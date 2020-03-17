@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 会社別シフトパレット
@@ -33,41 +33,59 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_PALETTE_CMP_COMBI")
-public class KscmtPaletteCmpCombi extends UkJpaEntity{
-	
-	
+public class KscmtPaletteCmpCombi extends ContractUkJpaEntity {
+
 	@EmbeddedId
 	public KscmtPaletteCmpCombiPk pk;
-	
+
 	/** シフトパレット組み合わせの名称 */
 	@Column(name = "POSITION_NAME")
 	public String positionName;
-	
+
 	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-    	@PrimaryKeyJoinColumn(name = "PAGE", referencedColumnName = "PAGE")
-    })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "PAGE", referencedColumnName = "PAGE") })
 	public KscmtPaletteCmp kscmtPaletteCmp;
-	
-	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "kscmtPaletteCmpCombi", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JoinTable(name = "KSCMT_PALETTE_CMP_COMBI_DTL")
+
+	@OneToMany(targetEntity = KscmtPaletteCmpCombiDtl.class, mappedBy = "kscmtPaletteCmpCombi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCMT_PALETTE_CMP_COMBI_DTL")
 	public List<KscmtPaletteCmpCombiDtl> cmpCombiDtls;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
-	
-	public ShiftPalletCombinations toDomain(){
-		return new ShiftPalletCombinations(pk.position, new ShiftCombinationName(positionName), cmpCombiDtls.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+
+	public ShiftPalletCombinations toDomain() {
+		return new ShiftPalletCombinations(pk.position, new ShiftCombinationName(positionName),
+				cmpCombiDtls.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	}
+
+	public static KscmtPaletteCmpCombi fromDomain(ShiftPalletCombinations shiftPalletCombinations,
+			KscmtPaletteCmpPk pk) {
+		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page,
+				shiftPalletCombinations.getPositionNumber());
+		return new KscmtPaletteCmpCombi(cmpCombiPk, shiftPalletCombinations.getCombinationName().v(), null,
+				shiftPalletCombinations.getCombinations().stream()
+						.map(x -> KscmtPaletteCmpCombiDtl.fromDomain(x, cmpCombiPk)).collect(Collectors.toList()));
 	}
 	
-	public static KscmtPaletteCmpCombi fromDomain(ShiftPalletCombinations shiftPalletCombinations, KscmtPaletteCmpPk pk) {
-		// TODO Auto-generated method stub
-		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page, shiftPalletCombinations.getPositionNumber());
-		return new KscmtPaletteCmpCombi(cmpCombiPk, 
-				shiftPalletCombinations.getCombinationName().v(), null, 
-				shiftPalletCombinations.getCombinations().stream().map(x-> KscmtPaletteCmpCombiDtl.fromDomain(x,cmpCombiPk)).collect(Collectors.toList()));
+	public static KscmtPaletteCmpCombi fromOneDomain(ShiftPalletCombinations shiftPalletCombinations,
+			KscmtPaletteCmpPk pk) {
+		KscmtPaletteCmpCombiPk cmpCombiPk = new KscmtPaletteCmpCombiPk(AppContexts.user().companyId(), pk.page,
+				shiftPalletCombinations.getPositionNumber());
+		return new KscmtPaletteCmpCombi(cmpCombiPk, shiftPalletCombinations.getCombinationName().v(), null,
+				null);
+	}
+
+	public void toEntity(ShiftPalletCombinations shiftPalletCombinations) {
+		this.positionName = shiftPalletCombinations.getCombinationName().v();
+		cmpCombiDtls.stream().forEach(x -> {
+			if(shiftPalletCombinations.getCombinations().stream()
+					.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().isPresent()) {
+				x.toEntity(shiftPalletCombinations.getCombinations().stream()
+						.filter(y -> x.pk.positionOrder == y.getOrder()).findFirst().get());
+			}
+		});
 	}
 }

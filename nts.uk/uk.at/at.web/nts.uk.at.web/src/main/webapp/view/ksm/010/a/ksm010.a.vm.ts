@@ -106,20 +106,20 @@ module nts.uk.at.view.ksm010.a {
 
                 self.isCreate(true);
                 self.currentCode(null);
-                self.currentCode.valueHasMutated();
+                //self.currentCode.valueHasMutated();
             }
 
             saveData(): void {
                 let self = this;
                 self.rankSymbol($.trim(self.rankSymbol()));
-                
                 $("#rankCode").trigger("validate");
                 $("#rankSymbol").trigger("validate");
-
+                _.map(self.rankItems() , 'rankCd');       
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-
+               
+    
                 let command: any = {
                     rankCd: self.rankCd(),
                     rankSymbol: self.rankSymbol()
@@ -132,6 +132,10 @@ module nts.uk.at.view.ksm010.a {
                         self.getListRank();
                         self.currentCode(self.rankCd());
                     }).fail(function(error: any) {
+                        if (error.messageId == "Msg_3") {
+                            $('#rankCode').ntsError('set', { messageId: "Msg_3" });
+                        }
+                        else
                         alertError({ messageId: error.messageId });
                     }).always(() => {
                         blockUI.clear();
@@ -140,6 +144,7 @@ module nts.uk.at.view.ksm010.a {
                     service.updateRank(command).done(() => {
                         info({ messageId: "Msg_15" });
                         self.getListRank();
+                        $('#rankSymbol').focus();
                     }).fail(function(error: any) {
                         alertError({ messageId: error.messageId });
                     }).always(() => {
@@ -153,13 +158,14 @@ module nts.uk.at.view.ksm010.a {
                 let self = this;
 
                 let command = { rankCd: self.rankCd() };
-
+     
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
                     service.deleteRank(command).done(() => {
-                        info(getMessage('Msg_16'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                         self.setCurrentCodeAfterDelete();
                         self.getListRank();
+                    });
                     }).fail(function(error) {
                         alertError(error.message);
                     }).always(function() {

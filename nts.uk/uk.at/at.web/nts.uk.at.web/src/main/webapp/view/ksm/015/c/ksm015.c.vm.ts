@@ -1,4 +1,6 @@
 module nts.uk.at.view.ksm015.c.viewmodel {
+	import flat = nts.uk.util.flatArray;
+
 	export class ScreenModel {
 		baseDate: KnockoutObservable<Date>;
 		selectedWorkplaceId: KnockoutObservable<string>;
@@ -8,33 +10,24 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		shiftColumns: Array<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
-		forAttendent: KnockoutObservable<String>;
+		forAttendent: KnockoutObservable<Boolean>;
+		workplaceName: KnockoutObservable<String>;
+		isWorkplaceAlreadySetting: KnockoutObservable<Boolean>;
+
 		constructor() {
 			let self = this;
-			self.forAttendent = ko.observable('');
+			self.forAttendent = ko.observable(true);
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
-			self.selectedWorkplaceId.subscribe((val) => {
-				if (val) {
-					let param = {
-						workplaceId: val,
-						targetUnit: TargetUnit.WORKPLACE
-					}
-					service.getShiftMasterByWorkplace(param)
-						.done((data) => {
-							data = _.sortBy(data, 'shiftMasterCode');
-							self.shiftItems(data);
-							self.selectedShiftMaster([]);
-						});
-				}
-			});
+			self.workplaceName = ko.observable('');
+
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
 				isShowAlreadySet: true,
 				isMultipleUse: false,
 				isMultiSelect: false,
 				treeType: 1,
-				selectedWorkplaceId: self.selectedWorkplaceId,
+				selectedId: self.selectedWorkplaceId,
 				baseDate: self.baseDate,
 				selectType: 3,
 				isShowSelectButton: true,
@@ -49,16 +42,52 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.shiftItems = ko.observableArray([]);
 			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
 			self.selectedShiftMaster = ko.observableArray([]);
-			$('#tree-grid').ntsTreeComponent(self.treeGrid);
+			self.isWorkplaceAlreadySetting = ko.observable(false);
+
+			$('#tree-grid').ntsTreeComponent(self.treeGrid)
+				.done(() => {
+					self.selectedWorkplaceId.subscribe((val) => {
+						if (val) {
+							let lwps = $('#tree-grid').getDataList();
+							let rstd = $('#tree-grid').getRowSelected();
+							let flwps = flat(_.cloneDeep(lwps), "children");
+							let wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id);
+							self.workplaceName(wkp ? wkp.name : '');
+							if (val) {
+								let param = {
+									workplaceId: val,
+									targetUnit: TargetUnit.WORKPLACE
+								}
+								service.getShiftMasterByWorkplace(param)
+									.done((data) => {
+										data = _.sortBy(data, 'shiftMasterCode');
+										self.shiftItems(data);
+										self.selectedShiftMaster([]);
+										self.isWorkplaceAlreadySetting(data && data.length > 0);
+									});
+							}
+						}
+
+					});
+					self.selectedWorkplaceId.valueHasMutated();
+				});
 		}
 
 		startPage(): JQueryPromise<any> {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.invisible();
-			service.isForAttendent()
+			service.startPage()
 				.done((data) => {
-					self.forAttendent(data.forAttendent);
+					self.forAttendent(!_.isNull(data.forAttendent));
+					if (data.alreadyConfigWorkplaces) {
+						let alreadySettings = []
+						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
+							alreadySettings.push({ workplaceId: wp, isAlreadySetting: true });
+						});
+						self.alreadySettingList(alreadySettings);
+					}
+
 					dfd.resolve(data);
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -70,19 +99,21 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
-			if (self.shiftItems().length === 0) {
-				nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-				return;
-			}
+
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE,
 				workplaceId: self.selectedWorkplaceId(),
 				shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			};
+
 			nts.uk.ui.block.grayout();
 			service.registerOrg(param)
 				.done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+					let isNew = _.findIndex(self.alreadySettingList(), (val) => { return val.workplaceId === self.selectedWorkplaceId() }) === -1;
+					if (isNew) {
+						self.reloadAlreadySetting();
+					}
 					self.selectedWorkplaceId.valueHasMutated();
 				}).fail(function (error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -102,9 +133,10 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
 					service.deleteOrg(param).done((data) => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 						self.selectedWorkplaceId.valueHasMutated();
 						nts.uk.ui.block.clear();
+						self.reloadAlreadySetting();
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
 					});
@@ -118,8 +150,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			if (this.selectedShiftMaster().length > 0) {
 				self.shiftItems(_.filter(self.shiftItems(), (val) => { return self.selectedShiftMaster().indexOf(val.shiftMasterCode) === -1 }));
 				self.selectedShiftMaster([]);
+			} else {
+				nts.uk.ui.dialog.info({ messageId: "Msg_85" });
 			}
-
 		}
 
 		public openDialogKDL044(): void {
@@ -128,7 +161,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.windows.setShared('kdl044Data', {
 				isMultiSelect: true,
 				filter: 0,
-				permission: true,
+				permission: false,
 				shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			}, true);
 
@@ -151,37 +184,70 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			* open dialog copy monthly pattern setting by on click button
 			*/
 		public openDialogCopy(): void {
-			var self = this;
-			if (!self.selectedShiftMaster()) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
-				return;
-			}
-
-			let dataSource = self.shiftItems();
-			let itemListSetting = _.map(self.alreadySettingList(), item => {
-				return _.find(dataSource, i => i.code == item.code).id;
-			});
-
-			let object: IObjectDuplication = {
-				code: self.selectedWorkplaceId(),
-				name: dataSource.filter(e => e.shiftMasterCode == self.selectedShiftMaster())[0].shiftMasterName,
-				targetType: TargetType.WORKPLACE,
-				itemListSetting: itemListSetting,
-				baseDate: self.baseDate()
-			};
+			let self = this,
+				lwps = $('#tree-grid').getDataList(),
+				rstd = $('#tree-grid').getRowSelected(),
+				flwps = flat(_.cloneDeep(lwps), "children"),
+				wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id),
+				param = {
+					targetType: 4,
+					name: wkp ? wkp.name : '',
+					code: wkp ? wkp.code : '',
+					baseDate: ko.toJS(self.baseDate),
+					itemListSetting: _.map(self.alreadySettingList(), m => m.workplaceId)
+				};
 
 			// create object has data type IObjectDuplication and use:
-			nts.uk.ui.windows.setShared("CDL023Input", object);
+			nts.uk.ui.windows.setShared("CDL023Input", param);
 
 			// open dialog
 			nts.uk.ui.windows.sub.modal('com', '/view/cdl/023/a/index.xhtml').onClosed(() => {
 				// show data respond
 				let lstSelection: any = nts.uk.ui.windows.getShared("CDL023Output");
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
-					// self.listDestSid(lstSelection);
-					// self.copyMonthlyPatternSetting();
+					let wkps = [];
+					lstSelection.forEach((wp) => {
+						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] });
+					});
+					let param = {
+						targetUnit: TargetUnit.WORKPLACE,
+						workplaceId: self.selectedWorkplaceId(),
+						shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode }),
+						toWkps: wkps
+					}
+					service.copyOrg(param)
+						.done((results) => {
+							let msg = '';
+							results.forEach((result) => {
+								let dataWkp = _.find(flwps, wkp => wkp.id == result.workplaceId);
+								if(dataWkp) {
+									let status = result.status ? nts.uk.resource.getText('KSM015_26') : nts.uk.resource.getText('KSM015_27');
+									msg += dataWkp.code + ' ' + dataWkp.name + ' ' + status + '<br>';
+								}
+							});
+							nts.uk.ui.dialog.info(msg);
+							self.reloadAlreadySetting();
+						});
 				}
 			});
+		}
+
+		public reloadAlreadySetting() {
+			let self = this;
+			service.getAlreadyConfigOrg()
+				.done((data) => {
+					let alreadySettings = []
+					_.forEach(data.workplaceIds, (wp) => {
+						alreadySettings.push({ workplaceId: wp, isAlreadySetting: true });
+					});
+					self.alreadySettingList(alreadySettings);
+				});
+		}
+
+		public reCalGridWidth() {
+			let panelWidthResize = window.innerWidth - 650;
+			$('#shift-list').igGrid("option", "width", panelWidthResize);
+			$('#form-title').css("width", panelWidthResize + "px");
 		}
 
 
