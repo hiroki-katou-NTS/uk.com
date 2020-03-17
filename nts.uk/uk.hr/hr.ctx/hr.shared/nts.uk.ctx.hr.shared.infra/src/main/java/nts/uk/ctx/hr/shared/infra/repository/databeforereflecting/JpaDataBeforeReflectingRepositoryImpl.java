@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.infra.repository.databeforereflecting;
+package nts.uk.ctx.hr.shared.infra.repository.databeforereflecting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecData;
-import nts.uk.ctx.hr.develop.infra.entity.databeforereflecting.PreReflecDataPk;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.OnHoldFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.Status;
+import nts.uk.ctx.hr.shared.infra.entity.databeforereflecting.PreReflecData;
+import nts.uk.ctx.hr.shared.infra.entity.databeforereflecting.PreReflecDataPk;
 
 @Stateless
 public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository implements DataBeforeReflectingRepository {
