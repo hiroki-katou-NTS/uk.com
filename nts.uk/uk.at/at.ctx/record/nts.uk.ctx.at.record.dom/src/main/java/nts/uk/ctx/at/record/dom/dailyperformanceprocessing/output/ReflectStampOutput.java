@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 public class ReflectStampOutput {
 	OutingTimeOfDailyPerformance outingTimeOfDailyPerformance;
 	TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
-	List<Stamp> lstStamp;//TODO
+	List<Stamp> lstStamp;
 	TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance;
 	AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily;
 	PCLogOnInfoOfDaily pcLogOnInfoOfDaily;

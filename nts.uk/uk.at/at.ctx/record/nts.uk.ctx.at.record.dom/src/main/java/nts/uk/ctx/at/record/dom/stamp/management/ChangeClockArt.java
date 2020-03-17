@@ -6,6 +6,11 @@ package nts.uk.ctx.at.record.dom.stamp.management;
  *
  */
 public enum ChangeClockArt {
+	/**
+	 * "時刻変更区分
+	 * 0:出勤 1:退勤 2:入門 3:退門 4:外出 5:戻り 6:応援開始 7:臨時出勤 8:応援終了 9:臨時退勤 10:PCログオン
+	 * 11:PCログオフ 12:応援出勤 13:臨時+応援出勤
+	 */
 	
 	/** 出勤 */
 	GOING_TO_WORK(0,"出勤"),
@@ -19,35 +24,35 @@ public enum ChangeClockArt {
 	/** 退門出 */
 	BRARK(3,"退門出"),
 
+	/** 外出 */
+	GO_OUT(4,"外出"),
+	
+	/** 戻り */
+	RETURN(5,"戻り"),
+	
 	/** 応援開始 */
-	FIX(4,"応援開始 "),
+	FIX(6,"応援開始 "),
+	
+	/** 臨時出勤 */
+	TEMPORARY_WORK(7,"臨時出勤"),
 
 	/** 応援終了 */
-	END_OF_SUPPORT(5,"応援終了"),
-
-	/** 応援出勤 */
-	SUPPORT(6,"応援出勤"),
-
-	/** 外出 */
-	GO_OUT(7,"外出"),
-
-	/** 戻り */
-	RETURN(8,"戻り"),
-
-	/** 臨時+応援出勤 */
-	TEMPORARY_SUPPORT_WORK(9,"臨時+応援出勤"),
-
-	/** 臨時出勤 */
-	TEMPORARY_WORK(10,"臨時出勤"),
-
+	END_OF_SUPPORT(8,"応援終了"),
+	
 	/** 臨時退勤 */
-	TEMPORARY_LEAVING(11,"臨時退勤"),
+	TEMPORARY_LEAVING(9,"臨時退勤"),
 
 	/** PCログオン */
-	PC_LOG_ON(12,"PCログオン"),
+	PC_LOG_ON(10,"PCログオン"),
 
 	/** PCログオフ */
-	PC_LOG_OFF(13,"PCログオフ");
+	PC_LOG_OFF(11,"PCログオフ"),
+
+	/** 応援出勤 */
+	SUPPORT(12,"応援出勤"),
+
+	/** 臨時+応援出勤 */
+	TEMPORARY_SUPPORT_WORK(13,"臨時+応援出勤");
 
 	/** The value. */
 	public int value;

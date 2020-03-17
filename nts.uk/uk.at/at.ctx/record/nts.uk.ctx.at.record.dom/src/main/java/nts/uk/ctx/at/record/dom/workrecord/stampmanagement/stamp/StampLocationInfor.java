@@ -6,6 +6,7 @@ import nts.gul.location.GeoCoordinate;
 
 /**
  * VO : 打刻場所情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻場所情報
  * @author tutk
  *
  */

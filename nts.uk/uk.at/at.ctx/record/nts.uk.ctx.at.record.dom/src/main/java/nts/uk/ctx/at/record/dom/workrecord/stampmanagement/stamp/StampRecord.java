@@ -7,10 +7,11 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 
 /**
  * @author ThanhNX
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻記録
  *         打刻記録
  */
 public class StampRecord implements DomainAggregate {
@@ -37,7 +38,7 @@ public class StampRecord implements DomainAggregate {
 	 * 予約区分
 	 */
 	@Getter
-	private final RevervationAtr revervationAtr;
+	private final ReservationArt revervationAtr;
 
 	/**
 	 * 就業情報端末コード
@@ -46,7 +47,7 @@ public class StampRecord implements DomainAggregate {
 	private final Optional<EmpInfoTerminalCode> empInfoTerCode;
 
 	public StampRecord(StampNumber stampNumber, GeneralDateTime stampDateTime, boolean stampArt,
-			RevervationAtr revervationAtr, Optional<EmpInfoTerminalCode> empInfoTerCode) {
+			ReservationArt revervationAtr, Optional<EmpInfoTerminalCode> empInfoTerCode) {
 		super();
 		this.stampNumber = stampNumber;
 		this.stampDateTime = stampDateTime;

@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RevervationAtr;
+import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecord;
@@ -92,7 +92,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
 		return new StampRecord(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime, entity.stampArt,
-				RevervationAtr.valueOf(entity.reservationArt), Optional.ofNullable(
+				ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
 						entity.workTerminalInfoCd == null ? null : new EmpInfoTerminalCode(entity.workTerminalInfoCd)));
 	}
 

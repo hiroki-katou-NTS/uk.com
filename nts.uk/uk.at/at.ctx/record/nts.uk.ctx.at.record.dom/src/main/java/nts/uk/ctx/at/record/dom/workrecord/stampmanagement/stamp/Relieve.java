@@ -5,6 +5,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * VO : 打刻する方法
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻する方法
  * @author tutk
  *
  */

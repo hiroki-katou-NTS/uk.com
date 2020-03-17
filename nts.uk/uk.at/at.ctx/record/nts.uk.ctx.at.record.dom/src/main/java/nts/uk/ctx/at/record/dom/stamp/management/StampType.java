@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 
 /**
  * 打刻種類
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻種類
  * @author phongtq
  *
  */

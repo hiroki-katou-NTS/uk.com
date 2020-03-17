@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * AR : 打刻
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻
  * @author tutk
  *
  */
@@ -84,6 +85,18 @@ public class Stamp implements DomainAggregate {
 		this.type = type;
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = reflectedCategory;
+		this.locationInfor = Optional.of(locationInfor);
+	}
+	
+	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
+			RefectActualResult refActualResults,StampLocationInfor locationInfor) {
+		super();
+		this.cardNumber = cardNumber;
+		this.stampDateTime = stampDateTime;
+		this.relieve = relieve;
+		this.type = type;
+		this.refActualResults = refActualResults;
+		this.reflectedCategory = false;
 		this.locationInfor = Optional.of(locationInfor);
 	}
 	

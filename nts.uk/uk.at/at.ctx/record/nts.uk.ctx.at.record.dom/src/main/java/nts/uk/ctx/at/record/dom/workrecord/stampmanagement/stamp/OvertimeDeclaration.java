@@ -6,6 +6,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * VO : 時間外の申告
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.出退勤時刻.時間外の申告
  * @author tutk
  *
  */

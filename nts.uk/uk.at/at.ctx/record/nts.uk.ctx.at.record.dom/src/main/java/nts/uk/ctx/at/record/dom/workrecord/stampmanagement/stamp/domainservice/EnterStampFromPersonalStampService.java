@@ -2,10 +2,9 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
@@ -15,10 +14,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 /**
  * @author ThanhNX
  *
- *         個人打刻入から打刻を作成する
+ *         個人打刻から打刻を入力する (old : 個人打刻入力から打刻を作成する)		
+ *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.個人打刻から打刻を入力する
  */
-@Stateless
-public class CreateStampFromPersonalStampService {
+public class EnterStampFromPersonalStampService {
 
 	// [1] 作成する
 	/**
@@ -32,8 +31,8 @@ public class CreateStampFromPersonalStampService {
 	 * @param positionInfo 打刻位置情報	
 	 * @param empInfoTerCode 就業情報端末コード
 	 */
-	public void create(Require require, String employeeId, GeneralDateTime stmapDateTime, int pageNo, int buttonPosNo,
-			Relieve relieve, RefectActualResult refActualResults, Optional<Integer> positionInfo,
+	public static StampDataReflectResult create(Require require, String employeeId, GeneralDateTime stmapDateTime, int pageNo, int buttonPosNo,
+			Relieve relieve, RefectActualResult refActualResults, Optional<GeoCoordinate> positionInfo,
 			Optional<EmpInfoTerminalCode> empInfoTerCode) {
 
 		// $個人利用の打刻設定 = require.個人利用の打刻設定を取得する()
@@ -43,11 +42,12 @@ public class CreateStampFromPersonalStampService {
 		Optional<ButtonSettings> buttonSet = stampSettingPerOpt.get().getButtonSet(pageNo, buttonPosNo);
 		if (!buttonSet.isPresent())
 			throw new BusinessException("Msg_1632");
-		//TODO: return 社員の打刻データを作成する.作成する(require, 社員ID, 打刻日時, $ボタン詳細設定.ボタン種類, 実績への反映内容, 打刻位置情報, 就業情報端末コード)
+		// return 社員の打刻データを作成する.作成する(require, 社員ID, 打刻日時, $ボタン詳細設定.ボタン種類, 実績への反映内容, 打刻位置情報, 就業情報端末コード)
+		return CreateStampDataForEmployeesService.create(require, employeeId, stmapDateTime, relieve, buttonSet.get().getButtonType(), Optional.of(refActualResults), positionInfo, empInfoTerCode);
 		
 	}
 
-	public static interface Require {
+	public static interface Require extends CreateStampDataForEmployeesService.Require {
 		
 		 //[R-1] 個人利用の打刻設定を取得する -StampSetPerRepository
 		 Optional<StampSettingPerson> getStampSet ();
