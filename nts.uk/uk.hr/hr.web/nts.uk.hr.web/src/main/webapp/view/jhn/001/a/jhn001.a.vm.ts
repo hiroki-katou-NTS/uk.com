@@ -29,7 +29,10 @@ module jhn001.a.viewmodel {
         enaSaveDraft: KnockoutObservable<boolean> = ko.observable(true);
         enaAttachedFile: KnockoutObservable<boolean> = ko.observable(true);
         enaRemove: KnockoutObservable<boolean> = ko.observable(true);
-
+        
+        showBtnBack: KnockoutObservable<boolean> = ko.observable(false);
+        showBtnRemove: KnockoutObservable<boolean> = ko.observable(false);
+        
         listItemDf = [];
         missingDocName = '';
         reportIdFromJhn003 = null;
@@ -78,12 +81,14 @@ module jhn001.a.viewmodel {
 
                     // A1.6
                     if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
-                        self.enaRemove(false);
-                        $( "#goBack" ).addClass("goBackDisable");
+                        
+                        self.showBtnBack(false);
+                        self.showBtnRemove(false);
 
                     } else {
-                        self.enaRemove(true);
-                        $( "#goBack" ).removeClass("goBackDisable");
+                        
+                        self.showBtnBack(true);
+                        self.showBtnRemove(true);
                     }
 
                     
@@ -365,8 +370,8 @@ module jhn001.a.viewmodel {
             self.layout().reportNameLabel('');
             self.layout().listDocument([]);
             self.layout().approvalRootState([]);
-            self.enaRemove(false);
-            $( "#goBack" ).addClass("goBackDisable");
+            self.showBtnBack(false);
+            self.showBtnRemove(false);
 
         }
         
@@ -429,8 +434,10 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveData(command).done(() => {
                     info({ messageId: "MsgJ_36" }).then(function() {
-                        self.enaRemove(true);
-                        $( "#goBack" ).removeClass("goBackDisable");
+                        
+                        self.showBtnBack(true);
+                        self.showBtnRemove(true);
+                        
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
@@ -488,8 +495,10 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.enaRemove(true);
-                        $( "#goBack" ).removeClass("goBackDisable");
+                        
+                        self.showBtnBack(true);
+                        self.showBtnRemove(true);
+                        
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
