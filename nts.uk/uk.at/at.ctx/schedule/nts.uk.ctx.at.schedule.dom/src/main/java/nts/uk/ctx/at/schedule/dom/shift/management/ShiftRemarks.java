@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 
-@StringMaxLength(10)
+@StringMaxLength(200)
 public class ShiftRemarks extends StringPrimitiveValue<ShiftRemarks>{
 
 	public ShiftRemarks(String rawValue) {

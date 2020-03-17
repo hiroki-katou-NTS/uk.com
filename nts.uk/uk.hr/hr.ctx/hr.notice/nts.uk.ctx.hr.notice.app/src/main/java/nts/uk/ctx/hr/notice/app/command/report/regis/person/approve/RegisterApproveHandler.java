@@ -270,13 +270,14 @@ public class RegisterApproveHandler extends CommandHandler<ApproveReportCommand>
 			
 			this.approveRepository.approveHr(rootStateID, sid, cmd.getApproveComment());
 			
-			//アルゴリズム[[RQ631]申請書の承認者と状況を取得する。]を実行する(( Thực hiện thuật toán[[RQ631] Get status và approver of application.] )
-			ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
-			
 			List<ApprovalPhaseStateForAppDto> appPhaseLst = new ArrayList<>();
 			
 			//アルコール[承認情報の取得]を実行する
-			reportItemFinder.getInfoApprover(rootStateID, approvalStateHrImport, appPhaseLst);
+			//アルゴリズム[[RQ631]申請書の承認者と状況を取得する。]を実行する(( Thực hiện thuật toán[[RQ631] Get status và approver of application.] )
+			ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
+			
+			reportItemFinder.getInfoApprover(rootStateID ,approvalStateHrImport, appPhaseLst);
+			
 			
 			boolean release = approvalStateHrImport == null?false: approvalStateHrImport.getApprState() == null? false: approvalStateHrImport.getApprState().isReflectFlag();
 			

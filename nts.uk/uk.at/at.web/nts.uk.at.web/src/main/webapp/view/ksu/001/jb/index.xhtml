@@ -7,13 +7,18 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 940, height:450 };</script>
+			<script>var dialogSize = { width: 1030, height:360 };</script>
 			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
-				nts.uk.ctx.at.request.dom.setting.workplace.Memo
+				nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks
+
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			
+			
+			
 			<com:stylefile path="ksu001.jb.main.css" />
 			<com:scriptfile path="ksu001.jb.service.js" />
 			<com:scriptfile path="ksu001.jb.vm.js" />
@@ -23,16 +28,16 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed"
-					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_901')}</button>
+					data-bind=" click: saveData">#{i18n.getText('KSU001_901')}</button>
 				<button class="danger"
 					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_902')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>
 			</div>
 			<div id="contents-area">
-				<div id="h-50" data-bind="visible: isVisibleWkpName">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_926')}</div>
-					<span id = "workplaceCode" data-bind="text: workplaceCode"></span>
-					<span id = "workplaceName" data-bind="text: workplaceName"></span> <br />
+				<div id="h-50" >	
+					<span style = "margin-left: 35px;">#{i18n.getText('KSU001_926')}</span>				
+					<span id = "workplaceCode" data-bind="text: workplaceCode,visible: isVisibleWkpName" ></span>
+					<span id = "workplaceName" data-bind="text: workplaceName,visible: isVisibleWkpName"></span> <br />
 					<hr />
 				</div>
 				<div id="group-link-button-ja"
@@ -43,10 +48,10 @@
 				</div>
 				<div class="mt-10">
 					<div id="name"
-						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">#{i18n.getText('KSU001_904')}</div>
+						data-bind="ntsFormLabel: {required: true, constraint: 'ShiftPalletName'}">#{i18n.getText('KSU001_904')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName', name: '#[KSU001_904]'}" />
-					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
+						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'ShiftPalletName', name: '#[KSU001_904]'}" />
+					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_109')}</div>
 					<div class="cf"
 						data-bind="ntsSwitchButton: {
 							options: groupUsageAtr,
@@ -56,12 +61,14 @@
 							enable: true }"></div>
 				</div>
 				
-				<div class="mt-10">			
-					<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KSU001_906')}</div>
-					<input id="note" data-bind="ntsTextEditor: {value: note, constraint: 'Memo', name: '#[KSU001_906]'}" />
+				<div class="valign-center control-group">			
+					<div  style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: 'ShiftRemarks'}">#{i18n.getText('KSU001_906')}</div>	
+					<textarea  id="multiline-textbox"
+						data-bind="ntsMultilineEditor: {value: note,constraint: 'ShiftRemarks', name: '#[KSU001_906]' }" />
 				</div>
-				<div class="mt-10">
-					<div class = "form-label" style = "display: inline-block;"
+				
+				<div class="valign-center control-group" style = "margin-top: 5px;">
+					<div class = "form-label" style = "display: inline-block; margin-bottom: 30px;"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_113')}</div>
 					<!--<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>-->	
 					<div id="popup-area" class="popup-area popup-panel">
@@ -77,6 +84,7 @@
 					<div id="test2"
 						data-bind="ntsTableButton: {source: source, row: 2, column: 10, contextMenu: contextMenu, click: openDialogJC.bind($data), mode: 'master'}"></div>
 				</div>
+	
 			</div>
 		</ui:define>
 	</ui:composition>

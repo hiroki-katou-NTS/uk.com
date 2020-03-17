@@ -63,6 +63,7 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 		entity.useApproval = x.getUseApproval().value;
 		entity.useMenu = x.getUseMenu().value;
 		entity.useNotice = x.getUseNotice().value;
+		entity.noRankOrder = x.isNoRankOrder()?1:0;
 		entity.ccd = x.getCcd();
 		return entity;
 	}

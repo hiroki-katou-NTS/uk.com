@@ -22,4 +22,5 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 public class Ksm015StartPageDto {
 	List<ShiftMasterDto> shiftMasters;
 	String forAttendent;
+	List<String> alreadyConfigWorkplaces;
 }

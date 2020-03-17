@@ -33,30 +33,34 @@ module jhn003.a.vm {
                 self.approvalAllEnable(false);
                 self.searchInfo().approvalStatus(data ? 1 : null);
             });
+            
+            setTimeout(function() {
+                $(window).resize(function() {
+                    $("#reportList").igGrid("option", "height", (window.innerHeight - 320) + "px");
+                });
+            }, 100);
         }
 
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            
+
             block.grayout();
-            
+
             service.startPage().done((data) => {
-                
+
                 let reportItems = [{ code: null, name: "" }];
 
                 self.searchInfo().reportItems(reportItems.concat(_.map(data, x => { return { code: x.reportClsId, name: x.reportName } })));
-                
+
                 self.bindReportList();
             }).fail((error) => {
 
-                    dialog.info(error);
+                dialog.info(error);
 
-                })
-                .always(() => {
+            }).always(() => {
                     dfd.resolve();
                     block.clear();
-
                 });
 
 
@@ -100,7 +104,9 @@ module jhn003.a.vm {
 
             block.grayout();
 
-            service.findPersonReport(ko.toJS(self.searchInfo())).done((data) => {
+            let param  = ko.toJS(self.searchInfo());
+
+            service.findPersonReport(param).done((data) => {
 
                 self.reportList(_.map(data, x => new PersonReport(x)));
                 self.bindReportList();
@@ -140,7 +146,7 @@ module jhn003.a.vm {
             $('#reportList').ntsGrid({
                 autoGenerateColumns: false,
                 width: '908px',
-                height: '279px',
+                height: window.innerHeight - 320,
                 primaryKey: 'reportID',
                 virtualization: true,
                 rowVirtualization: true,
@@ -218,7 +224,7 @@ module jhn003.a.vm {
     }
 
     class SearchInfo {
-        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment(new Date()).add(-1, 'M').toDate(), endDate: moment(new Date()).add(1, 'M').toDate() });
+        appDate: KnockoutObservable<any> = ko.observable({ startDate: moment.utc(new Date()).add(-1, 'M').toDate(), endDate: moment.utc(new Date()).add(1, 'M').toDate() });
         inputName: KnockoutObservable<string> = ko.observable('');
         approvalReport: KnockoutObservable<boolean> = ko.observable(false);
         reportItems: KnockoutObservableArray<ItemModel> = ko.observableArray([

@@ -41,14 +41,14 @@ public class ShiftPalletCombinations implements DomainValue {
 
 		// inv-2 1 <= @シフト組み合わせ.Size <= 31
 		if (!(1 <= combinations.size() && combinations.size() <= 31)) {
-			throw new BusinessException("Msg_1627");
+			throw new BusinessException("Msg_1626");
 		}
 
 		List<Integer> lstElement = combinations.stream().map(x -> x.getOrder()).distinct().collect(Collectors.toList());
 
 		if (lstElement.size() < combinations.size()) {
 			// inv-3 @シフト組み合わせ.順番が重複しないこと
-			throw new BusinessException("Msg_1627");
+			throw new BusinessException("Msg_1626");
 		}
 		// inv-4 @シフト組み合わせ: 昇順(シフトパレットのシフト.順番)
 		combinations.sort((p1, p2) -> p1.getOrder() - p2.getOrder());
@@ -58,7 +58,7 @@ public class ShiftPalletCombinations implements DomainValue {
 		this.combinations = combinations;
 	}
 
-	public void sortCombinations() {
+	public void sortCombinationsConsecutiveNumbersFrom1() {
 		// シフト組み合わせの順番を1～の連番に整頓する。
 		List<Combinations> list = new ArrayList<>();
 		Combinations com = null;
