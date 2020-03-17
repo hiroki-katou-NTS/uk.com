@@ -343,6 +343,8 @@ project (':hr.screen:nts.uk.screen.hr.ws') {
 
 project (':hr.screen:nts.uk.screen.hr.app') {
 	dependencies {
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
 		compile project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
@@ -402,6 +404,8 @@ project (':hr.file:nts.uk.file.hr.ws') {
 project (':hr.file:nts.uk.file.hr.app') {
 	dependencies {
 		compile project (':hr.screen:nts.uk.screen.hr.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	 	compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
