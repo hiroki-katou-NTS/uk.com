@@ -79,9 +79,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			+ " AND awh.endDate >= :refDate";
 	
 	private static final String SELECT_EMPLOYEE =  "SELECT"
-			+ " SID, SCD, CLASSIFICATION_CODE, EMP_CD, COM_STR_DATE, JOB_CD,"
-			+ " BUSINESS_NAME, WKP_ID, WKP_HIERARCHY_CD, WKP_CD, WKP_NAME "
-            + " DEP_ID, DEP_HIERARCHY_CD, DEP_CD, DEP_NAME, DEP_DELETE_FLAG "
+			+ " SID, SCD, CLASSIFICATION_CODE, EMP_CD, COM_STR_DATE, JOB_CD, "
+			+ " BUSINESS_NAME, WKP_ID, WKP_HIERARCHY_CD, WKP_CD, WKP_NAME, "
+            + " DEP_ID, DEP_HIERARCHY_CD, DEP_CD, DEP_NAME, DEP_DELETE_FLAG, "
+            + " WKP_DELETE_FLAG "
 			+ " FROM EMPLOYEE_DATA_VIEW ";
 	
 	private static final String EMPTY_LIST = "EMPTY_LIST";
@@ -833,7 +834,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		if(sql.contains("retireEnd")) {
 			sql = sql.replaceAll("retireEnd", "'" + retireEnd.toString(DATE_TIME_FORMAT) + "'");
 		}
-		
+		System.out.println(sql);
 		Query query = this.getEntityManager()
 				.createNativeQuery(sql);
 		@SuppressWarnings("unchecked")
@@ -859,6 +860,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.workplaceHierarchyCode(Optional.ofNullable(res[8] != null ? String.valueOf(res[8]) : null))
 				.workplaceCode(Optional.ofNullable(res[9] != null ? String.valueOf(res[9]) : null))
 				.workplaceName(Optional.ofNullable(res[10] != null ? String.valueOf(res[10]) : null))
+				.workplaceDeleteFlag(Optional.ofNullable(res[15] != null ? Boolean.valueOf(String.valueOf(res[14])) : null))
 				.departmentId(Optional.ofNullable(res[11] != null ? String.valueOf(res[11]) : null))
 				.departmentHierarchyCode(Optional.ofNullable(res[12] != null ? String.valueOf(res[12]) : null))
 				.departmentCode(Optional.ofNullable(res[13] != null ? String.valueOf(res[13]) : null))
