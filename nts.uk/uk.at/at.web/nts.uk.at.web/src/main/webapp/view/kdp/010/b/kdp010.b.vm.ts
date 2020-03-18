@@ -178,8 +178,9 @@ module nts.uk.at.view.kdp010 {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getStampPage().done(function(stampPage) {
-                    //                    if (stampPage)
-                    //                        self.lstStampPage() = stampPage;
+                if (stampPage)
+                self.lstStampPage = stampPage;
+                    
                     dfd.resolve();
                 }).fail(function(error) {
                     alert(error.message);

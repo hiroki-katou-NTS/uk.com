@@ -122,13 +122,16 @@ module nts.uk.at.view.kdp010.g {
                 nts.uk.ui.windows.close();
             }
 
-            openHDialog() {
+            openHDialog(enumVal: number, data): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('KDP010_G', self.dataShare);
+                let dataG = {
+                    dataShare: self.dataShare,
+                    buttonPositionNo: enumVal
+                }
+                nts.uk.ui.windows.setShared('KDP010_G', dataG);
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => { 
                 self.dataKdpH = nts.uk.ui.windows.getShared('KDP010_H');
                     self.dataShare = self.dataKdpH;
-                    console.log("aaa");
                 });
             }
         }

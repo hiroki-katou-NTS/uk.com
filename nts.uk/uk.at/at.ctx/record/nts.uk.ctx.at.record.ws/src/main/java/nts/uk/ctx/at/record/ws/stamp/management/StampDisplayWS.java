@@ -67,8 +67,8 @@ public class StampDisplayWS extends WebService {
 	
 	@POST
 	@Path("getStampPageByCid")
-	public StampSettingPersonDto getStampPageByCid() {
-		return this.finder.getStampSet();
+	public StampPageLayoutDto getStampPageByCid() {
+		return this.finder.getStampPageByCid();
 	}
 	
 	@POST

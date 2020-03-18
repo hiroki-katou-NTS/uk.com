@@ -1,12 +1,23 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.stamp.application.CheckErrorType;
+import nts.uk.ctx.at.record.dom.stamp.application.MessageContent;
+import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
+import nts.uk.ctx.at.record.dom.stamp.application.StamPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 @Entity
@@ -23,17 +34,54 @@ public class KrcmtPromptApplication extends ContractUkJpaEntity{
 	
 	/** エラー有時に促すメッセージ */
 	@Column(name ="MESSAGE_CONTENT")
-	public int messageContent;
+	public String messageContent;
 	
 	/** メッセージ色*/
 	@Column(name ="MESSAGE_COLOR")
-	public int MessageColor;
+	public String messageColor;
 	
 	
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
+
+	public static KrcmtPromptApplication toEntity(StampRecordDis listStamp, String companyId){
+		return new KrcmtPromptApplication(new KrcmtPromptApplicationPk(
+				companyId, 
+				listStamp.getCheckErrorType().value),
+				listStamp.getUseArt().value, 
+				listStamp.getPromptingMssage().getMessageContent().v(), 
+				listStamp.getPromptingMssage().getMessageColor().v() );
+	}
+
+	public static List<KrcmtPromptApplication> toEntity(StamPromptApplication application) {
+		// TODO Auto-generated method stub
+		List<KrcmtPromptApplication> lstPrompt = new ArrayList<>();
+		for(StampRecordDis listStamp : application.getLstStampRecordDis()){
+			lstPrompt.add(KrcmtPromptApplication.toEntity(listStamp, application.getCompanyId()));
+		}
+		return lstPrompt;
+	}
+	
+	
+	public StampRecordDis toDomainRecord(){
+		return new StampRecordDis(
+				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class) , 
+				EnumAdaptor.valueOf(this.pk.errorType, CheckErrorType.class), 
+				new PromptingMessage(
+						new MessageContent(this.messageContent), 
+						new ColorCode(this.messageColor)));
+	}
+
+	public KrcmtPromptApplication(KrcmtPromptApplicationPk pk, int useArt, String messageContent, String messageColor) {
+		super();
+		this.pk = pk;
+		this.useArt = useArt;
+		this.messageContent = messageContent;
+		this.messageColor = messageColor;
+	}
+	
 }																	
 			
 						
