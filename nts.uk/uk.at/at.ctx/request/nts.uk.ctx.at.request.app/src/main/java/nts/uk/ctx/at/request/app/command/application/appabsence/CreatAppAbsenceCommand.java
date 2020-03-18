@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.appabsence;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppTimeDigestDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubDigestionDto;
@@ -116,4 +117,6 @@ public class CreatAppAbsenceCommand {
 	private boolean checkOver1Year;
 	
 	private boolean checkContradiction;
+	
+	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
 }

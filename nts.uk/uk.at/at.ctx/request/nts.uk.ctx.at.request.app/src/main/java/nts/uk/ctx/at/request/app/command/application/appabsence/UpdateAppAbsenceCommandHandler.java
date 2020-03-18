@@ -148,7 +148,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		
 		//6.休暇申請（詳細）登録
 		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appAbsence.getApplication().getEmployeeID(), 
 				appAbsence.getApplication().getAppDate(), 
@@ -157,8 +157,8 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				appAbsence.getApplication().getPrePostAtr(), 
 				command.getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
-		GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());*/
+		/*GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
 		GeneralDate endDate = opAppAbsence.get().getApplication().getEndDate().isPresent() ? opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate();
 		
 		//休日申請日
@@ -174,7 +174,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
 				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
 				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
-				lstDateIsHoliday);
+				lstDateIsHoliday);*/
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		SpecHolidayCommand specHdCm = command.getSpecHd();

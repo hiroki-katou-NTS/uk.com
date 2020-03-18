@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
@@ -167,7 +168,7 @@ public interface AbsenceServiceProcess {
 	 * @param mourningAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
+	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
 	
 	/**
@@ -285,4 +286,18 @@ public interface AbsenceServiceProcess {
 			Integer holidayType, String workTypeCD, GeneralDate closureStartDate, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
 	
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
+	
+	/**
+	 * 更新前のエラーチェック処理
+	 * @param companyID 会社ID
+	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 * @param application 申請
+	 * @param appAbsence 休暇申請
+	 * @param alldayHalfDay 終日半日休暇区分
+	 * @param agentAtr 代行申請区分
+	 * @param mourningAtr 喪主区分<Optional>
+	 * @return
+	 */
+	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
+			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
 }

@@ -32,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -97,6 +98,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private OtherCommonAlgorithm otherCommonAlg;	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	
+	/**
+	 * 休暇申請（新規）登録処理
+	 */
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
 		CreatAppAbsenceCommand command = context.getCommand();
@@ -167,7 +172,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getEndTime2(),
 				specHd);
 		
-		//休日申請日
+		/*//休日申請日
 		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
 		// 2-1.新規画面登録前の処理を実行する
 		newBeforeRegister.processBeforeRegister(appRoot, 0, command.isCheckOver1Year(), lstDateIsHoliday);
@@ -177,7 +182,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		//計画年休上限チェック(check giới han trên plan annual holiday)
 		//hoatt-2018-07-04
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				startDate, endDate, lstDateIsHoliday);
+				startDate, endDate, lstDateIsHoliday);*/
 		// insert
 		absenceServiceProcess.createAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理
@@ -482,4 +487,5 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				setNo65.isSubVacaManage(), setNo65.isSubVacaTypeUseFlg(), setNo65.isSubHdManage(), setNo65.isSubHdTypeUseFlg(),
 				param.getNumberSubHd(), param.getNumberSubVaca());*/
 	}
+	
 }

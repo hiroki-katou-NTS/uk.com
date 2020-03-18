@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
@@ -627,10 +628,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 
 	@Override
-	public List<ConfirmMsgOutput> checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
+	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
 			Application_New application, AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr,
 			Optional<Boolean> mourningAtr) {
-		List<ConfirmMsgOutput> result = new ArrayList<>();
+		AbsenceCheckRegisterOutput result = new AbsenceCheckRegisterOutput();
+		List<ConfirmMsgOutput> confirmMsgLst = new ArrayList<>();
 		// 申請期間から休日の申請日を取得する
 		DatePeriod period = null;
 		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
@@ -654,7 +656,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				null, 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
 				holidayDateLst);
-		result.addAll(confirmMsgLst1);
+		confirmMsgLst.addAll(confirmMsgLst1);
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst2 = this.checkAppAbsenceRegister(
 				true, 
@@ -667,7 +669,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				alldayHalfDay, 
 				holidayDateLst, 
 				mourningAtr);
-		result.addAll(confirmMsgLst2);
+		confirmMsgLst.addAll(confirmMsgLst2);
+		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
+		result.setConfirmMsgLst(confirmMsgLst);
+		result.setHolidayDateLst(holidayDateLst);
 		return result;
 	}
 	
@@ -1030,5 +1035,49 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getAllDayHalfDayLeaveAtr().value, 
 				appAbsence.isHalfDayFlg());
 		return appAbsenceStartInfoOutput;
+	}
+
+	@Override
+	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID,
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application, AppAbsence appAbsence,
+			Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr) {
+		AbsenceCheckRegisterOutput absenceCheckRegisterOutput = new AbsenceCheckRegisterOutput();
+		// 申請期間から休日の申請日を取得する
+		DatePeriod period = null;
+		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+			GeneralDate startDate = application.getStartDate().get();
+			GeneralDate endDate = application.getEndDate().get();
+			period = new DatePeriod(startDate, endDate);
+		} else {
+			period = new DatePeriod(application.getAppDate(), application.getAppDate());
+		}
+		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
+		// 4-1.詳細画面登録前の処理
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyID, 
+				appAbsence.getApplication().getEmployeeID(), 
+				appAbsence.getApplication().getAppDate(), 
+				1, 
+				appAbsence.getAppID(), 
+				appAbsence.getApplication().getPrePostAtr(), 
+				appAbsence.getApplication().getVersion(),
+				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+		// 休暇申請登録時チェック処理
+		List<ConfirmMsgOutput> confirmMsgLst = this.checkAppAbsenceRegister(
+				false, 
+				companyID, 
+				appAbsence, 
+				appAbsenceStartInfoOutput, 
+				appAbsence.getHolidayAppType().value, 
+				appAbsence.getWorkTypeCode().v(), 
+				appAbsence.getApplication().getStartDate().get(), 
+				alldayHalfDay, 
+				holidayDateLst, 
+				mourningAtr);
+		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
+		absenceCheckRegisterOutput.setConfirmMsgLst(confirmMsgLst);
+		absenceCheckRegisterOutput.setHolidayDateLst(holidayDateLst);
+		return absenceCheckRegisterOutput;
 	}
 }

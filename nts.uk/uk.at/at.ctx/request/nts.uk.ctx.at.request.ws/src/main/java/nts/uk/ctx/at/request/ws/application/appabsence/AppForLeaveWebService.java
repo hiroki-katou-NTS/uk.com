@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -15,12 +14,14 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.ParamCheckRegist
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -116,15 +117,27 @@ public class AppForLeaveWebService extends WebService{
 	}
 	
 	@POST
-	@Path("changeRela/{workTypeCD}/{relationCD}")
-	public ChangeRelationShipDto changeRelationShip(@PathParam("workTypeCD") String workTypeCD, @PathParam("relationCD") String relationCD){
-		return appForLeaveFinder.changeRelationShip(workTypeCD, relationCD);
+	@Path("changeRela")
+	public ChangeRelationShipDto changeRelationShip(SpecAbsenceParam specAbsenceParam){
+		return appForLeaveFinder.changeRelationShip(specAbsenceParam);
 	}
 	
 	@POST
 	@Path("checkRegister")
 	public void checkRegister(ParamCheckRegister param){
 		creatAppAbsence.checkRegister(param);
+	}
+	
+	@POST
+	@Path("checkBeforeRegister")
+	public AbsenceCheckRegisterDto checkBeforeRegister(CreatAppAbsenceCommand param){
+		return appForLeaveFinder.checkBeforeRegister(param);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdate")
+	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
+		return appForLeaveFinder.checkBeforeUpdate(param);
 	}
 }
 
