@@ -6,15 +6,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingRepository;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
@@ -140,7 +143,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 
 		List<DataBeforeReflectingPerInfo> listDomain = this.queryProxy()
 				.query(SELECT_BY_WORKID_SIDS, PreReflecData.class).setParameter("workId", workId)
-				.setParameter("listSid", listSid).getList(dm -> toDomain(dm));
+				.setParameter("listSid", listSid).getList(dm -> dm.toDomain());
 		return listDomain;
 	}
 
@@ -194,7 +197,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 
 		List<PreReflecData> listEntity = query.getResultList();
 
-		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> toDomain(dm))
+		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> dm.toDomain())
 				.collect(Collectors.toList());
 
 		return listDomain;
@@ -273,6 +276,21 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.int_08 = domain.int_08;
 		entity.int_09 = domain.int_09;
 		entity.int_10 = domain.int_10;
+		
+		// ver 2
+		entity.approveSid1 = domain.approveSid1;
+		entity.approvePerName1 = domain.approvePerName1;
+		entity.approveStatus1 = domain.approveStatus1.value;
+		entity.approveComment1 = domain.approveComment1;
+		entity.approveSendMailFlg1 = domain.approveSendMailFlg1;
+		entity.approveDateTime1 = domain.approveDateTime1;
+		entity.approveSid2 = domain.approveSid2;
+		entity.approvePerName2 = domain.approvePerName2;
+		entity.approveStatus2 = domain.approveStatus2.value;
+		entity.approveComment2 = domain.approveComment2;
+		entity.approveSendMailFlg2 = domain.approveSendMailFlg2;
+		entity.approveDateTime2 = domain.approveDateTime2;
+		entity.rptLayoutId = domain.rptLayoutId;
 	}
 
 	private PreReflecData toEntity(DataBeforeReflectingPerInfo domain, PreReflecData entity) {
@@ -383,34 +401,23 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		entity.str_07 = domain.str_07 == null ? null : domain.str_07.toString();
 		entity.str_08 = domain.str_08 == null ? null : domain.str_08.toString();
 		entity.str_09 = domain.str_09 == null ? null : domain.str_09.toString();
-		entity.str_10 = domain.str_10;
+		entity.str_10 = domain.str_10 == null ? null : domain.str_09.toString();
+		
+		// ver 2
+		entity.approveSid1 = domain.approveSid1;
+		entity.approvePerName1 = domain.approvePerName1;
+		entity.approveStatus1 = domain.approveStatus1.value;
+		entity.approveComment1 = domain.approveComment1;
+		entity.approveSendMailFlg1 = domain.approveSendMailFlg1;
+		entity.approveDateTime1 = domain.approveDateTime1;
+		entity.approveSid2 = domain.approveSid2;
+		entity.approvePerName2 = domain.approvePerName2;
+		entity.approveStatus2 = domain.approveStatus2.value;
+		entity.approveComment2 = domain.approveComment2;
+		entity.approveSendMailFlg2 = domain.approveSendMailFlg2;
+		entity.approveDateTime2 = domain.approveDateTime2;
+		entity.rptLayoutId = domain.rptLayoutId;
 		return entity;
-	}
-
-	private DataBeforeReflectingPerInfo toDomain(PreReflecData entity) {
-		return DataBeforeReflectingPerInfo.createFromJavaType(entity.preReflecDataPk.getHistoryId(),
-				entity.contractCode, entity.companyId, entity.companyCode, entity.pId, entity.sId, entity.scd,
-				entity.workId, entity.personName, entity.workName,
-				EnumAdaptor.valueOf(entity.requestFlag, RequestFlag.class), entity.registerDate, entity.releaseDate,
-				EnumAdaptor.valueOf(entity.onHoldFlag, OnHoldFlag.class),
-				EnumAdaptor.valueOf(entity.stattus, Status.class), entity.histId_Refer, entity.date_01, entity.date_02,
-				entity.date_03, entity.date_04, entity.date_05, entity.date_06, entity.date_07, entity.date_08,
-				entity.date_09, entity.date_10, entity.int_01, entity.int_02, entity.int_03, entity.int_04,
-				entity.int_05, entity.int_06, entity.int_07, entity.int_08, entity.int_09, entity.int_10, entity.int_11,
-				entity.int_12, entity.int_13, entity.int_14, entity.int_15, entity.int_16, entity.int_17, entity.int_18,
-				entity.int_19, entity.int_20, entity.num_01, entity.num_02, entity.num_03, entity.num_04, entity.num_05,
-				entity.num_06, entity.num_07, entity.num_08, entity.num_09, entity.num_10, entity.num_11, entity.num_12,
-				entity.num_13, entity.num_14, entity.num_15, entity.num_16, entity.num_17, entity.num_18, entity.num_19,
-				entity.num_20, entity.select_code_01, entity.select_code_02, entity.select_code_03,
-				entity.select_code_04, entity.select_code_05, entity.select_code_06, entity.select_code_07,
-				entity.select_code_08, entity.select_code_09, entity.select_code_10, entity.select_id_01,
-				entity.select_id_02, entity.select_id_03, entity.select_id_04, entity.select_id_05, entity.select_id_06,
-				entity.select_id_07, entity.select_id_08, entity.select_id_09, entity.select_id_10,
-				entity.select_name_01, entity.select_name_02, entity.select_name_03, entity.select_name_04,
-				entity.select_name_05, entity.select_name_06, entity.select_name_07, entity.select_name_08,
-				entity.select_name_09, entity.select_name_10, entity.str_01, entity.str_02, entity.str_03,
-				entity.str_04, entity.str_05, entity.str_06, entity.str_07, entity.str_08, entity.str_09,
-				entity.str_10);
 	}
 
 }
