@@ -163,7 +163,17 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-    width: 792px !important;
+	
+	width: 792px !important;
+}
+
+
+.layout-control.readonly div.ui-sortable {
+    height: 100% !important;
+}
+
+.layout-control div.ui-sortable {
+    overflow-y: unset !important;
 }
 
 #B221_3 > div:nth-child(1) > span > input {
