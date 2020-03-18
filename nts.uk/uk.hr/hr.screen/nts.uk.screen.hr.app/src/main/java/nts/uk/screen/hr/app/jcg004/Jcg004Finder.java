@@ -35,10 +35,10 @@ public class Jcg004Finder {
 		
 		
 		List<String> businessApprovalProgramIds = new ArrayList<>();
-//		if(!programIds.isEmpty()) {
-//			//アルゴリズム [業務承認の有無チェック] を実行する (Thực hiện thuật toán "Check có hoặc không có phê duyệt nghiệp vụ")
-//			businessApprovalProgramIds.addAll(dataBeforeReflectingPerInfoService.checkForBusinessApp(cid, employeeId));
-//		}
+		if(!programIds.isEmpty()) {
+			//アルゴリズム [業務承認の有無チェック] を実行する (Thực hiện thuật toán "Check có hoặc không có phê duyệt nghiệp vụ")
+			businessApprovalProgramIds.addAll(dataBeforeReflectingPerInfoService.checkForBusinessApp(cid, employeeId));
+		}
 		
 		List<JCG004BusinessApprovalDto> businessApproval = programIds.stream().map(c->{
 			return new JCG004BusinessApprovalDto(c,businessApprovalProgramIds.contains(c));
