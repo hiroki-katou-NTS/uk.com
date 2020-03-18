@@ -54,6 +54,15 @@ module jhn003.a.vm {
                 self.searchInfo().reportItems(reportItems.concat(_.map(data, x => { return { code: x.reportClsId, name: x.reportName } })));
 
                 self.bindReportList();
+                nts.uk.characteristics.restore("JHN003").done((obj) => {
+                    nts.uk.characteristics.remove("JHN003");
+                    if (obj !== undefined && obj !== null) {
+                        self.searchInfo().appDate(obj.appDate);
+                        self.searchInfo().approvalReport(obj.approvalReport);
+                        self.searchInfo().approvalStatus(obj.approvalStatus);
+                        self.search();
+                    }
+                });
             }).fail((error) => {
 
                 dialog.info(error);

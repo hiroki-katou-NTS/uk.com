@@ -28,15 +28,22 @@ module nts.uk.at.view.jcg004.a.viewmodel {
         openJHN003A(): void{
             var self = this;
             block.invisible();
-            window.top.location = window.location.origin + '/nts.uk.hr.web/view/jhn/003/a/index.xhtml';
-            block.clear();
+            let param = {
+                appDate:{ startDate: moment.utc(new Date()).add(-1, 'M').toDate(), endDate: moment.utc(new Date()).add(1, 'M').toDate() },
+                approvalReport: true,
+                approvalStatus: '1'
+            }
+            nts.uk.characteristics.remove("JHN003").done(function() {
+                parent.nts.uk.characteristics.save('JHN003', param).done(function() {
+                    parent.nts.uk.ui.block.clear();
+                    window.top.location = window.location.origin + '/nts.uk.hr.web/view/jhn/003/a/index.xhtml';
+                });    
+            }); 
         }
         
-        openJHN007B(): void{
+        openJHN007Z(): void{
             var self = this;
-            block.invisible();
-            window.top.location = window.location.origin + '/nts.uk.hr.web/view/jcm/007/b/index.xhtml';
-            block.clear();
+            window.top.location = window.location.origin + '/nts.uk.hr.web/view/jcm/007/z/index.xhtml';
         }
         
     }
