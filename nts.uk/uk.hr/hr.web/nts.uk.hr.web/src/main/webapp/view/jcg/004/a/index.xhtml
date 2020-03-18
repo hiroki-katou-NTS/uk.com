@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<table class="widget-table first">
-					<tr class="BgColor1">
+					<tr data-bind="css: {bgColor1: approvalOfApplication()==true}" >
 						<td >#{i18n.getText('JCG004_A1_4')}</td>
 						<td>
 							<com:ko-if bind="approvalOfApplication()">
@@ -29,14 +29,14 @@
 							</com:ko-if>
 						</td>
 					</tr>
-					<tr class="BgColor2 tab2">
+					<tr class="tab2" data-bind="css: {bgColor2: check()==true}">
 						<td>#{i18n.getText('JCG004_A1_8')}</td>
 						<td></td>
 					</tr>
 				</table>
 				<table class="widget-table">
 					<tbody data-bind="foreach: businessApproval()">
-						<tr class="BgColor2">
+						<tr data-bind="css: {bgColor2: $parent.check()==true}">
 							<td class="tab" data-bind="text: programId +'_Z'"></td>
 							<td>
 								<com:ko-if bind="check">

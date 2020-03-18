@@ -4,11 +4,13 @@ module nts.uk.at.view.jcg004.a.viewmodel {
     import info = nts.uk.ui.dialog.info;
     export class ScreenModel {
         approvalOfApplication: KnockoutObservable<boolean>;
-        businessApproval: KnockoutObservableArray<boolean>;
+        businessApproval: KnockoutObservableArray<any>;
+        check: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.approvalOfApplication = ko.observable(false); 
             self.businessApproval = ko.observableArray([]);
+            self.check = ko.observable(false);
         }
 
         startPage(): JQueryPromise<any> {
@@ -19,6 +21,11 @@ module nts.uk.at.view.jcg004.a.viewmodel {
                 console.log(data);
                 self.approvalOfApplication(data.approvalOfApplication);
                 self.businessApproval(data.businessApproval);
+                _.forEach(data.businessApproval, (item) => {
+                    if(item.check){
+                        self.check(true);
+                    }
+                });
                 block.clear();
                 dfd.resolve();
             });  
