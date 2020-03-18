@@ -147,8 +147,12 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				new BigDecimal(0), // TODO
-				new BigDecimal(0), // TODO
+				new BigDecimal(stamp.getLocationInfor().isPresent()
+						? stamp.getLocationInfor().get().getPositionInfor().getLongitude()
+						: null),
+				new BigDecimal(stamp.getLocationInfor().isPresent()
+						? stamp.getLocationInfor().get().getPositionInfor().getLatitude()
+						: null),
 				stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
 	}
 
@@ -157,7 +161,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
-						GoingOutReason.valueOf(entity.goOutArt),
+						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 
@@ -179,7 +183,7 @@ private Stamp toDomainVer2(Object[] object) {
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
-						GoingOutReason.valueOf(entity.goOutArt),
+						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 
@@ -203,7 +207,7 @@ private Stamp toDomainVer3(Object[] object) {
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
-						GoingOutReason.valueOf(entity.goOutArt),
+						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 

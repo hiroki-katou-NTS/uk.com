@@ -7,16 +7,19 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 public enum ReservationArt {
 	
 	/** なし */
-	NONE(0),
+	NONE(0,"なし"),
 
 	/** 予約 */
-	RESERVATION(1),
+	RESERVATION(1,"予約"),
 
 	/** 予約取消 */
-	CANCEL_RESERVATION(2);
+	CANCEL_RESERVATION(2,"予約取消");
 
 	/** The value. */
 	public int value;
+	
+	/** The name id. */
+	public  String nameId;
 
 	/** The Constant values. */
 	private final static ReservationArt[] values = ReservationArt.values();
@@ -29,8 +32,9 @@ public enum ReservationArt {
 	 * @param description
 	 *            the description
 	 */
-	private ReservationArt(int value) {
+	private ReservationArt(int value,String nameId) {
 		this.value = value;
+		this.nameId = nameId;
 	}
 
 	/**

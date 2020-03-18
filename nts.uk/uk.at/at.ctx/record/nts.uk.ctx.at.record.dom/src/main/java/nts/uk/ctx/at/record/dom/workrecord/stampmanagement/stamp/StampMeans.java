@@ -59,4 +59,8 @@ public enum StampMeans {
 		// Not found.
 		return null;
 	}
+	
+	public boolean checkIndivition() {
+		return this == StampMeans.INDIVITION;
+	}
 }
