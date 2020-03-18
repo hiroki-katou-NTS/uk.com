@@ -26,11 +26,11 @@
 		<ui:define name="content">
 			<div id="functions-area" class="notranslate" >
 				<!-- Go back Style -->
-				<a id = "goBack" class="goback" tabindex="1" href="javascript:history.back()"  data-bind="ntsLinkButton: {} , click: backTopScreenTopReport">#{i18n.getText('JHN001_A1_1')}</a>
+				<a id = "goBack" class="goback" tabindex="1" href="javascript:history.back()"  data-bind="ntsLinkButton: {} , click: backTopScreenTopReport, visible : showBtnBack">#{i18n.getText('JHN001_A1_1')}</a>
 				<button id="A1_2" tabindex="2" data-bind="click : save , enable: enaSave " class="proceed" >#{i18n.getText('JHN001_A1_2')}</button>
 				<button id="A1_3" tabindex="3" data-bind="click : saveDraft , enable: enaSaveDraft ">#{i18n.getText('JHN001_A1_3')}</button>
 				<button id="A1_4" tabindex="4" data-bind="click : attachedFile , enable: enaAttachedFile">#{i18n.getText('JHN001_A1_4')}</button>
-				<button id="A1_6" tabindex="5" data-bind="click : remove , enable: enaRemove" class="danger" >#{i18n.getText('JHN001_A1_6')}</button>
+				<button id="A1_6" tabindex="5" data-bind="click : remove , enable: enaRemove, visible: showBtnRemove" class="danger" >#{i18n.getText('JHN001_A1_6')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="B221"
