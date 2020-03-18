@@ -17,32 +17,27 @@ module nts.uk.at.view.jcg004.a.viewmodel {
             block.invisible();
             new service.Service().start().done(function(data: any){
                 console.log(data);
+                self.approvalOfApplication(data.approvalOfApplication);
+                self.businessApproval(data.businessApproval);
                 block.clear();
                 dfd.resolve();
             });  
             return dfd.promise();
         }
         
-        getInfor(): void{
-            var self = this;
-            block.invisible();
-            new service.Service().getOptionalWidgetInfo(param).done(function(data: any){
-                block.clear();
-            });           
-        }
-        
         openJHN003A(): void{
             var self = this;
             block.invisible();
+            window.top.location = window.location.origin + '/nts.uk.hr.web/view/jhn/003/a/index.xhtml';
             block.clear();
         }
         
         openJHN007B(): void{
             var self = this;
             block.invisible();
+            window.top.location = window.location.origin + '/nts.uk.hr.web/view/jcm/007/b/index.xhtml';
             block.clear();
         }
-        
         
     }
     
