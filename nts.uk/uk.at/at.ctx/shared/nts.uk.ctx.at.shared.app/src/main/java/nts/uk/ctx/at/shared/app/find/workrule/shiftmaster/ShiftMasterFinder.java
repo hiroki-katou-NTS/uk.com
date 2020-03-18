@@ -69,7 +69,7 @@ public class ShiftMasterFinder {
 		WorkInfoDto result = new WorkInfoDto();
 		
 		if(worktype.isPresent()) {
-			result.setWorkType(new WorkTypeDto(worktype.get().getWorkTypeCode().v(), worktype.get().getAbbreviationName().v()));
+			result.setWorkType(new WorkTypeDto(worktype.get().getWorkTypeCode().v(), worktype.get().getName().v()));
 		} else {
 			result.setWorkType(new WorkTypeDto(workTypeCd, I18NText.getText("KSM015_28", workTypeCd, I18NText.getText("KSM015_29"))));
 		}
