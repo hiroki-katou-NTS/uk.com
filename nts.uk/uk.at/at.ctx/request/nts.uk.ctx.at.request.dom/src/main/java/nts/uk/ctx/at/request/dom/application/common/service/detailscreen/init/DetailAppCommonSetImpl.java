@@ -72,7 +72,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	}
 
 	@Override
-	public AppDetailScreenInfo getCommonSetBeforeDetail(String companyID, String appID) {
+	public AppDispInfoStartupOutput getCommonSetBeforeDetail(String companyID, String appID) {
 		// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 起動時の申請表示情報を取得する
@@ -106,8 +106,9 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		appDetailScreenInfo.setAuthorizableFlags(Optional.of(detailedScreenPreBootModeOutput.isAuthorizableFlags()));
 		appDetailScreenInfo.setApprovalATR(Optional.of(detailedScreenPreBootModeOutput.getApprovalATR()));
 		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));
+		appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo));
 		// 更新した「申請表示情報」を返す
-		return appDetailScreenInfo;
+		return appDispInfoStartupOutput;
 	}
 
 }

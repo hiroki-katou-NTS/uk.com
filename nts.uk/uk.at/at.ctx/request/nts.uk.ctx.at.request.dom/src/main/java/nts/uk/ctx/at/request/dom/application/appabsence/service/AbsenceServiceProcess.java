@@ -8,7 +8,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -157,6 +156,17 @@ public interface AbsenceServiceProcess {
 	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, Optional<Integer> holidayType);
 	
+	/**
+	 * 登録前のエラーチェック処理
+	 * @param companyID 会社ID
+	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
+	 * @param application 申請
+	 * @param appAbsence 休暇申請
+	 * @param alldayHalfDay 終日半日休暇区分
+	 * @param agentAtr 代行申請区分
+	 * @param mourningAtr 喪主区分<Optional>
+	 * @return
+	 */
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
 	
@@ -273,4 +283,6 @@ public interface AbsenceServiceProcess {
 	 */
 	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
 			Integer holidayType, String workTypeCD, GeneralDate closureStartDate, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
+	
+	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
 }

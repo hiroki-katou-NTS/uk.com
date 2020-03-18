@@ -13,9 +13,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
@@ -30,13 +30,10 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.HolidayRequestSetOutput;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
@@ -44,8 +41,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsence
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -60,19 +56,14 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -132,6 +123,9 @@ public class AppAbsenceFinder {
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
+	@Inject
+	private DetailAppCommonSetService detailAppCommonSetService;
+	
 	/**
 	 * 1.休暇申請（新規）起動前処理
 	 * @param appDate
@@ -182,8 +176,50 @@ public class AppAbsenceFinder {
 	 * @param appID
 	 * @return
 	 */
-	public AppAbsenceDto getByAppID(String appID) {
-		AppAbsenceDto result = new AppAbsenceDto();
+	public AppAbsenceDetailDto getByAppID(String appID) {
+		String companyID = AppContexts.user().companyId();
+		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = new AppAbsenceStartInfoOutput();
+		// 詳細画面起動前申請共通設定を取得する
+		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
+		appAbsenceStartInfoOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		// ドメインモデル「休暇申請」を取得する
+		Optional<AppAbsence> opAppAbsence = repoAppAbsence.getAbsenceByAppId(companyID, appID);
+		if (!opAppAbsence.isPresent()) {
+			throw new BusinessException("Msg_198");
+		}
+		AppAbsence appAbsence = opAppAbsence.get();
+		// 休暇申請設定を取得する
+		HolidayRequestSetOutput holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
+		appAbsenceStartInfoOutput.setHdAppSet(holidayRequestSetOutput.getHdAppSet());
+		appAbsenceStartInfoOutput.setDisplayReasonLst(holidayRequestSetOutput.getDisplayReasonLst());
+		// 勤務種類・就業時間帯情報を取得する
+		appAbsenceStartInfoOutput = absenseProcess.getWorkTypeWorkTimeInfo(
+				companyID,
+				appAbsence, 
+				appAbsenceStartInfoOutput);
+		// 休暇残数情報を取得する
+		RemainVacationInfo remainVacationInfo = absenseProcess.getRemainVacationInfo(
+				companyID, 
+				appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getEmployeeID(), 
+				GeneralDate.today());
+		appAbsenceStartInfoOutput.setRemainVacationInfo(remainVacationInfo);
+		
+		// 取得した情報もとに「休暇残数情報」にセットして返す
+		AppAbsenceStartInfoDto appAbsenceStartInfoDto = AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
+		holidayAppTypes = this.getHolidayAppTypeName(
+				Optional.of(holidayRequestSetOutput.getHdAppSet()),
+				holidayAppTypes,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
+		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+		appAbsenceStartInfoDto.holidayAppTypeName = holidayAppTypes;
+		// 「休暇申請起動時の表示情報」と「休暇申請」を返す
+		AppAbsenceDetailDto result = new AppAbsenceDetailDto();
+		result.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
+		result.appAbsenceDto = AppAbsenceDto.fromDomain(appAbsence);
+		return result;
+		
+		/*AppAbsenceDto result = new AppAbsenceDto();
 		String companyID = AppContexts.user().companyId();
 		String employeeIDLogin = AppContexts.user().employeeId();
 		//アルゴリズム「詳細画面起動前申請共通設定を取得する」を実行する - 「Lấy app common setting trước khi khởi động màn hình detail」
@@ -339,7 +375,7 @@ public class AppAbsenceFinder {
 				checkDispHolidayType.isSubVacaManage(), 
 				checkDispHolidayType.isRetentionManage());
 		result.setNumberRemain(numberRemain);
-		return result;
+		return result;*/
 	}
 
 	/**

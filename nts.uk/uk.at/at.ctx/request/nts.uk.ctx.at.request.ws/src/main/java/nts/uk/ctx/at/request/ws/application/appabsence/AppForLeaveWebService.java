@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.ParamCheckRegist
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
@@ -104,7 +105,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getByAppID")
-	public AppAbsenceDto getByAppID(String appID) {
+	public AppAbsenceDetailDto getByAppID(String appID) {
 		return this.appForLeaveFinder.getByAppID(appID);
 	}
 	

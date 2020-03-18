@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service.output;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,12 +54,12 @@ public class AppAbsenceStartInfoOutput {
 	/**
 	 * 勤務種類一覧
 	 */
-	private List<WorkType> workTypeLst;
+	private List<WorkType> workTypeLst = new ArrayList<>();
 	
 	/**
 	 * 勤務時間帯一覧
 	 */
-	private List<TimezoneUse> workTimeLst;
+	private List<TimezoneUse> workTimeLst = new ArrayList<>();
 	
 	/**
 	 * 勤務種類マスタ未登録
@@ -68,16 +69,16 @@ public class AppAbsenceStartInfoOutput {
 	/**
 	 * 特別休暇表示情報
 	 */
-	private Optional<SpecAbsenceDispInfo> specAbsenceDispInfo;
+	private Optional<SpecAbsenceDispInfo> specAbsenceDispInfo = Optional.empty();
 	
 	/**
 	 * 選択中の勤務種類
 	 */
-	private Optional<String> selectedWorkTypeCD;
+	private Optional<String> selectedWorkTypeCD = Optional.empty();
 	
 	/**
 	 * 選択中の就業時間帯
 	 */
-	private Optional<String> selectedWorkTimeCD;
+	private Optional<String> selectedWorkTimeCD = Optional.empty();
 	
 }

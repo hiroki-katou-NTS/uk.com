@@ -1019,4 +1019,16 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// 「確認メッセージリスト」を返す
 		return result;
 	}
+
+	@Override
+	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
+		List<WorkType> workType = appAbsenceThreeProcess.getWorkTypeDetails(
+				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet(),
+				companyID,
+				appAbsence.getHolidayAppType().value,
+				appAbsence.getAllDayHalfDayLeaveAtr().value, 
+				appAbsence.isHalfDayFlg());
+		return appAbsenceStartInfoOutput;
+	}
 }
