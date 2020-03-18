@@ -30,8 +30,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Start
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
+//import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
+//import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.WorkConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApplyPossibleCheck;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -78,11 +78,11 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private ActualLockAdapter actualLockAdapter;
 	
-	@Inject
-	private DayActualConfirmDoneCheck dayActualConfirmDoneCheck;
+	//@Inject
+	//private DayActualConfirmDoneCheck dayActualConfirmDoneCheck;
 
-	@Inject
-	private MonthActualConfirmDoneCheck monthActualConfirmDoneCheck;
+	//@Inject
+	//private MonthActualConfirmDoneCheck monthActualConfirmDoneCheck;
 
 	@Inject
 	private WorkConfirmDoneCheck workConfirmDoneCheck;
@@ -100,10 +100,10 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	private StartupErrorCheckService startupErrorCheckService;
 	
     public void processBeforeRegister(Application_New application, int overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
-		// アルゴリズム「未入社前チェック」を実施する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲梧悴蜈･遉ｾ蜑阪メ繧ｧ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
-		// アルゴリズム「社員の当月の期間を算出する」を実行する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎､ｾ蜩｡縺ｮ蠖捺怦縺ｮ譛滄俣繧堤ｮ怜�ｺ縺吶ｋ縲阪ｒ螳溯｡後☆繧�
 		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
 		GeneralDate startDate = application.getAppDate();
@@ -112,27 +112,27 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			startDate = application.getStartDate().get();
 			endDate = application.getEndDate().get();
 			
-			// 登録する期間のチェック
-			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
+			// 逋ｻ骭ｲ縺吶ｋ譛滄俣縺ｮ繝√ぉ繝�繧ｯ
+			//((TimeSpan)(逕ｳ隲九☆繧狗ｵゆｺ�譌･ - 逕ｳ隲九☆繧矩幕蟋区律)).Days > 31縺荊rue
 			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
 				throw new BusinessException("Msg_277");
 			}
-			// 登録可能期間のチェック(１年以内)
-			//EA修正履歴 No.3210
+			// 逋ｻ骭ｲ蜿ｯ閭ｽ譛滄俣縺ｮ繝√ぉ繝�繧ｯ(�ｼ大ｹｴ莉･蜀�)
+			//EA菫ｮ豁｣螻･豁ｴ No.3210
 			//hoatt 2019.03.22
 			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate) && checkOver1Year) {
-				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
-				//確認メッセージ（Msg_1518）を表示する
+				//邱�繧∵悄髢難ｼ朱幕蟋句ｹｴ譛域律.AddYears(1) <= 逕ｳ隲九☆繧狗ｵゆｺ�譌･縺荊rue
+				//遒ｺ隱阪Γ繝�繧ｻ繝ｼ繧ｸ�ｼ�Msg_1518�ｼ峨ｒ陦ｨ遉ｺ縺吶ｋ
 				throw new BusinessException("Msg_1518", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
 			}
 			
-			// 過去月のチェック
+			// 驕主悉譛医�ｮ繝√ぉ繝�繧ｯ
 			if(startDate.before(periodCurrentMonth.getStartDate())) {
 				throw new BusinessException("Msg_236");			
 			}
 		}		
 		
-		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
+		// 繧ｭ繝｣繝�繧ｷ繝･縺九ｉ謇ｿ隱阪Ν繝ｼ繝医ｒ蜿門ｾ励☆繧�(L蘯･y comfirm root t盻ｫ cache)	
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootPatternService.getApprovalRootPatternService(
 				application.getCompanyID(), 
 				application.getEmployeeID(), 
@@ -153,7 +153,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			break;
 		}
 		
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎筏隲九�ｮ邱�繧∝��繧頑悄髯舌ｒ繝√ぉ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
 			throw new BusinessException("Msg_426");
@@ -166,18 +166,18 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		deadlineApplicationCheck(application.getCompanyID(), closureEmployment.get().getClosureId(), application.getEmployeeID(),
 				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
 		
-		// アルゴリズム「申請の受付制限をチェック」を実施する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎筏隲九�ｮ蜿嶺ｻ伜宛髯舌ｒ繝√ぉ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
-		// 申請する開始日～申請する終了日までループする
+		// 逕ｳ隲九☆繧矩幕蟋区律�ｽ樒筏隲九☆繧狗ｵゆｺ�譌･縺ｾ縺ｧ繝ｫ繝ｼ繝励☆繧�
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-            //hoatt 2019/10/14 #109087を対応
+            //hoatt 2019/10/14 #109087繧貞ｯｾ蠢�
             if(lstDateHd != null && lstDateHd.contains(loopDate)){
                 continue;
             }
 			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
 				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{
-				// アルゴリズム「確定チェック」を実施する
+				// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎｢ｺ螳壹メ繧ｧ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}
 		}
@@ -186,16 +186,16 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	// moi nguoi chi co the o mot cty vao mot thoi diem
 	// check xem nguoi xin con trong cty k
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
-		// Imported(就業)「社員」を取得する
+		// Imported(蟆ｱ讌ｭ)縲檎､ｾ蜩｡縲阪ｒ蜿門ｾ励☆繧�
 		PesionInforImport pesionInforImport = employeeAdaptor.getEmployeeInfor(employeeID);
-		// 入社前をチェックする
-		// データが１件以上取得できた 且つ 申請対象日 < Imported(就業)「社員」．入社年月日
+		// 蜈･遉ｾ蜑阪ｒ繝√ぉ繝�繧ｯ縺吶ｋ
+		// 繝�繝ｼ繧ｿ縺鯉ｼ台ｻｶ莉･荳雁叙蠕励〒縺阪◆ 荳斐▽ 逕ｳ隲句ｯｾ雎｡譌･ < Imported(蟆ｱ讌ｭ)縲檎､ｾ蜩｡縲搾ｼ主�･遉ｾ蟷ｴ譛域律
 		if(pesionInforImport.getEntryDate() != null && date.before(pesionInforImport.getEntryDate())) {
 			throw new BusinessException("Msg_235");
 		}
 		
-		// 退職後をチェックする
-		// データが１件以上取得できた 且つ 申請対象日 > Imported(就業)「社員」．退職年月日
+		// 騾�閨ｷ蠕後ｒ繝√ぉ繝�繧ｯ縺吶ｋ
+		// 繝�繝ｼ繧ｿ縺鯉ｼ台ｻｶ莉･荳雁叙蠕励〒縺阪◆ 荳斐▽ 逕ｳ隲句ｯｾ雎｡譌･ > Imported(蟆ｱ讌ｭ)縲檎､ｾ蜩｡縲搾ｼ朱��閨ｷ蟷ｴ譛域律
 		if(pesionInforImport.getRetiredDate() != null && date.after(pesionInforImport.getRetiredDate())) {
 			throw new BusinessException("Msg_391");
 		}
@@ -203,11 +203,11 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	
 	public void deadlineApplicationCheck(String companyID, Integer closureID, String employeeID, 
 			GeneralDate deadlineStartDate, GeneralDate deadlineEndDate, GeneralDate appStartDate, GeneralDate appEndDate){
-		/*ログイン者のパスワードレベルが０の場合、チェックしない
-		ロールが決まったら、要追加*/
+		/*繝ｭ繧ｰ繧､繝ｳ閠�縺ｮ繝代せ繝ｯ繝ｼ繝峨Ξ繝吶Ν縺鯉ｼ舌�ｮ蝣ｴ蜷医�√メ繧ｧ繝�繧ｯ縺励↑縺�
+		繝ｭ繝ｼ繝ｫ縺梧ｱｺ縺ｾ縺｣縺溘ｉ縲∬ｦ∬ｿｽ蜉�*/
 		// if(passwordLevel!=0) return;
 		
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲狗ｷ�蛻�險ｭ螳壹�搾ｼ主茜逕ｨ蛹ｺ蛻�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ(check蛻ｩ逕ｨ蛹ｺ蛻�)
 		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, closureID);
 		if(!appDeadlineOp.isPresent()) {
 			throw new RuntimeException("Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
@@ -215,23 +215,23 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		ApplicationDeadline appDeadline = appDeadlineOp.get();
 		
 		GeneralDate systemDate = GeneralDate.today();
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲狗ｷ�蛻�險ｭ螳壹�搾ｼ主茜逕ｨ蛹ｺ蛻�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ(check蛻ｩ逕ｨ蛹ｺ蛻�)
 		if(appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) { 
 			return; 
 		};
 		
-		// 申請する開始日(input)から申請する終了日(input)までループする
+		// 逕ｳ隲九☆繧矩幕蟋区律(input)縺九ｉ逕ｳ隲九☆繧狗ｵゆｺ�譌･(input)縺ｾ縺ｧ繝ｫ繝ｼ繝励☆繧�
 		for(int i = 0; appStartDate.compareTo(appEndDate) + i <= 0; i++){
 			GeneralDate loopDate = appStartDate.addDays(i);
 			if(loopDate.after(deadlineEndDate)){
 				continue;
 			}
 			GeneralDate deadline = null;
-			// ドメインモデル「申請締切設定」．締切基準をチェックする
+			// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲狗ｷ�蛻�險ｭ螳壹�搾ｼ守ｷ�蛻�蝓ｺ貅悶ｒ繝√ぉ繝�繧ｯ縺吶ｋ
 			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
-				// アルゴリズム「社員所属職場履歴を取得」を実行する
+				// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎､ｾ蜩｡謇�螻櫁�ｷ蝣ｴ螻･豁ｴ繧貞叙蠕励�阪ｒ螳溯｡後☆繧�
 				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
-				// アルゴリズム「締切日を取得する」を実行する
+				// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎ｷ�蛻�譌･繧貞叙蠕励☆繧九�阪ｒ螳溯｡後☆繧�
 				deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
 						deadlineEndDate, 
 						appDeadline.getDeadline().v(), 
@@ -240,7 +240,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			} else {
 				deadline = deadlineEndDate.addDays(appDeadline.getDeadline().v());
 			}
-			// システム日付と申請締め切り日を比較する
+			// 繧ｷ繧ｹ繝�繝�譌･莉倥→逕ｳ隲狗ｷ�繧∝��繧頑律繧呈ｯ碑ｼ�縺吶ｋ
 			if(systemDate.after(deadline)) {
 				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
 			}
@@ -248,12 +248,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	}
 	
 	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr){
-		/*ログイン者のパスワードレベルが０の場合、チェックしない
-		ロールが決まったら、要追加*/
+		/*繝ｭ繧ｰ繧､繝ｳ閠�縺ｮ繝代せ繝ｯ繝ｼ繝峨Ξ繝吶Ν縺鯉ｼ舌�ｮ蝣ｴ蜷医�√メ繧ｧ繝�繧ｯ縺励↑縺�
+		繝ｭ繝ｼ繝ｫ縺梧ｱｺ縺ｾ縺｣縺溘ｉ縲∬ｦ∬ｿｽ蜉�*/
 		// if(passwordLevel!=0) return;
 		GeneralDate systemDate = GeneralDate.today();
 		
-		// キャッシュから取得
+		// 繧ｭ繝｣繝�繧ｷ繝･縺九ｉ蜿門ｾ�
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" +  appType);
@@ -265,25 +265,25 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
-		// 事前事後区分(input)をチェックする
+		// 莠句燕莠句ｾ悟玄蛻�(input)繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
 		if(postAtr.equals(PrePostAtr.POSTERIOR)){
-			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
+			// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲御ｺ句ｾ後�ｮ蜿嶺ｻ伜宛髯舌�搾ｼ取悴譚･譌･險ｱ蜿ｯ縺励↑縺�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
 			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
 				return;
 			}
-			// 未来日の事後申請かチェックする
+			// 譛ｪ譚･譌･縺ｮ莠句ｾ檎筏隲九°繝√ぉ繝�繧ｯ縺吶ｋ
 			if (startDate.after(systemDate) || endDate.after(systemDate)) {
 				throw new BusinessException("Msg_328");
 			} 
 		} else {
-			// ドメインモデル「事前の受付制限」．利用区分をチェックする
+			// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲御ｺ句燕縺ｮ蜿嶺ｻ伜宛髯舌�搾ｼ主茜逕ｨ蛹ｺ蛻�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
 			if(appTypeDiscreteSetting.getRetrictPreUseFlg().equals(UseAtr.NOTUSE)){
 				return;
 			}
-			// 申請する開始日(input)から申請する終了日(input)までループする
+			// 逕ｳ隲九☆繧矩幕蟋区律(input)縺九ｉ逕ｳ隲九☆繧狗ｵゆｺ�譌･(input)縺ｾ縺ｧ繝ｫ繝ｼ繝励☆繧�
 			boolean hasError = false;
 			for(int i = 0; startDate.compareTo(endDate) + i <= 0; i++){
-				// 対象日が申請可能かを判定する
+				// 蟇ｾ雎｡譌･縺檎筏隲句庄閭ｽ縺九ｒ蛻､螳壹☆繧�
 				hasError = applyPossibleCheck.check(appType, startDate, overTimeAtr, appTypeDiscreteSetting, i, receptionRestrictionSetting);
 				if (hasError == true) {
 					throw new BusinessException("Msg_327", startDate.addDays(i).toString(DATE_FORMAT));
@@ -294,7 +294,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎筏隲九�ｮ邱�繧∝��繧頑悄髯舌ｒ繝√ぉ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
 				employeeID, appDate);
 		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
@@ -317,9 +317,9 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
 		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
-		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲句宛髯占ｨｭ螳壹�搾ｼ取律蛻･螳溽ｸｾ縺檎｢ｺ隱肴ｸ医↑繧臥筏隲九〒縺阪↑縺�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ(check domain 縲檎筏隲句宛髯占ｨｭ螳壹�搾ｼ取律蛻･螳溽ｸｾ縺檎｢ｺ隱肴ｸ医↑繧臥筏隲九〒縺阪↑縺�)
 		boolean hasError = false;
-		hasError = dayActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
+		//hasError = dayActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_448");
 		}
@@ -327,7 +327,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
 	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
-		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		// 繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲檎筏隲九�ｮ邱�繧∝��繧頑悄髯舌ｒ繝√ぉ繝�繧ｯ縲阪ｒ螳滓命縺吶ｋ
 				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
 						employeeID, appDate);
 				if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
@@ -355,19 +355,19 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	private void confirmCheck(AppLimitSetting appLimitSetting, Optional<ActualLockImport> actualLockImport,
 			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
 		boolean hasError = false;
-		// ドメインモデル「申請制限設定」．月別実績が確認済なら申請できないをチェックする
-		hasError = monthActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲句宛髯占ｨｭ螳壹�搾ｼ取怦蛻･螳溽ｸｾ縺檎｢ｺ隱肴ｸ医↑繧臥筏隲九〒縺阪↑縺�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
+		//hasError = monthActualConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate);
 		if (hasError == true) {
 			throw new BusinessException("Msg_449");
 		}
 		
-		// ドメインモデル「申請制限設定」．就業確定済の場合申請できないをチェックする
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲句宛髯占ｨｭ螳壹�搾ｼ主ｰｱ讌ｭ遒ｺ螳壽ｸ医�ｮ蝣ｴ蜷育筏隲九〒縺阪↑縺�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
 		hasError = workConfirmDoneCheck.check(appLimitSetting, companyID, employeeID, appDate, closureEmployment);
 		if (hasError == true) {
 			throw new BusinessException("Msg_450");
 		}
 
-		// ドメインモデル「申請制限設定」．実績修正がロック状態なら申請できないをチェックする
+		// 繝峨Γ繧､繝ｳ繝｢繝�繝ｫ縲檎筏隲句宛髯占ｨｭ螳壹�搾ｼ主ｮ溽ｸｾ菫ｮ豁｣縺後Ο繝�繧ｯ迥ｶ諷九↑繧臥筏隲九〒縺阪↑縺�繧偵メ繧ｧ繝�繧ｯ縺吶ｋ
 		hasError = actualLockingCheck.check(appLimitSetting, companyID, employeeID, appDate, actualLockImport);
 		if (hasError == true) {
 			throw new BusinessException("Msg_451");
