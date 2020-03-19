@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.hr.develop.dom.sysoperationset.businessrecognition.algorithm.MenuApprovalSettingsService;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.ApprovalPersonReportRepository;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.DataBeforeReflectingPerInfoService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service.DataBeforeReflectingPerInfoService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
