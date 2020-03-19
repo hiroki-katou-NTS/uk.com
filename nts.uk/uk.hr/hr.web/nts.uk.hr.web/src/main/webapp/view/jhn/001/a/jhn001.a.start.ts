@@ -11,7 +11,7 @@ module jhn001.a {
         __viewContext.bind(__viewContext['viewModel']);
         $('.input-wrapper').addClass("notranslate");
 
-        setTimeout(() => $(window).trigger('resize'), 100);
+        setTimeout(() => $(window).trigger('resize'), 300);
         
         $(document.body).on('click', '.nts-guide-link', () => {
             setTimeout(() => $(window).trigger('resize'), 5);

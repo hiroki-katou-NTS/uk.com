@@ -27,6 +27,10 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			+ "Where c.pk.cid = :cid "
 			+ "ORDER BY c.reportName ASC";
 	
+	private static final String getListReportByCIdSid = "select c FROM  JhndtReportRegis c "
+			+ "Where c.pk.cid = :cid and c.inputSid = :inputSid "
+			+ "ORDER BY c.reportName ASC";
+	
 	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c " 
 			+ " Where c.pk.cid = :cid "
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.draftSaveDate ASC ";
@@ -61,6 +65,14 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	public List<RegistrationPersonReport> getListByCid(String cid) {
 		return this.queryProxy().query(getListReportByCId, JhndtReportRegis.class)
 				.setParameter("cid", cid).getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<RegistrationPersonReport> getListByCidandSid(String cid, String inputSid) {
+		return this.queryProxy().query(getListReportByCIdSid, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("inputSid", inputSid)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -235,8 +247,6 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			this.commandProxy().update(entity);
 		}
 	}
-	
-	
-	
+
 
 }

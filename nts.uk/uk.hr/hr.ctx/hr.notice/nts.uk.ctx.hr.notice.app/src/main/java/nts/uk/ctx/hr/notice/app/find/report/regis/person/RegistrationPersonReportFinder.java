@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
+
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationDto;
 import nts.uk.ctx.hr.notice.app.find.report.PersonalReportClassificationFinder;
@@ -38,11 +40,13 @@ public class RegistrationPersonReportFinder {
 	// lay ra danh sach report hien thi trong gird  owr manf JHN001.A
 	// アルゴリズム「起動処理」を実行する (Thực hiện thuật toán 「Xử lý khởi động」)
 	public List<PersonalReportDto> getListReport(String cid) {
-
+		
+		String sidInput = AppContexts.user().employeeId();
+		
 		List<PersonalReportDto> result = new ArrayList<PersonalReportDto>();
 
 		// danh sách report
-		List<RegistrationPersonReport> listReport = repo.getListByCid(cid);
+		List<RegistrationPersonReport> listReport = repo.getListByCidandSid(cid, sidInput);
 
 		// danh sách report bên màn hình JHN011.
 		

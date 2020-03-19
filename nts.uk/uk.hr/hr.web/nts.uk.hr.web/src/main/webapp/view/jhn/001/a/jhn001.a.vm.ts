@@ -36,6 +36,8 @@ module jhn001.a.viewmodel {
         listItemDf = [];
         missingDocName = '';
         reportIdFromJhn003 = null;
+        isNewMode = false;
+        isUpdateMode = false;
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
@@ -57,6 +59,22 @@ module jhn001.a.viewmodel {
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
+                self.isNewMode = false;
+                self.isUpdateMode = true;
+            }else {
+                self.reportIdFromJhn003 = null;
+                self.isNewMode = true;
+                self.isUpdateMode = false;
+            }
+            
+            if (self.isNewMode) {
+                self.showBtnBack(false);
+                self.showBtnRemove(false);
+            }
+
+            if (self.isUpdateMode) {
+                self.showBtnBack(true);
+                self.showBtnRemove(true);
             }
 
             self.reportClsId.subscribe(id => {
@@ -80,20 +98,17 @@ module jhn001.a.viewmodel {
                     }
 
                     // A1.6
-                    if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
-                        
-                        self.showBtnBack(false);
-                        self.showBtnRemove(false);
-
-                    } else {
-                        
-                        self.showBtnBack(true);
-                        self.showBtnRemove(true);
+                    if(self.isUpdateMode){
+                        if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
+                            self.showBtnRemove(false);
+                        } else {
+                            self.showBtnRemove(true);
+                        }
                     }
 
                     
                     let query = {
-                        reportId: string = objReport.reportId,
+                        reportId: string = self.isUpdateMode?  objReport.reportId : null,
                         reportLayoutId: number = objReport.reportClsId
                     };
 
@@ -269,14 +284,20 @@ module jhn001.a.viewmodel {
                 if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
                         let dataShare = getShared('JHN001B_PARAMS');
+                        let reportId = dataShare.reportId;
+                        
+                        // chỉ trường hơp continue thì mới nhảy vào mode update, còn các trường hợp khác là newMode
+                        if (dataShare.isContinue == true) {
+                            self.isNewMode = false;
+                            self.isUpdateMode = true;
+                        }
+                        
                         if (dataShare.hasRemove == true) {
                             // get lai danh sach report
-                            let reportId = dataShare.reportId;
                             self.start(reportId, false);
                         } else {
                             // khong phai get lai danh sach report , truong hop close thi khong lam gi ca.
                             if (dataShare.isContinue == true) {
-                                let reportId = dataShare.reportId;
                                 let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
                                 if (objReport) {
                                     self.reportClsId(objReport.id);
@@ -594,8 +615,7 @@ module jhn001.a.viewmodel {
 
                 service.removeData(objRemove).done(() => {
                     info({ messageId: "MsgJ_40" }).then(function() {
-                        //self.reportClsId(null);
-                        //self.start(null , false);
+                        
                         jump("hr", "/view/jhn/003/a/index.xhtml");
                         
                     });
