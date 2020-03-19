@@ -1062,6 +1062,114 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 modal("/view/kdl/005/a/single.xhtml");
             }
         }
+        
+        checkBeforeRegister() {
+            let self = this;
+            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
+            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true); 
+            let appReason: string;
+            if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
+                return;
+            }
+            if (!self.changeWorkHourValueFlg()) {
+                self.changeWorkHourValue(false);
+                self.timeStart1(null);
+                self.timeEnd1(null);
+                self.timeStart2(null);
+                self.timeEnd2(null);
+                self.workTimeCode(null);
+            }
+            let specHd = null;
+            if(self.holidayTypeCode() == 3 && self.fix()){
+                specHd = {  relationCD: self.selectedRelation(),
+                            mournerCheck: self.isCheck(),
+                            relaReason: self.relaReason()
+                        }
+            }
+            let paramInsert = {
+                //prePostAtr: self.prePostSelected(),
+                //startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                //endDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),
+                //employeeID: self.employeeID(),
+                //appReasonID: comboBoxReason,
+                //applicationReason: textAreaReason,
+                //holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                //workTypeCode: self.selectedTypeOfDuty(),
+                //workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
+                //halfDayFlg: self.displayHalfDayValue(),
+                //changeWorkHour: self.changeWorkHourValue(),
+                //allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
+                //startTime1: self.timeStart1(),
+                //endTime1: self.timeEnd1(),
+                //startTime2: self.timeStart2(),
+                //endTime2: self.timeEnd2(),
+                //displayEndDateFlg: self.displayEndDateFlg(),
+                //specHd: specHd,
+                //checkOver1Year: true,
+                //checkContradiction: false,
+                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto,
+                applicationCommand: self.getApplicationCommand(comboBoxReason, textAreaReason),
+                appAbsenceCommand: self.getAbsenceCommand(specHd),
+                alldayHalfDay: self.selectedAllDayHalfDayValue(),
+                holidayDateLst: [],
+            };
+            service.checkBeforeRegister(paramInsert).done((data) => {
+                self.processConfirmMsg(paramInsert, data, 0);
+            }).fail((res) => {
+                dialog.alertError({messageId : res.messageId}).then(function(){
+                    nts.uk.ui.block.clear();
+                });    
+            });    
+        }
+        
+        getApplicationCommand(comboBoxReason, textAreaReason) {
+            let self = this;
+            return {
+                prePostAtr: self.prePostSelected(),
+                appReasonID: comboBoxReason,
+                applicationReason: textAreaReason,
+                applicantSID: self.employeeID(),
+                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
+                endDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),  
+            }     
+        }
+        
+        getAbsenceCommand(specHd: any) {
+            let self = this;
+            return {
+                holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
+                workTypeCode: self.selectedTypeOfDuty(),
+                workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
+                halfDayFlg: self.displayHalfDayValue(),
+                changeWorkHour: self.changeWorkHourValue(),
+                allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
+                startTime1: self.timeStart1(),
+                endTime1: self.timeEnd1(),
+                startTime2: self.timeStart2(),
+                endTime2: self.timeEnd2(),
+                appForSpecLeave: specHd
+            }         
+        }
+        
+        processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
+            let self = this;
+            let confirmMsgLst = result.confirmMsgLst;
+            let confirmMsg = confirmMsgLst[confirmIndex];
+            if(_.isUndefined(confirmMsg)) {
+                service.createAbsence(paramInsert).done((data) => {
+                    self.sendMail(data);
+                }).fail((res) => {
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
+                });
+            }
+            
+            dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
+                self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
+            });
+        } 
     }
 
 }

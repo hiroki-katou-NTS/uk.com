@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
@@ -73,7 +74,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	// 打刻申請の新規登録
 	private ProcessResult appStampRegistration(AppStamp appStamp, boolean checkOver1Year) {
 		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
-		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), 0, checkOver1Year, Collections.emptyList());
+		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);
 		applicationApprovalService.insert(appStamp.getApplication_New());

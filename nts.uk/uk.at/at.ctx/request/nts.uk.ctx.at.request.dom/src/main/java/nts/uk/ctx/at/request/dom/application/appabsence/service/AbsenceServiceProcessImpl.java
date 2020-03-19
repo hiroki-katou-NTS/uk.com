@@ -644,7 +644,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
 		// 勤務種類・就業時間帯のマスタチェックする
-		detailBeforeUpdate.displayWorkingHourCheck(companyID, appAbsence.getWorkTypeCode().v(), appAbsence.getWorkTimeCode().v());
+		detailBeforeUpdate.displayWorkingHourCheck(companyID, 
+				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(), 
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
 		// 社員の当月の期間を算出する
 		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, application.getEmployeeID(), GeneralDate.today());
 		// 申請全般登録時チェック処理
@@ -970,6 +972,19 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		HolidayAppType holidayAppType = HolidayAppType.ABSENCE;
 		switch (holidayAppType) {
+		case ANNUAL_PAID_LEAVE: 
+			// INPUT．「休暇種類」 = 年次有給
+			// 年休のチェック処理
+			List<ConfirmMsgOutput> confirmMsgLst1 = this.annualLeaveCheck(
+					mode, 
+					companyID, 
+					employeeID, 
+					startDate, 
+					endDate,
+					workTypeCD, 
+					holidayDateLst, 
+					appAbsenceStartInfoOutput);
+			result.addAll(confirmMsgLst1);
 		case SPECIAL_HOLIDAY:
 			// INPUT．「休暇種類」 = 特別休暇
 			// 特別休暇のチェック処理

@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 
@@ -12,6 +13,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
  *
  */
 public interface ApplyPossibleCheck {
-	public boolean check(ApplicationType appType, GeneralDate startDate, int overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
+	public boolean check(ApplicationType appType, GeneralDate startDate, OverTimeAtr overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
 			int i, List<ReceptionRestrictionSetting> receptionRestrictionSetting);
 }

@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf006.shr.service {
         createAbsence: "at/request/application/appforleave/insert",
         deleteOvertime: "at/request/application/overtime/delete",
         updateAbsence: "at/request/application/appforleave/update",
-        checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
+        checkBeforeRegister: "at/request/application/appforleave/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
@@ -94,5 +94,9 @@ module nts.uk.at.view.kaf006.shr.service {
      */
     export function checkRegister(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkRegister, param);
+    }
+    
+    export function checkBeforeRegister(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkBeforeRegister, param);
     }
 }

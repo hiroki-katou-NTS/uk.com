@@ -16,8 +16,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.command.application.appabsence.AppForSpecLeaveCmd;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
-import nts.uk.ctx.at.request.app.command.application.appabsence.SpecHolidayCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
@@ -75,10 +75,8 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.Reco
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -1087,11 +1085,11 @@ public class AppAbsenceFinder {
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		// Create Application
-		GeneralDate startDate = param.getStartDate() == null ? null : GeneralDate.fromString(param.getStartDate(), DATE_FORMAT);
-		GeneralDate endDate = param.getEndDate() == null ? null : GeneralDate.fromString(param.getEndDate(), DATE_FORMAT);
+		GeneralDate startDate = param.getApplicationCommand().getStartDate() == null ? null : GeneralDate.fromString(param.getApplicationCommand().getStartDate(), DATE_FORMAT);
+		GeneralDate endDate = param.getApplicationCommand().getEndDate() == null ? null : GeneralDate.fromString(param.getApplicationCommand().getEndDate(), DATE_FORMAT);
 		List<DisplayReasonDto> displayReasonDtoLst = 
 				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getHolidayAppType())
+		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getAppAbsenceCommand().getHolidayAppType())
 				.findAny().orElse(null);
 		String appReason = "";
 		if(displayReasonSet!=null){
@@ -1100,20 +1098,20 @@ public class AppAbsenceFinder {
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
 			if(displayFixedReason){
-				if(Strings.isBlank(param.getAppReasonID())){
+				if(Strings.isBlank(param.getApplicationCommand().getAppReasonID())){
 					typicalReason += "";
 				} else {
-					typicalReason += param.getAppReasonID();
+					typicalReason += param.getApplicationCommand().getAppReasonID();
 				}
 			}
 			if(displayAppReason){
 				if(Strings.isNotBlank(typicalReason)){
 					displayReason += System.lineSeparator();
 				}
-				if(Strings.isBlank(param.getApplicationReason())){
+				if(Strings.isBlank(param.getApplicationCommand().getApplicationReason())){
 					displayReason += "";
 				} else {
-					displayReason += param.getApplicationReason();
+					displayReason += param.getApplicationCommand().getApplicationReason();
 				}
 			}
 			ApplicationSetting applicationSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
@@ -1127,34 +1125,35 @@ public class AppAbsenceFinder {
 			appReason = typicalReason + displayReason;
 		}
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
-				param.getPrePostAtr(), appReason, appReason,
-				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, param.getEmployeeID());
+				param.getApplicationCommand().getPrePostAtr(), appReason, appReason,
+				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
 		AppForSpecLeave specHd = null;
-		SpecHolidayCommand specHdCm = param.getSpecHd();
-		if(param.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && specHdCm != null){
-			specHd = AppForSpecLeave.createFromJavaType(appID, specHdCm.getMournerCheck(), specHdCm.getRelationCD(), specHdCm.getRelaReason());
+		AppForSpecLeaveCmd appForSpecLeaveCmd = param.getAppAbsenceCommand().getAppForSpecLeave();
+		if(param.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
+			specHd = AppForSpecLeave.createFromJavaType(appID, appForSpecLeaveCmd.isMournerFlag(), appForSpecLeaveCmd.getRelationshipCD(), appForSpecLeaveCmd.getRelationshipReason());
 		}
 		AppAbsence appAbsence = new AppAbsence(companyID,
 				appID,
-				param.getHolidayAppType(),
-				param.getWorkTypeCode(),
-				param.getWorkTimeCode(),
-				param.isHalfDayFlg(), 
-				param.isChangeWorkHour(),
-				param.getAllDayHalfDayLeaveAtr(), 
-				param.getStartTime1(),
-				param.getEndTime1(),
-				param.getStartTime2(),
-				param.getEndTime2(),
+				param.getAppAbsenceCommand().getHolidayAppType(),
+				param.getAppAbsenceCommand().getWorkTypeCode(),
+				param.getAppAbsenceCommand().getWorkTimeCode(),
+				param.getAppAbsenceCommand().isHalfDayFlg(), 
+				param.getAppAbsenceCommand().isChangeWorkHour(),
+				param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), 
+				param.getAppAbsenceCommand().getStartTime1(),
+				param.getAppAbsenceCommand().getEndTime1(),
+				param.getAppAbsenceCommand().getStartTime2(),
+				param.getAppAbsenceCommand().getEndTime2(),
 				specHd);
+		appAbsence.setApplication(appRoot);
 		AbsenceCheckRegisterOutput result = absenseProcess.checkBeforeRegister(
 				companyID, 
 				appAbsenceStartInfoOutput, 
 				appRoot, 
 				appAbsence, 
-				param.getAllDayHalfDayLeaveAtr(), 
-				false, 
-				Optional.empty());
+				param.getAlldayHalfDay(), 
+				param.isAgentAtr(), 
+				Optional.ofNullable(param.getMourningAtr()));
 		return AbsenceCheckRegisterDto.fromDomain(result);
 	}
 	
@@ -1162,15 +1161,17 @@ public class AppAbsenceFinder {
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain();
 		// 会社ID
 		String companyID = AppContexts.user().companyId();
-		Optional<AppAbsence> opAppAbsence = repoAppAbsence.getAbsenceByAppId(companyID, param.getAppID());
+		Optional<AppAbsence> opAppAbsence = repoAppAbsence.getAbsenceByAppId(companyID, param.getApplicationCommand().getApplicationID());
 		if(!opAppAbsence.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
 		List<DisplayReasonDto> displayReasonDtoLst = 
 				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
-		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getHolidayAppType())
+		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getAppAbsenceCommand().getHolidayAppType())
 				.findAny().orElse(null);
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(param.getUser(), User.class), param.getReflectPerState());
+		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(
+				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getUser(), 
+				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getReflectPlanState().value);
 		String appReason = opAppAbsence.get().getApplication().getAppReason().v();
 		if(output.getOutputMode()==OutputMode.EDITMODE){
 			if(displayReasonSet!=null){
@@ -1179,20 +1180,20 @@ public class AppAbsenceFinder {
 				String typicalReason = Strings.EMPTY;
 				String displayReason = Strings.EMPTY;
 				if(displayFixedReason){
-					if(Strings.isBlank(param.getAppReasonID())){
+					if(Strings.isBlank(param.getApplicationCommand().getAppReasonID())){
 						typicalReason += "";
 					} else {
-						typicalReason += param.getAppReasonID();
+						typicalReason += param.getApplicationCommand().getAppReasonID();
 					}
 				}
 				if(displayAppReason){
 					if(Strings.isNotBlank(typicalReason)){
 						displayReason += System.lineSeparator();
 					}
-					if(Strings.isBlank(param.getApplicationReason())){
+					if(Strings.isBlank(param.getApplicationCommand().getApplicationReason())){
 						displayReason += "";
 					} else {
-						displayReason += param.getApplicationReason();
+						displayReason += param.getApplicationCommand().getApplicationReason();
 					}
 				}else{
 					if (Strings.isBlank(typicalReason)) {
@@ -1211,23 +1212,23 @@ public class AppAbsenceFinder {
 			}
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
-		appAbsence.setAllDayHalfDayLeaveAtr(EnumAdaptor.valueOf(param.getAllDayHalfDayLeaveAtr(), AllDayHalfDayLeaveAtr.class));
-		appAbsence.setChangeWorkHour(param.isChangeWorkHour());
-		appAbsence.setStartTime1(param.getStartTime1() == null ? null : new TimeWithDayAttr(param.getStartTime1()));
-		appAbsence.setEndTime1(param.getEndTime1() == null ? null : new TimeWithDayAttr(param.getEndTime1()));
-		appAbsence.setStartTime2(param.getStartTime2() == null ? null : new TimeWithDayAttr(param.getStartTime2()));
-		appAbsence.setEndTime2(param.getEndTime2() == null ? null : new TimeWithDayAttr(param.getEndTime2()));
-		appAbsence.setWorkTypeCode(param.getWorkTypeCode() == null ? null : new WorkTypeCode(param.getWorkTypeCode()));
-		appAbsence.setWorkTimeCode(param.getWorkTimeCode() == null ? null : new WorkTimeCode(param.getWorkTimeCode()));
+		appAbsence.setAllDayHalfDayLeaveAtr(EnumAdaptor.valueOf(param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), AllDayHalfDayLeaveAtr.class));
+		appAbsence.setChangeWorkHour(param.getAppAbsenceCommand().isChangeWorkHour());
+		appAbsence.setStartTime1(param.getAppAbsenceCommand().getStartTime1() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getStartTime1()));
+		appAbsence.setEndTime1(param.getAppAbsenceCommand().getEndTime1() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getEndTime1()));
+		appAbsence.setStartTime2(param.getAppAbsenceCommand().getStartTime2() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getStartTime2()));
+		appAbsence.setEndTime2(param.getAppAbsenceCommand().getEndTime2() == null ? null : new TimeWithDayAttr(param.getAppAbsenceCommand().getEndTime2()));
+		appAbsence.setWorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode() == null ? null : new WorkTypeCode(param.getAppAbsenceCommand().getWorkTypeCode()));
+		appAbsence.setWorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode() == null ? null : new WorkTimeCode(param.getAppAbsenceCommand().getWorkTimeCode()));
 		appAbsence.getApplication().setAppReason(new AppReason(appReason));
 		appAbsence.setVersion(appAbsence.getVersion());
-		appAbsence.getApplication().setVersion(param.getVersion());
+		appAbsence.getApplication().setVersion(param.getApplicationCommand().getVersion());
 		AbsenceCheckRegisterOutput result = absenseProcess.checkBeforeUpdate(
 				companyID, 
 				appAbsenceStartInfoOutput, 
 				appAbsence.getApplication(), 
 				appAbsence, 
-				param.getAllDayHalfDayLeaveAtr(), 
+				param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), 
 				false, 
 				Optional.empty());
 		return AbsenceCheckRegisterDto.fromDomain(result);
