@@ -34,8 +34,18 @@ public class StamPromptApplicationTest {
 	
 	@Test
 	public void testEnum() {
-		assertThat(CheckErrorType.getErrorAlarm(0).get(0)).isEqualTo("S001");
-		assertThat(CheckErrorType.getErrorAlarm(1).get(0)).isEqualTo("S005");
-		assertThat(CheckErrorType.getErrorAlarm(2).get(0)).isEqualTo("D001", "D003");
+		CheckErrorType data = CheckErrorType.IMPRINT_LEAKAGE;
+		assertThat(data.getErrorAlarm().get(0)).isEqualTo("S001");
+		CheckErrorType data1 = CheckErrorType.HOKIDAY_EMBOSSING;
+		assertThat(data1.getErrorAlarm().get(0)).isEqualTo("S005");
+		CheckErrorType data2 = CheckErrorType.OVERTIME_DIVERGGENCE;
+		assertThat(data2.getErrorAlarm().get(0)).isEqualTo("D001", "D003");
+	}
+	
+	@Test
+	public void testEnum_1() {
+		CheckErrorType data = CheckErrorType.valueOf(0);
+		assertThat(data.value).isEqualTo(0);
+		CheckErrorType data1 = CheckErrorType.valueOf(9);
 	}
 }

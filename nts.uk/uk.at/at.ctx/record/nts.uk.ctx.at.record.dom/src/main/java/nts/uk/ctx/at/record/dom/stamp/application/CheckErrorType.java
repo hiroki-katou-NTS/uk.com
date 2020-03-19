@@ -73,10 +73,10 @@ public enum CheckErrorType {
 	 * @param value
 	 * @return
 	 */
-	public static List<String> getErrorAlarm(int value){
-		if(value == 0)
+	public List<String> getErrorAlarm(){
+		if(this == CheckErrorType.IMPRINT_LEAKAGE)
 			return  Arrays.asList("S001");
-		if(value == 1)
+		if(this == CheckErrorType.HOKIDAY_EMBOSSING)
 			return Arrays.asList("S005");
 		return Arrays.asList("D001", "D003");
 	} 
