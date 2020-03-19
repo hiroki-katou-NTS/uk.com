@@ -847,6 +847,11 @@ public class AppHolidayWorkFinder {
 						// 4_a.勤務種類を取得する（法定内外休日） 
 						WorkTypes = holidayService.getWorkTypeForLeaverApp(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition, payoutType);
 					}
+					if (WorkTypes == null) {
+						result.setWorkTypes(null);
+						WorkTypeOvertime workType = new WorkTypeOvertime();
+						result.setWorkType(workType);
+					}
 					result.setWorkTypes(WorkTypes.getWorkTypeCodes());
 					WorkTypeOvertime workType = new WorkTypeOvertime();
 					workType.setWorkTypeCode(WorkTypes.getWorkTypeCode());
@@ -854,6 +859,11 @@ public class AppHolidayWorkFinder {
 					result.setWorkType(workType);
 					// 5.就業時間帯を取得する
 					WorkTimeHolidayWork workTimes = this.holidayService.getWorkTimeHolidayWork(companyID, employeeID, baseDate, personalLablorCodition,isChangeDate);
+					if (workTimes == null) {
+						result.setWorkTimes(null);
+						SiftType workTime = new SiftType();
+						result.setWorkTime(workTime);
+					}
 					result.setWorkTimes(workTimes.getWorkTimeCodes());
 					SiftType workTime = new SiftType();
 					workTime.setSiftCode(workTimes.getWorkTimeCode());

@@ -713,7 +713,7 @@ module nts.uk.at.view.kaf010.b {
                         	self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
                         	self.timeStart2(data.startTime2 == null ? null : data.startTime2);
                         	self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
-                        	self.convertAppOvertimeReferDto(data);
+                        	self.convertActualList(data);
                         });
                     }
                 })
@@ -978,6 +978,18 @@ module nts.uk.at.view.kaf010.b {
                     hourMinute =  hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
                 }
                 return hourMinute;
+            }
+            
+            convertActualList(data :any){
+            	let self = this;
+            	if (data.actualStatusCheckResult.actualLst != null) {
+            		let actualLst = data.actualStatusCheckResult.actualLst;
+                    for (let i = 0; i < actualLst.length; i++) {
+                        if (actualLst[i].attendanceID == 2) {
+                            self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));
+                        }
+                    }
+                }
             }
             
             getErrorCode(calcError, preAppError, actualError){

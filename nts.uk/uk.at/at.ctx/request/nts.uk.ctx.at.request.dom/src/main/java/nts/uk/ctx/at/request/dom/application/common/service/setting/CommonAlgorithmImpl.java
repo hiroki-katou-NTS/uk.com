@@ -134,8 +134,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			throw new BusinessException("Msg_426");
 		}
 		// 雇用別申請承認設定を取得する
-		Optional<AppEmploymentSetting> employmentSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value)
-				.stream().findFirst();
+		List<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
+		output.setEmploymentSet(CollectionUtil.isEmpty(employmentSetLst) ? null : employmentSetLst.stream().findFirst().get());
 		
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
@@ -156,7 +156,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 取得したした情報をOUTPUT「申請表示情報(基準日関係あり)」にセットする
 		output.setApprovalFunctionSet(approvalFunctionSet);
 		output.setWorkTimeLst(workTimeLst);
-		output.setEmploymentSet(employmentSetOpt.get());
 		output.setApprovalRootState(approvalRootContentImport.approvalRootState);
 		output.setErrorFlag(approvalRootContentImport.getErrorFlag());
 		output.setPrePostAtr(appDispInfoWithDateOutput.getPrePostAtr());

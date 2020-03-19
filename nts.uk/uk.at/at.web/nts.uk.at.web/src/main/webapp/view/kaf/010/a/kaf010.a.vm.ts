@@ -242,10 +242,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                        $('#kaf010-pre-post-select').ntsError('clear');
                        nts.uk.ui.errors.clearAll();
                        $("#inputdate").trigger("validate");
-                      if(value == 0){                           
+                      if(value == 0){
+                    	   $("#break-time-frame0").css("display", "");
                            $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
+                           $("#break-time-frame1").css("display", "none");
                       }else if(value == 1){
+                    	   $("#break-time-frame1").css("display", "");
                            $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                           $("#break-time-frame0").css("display", "none");
                       }
                        
                     });
@@ -822,7 +826,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
                         self.timeStart2(data.startTime2 == null ? null : data.startTime2);
                         self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
-                        self.convertAppOvertimeReferDto(data);
+                        self.convertActualList(data);
                         self.setTimeZones(data.timezones);
                     });
                 }
@@ -966,6 +970,18 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
                  self.overTimeShiftNightRefer(self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
                  self.flexExessTimeRefer(self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
+            }
+        }
+        
+        convertActualList(data :any){
+        	let self = this;
+        	if (data.actualStatusCheckResult.actualLst != null) {
+        		let actualLst = data.actualStatusCheckResult.actualLst;
+                for (let i = 0; i < actualLst.length; i++) {
+                    if (actualLst[i].attendanceID == 2) {
+                        self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));
+                    }
+                }
             }
         }
         
