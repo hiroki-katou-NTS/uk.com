@@ -27,12 +27,15 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.AppTypeSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
@@ -151,6 +154,9 @@ public class AppHolidayWorkFinder {
 	
 	@Inject
 	private OvertimeService overtimeService;
+	
+	@Inject
+	private AtEmployeeAdapter atEmployeeAdapter;
 
 	/**
 	 * 1.休出申請（新規）起動処理
@@ -161,6 +167,20 @@ public class AppHolidayWorkFinder {
 	 */
 	public AppHolidayWorkDto getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
 		String companyID = AppContexts.user().companyId();
+		if(CollectionUtil.isEmpty(lstEmployee) && employeeID == null){
+			 employeeID = AppContexts.user().employeeId();
+		}else if(!CollectionUtil.isEmpty(lstEmployee)){
+			employeeID = lstEmployee.get(0);
+			List<EmployeeInfoImport> employees = this.atEmployeeAdapter.getByListSID(lstEmployee);
+			if(!CollectionUtil.isEmpty(employees)){
+				List<EmployeeOvertimeDto> employeeOTs = new ArrayList<>();
+				for(EmployeeInfoImport emp : employees){
+					EmployeeOvertimeDto employeeOT = new EmployeeOvertimeDto(emp.getSid(), emp.getBussinessName());
+					employeeOTs.add(employeeOT);
+				}
+				result.setEmployees(employeeOTs);
+			}
+		}
 		List<GeneralDate> dateLst = new ArrayList<>();
 		if(appDate != null) {
 			dateLst.add(GeneralDate.fromString(appDate, DATE_FORMAT));
@@ -456,12 +476,15 @@ public class AppHolidayWorkFinder {
 	}
 	
 	/**
+	 * 7.休出申請（詳細）起動処理
 	 * @param appID
 	 * @return
 	 */
 	public AppHolidayWorkDto getAppHolidayWorkByAppID(String appID){
 		
 		String companyID = AppContexts.user().companyId();
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 		// 14-1.詳細画面起動前申請共通設定を取得する
 		// 詳細画面の申請データを取得する
 		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appID);
@@ -470,9 +493,25 @@ public class AppHolidayWorkFinder {
 		}
 		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
 		String appDate = !appHolidayWork.getApplication().getStartDate().isPresent() ? null : appHolidayWork.getApplication().getStartDate().get().toString(DATE_FORMAT);
-		AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);
+		
 		// 起動時の申請表示情報を取得する
-		getAppHolidayWork(appDate, 0, new ArrayList<String>() , null , appHolidayWork.getApplication().getEmployeeID(), appHolidayWorkDto);		
+		List<String> lstEmployee = new ArrayList<String>();
+		lstEmployee.add(appHolidayWork.getApplication().getEmployeeID());
+		List<GeneralDate> dateLst = new ArrayList<>();
+		dateLst.add(GeneralDate.fromString(appDate, DATE_FORMAT));
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+				companyID, 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				lstEmployee, 
+				dateLst, 
+				true);
+		
+		// ドメインモデル「休日出勤申請」を取得する
+		AppHolidayWorkDto appHolidayWorkDto = AppHolidayWorkDto.fromDomain(appHolidayWork);
+		appHolidayWorkDto.setAppDispInfoStartupDto(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
+		
+		// 申請表示情報(基準日関係あり)．事前事後区分=取得した「申請」．事前事後区分
+		appHolidayWorkDto.getAppDispInfoStartupDto().appDispInfoWithDateOutput.prePostAtr = appHolidayWorkDto.getApplication().getPrePostAtr();
 		
 		// 詳細画面の利用者とステータスを取得する
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWork.getApplication().getEmployeeID(), appID, 
@@ -481,6 +520,9 @@ public class AppHolidayWorkFinder {
 		DetailScreenInitModeOutput detailScreenInitModeOutput = this.initMode.getDetailScreenInitMode(detailedScreenPreBootModeOutput.getUser(), detailedScreenPreBootModeOutput.getReflectPlanState().value);
 		appHolidayWorkDto.setDetailedScreenPreBootModeOutput(detailedScreenPreBootModeOutput);
 		appHolidayWorkDto.setDetailScreenInitModeOutput(detailScreenInitModeOutput);
+		
+		// 1-1.休日出勤申請（新規）起動時初期データを取得する		
+		this.getData(companyID, appHolidayWork.getApplication().getEmployeeID(), appDate, appHolidayWorkDto, 0, null, null, null, overtimeRestAppCommonSet);
 
 		// 07-01_事前申請状態チェック
 		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(companyID,
@@ -507,8 +549,6 @@ public class AppHolidayWorkFinder {
 				holidayLst.add(OvertimeColorCheck.createApp(2, holidayInput.getFrameNo(), holidayInput.getApplicationTime()));
 			}		
 		});
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.get().getPerformanceExcessAtr();
 		PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(preExcessDisplaySetting,
@@ -709,6 +749,7 @@ public class AppHolidayWorkFinder {
 			});
 			result.setHolidayWorkInputDtos(holidayWorkInputDtos);
 			
+			// 起動時の36協定時間の状態を取得する
 			if (overtimeRestAppCommonSet.isPresent()) {
 				Map<String,AppHolidayWork> appHolidayWorkDetailMap = appHolidayWorkRepository.getListAppHdWorkFrame(companyID, Arrays.asList(result.getAppID()));
 				if(!appHolidayWorkDetailMap.isEmpty()){

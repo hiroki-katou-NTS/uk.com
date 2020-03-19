@@ -223,7 +223,7 @@ module nts.uk.at.view.kaf010.b {
                 self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
-                self.prePostSelected(data.appDispInfoStartupDto.appDispInfoWithDateOutput.prePostAtr);
+                self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
