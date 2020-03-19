@@ -6,15 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation.RetirementInformation_NewService;
 
@@ -56,19 +52,19 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 		String historyId = cmd.getHistoryId();
 		String contractCode = cmd.getContractCode();
 		String companyId = cmd.getCompanyId();
-		String companyCode = cmd.getCompanyCode();
+		String companyCode =cmd.getCompanyCode();
 		String pId = cmd.getPId();
 		String sId = cmd.getSId();
 		String scd = cmd.getScd();
-		Integer workId = cmd.getWorkId();
+		Integer workId =cmd.getWorkId();
 		String personName = cmd.getPersonName();
 		String workName = cmd.getWorkName();
-		RequestFlag requestFlag = EnumAdaptor.valueOf(cmd.getNotificationCategory(), RequestFlag.class);
+		int requestFlag = cmd.getNotificationCategory();
 		GeneralDate registerDate = GeneralDate.today();
 		GeneralDateTime releaseDate = GeneralDateTime
 				.fromString(cmd.getReleaseDate().toString("yyyy-MM-dd") + TIME_DAY_START, DATE_TIME_FORMAT);
-		OnHoldFlag onHoldFlag = EnumAdaptor.valueOf(cmd.getPendingFlag(), OnHoldFlag.class);
-		Status status = EnumAdaptor.valueOf(cmd.getStatus(), Status.class);
+		int onHoldFlag = cmd.getPendingFlag();
+		int status = cmd.getStatus();
 		String histId_Refer = cmd.getDst_HistId();
 
 		GeneralDateTime date_01 = GeneralDateTime
@@ -82,14 +78,11 @@ public class RetirementInformationRegisterCommandHandler extends CommandHandler<
 		String select_name_02 = cmd.getDesiredWorkingCourseName();
 		String select_name_03 = cmd.getRetirementReasonCtgName1();
 
-		DataBeforeReflectingPerInfo domain = DataBeforeReflectingPerInfo.builder().historyId(historyId)
-				.contractCode(contractCode).companyId(companyId).companyCode(companyCode).pId(pId).sId(sId).scd(scd)
-				.workId(workId).personName(personName).workName(workName).requestFlag(requestFlag)
-				.registerDate(registerDate).releaseDate(releaseDate).onHoldFlag(onHoldFlag).stattus(status)
-				.histId_Refer(histId_Refer).date_01(date_01).select_code_01(select_code_01)
-				.select_code_02(select_code_02).select_code_03(select_code_03).select_code_04(select_code_04)
-				.select_name_01(select_name_01).select_name_02(select_name_02).select_name_03(select_name_03).build();
-
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo(historyId, contractCode, companyId,
+				companyCode, pId, sId, scd, workId, personName, workName, requestFlag, registerDate, releaseDate,
+				onHoldFlag, status, histId_Refer, date_01, select_code_01, select_code_02, select_code_03,
+				select_code_04, select_name_01, select_name_02, select_name_03);
+		
 		domain.setSelect_id_02(cmd.getDesiredWorkingCourseId());
 		domain.setSelect_id_03(cmd.getRetirementReasonCtgID1());
 		domain.setSelect_code_04(select_code_04);
