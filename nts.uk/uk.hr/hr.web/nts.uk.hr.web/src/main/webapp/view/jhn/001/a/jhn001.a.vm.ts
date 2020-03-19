@@ -516,10 +516,6 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        
-                        self.showBtnBack(true);
-                        self.showBtnRemove(true);
-                        
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
