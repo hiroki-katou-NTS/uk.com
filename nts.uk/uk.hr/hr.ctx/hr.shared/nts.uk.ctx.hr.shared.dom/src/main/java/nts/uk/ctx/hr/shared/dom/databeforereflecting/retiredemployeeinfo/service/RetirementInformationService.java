@@ -95,7 +95,7 @@ public class RetirementInformationService {
 
 		// 退職者情報リストを個人情報反映前データリストへ変換する (Convert retired employee information
 		// list to list data before reflecting personal information)
-		DataBeforeReflectingPerInfo domain = DataBeforeReflectingPerInfo.builder().build();
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo();
 		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
 		this.dataBeforeReflectPerInfoService.addDataBeforeReflectingPerInfo(domain);
 	}
@@ -172,7 +172,7 @@ public class RetirementInformationService {
 	}
 
 	public void updateRetireInformation(RetirementInformation domainObj) {
-		DataBeforeReflectingPerInfo domain = DataBeforeReflectingPerInfo.builder().build();
+		DataBeforeReflectingPerInfo domain = new DataBeforeReflectingPerInfo();
 		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
 		this.dataBeforeReflectPerInfoService.updateDataBeforeReflectingPerInfo(domain);
 
