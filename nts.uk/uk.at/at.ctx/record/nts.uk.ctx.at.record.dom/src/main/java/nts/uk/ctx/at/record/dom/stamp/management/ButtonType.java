@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.stamp.management;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
@@ -16,7 +18,7 @@ public class ButtonType implements DomainValue{
 	
 	/** 打刻種類 */
 	@Getter
-	private StampType stampType;
+	private Optional<StampType> stampType;
 
 	/**
 	 * [C-0] ボタン種類(予約区分, 打刻種類)
@@ -25,7 +27,7 @@ public class ButtonType implements DomainValue{
 	 */
 	public ButtonType(ReservationArt reservationArt, StampType stampType) {
 		this.reservationArt = reservationArt;
-		this.stampType = stampType;
+		this.stampType = Optional.ofNullable(stampType);
 	}
 	
 	/**
@@ -33,8 +35,6 @@ public class ButtonType implements DomainValue{
 	 * @return
 	 */
 	public boolean checkStampType(){
-		if(this.getStampType() == null) return false;
-		
-		return true;	
+		return this.getStampType().isPresent();	
 	}
 }

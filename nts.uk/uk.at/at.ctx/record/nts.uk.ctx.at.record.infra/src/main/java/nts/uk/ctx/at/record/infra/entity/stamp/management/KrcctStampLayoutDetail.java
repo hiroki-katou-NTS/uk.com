@@ -83,7 +83,7 @@ private static final long serialVersionUID = 1L;
 	 * 勤務種類を半休に変更する 0:False 1:True
 	 */
 	@Column(name ="CHANGE_HALF_DAY")
-	public boolean changeHalfDay;
+	public Integer changeHalfDay;
 	
 	/**
 	 * 外出区分 0:私用 1:公用 2:有償 3:組合
@@ -111,7 +111,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public KrcctStampLayoutDetail(KrcctStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
-			int changeClockArt, int changeCalArt, int setPreClockArt, boolean changeHalfDay, Integer goOutArt,
+			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
 		this.pk = pk;
@@ -147,7 +147,7 @@ private static final long serialVersionUID = 1L;
 				new ButtonType(
 						EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), 
 						new StampType(
-								this.changeHalfDay, 
+								this.changeHalfDay == 0 ? false : true  , 
 								this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
 								EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
 								EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
@@ -159,16 +159,22 @@ private static final long serialVersionUID = 1L;
 	public static KrcctStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
 		return new KrcctStampLayoutDetail(
 				new KrcctStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
-				settings.getUsrArt().value, 
-				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? settings.getButtonDisSet().getButtonNameSet().getButtonName().toString() : null, 
-				settings.getButtonType().getReservationArt().value, 
-				settings.getButtonType().getStampType().getChangeClockArt().value, 
-				settings.getButtonType().getStampType().getChangeCalArt().value, 
-				settings.getButtonType().getStampType().getSetPreClockArt().value, 
-				settings.getButtonType().getStampType().isChangeHalfDay(), 
-				settings.getButtonType().getStampType().getGoOutArt().isPresent() ? settings.getButtonType().getStampType().getGoOutArt().get().value : null, 
-				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(), 
-				settings.getButtonDisSet().getBackGroundColor().v(), 
-				settings.getAudioType().value);
+				settings.getUsrArt().value,
+				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
+						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,
+				settings.getButtonType().getReservationArt().value,
+				settings.getButtonType().getStampType() == null ? null
+						: settings.getButtonType().getStampType().get().getChangeClockArt().value,
+				settings.getButtonType().getStampType() == null ? null
+						: settings.getButtonType().getStampType().get().getChangeCalArt().value,
+				settings.getButtonType().getStampType() == null ? null
+						: settings.getButtonType().getStampType().get().getSetPreClockArt().value,
+				settings.getButtonType().getStampType() == null ? null
+						: settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0,
+				settings.getButtonType().getStampType() == null ? null
+						: settings.getButtonType().getStampType().get().getGoOutArt().isPresent()
+								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,
+				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
+				settings.getButtonDisSet().getBackGroundColor().v(), settings.getAudioType().value);
 	}
 }

@@ -39,11 +39,12 @@ public class StampPageLayoutDto {
 					x.getButtonDisSet().getButtonNameSet().getButtonName() == null ? null : x.getButtonDisSet().getButtonNameSet().getButtonName().get().v());
 			ButtonDisSetCommand buttonDisSet = new ButtonDisSetCommand(buttonNameSet, x.getButtonDisSet().getBackGroundColor().v());
 			
-			StampTypeCommand stampType = new StampTypeCommand(x.getButtonType().getStampType().isChangeHalfDay(),
-					x.getButtonType().getStampType().getGoOutArt() == null ? null : x.getButtonType().getStampType().getGoOutArt().get().value,
-					x.getButtonType().getStampType().getSetPreClockArt().value,
-					x.getButtonType().getStampType().getChangeClockArt().value,
-					x.getButtonType().getStampType().getChangeCalArt().value);
+			StampTypeCommand stampType = new StampTypeCommand(
+					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().isChangeHalfDay(),
+					x.getButtonType().getStampType().get() == null  ? null : x.getButtonType().getStampType().get().getGoOutArt() == null ? null : x.getButtonType().getStampType().get().getGoOutArt().get().value,
+					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getSetPreClockArt().value,
+					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getChangeClockArt().value,
+					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getChangeCalArt().value);
 			
 			ButtonTypeCommand buttonType = new ButtonTypeCommand(x.getButtonType().getReservationArt().value, stampType);
 			return new ButtonSettingsCommand(x.getButtonPositionNo().v(),

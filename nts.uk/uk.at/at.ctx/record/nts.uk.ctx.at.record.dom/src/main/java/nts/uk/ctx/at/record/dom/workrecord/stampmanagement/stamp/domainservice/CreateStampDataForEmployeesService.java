@@ -56,7 +56,7 @@ public class CreateStampDataForEmployeesService {
 		if(!stampAtr) {
 			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.empty());
 		}
-		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType(), refActualResults.get(), positionInfo);
+		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType().get(), refActualResults.get(), positionInfo);
 		
 		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.of(stamp));
 	}
