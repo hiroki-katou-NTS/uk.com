@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -46,7 +47,10 @@ public class JshmtDismissRestItem extends UkJpaEntity implements Serializable {
 	}
 	
 	@ManyToOne
-	@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
+	@JoinColumns( {
+		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "TERM_CASE", referencedColumnName = "TERM_CASE", insertable = false, updatable = false)
+    })
 	public JshmtDismissRestTerm dismissRestTerm;
 
 	
