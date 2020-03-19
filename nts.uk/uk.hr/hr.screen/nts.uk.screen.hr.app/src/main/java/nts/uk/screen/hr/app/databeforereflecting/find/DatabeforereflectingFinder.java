@@ -1,6 +1,7 @@
 package nts.uk.screen.hr.app.databeforereflecting.find;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,7 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
@@ -24,6 +27,9 @@ public class DatabeforereflectingFinder {
 	
 	@Inject
 	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private IInterviewRecordSummary interview;
 	
 	// 1.起動する(Khời động)
 	public DataBeforeReflectResultDto getDataBeforeReflect() {
@@ -51,20 +57,72 @@ public class DatabeforereflectingFinder {
 		resultDto.setRetiredEmployees(listRetiredEmployeeInfoResult);
 		
 		// アルゴリズム[社員情報リストの取得]を実行する(Thực hiện thuật toán [lấy list thông tin nhân viên])
-		List<String> sIDs = listRetirementInfo.stream().map(x -> x.getSId()).collect(Collectors.toList());
-		List<String> pIDs = listRetirementInfo.stream().map(x -> x.getPId()).collect(Collectors.toList());
-		GeneralDate baseDate = GeneralDate.today();
-		
-		List<EmployeeInformationImport> employeeImports = this.empInfoAdaptor.getEmployeeInfos(
-				Optional.of(pIDs), sIDs, baseDate, Optional.ofNullable(true),
-				Optional.ofNullable(true), Optional.ofNullable(true));
+		List<EmployeeInformationImport> employeeImports = getEmpInfo(listRetiredEmployeeInfoResult);
 		
 		resultDto.setEmployeeImports(employeeImports);
 		
 		return resultDto;
 
 	}
-	
+	/**
+	 * 社員情報リストの取得
+	 * @param retirementInfos
+	 * @return
+	 */
+	private List<EmployeeInformationImport> getEmpInfo(List<RetiredEmployeeInfoResult> retirementInfos) {
+		List<String> sIDs = retirementInfos.stream().map(x -> x.getSId()).collect(Collectors.toList());
+		List<String> pIDs = retirementInfos.stream().map(x -> x.getPId()).collect(Collectors.toList());
+		GeneralDate baseDate = GeneralDate.today();
+
+		return this.empInfoAdaptor.getEmployeeInfos(Optional.of(pIDs), sIDs, baseDate, Optional.ofNullable(true),
+				Optional.ofNullable(true), Optional.ofNullable(true));
+	}
+
+	// 起動する khởi động màn Z
+	public DataBeforeReflectResultDto startPageZ() {
+		String cID = AppContexts.user().companyId();
+
+		List<String> listSid = Arrays.asList(AppContexts.user().employeeId());
+
+		Optional<Boolean> includReflected = Optional.of(true);
+
+		// アルゴリズム[承認データの取得]を実行する(Thực hiện thuật toán [lấy ApprovalData])
+		List<RetiredEmployeeInfoResult> retirementInfos = convertToDto(getApprovalData(cID, listSid, includReflected));
+
+		if (retirementInfos.isEmpty()) {
+			throw new BusinessException("MsgJ_JCM007_11");
+		}
+
+		// アルゴリズム[社員情報リストの取得]を実行する(Thực hiện thuật toán [Lấy EmployeeInfoList])
+		List<EmployeeInformationImport> employeeImports = getEmpInfo(retirementInfos);
+
+		// アルゴリズム[面談記録概要の取得]を実行する(Thực hiện thuật toán [Lấy
+		// InterviewRecordOverview])
+
+		int interviewCate = 1;
+
+		boolean getSubInterviewer = false;
+		boolean getDepartment = true;
+		boolean getPosition = true;
+		boolean getEmployment = true;
+
+		this.interview.getInterviewInfo(cID, interviewCate, listSid, getSubInterviewer, getDepartment, getPosition,
+				getEmployment);
+
+		return DataBeforeReflectResultDto.builder().retiredEmployees(retirementInfos).employeeImports(employeeImports)
+				.build();
+	}
+
+	private List<RetirementInformation> getApprovalData(String cID, List<String> listSid, Optional<Boolean> includReflected) {
+		
+		Optional<String> sortByColumnName = Optional.of("date_01");
+		Optional<String> orderType = Optional.of("asc");
+		int workId = 1;
+
+		return this.retirementInfoService.getRetirementInfo(cID, workId, listSid, includReflected, sortByColumnName,
+				orderType);
+	}
+
 	// 退職日変更時処理(xử lý khi ngày nghỉ hưu thay đổi)
 	public RetirementRelartedDto ProcessRetirementDateChanges(GeneralDate resignmentDate) {
 		if (resignmentDate == null) {
