@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface CommonAlgorithm {
 	
@@ -102,4 +103,13 @@ public interface CommonAlgorithm {
 	 */
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst, GeneralDate targetDate,
 			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput);
+	
+	/**
+	 * 申請済み勤務種類の存在判定と取得
+	 * @param companyID
+	 * @param wkTypes 勤務種類(List) //workType(list)
+	 * @param wkTypeCD 選択済勤務種類コード//selectedWorkTypeCode
+	 * @return
+	 */
+	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD);
 }

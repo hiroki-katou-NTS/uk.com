@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -149,6 +150,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private GetHdDayInPeriodService getHdDayInPeriodSv;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -556,7 +560,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
 		// 就業時間帯の表示制御フラグを確認する
 		boolean controlDispWorkingHours = appAbsenceFourProcess.getDisplayControlWorkingHours(
-				workTypeCD.get(), 
+				workTypeCD.orElse(null), 
 				Optional.of(appAbsenceStartInfoOutput.getHdAppSet()), 
 				companyID);
 		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
@@ -1043,12 +1047,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
+		// 選択可能の勤務種類を取得する
 		List<WorkType> workType = appAbsenceThreeProcess.getWorkTypeDetails(
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet(),
 				companyID,
 				appAbsence.getHolidayAppType().value,
 				appAbsence.getAllDayHalfDayLeaveAtr().value, 
 				appAbsence.isHalfDayFlg());
+		// 申請済み勤務種類の存在判定と取得
+		boolean workTypeNotRegister = commonAlgorithm.appliedWorkType(companyID, workType, appAbsence.getWorkTypeCode().v());
+		// INPUT．「休暇申請起動時の表示情報」を更新する
+		appAbsenceStartInfoOutput.setWorkTypeLst(workType);
+		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
+		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
+		appAbsenceStartInfoOutput.setWorkTypeNotRegister(workTypeNotRegister);
+		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
 	}
 

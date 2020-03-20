@@ -489,12 +489,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 alldayHalfDay: self.selectedAllDayHalfDayValue(),
                 appAbsenceStartInfoDto:  self.appAbsenceStartInfoDto
             }).done((result) => {
-                if (!nts.uk.util.isNullOrEmpty(result.workTypes)) {
+                if (!nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
                     let a = [];
                     self.workTypecodes.removeAll();
-                    for (let i = 0; i < result.workTypes.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
-                        self.workTypecodes.push(result.workTypes[i].workTypeCode);
+                    for (let i = 0; i < result.workTypeLst.length; i++) {
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);
                     let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
@@ -534,7 +534,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
             }).done((result) => {
                 self.changeWorkHourValueFlg(result.workHoursDisp);
-                if (nts.uk.util.isNullOrEmpty(result.workTypes)) {
+                if (nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
                     self.typeOfDutys([]);
                     self.workTypecodes([]);
                     self.selectedTypeOfDuty(null);
@@ -546,9 +546,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 } else {
                     let a = [];
                     self.workTypecodes.removeAll();
-                    for (let i = 0; i < result.workTypes.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
-                        self.workTypecodes.push(result.workTypes[i].workTypeCode);
+                    for (let i = 0; i < result.workTypeLst.length; i++) {
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);
                     let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
@@ -556,9 +556,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.selectedTypeOfDuty('');
                     }
                 }
-                if (!nts.uk.util.isNullOrEmpty(result.workTimeCodes)) {
+                if (!nts.uk.util.isNullOrEmpty(result.workTimeLst)) {
                     self.workTimeCodes.removeAll();
-                    self.workTimeCodes(result.workTimeCodes);
+                    self.workTimeCodes(result.workTimeLst);
                 }
                 dfd.resolve(result);
             }).fail((res) => {
@@ -1156,6 +1156,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let confirmMsgLst = result.confirmMsgLst;
             let confirmMsg = confirmMsgLst[confirmIndex];
             if(_.isUndefined(confirmMsg)) {
+                paramInsert.holidayDateLst = result.holidayDateLst;
                 service.createAbsence(paramInsert).done((data) => {
                     self.sendMail(data);
                 }).fail((res) => {
