@@ -157,7 +157,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.reasonToApprover(data.authorCmt);
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
-                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message.replace(/\n/ig, '<br/>'));
+                    self.reasonOutputMessFull(deadlineMsg.message.replace(/\n/ig, '<br/>'));
                 }
                 if(!_.isEmpty(self.reasonOutputMessFull())){
                     self.messFullDisp(true);    
