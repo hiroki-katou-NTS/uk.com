@@ -163,7 +163,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     self.messFullDisp(true);    
                 }
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
-                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
+                    self.reasonOutputMessDealineFull(deadlineMsg.deadline);
                 }
                 if(!_.isEmpty(self.reasonOutputMessDealineFull())){
                     self.messDealineFullDisp(true);    
