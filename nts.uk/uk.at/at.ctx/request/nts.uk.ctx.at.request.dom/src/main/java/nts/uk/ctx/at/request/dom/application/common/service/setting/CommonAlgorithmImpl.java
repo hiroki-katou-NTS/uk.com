@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.setting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,6 +44,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -77,6 +80,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private WorkTypeRepository wkTypeRepo;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType) {
@@ -241,6 +247,27 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 申請表示情報(基準日関係あり)を取得する
 			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);
 		}
+	}
+
+	@Override
+	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
+		boolean masterUnregistered = true;
+		// ドメインモデル「勤務種類」を取得する(Lấy domain [WorkType])
+		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
+		boolean isInList = false;
+		if(WkTypeOpt.isPresent()){
+			  isInList = wkTypes.stream()
+					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
+					.collect(Collectors.toList()).isEmpty();
+		}
+
+		if (isInList) {
+			// INPUT.勤務種類(List)に勤務種類を追加する(Thêm workType vào INPUT.workType(list))
+			wkTypes.add(WkTypeOpt.get());
+
+			masterUnregistered = false;
+		}
+		return masterUnregistered;
 	}
 
 }

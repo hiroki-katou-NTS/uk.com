@@ -24,4 +24,8 @@ public class WorkTypeDto {
 		return new WorkTypeDto(workTypeOutput.getWorkTypeCode(), workTypeOutput.getName());
 	} 
 	
+	public WorkTypeOutput toDomain() {
+		return new WorkTypeOutput(workTypeCode, name);
+	}
+	
 }

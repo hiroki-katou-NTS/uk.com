@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -13,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDivisionDto;
@@ -71,7 +71,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 表示する実績内容
 	 */
-	public List<AchievementOutput> achievementOutputLst;
+	public List<AchievementDto> achievementOutputLst;
 	
 	/**
 	 * 表示する事前申請内容
@@ -89,7 +89,7 @@ public class AppDispInfoWithDateDto {
 		appDispInfoWithDateDto.errorFlag = appDispInfoWithDateOutput.getErrorFlag().value;
 		appDispInfoWithDateDto.prePostAtr = appDispInfoWithDateOutput.getPrePostAtr().value;
 		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate().toString("yyyy/MM/dd");
-		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst();
+		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst().stream().map(x -> AchievementDto.convertFromAchievementOutput(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
 		return appDispInfoWithDateDto;
 	}
@@ -124,7 +124,7 @@ public class AppDispInfoWithDateDto {
 		output.setErrorFlag(EnumAdaptor.valueOf(errorFlag, ErrorFlagImport.class));
 		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
 		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
-		output.setAchievementOutputLst(achievementOutputLst);
+		output.setAchievementOutputLst(achievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		output.setAppDetailContentLst(appDetailContentLst);
 		return output;
 	}

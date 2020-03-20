@@ -13,12 +13,11 @@ module nts.uk.at.view.kaf006.shr.service {
         deleteOvertime: "at/request/application/overtime/delete",
         updateAbsence: "at/request/application/appforleave/update",
         checkBeforeRegister: "at/request/application/appforleave/checkBeforeRegister",
-        checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
+        checkBeforeUpdate: "at/request/application/appforleave/checkBeforeUpdate",
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork",
         changeRelaCD: "at/request/application/appforleave/changeRela/{0}/{1}",
-        checkRegister: "at/request/application/appforleave/checkRegister"
     }
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
