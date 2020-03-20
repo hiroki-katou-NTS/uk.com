@@ -81,7 +81,7 @@ public class AppDispInfoWithDateDto {
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
-		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
+		appDispInfoWithDateDto.employmentSet = appDispInfoWithDateOutput.getEmploymentSet() == null ? null : AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
 		appDispInfoWithDateDto.workTimeLst = appDispInfoWithDateOutput.getWorkTimeLst().stream()
 				.map(x -> AppDispInfoWithDateDto.fromDomainWorkTime(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.listApprovalPhaseState = appDispInfoWithDateOutput.getApprovalRootState() == null ? Collections.emptyList() : 
@@ -117,7 +117,7 @@ public class AppDispInfoWithDateDto {
 	public AppDispInfoWithDateOutput toDomain() {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
-		output.setEmploymentSet(employmentSet.toDomain());
+		output.setEmploymentSet(employmentSet == null ? null : employmentSet.toDomain());
 		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
 		output.setApprovalRootState(new ApprovalRootStateImport_New(
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));

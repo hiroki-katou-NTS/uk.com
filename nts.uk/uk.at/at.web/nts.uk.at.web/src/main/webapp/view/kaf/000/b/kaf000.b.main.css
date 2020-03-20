@@ -1,6 +1,6 @@
 #message-area {
 	background-color: #f8efd4;
-	width: 800px;
+	width: 822px;
 	padding: 0 !important;
 }
 .comment{
@@ -10,7 +10,12 @@
 }
 
 .message-td {
-	padding-left: 8px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.message-td-1 {
+	padding-left: 12px;
+	width: 95px;
 }
 
 #table-phase, #table-phase td, #table-phase th {
