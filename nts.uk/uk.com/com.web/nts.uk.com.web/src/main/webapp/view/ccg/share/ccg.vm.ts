@@ -712,11 +712,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showSameWorkplaceAndChild = _.isNil(options.showSameWorkplaceAndChild) ? false: options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
-                self.showEmployment = _.isNil(options.showEmployment) ? true : options.showEmployment;
-                self.showDepartment = _.isNil(options.showDepartment) ? true : options.showDepartment;
-                self.showWorkplace = _.isNil(options.showWorkplace) ? true : options.showWorkplace;
-                self.showClassification = _.isNil(options.showClassification) ? true : options.showClassification;
-                self.showJobTitle = _.isNil(options.showJobTitle) ? true : options.showJobTitle;
+                // update ver 5.3
+                self.showEmployment = _.isNil(options.showEmployment) ? false : options.showEmployment;
+                self.showDepartment = _.isNil(options.showDepartment) ? false : options.showDepartment;
+                self.showWorkplace = _.isNil(options.showWorkplace) ? false : options.showWorkplace;
+                self.showClassification = _.isNil(options.showClassification) ? false : options.showClassification;
+                self.showJobTitle = _.isNil(options.showJobTitle) ? false : options.showJobTitle;
+                // up ver 5.3
                 self.showWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT && options.showWorktype;
                 self.isMultiple = _.isNil(options.isMutipleCheck) ? true : options.isMutipleCheck;
 
