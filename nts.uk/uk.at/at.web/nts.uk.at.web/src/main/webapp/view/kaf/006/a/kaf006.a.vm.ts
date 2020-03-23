@@ -420,18 +420,26 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         }
         changeForSpecHd(data: any){
             let self = this;
+            let specAbsenceDispInfo = data.specAbsenceDispInfo;
+            if(nts.uk.util.isNullOrUndefined(specAbsenceDispInfo)) {
+                return;        
+            }
              //hoatt 2018.08.09
             //relationship list
             self.relationCombo([]);
             let lstRela = [];
-            _.each(data.lstRela, function(rela){
+            let lstRelaOutput = [];
+            if(!nts.uk.util.isNullOrEmpty(specAbsenceDispInfo.dateSpecHdRelationLst)) {
+                lstRelaOutput = specAbsenceDispInfo.dateSpecHdRelationLst;    
+            }  
+            _.each(data.lstRelaOutput, function(rela){
                 lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
                         maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;
-            if(data.specHdForEventFlag){
-                fix = data.maxNumberDayType == 2 ? true : false;
+            if(specAbsenceDispInfo.specHdForEventFlag){
+                fix = specAbsenceDispInfo.maxDay == 2 ? true : false;
             }
             if(!fix && self.relaReason() != ''){
                 $('#relaReason').ntsError('clear');
@@ -443,8 +451,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }else{
                 self.requiredRela(true);
             }
-            self.maxDayDis(data.specHdForEventFlag);
-            if(data.specHdForEventFlag && data.maxNumberDayType == 2 && data.makeInvitation == 1){
+            self.maxDayDis(specAbsenceDispInfo.specHdForEventFlag);
+            if(specAbsenceDispInfo.specHdForEventFlag && specAbsenceDispInfo.specHdEvent.maxNumberDay == 2 && specAbsenceDispInfo.specHdEvent.makeInvitation == 1){
                 self.mournerDis(true);
             }else{
                self.mournerDis(false);
@@ -454,17 +462,17 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 let line1 = getText('KAF006_44');
                 let maxDay = 0;
                 if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                    maxDay =data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
+                    maxDay = specAbsenceDispInfo.maxDay + specAbsenceDispInfo.dayOfRela;
                 }else{//・その以外 ⇒ 上限日数
-                    maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
+                    maxDay = specAbsenceDispInfo.maxDay;
                 }
-                if(data.maxDayObj != null){
-                    self.maxDay(data.maxDayObj.maxDay);
-                    self.dayOfRela(data.maxDayObj.dayOfRela);
+                //if(data.maxDayObj != null){
+                    self.maxDay(specAbsenceDispInfo.maxDay);
+                    self.dayOfRela(specAbsenceDispInfo.dayOfRela);
                     self.dataMax(true);  
-                }else{
-                    self.dataMax(false);    
-                }
+//                }else{
+//                    self.dataMax(false);    
+//                }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
                 self.maxDayline1(line1);
@@ -493,7 +501,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].abbreviationName));
                         self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);
@@ -547,7 +555,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].abbreviationName));
                         self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);

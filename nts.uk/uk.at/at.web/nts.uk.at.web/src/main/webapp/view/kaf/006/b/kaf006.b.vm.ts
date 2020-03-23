@@ -368,7 +368,7 @@ module nts.uk.at.view.kaf006.b{
                     let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].abbreviationName));
                         self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);
@@ -414,7 +414,7 @@ module nts.uk.at.view.kaf006.b{
                     let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].abbreviationName));
                         self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
                     }
                     self.typeOfDutys(a);
@@ -485,7 +485,7 @@ module nts.uk.at.view.kaf006.b{
             }
             if (!nts.uk.util.isNullOrEmpty(appAbsenceStartInfoDto.workTypeLst)) {
                 for (let i = 0; i < appAbsenceStartInfoDto.workTypeLst.length; i++) {
-                    self.typeOfDutys.push(new common.TypeOfDuty(appAbsenceStartInfoDto.workTypeLst[i].workTypeCode, appAbsenceStartInfoDto.workTypeLst[i].displayName));
+                    self.typeOfDutys.push(new common.TypeOfDuty(appAbsenceStartInfoDto.workTypeLst[i].workTypeCode, appAbsenceStartInfoDto.workTypeLst[i].abbreviationName));
                     self.workTypecodes.push(appAbsenceStartInfoDto.workTypeLst[i].workTypeCode);
                 }
             }

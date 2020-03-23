@@ -42,6 +42,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
@@ -58,7 +59,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -73,7 +73,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -420,7 +419,7 @@ public class AppAbsenceFinder {
 				param.getAppAbsenceStartInfoDto().toDomain(), 
 				param.isDisplayHalfDayValue(), 
 				param.getAlldayHalfDay(), 
-				param.getHolidayType());
+				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class));
 		
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 		
@@ -525,7 +524,7 @@ public class AppAbsenceFinder {
 					appAbsenceStartInfoOutput, 
 					displayHalfDayValue, 
 					alldayHalfDay, 
-					Optional.ofNullable(holidayType));
+					holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType.class)));
 		}
 		// 各休暇の管理区分を取得する
 		CheckDispHolidayType checkDispHolidayType = absenseProcess.checkDisplayAppHdType(
@@ -635,8 +634,12 @@ public class AppAbsenceFinder {
 		// INPUT．「休暇種類」を確認する
 		if(holidayType!=null) {
 			// 休暇種類変更時処理
-			appAbsenceStartInfoOutput = absenseProcess
-					.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput, displayHalfDayValue, alldayHalfDay, holidayType);
+			appAbsenceStartInfoOutput = absenseProcess.holidayTypeChangeProcess(
+					companyID, 
+					appAbsenceStartInfoOutput, 
+					displayHalfDayValue, 
+					alldayHalfDay, 
+					EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
 		}
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
@@ -708,7 +711,10 @@ public class AppAbsenceFinder {
 				startAppDate == null ? null : GeneralDate.fromString(startAppDate, DATE_FORMAT));
 		// 2.勤務種類を取得する（詳細）
 		List<WorkType> workTypes = this.appAbsenceThreeProcess.getWorkTypeDetails(
-				appCommonSettingOutput.appEmploymentWorkType.stream().findFirst().orElse(null), companyID, holidayType, alldayHalfDay,
+				appCommonSettingOutput.appEmploymentWorkType.stream().findFirst().orElse(null), 
+				companyID, 
+				EnumAdaptor.valueOf(holidayType, HolidayAppType.class), 
+				alldayHalfDay,
 				displayHalfDayValue);
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		for (WorkType workType : workTypes) {
@@ -754,7 +760,7 @@ public class AppAbsenceFinder {
 				appAbsenceStartInfoOutput, 
 				displayHalfDayValue, 
 				alldayHalfDay, 
-				Optional.ofNullable(holidayType));
+				holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, HolidayAppType.class)));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 		/*AppAbsenceDto result = new AppAbsenceDto();
 		if (employeeID == null) {
@@ -821,7 +827,7 @@ public class AppAbsenceFinder {
 		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
-				param.getHolidayType(), 
+				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class), 
 				Optional.ofNullable(param.getWorkTypeCode()));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 		/*String workTypeCode = param.getWorkTypeCode();
@@ -917,7 +923,7 @@ public class AppAbsenceFinder {
 				appAbsenceStartInfoOutput, 
 				workTypeCode, 
 				Optional.of(workTimeCode), 
-				holidayType);
+				EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput).workTimeLst;
 		/*String companyID = AppContexts.user().companyId();
 		List<TimeZoneUseDto> result = new ArrayList<>();
