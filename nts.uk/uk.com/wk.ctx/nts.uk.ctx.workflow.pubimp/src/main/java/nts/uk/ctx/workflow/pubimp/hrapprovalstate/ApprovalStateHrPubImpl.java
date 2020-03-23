@@ -694,11 +694,16 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 	@Override
 	public Boolean isApprovedAllHr(ApprovalStateHrImport apprState) {
 		//承認完了フラグ = false（初期化）
+		
 		Boolean approveAllFlag = false;
-		apprState.getLstPhaseState().stream()
-				.sorted((a,b) -> a.getPhaseOrder().compareTo(b.getPhaseOrder()))
+		
+		List<PhaseStateHrImport> lstPhaseState = apprState.getLstPhaseState();
+		
+		lstPhaseState.stream()
+				.sorted(Comparator.comparingInt(PhaseStateHrImport::getPhaseOrder))
 				.collect(Collectors.toList());
-		for(PhaseStateHrImport phase : apprState.getLstPhaseState()){
+		
+		for(PhaseStateHrImport phase : lstPhaseState){
 			//「承認フェーズインスタンス」．承認区分が承認済かチェックする
 			if(phase.getApprovalAtr() == ApprovalBehaviorAtr.APPROVED.value){
 				approveAllFlag = true;
