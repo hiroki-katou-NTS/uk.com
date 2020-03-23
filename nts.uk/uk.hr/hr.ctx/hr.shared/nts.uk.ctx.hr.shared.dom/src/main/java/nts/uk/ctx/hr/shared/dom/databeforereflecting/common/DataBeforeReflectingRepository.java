@@ -26,4 +26,6 @@ public interface DataBeforeReflectingRepository {
 
 	List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,
 			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType);
+	
+	Optional<DataBeforeReflectingPerInfo> getByHistId(String histId);
 }

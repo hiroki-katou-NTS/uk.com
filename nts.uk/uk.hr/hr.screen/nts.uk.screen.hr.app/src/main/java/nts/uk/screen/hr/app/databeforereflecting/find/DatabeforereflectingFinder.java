@@ -77,6 +77,7 @@ public class DatabeforereflectingFinder {
 		return this.empInfoAdaptor.getEmployeeInfos(Optional.of(pIDs), sIDs, baseDate, Optional.ofNullable(true),
 				Optional.ofNullable(true), Optional.ofNullable(true));
 	}
+	
 
 	// 起動する khởi động màn Z
 	public DataBeforeReflectResultDto startPageZ() {
