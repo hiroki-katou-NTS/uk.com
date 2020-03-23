@@ -198,13 +198,18 @@ module jhn001.c.viewmodel {
             
             layout.denyOraprrove(data.denyOraprrove);
             
-            layout.classifications(data.classifications);
-            
             layout.approvalRootState(data.approvalRootState);
             
             layout.listDocument(data.listDocument);
             
-            layout.classifications(data.classificationItems || []);
+            if(data.classificationItems){
+                $('.layout-control .drag-panel').attr(`style`, `height: 100% !important;` );
+                layout.classifications(data.classificationItems);
+            }else{
+                $('.layout-control .drag-panel').attr(`style`, `height: 0 !important;`);
+                layout.classifications([]);
+            }
+            
             
             layout.approvalRootState(ko.mapping.fromJS(data.listApprovalFrame)()|| []);
             
