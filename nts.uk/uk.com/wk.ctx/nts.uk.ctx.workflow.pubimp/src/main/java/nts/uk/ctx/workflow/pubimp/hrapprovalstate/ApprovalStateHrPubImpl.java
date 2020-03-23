@@ -699,11 +699,11 @@ public class ApprovalStateHrPubImpl implements ApprovalStateHrPub{
 		
 		List<PhaseStateHrImport> lstPhaseState = apprState.getLstPhaseState();
 		
-		lstPhaseState.stream()
+		List<PhaseStateHrImport> stateHrImportAfterOrder = lstPhaseState.stream()
 				.sorted(Comparator.comparingInt(PhaseStateHrImport::getPhaseOrder))
 				.collect(Collectors.toList());
 		
-		for(PhaseStateHrImport phase : lstPhaseState){
+		for(PhaseStateHrImport phase : stateHrImportAfterOrder){
 			//「承認フェーズインスタンス」．承認区分が承認済かチェックする
 			if(phase.getApprovalAtr() == ApprovalBehaviorAtr.APPROVED.value){
 				approveAllFlag = true;
