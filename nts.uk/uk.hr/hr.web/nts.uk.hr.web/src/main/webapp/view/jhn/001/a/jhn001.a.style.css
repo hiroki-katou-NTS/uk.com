@@ -106,10 +106,6 @@ div#B221.relative.bg-green.caret-right.caret-background {
 	width: 450px;
 }
 
-div.drag-panel{
-	max-height: 365px ;
-    height: 365px;
-}
 
 .nosetarea {
 	width: 810px;
@@ -163,13 +159,8 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-	
-	width: 792px !important;
-}
-
-
-.layout-control.readonly div.ui-sortable {
-    height: 100% !important;
+	width: 795px !important;
+	border: 0px solid #ccc !important;
 }
 
 .layout-control div.ui-sortable {

@@ -118,7 +118,14 @@ module jhn001.a.viewmodel {
                             self.layout().listItemCls(data.classificationItems || []);
 
                             if (data.classificationItems.length > 0) {
+                               
+                                $('.layout-control .drag-panel').attr(`style`, `border: 1px solid #ccc !important;` + `height: 100% !important;` + `padding: 10 !important;`);
+                                
                                 self.setListItemDf(data.classificationItems);
+                            } else {
+                                
+                                $('.layout-control .drag-panel').attr(`style`, `border: 0px solid #ccc !important;` + `height: 0 !important;` + `padding: 0 !important;`);
+
                             }
 
                             // set sendBackComment header A222_2_1
@@ -386,6 +393,7 @@ module jhn001.a.viewmodel {
                 layouts = self.layouts;
 
             self.layout().listItemCls.removeAll();
+            $('.layout-control .drag-panel').attr(`style`, `border: 0px solid #ccc !important;` + `height: 0 !important;` + `padding: 0 !important;`);
             self.layout().sendBackComment(text('JHN001_A222_2_1')  + ' : ' );
             self.layout().message(text('JHN001_A222_1_1')  + ' : ' );
             self.layout().reportNameLabel('');

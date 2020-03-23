@@ -35,7 +35,6 @@ $(window).on('resize', () => {
         B221_panelResize = window.innerHeight - B221.getBoundingClientRect().top;
     
     if (panelHeightResize <= 215) {
-        $(".drag-panel").attr(`style`, `max-height: 100px !important;height: 100px !important;`);
         $('#B221').attr(`style`, `max-height: 488px !important;height: 488px !important;` + `magin-bottom: 5px !important;`);
         $("#B221_4").igGrid("option", "height", 368);
     } else {
@@ -43,7 +42,6 @@ $(window).on('resize', () => {
             heightGridSet = heighGridCal < 368 ? 368 : (heighGridCal - 23),
             dragPanelSet = heighGridCal < 368 ? 100 : (panelHeightResize - 170);
 
-        $(".drag-panel").attr(`style`, `max-height: ` + dragPanelSet + `px !important;` + `height: ` + dragPanelSet + `px !important;`);
         $("#B221").attr(`style`, `max-height: ` + (heightGridSet + 95) + `px !important;` + `height: ` + (heightGridSet + 95) + `px !important;` + `magin-bottom: 5px !important;`);
         $("#B221_4").igGrid("option", "height", heightGridSet);
     }
