@@ -59,4 +59,18 @@ public class WorkTypeDto {
 		return new WorkTypeDto(workType.getCompanyId(), workType.getWorkTypeCode().v(), workType.getName().v(),
 				workType.getAbbreviationName().v());
 	}
+	
+	public WorkType toDomain() {
+		WorkType workType = WorkType.createSimpleFromJavaType(
+				workTypeCode, 
+				name, 
+				abbreviationName, 
+				symbolicName, 
+				memo, 
+				workAtr, 
+				oneDayCls, 
+				morningCls, 
+				afternoonCls);
+		return workType;
+	}
 }

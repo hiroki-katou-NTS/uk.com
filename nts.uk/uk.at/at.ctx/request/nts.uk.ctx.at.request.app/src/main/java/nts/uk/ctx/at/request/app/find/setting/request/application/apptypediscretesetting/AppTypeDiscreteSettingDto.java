@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -55,7 +56,7 @@ public class AppTypeDiscreteSettingDto {
 				EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				EnumAdaptor.valueOf(prePostInitFlg, InitValueAtr.class), 
 				EnumAdaptor.valueOf(prePostCanChangeFlg, AppCanAtr.class), 
-				EnumAdaptor.valueOf(typicalReasonDisplayFlg, AppDisplayAtr.class), 
+				EnumAdaptor.valueOf(typicalReasonDisplayFlg, DisplayAtr.class), 
 				EnumAdaptor.valueOf(sendMailWhenApprovalFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(sendMailWhenRegisterFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(displayReasonFlg, AppDisplayAtr.class), 

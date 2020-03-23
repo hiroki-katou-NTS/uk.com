@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -27,11 +28,11 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID, int holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
+			String employeeID, HolidayAppType holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
 		List<WorkType> workTypes = this
-				.getWorkTypeDetails(appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,
+				.getWorkTypeDetails(appEmploymentWorkType.stream().findFirst().orElse(null), companyID, holidayType, alldayHalfDay,
 						displayHalfDayValue);
 		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する): bên anh chình chưa làm.
 		if(hdAppSet.isPresent()&& hdAppSet.get().getDisplayUnselect().value == 1 ? true : false){//#102295
@@ -48,26 +49,23 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	}
 	//  2.勤務種類を取得する（詳細）
 	@Override
-	public List<WorkType> getWorkTypeDetails(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID,int holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
+	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType, String companyID,
+			HolidayAppType holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
 		List<WorkType> result = new ArrayList<>();
 		//ドメインモデル「休暇申請対象勤務種類」を取得する
 		List<String> lstWorkTypeCodes = new ArrayList<>();
-		if(!CollectionUtil.isEmpty(appEmploymentWorkType)){
-			List<AppEmploymentSetting> appEmploymentWorkTypes = appEmploymentWorkType.stream().filter(x -> x.getHolidayOrPauseType() == holidayType).collect(Collectors.toList());
-			if(!CollectionUtil.isEmpty(appEmploymentWorkTypes)){
-				if(!CollectionUtil.isEmpty(appEmploymentWorkTypes.get(0).getLstWorkType())){
-					for(AppEmployWorkType appEmployWorkType : appEmploymentWorkTypes.get(0).getLstWorkType()){
-						if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
-							lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
-						}
+		if(appEmploymentWorkType!=null){
+			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getLstWorkType())){
+				for(AppEmployWorkType appEmployWorkType : appEmploymentWorkType.getLstWorkType()){
+					if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
+						lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
 					}
 				}
 			}
 		}
 		if(CollectionUtil.isEmpty(lstWorkTypeCodes)){
 			// ドメインモデル「勤務種類」を取得(lấy dữ liệu domain 「勤務種類」)
-			List<WorkType> workTypes = getWorkTypeByHolidayType(companyID,holidayType);
+			List<WorkType> workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
 			for(WorkType workType : workTypes){
 				lstWorkTypeCodes.add(workType.getWorkTypeCode().toString());
 			}
@@ -79,7 +77,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				if(displayHalfDayValue){
 					// 勤務種類組み合わせ全表示チェック = ON
 					List<Integer> allDayAtrs = new ArrayList<>();
-					allDayAtrs.add(convertHolidayType(holidayType));
+					allDayAtrs.add(convertHolidayType(holidayType.value));
 					List<Integer> hdType = new ArrayList<>();
 					hdType.add(WorkTypeClassification.Holiday.value);//休日
 					hdType.add(WorkTypeClassification.AnnualHoliday.value);//年休

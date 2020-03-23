@@ -45,10 +45,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -134,8 +134,9 @@ public class HolidayShipmentScreenAFinder {
 	private AtEmployeeAdapter atEmpAdaptor;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	
 	@Inject
-	private OvertimeService overtimeService;
+	private CommonAlgorithm commonAlgorithm;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -167,7 +168,7 @@ public class HolidayShipmentScreenAFinder {
 		
         // 1.職場別就業時間帯を取得
         List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-                appCommonSettingOutput.generalDate);
+                appCommonSettingOutput.generalDate).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
         result.setWorkTimeCDs(listWorkTimeCodes);
 
 
@@ -177,7 +178,7 @@ public class HolidayShipmentScreenAFinder {
 		String wkTimeCD = getWkTimeCD(wkingItem);
 		
         //12.マスタ勤務種類、就業時間帯データをチェック
-        CheckWorkingInfoResult checkResult = this.overtimeService.checkWorkingInfo(companyID, null,wkTimeCD);
+        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, null,wkTimeCD);
         //「職場別就業時間帯」を取得した先頭値を表示
         if(checkResult.isWkTimeError() && !listWorkTimeCodes.isEmpty()){
             wkTimeCD = listWorkTimeCodes.get(0);
@@ -686,7 +687,7 @@ public class HolidayShipmentScreenAFinder {
 		boolean isWkTypeCDNotNullOrEmpty = !StringUtils.isEmpty(wkTypeCD);
 		if (isWkTypeCDNotNullOrEmpty) {
 			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
-			boolean masterUnreg = appliedWorkType(companyID, outputWkTypes, wkTypeCD);
+			boolean masterUnreg = commonAlgorithm.appliedWorkType(companyID, outputWkTypes, wkTypeCD);
 			if(masterUnreg){
 				result.setMasterUnreg(masterUnreg);
 			}
@@ -701,26 +702,6 @@ public class HolidayShipmentScreenAFinder {
 		disOrderList.addAll(wkTypeCDList);
 		result.setLstWorkType(disOrderList);
 		return result;
-
-	}
-
-	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
-		boolean masterUnregistered = true;
-
-		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		boolean isInList = false;
-		if(WkTypeOpt.isPresent()){
-			  isInList = wkTypes.stream()
-					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
-					.collect(Collectors.toList()).isEmpty();
-		}
-
-		if (isInList) {
-			wkTypes.add(WkTypeOpt.get());
-
-			masterUnregistered = false;
-		}
-		return masterUnregistered;
 
 	}
 

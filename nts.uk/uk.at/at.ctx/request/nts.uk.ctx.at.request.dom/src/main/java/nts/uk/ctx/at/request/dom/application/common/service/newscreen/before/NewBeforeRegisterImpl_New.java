@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,12 +24,15 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.Ac
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
@@ -99,7 +103,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	
-    public void processBeforeRegister(Application_New application, int overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
+    public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
 		
@@ -167,7 +171,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
-		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
+		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate, overTimeAtr);
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
             //hoatt 2019/10/14 #109087を対応
@@ -247,7 +251,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -328,29 +332,29 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	}
 	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
-						employeeID, appDate);
-				if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
-					throw new BusinessException("Msg_426");
-				}
-				String employmentCD = empHistImport.getEmploymentCode();
-				Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
-						.findByEmploymentCD(companyID, employmentCD);
-				if (!closureEmployment.isPresent()) {
-					throw new RuntimeException(
-							"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
-				}
-				Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
-						closureEmployment.get().getClosureId());
-				
-				
-				Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
-				if (!requestSetting.isPresent()) {
-					return;
-				}
-				ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
-				AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
-				confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
+				employeeID, appDate);
+		if (empHistImport == null || empHistImport.getEmploymentCode() == null) {
+			throw new BusinessException("Msg_426");
+		}
+		String employmentCD = empHistImport.getEmploymentCode();
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository
+				.findByEmploymentCD(companyID, employmentCD);
+		if (!closureEmployment.isPresent()) {
+			throw new RuntimeException(
+					"Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);
+		}
+		Optional<ActualLockImport> actualLockImport = this.actualLockAdapter.findByID(companyID,
+				closureEmployment.get().getClosureId());
+		
+		
+		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
+		if (!requestSetting.isPresent()) {
+			return;
+		}
+		ApplicationSetting applicationSetting = requestSetting.get().getApplicationSetting();
+		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
+		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
 	private void confirmCheck(AppLimitSetting appLimitSetting, Optional<ActualLockImport> actualLockImport,
 			GeneralDate appDate, String companyID, String employeeID,Optional<ClosureEmployment> closureEmployment) {
@@ -372,5 +376,80 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		if (hasError == true) {
 			throw new BusinessException("Msg_451");
 		}
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
+			Application_New application, OverTimeAtr overTimeAtr, ErrorFlagImport errorFlg,
+			List<GeneralDate> lstDateHd) {
+		List<ConfirmMsgOutput> result = new ArrayList<>();
+		// アルゴリズム「未入社前チェック」を実施する
+		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		
+		// アルゴリズム「社員の当月の期間を算出する」を実行する
+		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		
+		GeneralDate startDate = application.getAppDate();
+		GeneralDate endDate = application.getAppDate();
+		if (application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+			startDate = application.getStartDate().get();
+			endDate = application.getEndDate().get();
+			
+			// 登録する期間のチェック
+			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
+			if((ChronoUnit.DAYS.between(startDate.localDate(), endDate.localDate()) + 1)  > 31){
+				throw new BusinessException("Msg_277");
+			}
+			// 登録可能期間のチェック(１年以内)
+			//EA修正履歴 No.3210
+			//hoatt 2019.03.22
+			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate)) {
+				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
+				//確認メッセージ（Msg_1518）を表示する
+				result.add(new ConfirmMsgOutput(
+						"Msg_1518", 
+						Arrays.asList(periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT))));
+			}
+			
+			// 過去月のチェック
+			if(startDate.before(periodCurrentMonth.getStartDate())) {
+				throw new BusinessException("Msg_236");			
+			}
+		}		
+		
+		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
+		switch (errorFlg) {
+		case NO_CONFIRM_PERSON:
+			throw new BusinessException("Msg_238");
+		case APPROVER_UP_10:
+			throw new BusinessException("Msg_237");
+		case NO_APPROVER:
+			throw new BusinessException("Msg_324");
+		default:
+			break;
+		}
+
+		// アルゴリズム「申請の締め切り期限をチェック」を実施する
+		deadlineApplicationCheck(application.getCompanyID(), periodCurrentMonth.getClosureId().value, application.getEmployeeID(),
+				periodCurrentMonth.getStartDate(), periodCurrentMonth.getEndDate(), startDate, endDate);
+		
+		// アルゴリズム「申請の受付制限をチェック」を実施する
+		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate, overTimeAtr);
+		
+		// 申請する開始日～申請する終了日までループする
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+            //hoatt 2019/10/14 #109087を対応
+            if(lstDateHd != null && lstDateHd.contains(loopDate)){
+                continue;
+            }
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+				// アルゴリズム「6.確定チェック（事前残業申請用）」を実施する
+				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}else{
+				// アルゴリズム「確定チェック」を実施する
+				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}
+		}
+		return result;
 	}
 }

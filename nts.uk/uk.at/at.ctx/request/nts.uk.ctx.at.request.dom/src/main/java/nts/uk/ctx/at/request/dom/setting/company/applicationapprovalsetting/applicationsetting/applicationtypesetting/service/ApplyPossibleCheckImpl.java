@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 public class ApplyPossibleCheckImpl implements ApplyPossibleCheck {
 
 	@Override
-	public boolean check(ApplicationType appType, GeneralDate startDate, int overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
+	public boolean check(ApplicationType appType, GeneralDate startDate, OverTimeAtr overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
 			int i, List<ReceptionRestrictionSetting> receptionRestrictionSetting) {
 		GeneralDate loopDay = startDate.addDays(i);
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
@@ -39,11 +40,11 @@ public class ApplyPossibleCheckImpl implements ApplyPossibleCheck {
 				} else if(loopDay.equals(systemDate)){
 					Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
 					int resultCompare = 0;
-					if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+					if(overTimeAtr == OverTimeAtr.PREOVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
-					}else if(overTimeAtr == 1 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+					}else if(overTimeAtr == OverTimeAtr.REGULAROVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
-					}else if(overTimeAtr == 2 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+					}else if(overTimeAtr == OverTimeAtr.ALL && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
 					}
 					// システム日時と受付制限日時と比較する

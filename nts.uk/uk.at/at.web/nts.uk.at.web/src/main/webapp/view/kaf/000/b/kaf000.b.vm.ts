@@ -157,13 +157,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.reasonToApprover(data.authorCmt);
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
-                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);
+                    self.reasonOutputMessFull(deadlineMsg.message.replace(/\n/ig, '<br/>'));
                 }
                 if(!_.isEmpty(self.reasonOutputMessFull())){
                     self.messFullDisp(true);    
                 }
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)) {
-                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
+                    self.reasonOutputMessDealineFull(deadlineMsg.deadline);
                 }
                 if(!_.isEmpty(self.reasonOutputMessDealineFull())){
                     self.messDealineFullDisp(true);    
@@ -172,11 +172,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.getDetailCheck(self.inputDetail());
                 nts.uk.ui.block.clear();
                 dfd.resolve();
+                $("#inpStartTime1").focus();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
-                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                    nts.uk.ui.block.clear();
-                });
+            	if(res.messageId == 'Msg_426'){
+            		nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+            			nts.uk.ui.block.clear();
+            			appcommon.CommonProcess.callCMM045();
+            		});
+            	}else{
+            		nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
+            			nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+            			nts.uk.ui.block.clear();
+            		});
+            	}
+
             });
 
             return dfd.promise();

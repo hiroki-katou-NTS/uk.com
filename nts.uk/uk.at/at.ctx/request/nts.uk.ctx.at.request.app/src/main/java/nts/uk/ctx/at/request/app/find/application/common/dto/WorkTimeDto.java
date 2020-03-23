@@ -20,4 +20,8 @@ public class WorkTimeDto {
 	public static WorkTimeDto convertFromWorkTimeOutput(WorkTimeOutput workTimeOutput){
 		return new WorkTimeDto(workTimeOutput.getWorkTimeCD(), workTimeOutput.getWorkTimeName());
 	}
+	
+	public WorkTimeOutput toDomain() {
+		return new WorkTimeOutput(workTimeCD, workTimeName);
+	}
 }

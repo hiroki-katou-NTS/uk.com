@@ -1,7 +1,7 @@
 <div data-bind="let: { $vm: $data }">
 	<div data-bind="if: screenModeNew()&amp;&amp;indicationOvertimeFlg()">
 		<div class="cf valign-center control-group"
-			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
+			data-bind="style: {padding: screenModeNew()== true ? '0px 12px 15px 12px' : '15px 10px 15px 12px'}"
 			style = "margin-left: -2px; background: #f8efd4;width: 778px;">
 			<!--A2_7時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF010_23')}</div>
@@ -49,7 +49,7 @@
 	<div data-bind="if: (!screenModeNew())&amp;&amp;indicationOvertimeFlg()" >
 		<div class="cf valign-center control-group"
 			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
-			style = "margin-left: -2px; background: #f8efd4;width: 800px;">
+			style = "margin-top: 0px !important; background: #f8efd4;width: 800px;">
 			<!--A2_7 時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
 			<div class="pull-left">
@@ -382,7 +382,7 @@
 			<!--A5_8 計算ボタン--> 			
 			<button data-bind="click: CaculationTime, enable: $vm.editable" style="margin: 15px 0px 10px 290px;" class="caret-bottom">#{i18n.getText('KAF010_43')}</button>
 		</div>
-		<div class="cf valign-top control-group" data-bind ="if: prePostSelected() == 0">
+		<div class="cf valign-top control-group" data-bind ="if: prePostSelected() == 0" id="break-time-frame0">
 			<!--A6_1 休出時間ラベル--> 		
 			<div class="cm-column" style="display: inline-block;">
 				<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required : true}">#{i18n.getText('KAF010_50')}</div>
@@ -406,9 +406,9 @@
 							<!--A6_7 休出時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()},text: frameName"></td>
 							<!--A6_8 休出申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}">
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo(), style: { 'background-color' : color }}">
 							<input class="right-content breakTimesCheck"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo(), style: { 'background-color' : color }},
 								ntsTimeEditor: {
 									name: '#[KAF010_56]', 
 									value: applicationTime, 
@@ -422,7 +422,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="cf valign-top control-group" data-bind ="if: prePostSelected() == 1">
+		<div class="cf valign-top control-group" data-bind ="if: prePostSelected() == 1" id="break-time-frame1">
 			<!--A6_1 休出時間ラベル--> 		
 			<div class="cm-column" style="display: inline-block;">
 				<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required : true}">#{i18n.getText('KAF010_50')}</div>

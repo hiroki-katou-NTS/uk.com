@@ -109,13 +109,15 @@
 				<td><div
 						data-bind="ntsFormLabel: {required: true}"
 						style="margin-right: 16px">#{i18n.getText('KAF006_8')}</div></td>
-				<td><div style="float: left; margin-right: 15px"
+				<td>
+					<div>
+					<div style="display: inline-block; margin-right: 15px; vertical-align: top;"
 						data-bind="ntsCheckBox: { checked: displayEndDateFlg, 
 							enable: enableDisplayEndDate, 
 							text: '#{i18n.getText('KAF006_12')}'},
 							visible: screenModeNew">
 					</div>
-					<div
+					<div style="display: inline-block;"
 						data-bind="if: screenModeNew()">
 						<!--A3_9  期間入力-->
 						<div id="inputdate"
@@ -135,11 +137,11 @@
 									maxRange: 'none'},
 							visible: displayEndDateFlg()" />
 					</div>
-					<div data-bind="if: !screenModeNew()">
-						<span style ="margin-left: 6px;"
-							data-bind="text: appDate"></span>
+					<div data-bind="if: !screenModeNew()" style="display: inline-block;">
+						<span data-bind="text: appDate"></span>
 					</div>
 					<div style="clear: both"></div>
+					</div>
 				</td>
 			</tr>
 			<tr>

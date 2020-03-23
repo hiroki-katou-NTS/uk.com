@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,8 +17,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -49,6 +52,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -77,13 +81,13 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
@@ -170,6 +174,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
+	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -198,28 +205,29 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		*/
 		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId().value,
 				closure.get().getClosureMonth().getProcessingYm());
-		return new PeriodCurrentMonth(datePeriod.start(), datePeriod.end());
+		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
 	 * 1.職場別就業時間帯を取得
 	 */
 	@Override
-	public List<String> getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
-		List<String> listEmployeeAdaptor = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
-		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-		List<String> listWorkTimeCodes = new ArrayList<>();
-		for(String employeeAdaptor : listEmployeeAdaptor) {
-			listWorkTimeCodes = workTimeWorkplaceRepo
-					.getWorkTimeWorkplaceById(companyID, employeeAdaptor);
-			if(listWorkTimeCodes.size()>0) {
-				Collections.sort(listWorkTimeCodes);
-				break;
+	public List<WorkTimeSetting> getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
+		// 申請本人の所属職場を含める上位職場を取得する
+		List<String> wkpIDLst = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
+		// 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+		// Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
+		for(String wkpID : wkpIDLst) {
+			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
+			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+			if(listWorkTime.size()>0) {
+				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				return listWorkTime;
 			}
-			
 		}
-		listWorkTimeCodes = workTimeSettingRepository.findByCompanyId(companyID).stream()
-			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH).map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-		return listWorkTimeCodes;
+		// アルゴリズム「廃止区分によって就業時間帯を取得する」を実行する
+		return workTimeSettingRepository.findByCompanyId(companyID).stream()
+			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH)
+			.sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
 	}
 
 	@Override
@@ -236,14 +244,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		//if appdate > systemDate 
-		if(appDate.after(systemDate) ) {
-			//xin truoc 事前事後区分= 事前
-			prePostAtr = PrePostAtr.PREDICT;
-			
-		}else if(appDate.before(systemDate)) { // if appDate < systemDate
-			//xin sau 事前事後区分= 事後
-			prePostAtr = PrePostAtr.POSTERIOR;
-		}else{ // if appDate = systemDate
+		if (appDate == null || appDate.equals(systemDate)) { // if appDate = systemDate
 //			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
 //			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
 //				prePostAtr = PrePostAtr.POSTERIOR;
@@ -282,7 +283,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				prePostAtr = PrePostAtr.POSTERIOR;
 			}
 			
+		} else if(appDate.after(systemDate) ) {
+			//xin truoc 事前事後区分= 事前
+			prePostAtr = PrePostAtr.PREDICT;
+			
+		} else if(appDate.before(systemDate)) { // if appDate < systemDate
+			//xin sau 事前事後区分= 事後
+			prePostAtr = PrePostAtr.POSTERIOR;
 		}
+		
 			
 		return prePostAtr;
 	}
@@ -602,9 +611,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public List<ApplicationReason> getApplicationReasonType(String companyID, AppDisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
+	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
 		// Input．定型理由の表示区分をチェック
-		if (typicalReasonDisplayFlg == AppDisplayAtr.DISPLAY) {
+		if (typicalReasonDisplayFlg == DisplayAtr.DISPLAY) {
 			// ドメインモデル「申請定型理由」を取得
 			List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
 			return applicationReasons;
@@ -655,5 +664,52 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 12.マスタ勤務種類、就業時間帯データをチェック
+	 * @param companyID
+	 * @param wkTypeCode
+	 * @param wkTimeCode
+	 * @return
+	 */
+	@Override
+	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode) {
+		CheckWorkingInfoResult result = new CheckWorkingInfoResult();
+		
+		
+		// 「勤務種類CD ＝＝ Null」 をチェック
+		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
+		if (isWkTypeCDNotEmpty) {
+			String WkTypeName = null;
+			Optional<WorkType> wkTypeOpt = this.workTypeRepository.findByPK(companyID, wkTypeCode);
+			if (wkTypeOpt.isPresent()) {
+				WkTypeName = wkTypeOpt.get().getName().v();
+			}
+			// 「勤務種類名称を取得する」 ＝＝NULL をチェック
+			boolean isWkTypeNameEmpty = StringUtil.isNullOrEmpty(WkTypeName, true);
+			if (isWkTypeNameEmpty ) {
+				// 勤務種類エラーFlg ＝ True
+				result.setWkTypeError(true);
+			}
+		}
+		// 「就業時間帯CD ＝＝ NULL」をチェック
+		boolean isWkTimeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTimeCode, true);
+		if (isWkTimeCDNotEmpty) {
+			// 「就業時間帯名称を取得する」＝＝ NULL をチェック
+			String WkTimeName = null;
+			Optional<WorkTimeSetting> wwktimeOpt = this.workTimeRepository.findByCode(companyID, wkTimeCode);
+			if (wwktimeOpt.isPresent()) {
+				WkTimeName = wwktimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+			boolean isWkTimeNameEmpty = StringUtil.isNullOrEmpty(WkTimeName, true);
+			if (isWkTimeNameEmpty) {
+				// 就業時間帯エラーFlg ＝ True
+				result.setWkTimeError(true);
+			}
+		}
+			
+		
+		return result;
 	}
 }

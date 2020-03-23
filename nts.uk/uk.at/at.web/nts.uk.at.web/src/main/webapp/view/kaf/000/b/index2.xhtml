@@ -117,14 +117,21 @@
 			<div id = "appNew">
 				<!-- row1 -->
 				<div id="message-area" data-bind="if: messageArea">
-					<div class="message-td" data-bind="if: messFullDisp">
-						<div style="padding: 5px; padding-left: 0;" data-bind="text: reasonOutputMessFull()"></div>
+					<div class="table" data-bind="if: messFullDisp">
+						<div class="cell message-td-1">#{i18n.getText('KAF000_1')}</div>
+						<div class="cell message-td">
+							<div style="padding: 5px; padding-left: 0; word-break: break-all;"
+								data-bind="html: reasonOutputMessFull()"></div>
+						</div>
 					</div>
-					<div class="message-td" data-bind="if: messDealineFullDisp">
-						<div style="padding: 5px; padding-left: 0;" data-bind="text: reasonOutputMessDealineFull()"></div>
+					<div class="table" data-bind="if: messDealineFullDisp">
+						<div class="cell message-td-1">#{i18n.getText('KAF000_2')}</div>
+						<div class="cell message-td" data-bind="if: messDealineFullDisp">
+							<div style="padding: 5px; padding-left: 0;"
+								data-bind="text: reasonOutputMessDealineFull()"></div>
+						</div>
 					</div>
 				</div>
-
 				<div data-bind="if: displayReturnReasonPanel">
 					<!-- row2 -->
 					<div id="message-area" style="margin-top: 10px;">

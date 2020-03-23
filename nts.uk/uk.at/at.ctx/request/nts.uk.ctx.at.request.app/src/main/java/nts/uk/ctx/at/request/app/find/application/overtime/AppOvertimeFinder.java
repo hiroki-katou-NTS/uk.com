@@ -1382,7 +1382,7 @@ public class AppOvertimeFinder {
 				}
 			}
 		}
-		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference, timeZones);
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference, timeZones, null);
 	} 
 	
 	public AppOverTimeMobDto getDetailMob(String appID, AppCommonSettingOutput appCommonSettingOutput) {

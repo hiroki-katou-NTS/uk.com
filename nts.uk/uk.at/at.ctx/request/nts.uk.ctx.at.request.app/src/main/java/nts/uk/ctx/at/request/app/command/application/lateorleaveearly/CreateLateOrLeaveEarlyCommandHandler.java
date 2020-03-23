@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -74,7 +75,7 @@ public class CreateLateOrLeaveEarlyCommandHandler
 				command.getLateTime2());
 
 		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication(), 0, command.isCheckOver1Year(), Collections.emptyList());
+		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly.getApplication(), OverTimeAtr.ALL, command.isCheckOver1Year(), Collections.emptyList());
 		// 事前制約をチェックする
 		// ドメインモデル「遅刻早退取消申請」の新規登録する
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
