@@ -240,7 +240,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
 					.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
 			return this.getAppDispInfoRelatedDate(
-					companyID, "", dateLst, appType, 
+					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), dateLst, appType, 
 					appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
 					appTypeSetting.getDisplayInitialSegment());
 		} else {
