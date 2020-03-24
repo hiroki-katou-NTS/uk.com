@@ -33,6 +33,7 @@ public class ApprovedCommandHandler extends CommandHandler<ApprovedCommand> {
 		// vụ])
 		approvalProcess(cId, sId, cmd);
 		// アルゴリズム[事後表示処理]を実行する(Thực hiện thuật toán [xử lý hiển thị xin sau])
+		// bước này làm dưới client
 	}
 
 	private void approvalProcess(String cId, String sId, ApprovedCommand cmd) {

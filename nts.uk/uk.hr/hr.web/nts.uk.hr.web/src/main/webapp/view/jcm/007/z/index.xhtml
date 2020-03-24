@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="jcm007.z.style.css" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/jhn/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="jcm007.z.service.js" />
+			<com:scriptfile path="jcm007.z.vm.js" />
+			<com:scriptfile path="jcm007.z.start.js" />
+			
+			<com:ValidatorScript>
+			nts.uk.ctx.hr.notice.dom.report.String_Any_20
+			</com:ValidatorScript>
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button id="A1_1" data-bind="click:approvalAll, enable: approvalAllEnable ">#{i18n.getText('JHN003_A1_1')}</button>
+				</div>
+			</div>
+			<div id="contents-area" class="cf">
+				<div id="content">
+					<div id="search_box">
+						<div class="div_line">
+							<div class="content-left">
+								<div class="col_group_1">
+									<div id="A222_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('JHN003_A222_1')}</div>
+								</div>
+								<div class="col_group_2">
+									<div id="A222_1_1"
+										data-bind="ntsDateRangePicker: {name: '#{i18n.getText('JHN003_A222_1')}', required: true, enable: true, value: searchInfo().appDate }" />
+								</div>
+							</div>
+
+							<div class="content-right">
+								<div class="col_group_1">
+									<div id="A222_3" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_3')}</div>
+								</div>
+								<div class="col_group_2">
+									<input id="A222_3_1" 
+										data-bind="ntsTextEditor: {name: '#[JHN003_A222_3_1]', constraint: 'String_Any_20', value: searchInfo().inputName, enable: true  }" />
+								</div>
+								<div class="col_group_3">
+									<div id="A222_5"
+										data-bind="ntsCheckBox: {name: ' #[ JHN003_A222_5 ] ', checked: searchInfo().approvalReport }">#{i18n.getText('JHN003_A222_5')}</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="div_line">
+							<div class="content-left">
+								<div class="col_group_1">
+									<div id="A222_2" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_2')}</div>
+								</div>
+
+								<div class="col_group_2">
+									<div id="A222_2_1"
+										data-bind="ntsComboBox: {
+														name:' #[ JHN003_A222_2_1 ] ',
+														options: searchInfo().reportItems,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: searchInfo().reportId,
+														optionsText: 'name',
+														editable: false,
+														required: false,
+														selectFirstIfNull: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div>
+								</div>
+							</div>
+							<div class="content-right">
+								<div class="col_group_1">
+									<div id="A222_4" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('JHN003_A222_4')}</div>
+								</div>
+								<div class="col_group_2">
+									<div id="A222_2_1"
+										data-bind="ntsComboBox: {
+														name: ' #[ JHN003_A222_4_1 ] ' ,
+														options: searchInfo().approvalItems,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: searchInfo().approvalStatus,
+														optionsText: 'name',
+														editable: false,
+														required: false,
+														enable:searchInfo().approvalReport()==false,
+														selectFirstIfNull: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div>
+								</div>
+								<div class="col_group_3">
+									<button id="A222_8" data-bind="click:search">#{i18n.getText('JHN003_A222_8')}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="grid">
+						<div class="div_line">
+						<table id="reportList"></table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
