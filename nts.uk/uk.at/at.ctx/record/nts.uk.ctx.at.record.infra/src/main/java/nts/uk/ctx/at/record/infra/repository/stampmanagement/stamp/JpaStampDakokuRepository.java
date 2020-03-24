@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -100,7 +101,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	// [4] 取得する
 	@Override
-	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDateTime stampDateTime) {
+	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);

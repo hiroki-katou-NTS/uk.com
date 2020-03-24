@@ -59,7 +59,10 @@ public enum StampMeans {
 		// Not found.
 		return null;
 	}
-	
+	/**
+	 * [1] 打刻ボタンを抑制する必要か
+	 * @return
+	 */
 	public boolean checkIndivition() {
 		return this == StampMeans.INDIVITION;
 	}

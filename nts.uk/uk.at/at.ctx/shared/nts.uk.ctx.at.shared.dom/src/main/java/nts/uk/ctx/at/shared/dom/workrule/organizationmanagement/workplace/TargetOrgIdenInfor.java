@@ -3,13 +3,16 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Value;
+import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * VO : 対象組織識別情報
  * @author tutk
  *
  */
-public class TargetOrgIdenInfor {
+@Value
+public class TargetOrgIdenInfor implements DomainValue {
 
 	/**
 	 * 単位

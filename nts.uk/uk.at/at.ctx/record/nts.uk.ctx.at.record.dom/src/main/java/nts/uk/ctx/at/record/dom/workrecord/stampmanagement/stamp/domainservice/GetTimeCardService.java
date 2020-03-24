@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 
 /**
  * DS : タイムカードを取得する
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.タイムカードを取得する
  * @author tutk
  *
  */
@@ -44,18 +45,18 @@ public class GetTimeCardService {
 
 	// [prv-3] 1日の出退勤を作成する
 	private static AttendanceOneDay createAttendanceOneDay(GeneralDate ymd , List<TimeLeavingWork> timeLeavingWorks) {
-		TimeActualStamp attendance1 = new TimeActualStamp();
-		TimeActualStamp leavingStamp1 = new TimeActualStamp();
-		TimeActualStamp attendance2 = new TimeActualStamp();
-		TimeActualStamp leavingStamp2 = new TimeActualStamp();
+		Optional<TimeActualStamp> attendance1 = Optional.empty();
+		Optional<TimeActualStamp> leavingStamp1 = Optional.empty();
+		Optional<TimeActualStamp> attendance2 = Optional.empty();
+		Optional<TimeActualStamp> leavingStamp2 = Optional.empty();
 
 		for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 			if (timeLeavingWork.getWorkNo().v() == 1) {
-				attendance1 = timeLeavingWork.getAttendanceStamp().get();
-				leavingStamp1 = timeLeavingWork.getLeaveStamp().get();
+				attendance1 = timeLeavingWork.getAttendanceStamp();
+				leavingStamp1 = timeLeavingWork.getLeaveStamp();
 			} else if (timeLeavingWork.getWorkNo().v() == 2) {
-				attendance2 = timeLeavingWork.getAttendanceStamp().get();
-				leavingStamp2 = timeLeavingWork.getLeaveStamp().get();
+				attendance2 = timeLeavingWork.getAttendanceStamp();
+				leavingStamp2 = timeLeavingWork.getLeaveStamp();
 			}
 		}
 

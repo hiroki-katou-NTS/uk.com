@@ -5,6 +5,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
  *
  */
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -14,16 +16,17 @@ public class AttendanceOneDay {
 	@Getter
 	private final GeneralDate date;
 	@Getter
-	private final TimeActualStamp attendance1;
+	private final Optional<TimeActualStamp> attendance1;
 	@Getter
-	private final TimeActualStamp leavingStamp1;
+	private final Optional<TimeActualStamp> leavingStamp1;
 	@Getter
-	private final TimeActualStamp attendance2;
+	private final Optional<TimeActualStamp> attendance2;
 	@Getter
-	private final TimeActualStamp leavingStamp2;
-	
-	public AttendanceOneDay(GeneralDate date, TimeActualStamp attendance1, TimeActualStamp leavingStamp1,
-			TimeActualStamp attendance2, TimeActualStamp leavingStamp2) {
+	private final Optional<TimeActualStamp> leavingStamp2;
+
+	public AttendanceOneDay(GeneralDate date, Optional<TimeActualStamp> attendance1,
+			Optional<TimeActualStamp> leavingStamp1, Optional<TimeActualStamp> attendance2,
+			Optional<TimeActualStamp> leavingStamp2) {
 		super();
 		this.date = date;
 		this.attendance1 = attendance1;
@@ -31,7 +34,5 @@ public class AttendanceOneDay {
 		this.attendance2 = attendance2;
 		this.leavingStamp2 = leavingStamp2;
 	}
-	
-	
 
 }
