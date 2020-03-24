@@ -41,7 +41,7 @@ public class OutputConditionOfEmbossingWS extends WebService{
 		return this.outputConditionOfEmbossingFinder.initDisplayProcessing();
 	}
 	
-	@Path("intiScreen")
+	@Path("initScreen")
 	@POST
 	public OutputScreenListOfStampDto initScreen(){
 		return finder.initScreen();

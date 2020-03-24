@@ -13,6 +13,8 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingExportService;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery;
+import nts.uk.file.at.app.export.statement.stamp.OutputConditionListOfStampQuery;
+import nts.uk.file.at.app.export.statement.stamp.OutputListOfStampExportService;
 
 /**
  * The Class OutputConditionOfEmbossingWS.
@@ -25,6 +27,9 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@Inject
 	OutputConditionOfEmbossingExportService service;
 	
+	@Inject 
+	private OutputListOfStampExportService export;
+	
 	/**
 	 * Export data.
 	 *
@@ -35,5 +40,11 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@Path("export")
 	public ExportServiceResult exportData(OutputConditionOfEmbossingQuery dto) {
 		return service.start(dto);
+	}
+
+	@POST
+	@Path("stampExport")
+	public ExportServiceResult stampExport(OutputConditionListOfStampQuery dto) {
+		return export.start(dto);
 	}
 }

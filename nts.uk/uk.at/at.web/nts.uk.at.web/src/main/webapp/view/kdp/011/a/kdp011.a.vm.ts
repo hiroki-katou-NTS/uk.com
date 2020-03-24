@@ -182,9 +182,9 @@ module nts.uk.at.view.kdp011.a {
                     userId: string = __viewContext.user.employeeId,
                     data: any = {};
                 
-                if (!self.validateExportExcel()) {
-                    return;
-                }
+//                if (!self.validateExportExcel()) {
+//                    return;
+//                }
                 blockUI.grayout();
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);

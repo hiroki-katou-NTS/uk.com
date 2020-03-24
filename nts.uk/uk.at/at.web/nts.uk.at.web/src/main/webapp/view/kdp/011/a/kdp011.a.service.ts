@@ -5,15 +5,15 @@ module nts.uk.at.view.kdp011.a {
         
         var paths = {
             getDataStartPage: "at/function/statement/startPage",
-            exportExcel: "screen/at/statement/export",
+            exportExcel: "screen/at/statement/stampExport",
             findStampingOutputItemSet: "at/function/statement/findAll",
-            initScreen :  "at/function/statement/intiScreen"
+            initScreen :  "at/function/statement/initScreen"
         }
         
         export function getDataStartPage(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getDataStartPage);
         }
-         export function intiScreen(): JQueryPromise<any> { 
+         export function initScreen(): JQueryPromise<any> { 
             return nts.uk.request.ajax('at', paths.initScreen);
         }
         

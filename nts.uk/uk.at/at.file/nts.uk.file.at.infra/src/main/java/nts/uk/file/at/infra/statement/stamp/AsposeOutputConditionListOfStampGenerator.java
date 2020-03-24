@@ -25,17 +25,17 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReportGenerator implements OutputConditionListOfStampGenerator {
 	
-	private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト(個人別).xlsx";
+	private static final String TEMPLATE_FILE = "report/KDP011-打刻一覧表_帳票レイアウト（社員別）.xlsx";
 	
 	private static final String COMPANY_ERROR = "Company is not found!!!!";
 	
 	/** The stamping output item set repository. */
 	
-	@Inject
-	private RetrieveNoStampCardRegisteredService stampCardService;
-	
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
+//	@Inject
+//	private RetrieveNoStampCardRegisteredService stampCardService;
+//	
+//	@Inject
+//	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,
@@ -43,7 +43,10 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			//setHeaderAndHeaderColumn(reportContext,currentAlarmCode);
 			// set data source named "item"
-			reportContext.setDataSource("item", query);
+			reportContext.setDataSource("item", query.getEmployeeList());
+			reportContext.setDataSource("companyName", query.getCompanyName());
+			reportContext.setDataSource("title", query.getTitle());
+			reportContext.setDataSource("period", query.getDatePeriodHead());
 			// process data binginds in template
 			reportContext.processDesigner();
 
