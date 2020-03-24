@@ -505,10 +505,11 @@ module nts.uk.at.view.kaf006.b{
             self.workTimeCode(appAbsenceDto.workTimeCode);
             let wktimeName = appAbsenceDto.workTimeName || nts.uk.resource.getText('KAL003_120');
             self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(appAbsenceDto.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : appAbsenceDto.workTimeCode +"　"+ wktimeName);
-            if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
-                let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+            let appReasonLst = data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.appReasonLst;
+            if(appReasonLst != null && appReasonLst.length > 0){
+                let lstReasonCombo = _.map(appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
-                let reasonID = data.applicationReasonDtos[0].reasonID;
+                let reasonID = appReasonLst[0].reasonID;
                 self.selectedReason(reasonID);
                 
                 self.multilContent(application.applicationReason);

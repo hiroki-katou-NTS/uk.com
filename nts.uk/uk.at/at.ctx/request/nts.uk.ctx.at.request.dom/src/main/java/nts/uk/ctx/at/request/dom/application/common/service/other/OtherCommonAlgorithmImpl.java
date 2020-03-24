@@ -612,13 +612,17 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Override
 	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
-		// Input．定型理由の表示区分をチェック
-		if (typicalReasonDisplayFlg == DisplayAtr.DISPLAY) {
-			// ドメインモデル「申請定型理由」を取得
-			List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
-			return applicationReasons;
+		// Input．申請種類をチェックする
+		if(appType != ApplicationType.ABSENCE_APPLICATION) {
+			// Input．定型理由の表示区分をチェック
+			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
+				return Collections.emptyList();
+			}
 		}
-		return Collections.emptyList();
+		// ドメインモデル「申請定型理由」を取得
+		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
+		return applicationReasons;
+		
 	}
 	
 	@Override
