@@ -99,7 +99,7 @@ module nts.uk.com.view.cmm022.a {
                 .done((data: Array<ICommonMaster>) => {
 
                     self.commonMasters(data);
-                    self.selectedCommonMaster().commonMasterId(data.length ? data[0].commonMasterId : null);
+                    self.selectedCommonMaster().commonMasterId(data[0].commonMasterId);
 
                 }).fail(function(res) {
 
@@ -113,7 +113,7 @@ module nts.uk.com.view.cmm022.a {
                             service.startPage(param).done((data: Array<ICommonMaster>) => {
 
                                 self.commonMasters(data);
-
+                                self.selectedCommonMaster().commonMasterId(data[0].commonMasterId);
                             }).always(() => {
                                 
                                 block.clear();
