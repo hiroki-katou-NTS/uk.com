@@ -7,10 +7,14 @@ module nts.uk.at.view.kdp011.a {
             getDataStartPage: "at/function/statement/startPage",
             exportExcel: "screen/at/statement/export",
             findStampingOutputItemSet: "at/function/statement/findAll",
+            initScreen :  "at/function/statement/intiScreen"
         }
         
         export function getDataStartPage(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getDataStartPage);
+        }
+         export function intiScreen(): JQueryPromise<any> { 
+            return nts.uk.request.ajax('at', paths.initScreen);
         }
         
         export function saveCharacteristic(companyId: string, userId: string, obj: any): void {

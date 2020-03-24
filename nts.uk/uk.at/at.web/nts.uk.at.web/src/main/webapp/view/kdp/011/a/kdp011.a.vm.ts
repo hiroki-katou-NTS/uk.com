@@ -71,15 +71,14 @@ module nts.uk.at.view.kdp011.a {
             
             /**
             * start screen
-            */
+            */   
             public startPage(): JQueryPromise<void>  {
                 var dfd = $.Deferred<void>();
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
-                
-                $.when(service.getDataStartPage(), service.restoreCharacteristic(companyId, userId))
-                                    .done((dataStartPage, dataCharacteristic) => {
+                 $.when(service.initScreen(), service.restoreCharacteristic(companyId, userId))
+                                    .done((dataStartPage, dataCharacteristic) => {                        
                     // get data from server
                     self.startDateString(dataStartPage.startDate);
                     self.endDateString(dataStartPage.endDate);
@@ -468,3 +467,4 @@ module nts.uk.at.view.kdp011.a {
                     }
     }
 }
+    }
