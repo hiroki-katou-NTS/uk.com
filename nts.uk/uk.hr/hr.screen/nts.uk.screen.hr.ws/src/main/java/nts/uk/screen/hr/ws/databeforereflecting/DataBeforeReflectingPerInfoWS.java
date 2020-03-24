@@ -10,13 +10,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmDateCheck;
+import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmPreCheck;
 import nts.uk.screen.hr.app.databeforereflecting.command.DataBeforeReflectCommand;
 import nts.uk.screen.hr.app.databeforereflecting.command.ModifyRetireeInformationCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.RemoveCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
+import nts.uk.screen.hr.app.databeforereflecting.find.ChangeRetirementDate;
 import nts.uk.screen.hr.app.databeforereflecting.find.CheckStatusRegistration;
 import nts.uk.screen.hr.app.databeforereflecting.find.DataBeforeReflectResultDto;
 import nts.uk.screen.hr.app.databeforereflecting.find.DatabeforereflectingFinder;
@@ -45,9 +46,6 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@Inject
 	private AlgorithmPreCheck preCheck;
-	
-	@Inject
-	private AlgorithmDateCheck dateCheck;
 
 	@POST
 	@Path("/getData")
@@ -91,4 +89,13 @@ public class DataBeforeReflectingPerInfoWS {
 	public void remove(@PathParam("hisId") String hisId) {
 		this.removeCommnad.remove(hisId);
 	}
+	
+	//jcm007 update ver 2 
+	@POST
+	@Path("/event-change-retirementdate")
+	public RetirementRelatedInfoDto eventChangeRetirementDate(ChangeRetirementDate changeRetirementDateObj) {
+		return this.finder.processRetirementDateChanges(changeRetirementDateObj);
+	}
+	
+	
 }

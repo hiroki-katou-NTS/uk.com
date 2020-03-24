@@ -13,7 +13,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.EmployeeInfoDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.LaborContractHistory;
+import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.LaborContractHistoryDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.WageTypeDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.algorithm.LaborContractHistoryRepository;
 import nts.uk.ctx.hr.shared.infra.entity.laborcontracthistory.PpedtJmWorkHist;
@@ -28,9 +31,15 @@ public class JpaLaborContractHistoryRepository extends JpaRepository implements 
 	private static final String getListDomain = "SELECT c FROM PpedtJmWorkHist c "
 			+ " WHERE c.startDate <= :baseDate and c.endDate >= :baseDate" + " AND c.sId IN :sids";
 	
-	private static final String getListWageType = "SELECT a.sId FROM PpedtJmWorkHist a "
+	private static final String getListWageType = "SELECT a.sId, b.wageType FROM PpedtJmWorkHist a "
 			+ "INNER JOIN PpedtJmWork b ON a.histId = b.hisId "
 			+ " WHERE a.startDate <= :baseDate and a.endDate >= :baseDate AND a.sId IN :sids ";
+	
+	private static final String getListEmployeeInfo = "SELECT a FROM PpedtJmWorkHist a "
+			+ " WHERE a.endDate >= :startDate and a.endDate <= :endDate AND a.cid = :cid ";
+	
+	private static final String getListDomainByListSidAndStartDate = "SELECT a.cId, a.sId, a.histId, a.startDate, a.endDate FROM PpedtJmWorkHist a "
+			+ " WHERE a.startDate >= :startDate AND a.cid = :cid AND a.sId IN :sids";
 
 
 	@Override
@@ -71,6 +80,50 @@ public class JpaLaborContractHistoryRepository extends JpaRepository implements 
 		}).collect(Collectors.toList());
 		
 		return result;
+	}
+
+	@Override
+	public List<EmployeeInfoDto> getListEmployeeInfoDto(String cid, GeneralDate startDate, GeneralDate endDate) {
+		List<PpedtJmWorkHist> entitys = this.queryProxy().query(getListEmployeeInfo, PpedtJmWorkHist.class)
+				.setParameter("cid", cid)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList();
+		if (entitys.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<EmployeeInfoDto> result = entitys.stream().map(e -> {
+			EmployeeInfoDto emp = EmployeeInfoDto.builder()
+					.sid(e.sId)
+					.startDate(e.startDate)
+					.endDate(e.endDate).build();
+			return emp;
+		}).collect(Collectors.toList());
+		
+		return result;
+	}
+
+	@Override
+	public List<LaborContractHistoryDto> getListDomainByListSidAndStartDate(String cid, List<String> sids, GeneralDate startDate) {
+		List<Object[]> objects = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			objects.addAll(this.getEntityManager().createQuery(getListDomainByListSidAndStartDate)
+					.setParameter("sids", sids)
+					.setParameter("cid", cid)
+					.setParameter("startDate", startDate).getResultList());
+		});
+		
+		if (objects.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<LaborContractHistoryDto> result = objects.stream().map(object -> {
+			return new LaborContractHistoryDto(object[0].toString(), object[1].toString(), object[2].toString(), 
+					GeneralDate.fromString(object[3].toString(), "yyyy/MM/dd"), GeneralDate.fromString(object[4].toString(), "yyyy/MM/dd"));
+		}).collect(Collectors.toList());
+		
+		return result;
+		
 	}
 
 }

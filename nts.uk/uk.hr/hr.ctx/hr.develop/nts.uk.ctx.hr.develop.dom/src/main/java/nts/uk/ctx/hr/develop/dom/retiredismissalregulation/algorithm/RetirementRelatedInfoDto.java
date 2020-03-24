@@ -42,7 +42,5 @@ public class RetirementRelatedInfoDto {
 	
 	/** 解雇予告日 */
 	public GeneralDate dismissalNoticeDate;
-
-
 	
 }

@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.empregulationhistory.algorithm.EmploymentRegulationHistoryInterface;
+import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.DismissRestrictionTerm;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.DissisalNoticeTerm;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.RetireDismissalRegulation;
 import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
@@ -22,8 +24,10 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.algorithm.Labo
 
 /**
  * @author laitv
+ * 
  *
  */
+@Stateless
 public class RetireDismissalRegulationServices {
 
 	@Inject
@@ -37,8 +41,82 @@ public class RetireDismissalRegulationServices {
 
 	@Inject
 	private LaborContractHistoryService laborContractHistoryService;
+	
+	//退職・解雇の就業規則の取得
+	//Path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.contexts.人材育成.人事発令.退職・解雇.アルゴリズム.退職・解雇の就業規則.発注対象外.退職・解雇の就業規則の取得
+	// [Input]
+	//・会社ID// companyID
+	//・履歴ID// HistoryID
+	public RetireDismissalRegulation getEmploymentRulesForRetirementAndDismissal(String cid, String hisId){
+		
+		Optional<RetireDismissalRegulation> domain =  this.retireDismissalRegulationRepo.getDomain(cid, hisId);
+		if (domain.isPresent()) {
+			return domain.get();
+		}
+		
+		return null;
+		
+	}
+	
+	// 退職・解雇の就業規則の追加
+	// Path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.contexts.人材育成.人事発令.退職・解雇.アルゴリズム.退職・解雇の就業規則.発注対象外.退職・解雇の就業規則の追加
+	// [Input]
+	//・会社ID// companyID
+	//・履歴ID// HistoryID
+	//・公開条件// PublicTerm
+	//・解雇予告日アラーム// DismissalNoticeDateAlarm
+	//・解雇制限アラーム// DismissalRestrictionAlarm
+	//・List<解雇予告条件>// List<DismissalNoticeTerm>
+	//・List<解雇制限条件>// List<DismissalRestrictionTerm>
+	public void addEmploymentRulesForRetirementAndDismissal(String cid, String hisId, DateCaculationTerm publicTerm,
+			Boolean dismissalNoticeAlerm, Boolean dismissalRestrictionAlerm,
+			List<DissisalNoticeTerm> dismissalNoticeTermList,
+			List<DismissRestrictionTerm> dismissalRestrictionTermList) {
+		
+		RetireDismissalRegulation domain = RetireDismissalRegulation.builder()
+				.companyId(cid)
+				.historyId(hisId)
+				.publicTerm(publicTerm)
+				.dismissalNoticeAlerm(dismissalNoticeAlerm)
+				.dismissalRestrictionAlerm(dismissalRestrictionAlerm)
+				.dismissalNoticeTermList(dismissalNoticeTermList)
+				.dismissalRestrictionTermList(dismissalRestrictionTermList)
+				.build();
+		retireDismissalRegulationRepo.addRetireDismissalRegulation(domain);		
+	}
+
+	// 退職・解雇の就業規則の更新
+	// UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.contexts.人材育成.人事発令.退職・解雇.アルゴリズム.退職・解雇の就業規則.発注対象外.退職・解雇の就業規則の更新
+	// [Input]
+	// ・会社ID// companyID
+	// ・履歴ID/ HistoryID
+	// ・公開条件// PublicTerm
+	// ・解雇予告日アラーム// DismissalNoticeDateAlarm
+	// ・解雇制限アラーム// DismissalRestrictionAlarm
+	// ・List<解雇予告条件>// List<DismissalNoticeTerm>
+	// ・List<解雇制限条件>// List<DismissalRestrictionTerm>
+	public void updateEmploymentRulesForRetirementAndDismissal(String cid, String hisId, DateCaculationTerm publicTerm,
+			Boolean dismissalNoticeAlerm, Boolean dismissalRestrictionAlerm,
+			List<DissisalNoticeTerm> dismissalNoticeTermList,
+			List<DismissRestrictionTerm> dismissalRestrictionTermList) {
+		
+		RetireDismissalRegulation domain = RetireDismissalRegulation.builder()
+				.companyId(cid)
+				.historyId(hisId)
+				.publicTerm(publicTerm)
+				.dismissalNoticeAlerm(dismissalNoticeAlerm)
+				.dismissalRestrictionAlerm(dismissalRestrictionAlerm)
+				.dismissalNoticeTermList(dismissalNoticeTermList)
+				.dismissalRestrictionTermList(dismissalRestrictionTermList)
+				.build();
+		retireDismissalRegulationRepo.updateRetireDismissalRegulation(domain);	
+		
+	}
+	
+	
 
 	// 基準日で退職・解雇の就業規則の取得
+	// Path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.contexts.人材育成.人事発令.退職・解雇.アルゴリズム.退職・解雇の就業規則.基準日で退職・解雇の就業規則の取得
 	public RetireDismissalRegulationDto getDismissalWorkRules(String cId, GeneralDate baseDate) {
 
 		RetireDismissalRegulationDto result = new RetireDismissalRegulationDto();
@@ -52,8 +130,7 @@ public class RetireDismissalRegulationServices {
 			return result;
 		}
 
-		Optional<RetireDismissalRegulation> retireDismissalRegulation = retireDismissalRegulationRepo.getDomain(cId,
-				historyId.get());
+		Optional<RetireDismissalRegulation> retireDismissalRegulation = retireDismissalRegulationRepo.getDomain(cId, historyId.get());
 
 		if (!retireDismissalRegulation.isPresent()) {
 			result.setProcessingResult(false);
@@ -73,6 +150,7 @@ public class RetireDismissalRegulationServices {
 	}
 
 	// 退職関連情報の取得
+	// Path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.contexts.人材育成.人事発令.退職・解雇.アルゴリズム.退職・解雇の就業規則.退職関連情報の取得
 	public RetirementRelatedInfoDto getRetirementRelatedInfo(String cId, GeneralDate baseDate, String sid,
 			GeneralDate retirementDate, Integer retimentType) {
 

@@ -8,6 +8,8 @@ module jcm007.a {
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import dialog = nts.uk.ui.dialog;
+    import error = nts.uk.ui.dialog.error;
+    import info = nts.uk.ui.dialog.info;
 
     var block = nts.uk.ui.block;
     export class ViewModel {
@@ -1153,8 +1155,42 @@ module jcm007.a {
             //xử lý subscribe
 
             self.retirementDate.subscribe((value) => {
-
                 console.log("retirementDate change");
+                block.grayout();
+                let object = {
+                    retirementDate : self.retirementDate(), // A222_12  退職日
+                    retirementType : self.selectedCode_Retiment(),        // A222_16 退職区分
+                    sid            : self.sid,                 // 社員ID = 選択中社員の社員ID(EmployeeID = EmployeeID của employee dang chon)
+                    cid            : null ,                 // 会社ID = ログイン会社ID(CompanyID = LoginCompanyID)
+                    baseDate       : null
+                };
+                
+                service.eventChangeRetirementDate(object).done((result: any) => {
+                    console.log('event retirementDate change done');
+                    debugger;
+                    if (result.processingResult == true) {
+                        self.releaseDate(result.releaseDate);
+
+                        if (result.dismissalNoticeAlerm == false) {
+                            error({ messageId: result.errorMessageId });
+
+                        } else {
+                            if (result.dismissalNoticeDateCheckProcess && result.dismissalAllowance) {
+                                self.dismissalNoticeDate(result.dismissalNoticeDate);
+                            }
+                        }
+                    }
+                }).fail((error) => {
+                    console.log('event retirementDate change done fail');
+                    debugger;
+                    block.clear();
+                    nts.uk.ui.dialog.info(error);
+                    return;
+                }).always(() => {
+                    block.clear();
+                });
+                
+                
                 // update bien objResultOfterRetimentChange
 
             });
@@ -1306,6 +1342,7 @@ module jcm007.a {
             });
         }
     }
+    
 
     interface IEmpInfoHeader {
         avartaFileId: string;
@@ -1347,8 +1384,8 @@ module jcm007.a {
         workplaceName: string;
 
         constructor(input: IEmpInfoHeader) {
-            this.avartaFileId =
-                this.businessName = input.businessName;
+            this.avartaFileId = input.avartaFileId;
+            this.businessName = input.businessName;
             this.businessNameKana = input.businessNameKana;
             this.departmentCode = input.departmentCode;
             this.departmentName = input.departmentName

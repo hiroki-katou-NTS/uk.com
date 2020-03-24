@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
+import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetireDismissalRegulationServices;
+import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
@@ -30,6 +32,9 @@ public class DatabeforereflectingFinder {
 	
 	@Inject
 	private IInterviewRecordSummary interview;
+	
+	@Inject
+	private RetireDismissalRegulationServices retireDismissalRegulationServices;
 	
 	// 1.起動する(Khời động)
 	public DataBeforeReflectResultDto getDataBeforeReflect() {
@@ -125,23 +130,26 @@ public class DatabeforereflectingFinder {
 	}
 
 	// 退職日変更時処理(xử lý khi ngày nghỉ hưu thay đổi)
-	public RetirementRelartedDto ProcessRetirementDateChanges(GeneralDate resignmentDate) {
-		if (resignmentDate == null) {
-			return RetirementRelartedDto.builder().build();
+	// path:UKDesign.UniversalK.人事.JCM_異動・発令.JCM007_退職者の登録.A：退職者の登録.アルゴリズム.退職日変更時処理.退職日変更時処理 
+	public RetirementRelatedInfoDto processRetirementDateChanges(ChangeRetirementDate changeRetirementDateObj) {
+		if (changeRetirementDateObj.retirementDate == null) {
+			return new RetirementRelatedInfoDto();
 		}
+		
+		// アルゴリズム[退職関連情報の取得]を実行する(Thực hiện thuật toán [lấy thông tin liên quan đến nghỉ hưu])
+		RetirementRelatedInfoDto result = retireDismissalRegulationServices.getRetirementRelatedInfo(AppContexts.user().companyId(), GeneralDate.today(),
+																	changeRetirementDateObj.sid, changeRetirementDateObj.retirementDate,
+																	changeRetirementDateObj.retirementType);
 
-		// アルゴリズム[退職関連情報の取得]を実行する(Thực hiện thuật toán [lấy thông tin liên quan
-		// đến nghỉ hưu])
-
-		return getRetirementRelatedInfor();
+		if (result.processingResult == false) {
+			throw new BusinessException(result.errorMessageId);
+		}
+		
+		return  result;
 
 	}
 
-	private RetirementRelartedDto getRetirementRelatedInfor() {
-		return null;
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo ) {
 

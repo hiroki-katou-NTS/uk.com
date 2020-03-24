@@ -12,6 +12,7 @@ module jcm007.a.service {
         'modifyRetireeInformation': 'databeforereflecting/modify-retiree-information',
         'remove': 'databeforereflecting/remove/{0}',
         'exportExcel': 'file/hr/report/databeforereflecting/export',
+        'eventChangeRetirementDate': 'databeforereflecting/event-change-retirementdate',
     }
 
     export function getData(): JQueryPromise<any> {
@@ -48,6 +49,10 @@ module jcm007.a.service {
 
     export function exportExcel(): JQueryPromise<any> {
         return nts.uk.request.exportFile(paths.exportExcel);
+    }
+    
+    export function eventChangeRetirementDate(): JQueryPromise<any> {
+        return ajax(paths.eventChangeRetirementDate, changeRetirementDateObj);
     }
 
 
