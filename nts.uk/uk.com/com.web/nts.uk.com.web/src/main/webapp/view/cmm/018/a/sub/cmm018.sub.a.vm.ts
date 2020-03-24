@@ -14,7 +14,23 @@ module nts.uk.com.view.cmm018.a.sub {
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             constructor() {
             }
-            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE){
+            // fix bug 109950
+            scrollToIndex(object: any) {
+                let index = 0;
+                // not to use Array.findIndex in IE
+                if (this.lstData() != null) {
+                    for (let i = 0; i < this.lstData().length; ++i) {
+                        if (this.lstData()[i].approvalId == object.approvalId) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }  
+                $('#grid_matome').igGrid("virtualScrollTo", index);
+
+            }
+            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE): JQueryPromise<void>{
+                var dfd = $.Deferred<void>();
                 let self = this;
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
@@ -163,6 +179,8 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(5, empRType, appType);
             });
+            dfd.resolve();
+            return dfd.promise();
         }
         resize1(){
             let self = this;

@@ -1522,7 +1522,8 @@ module nts.uk.com.view.cmm018.a {
                         dataOld.push(a);
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
+                        // bug #109950
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME).then(__viewContext.viewModel.viewmodelSubA.scrollToIndex(a));
                         vmbase.ProcessHandler.resizeColumn(self.cpA(), tabSel, vmbase.MODE.MATOME);
                     }
                 }); 
