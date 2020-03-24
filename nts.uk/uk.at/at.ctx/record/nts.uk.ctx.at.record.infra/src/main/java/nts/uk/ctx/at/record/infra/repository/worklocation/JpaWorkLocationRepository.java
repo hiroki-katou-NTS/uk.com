@@ -65,6 +65,12 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 				.setParameter("workLocationCDs", listWorkLocationCd)
 				.getList().stream().collect(Collectors.toMap(s-> String.valueOf(s[0]), s-> String.valueOf(s[1])));
 	}
+
+	@Override
+	public List<WorkLocation> findByListEmp(List<String> lstEmp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/*private KwlmtWorkLocation toEntity (WorkLocation domain){
 		return new KwlmtWorkLocation(

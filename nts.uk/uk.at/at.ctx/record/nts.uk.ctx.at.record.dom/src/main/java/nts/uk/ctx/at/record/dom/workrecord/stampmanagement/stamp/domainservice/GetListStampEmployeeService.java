@@ -25,7 +25,7 @@ public class GetListStampEmployeeService {
 	 * @param date
 	 * @return
 	 */
-	public static Optional<EmployeeStampInfo> name(Require require, String employeeId,GeneralDate date) {
+	public static Optional<EmployeeStampInfo> get(Require require, String employeeId,GeneralDate date) {
 		
 		Optional<StampDataOfEmployees> stampDataOfEmployees = GetEmpStampDataService.get(require, employeeId, date);
 		
