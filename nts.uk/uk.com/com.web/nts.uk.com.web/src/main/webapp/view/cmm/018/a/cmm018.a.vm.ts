@@ -1086,7 +1086,7 @@ module nts.uk.com.view.cmm018.a {
                     let appType = null;
                     let employRootAtr = null;
                     let startDate = ''
-                    itemCurrent = self.findHistory(self.currentCode());
+                    itemCurrent = self.findHistory(self.listHistory()[0].id);
                     //TH: tab company
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
                         //Check dang chon item vua moi them
@@ -1204,7 +1204,7 @@ module nts.uk.com.view.cmm018.a {
                             });
                         }else{
                             _.each(self.listHistory(), function(item){
-                                if(item.id != self.currentCode()){
+                                if(item.id != self.listHistory()[0].id){
                                   tmp.push(item);  
                                 }
                             });
