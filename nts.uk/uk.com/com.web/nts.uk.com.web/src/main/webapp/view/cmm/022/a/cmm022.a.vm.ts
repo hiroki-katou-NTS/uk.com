@@ -121,7 +121,7 @@ module nts.uk.com.view.cmm022.a {
                             });
                         }).ifNo(() => {
                             
-                            alert("Msg_1590");
+                            alert({ messageId:"Msg_1590"});
                             
                         });
                     } else {
