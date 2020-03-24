@@ -35,7 +35,7 @@ public class SaveCommonMasterCmdHandler extends CommandHandler<SaveCommonMasterC
 
 		List<GroupCommonMasterItem> domains = new ArrayList<GroupCommonMasterItem>();
 
-		String commonMasterId = cmd.getCommonMasterId();
+		String commonMasterId = cmd.getSelectedCommonMaster().getCommonMasterId();
 
 		String CommonMasterItemId = updateItem.getCommonMasterItemId() != null ? updateItem.getCommonMasterItemId()
 				: null;

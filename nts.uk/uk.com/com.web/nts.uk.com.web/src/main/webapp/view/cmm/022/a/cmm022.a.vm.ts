@@ -11,10 +11,8 @@ module nts.uk.com.view.cmm022.a {
     export module viewmodel {
         export class ScreenModel {
             commonMasters: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
-            commonMasterId: KnockoutObservable<String> = ko.observable();
             selectedCommonMaster: KnockoutObservable<ICommonMaster> = ko.observable(new CommonMaster());
             commonMasterItems: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
-            commonMasterItemId: KnockoutObservable<String> = ko.observable();
             selectedCommonMasterItem: KnockoutObservable<MasterItem> = ko.observable(new MasterItem(this.defaultItem));
             defaultItem = {
                 commonMasterItemId: null,
@@ -30,14 +28,15 @@ module nts.uk.com.view.cmm022.a {
             constructor() {
                 let self = this;
 
-                self.commonMasterId.subscribe((id) => {
+                self.selectedCommonMaster().commonMasterId.subscribe((id) => {
+                    
+                    let cMaster = _.filter(self.commonMasters(), ['commonMasterId', id])[0]
 
-                    self.selectedCommonMaster(new CommonMaster(_.filter(self.commonMasters(), ['commonMasterId', id])[0]));
+                    self.selectedCommonMaster().updateData(_.filter(self.commonMasters(), ['commonMasterId', id])[0]);
 
                     if (!id) {
                         self.commonMasterItems([]);
-                        self.commonMasterItemId("");
-                        self.selectedCommonMasterItem().updateData(self.defaultItem);
+                        self.selectedCommonMasterItem().commonMasterItemId(null);
                         return;
                     }
 
@@ -46,12 +45,10 @@ module nts.uk.com.view.cmm022.a {
                     service.getItems(id).done((data: Array<IMasterItem>) => {
 
                         self.commonMasterItems(data);
-                        self.commonMasterItemId(data.length ? data[0].commonMasterItemId : null);
-                        if (!data.length) {
-                            self.selectedCommonMasterItem().updateData(self.defaultItem);
-                        }
+                        self.selectedCommonMasterItem().commonMasterItemId(data[0].commonMasterItemId);
                     }).fail(function(res) {
-                        
+                        self.commonMasterItems([]);
+                        self.selectedCommonMasterItem().commonMasterItemId(null);
                         alert(res);
 
                     }).always(() => {
@@ -63,36 +60,17 @@ module nts.uk.com.view.cmm022.a {
                 });
 
 
-                self.commonMasterItemId.subscribe((id) => {
+                self.selectedCommonMasterItem().commonMasterItemId.subscribe((id) => {
+                    nts.uk.ui.errors.clearAll();
                     $("#A223_2").focus();
-                    if (id == null) {
-                        return;
-                    }
                     let selectedItem = _.filter(self.commonMasterItems(), ['commonMasterItemId', id])[0];
                     self.selectedCommonMasterItem().updateData(selectedItem ? selectedItem : self.defaultItem);
                     if (id) {
                         self.newMode(false);
-                    }
-
-                });
-
-                self.commonMasters.subscribe((data) => {
-
-                    self.commonMasterId(data.length ? data[0].commonMasterId : null);
-
-                });
-
-                self.selectedCommonMasterItem.subscribe((item) => {
-
-                    nts.uk.ui.errors.clearAll();
-                    if (item.commonMasterItemCode()) {
-                        self.newMode(false);
                     } else {
                         self.newMode(true);
                     }
-
                 });
-                
                 
                 setTimeout(() => {
                     
@@ -121,7 +99,7 @@ module nts.uk.com.view.cmm022.a {
                 .done((data: Array<ICommonMaster>) => {
 
                     self.commonMasters(data);
-
+                    self.selectedCommonMaster().commonMasterId(data[0].commonMasterId);
 
                 }).fail(function(res) {
 
@@ -135,7 +113,7 @@ module nts.uk.com.view.cmm022.a {
                             service.startPage(param).done((data: Array<ICommonMaster>) => {
 
                                 self.commonMasters(data);
-
+                                self.selectedCommonMaster().commonMasterId(data[0].commonMasterId);
                             }).always(() => {
                                 
                                 block.clear();
@@ -143,7 +121,7 @@ module nts.uk.com.view.cmm022.a {
                             });
                         }).ifNo(() => {
                             
-                            alert("Msg_1590");
+                            alert({ messageId:"Msg_1590"});
                             
                         });
                     } else {
@@ -196,12 +174,12 @@ module nts.uk.com.view.cmm022.a {
 
                 service.saveItems(param).done(() => {
 
-                    service.getItems(self.commonMasterId()).done((data: Array<IMasterItem>) => {
+                    service.getItems(self.selectedCommonMaster().commonMasterId()).done((data: Array<IMasterItem>) => {
 
                         self.commonMasterItems(data);
                         
                         if (self.newMode()) {
-                            self.commonMasterItemId(_.maxBy(data, 'displayNumber').commonMasterItemId);
+                            self.selectedCommonMasterItem().commonMasterItemId(_.maxBy(data, 'displayNumber').commonMasterItemId);
                         }
 
                     }).always(() => {
@@ -225,9 +203,7 @@ module nts.uk.com.view.cmm022.a {
             public newItem() {
 
                 let self = this;
-                self.commonMasterItemId(null);
-                self.selectedCommonMasterItem().updateData(self.defaultItem);
-                self.newMode(true);
+                self.selectedCommonMasterItem().commonMasterItemId(null);
                 $("#A223_2").focus();
             }
             
@@ -247,11 +223,11 @@ module nts.uk.com.view.cmm022.a {
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogBToMaster');
 
-                    if (self.commonMasterId() == data.commonMasterId) {
-                        self.commonMasterId.valueHasMutated();
+                    if (self.selectedCommonMaster().commonMasterId() == data.commonMasterId) {
+                        self.selectedCommonMaster().commonMasterId.valueHasMutated();
                         self.commonMasterItems(data.itemList);
                     } else {
-                        self.commonMasterId(data.commonMasterId);
+                        self.selectedCommonMaster().commonMasterId(data.commonMasterId);
                     }
                 });
             }
@@ -262,10 +238,10 @@ module nts.uk.com.view.cmm022.a {
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogCToMaster');
                     self.commonMasters(data.masterList);
-                    if (self.commonMasterId() == data.commonMasterId) {
-                        self.commonMasterId.valueHasMutated();
+                    if (self.selectedCommonMaster().commonMasterId() == data.commonMasterId) {
+                        self.selectedCommonMaster().commonMasterId.valueHasMutated();
                     } else {
-                        self.commonMasterId(data.commonMasterId);
+                        self.selectedCommonMaster().commonMasterId(data.commonMasterId);
                     }
                 });
             }
@@ -306,6 +282,14 @@ module nts.uk.com.view.cmm022.a {
                 self.commonMasterName(data.commonMasterName);
                 self.commonMasterMemo(data.commonMasterMemo);
             }
+        }
+        
+        updateData(data?) {
+            let self = this;
+            self.commonMasterCode(data ? data.commonMasterCode : "");
+            self.commonMasterName(data ? data.commonMasterName : "");
+            self.commonMasterMemo(data ? data.commonMasterMemo : "");
+
         }
     }
 
@@ -349,7 +333,6 @@ module nts.uk.com.view.cmm022.a {
         
         updateData(data: IMasterItem) {
             let self = this;
-            self.commonMasterItemId(data.commonMasterItemId);
             self.commonMasterItemCode(data.commonMasterItemCode);
             self.commonMasterItemName(data.commonMasterItemName);
             self.displayNumber(data.displayNumber);

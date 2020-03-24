@@ -43,7 +43,8 @@ public class GroupCommonMasterFinder {
 			return groupMasterDtos;
 		}
 
-		return groupMasterDtos;
+		return groupMasterDtos.stream().sorted(Comparator.comparing(GroupCommonMasterDto::getCommonMasterCode))
+				.collect(Collectors.toList());
 
 	}
 
@@ -64,7 +65,7 @@ public class GroupCommonMasterFinder {
 				.collect(Collectors.toList());
 
 		if (CollectionUtil.isEmpty(groupItems)) {
-			return groupItems;
+			throw new BusinessException("Msg_1578");
 		}
 
 		String companyId = AppContexts.user().companyId();

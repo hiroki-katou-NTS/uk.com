@@ -14,7 +14,7 @@ public class SaveCommonMasterCommand {
 	// 画面モード
 	private boolean newMode;
 
-	private String commonMasterId;
+	private CommonMasterCommand selectedCommonMaster;
 
 	private List<UpdateMasterItemCommand> commonMasterItems;
 

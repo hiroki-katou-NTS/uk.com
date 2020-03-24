@@ -77,7 +77,7 @@ public class AsposeGroupCommonMasterExportGenerator extends AsposeCellsReportGen
 		Worksheet ws = worksheets.get(0);
 		int rowIndex = FIRST_ROW_FILL;
 
-		ws.setName(TextResource.localize("CMM022_P2_7"));
+		ws.setName(TextResource.localize("CMM022_P2_8"));
 		try {
 
 			for (int i = 0; i < data.size(); i++) {
@@ -127,7 +127,7 @@ public class AsposeGroupCommonMasterExportGenerator extends AsposeCellsReportGen
 	}
 
 	private Style getDefaultStyle(Worksheet worksheet) {
-		Style style = worksheet.getCells().get(10, 0).getStyle();
+		Style style = worksheet.getCells().get(9, 0).getStyle();
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -142,10 +142,18 @@ public class AsposeGroupCommonMasterExportGenerator extends AsposeCellsReportGen
 	private void settingHeader(Worksheet ws, CompanyInfor companyInfor) {
 
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  HH:mm:ss", Locale.JAPAN);
+		
+		ws.getCells().get(0, 0).putValue(TextResource.localize("CMM022_P2_1"));
 		ws.getCells().get(0, 1).putValue(companyInfor.getCompanyCode() + "　" + companyInfor.getCompanyName());
+		
+		ws.getCells().get(1, 0).putValue(TextResource.localize("CMM022_P2_3"));
 		ws.getCells().get(1, 1).putValue("CMM0022　グループ会社共通マスタの登録");
+
+		ws.getCells().get(2, 0).putValue(TextResource.localize("CMM022_P2_5"));
 		ws.getCells().get(2, 1).putValue(LocalDateTime.now().format(fullDateTimeFormatter));
-		ws.getCells().get(3, 1).putValue(TextResource.localize("CMM022_P2_7"));
+
+		ws.getCells().get(3, 0).putValue(TextResource.localize("CMM022_P2_7"));
+		ws.getCells().get(3, 1).putValue(TextResource.localize("CMM022_P2_8"));
 	}
 
 	private void settingTableHeader(Worksheet ws) {
