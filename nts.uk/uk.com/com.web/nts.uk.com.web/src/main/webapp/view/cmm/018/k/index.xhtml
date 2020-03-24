@@ -52,7 +52,8 @@
 						<div class="titleSelect" data-bind="ntsFormLabel: {required: false, text: k2_1 }"></div>
 						<!--選択された承認者 -->
 						<!--K2_14-->
-						<div class="approverSelect" style="margin-left: 30px" data-bind="ntsFormLabel: {required: false, text: k2_2 }"></div>
+						<div class="approverSelect" style="margin-left: 0px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
+						<div class="approverSelect" style="margin-left: 30px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() != 0"></div>
 						<br />
 						<!-- List Approver -->
 						<!-- TH SETTING CA NHAN -->
