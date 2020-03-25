@@ -51,12 +51,6 @@ public class OutputScreenListOfStampFinder {
 	private  StampDakokuRepository  stampDakokuRepository;
 	
 	@Inject
-	private GetListStampEmployeeService getListStampEmployeeService;
-	
-	@Inject
-	private RetrieveNoStampCardRegisteredService retrieveNoStampCardRegisteredService;
-	
-	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
 	
 	@Inject
@@ -93,7 +87,7 @@ public class OutputScreenListOfStampFinder {
 		Optional<EmployeeStampInfo> employeeStampInfo;
 		for (GeneralDate date : datePerriod.datesBetween()) {
 			for (String employeeId : listEmp) {
-				employeeStampInfo = getListStampEmployeeService.get(require, employeeId, date);
+				employeeStampInfo = GetListStampEmployeeService.get(require, employeeId, date);
 				if (employeeStampInfo.isPresent()) {
 					listEmployeeStampInfo.add(employeeStampInfo.get());
 				}
@@ -125,7 +119,7 @@ public class OutputScreenListOfStampFinder {
 		//1取得する(@Require, 期間): 打刻情報リスト
 		//打刻カード未登録の打刻データを取得する
 		RetrieveNoStampCardRegisteredService.Require requireCardNo = new RequireCardNoIml(stampRecordRepository, stampDakokuRepository);
-		List<StampInfoDisp> listStampInfoDisp =retrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
+		List<StampInfoDisp> listStampInfoDisp =RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
 		//2 
 		
 		return null;
