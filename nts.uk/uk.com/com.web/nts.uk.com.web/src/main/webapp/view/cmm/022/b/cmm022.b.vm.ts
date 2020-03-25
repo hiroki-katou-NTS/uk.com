@@ -33,9 +33,6 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             // list master item dang duoc select cua iggrid right content
             listItems: KnockoutObservableArray<any> = ko.observableArray([]);
             
-            // text data bind vao control B222_1
-            title: KnockoutObservable<CommonMasterItem> = ko.observable();
-            
             // check enable/disable nut dang ky
             checkData: KnockoutObservable<> = ko.observable(true);
             
@@ -71,6 +68,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         });
 
                 });
+                
+               
 
                 setTimeout(() => {
                     
@@ -106,6 +105,11 @@ module nts.uk.com.view.cmm022.b.viewmodel {
 
                 dfd.resolve();
                 return dfd.promise();
+            }
+            
+            public title() {
+                let self = this;
+                return self.masterSelected().commonMasterCode() + " " + self.masterSelected().commonMasterName();
             }
             
             register(){
