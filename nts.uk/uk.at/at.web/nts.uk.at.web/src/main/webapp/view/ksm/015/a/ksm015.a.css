@@ -1,4 +1,10 @@
-
+#ksm015a {
+    width: 700px;
+    
+}
+#ksm015a small {
+    font-size: smaller !important;
+}
 .registration-panel, .setting-panel{
    width: 200px;
    float: left;
