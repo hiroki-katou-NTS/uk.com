@@ -329,6 +329,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             $("#workTypes").find("input:first").focus();
                             dfd.resolve(data);
                         }).fail((res) => {
+                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                                .then(function() { nts.uk.ui.block.clear(); });
                             dfd.reject(res);
                         });
                         return dfd.promise();
@@ -526,6 +528,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.convertListHolidayType(result.holidayAppTypeName, result.remainVacationInfo);
                 dfd.resolve(result);
             }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -577,6 +581,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 dfd.resolve(result);
             }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -629,6 +635,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 dfd.resolve(result);
             }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -664,6 +672,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 dfd.resolve(result);
             }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -939,6 +949,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.workTimeCodes(value);
                 dfd.resolve(value);
             }).fail((res) => {
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             })
             return dfd.promise();
@@ -1134,9 +1146,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             service.checkBeforeRegister(paramInsert).done((data) => {
                 self.processConfirmMsg(paramInsert, data, 0);
             }).fail((res) => {
-                dialog.alertError({messageId : res.messageId}).then(function(){
-                    nts.uk.ui.block.clear();
-                });    
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });    
             });    
         }
         

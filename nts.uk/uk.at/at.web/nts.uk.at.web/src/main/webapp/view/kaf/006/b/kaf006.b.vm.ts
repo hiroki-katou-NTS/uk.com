@@ -387,6 +387,8 @@ module nts.uk.at.view.kaf006.b{
                 }
                  dfd.resolve(result);
             }).fail((res) =>{
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
              return dfd.promise();
@@ -434,6 +436,8 @@ module nts.uk.at.view.kaf006.b{
                 }
                  dfd.resolve(result);
             }).fail((res) =>{
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
              return dfd.promise();
@@ -465,6 +469,8 @@ module nts.uk.at.view.kaf006.b{
                 }
                 dfd.resolve(result);
             }).fail((res) =>{
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             });
              return dfd.promise();
@@ -724,6 +730,8 @@ module nts.uk.at.view.kaf006.b{
                 self.workTimeCodes(value);
                 dfd.resolve(value);
             }).fail((res) =>{
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject(res);
             })
             return dfd.promise();
