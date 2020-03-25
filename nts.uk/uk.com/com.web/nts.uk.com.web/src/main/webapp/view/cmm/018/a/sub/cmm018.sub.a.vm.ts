@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm018.a.sub {
         export class ScreenModel{
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
-            constructor() {
+            constructor() { 
             }
             // fix bug 109950
             scrollToIndex(object: any) {
@@ -122,7 +122,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     { name: "MultiColumnHeaders" },
                     { name: 'ColumnFixing', fixingDirection: 'left',
                                             showFixButtons: false,
-                                            columnSettings: [{ columnKey: 'appName', isFixed: true } ]},
+                                            //resize column in gridlist
+                                            columnSettings: [{ columnKey: 'appName', allowResizing: false, minimumWidth: 0 } ]},
                 ],
                  ntsFeatures:[
                     {
@@ -179,6 +180,16 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(5, empRType, appType);
             });
+                // fix bug  109946
+            if (systemAtr == 0) {
+                $('#grid_matome').igGrid("option", "width",(window.outerWidth * 950)/(1920));
+                $('#grid_matome').igGrid("option", "height",(window.outerHeight * 500)/(1080 - 40 ));
+                $(window).resize(function() {
+                    console.log('resize');
+                    $('#grid_matome').igGrid("option", "width",(window.outerWidth * 950)/1920);
+                    $('#grid_matome').igGrid("option", "height",(window.outerHeight * 500)/1080 -40 );
+                 });
+            }  
             dfd.resolve();
             return dfd.promise();
         }
