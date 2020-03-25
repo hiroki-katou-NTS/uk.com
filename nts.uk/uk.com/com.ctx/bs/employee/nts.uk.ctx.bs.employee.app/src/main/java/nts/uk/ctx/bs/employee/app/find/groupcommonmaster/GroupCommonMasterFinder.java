@@ -168,7 +168,8 @@ public class GroupCommonMasterFinder {
 			}
 		}
 		
-		return groupMasterDtos;
+		return groupMasterDtos.stream().sorted(Comparator.comparing(GroupCommonMasterDto::getCommonMasterCode))
+				.collect(Collectors.toList());
 	}
 	
 	public List<GroupCommonItemDto> getMasterItems(String commonMasterId) {
