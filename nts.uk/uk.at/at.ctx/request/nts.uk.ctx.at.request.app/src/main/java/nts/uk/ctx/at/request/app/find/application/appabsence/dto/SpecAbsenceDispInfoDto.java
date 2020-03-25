@@ -62,7 +62,7 @@ public class SpecAbsenceDispInfoDto {
 		result.setFrameNo(Optional.of(frameNo));
 		result.setMaxDay(Optional.of(maxDay));
 		result.setDayOfRela(Optional.of(dayOfRela));
-		result.setDateSpecHdRelationLst(Optional.of(dateSpecHdRelationLst));
+		result.setDateSpecHdRelationLst(dateSpecHdRelationLst == null ? Optional.empty() : Optional.of(dateSpecHdRelationLst));
 		return result;
 	}
 	

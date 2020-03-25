@@ -1243,8 +1243,8 @@ public class AppAbsenceFinder {
 				appAbsence.getApplication(), 
 				appAbsence, 
 				param.getAppAbsenceCommand().getAllDayHalfDayLeaveAtr(), 
-				false, 
-				Optional.empty());
+				param.isAgentAtr(), 
+				Optional.ofNullable(param.getMourningAtr()));
 		return AbsenceCheckRegisterDto.fromDomain(result);
 	}
 
