@@ -18,13 +18,14 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register, enable: checkData">#{i18n.getText('CMM022_B1_1')}</button>
+				<button class="proceed"
+					data-bind="click: register, enable: checkData">#{i18n.getText('CMM022_B1_1')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('CMM022_B1_2')}</button>
 
 			</div>
 			<div id="contents-area" style="width: 980px">
 				<div class="left-content">
-					<div class="panel-item" id = "height-panel"
+					<div class="panel-item" id="height-panel"
 						data-bind="ntsPanel: {width: '410px', height: '430', direction: 'right', showIcon: true, visible: true}">
 						<div style="width: 350px"
 							data-bind="ntsSearchBox: {
@@ -35,15 +36,20 @@
 							selectedKey: 'commonMasterId', 
 							fields: ['commonMasterName', 'commonMasterCode'], 
 							mode: 'igGrid'}" />
-							
+
 						<table id="multi-list"
 							data-bind="ntsGridList: {
 								height: 390,
 								options: listMaster,
 								optionsValue: 'commonMasterId',
-								columns: columns,
+								columns: [
+				                    { headerText: nts.uk.resource.getText('CMM022_B1_6'), key: 'commonMasterId', width: 80, hidden: true },
+				                    { headerText: nts.uk.resource.getText('CMM022_B221_6'), key: 'commonMasterCode', width: 80, formatter: _.escape},
+				                    { headerText: nts.uk.resource.getText('CMM022_B221_7'), key: 'commonMasterName', width: 160, formatter: _.escape},
+				                    { headerText: nts.uk.resource.getText('CMM022_B221_8'), key: 'commonMasterMemo', width: 160, formatter: _.escape}
+				                	],
 								multiple: false,
-								value: masterSelected
+								value: masterSelected().commonMasterId
 							}"></table>
 					</div>
 				</div>
@@ -53,15 +59,19 @@
 						data-bind="text: title"></div>
 					<div id="labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM022_B222_2')}</div>
 					<div>
-						<div class="master-item" id = "listItem">
+						<div class="master-item" id="listItem">
 							<table id="item-list"
 								data-bind="ntsGridList: {
 										height: 380,
-										options: listItems,
+										options: listItems ,
 										optionsValue: 'commonMasterItemId',
-										columns: columnsItem ,
+										columns: [
+								                    { headerText: nts.uk.resource.getText('CMM022_B221_5'), key: 'commonMasterItemId', width: 80, hidden: true },
+								                    { headerText: nts.uk.resource.getText('CMM022_B221_6'), key: 'commonMasterItemCode', width: 80, formatter: _.escape},
+								                    { headerText: nts.uk.resource.getText('CMM022_B221_7'), key: 'commonMasterItemName', width: 160, formatter: _.escape}
+								                ] ,
 										multiple: false,
-										value: selected
+										value: itemSelected().commonMasterItemId
 									}"></table>
 						</div>
 						<div class="up-and-down" id="tree-up-down"

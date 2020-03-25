@@ -217,7 +217,13 @@ module nts.uk.com.view.cmm022.a {
 
             public openDialogB() {
                 let self = this;
-                setShared('listMasterToB', self.commonMasters());
+                setShared('listMasterToB',
+                {
+                    commonMasters: self.commonMasters(),
+                    commonMasterId: self.selectedCommonMaster().commonMasterId(),
+                    commonMasterItems: self.commonMasterItems(),
+                    commonMasterItemId: self.selectedCommonMasterItem().commonMasterItemId()
+                });
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogBToMaster');
 
