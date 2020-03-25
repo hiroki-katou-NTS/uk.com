@@ -19,3 +19,6 @@
 #register-btn{
 	 margin-left: 45px !important;
 }
+.sidebar-content-header {
+    min-width: 700px;
+}
