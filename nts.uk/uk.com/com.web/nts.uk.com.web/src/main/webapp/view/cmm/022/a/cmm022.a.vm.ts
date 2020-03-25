@@ -29,8 +29,6 @@ module nts.uk.com.view.cmm022.a {
                 let self = this;
 
                 self.selectedCommonMaster().commonMasterId.subscribe((id) => {
-                    
-                    let cMaster = _.filter(self.commonMasters(), ['commonMasterId', id])[0]
 
                     self.selectedCommonMaster().updateData(_.filter(self.commonMasters(), ['commonMasterId', id])[0]);
 

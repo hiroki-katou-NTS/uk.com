@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class UpdateMasterItemDisplayCmdHandler extends CommandHandler<UpdateMasterItemDisplayCommand>{
-	@Inject
+	@Inject	
 	private GroupCommonMasterDomainService services;
 
 	@Override

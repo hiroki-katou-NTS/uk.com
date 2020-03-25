@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.groupcommonmaster;
 
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,13 +29,12 @@ public class UpdateCommonMasterCmdHandler extends CommandHandler<UpdateCommonMas
 		UpdateCommonMasterCommand command = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
 		
+		List<GroupCommonMaster> domains = Arrays.asList(GroupCommonMaster.creatFromJavaType(contractCode,
+				command.getMasterSelected().getCommonMasterId(), command.getMasterSelected().getCommonMasterCode(),
+				command.getMasterSelected().getCommonMasterName(), command.getMasterSelected().getCommonMasterMemo()));
+		
 		// グループ会社共通マスタの更新
-		services.updateGroupCommonMaster(contractCode, command.getListCommonMaster().stream()
-																.map(x -> GroupCommonMaster.creatFromJavaType(contractCode, x.getCommonMasterId(),
-																												x.getCommonMasterCode(),
-																												x.getCommonMasterName(), 
-																												x.getCommonMasterMemo()))
-																.collect(Collectors.toList()));
+		services.updateGroupCommonMaster(contractCode, domains);
 		
 	}
 
