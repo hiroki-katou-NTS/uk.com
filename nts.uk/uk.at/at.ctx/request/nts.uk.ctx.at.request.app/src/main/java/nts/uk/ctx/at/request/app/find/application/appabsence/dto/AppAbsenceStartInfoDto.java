@@ -102,8 +102,8 @@ public class AppAbsenceStartInfoDto {
 				CollectionUtil.isEmpty(workTypeLst) ? Collections.emptyList() : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				CollectionUtil.isEmpty(workTimeLst) ? Collections.emptyList() : workTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				workTypeNotRegister, 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty());
+				specAbsenceDispInfo == null ? Optional.empty() : Optional.of(specAbsenceDispInfo.toDomain()), 
+				Optional.ofNullable(selectedWorkTypeCD), 
+				Optional.ofNullable(selectedWorkTimeCD));
 	}
 }

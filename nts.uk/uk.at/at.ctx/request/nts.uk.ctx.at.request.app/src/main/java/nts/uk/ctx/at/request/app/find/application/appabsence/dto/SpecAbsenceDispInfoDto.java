@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent.SpecialHolidayEventDto;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.DateSpecHdRelationOutput;
 
 @AllArgsConstructor
@@ -50,6 +52,17 @@ public class SpecAbsenceDispInfoDto {
 		result.maxDay = specAbsenceDispInfo.getMaxDay().orElse(null);
 		result.dayOfRela = specAbsenceDispInfo.getDayOfRela().orElse(null);
 		result.dateSpecHdRelationLst = specAbsenceDispInfo.getDateSpecHdRelationLst().orElse(null);
+		return result;
+	}
+	
+	public SpecAbsenceDispInfo toDomain() {
+		SpecAbsenceDispInfo result = new SpecAbsenceDispInfo();
+		result.setSpecHdForEventFlag(specHdForEventFlag);
+		result.setSpecHdEvent(specHdEvent == null ? Optional.empty() : Optional.of(specHdEvent.toDomain()));
+		result.setFrameNo(Optional.of(frameNo));
+		result.setMaxDay(Optional.of(maxDay));
+		result.setDayOfRela(Optional.of(dayOfRela));
+		result.setDateSpecHdRelationLst(Optional.of(dateSpecHdRelationLst));
 		return result;
 	}
 	

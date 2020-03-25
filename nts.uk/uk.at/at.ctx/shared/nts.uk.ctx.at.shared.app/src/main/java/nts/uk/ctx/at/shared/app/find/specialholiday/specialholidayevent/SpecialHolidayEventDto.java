@@ -95,7 +95,7 @@ public class SpecialHolidayEventDto {
 				EnumAdaptor.valueOf(restrictEmployment, UseAtr.class), 
 				EnumAdaptor.valueOf(restrictClassification, UseAtr.class), 
 				EnumAdaptor.valueOf(gender, GenderCls.class), 
-				AgeRange.createFromJavaType(ageRange.getAgeLowerLimit(), ageRange.getAgeHigherLimit()), 
+				ageRange == null ? null : AgeRange.createFromJavaType(ageRange.getAgeLowerLimit(), ageRange.getAgeHigherLimit()), 
 				EnumAdaptor.valueOf(ageStandard, AgeStandardType.class), 
 				ageStandardBaseDate, 
 				new Memo(memo), 
