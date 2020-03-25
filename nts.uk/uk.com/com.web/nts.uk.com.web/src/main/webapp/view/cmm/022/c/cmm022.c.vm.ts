@@ -2,14 +2,12 @@ module nts.uk.com.view.cmm022.c.viewmodel {
     import blockUI = nts.uk.ui.block;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import dialog = nts.uk.ui.dialog;
     
         export class ScreenModel {
             
             // list data de bind vao iggrid
             listMaster: KnockoutObservableArray<any> = ko.observableArray([]);
-            
-            // ma code cua item dang duoc select trong iggrid
-            masterSelected: KnockoutObservable<CommonMaster> = ko.observable(new CommonMaster(this.defaultItem));
             
             // data gui ve man A
             setData: KnockoutObservable<any> = ko.observable();
@@ -21,6 +19,9 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 commonMasterName: '',
                 commonMasterMemo: '',
             }
+            
+            // ma code cua item dang duoc select trong iggrid
+            masterSelected: KnockoutObservable<CommonMaster> = ko.observable(new CommonMaster(this.defaultItem));
             constructor() {
                 
                 let self = this;
@@ -53,30 +54,12 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 
                 let getshareMaster = getShared('listMasterToC');
                 
-                _.forEach(getshareMaster, (obj) => {
-                    
-                    let parameter = {
-                        commonMasterId: obj.commonMasterId,
-                        commonMasterCode: obj.commonMasterCode,
-                        commonMasterName: obj.commonMasterName,
-                        commonMasterMemo: obj.commonMasterMemo,
-                    }
-                    
-                    self.listMaster().push(new CommonMasterItem(parameter));               
-                });
+                 self.listMaster(getshareMaster);
                 
                 _.sortBy(self.listMaster(), ['commonMasterCode']);
                 
-                if(_.size(self.listMaster()) > 0){
-                    
-                    self.masterSelected(self.listMaster()[0].commonMasterId);    
-                    
-                }else{
-                    
-                    self.masterSelected(null);
-                    self.commonMasterCode(null);
-                    self.commonMasterName(null);
-                }
+                self.masterSelected().commonMasterId(self.listMaster()[0].commonMasterId);
+               
                 dfd.resolve();
 
                 return dfd.promise();
@@ -107,7 +90,7 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                     
                 }).fail(function(err) {
                     
-                    nts.uk.ui.dialog.error({ messageId: err.messageId });
+                   dialog.bundledErrors(err);
                     
                 }).always(function() {
                     blockUI.clear();
