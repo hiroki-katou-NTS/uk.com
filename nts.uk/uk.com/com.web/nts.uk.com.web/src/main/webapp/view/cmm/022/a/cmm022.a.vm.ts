@@ -232,7 +232,11 @@ module nts.uk.com.view.cmm022.a {
 
             public openDialogC() {
                 let self = this;
-                setShared('listMasterToC', self.commonMasters());
+                setShared('listMasterToC', {
+                    commonMasters: self.commonMasters(),
+                    commonMasterId: self.selectedCommonMaster().commonMasterId()
+                });
+                
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogCToMaster');
                     self.commonMasters(data.masterList);
