@@ -29,6 +29,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.RetrieveNoStampCardRegisteredService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
 
 @Stateless
 public class OutputScreenListOfStampFinder {
@@ -50,6 +52,9 @@ public class OutputScreenListOfStampFinder {
 	
 	@Inject
 	private GetListStampEmployeeService getListStampEmployeeService;
+	
+	@Inject
+	private RetrieveNoStampCardRegisteredService retrieveNoStampCardRegisteredService;
 	
 	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
@@ -116,9 +121,13 @@ public class OutputScreenListOfStampFinder {
 	
 	
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod){
-		RetrieveNoStampCardRegisteredService
+		//RetrieveNoStampCardRegisteredService
 		//1取得する(@Require, 期間): 打刻情報リスト
 		//打刻カード未登録の打刻データを取得する
+		RetrieveNoStampCardRegisteredService.Require requireCardNo = new RequireCardNoIml(stampRecordRepository, stampDakokuRepository);
+		List<StampInfoDisp> listStampInfoDisp =retrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
+		//2 
+		
 		return null;
 	}
 	
@@ -150,7 +159,21 @@ public class OutputScreenListOfStampFinder {
 		
 	}
 	@AllArgsConstructor
-	private static class RequireCardNoIml implements RetrieveNoStampCardRegisteredService{
+	private static class RequireCardNoIml implements RetrieveNoStampCardRegisteredService.Require{
+		
+		@Inject
+		private StampRecordRepository stampRecordRepo;
+		@Inject
+		private  StampDakokuRepository  stampDakokuRepo;
+		@Override
+		public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {	
+			return stampRecordRepo.getStempRcNotResgistNumber(period);
+		}
+
+		@Override
+		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period) {	
+			return stampDakokuRepo.getStempRcNotResgistNumber(period);
+		}
 		
 	}
 	
