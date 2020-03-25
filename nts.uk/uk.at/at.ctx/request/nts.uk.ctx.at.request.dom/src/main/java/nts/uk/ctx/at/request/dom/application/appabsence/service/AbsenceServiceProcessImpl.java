@@ -990,6 +990,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 					holidayDateLst, 
 					appAbsenceStartInfoOutput);
 			result.addAll(confirmMsgLst1);
+			break;
 		case SPECIAL_HOLIDAY:
 			// INPUT．「休暇種類」 = 特別休暇
 			// 特別休暇のチェック処理
