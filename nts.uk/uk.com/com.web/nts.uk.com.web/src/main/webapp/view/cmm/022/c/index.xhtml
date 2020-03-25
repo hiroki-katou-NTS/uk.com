@@ -38,11 +38,16 @@
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 								height: 390,
-								options: listMaster,
+								options: [
+						                    { headerText: nts.uk.resource.getText('CMM022_C221_6'), key: 'commonMasterId', width: 80, hidden: true },
+						                    { headerText: nts.uk.resource.getText('CMM022_C221_6'), key: 'commonMasterCode', width: 80, formatter: _.escape},
+						                    { headerText: nts.uk.resource.getText('CMM022_C221_7'), key: 'commonMasterName', width: 160, formatter: _.escape},
+						                    { headerText: nts.uk.resource.getText('CMM022_C221_8'), key: 'commonMasterMemo', width: 160, formatter: _.escape}
+                						] ,
 								optionsValue: 'commonMasterId',
 								columns: columns,
 								multiple: false,
-								value: masterSelected
+								value: masterSelected().commonMasterId
 							}"></table>
 						</div>
 					</div>
@@ -52,7 +57,7 @@
 						<div style = "display: inline-block;">
 							<input data-bind="ntsTextEditor: {
 													name: '#[CMM020_C222_2]',
-													value: commonMasterCode,
+													value: masterSelected().commonMasterCode,
 													constraint: 'CommonMasterItemCode',
 													required: true,
 													enable: true,
@@ -62,7 +67,7 @@
 							<input
 								data-bind="ntsTextEditor: {
 													name: '#[CMM020_C222_3]',
-													value: commonMasterName,
+													value: masterSelected().commonMasterName,
 													constraint: 'CommonMasterItemName',
 													required: true,
 													enable: true,

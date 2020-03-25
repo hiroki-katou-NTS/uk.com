@@ -6,5 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class UpdateCommonMasterCommand {
-	private List<CommonMasterCommand> listCommonMaster;
+	private CommonMasterCommand masterSelected;
+	
+	private List<CommonMasterCommand> listMaster;
 }
