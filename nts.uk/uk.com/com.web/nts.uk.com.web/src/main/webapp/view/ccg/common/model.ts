@@ -113,6 +113,8 @@ module nts.uk.com.view.ccg.model {
                     this.url = this.origin + ""; 
                 }else if(placementPartDto.topPageCode === "0006"){
                     this.url = this.origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
+                }else if(placementPartDto.topPageCode === "9999"){
+                    this.url = this.origin + "/nts.uk.hr.web/view/jcg/004/a/index.xhtml"; 
                 }
                 
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {

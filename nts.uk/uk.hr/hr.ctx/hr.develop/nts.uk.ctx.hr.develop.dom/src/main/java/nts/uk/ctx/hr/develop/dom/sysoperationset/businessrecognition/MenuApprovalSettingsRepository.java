@@ -9,4 +9,6 @@ public interface MenuApprovalSettingsRepository {
 	List<BusinessApprovalSettingsDto> getBusinessApprovalSettings(String cid);
 	
 	void update(List<BusinessApprovalSettingsDto> domain);
+	
+	List<String> getProgramId(String cid, List<String> programId);
 }

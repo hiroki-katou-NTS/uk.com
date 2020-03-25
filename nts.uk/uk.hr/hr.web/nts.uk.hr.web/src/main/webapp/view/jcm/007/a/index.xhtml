@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.hr.shared.dom.databeforereflecting.NoteRetiment
+					nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="jcm007.a.style.css" />
@@ -28,8 +28,12 @@
 				<!-- A1_2 -->
 				<button id="register" tabindex="31" class="proceed group-button-1"
 					data-bind="click: register , enable:  enable_btnRegister"> #{i18n.getText('JCM007_A1_2')}  </button>
+				<!-- A1_4 -->
+				<button id="export" tabindex="32" class="group-button-1"
+					data-bind="click:exportExcel">#{i18n.getText('JCM007_A1_4')}</button>
+
 				<!-- A1_3 -->
-				<button id="setting" tabindex="32" class="danger group-button-1" 
+				<button id="setting" tabindex="33" class="danger group-button-1" 
 					data-bind="click: remove , enable: enable_btnRemove">#{i18n.getText('JCM007_A1_3')} </button>
 					
 				<span class = "guideDisplay"  data-bind="visible: false"> 操作ガイド　表示 </span>

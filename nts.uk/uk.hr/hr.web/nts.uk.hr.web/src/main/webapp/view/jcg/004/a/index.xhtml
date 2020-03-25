@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
+			<com:stylefile path="jcg004.a.style.css" />
+			<com:scriptfile path="jcg004.a.service.js" />
+			<com:scriptfile path="jcg004.a.start.js" />
+			<com:scriptfile path="jcg004.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="widget-table first">
+					<tr data-bind="css: {bgColor1: approvalOfApplication()==true}" >
+						<td >#{i18n.getText('JCG004_A1_4')}</td>
+						<td>
+							<com:ko-if bind="approvalOfApplication()">
+								<a class="" href="#" data-bind = "click: openJHN003A, text: '#{i18n.getText('JCG004_A1_5')}'"></a>
+							</com:ko-if>
+							<com:ko-if bind="!approvalOfApplication()">
+								#{i18n.getText('JCG004_A1_6')}
+							</com:ko-if>
+						</td>
+					</tr>
+					<tr class="tab2" data-bind="css: {bgColor2: check()==true}">
+						<td>#{i18n.getText('JCG004_A1_8')}</td>
+						<td></td>
+					</tr>
+				</table>
+				<table class="widget-table">
+					<tbody data-bind="foreach: businessApproval()">
+						<tr data-bind="css: {bgColor2: $parent.check()==true}">
+							<td class="tab" data-bind="text: programId +'_Z'"></td>
+							<td>
+								<com:ko-if bind="check">
+									<a class="" href="#" data-bind = "click: $parent.openJHN007Z, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
+								</com:ko-if>
+								<com:ko-if bind="!check">
+									#{i18n.getText('JCG004_A1_13')}
+								</com:ko-if>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

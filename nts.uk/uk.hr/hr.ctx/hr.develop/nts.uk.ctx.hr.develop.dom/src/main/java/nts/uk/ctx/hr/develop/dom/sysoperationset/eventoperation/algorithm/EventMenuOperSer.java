@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevEvent;
 import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.HRDevMenu;
 import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm.AvailableEventAndMenuDto;
+import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm.HRDevMenuRepository;
 import nts.uk.ctx.hr.develop.dom.humanresourcedevevent.algorithm.HREventMenuService;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.MenuOperation;
@@ -27,6 +28,9 @@ public class EventMenuOperSer {
 	
 	@Inject
 	private MenuOperationRepository menuRep;
+	
+	@Inject
+	private HRDevMenuRepository hRDevMenuRepository;
 	
 	/**
 	 * ドメインモデル[イベント管理]を取得する
@@ -126,4 +130,5 @@ public class EventMenuOperSer {
 		}
 		return new EventOprationSettingDto(true, listEventOper, listMenuOper);
 	}
+	
 }
