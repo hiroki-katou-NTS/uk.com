@@ -52,13 +52,13 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 let self = this;
                 var dfd = $.Deferred();
                 
-                let getshareMaster = getShared('listMasterToC');
+                let shared = getShared('listMasterToC');
+
+                _.sortBy(shared.commonMasters, ['commonMasterCode']);
+
+                self.listMaster(shared.commonMasters);
                 
-                 self.listMaster(getshareMaster);
-                
-                _.sortBy(self.listMaster(), ['commonMasterCode']);
-                
-                self.masterSelected().commonMasterId(self.listMaster()[0].commonMasterId);
+                self.masterSelected().commonMasterId(shared.commonMasterId);
                
                 dfd.resolve();
 
@@ -99,17 +99,13 @@ module nts.uk.com.view.cmm022.c.viewmodel {
             
             // close dialog
             closeDialog() {
-                
+
                 let self = this;
-                if (!self.setData()) {
-                    self.setData({
-                        commonMasterId: self.masterSelected(),
-                        masterList: [],
-                        itemList: []
-                    })
-                }
-                
-                setShared('DialogCToMaster', self.setData());
+
+                setShared('DialogCToMaster', {
+                    masterList: self.listMaster(),
+                    commonMasterId: self.masterSelected().commonMasterId()
+                });
                 nts.uk.ui.windows.close();
             }
 
