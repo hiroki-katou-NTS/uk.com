@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf006.shr.service {
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork",
-        changeRelaCD: "at/request/application/appforleave/changeRela/{0}/{1}",
+        changeRelaCD: "at/request/application/appforleave/changeRela",
     }
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
@@ -85,8 +85,8 @@ module nts.uk.at.view.kaf006.shr.service {
     /**
      * when change relation ship
      */
-    export function changeRelaCD(workTypeCD: string, relationCD: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.changeRelaCD, workTypeCD, relationCD));
+    export function changeRelaCD(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.changeRelaCD, param);
     }
     /**
      * Khi thay doi appDate

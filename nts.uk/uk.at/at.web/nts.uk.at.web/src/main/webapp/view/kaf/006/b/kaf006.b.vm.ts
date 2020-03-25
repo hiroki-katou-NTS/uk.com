@@ -284,14 +284,14 @@ module nts.uk.at.view.kaf006.b{
             if(!nts.uk.util.isNullOrEmpty(specAbsenceDispInfo.dateSpecHdRelationLst)) {
                 lstRelaOutput = specAbsenceDispInfo.dateSpecHdRelationLst;    
             }   
-            _.each(data.lstRela, function(rela){
+            _.each(lstRelaOutput, function(rela){
                 lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
                         maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;
             if(specAbsenceDispInfo.specHdForEventFlag){
-                fix = specAbsenceDispInfo.maxDay == 2 ? true : false;
+                fix = specAbsenceDispInfo.specHdEvent.maxNumberDay == 2 ? true : false;
             }
             self.fix(fix);
             if(!fix){
