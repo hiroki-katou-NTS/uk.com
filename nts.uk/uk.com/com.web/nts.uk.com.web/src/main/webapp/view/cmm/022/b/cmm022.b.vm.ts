@@ -5,26 +5,33 @@ module nts.uk.com.view.cmm022.b.viewmodel {
 
         export class ScreenModel {
             
-            // header cua iggrid left content
-            columns: KnockoutObservableArray<any>
-            
-            // header cua iggrid right content
-            columnsItem: KnockoutObservableArray<any>
-            
             // list master de bind data vao iggrid left content
             listMaster: KnockoutObservableArray<any> = ko.observableArray([]);
             
-            // code cua common master dang select trong iggrid left content 
-            masterSelected: KnockoutObservable<any> = ko.observable();
+            defaultMaster = {
+                commonMasterId: null,
+                commonMasterCode: '',
+                commonMasterName: '',
+                commonMasterMemo: '',
+            }
+
+            // common master dang select trong iggrid left content 
+            masterSelected: KnockoutObservable<CommonMaster> = ko.observable(new CommonMaster(this.defaultMaster));
+            
+            defaultItem = {
+                commonMasterItemId: null,
+                commonMasterItemCode: "",
+                commonMasterItemName: "",
+                displayNumber: null,
+                usageStartDate: moment(new Date()).format("YYYY/MM/DD"),
+                usageEndDate: "9999/12/31"
+            }
             
             // code cua master item dang duoc select trong iggrid right content
-            selected: KnockoutObservable<CommonMasterItem> = ko.observable();
+            itemSelected: KnockoutObservable<CommonMasterItem> = ko.observable(new CommonMasterItem(this.defaultItem));
             
             // list master item dang duoc select cua iggrid right content
             listItems: KnockoutObservableArray<any> = ko.observableArray([]);
-            
-            // text data bind vao control B222_1
-            title: KnockoutObservable<CommonMasterItem> = ko.observable();
             
             // check enable/disable nut dang ky
             checkData: KnockoutObservable<> = ko.observable(true);
@@ -34,37 +41,17 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             constructor() {
                 let self = this;
                 
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("CMM022_B1_6"), key: 'commonMasterId', width: 80, hidden: true },
-                    { headerText: nts.uk.resource.getText("CMM022_B221_6"), key: 'commonMasterCode', width: 80, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("CMM022_B221_7"), key: 'commonMasterName', width: 160, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("CMM022_B221_8"), key: 'commonMasterMemo', width: 160, formatter: _.escape}
-                ]);
-                
-                self.columnsItem = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("CMM022_B221_5"), key: 'commonMasterItemId', width: 80, hidden: true },
-                    { headerText: nts.uk.resource.getText("CMM022_B221_6"), key: 'commonMasterItemCode', width: 80, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("CMM022_B221_7"), key: 'commonMasterItemName', width: 160, formatter: _.escape}
-                ]);
-                
-                self.masterSelected.subscribe(function(code){
+                self.masterSelected().commonMasterId.subscribe(function(id) {
+
+                    self.masterSelected().updateData(_.filter(self.listMaster(), ['commonMasterId', id])[0]);
                     
-                    if(!!code){
-                        let objectSelected = _.find(self.listMaster(), function(o) { return o.commonMasterId == code; });
-                        self.title(objectSelected.commonMasterCode + " " + objectSelected.commonMasterName);
-                        
-                        let param = {
-                            commonMasterId: code,
-                        }
-                        
-                        blockUI.grayout();
-                        service.getListMasterItem(param).done((data: any) => {
+                    blockUI.grayout();
+                        service.getListMasterItem({ commonMasterId: id }).done((data: any) => {
                             
-                            let listTemp = data.listCommonMasterItem;
-                            
-                            listTemp = _.sortBy(listTemp, [function(o) { return o.displayNumber; }]);
-                            self.listItems(listTemp);
-                            self.selected(self.listItems()[0].commonMasterItemId);
+                            _.sortBy(data.listCommonMasterItem, ['displayNumber']);
+
+                            self.listItems(data.listCommonMasterItem);
+                            self.itemSelected().commonMasterItemId(self.listItems()[0].commonMasterItemId);
                             self.checkData(true);
                             
                         }).fail(function(err) {
@@ -79,12 +66,10 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                         }).always(function() {
                             blockUI.clear();
                         });
-                    }else{
-                        self.title("");
-                        self.listItems([]);    
-                    }
-                    
+
                 });
+                
+               
 
                 setTimeout(() => {
                     
@@ -106,39 +91,25 @@ module nts.uk.com.view.cmm022.b.viewmodel {
              */
             public start_page(): JQueryPromise<any> {
                 
-                let self = this;
+                let self = this,
+
+                    dfd = $.Deferred(),
+
+                    shared = getShared('listMasterToB');
                 
-                var dfd = $.Deferred();
+                _.sortBy(shared.commonMasters, ['commonMasterCode']);
+
+                self.listMaster(shared.commonMasters);
                 
-                let getshareMaster = getShared('listMasterToB');
-                
-                _.forEach(getshareMaster, (obj) => {
-                    
-                    let parameter = {
-                        commonMasterId: obj.commonMasterId,
-                        commonMasterCode: obj.commonMasterCode,
-                        commonMasterName: obj.commonMasterName,
-                        commonMasterMemo: obj.commonMasterMemo,
-                    }
-                    
-                    self.listMaster().push(new CommonMasterItem(parameter));               
-                });
-                
-                _.sortBy(self.listMaster(), ['commonMasterCode']);
-                
-                if(_.size(self.listMaster()) > 0){
-                    
-                    self.masterSelected(self.listMaster()[0].commonMasterId);  
-                      
-                }else{
-                    
-                    self.masterSelected(null);
-                    self.title("");
-                    self.listItems([]);
-                }
+                self.masterSelected().commonMasterId(shared.commonMasterId);
 
                 dfd.resolve();
                 return dfd.promise();
+            }
+            
+            public title() {
+                let self = this;
+                return self.masterSelected().commonMasterCode() + " " + self.masterSelected().commonMasterName();
             }
             
             register(){
@@ -150,7 +121,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 }
                 
                 let param = {
-                    commonMasterId: self.masterSelected(),
+                    commonMasterId: self.masterSelected().commonMasterId(),
                     listMasterItem: self.listItems(),
                 }
                 
@@ -158,7 +129,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 
                 service.update(param).done(function(data: any) {
                     self.setData({
-                        commonMasterId: self.masterSelected,
+                        commonMasterId: self.masterSelected().commonMasterId(),
                         masterList: [],
                         itemList: self.listItems()
                         }
@@ -181,7 +152,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 
                 if (!self.setData()) {
                     self.setData({
-                        commonMasterId: self.masterSelected(),
+                        commonMasterId: self.masterSelected().commonMasterId(),
                         masterList: [],
                         itemList: []
                     })
@@ -200,27 +171,26 @@ module nts.uk.com.view.cmm022.b.viewmodel {
         displayNumber: number;
         usageStartDate: string;
         usageEndDate: string;
-        useSetting: Array<string>;
     }
         
-    class MasterItem{
-        commonMasterItemId: string;
-        commonMasterItemCode: string;
-        commonMasterItemName: string;
-        displayNumber: number;
-        usageStartDate: string;
-        usageEndDate: string;
-        useSetting: Array<string>;
+    class CommonMasterItem{
+        commonMasterItemId:  KnockoutObservable<string> = ko.observable();
+        commonMasterItemCode:  KnockoutObservable<string> = ko.observable();
+        commonMasterItemName:  KnockoutObservable<string> = ko.observable();
+        displayNumber: KnockoutObservable<number> = ko.observable();
+        usageStartDate: KnockoutObservable<string> = ko.observable();
+        usageEndDate: KnockoutObservable<string> = ko.observable();
         constructor(param: IMasterItem){
             let self = this;
-            self.commonMasterItemId = param.commonMasterItemId;
-            self.commonMasterItemCode = param.commonMasterItemCode;
-            self.commonMasterItemName = param.commonMasterItemName;
-            self.displayNumber = param.displayNumber;
-            self.usageStartDate = param.usageStartDate;
-            self.usageEndDate = param.usageEndDate;
-            self.useSetting = param.useSetting;
+            self.commonMasterItemId(param.commonMasterItemId);
+            self.commonMasterItemCode(param.commonMasterItemCode);
+            self.commonMasterItemName(param.commonMasterItemName);
+            self.displayNumber(param.displayNumber);
+            self.usageStartDate(param.usageStartDate);
+            self.usageEndDate(param.usageEndDate);
         }
+        
+       
     }
         
     export interface ICommonMaster {
@@ -229,19 +199,26 @@ module nts.uk.com.view.cmm022.b.viewmodel {
         commonMasterName: string;
         commonMasterMemo: string;
     }
-    
-    class CommonMasterItem {
-        commonMasterId: string;
-        commonMasterCode: string;
-        commonMasterName: string;
-        commonMasterMemo: string;
+
+    class CommonMaster {
+        commonMasterId: KnockoutObservable<string> = ko.observable();
+        commonMasterCode: KnockoutObservable<string> = ko.observable();
+        commonMasterName: KnockoutObservable<string> = ko.observable();
+        commonMasterMemo: KnockoutObservable<string> = ko.observable();
 
         constructor(param: ICommonMaster) {
             let self = this;
-            self.commonMasterId = param.commonMasterId;
-            self.commonMasterCode = param.commonMasterCode;
-            self.commonMasterName = param.commonMasterName;
-            self.commonMasterMemo = param.commonMasterMemo;
+            self.commonMasterId(param.commonMasterId);
+            self.commonMasterCode(param.commonMasterCode);
+            self.commonMasterName(param.commonMasterName);
+            self.commonMasterMemo(param.commonMasterMemo);
+        }
+
+        updateData(data) {
+            let self = this;
+            self.commonMasterCode(data.commonMasterCode);
+            self.commonMasterName(data.commonMasterName);
+            self.commonMasterMemo(data.commonMasterMemo);
         }
     }
     
