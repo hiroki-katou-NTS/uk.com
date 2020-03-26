@@ -1094,6 +1094,22 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         
         checkBeforeRegister() {
             let self = this;
+            self.checkDisplayEndDate(self.displayEndDateFlg());
+            if (self.displayEndDateFlg()) {
+               $('#daterangepicker').find(".nts-input").trigger('validate');
+            } else {
+                $("#inputdate").trigger("validate");
+            }
+            $("#switch_prePost").trigger("validate");
+            $("#relaReason").trigger("validate");
+            if(self.holidayTypeCode() == 3 && self.fix()){
+                $("#relaCD-combo").trigger("validate");
+            }
+            $("#hdType").trigger('validate');
+            $("#workTypes").trigger('validate');
+            if (!self.validate()) { return; }
+            if (nts.uk.ui.errors.hasError()) { return; }
+            nts.uk.ui.block.invisible();
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true); 
             let appReason: string;
