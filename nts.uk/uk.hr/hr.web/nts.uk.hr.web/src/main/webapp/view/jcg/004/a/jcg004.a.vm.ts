@@ -26,8 +26,9 @@ module nts.uk.at.view.jcg004.a.viewmodel {
                         self.check(true);
                     }
                 });
-                block.clear();
                 dfd.resolve();
+            }).always(() => {
+                block.clear();
             });  
             return dfd.promise();
         }
