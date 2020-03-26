@@ -75,7 +75,6 @@ module nts.uk.com.view.cmm022.c.viewmodel {
                 service.update(param).done(function(data: any) {
                     service.getListMaster().done(function(data: any){
                         self.listMaster(data);
-                        self.changeList([]);
 
                         self.setData({
                             commonMasterId: self.masterSelected(),
