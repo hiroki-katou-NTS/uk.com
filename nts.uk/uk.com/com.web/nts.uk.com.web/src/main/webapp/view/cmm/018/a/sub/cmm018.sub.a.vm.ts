@@ -34,19 +34,24 @@ module nts.uk.com.view.cmm018.a.sub {
                 let self = this;
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
+                let height = 530;
                 let gridName = '#grid_matome';
+                $('html.sidebar-html').css('overflow','visible')
                 if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matome';        
                         if(systemAtr == 0) {
-                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;    
+//                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
+                            width = (window.outerWidth * 950)/(1920);
+                            height = (window.outerHeight * 450)/(1080 - 40);
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
                         gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
-                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            width = (window.outerWidth * 900)/(1920);
+                            height = (window.outerHeight * 450)/(1080 - 40);  
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -55,7 +60,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
-                            width = screen.width - 430 > 950 ? 950 : screen.width - 430;    
+                            width = (window.outerWidth * 950)/(1920);
+                            height = (window.outerHeight * 450)/(1080 - 40);
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -71,7 +77,14 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
-                            width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
+                            if (window.outerHeight == 728 && window.outerWidth == 1280) {
+                                    $('div#left-contents').css('margin-top',"-20px");
+                                    $('html.sidebar-html').css('overflow','hidden')
+                                }else {
+                                    $('div#left-contents').css('margin-top',"0px");   
+                            }
+                            width = (window.outerWidth * 840)/(1920);
+                            height = (window.outerHeight * 400)/(1080 - 40);
                         } else {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
@@ -182,12 +195,74 @@ module nts.uk.com.view.cmm018.a.sub {
             });
                 // fix bug  109946
             if (systemAtr == 0) {
-                $('#grid_matome').igGrid("option", "width",(window.outerWidth * 950)/(1920));
-                $('#grid_matome').igGrid("option", "height",(window.outerHeight * 500)/(1080 - 40 ));
+                $(gridName).igGrid("option", "width", width);
+                $(gridName).igGrid("option", "height", height);
                 $(window).resize(function() {
                     console.log('resize');
-                    $('#grid_matome').igGrid("option", "width",(window.outerWidth * 950)/1920);
-                    $('#grid_matome').igGrid("option", "height",(window.outerHeight * 500)/1080 -40 );
+                    $('html.sidebar-html').css('overflow','visible')
+                    let width = 0;
+                    let height = 0;
+                   if(rootType == vmbase.RootType.COMPANY){
+                    if(mode == vmbase.MODE.MATOME) {
+                        gridName = '#grid_matome';        
+                        if(systemAtr == 0) {
+//                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
+                            width = (window.outerWidth * 950)/(1920);
+                            height = (window.outerHeight * 450)/(1080 - 40);
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }
+                    } else {
+                        gridName = '#grid_matomeB';   
+                        if(systemAtr == 0) {
+                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }     
+                    }
+                    }else if(rootType == vmbase.RootType.WORKPLACE){
+                        if(mode == vmbase.MODE.MATOME) {
+                            gridName = '#grid_matomeC';    
+                            if(systemAtr == 0) {
+                                width = (window.outerWidth * 950)/(1920);
+                                height = (window.outerHeight * 450)/(1080 - 40);   
+                            } else {
+                                width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                            }     
+                        } else {
+                            gridName = '#grid_matomeD'; 
+                            if(systemAtr == 0) {
+                                width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            } else {
+                                width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                            }       
+                        }
+                    }else{//PERSON
+                        if(mode == vmbase.MODE.MATOME) {
+                            gridName = '#grid_matomeE';   
+                            if(systemAtr == 0) {
+                                if (window.outerHeight == 728 && window.outerWidth == 1280) {
+                                    $('div#left-contents').css('margin-top',"-20px");
+                                }else {
+                                    $('div#left-contents').css('margin-top',"0px");   
+                                }
+                                width = (window.outerWidth * 840)/(1920);
+                                height = (window.outerHeight * 380)/(1080 - 40);
+                            } else {
+                                width = screen.width - 195 > 950 ? 950 : screen.width - 195;
+                            }     
+                        } else {
+                            gridName = '#grid_matomeF';     
+                            if(systemAtr == 0) {
+                                width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
+                            } else {
+                                width = screen.width - 195 > 950 ? 950 : screen.width - 195;
+                            }   
+                        }
+                    }
+                    
+                    $(gridName).igGrid("option", "width", width);
+                    $(gridName).igGrid("option", "height", height);
                  });
             }  
             dfd.resolve();
