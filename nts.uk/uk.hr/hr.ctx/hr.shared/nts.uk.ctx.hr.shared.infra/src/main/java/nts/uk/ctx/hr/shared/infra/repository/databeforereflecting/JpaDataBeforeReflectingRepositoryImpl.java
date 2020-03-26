@@ -89,6 +89,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 				PreReflecData entity = entityOpt.get();
 				entity.updateEntity(dm);
 				this.commandProxy().update(entity);
+				this.getEntityManager().flush();
 				System.out.println("Update entity Success - " + listDomain.indexOf(dm));
 
 			} else {
@@ -143,7 +144,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	}
 
 	@Override
-	public List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,
+	public List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,List<String> listPid,
 			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
 
 		String sql = "SELECT c FROM PreReflecData c WHERE 1=1 ";
@@ -173,6 +174,25 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 			}
 			
 			sql = sql + " and c.sId IN " + inClause ;
+		}
+		
+		if (!listPid.isEmpty()) {
+			String inClause = "";
+			if (listSid.size() ==  1) {
+				inClause = inClause + "('" + listPid.get(0) + "')"  ;
+			}else{
+				for (int i = 0; i < listPid.size(); i++) {
+					if (i == 0) {
+						inClause = inClause + "('" + listPid.get(0) + "'"  ;
+					} else if (i == listPid.size() - 1) {
+						inClause = inClause + ",'" + listPid.get(i) + "')"  ;
+					} else {
+						inClause = inClause + ",'" + listPid.get(i) + "'"  ;
+					}
+				}
+			}
+			
+			sql = sql + " and c.pId IN " + inClause ;
 		}
 
 		if ((!includReflected.isPresent()) || (includReflected.isPresent() && includReflected.get() == false)) {

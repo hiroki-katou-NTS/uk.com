@@ -24,6 +24,13 @@ public class CheckStatusRegistration {
 		
 		
 		// アルゴリズム[退職登録済みチェック]を実行する(thực hiện thuật toán[check đã đăng ký nghỉ việc])
+		//[input]
+		//・会社ID = ログイン会社ID
+	    //・社員ID = input. 社員ID
+		//・基準日 = システム日付
+		
+		
+
 		
 		
 		
@@ -32,18 +39,14 @@ public class CheckStatusRegistration {
 		
 		
 		String cid = AppContexts.user().companyId();
-		Integer workId = 1;
 		List<String> listSid =  Arrays.asList(sid);
 		Optional<Boolean> includReflected = Optional.of(true);
-		Optional<String> sortByColumnName = Optional.empty();
-		Optional<String> orderType = Optional.empty();
 
 		// [個人情報の取得]("Get personal information")
 		// todo 
 		
 		// アルゴリズム[退職者情報の取得]を実行する (Thực hiện thuật toán "Get Retired information")
-		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, workId, listSid,
-				includReflected, sortByColumnName, orderType);
+		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, listSid, includReflected);
 		
 		if (!listRetirementInfo.isEmpty()) {
 			throw new BusinessException("MsgJ_JCM007_5"); // MsgJ_JCM007_5

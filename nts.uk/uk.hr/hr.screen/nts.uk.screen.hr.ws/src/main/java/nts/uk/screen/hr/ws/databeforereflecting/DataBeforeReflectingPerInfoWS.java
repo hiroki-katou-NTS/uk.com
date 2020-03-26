@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmPreCheck;
 import nts.uk.screen.hr.app.databeforereflecting.command.DataBeforeReflectCommand;
@@ -80,8 +81,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/modify-retiree-information")
-	public void modifyRetireeInformation(DataBeforeReflectCommand command) {
-		this.modifyRetireeInfo.handle(command);
+	public JavaTypeResult<Boolean> modifyRetireeInformation(DataBeforeReflectCommand command) {
+		return new JavaTypeResult<Boolean>(this.modifyRetireeInfo.handle(command));
 	}
 
 	@POST

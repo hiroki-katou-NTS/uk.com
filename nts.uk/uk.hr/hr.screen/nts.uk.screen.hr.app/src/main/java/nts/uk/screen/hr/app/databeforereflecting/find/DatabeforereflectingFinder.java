@@ -42,15 +42,11 @@ public class DatabeforereflectingFinder {
 		DataBeforeReflectResultDto resultDto = new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
 
 		String cid = AppContexts.user().companyId();
-		Integer workId = 1;
-		List<String> listPid = new ArrayList<>();
+		List<String> listSid = new ArrayList<>();
 		Optional<Boolean> includReflected = Optional.empty();
-		Optional<String> sortByColumnName = Optional.of("date_01");
-		Optional<String> orderType = Optional.of("asc");
 
 		// アルゴリズム[退職者登録一覧の取得]を実行する (Thực hiện thuật toán "Get list đăng ký người nghỉ hưu")
-		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, workId, listPid,
-				includReflected, sortByColumnName, orderType);
+		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, listSid, includReflected);
 		
 		if (listRetirementInfo.isEmpty()) {
 			return new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
@@ -121,12 +117,23 @@ public class DatabeforereflectingFinder {
 
 	private List<RetirementInformation> getApprovalData(String cID, List<String> listSid, Optional<Boolean> includReflected) {
 		
-		Optional<String> sortByColumnName = Optional.of("date_01");
-		Optional<String> orderType = Optional.of("asc");
-		int workId = 1;
+		return this.retirementInfoService.getRetirementInfo(cID, listSid, includReflected);
+	}
+	
+	// 退職者登録一覧の取得
+	public boolean getRetiredEmployeeList(String cid) {
 
-		return this.retirementInfoService.getRetirementInfo(cID, workId, listSid, includReflected, sortByColumnName,
-				orderType);
+		List<String> listSid = new ArrayList<>();
+		Optional<Boolean> includReflected = Optional.empty();
+
+		// アルゴリズム[退職者登録一覧の取得]を実行する (Thực hiện thuật toán "Get list đăng ký người nghỉ hưu")
+		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, listSid, includReflected);
+
+		if (listRetirementInfo.isEmpty()) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	// 退職日変更時処理(xử lý khi ngày nghỉ hưu thay đổi)

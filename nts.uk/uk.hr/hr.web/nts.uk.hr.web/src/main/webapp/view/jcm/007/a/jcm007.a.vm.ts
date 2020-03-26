@@ -535,7 +535,7 @@ module jcm007.a {
                 block.clear();
                 console.log('PRECHECK DONE!!');
                 
-                self.algorithmPreCheck(2, command);
+                self.dateConfirmCheck(2, command);
                 
             }).fail((mes) => {
                 self.enable_disableInput(true);
@@ -592,7 +592,7 @@ module jcm007.a {
                 block.clear();
                 console.log('PRECHECK DONE!!');
                 
-                self.algorithmPreCheck(3, command);
+                self.dateConfirmCheck(3, command);
                 
             }).fail((mes) => {
                 self.enable_disableInput(true);
@@ -654,7 +654,7 @@ module jcm007.a {
                 block.clear();
                 console.log('PRECHECK DONE!!');
 
-                self.algorithmPreCheck(4 , command);
+                self.dateConfirmCheck(4 , command);
 
             }).fail((mes) => {
                 self.enable_disableInput(true);
@@ -666,7 +666,7 @@ module jcm007.a {
         }
 
         
-        algorithmPreCheck(regisType, command) {
+        dateConfirmCheck(regisType, command) {
             let self = this;
             // アルゴリズム[日付確認チェック]を実行する(Thực hiện thuật toán [check xác nhận ngày]) 
             // (thuat toan nay check ở dưới client sẽ hợp lý hơn)
@@ -734,13 +734,24 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.modifyRetireeInformation(command).done(() => {
+            service.modifyRetireeInformation(command).done((result : boolean) => {
                 console.log('UPDATE DONE!');
-                self.start(command.historyId).done(() => {
-                       console.log('START DONE!'); 
-                });
+                console.log(result);
+                if (result) {
+                    self.start(command.historyId).done(() => {
+                        console.log('START DONE!');
+                        dialog.info({ messageId: "Msg_15" });
+                    });
+                }else {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.start(null).done(() => {
+                            console.log('START DONE!');
+                        });
+                    });
+                
+                }
+
                 block.clear();
-                dialog.info({ messageId: "Msg_15" });
                 dfd.resolve();
             }).fail((mes) => {
                 console.log('UPDATE FAIL!!');

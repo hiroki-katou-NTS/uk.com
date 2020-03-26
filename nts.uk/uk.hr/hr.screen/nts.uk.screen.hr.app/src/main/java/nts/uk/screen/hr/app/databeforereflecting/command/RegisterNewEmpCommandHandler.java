@@ -1,5 +1,7 @@
 package nts.uk.screen.hr.app.databeforereflecting.command;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,7 +32,7 @@ public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeRefle
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
-		retirementInformationService.addRetireInformation(domainObj);
+		retirementInformationService.addRetireInformation(Arrays.asList(domainObj));
 	}
 	
 	private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){
