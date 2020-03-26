@@ -211,6 +211,9 @@ public class AppAbsenceFinder {
 			throw new BusinessException("Msg_198");
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
+		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
+		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
+		
 		// 休暇申請設定を取得する
 		HolidayRequestSetOutput holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
 		appAbsenceStartInfoOutput.setHdAppSet(holidayRequestSetOutput.getHdAppSet());
@@ -512,15 +515,23 @@ public class AppAbsenceFinder {
 		GeneralDate targetDate = GeneralDate.fromString(startAppDate, "yyyy/MM/dd");
 		dateLst.add(targetDate);
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
 		// 共通インタラクション「申請日を変更する」を実行する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+		AppDispInfoWithDateOutput appDispInfoWithDateOutputResult = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
 				targetDate,
 				ApplicationType.ABSENCE_APPLICATION, 
-				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput());
+				appDispInfoNoDateOutput);
 		// INPUT．「休暇申請起動時の表示情報」を更新する
-		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		if(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting()
+				.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
+			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setPrePostAtr(appDispInfoWithDateOutputResult.getPrePostAtr());
+			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setAchievementOutputLst(appDispInfoWithDateOutputResult.getAchievementOutputLst());
+			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setAppDetailContentLst(appDispInfoWithDateOutputResult.getAppDetailContentLst());
+		} else {
+			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutputResult);
+		}
 		// 承認ルートの基準日を確認する
 		RequestSetting requestSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting();
 		if(requestSetting.getApplicationSetting().getRecordDate() == RecordDate.APP_DATE ) {
@@ -536,7 +547,7 @@ public class AppAbsenceFinder {
 		// 各休暇の管理区分を取得する
 		CheckDispHolidayType checkDispHolidayType = absenseProcess.checkDisplayAppHdType(
 				companyID, 
-				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getSid(), 
+				appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 		// 「休暇申請起動時の表示情報」を更新する
 		appAbsenceStartInfoOutput.getRemainVacationInfo().setYearManage(checkDispHolidayType.isYearManage());
