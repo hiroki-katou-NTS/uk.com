@@ -532,7 +532,7 @@ module nts.uk.at.view.kaf006.b{
             self.workTimeCodes(data.appAbsenceStartInfoDto.workTimeLst);
             
             
-            self.changeWorkHourValueFlg(appAbsenceDto.displayWorkChangeFlg);
+            self.changeWorkHourValueFlg(appAbsenceStartInfoDto.workHoursDisp);
             self.changeWorkHourValue(appAbsenceDto.changeWorkHourFlg);
             self.selectedAllDayHalfDayValue(appAbsenceDto.allDayHalfDayLeaveAtr);
             self.displayHalfDayValue(appAbsenceDto.halfDayFlg);
