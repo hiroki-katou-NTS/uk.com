@@ -112,7 +112,7 @@
 							data-bind="ntsTextEditor: {
 											value: selectedCommonMasterItem().commonMasterItemCode ,
 											required: true,
-											name:['CMM022_A222_2'],
+											name:'#[CMM022_A222_2]',
 											constraint:'CommonMasterCode',
 											option:{ width:'20px'},
 											enable:commonMasters().length
@@ -122,7 +122,7 @@
 						id="A223_3"
 							data-bind="ntsTextEditor: {
 											value: selectedCommonMasterItem().commonMasterItemName ,
-											name:['CMM022_A222_3'],
+											name: '#[CMM022_A222_3]',
 											required: true,
 											constraint:'CommonMasterName',
 											option:{ width: '150px' },
@@ -136,12 +136,12 @@
 					<div class="div_line pl-15">
 					<!-- A223_5 -->
 						<div
-							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:['CMM022_A222_5'] , enable:commonMasters().length }"></div>
+							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:'#[CMM022_A222_5]' , enable:commonMasters().length }"></div>
 						<!-- A223_6 -->
 						#{i18n.getText('CMM022_A223_6')}
 						<!-- A223_7 -->
 						<div
-							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:['CMM022_A222_7'], enable:commonMasters().length }"></div>
+							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:'#[CMM022_A222_7]', enable:commonMasters().length }"></div>
 					</div>
 				</div>
 			</div>
