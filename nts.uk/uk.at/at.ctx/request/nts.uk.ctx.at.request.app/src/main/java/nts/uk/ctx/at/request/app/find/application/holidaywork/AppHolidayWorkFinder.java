@@ -837,7 +837,7 @@ public class AppHolidayWorkFinder {
 					//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 					Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 					List<AppEmploymentSetting> appEmploymentWorkType = new ArrayList<AppEmploymentSetting>();
-					appEmploymentWorkType.add(result.getAppDispInfoStartupDto().appDispInfoWithDateOutput.toDomain().getEmploymentSet());
+					appEmploymentWorkType.addAll(result.getAppDispInfoStartupDto().appDispInfoWithDateOutput.toDomain().getEmploymentSet());
 					WorkTypes = new WorkTypeHolidayWork();
 					if(uiType != 1){
 						// 4.勤務種類を取得する

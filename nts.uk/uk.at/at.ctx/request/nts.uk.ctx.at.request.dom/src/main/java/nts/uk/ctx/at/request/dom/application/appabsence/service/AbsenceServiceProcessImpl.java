@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -586,11 +587,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
+		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == holidayType.value)
+				.findFirst().get();
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
 		// 勤務種類を取得する
 		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
-				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet(), 
+				employmentSet, 
 				companyID, 
 				holidayType, 
 				alldayHalfDay,
@@ -914,10 +918,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 代休振休優先消化チェック
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
+				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().get();
 		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
 				mode, 
 				appAbsenceStartInfoOutput.getHdAppSet(), 
-				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet(), 
+				employmentSet, 
 				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubVacaManage(), 
 				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubHdManage(), 
 				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubVacaRemain(), 
@@ -1054,9 +1060,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
+		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
+				.findFirst().get();
 		// 選択可能の勤務種類を取得する
-		List<WorkType> workType = appAbsenceThreeProcess.getWorkTypeDetails(
-				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet(),
+		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
+				employmentSet,
 				companyID,
 				appAbsence.getHolidayAppType(),
 				appAbsence.getAllDayHalfDayLeaveAtr().value, 

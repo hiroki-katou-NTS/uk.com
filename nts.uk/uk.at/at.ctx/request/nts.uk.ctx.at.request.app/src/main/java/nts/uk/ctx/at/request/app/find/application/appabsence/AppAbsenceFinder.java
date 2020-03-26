@@ -63,6 +63,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
@@ -1015,17 +1016,18 @@ public class AppAbsenceFinder {
 		}
 		return null;
 	}
-	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
-		if(appEmploymentSetting.getHolidayOrPauseType() == hdType){
+	private boolean checkHdType(List<AppEmploymentSetting> appEmploymentSetting, int hdType){
+		Optional<AppEmploymentSetting> setting = appEmploymentSetting.stream().filter(x -> x.getHolidayOrPauseType() == hdType).findFirst();
+		if(setting.isPresent()) {
 			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
 			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
-			return appEmploymentSetting.getHolidayTypeUseFlg() ? false : true;
+			return setting.get().getHolidayTypeUseFlg() ? false : true;
 		}
 		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
 		return true;
 	}
 	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
-			List<HolidayAppTypeName> holidayAppTypes,AppEmploymentSetting appEmploymentSetting){
+			List<HolidayAppTypeName> holidayAppTypes, List<AppEmploymentSetting> appEmploymentSetting){
 		List<Integer> holidayAppTypeCodes = new ArrayList<>();
 		for(int hdType = 0; hdType <=7; hdType ++){
 			if(hdType == 5 || hdType == 6){

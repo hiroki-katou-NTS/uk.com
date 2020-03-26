@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -141,7 +142,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 雇用別申請承認設定を取得する
 		List<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
-		output.setEmploymentSet(CollectionUtil.isEmpty(employmentSetLst) ? null : employmentSetLst.stream().findFirst().get());
+		output.setEmploymentSet(employmentSetLst);
 		
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
