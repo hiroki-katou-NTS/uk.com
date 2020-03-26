@@ -19,7 +19,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed"
-					data-bind="click: register, enable: checkData">#{i18n.getText('CMM022_B1_1')}</button>
+					data-bind="click: register, enable: enabledSave()">#{i18n.getText('CMM022_B1_1')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('CMM022_B1_2')}</button>
 
 			</div>

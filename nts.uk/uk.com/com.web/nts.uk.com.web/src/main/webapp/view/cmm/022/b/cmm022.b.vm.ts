@@ -33,8 +33,6 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             // list master item dang duoc select cua iggrid right content
             listItems: KnockoutObservableArray<any> = ko.observableArray([]);
             
-            // check enable/disable nut dang ky
-            checkData: KnockoutObservable<> = ko.observable(true);
             
             // data gui ve man A
             setData: KnockoutObservable<> = ko.observable();
@@ -52,13 +50,11 @@ module nts.uk.com.view.cmm022.b.viewmodel {
 
                             self.listItems(data.listCommonMasterItem);
                             self.itemSelected().commonMasterItemId(self.listItems()[0].commonMasterItemId);
-                            self.checkData(true);
                             
                         }).fail(function(err) {
                             
                             if(err.messageId == "Msg_1578"){
                                 self.listItems([]);
-                                self.checkData(false);
                             }
                             
                             nts.uk.ui.dialog.error({ messageId: err.messageId });
@@ -85,6 +81,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                     });
                 }, 100); 
             }
+            
+            
 
             /**
              * start page
@@ -110,6 +108,11 @@ module nts.uk.com.view.cmm022.b.viewmodel {
             public title() {
                 let self = this;
                 return self.masterSelected().commonMasterCode() + " " + self.masterSelected().commonMasterName();
+            }
+            
+            public enabledSave() {
+                let self = this;
+                return self.listItems().length > 1;
             }
             
             register(){
