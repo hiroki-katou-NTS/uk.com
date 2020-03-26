@@ -250,24 +250,27 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
-		boolean masterUnregistered = true;
+	public ApplyWorkTypeOutput appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
+		Optional<WorkType> workTypeInLst = wkTypes.stream()
+				.filter(wk -> wk.getWorkTypeCode().v().equals(wkTypeCD))
+				.findAny();
+		if(workTypeInLst.isPresent()) {
+			// INPUT.勤務種類(List)内にINPUT.選択済勤務種類コードが含まれる((trong INPUT.workType(list) có chứa selectedWorkTypeCode)
+			return new ApplyWorkTypeOutput(wkTypes, false);
+		}
+		
 		// ドメインモデル「勤務種類」を取得する(Lấy domain [WorkType])
-		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		boolean isInList = false;
-		if(WkTypeOpt.isPresent()){
-			  isInList = wkTypes.stream()
-					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
-					.collect(Collectors.toList()).isEmpty();
+		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
+		if(!wkTypeOpt.isPresent()) {
+			// マスタ未登録←true(master Unregistered ←true)
+			return new ApplyWorkTypeOutput(wkTypes, true);
 		}
-
-		if (isInList) {
-			// INPUT.勤務種類(List)に勤務種類を追加する(Thêm workType vào INPUT.workType(list))
-			wkTypes.add(WkTypeOpt.get());
-
-			masterUnregistered = false;
-		}
-		return masterUnregistered;
+		// INPUT.勤務種類(List)に勤務種類を追加する(Thêm workType vào INPUT.workType(list))
+		wkTypes.add(wkTypeOpt.get());
+		// INPUT.勤務種類(List)をソートする(Sort INPUT.workType(List))
+		wkTypes.sort(Comparator.comparing(x -> x.getWorkTypeCode().v()));
+		// マスタ未登録←false(master Unregistered ←false)
+		return new ApplyWorkTypeOutput(wkTypes, false);
 	}
 
 }

@@ -1062,12 +1062,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getAllDayHalfDayLeaveAtr().value, 
 				appAbsence.isHalfDayFlg());
 		// 申請済み勤務種類の存在判定と取得
-		boolean workTypeNotRegister = commonAlgorithm.appliedWorkType(companyID, workType, appAbsence.getWorkTypeCode().v());
+		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, appAbsence.getWorkTypeCode().v());
 		// INPUT．「休暇申請起動時の表示情報」を更新する
-		appAbsenceStartInfoOutput.setWorkTypeLst(workType);
+		appAbsenceStartInfoOutput.setWorkTypeLst(applyWorkTypeOutput.getWkTypes());
 		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
 		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
-		appAbsenceStartInfoOutput.setWorkTypeNotRegister(workTypeNotRegister);
+		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
 	}

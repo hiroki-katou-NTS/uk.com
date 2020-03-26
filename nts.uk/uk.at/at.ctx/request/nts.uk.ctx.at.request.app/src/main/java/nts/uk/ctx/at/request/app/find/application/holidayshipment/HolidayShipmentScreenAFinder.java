@@ -687,7 +687,7 @@ public class HolidayShipmentScreenAFinder {
 		boolean isWkTypeCDNotNullOrEmpty = !StringUtils.isEmpty(wkTypeCD);
 		if (isWkTypeCDNotNullOrEmpty) {
 			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
-			boolean masterUnreg = commonAlgorithm.appliedWorkType(companyID, outputWkTypes, wkTypeCD);
+			boolean masterUnreg = commonAlgorithm.appliedWorkType(companyID, outputWkTypes, wkTypeCD).isMasterUnregister();
 			if(masterUnreg){
 				result.setMasterUnreg(masterUnreg);
 			}
