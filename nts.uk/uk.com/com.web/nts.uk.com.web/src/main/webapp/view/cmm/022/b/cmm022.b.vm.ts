@@ -45,10 +45,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                     
                     blockUI.grayout();
                         service.getListMasterItem({ commonMasterId: id }).done((data: any) => {
-                            
-                            _.sortBy(data.listCommonMasterItem, ['displayNumber']);
 
-                            self.listItems(data.listCommonMasterItem);
+                            self.listItems(_.sortBy(data.listCommonMasterItem, ['displayNumber']));
                             
                             let item = _.filter(data.listCommonMasterItem, ['commonMasterItemId', self.itemSelected().commonMasterItemId()])[0];
                             if (!item) {
