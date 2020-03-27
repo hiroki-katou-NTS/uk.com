@@ -1,3 +1,6 @@
+html {
+	overflow: hidden;
+}
 #ksm015b{
     width: 1200px;
 }

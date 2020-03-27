@@ -22,3 +22,6 @@
 .sidebar-content-header {
     min-width: 700px;
 }
+.sidebar-content {
+	height: 100%;
+}
