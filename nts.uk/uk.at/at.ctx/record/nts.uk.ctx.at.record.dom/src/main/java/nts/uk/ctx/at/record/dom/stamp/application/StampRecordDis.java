@@ -29,6 +29,7 @@ public class StampRecordDis implements DomainValue{
 		this.useArt = useArt;
 		this.checkErrorType = Optional.of(checkErrorType).get();
 		this.promptingMssage = promptingMssage;
+		checkErrorType.getErrorAlarm();
 	}
 	
 }

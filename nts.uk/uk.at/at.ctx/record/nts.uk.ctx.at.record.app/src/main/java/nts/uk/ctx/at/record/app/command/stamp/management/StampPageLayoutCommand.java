@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
@@ -13,8 +14,13 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampPageComment;
 import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
 import nts.uk.ctx.at.record.dom.stamp.management.StampPageName;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
+@NoArgsConstructor
 public class StampPageLayoutCommand {
 
 	/** ページNO */
@@ -42,4 +48,13 @@ public class StampPageLayoutCommand {
 		return new StampPageLayout(pageNos, stampPageNames, stampPageComments, buttonLayoutTypes, lstButtonSets);
 	}
 
+	public StampPageLayoutCommand(int pageNo, String stampPageName, StampPageCommentCommand stampPageComment,
+			int buttonLayoutType, List<ButtonSettingsCommand> lstButtonSet) {
+		super();
+		this.pageNo = pageNo;
+		this.stampPageName = stampPageName;
+		this.stampPageComment = stampPageComment;
+		this.buttonLayoutType = buttonLayoutType;
+		this.lstButtonSet = lstButtonSet;
+	}
 }

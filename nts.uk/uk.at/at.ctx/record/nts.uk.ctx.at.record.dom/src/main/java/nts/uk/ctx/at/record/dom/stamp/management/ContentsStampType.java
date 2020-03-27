@@ -28,8 +28,8 @@ public enum ContentsStampType {
 	/** 退勤＋残業 */
 	DEPARTURE_OVERTIME(7, "退勤＋残業", "Enum_ContentsStampType_DEPARTURE_OVERTIME"),
 	
-	/** 退勤 */
-	OUT(8, "退勤", "Enum_ContentsStampType_OUT"),
+	/** 外出 */
+	OUT(8, "外出", "Enum_ContentsStampType_OUT"),
 	
 	/** 戻り */
 	RETURN(9, "戻り", "Enum_ContentsStampType_RETURN"),

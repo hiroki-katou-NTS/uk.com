@@ -1,18 +1,23 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-
+import lombok.NoArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class StampPageCommentCommand {
 	/** コメント */
-	@Getter
 	private String pageComment;
 	
 	/** コメント色 */
-	@Getter
 	private String commentColor;
 
+	public StampPageCommentCommand(String pageComment, String commentColor) {
+		this.pageComment = pageComment;
+		this.commentColor = commentColor;
+	}
 }

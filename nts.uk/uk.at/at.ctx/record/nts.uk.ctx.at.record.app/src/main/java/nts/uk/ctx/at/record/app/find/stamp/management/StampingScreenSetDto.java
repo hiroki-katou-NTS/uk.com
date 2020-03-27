@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.app.find.stamp.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @Data
 public class StampingScreenSetDto {

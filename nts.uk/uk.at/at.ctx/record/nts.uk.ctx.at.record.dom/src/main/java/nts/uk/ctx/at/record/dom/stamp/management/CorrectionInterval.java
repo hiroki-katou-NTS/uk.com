@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.stamp.management;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * 打刻時刻補正時間
@@ -9,8 +11,9 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 
-@IntegerRange(min = 1, max = 60)
-public class CorrectionInterval extends IntegerPrimitiveValue<CorrectionInterval> {
+@IntegerMinValue(1)
+@IntegerMaxValue(60)
+public class CorrectionInterval extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 
 	/**
 	 * serialVersionUID

@@ -25,9 +25,19 @@
 }
 
 #message-text-1, #message-text-2, #message-text-3 {
-	width: 300px;
+	width: 300px !important;
 }
 
-.text-end{
+.text-end {
 	margin-left: 257px;
+}
+
+.text-color-1 {
+	margin-top: -37px;
+	margin-left: 320px;
+}
+
+#mess-color-1 {
+	margin-top: -34px;
+	margin-left: 130px;
 }

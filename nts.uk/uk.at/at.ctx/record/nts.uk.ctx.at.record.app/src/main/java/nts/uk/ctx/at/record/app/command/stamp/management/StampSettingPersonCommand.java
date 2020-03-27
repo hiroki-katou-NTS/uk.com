@@ -4,7 +4,11 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class StampSettingPersonCommand {
 	

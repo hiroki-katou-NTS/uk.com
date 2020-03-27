@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.management.ColorSetting;
 import nts.uk.ctx.at.record.dom.stamp.management.CorrectionInterval;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Data
+@NoArgsConstructor
 public class AddStampSettingPersonCommand {
 	
 

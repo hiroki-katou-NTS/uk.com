@@ -14,6 +14,7 @@
 	margin-left: 10px;
 }
 
+
 #stamping-his-radio {
 	margin-left: 75px;
 }
@@ -40,8 +41,12 @@
 	margin-left: 212px;
 }
 
-.nts-input, #correc-text-b {
+#correc-text-b {
 	width: 50px;
+}
+
+.nts-input{
+	width: 24px;
 }
 
 .ntsRadioBox {

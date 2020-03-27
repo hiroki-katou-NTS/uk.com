@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 
-@StringMaxLength(5)
+@StringMaxLength(10)
 public class StampPageName extends StringPrimitiveValue<StampPageName>{
 	
 	private static final long serialVersionUID = 1L;

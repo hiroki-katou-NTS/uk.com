@@ -12,7 +12,11 @@ import nts.uk.ctx.at.record.app.command.stamp.management.ButtonTypeCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageCommentCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampTypeCommand;
 import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class StampPageLayoutDto {
@@ -40,11 +44,11 @@ public class StampPageLayoutDto {
 			ButtonDisSetCommand buttonDisSet = new ButtonDisSetCommand(buttonNameSet, x.getButtonDisSet().getBackGroundColor().v());
 			
 			StampTypeCommand stampType = new StampTypeCommand(
-					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().isChangeHalfDay(),
+					!x.getButtonType().getStampType().isPresent() ? null : x.getButtonType().getStampType().get().isChangeHalfDay(),
 					x.getButtonType().getStampType().get() == null  ? null : x.getButtonType().getStampType().get().getGoOutArt() == null ? null : x.getButtonType().getStampType().get().getGoOutArt().get().value,
-					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getSetPreClockArt().value,
-					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getChangeClockArt().value,
-					x.getButtonType().getStampType() == null ? null : x.getButtonType().getStampType().get().getChangeCalArt().value);
+					!x.getButtonType().getStampType().isPresent() ? null : x.getButtonType().getStampType().get().getSetPreClockArt().value,
+					!x.getButtonType().getStampType().isPresent() ? null : x.getButtonType().getStampType().get().getChangeClockArt().value,
+					!x.getButtonType().getStampType().isPresent() ? null : x.getButtonType().getStampType().get().getChangeCalArt().value);
 			
 			ButtonTypeCommand buttonType = new ButtonTypeCommand(x.getButtonType().getReservationArt().value, stampType);
 			return new ButtonSettingsCommand(x.getButtonPositionNo().v(),

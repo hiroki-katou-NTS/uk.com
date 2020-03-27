@@ -24,6 +24,10 @@ public interface StampSetPerRepository {
 	 */
 	public Optional<StampSettingPerson> getStampSet (String companyId);
 
+	/**
+	 * 
+	 * @param layout
+	 */
 	public void insertPage(StampPageLayout layout);
 
 	public void updatePage(StampPageLayout layout);
@@ -33,5 +37,7 @@ public interface StampSetPerRepository {
 	List<StampPageLayout> getAllStampSetPage(String companyId);
 
 	Optional<StampPageLayout> getStampSetPageByCid(String companyId);
+
+	void delete(String companyId, int pageNo);
 
 }
