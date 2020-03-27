@@ -12,7 +12,8 @@ module nts.uk.com.view.cmm018.a.sub {
         export class ScreenModel{
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
-            constructor() {
+            intervalDetectResolution: any;
+            constructor() {  
             }
             // fix bug 109950
             scrollToIndex(object: any) {
@@ -34,19 +35,43 @@ module nts.uk.com.view.cmm018.a.sub {
                 let self = this;
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
+                let height = 530;
                 let gridName = '#grid_matome';
+                $('html.sidebar-html').css('overflow','visible');
+                $('div#left-contents').css('margin-top',"0px"); 
                 if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matome';        
                         if(systemAtr == 0) {
-                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;    
+//                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
+//                            width = (screen.width * 1000)/(1920);
+//                            height = (screen.height * 450)/(1080 - 40);
+                            //1920*1040
+                            if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+//                                     width = 750;
+                                     width = 860
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+//                                width = 510;
+                                width = 600;
+                                height = 315;                           
+                            }
+                            
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
                         gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
-                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            width = (screen.width * 900)/(1920);
+                            height = (screen.height * 450)/(1080 - 40);  
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -55,7 +80,20 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
-                            width = screen.width - 430 > 950 ? 950 : screen.width - 430;    
+                           if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                     width = 850;
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+                                width = 600;
+                                height = 315;                           
+                            }
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -71,7 +109,30 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
-                            width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
+                            
+                           if (screen.height == 1080 && screen.width == 1920) {
+                                width = 950;
+                                height = 580;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                width = 800;
+                                height = 285;
+                                $('div#left-contents').css('margin-top',"-20px");
+                               if(window.outerHeight == 728 && window.outerWidth == 1280){
+                                        $('html.sidebar-html').css('overflow','hidden');
+                                }  
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {
+                                width = 550;
+                                height = 285;
+                                $('div#left-contents').css('margin-top',"-20px");
+                               if(window.outerHeight == 728 && window.outerWidth == 1024){
+                                        $('html.sidebar-html').css('overflow','hidden');
+                               }  
+                            }
+
                         } else {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
@@ -97,6 +158,8 @@ module nts.uk.com.view.cmm018.a.sub {
                 if(mode == vmbase.MODE.SHINSEI){
                     heightG = 181;
                 }
+                
+                
               $(gridName).ntsGrid({
                 width: width,
                 height: heightG,
@@ -122,7 +185,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     { name: "MultiColumnHeaders" },
                     { name: 'ColumnFixing', fixingDirection: 'left',
                                             showFixButtons: false,
-                                            columnSettings: [{ columnKey: 'appName', isFixed: true } ]},
+                                            //resize column in gridlist
+                                            columnSettings: [{ columnKey: 'appName', allowResizing: false, minimumWidth: 0 } ]},
                 ],
                  ntsFeatures:[
                     {
