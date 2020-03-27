@@ -228,7 +228,8 @@ module nts.uk.com.view.cmm018.a.sub {
                         /**プログラムID(インベント)*/
                         lstEventID: []};
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
-                    self.workplaceIdB(data.workplaceId); 
+                    self.workplaceIdB(data.workplaceId);
+                    __viewContext.viewModel.viewmodelA.workplaceId(data.workplaceId);
                     servicebase.getWkpDepInfo({id: data.workplaceId, sysAtr: 0}).done(function(wpInfo){
                         __viewContext.viewModel.viewmodelA.wpCode(wpInfo.code);
                         __viewContext.viewModel.viewmodelA.wpName(wpInfo.name);
