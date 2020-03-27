@@ -444,10 +444,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				checkDispHolidayType.isSubHdManage(), 
 				checkDispHolidayType.isSubVacaManage(), 
 				checkDispHolidayType.isRetentionManage(), 
-				numberOfRemainOutput.getYearRemain(), 
-				numberOfRemainOutput.getSubHdRemain(), 
-				numberOfRemainOutput.getSubVacaRemain(), 
-				numberOfRemainOutput.getStockRemain());
+				numberOfRemainOutput.getYearRemain() == null ? new Double(0) : numberOfRemainOutput.getYearRemain(), 
+				numberOfRemainOutput.getSubHdRemain() == null ? new Double(0) : numberOfRemainOutput.getSubHdRemain(), 
+				numberOfRemainOutput.getSubVacaRemain() == null ? new Double(0) : numberOfRemainOutput.getSubVacaRemain(), 
+				numberOfRemainOutput.getStockRemain() == null ? new Double(0) : numberOfRemainOutput.getStockRemain());
 	}
 
 	@Override
