@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
@@ -59,5 +60,11 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 				endDate, 
 				employeeID, 
 				rootType);
+	}
+
+	@Override
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID,
+			List<ApprovalPhaseState> listApprovalPhaseState) {
+		approvalRootStateRepository.insert(companyID, ApprovalRootState.createFromCache(appID, date, employeeID, listApprovalPhaseState), 0);
 	}
 }

@@ -74,11 +74,13 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	public void insert(Application_New application) {
 		String companyID = AppContexts.user().companyId();
 		applicationRepository.insert(application);
-		BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
-				.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
-		GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate();
-		approvalRootStateAdapter.insertByAppType(application.getCompanyID(), application.getEmployeeID(),
-				application.getAppType().value, application.getAppDate(), application.getAppID(), targetDate);
+		if(application.getAppType() != ApplicationType.ABSENCE_APPLICATION) {
+			BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
+					.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
+			GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate();
+			approvalRootStateAdapter.insertByAppType(application.getCompanyID(), application.getEmployeeID(),
+					application.getAppType().value, application.getAppDate(), application.getAppID(), targetDate);
+		}
 	}
 
 	@Override

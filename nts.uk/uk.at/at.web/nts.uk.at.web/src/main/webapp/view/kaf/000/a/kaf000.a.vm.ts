@@ -88,37 +88,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 employeeID: employeeID,
                 overtimeAtrParam: overtimeAtr
             }).done((data)=>{
-                $('#listApproverRootState').ntsError('clear');
-                if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){
-                    if(data.errorFlag==0){
-                        if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
-                            self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
-                        }
-                    }
-                    switch(data.errorFlag){
-                        case 1:
-                            // $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
-                            // $("#inputdate").ntsError('set', {messageId:"Msg_324"});
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
-                                nts.uk.ui.block.clear();
-                            });
-                            break;
-                        case 2: 
-                            // $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
-                            // $("#inputdate").ntsError('set', {messageId:"Msg_238"});
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
-                                nts.uk.ui.block.clear();
-                            });
-                            break;
-                        case 3:
-                            // $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
-                            // $("#inputdate").ntsError('set', {messageId:"Msg_237"});
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
-                                nts.uk.ui.block.clear();
-                            });
-                            break;
-                        default: 
-                    }  
+                if(appType != 1) {
+                    self.initData(data);    
                 }
                 let deadlineMsg = data.outputMessageDeadline;
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
@@ -216,6 +187,42 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     }
                 }   
                 return s;
+            }        
+        }
+        
+        public initData(data) {
+            let self = this;
+            $('#listApproverRootState').ntsError('clear');
+            if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){
+                if(data.errorFlag==0){
+                    if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
+                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
+                    }
+                }
+                switch(data.errorFlag){
+                    case 1:
+                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
+                        // $("#inputdate").ntsError('set', {messageId:"Msg_324"});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                        break;
+                    case 2: 
+                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
+                        // $("#inputdate").ntsError('set', {messageId:"Msg_238"});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                        break;
+                    case 3:
+                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
+                        // $("#inputdate").ntsError('set', {messageId:"Msg_237"});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                        break;
+                    default: 
+                }  
             }        
         }
     }
