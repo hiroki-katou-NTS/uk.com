@@ -166,7 +166,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
 				startDate, endDate, lstDateIsHoliday);*/
 		// insert
-		absenceServiceProcess.createAbsence(appAbsence, appRoot);
+		absenceServiceProcess.createAbsence(appAbsence, appRoot, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalRootState());
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
 		// 暫定データの登録

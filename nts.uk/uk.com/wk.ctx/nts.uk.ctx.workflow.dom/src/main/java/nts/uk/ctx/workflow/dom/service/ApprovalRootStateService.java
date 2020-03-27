@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 
 /**
@@ -26,5 +27,7 @@ public interface ApprovalRootStateService {
 	 * @return
 	 */
 	public List<ApprovalRootState> getByPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate, Integer rootType);
+	
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID, List<ApprovalPhaseState> listApprovalPhaseState);
 	
 }

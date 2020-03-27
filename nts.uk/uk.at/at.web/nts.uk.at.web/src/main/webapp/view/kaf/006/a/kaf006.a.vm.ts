@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         multilContent: KnockoutObservable<string> = ko.observable('');
 
         //Approval 
-        approvalSource: Array<common.AppApprovalPhase> = [];
+        // approvalSource: Array<common.AppApprovalPhase> = [];
         employeeID: KnockoutObservable<string> = ko.observable('');
         //menu-bar 
         prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
@@ -153,7 +153,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             //startPage 006a AFTER start 000_A
             self.startPage().done(function() {
                 self.kaf000_a.start(self.employeeID(), 1, 1, self.targetDate).done(function() {
-                    self.approvalSource = self.kaf000_a.approvalList;
+                    // self.approvalSource = self.kaf000_a.approvalList;
 
                 })
             })
@@ -227,6 +227,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
             }).done((data) => {
                 self.appAbsenceStartInfoDto = data; 
+                self.kaf000_a.initData({
+                    errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
+                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                });
+                // self.approvalSource = self.kaf000_a.approvalList;
                 $("#inputdate").focus();
                 //No.65
                 let appEmpSet = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.employmentSet;
@@ -505,6 +510,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 appAbsenceStartInfoDto:  self.appAbsenceStartInfoDto
             }).done((result) => {
                 self.appAbsenceStartInfoDto = result;
+                self.kaf000_a.initData({
+                    errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
+                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                });
                 if (!nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
                     let a = [];
                     self.workTypecodes.removeAll();
