@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.classification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,13 +13,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffCompanyHistItemDto;
+import nts.uk.ctx.bs.employee.app.find.affiliatedcompanyhistory.AffiliatedCompanyHistoryFinder;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.classification.AffCompanyHistItemExport;
 import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
@@ -42,6 +47,9 @@ public class ClassificationPubImp implements SyClassificationPub {
 	/** The aff class history repository ver 1. */
 	@Inject
 	private AffClassHistoryRepository affClassHistoryRepository;
+	
+	@Inject
+	private AffiliatedCompanyHistoryFinder affiliatedCompanyHistoryFinder;
 
 	/*
 	 * (non-Javadoc)
@@ -153,6 +161,28 @@ public class ClassificationPubImp implements SyClassificationPub {
 		return classificationRepository.getAllManagementCategory(companyId).stream().map(item -> {
 			return new ClassificationExport(item.getCompanyId().v(), item.getClassificationCode().v(), item.getClassificationName().v(), item.getMemo().v());
 		}).collect(Collectors.toList());
+	}
+
+	
+	
+	@Override
+	public List<AffCompanyHistItemExport> getByIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
+		List<AffCompanyHistItemDto> listAffCompanyHistItem = this.affiliatedCompanyHistoryFinder.getByIDAndBasedate( baseDate , listempID);
+		if (listAffCompanyHistItem.isEmpty()) {
+			return new ArrayList<AffCompanyHistItemExport>();
+		}
+		
+		List<AffCompanyHistItemExport> result = listAffCompanyHistItem.stream().map(item -> {
+			AffCompanyHistItemExport export = AffCompanyHistItemExport.builder()
+					.employeeID(item.getEmployeeID())
+					.historyId(item.getHistoryId())
+					.destinationData(item.isDestinationData())
+					.startDate(item.getStartDate())
+					.endDate(item.getEndDate()).build();
+			return export;
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 
 }

@@ -32,7 +32,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	public static final String DELETE_BY_HIST_ID = "DELETE FROM PreReflecData c WHERE c.historyId = :histId";
 	
 	public static final String SELECT_BY_HIST_ID = "SELECT c FROM PreReflecData c WHERE c.historyId = :histId";
-
+	
 	@Override
 	public void addData(List<DataBeforeReflectingPerInfo> listDomain) {
 		if (listDomain.isEmpty()) {
@@ -222,6 +222,22 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	public Optional<DataBeforeReflectingPerInfo> getByHistId(String histId) {
 		return this.queryProxy().query(SELECT_BY_HIST_ID, PreReflecData.class).setParameter("histId", histId)
 				.getSingle().map(x -> x.toDomain());
+	}
+
+	@Override
+	public boolean checkExitByWorkIdCidSid(String companyId, String sid) {
+		
+		String query = "SELECT c FROM PreReflecData c WHERE c.companyId = :companyId and c.sId = : sid and (c.workId = 1 or c.workId = 2)";
+		List<PreReflecData> entitys = this.queryProxy()
+				.query(query, PreReflecData.class)
+				.setParameter("companyId", companyId)
+				.setParameter("sid", sid).getList();
+		
+		if (entitys.isEmpty()) {
+			return false;
+		}
+		
+		return true;
 	}
 
 }

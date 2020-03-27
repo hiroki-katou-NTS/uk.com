@@ -28,4 +28,7 @@ public interface DataBeforeReflectingRepository {
 			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType);
 	
 	Optional<DataBeforeReflectingPerInfo> getByHistId(String histId);
+	
+	boolean checkExitByWorkIdCidSid(String cId, String sid);
+	
 }

@@ -2,6 +2,7 @@
 package nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
@@ -20,14 +22,21 @@ import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service.DataBeforeReflectingPerInfoService;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
+import nts.uk.ctx.hr.shared.dom.employee.AffCompanyHistItemImport;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.web.request.RequestNavigateFilter;
 
 @Stateless
 public class RetirementInformationService {
 
 	@Inject
 	DataBeforeReflectingPerInfoService dataBeforeReflectPerInfoService;
+	
+	@Inject
+	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private  DataBeforeReflectingRepository dataBeforeReflectingRepo;
 
 	// 退職者情報の取得
 	public List<RetirementInformation> getRetirementInfo(String cid, List<String> listSid, Optional<Boolean> includReflected) {
@@ -93,6 +102,7 @@ public class RetirementInformationService {
 	}
 
 	// 退職者情報の追加
+	// path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報反映前データ.個人情報反映前データ_退職者情報.アルゴリズム.退職者情報の追加.退職者情報の追加
 	public void addRetireInformation(List<RetirementInformation> listDomain) {
 
 		// 退職者情報リストを個人情報反映前データリストへ変換する (Convert retired employee information
@@ -181,6 +191,7 @@ public class RetirementInformationService {
 		return result;
 	}
 
+	// 退職者情報の変更
 	public void updateRetireInformation(List<RetirementInformation> listRetirementInfor) {
 		if (!listRetirementInfor.isEmpty()) {
 			List<DataBeforeReflectingPerInfo> listDataBeforeReflect = convertRetiredEmpIntoDataBefReflec(listRetirementInfor);
@@ -188,8 +199,51 @@ public class RetirementInformationService {
 		}
 	}
 
+	
 	public void removeRetireInformation(String histId) {
 		this.dataBeforeReflectPerInfoService.removeDataBeforeReflectingPerInfo(histId);
 
 	}
+	
+	// 退職登録済みチェック
+	//[Input]
+	//・会社ID// companyID
+	//・社員ID// EmployeeID
+	//・基準日/ BaseDate
+	public int retirementRegisteredCheck(String cid, String sid, GeneralDate baseDate) {
+		
+		// 社員ID（List）と基準日から所属会社履歴項目を取得する(Lấy AffCompanyHistoryItem từ EmployeeID(List) và BaseDate)
+		List<AffCompanyHistItemImport> listAffCompanyHistItemImport = this.empInfoAdaptor.getByIDAndBasedate(baseDate, Arrays.asList(sid));
+		
+		// List<所属会社履歴項目> を確認する
+		boolean check = false;
+		Integer confirmationResul =9;
+		
+		for (int i = 0; i < listAffCompanyHistItemImport.size(); i++) {
+			AffCompanyHistItemImport affComHistItem = listAffCompanyHistItemImport.get(i);
+			if ((affComHistItem.isDestinationData() == false) && (!affComHistItem.getEndDate().equals(GeneralDate.max()))) {
+				check = true;
+			}
+		}
+		if (check) {
+			confirmationResul = 1;
+		}
+		
+		if (confirmationResul == 1) {
+			return confirmationResul;
+		}
+		
+		if (confirmationResul == 9) {
+			// ドメイン [個人情報反映前データ_退職者情報] を取得する
+			boolean domainExit = dataBeforeReflectingRepo.checkExitByWorkIdCidSid(cid, sid);
+			if (domainExit) {
+				confirmationResul = 2;
+			}else{
+				confirmationResul = 9;
+			}
+		}
+		
+		return confirmationResul;
+	}
+	
 }
