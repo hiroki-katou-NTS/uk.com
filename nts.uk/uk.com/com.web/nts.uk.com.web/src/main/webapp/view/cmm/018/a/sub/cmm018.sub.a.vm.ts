@@ -369,7 +369,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         $(gridName).igGrid("option", "width", width);
                     }
                         
-                    if ($(gridName).igGrid("option", "height") != width){
+                    if ($(gridName).igGrid("option", "height") != height){
                         $(gridName).igGrid("option", "height", height);
                     }          
                     }
