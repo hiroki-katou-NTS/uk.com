@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.develop.dom.interview.service.IInterviewRecordSummary;
+import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetireDismissalRegulationServices;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
@@ -39,7 +40,7 @@ public class DatabeforereflectingFinder {
 	// 1.起動する(Khời động)
 	public DataBeforeReflectResultDto getDataBeforeReflect() {
 		
-		DataBeforeReflectResultDto resultDto = new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
+		DataBeforeReflectResultDto resultDto = new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>(), null);
 
 		String cid = AppContexts.user().companyId();
 		List<String> listSid = new ArrayList<>();
@@ -49,18 +50,36 @@ public class DatabeforereflectingFinder {
 		List<RetirementInformation> listRetirementInfo = retirementInfoService.getRetirementInfo(cid, listSid, includReflected);
 		
 		if (listRetirementInfo.isEmpty()) {
-			return new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>());
+			return new DataBeforeReflectResultDto(new ArrayList<>(), new ArrayList<>(), null);
 		}
 		
 		// 取得した退職者情報を[A221_4 退職者登録一覧]に移送する(Transfer  retiree information đã get vào  [A221_4 Retired employee registration list])
 		List<RetiredEmployeeInfoResult> listRetiredEmployeeInfoResult= convertToDto(listRetirementInfo);
-		
 		resultDto.setRetiredEmployees(listRetiredEmployeeInfoResult);
 		
 		// アルゴリズム[社員情報リストの取得]を実行する(Thực hiện thuật toán [lấy list thông tin nhân viên])
 		List<EmployeeInformationImport> employeeImports = getEmpInfo(listRetiredEmployeeInfoResult);
-		
 		resultDto.setEmployeeImports(employeeImports);
+		
+		// アルゴリズム[面談記録概要の取得]を実行する(Thực hiện thuật toán [lấy khái quát kết quả phỏng vấn])
+		// [Input]
+		// ・会社ID = ログイン会社ID
+		// ・面談区分 = 1（退職）
+		// ・社員IDリスト = 取得した退職者情報の社員IDリスト
+		// ・サブ面談者を取得する = false
+		// ・部門を取得する = false
+		// ・職位を取得する = false
+		// ・雇用を取得する = false
+
+		int interviewCate = 1;
+		boolean getSubInterviewer = false;
+		boolean getDepartment = false;
+		boolean getPosition = false;
+		boolean getEmployment = false;
+		List<String> listSidToGetInterView = listRetirementInfo.stream().map(i -> i.getSId()).collect(Collectors.toList());
+
+		InterviewSummary interviewSummary = this.interview.getInterviewInfo(cid, interviewCate, listSidToGetInterView, getSubInterviewer, getDepartment, getPosition, getEmployment);
+		resultDto.setInterviewSummary(interviewSummary);
 		
 		return resultDto;
 

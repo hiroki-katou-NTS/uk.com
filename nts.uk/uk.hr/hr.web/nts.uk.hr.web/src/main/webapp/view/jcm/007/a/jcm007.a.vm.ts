@@ -286,19 +286,15 @@ module jcm007.a {
                             self.itemSelectedTab2(null);
                         }
                     }
+                    self.newMode();
                 } else {
-
                     self.enable_tab2(false);
                     self.visible_tab2(false);
-
-                    self.initHeaderInfo();
-                    self.initRetirementInfo();
-                    dfd.resolve();
+                    self.newMode();
                 }
-
                 dfd.resolve();
                 block.clear();
-
+                
             }).fail((error) => {
                 console.log('Get Data Tab-2 Fail');
                 dfd.reject();
@@ -885,6 +881,23 @@ module jcm007.a {
             self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' : dataDetail.naturalUnaReasons_6Val);
         }
 
+        /** new mode */
+        newMode() {
+            let self = this;
+            self.isNewMode = true;
+            
+            self.initHeaderInfo();
+            self.initRetirementInfo();
+            
+            self.itemSelectedTab1(null);
+            self.itemSelectedTab2(null);
+            $("#gridListEmployees").igGridSelection("clearSelection");
+            $("#gridListEmployeesJcm007").igGridSelection("clearSelection");
+            
+            self.selectedTab('tab-1');
+            nts.uk.ui.errors.clearAll();
+        }
+
         initHeaderInfo() {
             let self = this;
             self.enable_btnRemove(false);
@@ -893,23 +906,6 @@ module jcm007.a {
             self.currentEmployee().department('');
             self.currentEmployee().position('');
             self.currentEmployee().employmentCls('');
-            // set avatar blank
-
-        }
-
-        /** new mode */
-        newMode() {
-            let self = this;
-            self.isNewMode = true;
-            self.enable_btnRemove(false);
-            self.initHeaderInfo();
-            self.initRetirementInfo();
-            self.itemSelectedTab1(null);
-            $("#gridListEmployees").igGridSelection("clearSelection");
-            $("#gridListEmployeesJcm007").igGridSelection("clearSelection");
-            self.itemSelectedTab2(null);
-            self.selectedTab('tab-1');
-            nts.uk.ui.errors.clearAll();
         }
 
         initRetirementInfo() {
