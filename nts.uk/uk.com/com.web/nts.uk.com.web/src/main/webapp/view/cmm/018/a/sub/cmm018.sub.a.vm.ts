@@ -170,7 +170,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '100px'},
+                    { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '130px'},
                     { headerText: getText('CMM018_28'), 
                         group:[{ headerText: getText('CMM018_30'), key: 'phase1', dataType: 'string', width: '100px' },
                                { headerText: '⇐' + getText('CMM018_31'), key: 'phase2', dataType: 'string', width: '100px' },
