@@ -22,6 +22,7 @@ module nts.uk.com.view.cmm022.a {
                 usageStartDate: moment(new Date()).format("YYYY/MM/DD"),
                 usageEndDate: "9999/12/31"
             }
+            fistLoad = true;
             
             newMode: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -47,10 +48,16 @@ module nts.uk.com.view.cmm022.a {
                     }).fail(function(res) {
                         self.commonMasterItems([]);
                         self.selectedCommonMasterItem().commonMasterItemId(null);
-                        alert(res);
+                        if (self.fistLoad && res.messageId == 'Msg_1578') {
+                            alert(res);
+                        }
+                        
+                        if (res.messageId != 'Msg_1578') {
+                            alert(res);
+                        }
 
                     }).always(() => {
-
+                        self.fistLoad = false;
                         nts.uk.ui.errors.clearAll();
                         block.clear();
                     });
