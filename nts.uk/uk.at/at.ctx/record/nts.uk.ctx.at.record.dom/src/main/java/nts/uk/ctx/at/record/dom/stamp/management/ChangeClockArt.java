@@ -98,8 +98,11 @@ public enum ChangeClockArt {
 		// Not found.
 		return null;
 	}
-	
-	public boolean check () {
+	/**
+	 * 	[1] 打刻後のエラー確認する必要があるか
+	 * @return
+	 */
+	public boolean checkWorkingOut() {
 		return this == ChangeClockArt.WORKING_OUT;
 	}
 }

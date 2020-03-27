@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 打刻種類
@@ -58,13 +59,13 @@ public class StampType implements DomainValue {
 	 */
 	public String createStampTypeDisplay() {
 		if (this.setPreClockArt == SetPreClockArt.DIRECT) {
-			return "直行";
+			return TextResource.localize("KDP011_35");
 		} else if (this.setPreClockArt == SetPreClockArt.BOUNCE) {
-			return "直帰";
+			return TextResource.localize("KDP011_36");
 		} else if (changeCalArt == ChangeCalArt.EARLY_APPEARANCE) {
-			return "早出";
+			return TextResource.localize("KDP011_37");
 		} else if (changeCalArt == ChangeCalArt.BRARK) {
-			return "休出";
+			return TextResource.localize("KDP011_38");
 		}
 
 		String stampAtr = this.changeClockArt.nameId;
@@ -78,7 +79,7 @@ public class StampType implements DomainValue {
 		}
 
 		if (changeHalfDay) {
-			stampAtr = stampAtr + "+" + "半休";
+			stampAtr = stampAtr + "+" + TextResource.localize("KDP011_39");
 		}
 
 		return stampAtr;

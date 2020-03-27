@@ -17,8 +17,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-
 /**
  * DS : 社員の打刻データを作成する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.社員の打刻データを作成する
@@ -97,12 +95,11 @@ public class CreateStampDataForEmployeesService {
 		if(positionInfo.isPresent()) {
 			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
 		}
-		Stamp stamp = new Stamp(
+		return new Stamp(
 				stampNumber, 
 				datetime, 
 				relieve, 
 				type, refActualResults, stampLocationInfor);
-		return stamp;
 	}
 
 	public static interface Require extends StampDataReflectProcessService.Require {

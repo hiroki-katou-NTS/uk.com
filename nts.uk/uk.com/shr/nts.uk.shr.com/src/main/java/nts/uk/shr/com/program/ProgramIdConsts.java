@@ -1266,4 +1266,7 @@ public class ProgramIdConsts {
 	/** QUI004 */
 	public static final String QUI004A = "QUI004A";
 	public static final String QUI004C = "QUI004C";
+
+	/** KDP011*/
+	public static final String KDP011A = "KDP011A";
 }

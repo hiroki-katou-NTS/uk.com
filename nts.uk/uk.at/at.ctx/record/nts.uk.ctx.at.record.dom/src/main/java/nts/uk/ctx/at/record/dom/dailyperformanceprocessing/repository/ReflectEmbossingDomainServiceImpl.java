@@ -662,8 +662,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -864,7 +864,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
@@ -873,7 +873,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 			break;
 		// その他 no cover
 		default:
@@ -882,13 +882,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
 					new TimeWithDayAttr(x.getAttendanceTime().isPresent() ? x.getAttendanceTime().get().v()
 							: new AttendanceTime(x.getStampDateTime().clockHourMinute().v()).v()),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 			break;
 		}
 		// 反映済み区分 ← true stamp
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -1207,24 +1207,24 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 			break;
 		// その他 no cover
 		default:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 			break;
 		}
 
 		// 反映済み区分 ← true stamp
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -1274,17 +1274,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 				break;
 			// その他 no cover
 			default:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 				break;
 			}
 			int numberOfReflectionStamp = 0;
@@ -1307,8 +1307,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 反映済み区分 = true
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -1514,24 +1514,24 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 			break;
 		// その他 no cover
 		default:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 			break;
 		}
 
 		// 反映済み区分 ← true stamp
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -1579,17 +1579,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 				break;
 			// その他 no cover
 			default:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 				break;
 			}
 			int numberOfReflectionStamp = 0;
@@ -1609,8 +1609,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 		// 反映済み区分 = true
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -2087,12 +2087,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 				break;
 //			// ID入力 → タイムレコーダ(ID入力)
 //			case 2:
@@ -2117,7 +2117,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //			// その他 no cover
 			default:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 				break;
 			}
 			return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(new TimeActualStamp(newActualStamp,
@@ -2132,8 +2132,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 		// 反映済み区分 = true
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
@@ -2182,12 +2182,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// タイムレコーダー → タイムレコーダー
 			case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 				break;
 			// Web → Web打刻入力
 			case 5:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 				break;
 //			// ID入力 → タイムレコーダ(ID入力)
 //			case 2:
@@ -2212,7 +2212,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //			// その他 no cover
 			default:
 				newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-						x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+						x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 				break;
 			}
 			int numberOfReflectionStamp = 0;
@@ -2234,8 +2234,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// 反映済み区分 = true
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2299,12 +2299,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 			break;
 //		// ID入力 → タイムレコーダ(ID入力)
 //		case 2:
@@ -2329,14 +2329,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //		// その他 no cover
 		default:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 			break;
 		}
 
 		// 反映済み区分 ← true stamp
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2382,12 +2382,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// タイムレコーダー → タイムレコーダー
 		case 0:case 1:case 2:case 3:case 4: case 7: case 8: 
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.WEB_STAMP_INPUT);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.WEB_STAMP_INPUT);
 			break;
 		// Web → Web打刻入力
 		case 5:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.MOBILE_STAMP);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.MOBILE_STAMP);
 			break;
 //		// ID入力 → タイムレコーダ(ID入力)
 //		case 2:
@@ -2412,14 +2412,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //		// その他 no cover
 		default:
 			newActualStamp = new WorkStamp(processTimeOutput.getTimeAfter(), processTimeOutput.getTimeOfDay(),
-					x.getRefActualResults().getWorkLocationCD().get(), StampSourceInfo.TIME_RECORDER);
+					x.getRefActualResults().getWorkLocationCD().isPresent()?x.getRefActualResults().getWorkLocationCD().get():null, StampSourceInfo.TIME_RECORDER);
 			break;
 		}
 
 		// 反映済み区分 ← true stamp
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().get());
-		stamp.setAttendanceTime(x.getAttendanceTime().get());
+				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamp.setEmployeeId(x.getEmployeeId());
 		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2543,7 +2543,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			stampOrActualStamp = new WorkStamp();
 		}
 		// 組み合わせ区分 != 直行 or != 直帰
-		if (x.getType().getChangeCalArt().value != 0 && x.getType().isChangeHalfDay() == true
+		if (x.getType().getChangeCalArt().value != 0 && x.getType().isChangeHalfDay()
 				&& x.getType().getSetPreClockArt().value != 1 && x.getType().getSetPreClockArt().value != 2) {
 
 			// 1* // Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻
@@ -2633,8 +2633,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 5*
 					// gan 反映済み区分 = true, trường này chưa có trong StampItem
 					Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-							x.getRefActualResults(), true, x.getLocationInfor().get());
-					stamp.setAttendanceTime(x.getAttendanceTime().get());
+							x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
+					stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 					stamp.setEmployeeId(x.getEmployeeId());
 					stamp.setWorkLocationName(x.getWorkLocationName());
 

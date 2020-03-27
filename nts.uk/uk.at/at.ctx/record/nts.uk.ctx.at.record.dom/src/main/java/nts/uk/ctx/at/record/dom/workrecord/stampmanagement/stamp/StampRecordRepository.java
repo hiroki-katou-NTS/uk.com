@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -33,7 +34,7 @@ public interface StampRecordRepository {
 	 * @param stampDateTime
 	 * @return
 	 */
-	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDateTime stampDateTime);
+	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 *  [5] 打刻カード未登録の打刻記録データを取得する

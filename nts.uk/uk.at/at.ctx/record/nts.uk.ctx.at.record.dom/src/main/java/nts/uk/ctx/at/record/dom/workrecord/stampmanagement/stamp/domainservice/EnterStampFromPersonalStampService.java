@@ -37,11 +37,15 @@ public class EnterStampFromPersonalStampService {
 
 		// $個人利用の打刻設定 = require.個人利用の打刻設定を取得する()
 		Optional<StampSettingPerson> stampSettingPerOpt = require.getStampSet();
+		if (!stampSettingPerOpt.isPresent()) {
+			throw new BusinessException("Msg_1632");
+		}
 
 		// $ボタン詳細設定 = $個人利用の打刻設定.ボタン詳細設定を取得する(ページNO, ボタン位置NO)
 		Optional<ButtonSettings> buttonSet = stampSettingPerOpt.get().getButtonSet(pageNo, buttonPosNo);
-		if (!buttonSet.isPresent())
+		if (!buttonSet.isPresent()) {
 			throw new BusinessException("Msg_1632");
+		}
 		// return 社員の打刻データを作成する.作成する(require, 社員ID, 打刻日時, $ボタン詳細設定.ボタン種類, 実績への反映内容, 打刻位置情報, 就業情報端末コード)
 		return CreateStampDataForEmployeesService.create(require, employeeId, stmapDateTime, relieve, buttonSet.get().getButtonType(), Optional.of(refActualResults), positionInfo, empInfoTerCode);
 		
