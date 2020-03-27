@@ -6,7 +6,7 @@ module nts.uk.at.view.kdp010.e.service {
         saveStampFunc: "at/record/stamp/application/saveStampFunc",
         deleteStampFunc: "at/record/stamp/application/delete",
         getAttendNameByIds:"at/record/attendanceitem/daily/getattendnamebyids",
-        getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/"
+        getOptItemByAtr: "at/record/attendanceitem/daily/getlistattendcomparison"
     }
 
     export function saveStampApp(command: any): JQueryPromise<any> {
@@ -33,8 +33,8 @@ module nts.uk.at.view.kdp010.e.service {
         return nts.uk.request.ajax("at", paths.findWorkType);
     }
     
-    export function getOptItemByAtr(atr) {
-        return nts.uk.request.ajax("at", paths.getOptItemByAtr + atr);
+    export function getOptItemByAtr(checkItem) {
+        return nts.uk.request.ajax("at", paths.getOptItemByAtr);
     }
     
      export function deleteStampFunc(command: any): JQueryPromise<any> {

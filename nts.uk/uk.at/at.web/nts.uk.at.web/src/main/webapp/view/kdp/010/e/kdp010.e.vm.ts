@@ -18,7 +18,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             { id: 1, name: nts.uk.resource.getText("KDP010_60") }
         ]);
         selectedHoliday: KnockoutObservable<number> = ko.observable(0);
-        messageValueSecond: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_130"));
+        messageValueSecond: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_131"));
         secondColors: KnockoutObservable<string> = ko.observable('#000000');
 
         // E6_1, E6_2, E6_5, E6_6
@@ -27,7 +27,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             { id: 1, name: nts.uk.resource.getText("KDP010_60") }
         ]);
         selectedOvertime: KnockoutObservable<number> = ko.observable(0);
-        messageValueThird: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_130"));
+        messageValueThird: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_132"));
         thirdColors: KnockoutObservable<string> = ko.observable('#000000');
 
         workTypeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -42,12 +42,6 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         selectedImp: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
-            self.selectedImp.subscribe((newValue) => {
-                if (newValue == 0)
-                    $("text-adt").hide();
-                else
-                    $("text-adt").show();
-            })
         }
 
         /**
@@ -133,7 +127,8 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         getWorkTypeList() {
             var self = this;
             var dfd = $.Deferred();
-            service.getOptItemByAtr(1).done(function(res) {
+            let data = [1,2,5,6]
+            service.getOptItemByAtr(data).done(function(res) {
                 self.workTypeList.removeAll();
                 _.forEach(res, function(item) {
                     self.workTypeList.push({
@@ -154,7 +149,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getStampApp().done(function(totalStamp) {
-                if (totalStamp) {
+                if (totalStamp.length > 0) {
 
                     self.selectedImprint(totalStamp[0].useArt);
                     self.messageValueFirst(totalStamp[0].messageContent);
@@ -179,7 +174,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             let dfd = $.Deferred();
             service.getStampFunc().done(function(totalStamp) {
                 if (totalStamp) {
-                    self.selectedImprint(totalStamp.useAtr);
+                    self.selectedImp(totalStamp.usrAtr);
                     var workTypeCodes = _.map(totalStamp.lstDisplayItemId, function(item: any) { return item.displayItemId; });
                     self.generateNameCorrespondingToAttendanceItem(workTypeCodes);
                     var names = self.getNames(self.workTypeList(), totalStamp.workTypeList);
