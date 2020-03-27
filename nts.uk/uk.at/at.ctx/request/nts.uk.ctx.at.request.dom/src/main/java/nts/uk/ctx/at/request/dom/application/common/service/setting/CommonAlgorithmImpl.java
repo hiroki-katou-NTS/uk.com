@@ -123,7 +123,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			List<GeneralDate> dateLst, AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// 基準日として扱う日の取得
-		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst());
+		RecordDate recordDate = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate();
+		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst(), recordDate);
 		// 社員IDから申請承認設定情報の取得
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSetting approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
