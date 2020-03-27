@@ -2,20 +2,20 @@ module nts.uk.at.view.kdp011.a {
     import service = nts.uk.at.view.kdp011.a.service;
     import blockUI = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
-    
+
     export module viewmodel {
-        
+
         const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
-        
+
         export class ScreenModel {
-           
+
             // CCG001
             ccg001ComponentOption: GroupOption;
-            
+
             datepickerValue: KnockoutObservable<any> = ko.observable({});
             startDateString: KnockoutObservable<string> = ko.observable("");
-            endDateString: KnockoutObservable<string> = ko.observable("");           
-            
+            endDateString: KnockoutObservable<string> = ko.observable("");
+
             // KCP005 start
             listComponentOption: any;
             selectedCodeEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -29,16 +29,17 @@ module nts.uk.at.view.kdp011.a {
             employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
             showOptionalColumn: KnockoutObservable<boolean> = ko.observable(false);
             // KCP005 end
-            
-            
+
+
             lstOutputItemCode: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
             selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
-            
+
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable(false);
             enableCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable(true);
             // Process Select 
-            itemList: KnockoutObservableArray<any> 
-            selectedIdProcessSelect: KnockoutObservable<number>= ko.observable();
+            itemList: KnockoutObservableArray<any>
+            selectedIdProcessSelect: KnockoutObservable<number>;
+            enableProcessSelect: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 let self = this;
                 //CCG 001 
@@ -58,53 +59,63 @@ module nts.uk.at.view.kdp011.a {
                     showOptionalColumn: self.showOptionalColumn(),
                     maxRows: 15
                 };
-                
+
                 self.conditionBinding();
                 //Process Select
-                        self.listProcessSelect = ko.observableArray([
+                self.listProcessSelect = ko.observableArray([
                     new ProcessSelect(1, nts.uk.resource.getText('KDP011_14')),
                     new ProcessSelect(2, nts.uk.resource.getText('KDP011_15'))
-                    
+
                 ]);
                 
+                  if (__viewContext.user.role.attendance != '') {
+                    self.selectedIdProcessSelect = ko.observable(1);
+                       {"id":1,"enableProcessSelect":false};
+                }
+                else {
+                    self.selectedIdProcessSelect = ko.observable(2);
+                      {"id":1,"enableProcessSelect":false};
+                }
+
             }
-            
+
             /**
             * start screen
-            */   
-            public startPage(): JQueryPromise<void>  {
+            */
+            public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
+
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
-                 $.when(service.initScreen(), service.restoreCharacteristic(companyId, userId))
-                                    .done((dataStartPage, dataCharacteristic) => {                        
-                    // get data from server
-                    self.startDateString(dataStartPage.startDate);
-                    self.endDateString(dataStartPage.endDate);
-                    self.ccg001ComponentOption.periodStartDate = moment.utc(dataStartPage.startDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
-                    self.ccg001ComponentOption.periodEndDate = moment.utc(dataStartPage.endDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
-                      
-                    let arrOutputItemCodeTmp: ItemModel[] = [];
-                    _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
-                        arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
-                    });
-                    self.lstOutputItemCode(arrOutputItemCodeTmp);                    
-                                        
-                    // get data from characteris
-                    if (!_.isUndefined(dataCharacteristic)) {
-                        self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
-                        self.selectedOutputItemCode(dataCharacteristic.outputSetCode);    
-                    }
-                    
-                    // enable button when exist Authority of employment form                                        
-                    self.enableCardNOUnregisteStamp(dataStartPage.existAuthEmpl);
-                                        
-                    dfd.resolve();
-                })
+                $.when(service.initScreen(), service.restoreCharacteristic(companyId, userId))
+                    .done((dataStartPage, dataCharacteristic) => {
+                        // get data from server
+                        self.startDateString(dataStartPage.startDate);
+                        self.endDateString(dataStartPage.endDate);
+                        self.ccg001ComponentOption.periodStartDate = moment.utc(dataStartPage.startDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
+                        self.ccg001ComponentOption.periodEndDate = moment.utc(dataStartPage.endDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
+
+                        let arrOutputItemCodeTmp: ItemModel[] = [];
+                        _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
+                            arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));
+                        });
+                        self.lstOutputItemCode(arrOutputItemCodeTmp);
+
+                        // get data from characteris
+                        if (!_.isUndefined(dataCharacteristic)) {
+                            self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
+                            self.selectedOutputItemCode(dataCharacteristic.outputSetCode);
+                        }
+
+                        // enable button when exist Authority of employment form                                        
+                        self.enableCardNOUnregisteStamp(dataStartPage.existAuthEmpl);
+
+                        dfd.resolve();
+                    })
                 return dfd.promise();
             }
-            
+
             /**
             * binding component CCG001 and KCP005
             */
@@ -112,14 +123,14 @@ module nts.uk.at.view.kdp011.a {
                 var dfd = $.Deferred<void>();
                 let self = this;
                 blockUI.grayout();
-                $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption), 
-                        $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {
-                   self.changeHeightKCP005(); 
-                   dfd.resolve();     
-                });
+                $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption),
+                    $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {
+                        self.changeHeightKCP005();
+                        dfd.resolve();
+                    });
                 return dfd.promise();
             }
-            
+
             private declareCCG001(): void {
                 let self = this;
                 // Set component option
@@ -134,7 +145,7 @@ module nts.uk.at.view.kdp011.a {
                     showAllClosure: false,
                     showPeriod: true,
                     periodFormatYM: false,
-                    
+
                     /** Required parameter */
                     baseDate: moment().toISOString(),
                     periodStartDate: moment().toISOString(),
@@ -143,13 +154,13 @@ module nts.uk.at.view.kdp011.a {
                     leaveOfAbsence: true,
                     closed: true,
                     retirement: false,
-                    
+
                     /** Quick search tab options */
                     showAllReferableEmployee: true,
                     showOnlyMe: true,
                     showSameWorkplace: true,
                     showSameWorkplaceAndChild: true,
-                    
+
                     /** Advanced search properties */
                     showEmployment: true,
                     showWorkplace: true,
@@ -157,7 +168,7 @@ module nts.uk.at.view.kdp011.a {
                     showJobTitle: true,
                     showWorktype: false,
                     isMutipleCheck: true,
-                    
+
                     /**
                     * Self-defined function: Return data from CCG001
                     * @param: data: the data return from CCG001
@@ -169,26 +180,26 @@ module nts.uk.at.view.kdp011.a {
                         });
                         self.employeeList(arrEmployeelst);
                     }
-                }    
+                }
             }
-            
+
             /**
             * Export excel
             */
             private exportExcel(): void {
-                
+
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId,
                     data: any = {};
-                
-//                if (!self.validateExportExcel()) {
-//                    return;
-//                }
+
+                //                if (!self.validateExportExcel()) {
+                //                    return;
+                //                }
                 blockUI.grayout();
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
-                 
+
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
@@ -200,7 +211,7 @@ module nts.uk.at.view.kdp011.a {
                     blockUI.clear();
                 })
             }
-            
+
             /**
             * validate when export
             */
@@ -208,26 +219,26 @@ module nts.uk.at.view.kdp011.a {
                 let self = this;
                 if (!self.checkedCardNOUnregisteStamp()) {
                     if (_.isEmpty(self.selectedCodeEmployee())) {
-                        dialog.alertError({ messageId: "Msg_1204"});
+                        dialog.alertError({ messageId: "Msg_1204" });
                         return false;
                     }
-                } 
-                
+                }
+
                 if (_.isEmpty(self.selectedOutputItemCode())) {
-                    dialog.alertError({ messageId: "Msg_1205"});
+                    dialog.alertError({ messageId: "Msg_1617" });
                     return false;
                 }
-                
+
                 // when don't have error
                 return true;
             }
-            
+
             /**
             * Open screen C
             */
             private openPreviewScrC(): void {
                 let self = this,
-                data: any = {};
+                    data: any = {};
                 if (!self.validateExportExcel()) {
                     return;
                 }
@@ -237,78 +248,78 @@ module nts.uk.at.view.kdp011.a {
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
-                nts.uk.request.jump("/view/kdp/003/c/index.xhtml",data);
-               
-               
+                nts.uk.request.jump("/view/kdp/003/c/index.xhtml", data);
+
+
             }
-            
+
             /**
             * Open screen B
             */
             private openScrB(): void {
-                   let _self = this;
-                    nts.uk.ui.windows.setShared("datakdp003.b",  _self.selectedOutputItemCode());
-                    nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
+                let _self = this;
+                nts.uk.ui.windows.setShared("datakdp003.b", _self.selectedOutputItemCode());
+                nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
                     let currentStampOutputCd = nts.uk.ui.windows.getShared("datakdp003.a");
                     if (!_.isNil(currentStampOutputCd)) {
                         service.findAll().done((lstStampingOutputItem) => {
                             let arrOutputItemCodeTmp: ItemModel[] = [];
                             _.forEach(lstStampingOutputItem, function(value) {
-                                arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
+                                arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));
                             });
                             _self.lstOutputItemCode(arrOutputItemCodeTmp);
                             _self.selectedOutputItemCode(currentStampOutputCd);
-                        }) 
+                        })
                     }
                     nts.uk.ui.block.clear();
                 });
             }
-            
+
             /**
             * Subscribe Event
             */
             private conditionBinding(): void {
                 let self = this;
-                
-                self.startDateString.subscribe(function(value){
+
+                self.startDateString.subscribe(function(value) {
                     self.datepickerValue().startDate = value;
-                    self.datepickerValue.valueHasMutated();        
+                    self.datepickerValue.valueHasMutated();
                 });
-                
-                self.endDateString.subscribe(function(value){
-                    self.datepickerValue().endDate = value;   
-                    self.datepickerValue.valueHasMutated();      
+
+                self.endDateString.subscribe(function(value) {
+                    self.datepickerValue().endDate = value;
+                    self.datepickerValue.valueHasMutated();
                 });
-                
+
                 self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
-//                    if (newValue) {
-//                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
-//                    } else {
-//                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
-//                    }
+                    //                    if (newValue) {
+                    //                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
+                    //                    } else {
+                    //                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
+                    //                    }
                 })
             }
-            
+
             /**
             * convert data to data object matching java
             */
             private convertDataEmployee(data: UnitModel[], employeeCd: string[]): EmployeeInfor[] {
-                let mapCdId : { [key:string]:string; } = {};
-                let mapCdName : { [key:string]:string; } = {};
-                
+                let mapCdId: { [key: string]: string; } = {};
+                let mapCdName: { [key: string]: string; } = {};
+
                 let arrEmployee: EmployeeInfor[] = [];
                 _.forEach(data, function(value) {
-                    mapCdId[value.code] = value.id; 
-                    mapCdName[value.code] = value.name; 
+                    mapCdId[value.code] = value.id;
+                    mapCdName[value.code] = value.name;
                 });
-                
+
                 _.forEach(employeeCd, function(value) {
-                    arrEmployee.push({employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value]}); 
+                    arrEmployee.push({ employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value] });
                 });
-                
+
                 return arrEmployee;
             }
-            
+
             /**
             * set height table in KCP005 after initialize
             */
@@ -318,17 +329,17 @@ module nts.uk.at.view.kdp011.a {
                 if (isIE) {
                     let heightKCP = $('div[id$=displayContainer]').height();
                     $('div[id$=displayContainer]').height(heightKCP + 3);
-                    $('div[id$=scrollContainer]').height(heightKCP + 3);    
+                    $('div[id$=scrollContainer]').height(heightKCP + 3);
                 }
             }
         }
-        
+
         export interface EmployeeInfor {
             employeeID: string;
             employeeCD: string;
             employeeName?: string;
         }
-        
+
         export interface GroupOption {
             /** Common properties */
             showEmployeeSelection?: boolean; // 検索タイプ
@@ -341,7 +352,7 @@ module nts.uk.at.view.kdp011.a {
             showPeriod?: boolean; // 対象期間利用
             periodFormatYM?: boolean; // 対象期間精度
             isInDialog?: boolean;
-        
+
             /** Required parameter */
             baseDate?: string; // 基準日
             periodStartDate?: string; // 対象期間開始日
@@ -350,13 +361,13 @@ module nts.uk.at.view.kdp011.a {
             leaveOfAbsence: boolean; // 休職区分
             closed: boolean; // 休業区分
             retirement: boolean; // 退職区分
-        
+
             /** Quick search tab options */
             showAllReferableEmployee?: boolean; // 参照可能な社員すべて
             showOnlyMe?: boolean; // 自分だけ
             showSameWorkplace?: boolean; // 同じ職場の社員
             showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
-        
+
             /** Advanced search properties */
             showEmployment?: boolean; // 雇用条件
             showWorkplace?: boolean; // 職場条件
@@ -365,11 +376,11 @@ module nts.uk.at.view.kdp011.a {
             showWorktype?: boolean; // 勤種条件
             isMutipleCheck?: boolean; // 選択モード
             isTab2Lazy?: boolean;
-        
+
             /** Data returned */
             returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
         }
-        
+
         export interface EmployeeSearchDto {
             employeeId: string;
             employeeCode: string;
@@ -377,7 +388,7 @@ module nts.uk.at.view.kdp011.a {
             workplaceId: string;
             workplaceName: string;
         }
-        
+
         export interface Ccg001ReturnedData {
             baseDate: string; // 基準日
             closureId?: number; // 締めID
@@ -385,8 +396,8 @@ module nts.uk.at.view.kdp011.a {
             periodEnd: string; // 対象期間（終了）
             listEmployee: Array<EmployeeSearchDto>; // 検索結果
         }
-        
-        
+
+
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
@@ -401,70 +412,70 @@ module nts.uk.at.view.kdp011.a {
             id?: string;
             isAlreadySetting?: boolean;
         }
-        
+
         export class SelectType {
             static SELECT_BY_SELECTED_CODE = 1;
             static SELECT_ALL = 2;
             static SELECT_FIRST_ITEM = 3;
             static NO_SELECT = 4;
         }
-        
+
         export interface UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
-        }   
-        
+        }
+
         export class ItemModel {
             code: string;
             name: string;
-        
+
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
             }
         }
-        
+
         export class OutputConditionEmbossing {
             userID: string;
             outputSetCode: string;
             cardNumNotRegister: boolean;
-            
+
             constructor(userID: string, outputSetCode: string, cardNumNotRegister: boolean) {
                 this.userID = userID;
                 this.outputSetCode = outputSetCode;
                 this.cardNumNotRegister = cardNumNotRegister;
             }
         }
-        
+
         class OutputConditionOfEmbossingDto {
             startDate: string;
             endDate: string;
             lstStampingOutputItemSetDto: StampingOutputItemSetDto[];
-            
+
             constructor(startDate: string, endDate: string, lstStampingOutputItemSetDto: StampingOutputItemSetDto[]) {
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.lstStampingOutputItemSetDto = lstStampingOutputItemSetDto;
             }
         }
-        
+
         class StampingOutputItemSetDto {
             stampOutputSetName: string;
             stampOutputSetCode: string;
-            
+
             constructor(stampOutputSetName: string, stampOutputSetCode: string) {
                 this.stampOutputSetName = stampOutputSetName;
                 this.stampOutputSetCode = stampOutputSetCode;
             }
         }
-            class ProcessSelect {
-                    idProcessSelect: number;
-                    nameProcessSelect: string;
-                    constructor(idProcessSelect, nameProcessSelect){
-                        var self = this;
-                        self.idProcessSelect = idProcessSelect;
-                        self.nameProcessSelect = nameProcessSelect;
-                    }
+        class ProcessSelect {
+            idProcessSelect: number;
+            nameProcessSelect: string;
+            constructor(idProcessSelect, nameProcessSelect) {
+                var self = this;
+                self.idProcessSelect = idProcessSelect;
+                self.nameProcessSelect = nameProcessSelect;
+            }
+        }
     }
 }
-    }

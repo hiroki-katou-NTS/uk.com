@@ -1,5 +1,5 @@
 #combobox1 {
-	margin-left: -249px;
+	margin-left: -274px;
 }
 
 #first-color-picker,#second-color-picker, #date-time-label, #correc-label1, #combobox1, #stamping-his-label, #stamping-his-radio {
@@ -10,22 +10,39 @@
 	margin-left:30px;
 }
 
-#combobox1, #correc-text{
+#combobox1{
     width: 120px;
 }
 
 #correc-text{
-	margin-left: 20px;
+    width: 114px;
+}
+
+#correc-text{
+	margin-left: 93px;
+	margin-top: -33px;
 }
 
 #highlight-radio{
-	margin-left: 8px;
+	margin-left: 3px;
 }
 
 #first-color-picker{
-	margin-left: 24px;
+	margin-left: 23px;
 }
 
 #second-color-picker{
 	margin-left: 37px;
+}
+
+#correc-label{
+	margin-top: 9px;
+}
+
+#contents-area{
+	margin-left: 20px;
+}
+
+.box{
+	margin-left: 6px !important;
 }

@@ -98,13 +98,8 @@ module nts.uk.at.view.kdp010 {
 
     export module b.viewmodel {
         export class ScreenModel {
-
-            /**
-             * Item screen
-             */
             // B4_2 - 打刻画面のサーバー時刻補正間隔 
             correcValue: KnockoutObservable<number> = ko.observable(10);
-
             // B5_2 - 打刻履歴表示方法
             optionStamping: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 0, name: nts.uk.resource.getText("KDP010_19") },
@@ -112,27 +107,21 @@ module nts.uk.at.view.kdp010 {
                 { id: 2, name: nts.uk.resource.getText("KDP010_21") }
             ]);
             selectedStamping: KnockoutObservable<number> = ko.observable(0);
-
             // B6_3
-            letterColors: KnockoutObservable<string> = ko.observable('#ffffff');
-
+            letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
             // B6_5
-            backgroundColors: KnockoutObservable<string> = ko.observable('#0033cc');
-
+            backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
             // B10_2
             optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 0, name: nts.uk.resource.getText("KDP010_39") },
                 { id: 1, name: nts.uk.resource.getText("KDP010_40") }
             ]);
             selectedHighlight: KnockoutObservable<number> = ko.observable(0);
-
             // B7_2
             stampValue: KnockoutObservable<number> = ko.observable(3);
-
             // List StampPageLayout (ページレイアウト設定)
-            lstStampPage: KnockoutObservableArray<any> = ko.observableArray([]);
-
-            checkInUp: KnockoutObservable<boolean> = ko.observable(true);
+            lstStampPage: KnockoutObservable<any> = ko.observable({});
+            checkInUp: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 let self = this;
             }
@@ -164,7 +153,6 @@ module nts.uk.at.view.kdp010 {
                         self.letterColors(totalTimeArr.textColor);
                         self.backgroundColors(totalTimeArr.backGroundColor);
                         self.stampValue(totalTimeArr.resultDisplayTime);
-                        self.checkInUp(false);
                     }
                     dfd.resolve();
                 }).fail(function(error) {
@@ -178,10 +166,12 @@ module nts.uk.at.view.kdp010 {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getStampPage().done(function(stampPage) {
-                if (stampPage)
-                self.lstStampPage = stampPage;
+                    if (stampPage && stampPage.length > 0)
+                        self.checkInUp(true);
+                    else
+                        self.checkInUp(false);
                     
-                    dfd.resolve();
+                        dfd.resolve();
                 }).fail(function(error) {
                     alert(error.message);
                     dfd.reject(error);
@@ -194,6 +184,9 @@ module nts.uk.at.view.kdp010 {
              */
             registration() {
                 let self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 // Data from Screen 
                 let data = new model.StampSettingPersonDto({
@@ -209,7 +202,6 @@ module nts.uk.at.view.kdp010 {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
-                    self.checkInUp(false);
                     nts.uk.ui.block.clear();
                 });
             }
@@ -218,7 +210,10 @@ module nts.uk.at.view.kdp010 {
              * Open E dialog to set condition list.
              */
             openEDialog() {
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => { });
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
+                let self = this;
+                    self.getStamp();   
+                });
             }
         }
     }

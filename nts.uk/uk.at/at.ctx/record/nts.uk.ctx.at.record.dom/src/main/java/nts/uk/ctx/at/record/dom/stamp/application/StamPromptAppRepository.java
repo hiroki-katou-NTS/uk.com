@@ -9,7 +9,7 @@ public interface StamPromptAppRepository {
 	
 	void update(StamPromptApplication application);
 	
-	Optional<StamPromptApplication> getStampSet (String companyId);
+	Optional<StampResultDisplay> getStampSet (String companyId);
 
 	List<StampRecordDis> getAllStampSetPage(String companyId);
 }

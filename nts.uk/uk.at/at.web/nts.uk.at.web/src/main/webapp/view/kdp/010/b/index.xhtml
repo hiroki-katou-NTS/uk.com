@@ -7,9 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-		<com:ValidatorScript>
+			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.stamp.management.CorrectionInterval
 				nts.uk.ctx.at.record.dom.stamp.management.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.stamp.application.MessageContent
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/010/main.css" of="/nts.uk.at.web" />
@@ -65,10 +66,10 @@
 							<div id="correc-label"
 								data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_15')}
 							</div>
-							<div id="correc-text-b" tabindex="3">
+							<div id="correc-text-b">
 								<!-- B4_2 -->
-								<input class="nts-input"
-									data-bind="ntsTextEditor: {value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+								<input tabindex="3" class="nts-input"
+									data-bind="ntsNumberEditor: {value: correcValue, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
@@ -112,7 +113,7 @@
 							</div> 
 							<div id = "stamp-texts-note" tabindex="5">
 							<!-- B7_2 --> <input class="nts-input" id="stamp-texts" 
-							data-bind="ntsTextEditor: {value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							data-bind="ntsNumberEditor: {value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
 							<!-- B7_3 -->
 							<label id="text-note">#{i18n.getText('KDP010_30')}</label>
 							</div>
@@ -124,7 +125,7 @@
 							<div id="highlight-label"
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_38')}
 							</div> <!-- B10_2 -->
-							<div id="highlight-radio"
+							<div id="highlight-radio" tabindex="6"
 								data-bind="ntsRadioBoxGroup: {
 													options: optionHighlight,
 													optionsValue: 'id',
@@ -140,11 +141,11 @@
 							<button id="stamp-button" data-bind="click: openEDialog"
 								class="large">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
 							<!-- B20_2 -->	
-							<com:ko-if bind = "lstStampPage.length != null">
-							<label id="background-color" style="color: blue;">#{i18n.getText('KDP010_52')}</label>
+							<com:ko-if bind = "checkInUp() == true">
+							<label id="background-color" tabindex="7" style="color: blue;">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
-							<com:ko-if bind = "lstStampPage.length == null">
-							<label id="background-color" style="color: red;">#{i18n.getText('KDP010_53')}</label>
+							<com:ko-if bind = "checkInUp() == false">
+							<label id="background-color" tabindex="7" style="color: red;">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
 							
 						</td>

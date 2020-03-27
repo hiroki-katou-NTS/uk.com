@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.app.command.stamp.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class StampingScreenSetCommand {
 	/** 打刻履歴表示方法 */

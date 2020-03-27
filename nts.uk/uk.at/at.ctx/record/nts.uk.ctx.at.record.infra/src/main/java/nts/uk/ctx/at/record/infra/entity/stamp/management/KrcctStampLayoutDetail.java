@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
@@ -163,15 +163,15 @@ private static final long serialVersionUID = 1L;
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,
 				settings.getButtonType().getReservationArt().value,
-				settings.getButtonType().getStampType() == null ? null
+				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getChangeClockArt().value,
-				settings.getButtonType().getStampType() == null ? null
+				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getChangeCalArt().value,
-				settings.getButtonType().getStampType() == null ? null
+				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getSetPreClockArt().value,
-				settings.getButtonType().getStampType() == null ? null
+				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0,
-				settings.getButtonType().getStampType() == null ? null
+				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getGoOutArt().isPresent()
 								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,
 				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),

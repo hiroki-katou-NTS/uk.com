@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class StampTypeCommand {
 	/** 勤務種類を半休に変更する */
 	private boolean changeHalfDay;
@@ -20,4 +24,13 @@ public class StampTypeCommand {
 	
 	/** 計算区分変更対象 */
 	private int changeCalArt;
+
+	public StampTypeCommand(boolean changeHalfDay, Integer goOutArt, int setPreClockArt, int changeClockArt,
+			int changeCalArt) {
+		this.changeHalfDay = changeHalfDay;
+		this.goOutArt = goOutArt;
+		this.setPreClockArt = setPreClockArt;
+		this.changeClockArt = changeClockArt;
+		this.changeCalArt = changeCalArt;
+	}
 }

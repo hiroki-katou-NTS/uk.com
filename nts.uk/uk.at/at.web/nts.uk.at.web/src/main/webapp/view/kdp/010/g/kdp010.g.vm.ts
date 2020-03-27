@@ -1,38 +1,48 @@
 module nts.uk.at.view.kdp010.g {
     export module viewmodel {
         export class ScreenModel {
-
             // G2_2
             optionPage: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, name: nts.uk.resource.getText("KDP010_98","1") },
-                { code: 2, name: nts.uk.resource.getText("KDP010_98","2") },
-                { code: 3, name: nts.uk.resource.getText("KDP010_98","3") },
-                { code: 4, name: nts.uk.resource.getText("KDP010_98","4") },
-                { code: 5, name: nts.uk.resource.getText("KDP010_98","5") }]);
+                { code: 1, name: nts.uk.resource.getText("KDP010_98", "1") },
+                { code: 2, name: nts.uk.resource.getText("KDP010_98", "2") },
+                { code: 3, name: nts.uk.resource.getText("KDP010_98", "3") },
+                { code: 4, name: nts.uk.resource.getText("KDP010_98", "4") },
+                { code: 5, name: nts.uk.resource.getText("KDP010_98", "5") }]);
             selectedPage: KnockoutObservable<number> = ko.observable(1);
-
             // G3_2
             pageName: KnockoutObservable<string> = ko.observable("");
-
             // G4_2
             optionLayout: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ButtonLayoutType);
             selectedLayout: KnockoutObservable<number> = ko.observable(0);
-
             // G5_2
             commentDaily: KnockoutObservable<string> = ko.observable("");
-
             // G6_2
-            letterColors: KnockoutObservable<string> = ko.observable('#000000');
-            
-            currentItem: KnockoutObservable<model.StampPageLayoutCommand> = ko.observable(new model.StampPageLayoutCommand({}));
-            
+            letterColors: KnockoutObservable<string> = ko.observable("#000000");
             dataKdpH: KnockoutObservable<model.StampPageCommentCommand> = ko.observable(new model.StampPageCommentCommand({}));
-            
             dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
+            isDel: KnockoutObservable<string> = ko.observable(false);
+            buttonInfo: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 1, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 2, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 3, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 4, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 5, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 6, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 7, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
+                { code: 8, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') }
+            ]);
 
             constructor() {
                 let self = this;
+                self.selectedLayout.subscribe((newValue) => {
+                    self.getData(newValue);
+                    nts.uk.ui.errors.clearAll();
+                })
 
+                self.selectedPage.subscribe((newValue) => {
+                    self.startPage();
+                    nts.uk.ui.errors.clearAll();
+                })
             }
             /**
              * start page  
@@ -40,22 +50,32 @@ module nts.uk.at.view.kdp010.g {
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                self.getData();
+                self.getData(self.selectedLayout());
                 dfd.resolve();
                 return dfd.promise();
             }
-            getData(): JQueryPromise<any> {
+            getData(newValue: number): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getStampPage(self.selectedPage()).done(function(totalTimeArr) {
                     if (totalTimeArr) {
-                        self.selectedPage(totalTimeArr.pageNo);
                         self.pageName(totalTimeArr.stampPageName);
                         self.commentDaily(totalTimeArr.stampPageComment.pageComment);
                         self.letterColors(totalTimeArr.stampPageComment.commentColor);
-                        self.selectedLayout(totalTimeArr.buttonLayoutType)
-                        
+                        if (totalTimeArr.lstButtonSet != null) {
+                            self.getInfoButton(totalTimeArr.lstButtonSet, totalTimeArr.buttonLayoutType);
+
+                        }
                         self.dataShare = totalTimeArr;
+                        self.isDel(true);
+                    } else {
+                        self.setColor("#999", ".btn-name");
+                        self.getInfoButton(null, self.selectedLayout());
+                        self.isDel(false);
+                        self.pageName("");
+                        self.commentDaily("");
+                        self.letterColors("#000000");
+                        self.dataShare = [];
                     }
                     dfd.resolve();
                 }).fail(function(error) {
@@ -65,37 +85,55 @@ module nts.uk.at.view.kdp010.g {
                 return dfd.promise();
             }
 
+
             /**
              * Pass Data to A
              */
             public registration() {
                 let self = this;
+                $('#correc-text').trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
+                
+                if((self.dataKdpH.length == undefined || self.dataKdpH.length == 0 ) && self.isDel() == true){
+                    let data = {dataShare : self.dataShare,
+                    buttonPositionNo : self.dataShare.lstButtonSet[0].buttonPositionNo
+                    }
+                    self.dataKdpH = data;
+                }
                 // Data from Screen 
-                let lstButton = new Array<ButtonSettingsCommand>(); 
-                let lstButtonSet = new model.ButtonSettingsCommand({
-                    buttonPositionNo: self.dataKdpH.buttonPositionNo,
-                    buttonDisSet: new model.ButtonDisSetCommand({
-                        buttonNameSet: new model.ButtonNameSetCommand({
-                            textColor: self.dataKdpH.buttonDisSet.buttonNameSet.textColor,
-                            buttonName: self.dataKdpH.buttonDisSet.buttonNameSet.buttonName
-                        }),
-                        backGroundColor: self.dataKdpH.buttonDisSet.backGroundColor
-                    }),
-                    buttonType: new model.ButtonTypeCommand({
-                        reservationArt: self.dataKdpH.buttonType.reservationArt,
-                        stampType: new model.StampTypeCommand({
-                            changeHalfDay: self.dataKdpH.buttonType.stampType.changeHalfDay,
-                            goOutArt: self.dataKdpH.buttonType.stampType.goOutArt,
-                            setPreClockArt: self.dataKdpH.buttonType.stampType.setPreClockArt,
-                            changeClockArt: self.dataKdpH.buttonType.stampType.changeClockArt,
-                            changeCalArt: self.dataKdpH.buttonType.stampType.changeCalArt
-                        })
-                    }),
-                    usrArt: self.dataKdpH.usrArt,
-                    audioType: self.dataKdpH.audioType  
-                });
-                lstButton.push(lstButtonSet);
+                let lstButton = new Array<ButtonSettingsCommand>();
+                if (self.dataKdpH.buttonPositionNo != undefined) {
+                    let lstButtonSet = new Array<>();
+                    _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
+                        lstButtonSet = new model.ButtonSettingsCommand({
+                            buttonPositionNo: item.buttonPositionNo,
+                            buttonDisSet: new model.ButtonDisSetCommand({
+                                buttonNameSet: new model.ButtonNameSetCommand({
+                                    textColor: item.buttonDisSet.buttonNameSet.textColor,
+                                    buttonName: item.buttonDisSet.buttonNameSet.buttonName
+                                }),
+                                backGroundColor: item.buttonDisSet.backGroundColor
+                            }),
+                            buttonType: new model.ButtonTypeCommand({
+                                reservationArt: item.buttonType.reservationArt,
+                                stampType: new model.StampTypeCommand({
+                                    changeHalfDay: item.buttonType.stampType.changeHalfDay,
+                                    goOutArt: item.buttonType.stampType.goOutArt,
+                                    setPreClockArt: item.buttonType.stampType.setPreClockArt,
+                                    changeClockArt: item.buttonType.stampType.changeClockArt,
+                                    changeCalArt: item.buttonType.stampType.changeCalArt
+                                })
+                            }),
+                            usrArt: self.dataKdpH.dataShare.usrArt,
+                            audioType: self.dataKdpH.dataShare.audioType
+                        });
+                        lstButton.push(lstButtonSet);
+                    });
+                }
+
                 let data = new model.StampPageLayoutCommand({
                     pageNo: self.selectedPage(),
                     stampPageName: self.pageName(),
@@ -107,12 +145,64 @@ module nts.uk.at.view.kdp010.g {
                     lstButtonSet: lstButton
                 });
                 service.saveStampPage(data).done(function() {
+                    self.isDel(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
+            }
+
+
+            public getInfoButton(lstButtonSet: any, buttonLayoutType: number) {
+                let self = this, buttonLength = 0;
+                if (lstButtonSet == null) {
+                    for (let i = 0; i < 8; i++) {
+                        self.buttonInfo()[i].buttonColor("#999");
+                        self.buttonInfo()[i].buttonName(null);
+                        self.buttonInfo()[i].textColor("#999");
+                    }
+                } else {
+                    for (let i = 0; i < 8; i++) {
+                        self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
+                        if (lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null) {
+                            self.buttonInfo()[i].buttonColor("#999");
+                            self.buttonInfo()[i].buttonName(null);
+                            self.buttonInfo()[i].textColor("#999");
+                        } else {
+                            self.buttonInfo()[i].buttonColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.backGroundColor));
+                            self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
+                            self.buttonInfo()[i].textColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.textColor));
+                        }
+                    }
+                }
+
+            }
+
+            public setColor(color: string, name: string) {
+                $(name).css("background", color);
+            }
+
+            public deleteStamp(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                let data = {
+                    pageNo: self.selectedPage()
+                };
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.deleteStampPage(data).done(function(stampPage) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        self.getData(self.selectedPage());
+                        dfd.resolve();
+                    }).fail(function(error) {
+                        alert(error.message);
+                        dfd.reject(error);
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                });
+                return dfd.promise();
             }
 
             /**
@@ -124,20 +214,60 @@ module nts.uk.at.view.kdp010.g {
 
             openHDialog(enumVal: number, data): void {
                 let self = this;
+                let shareH = {
+                    pageNo: self.selectedPage(),
+                    stampPageName: self.pageName(),
+                    stampPageComment: {
+                        pageComment: self.commentDaily(),
+                        commentColor: self.letterColors(),
+                    },
+
+                    buttonLayoutType: self.selectedLayout(),
+                    lstButtonSet: []
+                };
                 let dataG = {
-                    dataShare: self.dataShare,
+                    dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
                     buttonPositionNo: enumVal
                 }
                 nts.uk.ui.windows.setShared('KDP010_G', dataG);
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => { 
-                self.dataKdpH = nts.uk.ui.windows.getShared('KDP010_H');
-                    self.dataShare = self.dataKdpH;
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+                    self.dataKdpH = nts.uk.ui.windows.getShared('KDP010_H');
+                    if (self.dataKdpH) {
+                        self.dataShare = self.dataKdpH.dataShare == undefined ? self.dataKdpH : self.dataKdpH.dataShare;
+                        if (self.dataKdpH.dataShare) {
+                            let dataH = self.dataKdpH.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
+                        }
+                        self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
+                        self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
+                        self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
+                    }
                 });
             }
         }
 
     }
     export module model {
+
+        export class ButtonInfo {
+            buttonName: KnockoutObservable<string>;
+            buttonColor: KnockoutObservable<string>;
+            textColor: KnockoutObservable<string>;
+
+            constructor(param: IButtonInfo) {
+                this.buttonName = ko.observable(param.buttonName) || '';
+                this.buttonColor = ko.observable(param.buttonColor) || '';
+                this.textColor = ko.observable(param.textColor) || '';
+
+            }
+        }
+
+        interface IButtonInfo {
+            buttonName: string;
+            buttonColor: string;
+            textColor: string;
+        }
+
+
         // StampPageLayoutCommand
         export class StampPageLayoutCommand {
 
@@ -168,7 +298,7 @@ module nts.uk.at.view.kdp010.g {
             buttonLayoutType: number;
             lstButtonSet: Array<ButtonSettingsCommand>;
         }
-        
+
         // StampPageCommentCommand
         export class StampPageCommentCommand {
 
@@ -187,7 +317,7 @@ module nts.uk.at.view.kdp010.g {
             pageComment: number;
             commentColor: number;
         }
-        
+
         // ButtonSettingsCommand
         export class ButtonSettingsCommand {
             /** ボタン位置NO */
@@ -211,7 +341,7 @@ module nts.uk.at.view.kdp010.g {
         }
 
         interface IButtonSettingsCommand {
-             /** ボタン位置NO */
+            /** ボタン位置NO */
             buttonPositionNo: number;
             /** ボタンの表示設定 */
             buttonDisSet: ButtonDisSetCommand;
@@ -222,11 +352,11 @@ module nts.uk.at.view.kdp010.g {
             /** 音声使用方法 */
             audioType: number;
         }
-        
+
         // ButtonDisSetCommand
         export class ButtonDisSetCommand {
 
-           /** ボタン名称設定 */
+            /** ボタン名称設定 */
             buttonNameSet: ButtonNameSetCommand;
             /** 背景色 */
             backGroundColor: string;
@@ -241,11 +371,11 @@ module nts.uk.at.view.kdp010.g {
             buttonNameSet: ButtonNameSetCommand;
             backGroundColor: string;
         }
-        
-        // ButtonNameSetCommand
-         export class ButtonNameSetCommand {
 
-           /** ボタン名称設定 */
+        // ButtonNameSetCommand
+        export class ButtonNameSetCommand {
+
+            /** ボタン名称設定 */
             textColor: string;
             /** 背景色 */
             buttonName: string;
@@ -260,7 +390,7 @@ module nts.uk.at.view.kdp010.g {
             textColor: string;
             buttonName: string;
         }
-        
+
         // ButtonTypeCommand
         export class ButtonTypeCommand {
 
@@ -279,7 +409,7 @@ module nts.uk.at.view.kdp010.g {
             reservationArt: number;
             stampType: StampTypeCommand;
         }
-        
+
         // StampTypeCommand
         export class StampTypeCommand {
 

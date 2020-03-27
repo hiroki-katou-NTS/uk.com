@@ -25,5 +25,10 @@ public class KrccpStampRecordDisPk  implements Serializable {
 	@Column(name = "D_ATD_ITEM_ID")
 	public int dAtdItemId;
 
+	public KrccpStampRecordDisPk(String companyId) {
+		super();
+		this.companyId = companyId;
+	}
+	
 }
 								

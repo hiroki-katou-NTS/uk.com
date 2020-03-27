@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class ButtonNameSetCommand {
 	/** 文字色 */
 	private String textColor;
@@ -13,4 +17,9 @@ public class ButtonNameSetCommand {
 	/** ボタン名称 */
 	@Getter
 	private String buttonName;
+
+	public ButtonNameSetCommand(String textColor, String buttonName) {
+		this.textColor = textColor;
+		this.buttonName = buttonName;
+	}
 }

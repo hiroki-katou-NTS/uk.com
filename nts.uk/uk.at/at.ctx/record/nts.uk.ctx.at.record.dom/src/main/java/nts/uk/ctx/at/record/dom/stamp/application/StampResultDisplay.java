@@ -21,11 +21,16 @@ public class StampResultDisplay implements DomainAggregate{
 	private NotUseAtr usrAtr;
 	
 	/** 表示項目一覧 */
-	private List<Integer> lstDisplayItemId;
+	private List<StampAttenDisplay> lstDisplayItemId;
 
-	public StampResultDisplay(String companyId, NotUseAtr usrAtr, List<Integer> lstDisplayItemId) {
+	public StampResultDisplay(String companyId, NotUseAtr usrAtr, List<StampAttenDisplay> lstDisplayItemId) {
 		this.companyId = companyId;
 		this.usrAtr = usrAtr;
 		this.lstDisplayItemId = lstDisplayItemId;
+	}
+	
+	public StampResultDisplay(String companyId, NotUseAtr usrAtr) {
+		this.companyId = companyId;
+		this.usrAtr = usrAtr;
 	}
 }

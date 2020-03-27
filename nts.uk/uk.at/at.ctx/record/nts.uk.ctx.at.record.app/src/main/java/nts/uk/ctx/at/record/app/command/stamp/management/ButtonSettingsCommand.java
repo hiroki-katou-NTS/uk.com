@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;
@@ -13,6 +12,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
@@ -24,7 +24,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class ButtonSettingsCommand {
 	/** ボタン位置NO */
 	private int buttonPositionNo;
@@ -40,6 +40,8 @@ public class ButtonSettingsCommand {
 
 	/** 音声使用方法 */
 	private int audioType;
+	
+	
 
 	public static ButtonSettings toDomain(ButtonSettingsCommand x) {
 		ButtonPositionNo buttonPositionNos = new ButtonPositionNo(x.getButtonPositionNo());
@@ -69,5 +71,17 @@ public class ButtonSettingsCommand {
 		AudioType audioTypes = EnumAdaptor.valueOf(x.getAudioType(), AudioType.class);
 
 		return new ButtonSettings(buttonPositionNos, buttonDisSets, buttonType, usrArts, audioTypes);
+	}
+
+
+
+	public ButtonSettingsCommand(int buttonPositionNo, ButtonDisSetCommand buttonDisSet, ButtonTypeCommand buttonType,
+			int usrArt, int audioType) {
+		super();
+		this.buttonPositionNo = buttonPositionNo;
+		this.buttonDisSet = buttonDisSet;
+		this.buttonType = buttonType;
+		this.usrArt = usrArt;
+		this.audioType = audioType;
 	}
 }
