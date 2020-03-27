@@ -44,7 +44,13 @@ module nts.uk.com.view.cmm022.a {
                     service.getItems(id).done((data: Array<IMasterItem>) => {
 
                         self.commonMasterItems(data);
-                        self.selectedCommonMasterItem().commonMasterItemId(data[0].commonMasterItemId);
+                        
+                        let item = _.filter(data, ['commonMasterItemId', self.selectedCommonMasterItem().commonMasterItemId()])[0];
+                        if (!item) {
+                            self.selectedCommonMasterItem().commonMasterItemId(data[0].commonMasterItemId);
+                        } else {
+                            self.selectedCommonMasterItem().commonMasterItemId.valueHasMutated();
+                        }
                     }).fail(function(res) {
                         self.commonMasterItems([]);
                         self.selectedCommonMasterItem().commonMasterItemId(null);
@@ -236,10 +242,11 @@ module nts.uk.com.view.cmm022.a {
 
                     if (self.selectedCommonMaster().commonMasterId() == data.commonMasterId) {
                         self.selectedCommonMaster().commonMasterId.valueHasMutated();
-                        self.commonMasterItems(data.itemList);
                     } else {
                         self.selectedCommonMaster().commonMasterId(data.commonMasterId);
                     }
+                    
+                    self.selectedCommonMasterItem().commonMasterItemId(data.commonMasterItemId);
                 });
             }
 
@@ -270,7 +277,8 @@ module nts.uk.com.view.cmm022.a {
     export interface IDialogToMaster {
         commonMasterId: string;
         masterList: Array<ICommonMaster>;
-        itemList: Array<IMasterItem>;
+        commonMasterItemId: string;
+        
     }
 
     export interface ICommonMaster {

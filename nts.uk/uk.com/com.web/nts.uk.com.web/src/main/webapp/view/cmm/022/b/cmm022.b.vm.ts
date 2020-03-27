@@ -49,8 +49,11 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                             _.sortBy(data.listCommonMasterItem, ['displayNumber']);
 
                             self.listItems(data.listCommonMasterItem);
-                            self.itemSelected().commonMasterItemId(self.listItems()[0].commonMasterItemId);
                             
+                            let item = _.filter(data.listCommonMasterItem, ['commonMasterItemId', self.itemSelected().commonMasterItemId()])[0];
+                            if (!item) {
+                                self.itemSelected().commonMasterItemId(self.listItems()[0].commonMasterItemId);
+                            }
                         }).fail(function(err) {
                             
                             if(err.messageId == "Msg_1578"){
@@ -100,6 +103,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 self.listMaster(shared.commonMasters);
                 
                 self.masterSelected().commonMasterId(shared.commonMasterId);
+                
+                self.itemSelected().commonMasterItemId(shared.commonMasterItemId);
 
                 dfd.resolve();
                 return dfd.promise();
@@ -134,7 +139,8 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                     self.setData({
                         commonMasterId: self.masterSelected().commonMasterId(),
                         masterList: [],
-                        itemList: self.listItems()
+                        itemList: self.listItems(),
+                        commonMasterItemId: self.itemSelected().commonMasterItemId()
                         }
                     )
                     setShared('DialogBToMaster', self.setData());
@@ -156,8 +162,7 @@ module nts.uk.com.view.cmm022.b.viewmodel {
                 if (!self.setData()) {
                     self.setData({
                         commonMasterId: self.masterSelected().commonMasterId(),
-                        masterList: [],
-                        itemList: []
+                        commonMasterItemId: self.itemSelected().commonMasterItemId()
                     })
                 }
 

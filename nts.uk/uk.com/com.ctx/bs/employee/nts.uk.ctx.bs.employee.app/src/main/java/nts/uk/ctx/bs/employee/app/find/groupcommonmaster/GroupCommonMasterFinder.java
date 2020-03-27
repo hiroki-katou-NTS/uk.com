@@ -79,7 +79,7 @@ public class GroupCommonMasterFinder {
 			});
 		});
 
-		return groupItems;
+		return groupItems.stream().sorted(Comparator.comparing(GroupCommonItemDto::getDisplayNumber)).collect(Collectors.toList());
 	}
 	
 	/**
