@@ -12,7 +12,8 @@ module nts.uk.com.view.cmm018.a.sub {
         export class ScreenModel{
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
-            constructor() { 
+            intervalDetectResolution: any;
+            constructor() {  
             }
             // fix bug 109950
             scrollToIndex(object: any) {
