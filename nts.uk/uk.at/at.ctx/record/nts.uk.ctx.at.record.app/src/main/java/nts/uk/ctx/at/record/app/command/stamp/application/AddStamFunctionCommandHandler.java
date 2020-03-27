@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 打刻の前準備(オプション)を登録する
+ * 打刻の前準備(オプション)を登録する 
  * @author phongtq
  *
  */

@@ -33,12 +33,18 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 	
 	private static final String SELECT_BY_CID_TYPE = SELECT_BY_CID_PAGE + " AND c.pk.errorType = :errorType";
 
+	/**
+	 * 打刻の前準備(オプション)を登録する
+	 */
 	@Override
 	public void insert(StamPromptApplication application) {
 		commandProxy().insertAll(KrcmtPromptApplication.toEntity(application));
 		
 	}
 
+	/**
+	 * 打刻の前準備(オプション)を登録する
+	 */
 	@Override
 	public void update(StamPromptApplication application) {
 		String companyId = AppContexts.user().companyId();
@@ -59,6 +65,9 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 		}
 	}
 
+	/**
+	 * 打刻の前準備(オプション)を取得する
+	 */
 	@Override
 	public Optional<StampResultDisplay> getStampSet(String companyId) {
 		Optional<StampResultDisplay> data = this.queryProxy().query(SELECT_BY_CID_TYPE, KrccpStampFunction.class)
@@ -68,6 +77,9 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 		return data;
 	}
 	
+	/**
+	 * get all Stamp Set Page
+	 */
 	@Override
 	public List<StampRecordDis> getAllStampSetPage(String companyId) {
 		List<StampRecordDis> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtPromptApplication.class)
