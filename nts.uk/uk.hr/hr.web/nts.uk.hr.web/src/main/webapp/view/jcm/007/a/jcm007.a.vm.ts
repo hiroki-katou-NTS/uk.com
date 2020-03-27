@@ -551,15 +551,25 @@ module jcm007.a {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.registerNewEmployee(command).done(() => {
-                console.log('REGISTER DONE!!');
-                self.newMode();
-                self.start(null);
+            service.registerNewEmployee(command).done((result : boolean) => {
+                console.log('REGISTER NEW EMPINFO DONE!!');
+                console.log(result);
+                if(result){
+                    self.enable_tab2(true);
+                    self.visible_tab2(true);
+                }else{
+                    self.enable_tab2(false);
+                    self.visible_tab2(false);    
+                }
+                
+                self.start(null).done(() => {
+                    self.newMode();
+                    dialog.info({ messageId: "Msg_15" });
+                });
                 block.clear();
-                dialog.info({ messageId: "Msg_15" });
                 dfd.resolve();
             }).fail((mes) => {
-                console.log('REGISTER FAIL!!');
+                console.log('REGISTER NEW EMPINFO FAIL!!');
                 block.clear();
                 dfd.reject();
             });
@@ -601,8 +611,8 @@ module jcm007.a {
                 dfd.reject();
             });
             return dfd.promise();
-
         }
+        
 
         registerNewRetireesApproved(command: any) {
             let self = this;

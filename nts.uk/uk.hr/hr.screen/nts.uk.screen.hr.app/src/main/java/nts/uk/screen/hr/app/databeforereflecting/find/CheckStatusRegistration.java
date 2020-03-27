@@ -1,15 +1,10 @@
 package nts.uk.screen.hr.app.databeforereflecting.find;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
 import nts.uk.shr.com.context.AppContexts;
 

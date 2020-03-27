@@ -227,7 +227,7 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	@Override
 	public boolean checkExitByWorkIdCidSid(String companyId, String sid) {
 		
-		String query = "SELECT c FROM PreReflecData c WHERE c.companyId = :companyId and c.sId = : sid and (c.workId = 1 or c.workId = 2)";
+		String query = "SELECT c FROM PreReflecData c WHERE c.companyId = :companyId and c.sId = :sid and (c.workId = 1 or c.workId = 2)";
 		List<PreReflecData> entitys = this.queryProxy()
 				.query(query, PreReflecData.class)
 				.setParameter("companyId", companyId)

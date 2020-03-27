@@ -69,8 +69,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/register-new-employee")
-	public void registerNewEmployee(DataBeforeReflectCommand command) {
-		this.addCommand.handle(command);
+	public JavaTypeResult<Boolean> registerNewEmployee(DataBeforeReflectCommand command) {
+		return new JavaTypeResult<Boolean>(this.addCommand.handle(command));
 	}
 
 	@POST
@@ -87,8 +87,8 @@ public class DataBeforeReflectingPerInfoWS {
 
 	@POST
 	@Path("/remove/{hisId}")
-	public void remove(@PathParam("hisId") String hisId) {
-		this.removeCommnad.remove(hisId);
+	public JavaTypeResult<Boolean> remove(@PathParam("hisId") String hisId) {
+		return new JavaTypeResult<Boolean>(this.removeCommnad.handle(hisId));
 	}
 	
 	//jcm007 update ver 2 
