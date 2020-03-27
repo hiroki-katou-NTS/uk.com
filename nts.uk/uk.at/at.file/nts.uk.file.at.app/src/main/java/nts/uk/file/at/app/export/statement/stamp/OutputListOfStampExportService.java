@@ -19,13 +19,15 @@ public class OutputListOfStampExportService extends ExportService<OutputConditio
 	protected void handle(ExportServiceContext<OutputConditionListOfStampQuery> context) {
 		// OutputConditionListOfStampQuery query = context.getQuery();
 		OutputConditionListOfStampQuery query = new OutputConditionListOfStampQuery();
-		query.setCompanyName("company1");
-		query.setDatePeriodHead("20/12/2020");
-		query.setTitle("title");
-		List<StampList> stampLists = new ArrayList<>();
+		StampHeader header = new StampHeader();
+		header.setCompanyName("company1");
+		header.setDatePeriodHead("20/12/2020");
+		header.setTitle("title");
+		query.setHeader(header);
 		List<EmployeeInfor> employeeList = new ArrayList<>();
 		for (Integer j = 0; j < 2; j++) {
-			for (Integer i = 0; i < 10; i++) {
+			List<StampList> stampLists = new ArrayList<>();
+			for (Integer i = 0; i < 40; i++) {
 				StampList stampList = new StampList();
 				stampList.setClassification(i.toString());
 				stampList.setDate(i.toString());
@@ -38,6 +40,7 @@ public class OutputListOfStampExportService extends ExportService<OutputConditio
 				stampLists.add(stampList);
 			}
 			EmployeeInfor employeeInfor = new EmployeeInfor();
+			employeeInfor.setWorkplace("Workplace");
 			employeeInfor.setCardNo(j.toString());
 			employeeInfor.setEmployee(j.toString());
 			employeeInfor.setStampList(stampLists);

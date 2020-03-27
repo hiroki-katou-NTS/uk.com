@@ -10,6 +10,7 @@ public class EmployeeInfor {
 	private String workplace;
 	private String employee;
 	private String cardNo;
+
 	//data list
 	private List<StampList> stampList;
 }

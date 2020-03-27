@@ -39,6 +39,7 @@ module nts.uk.at.view.kdp011.a {
             // Process Select 
             itemList: KnockoutObservableArray<any>
             selectedIdProcessSelect: KnockoutObservable<number>;
+            enableProcessSelect: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 let self = this;
                 //CCG 001 
@@ -69,9 +70,11 @@ module nts.uk.at.view.kdp011.a {
                 
                   if (__viewContext.user.role.attendance != '') {
                     self.selectedIdProcessSelect = ko.observable(1);
+                       {"id":1,"enableProcessSelect":false};
                 }
                 else {
                     self.selectedIdProcessSelect = ko.observable(2);
+                      {"id":1,"enableProcessSelect":false};
                 }
 
             }
