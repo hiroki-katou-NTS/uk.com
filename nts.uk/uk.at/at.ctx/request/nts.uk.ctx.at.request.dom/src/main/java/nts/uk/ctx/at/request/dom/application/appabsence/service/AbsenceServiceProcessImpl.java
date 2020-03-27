@@ -259,8 +259,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				subVacaTypeUseFlg, 
 				subHdManage,
 				subHdTypeUseFlg, 
-				subHdRemain.intValue(), 
-				subVacaRemain.intValue());
+				subHdRemain == null ? 0 : subHdRemain.intValue(), 
+				subVacaRemain == null ? 0 : subVacaRemain.intValue());
 		return result;
 	}
 	/**
