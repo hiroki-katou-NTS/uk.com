@@ -181,6 +181,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
             })
             
+            // fix break layout on IE
+            window.onresize = function(event) {
+            	if ((navigator.userAgent.match(/msie/i) != null || navigator.userAgent.match(/trident/i) != null) && $("#prev-next-button").width() < 75) {
+            		$("#selected-approver").css("margin-left", 100 - $("#prev-next-button").width() + "px");
+            	}
+            }
+            
         }// end constructor
         
         checkEmpty(value: any){
