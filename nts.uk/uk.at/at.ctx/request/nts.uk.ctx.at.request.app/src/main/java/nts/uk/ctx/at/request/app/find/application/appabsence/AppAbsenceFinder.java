@@ -230,14 +230,6 @@ public class AppAbsenceFinder {
 				appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getEmployeeID(), 
 				GeneralDate.today());
 		appAbsenceStartInfoOutput.setRemainVacationInfo(remainVacationInfo);
-		
-		// 勤務種類変更時処理
-		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
-				companyID, 
-				appAbsenceStartInfoOutput, 
-				appAbsence.getHolidayAppType(), 
-				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
-		
 		// 取得した情報もとに「休暇残数情報」にセットして返す
 		AppAbsenceStartInfoDto appAbsenceStartInfoDto = AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
