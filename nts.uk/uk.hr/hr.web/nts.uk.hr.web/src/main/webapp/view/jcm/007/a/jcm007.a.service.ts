@@ -51,8 +51,8 @@ module jcm007.a.service {
         return nts.uk.request.exportFile(paths.exportExcel);
     }
     
-    export function eventChangeRetirementDate(): JQueryPromise<any> {
-        return ajax(paths.eventChangeRetirementDate, changeRetirementDateObj);
+    export function eventChangeRetirementDate(object): JQueryPromise<any> {
+        return ajax(paths.eventChangeRetirementDate, object);
     }
 
 

@@ -10,8 +10,8 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * @author laitv 年月日期間の汎用履歴項目 path :
- *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.労働契約履歴.年月日期間の汎用履歴項目
+ * @author laitv 年月日期間の汎用履歴項目 
+ * path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.労働契約履歴.年月日期間の汎用履歴項目
  */
 @Getter
 @Setter

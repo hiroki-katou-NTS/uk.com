@@ -676,60 +676,82 @@ module jcm007.a {
             let self = this;
             // アルゴリズム[日付確認チェック]を実行する(Thực hiện thuật toán [check xác nhận ngày]) 
             // (thuat toan nay check ở dưới client sẽ hợp lý hơn)
-            let objResultOfterRetimentChange = self.currentEmployee().objResultOfterRetimentChange;
+            let objResultWhenRetimentChange = self.currentEmployee().objResultWhenRetimentChange;
             let releaseDateA22214 = moment.utc(self.currentEmployee().releaseDate(), DateFormat.DEFAULT_FORMAT);
             let dismissalNoticeDateA22235 = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
 
-            if (objResultOfterRetimentChange.releaseDate == null) {
+            if (objResultWhenRetimentChange.releaseDate == null) {
 
-                self.modifyRetireeInformation(command);
+                if (regisType == 2) {
+                    self.registerNewEmployee(command);
+                } else if (regisType == 3) {
+                    self.registerNewRetireesApproved(command);
+                } else if (regisType == 4) {
+                    self.modifyRetireeInformation(command);
+                }
 
-            } else if (objResultOfterRetimentChange.releaseDate != null) {
+            } else if (objResultWhenRetimentChange.releaseDate != null) {
 
-                let releaseDateCalculator = moment.utc(objResultOfterRetimentChange.releaseDate, DateFormat.DEFAULT_FORMAT);
+                let releaseDateCalculator = moment.utc(objResultWhenRetimentChange.releaseDate, DateFormat.DEFAULT_FORMAT);
                 let dayDifferenceRelease = releaseDateA22214.diff(releaseDateCalculator, 'days');
-                if (dayDifferenceRelease > 0) {
+                if (dayDifferenceRelease != 0) {
                     nts.uk.ui.dialog.confirm({ messageId: "MsgJ_JCM007_13" }).ifYes(() => {
 
-                        if (objResultOfterRetimentChange.dismissalNoticeDate == null) {
-
-                            self.modifyRetireeInformation(command);
-
-                        } else if (objResultOfterRetimentChange.dismissalNoticeDate != null) {
-
-                            let dismissalNoticeDateCalculator = moment.utc(objResultOfterRetimentChange.dismissalNoticeDate, DateFormat.DEFAULT_FORMAT);
-
-                            let dayDifferenceDismissalNotice = dismissalNoticeDateA22235.diff(dismissalNoticeDateCalculator, 'days');
-
-                            if (dayDifferenceDismissalNotice > 0) {
-                                if (dismissalNoticeDateA22235 < dismissalNoticeDateCalculator) {
-
-                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
-                                        self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
-                                    } else {
-                                        self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
-                                    }
-
-                                } else if (dismissalNoticeDateA22235 > dismissalNoticeDateCalculator) {
-
-                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
-                                        self.showConfirmDialog("MsgJ_JCM007_8", command, regisType);
-                                    } else {
-                                        self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
-                                    }
-
-                                } else if (dismissalNoticeDateA22235 == dismissalNoticeDateCalculator) {
-
-                                    if (self.currentEmployee().dismissalNoticeDateAllow()) {
-                                        self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
-                                    } else {
-                                        self.modifyRetireeInformation(command);
-                                    }
-                                }
-                            }
-                        }
+                        self.dismissalNoticeDateCheck(regisType, command);
 
                     }).ifNo(() => { return; });
+                } else {
+
+                    self.dismissalNoticeDateCheck(regisType, command);
+
+                }
+            }
+        }
+        
+        dismissalNoticeDateCheck(regisType, command) {
+            let self = this;
+            let objResultWhenRetimentChange = self.currentEmployee().objResultWhenRetimentChange;
+            let dismissalNoticeDateA22235 = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
+            if (objResultWhenRetimentChange.dismissalNoticeDate == null) {
+                
+                if (regisType == 2) {
+                    self.registerNewEmployee(command);
+                } else if (regisType == 3) {
+                    self.registerNewRetireesApproved(command);
+                } else if (regisType == 4) {
+                    self.modifyRetireeInformation(command);
+                }
+
+            } else if (objResultWhenRetimentChange.dismissalNoticeDate != null) {
+
+                let dismissalNoticeDateCalculator = moment.utc(objResultWhenRetimentChange.dismissalNoticeDate, DateFormat.DEFAULT_FORMAT);
+                let dayDifferenceDismissalNotice = dismissalNoticeDateA22235.diff(dismissalNoticeDateCalculator, 'days');
+
+                if (dayDifferenceDismissalNotice != 0) {
+                    if (dismissalNoticeDateA22235 < dismissalNoticeDateCalculator) {
+
+                        if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                            self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
+                        } else {
+                            self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
+                        }
+
+                    } else if (dismissalNoticeDateA22235 > dismissalNoticeDateCalculator) {
+
+                        if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                            self.showConfirmDialog("MsgJ_JCM007_8", command, regisType);
+                        } else {
+                            self.showConfirmDialog("MsgJ_JCM007_14", command, regisType);
+                        }
+
+                    } else if (dismissalNoticeDateA22235 == dismissalNoticeDateCalculator) {
+
+                        if (self.currentEmployee().dismissalNoticeDateAllow()) {
+                            self.showConfirmDialog("MsgJ_JCM007_9", command, regisType);
+                        } else {
+                            self.modifyRetireeInformation(command);
+                        }
+                    }
                 }
             }
         }
@@ -1098,7 +1120,7 @@ module jcm007.a {
         enable_leaveConsiderableTime5: KnockoutObservable<boolean> = ko.observable(true);
         enable_other6: KnockoutObservable<boolean> = ko.observable(true);
 
-        objResultOfterRetimentChange: any;
+        objResultWhenRetimentChange: any;
 
         constructor(param: IEmployee) {
             let self = this;
@@ -1170,20 +1192,24 @@ module jcm007.a {
             self.other_6Val(param.other_6Val || '');
 
             //xử lý subscribe
-
             self.retirementDate.subscribe((value) => {
                 console.log("retirementDate change");
+                if(self.sid == undefined || value == "")
+                    return;
+                
                 block.grayout();
                 let object = {
                     retirementDate : self.retirementDate(), // A222_12  退職日
                     retirementType : self.selectedCode_Retiment(),        // A222_16 退職区分
                     sid            : self.sid,                 // 社員ID = 選択中社員の社員ID(EmployeeID = EmployeeID của employee dang chon)
-                    cid            : null ,                 // 会社ID = ログイン会社ID(CompanyID = LoginCompanyID)
-                    baseDate       : null
+                    cid            : null,                 // 会社ID = ログイン会社ID(CompanyID = LoginCompanyID) lấy trên server
+                    baseDate       : null                  // lấy trên server
                 };
                 
                 service.eventChangeRetirementDate(object).done((result: any) => {
                     console.log('event retirementDate change done');
+                    console.log(result);
+                    self.objResultWhenRetimentChange = result;
                     debugger;
                     if (result.processingResult == true) {
                         self.releaseDate(result.releaseDate);
@@ -1199,7 +1225,7 @@ module jcm007.a {
                     }
                 }).fail((error) => {
                     console.log('event retirementDate change done fail');
-                    debugger;
+                    console.log(error);
                     block.clear();
                     nts.uk.ui.dialog.info(error);
                     return;
@@ -1207,8 +1233,7 @@ module jcm007.a {
                     block.clear();
                 });
                 
-                
-                // update bien objResultOfterRetimentChange
+                // update bien objResultWhenRetimentChange
 
             });
 
