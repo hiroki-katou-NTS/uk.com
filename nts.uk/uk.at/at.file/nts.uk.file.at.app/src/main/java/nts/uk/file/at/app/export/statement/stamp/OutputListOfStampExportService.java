@@ -8,17 +8,25 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampFinder;
 
 @Stateless
-public class OutputListOfStampExportService extends ExportService<OutputConditionListOfStampQuery> {
+public class OutputListOfStampExportService extends ExportService<ConditionListOfStampQueryDto> {
 
 	@Inject
 	private OutputConditionListOfStampGenerator generator;
+	
+	@Inject
+	private OutputScreenListOfStampFinder finder;
 
 	@Override
-	protected void handle(ExportServiceContext<OutputConditionListOfStampQuery> context) {
+	protected void handle(ExportServiceContext<ConditionListOfStampQueryDto> context) {
 		// OutputConditionListOfStampQuery query = context.getQuery();
-		OutputConditionListOfStampQuery query = new OutputConditionListOfStampQuery();
+		ConditionListOfStampQueryDto query1 = context.getQuery();
+		//
+		//finder.createListOfStampEmpQuery(query1, query1);
+		//Map
+		OutputConditionListOfStampQuery query = new  OutputConditionListOfStampQuery();
 		StampHeader header = new StampHeader();
 		header.setCompanyName("company1");
 		header.setDatePeriodHead("20/12/2020");
