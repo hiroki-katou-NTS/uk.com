@@ -100,10 +100,11 @@ public interface CommonAlgorithm {
 	 * @param targetDate 基準日
 	 * @param appType 申請種類
 	 * @param appDispInfoNoDateOutput 申請表示情報(基準日関係なし)
+	 * @param appDispInfoWithDateOutput 申請表示情報(基準日関係あり)
 	 * @return
 	 */
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst, GeneralDate targetDate,
-			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput);
+			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput);
 	
 	/**
 	 * 申請済み勤務種類の存在判定と取得

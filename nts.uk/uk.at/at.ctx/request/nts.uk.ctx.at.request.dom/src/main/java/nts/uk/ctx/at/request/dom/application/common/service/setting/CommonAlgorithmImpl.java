@@ -235,16 +235,20 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput) {
+			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
 			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
 					.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
-			return this.getAppDispInfoRelatedDate(
+			AppDispInfoWithDateOutput result = this.getAppDispInfoRelatedDate(
 					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), dateLst, appType, 
 					appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
 					appTypeSetting.getDisplayInitialSegment());
+			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
+			appDispInfoWithDateOutput.setAchievementOutputLst(result.getAchievementOutputLst());
+			appDispInfoWithDateOutput.setAppDetailContentLst(result.getAppDetailContentLst());
+			return appDispInfoWithDateOutput;
 		} else {
 			// 申請表示情報(基準日関係あり)を取得する
 			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);

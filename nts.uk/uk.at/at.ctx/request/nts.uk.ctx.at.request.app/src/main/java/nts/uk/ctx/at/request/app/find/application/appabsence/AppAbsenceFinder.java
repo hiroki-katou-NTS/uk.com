@@ -512,22 +512,17 @@ public class AppAbsenceFinder {
 		dateLst.add(targetDate);
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
 		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput();
 		// 共通インタラクション「申請日を変更する」を実行する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutputResult = commonAlgorithm.changeAppDateProcess(
+		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
 				targetDate,
 				ApplicationType.ABSENCE_APPLICATION, 
-				appDispInfoNoDateOutput);
+				appDispInfoNoDateOutput,
+				appDispInfoWithDateOutput);
 		// INPUT．「休暇申請起動時の表示情報」を更新する
-		if(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting()
-				.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
-			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setPrePostAtr(appDispInfoWithDateOutputResult.getPrePostAtr());
-			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setAchievementOutputLst(appDispInfoWithDateOutputResult.getAchievementOutputLst());
-			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setAppDetailContentLst(appDispInfoWithDateOutputResult.getAppDetailContentLst());
-		} else {
-			appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutputResult);
-		}
+		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 承認ルートの基準日を確認する
 		RequestSetting requestSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting();
 		if(requestSetting.getApplicationSetting().getRecordDate() == RecordDate.APP_DATE ) {
