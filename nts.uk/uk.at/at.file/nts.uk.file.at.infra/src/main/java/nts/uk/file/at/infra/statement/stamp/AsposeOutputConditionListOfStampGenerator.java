@@ -86,6 +86,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			for (int i = 0; i < query.getEmployeeList().size(); i++) {
 				row = generateData(row, reportContext, query.getEmployeeList().get(i), printStyle);
 			}
+			reportContext.getWorkbook().getWorksheets().get(0).setName(TextResource.localize("KDP011_1"));
 			reportContext.processDesigner();
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
