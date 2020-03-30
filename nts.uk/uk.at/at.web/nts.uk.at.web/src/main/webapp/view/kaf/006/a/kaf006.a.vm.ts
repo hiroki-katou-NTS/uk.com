@@ -434,6 +434,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let self = this;
             let specAbsenceDispInfo = data.specAbsenceDispInfo;
             if(nts.uk.util.isNullOrUndefined(specAbsenceDispInfo)) {
+                self.fix(false);
+                self.maxDayDis(false);
+                self.dataMax(false);
                 return;        
             }
              //hoatt 2018.08.09
@@ -478,13 +481,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = specAbsenceDispInfo.maxDay;
                 }
-                //if(data.maxDayObj != null){
+                if(data.maxDayObj != null){
                     self.maxDay(specAbsenceDispInfo.maxDay);
                     self.dayOfRela(specAbsenceDispInfo.dayOfRela);
                     self.dataMax(true);  
-//                }else{
-//                    self.dataMax(false);    
-//                }
+                }else{
+                    self.dataMax(false);    
+                }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
                 self.maxDayline1(line1);

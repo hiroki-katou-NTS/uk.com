@@ -275,6 +275,9 @@ module nts.uk.at.view.kaf006.b{
             let self = this;
             let specAbsenceDispInfo = data.appAbsenceStartInfoDto.specAbsenceDispInfo;
             if(nts.uk.util.isNullOrUndefined(specAbsenceDispInfo)) {
+                self.fix(false);
+                self.maxDayDis(false);
+                self.dataMax(false);
                 return;        
             }
              //hoatt 2018.08.09
