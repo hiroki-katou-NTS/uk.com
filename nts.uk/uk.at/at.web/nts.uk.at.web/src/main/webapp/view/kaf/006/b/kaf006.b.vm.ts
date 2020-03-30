@@ -127,6 +127,7 @@ module nts.uk.at.view.kaf006.b{
         dataMax: KnockoutObservable<boolean> = ko.observable(false);
         appCur: any = null;
         appAbsenceStartInfoDto: any;
+        dayDispSet: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -505,6 +506,7 @@ module nts.uk.at.view.kaf006.b{
                 }
             }
             
+            self.dayDispSet(data.appAbsenceStartInfoDto.hdAppSet.dayDispSet==1?true:false);
             let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==self.holidayTypeCode());
             if(nts.uk.util.isNullOrUndefined(currentDisplay)){
                 self.typicalReasonDisplayFlg(false);
