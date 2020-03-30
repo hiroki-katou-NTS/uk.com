@@ -600,7 +600,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
 		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
 		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == holidayType.value)
-				.findFirst().get();
+				.findFirst().orElse(null);
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
 		// 勤務種類を取得する
