@@ -25,11 +25,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -49,15 +47,9 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	@Inject
 	private AppAbsenceRepository repoAppAbsence;
 	@Inject
-	private DetailBeforeUpdate detailBeforeUpdate;
-	@Inject
 	private ApplicationRepository_New repoApplication;
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
-	@Inject
-	private CreatAppAbsenceCommandHandler insertAppAbsence;
-	@Inject 
-	private AbsenceServiceProcess absenceServiceProcess;
 	@Inject
 	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
@@ -66,8 +58,6 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	private DisplayReasonRepository displayRep;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;	
 	@Inject
@@ -143,35 +133,6 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		appAbsence.setVersion(appAbsence.getVersion());
 		appAbsence.getApplication().setVersion(command.getApplicationCommand().getVersion());
 		
-		//6.休暇申請（詳細）登録
-		// 4-1.詳細画面登録前の処理
-		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				appAbsence.getApplication().getAppDate(), 
-				1, 
-				appAbsence.getAppID(), 
-				appAbsence.getApplication().getPrePostAtr(), 
-				command.getVersion(),
-				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());*/
-		/*GeneralDate startDate = opAppAbsence.get().getApplication().getAppDate();
-		GeneralDate endDate = opAppAbsence.get().getApplication().getEndDate().isPresent() ? opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate();
-		
-		//休日申請日
-		List<GeneralDate> lstDateIsHoliday = otherCommonAlg.lstDateIsHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
-		//check update 7.登録時のエラーチェック
-		insertAppAbsence.checkBeforeRegister(convert(command),
-				startDate,
-				endDate,
-				false,
-				lstDateIsHoliday);
-		//計画年休上限チェック(check giới han trên plan annual holiday)
-		//hoatt-2018-07-05
-		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
-				GeneralDate.fromString(command.getStartDate(),"yyyy/MM/dd"),
-				GeneralDate.fromString(command.getEndDate(),"yyyy/MM/dd"),
-				lstDateIsHoliday);*/
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		AppForSpecLeaveCmd appForSpecLeaveCmd = command.getAppAbsenceCommand().getAppForSpecLeave();
@@ -213,14 +174,5 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		// 4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());
 	}
-	/*private CreatAppAbsenceCommand convert(UpdateAppAbsenceCommand command){
-		CreatAppAbsenceCommand creat = new CreatAppAbsenceCommand();
-		creat.setEmployeeID(command.getApplicationCommand().getApplicantSID());
-		creat.setPrePostAtr(command. getPrePostAtr());
-		creat.setHolidayAppType(command.getHolidayAppType());
-		creat.setWorkTypeCode(command.getWorkTypeCode());
-		creat.setSpecHd(command.getSpecHd());
-		return creat;
-	}*/
 
 }
