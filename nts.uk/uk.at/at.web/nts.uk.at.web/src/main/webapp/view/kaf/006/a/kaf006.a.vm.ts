@@ -481,7 +481,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = specAbsenceDispInfo.maxDay;
                 }
-                if(data.maxDayObj != null){
+                if(maxDay != null){
                     self.maxDay(specAbsenceDispInfo.maxDay);
                     self.dayOfRela(specAbsenceDispInfo.dayOfRela);
                     self.dataMax(true);  
@@ -1221,6 +1221,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });
                 });
+                return;
             }
             
             dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {

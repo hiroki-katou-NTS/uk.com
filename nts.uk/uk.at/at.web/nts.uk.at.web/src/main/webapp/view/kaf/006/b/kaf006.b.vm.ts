@@ -335,7 +335,7 @@ module nts.uk.at.view.kaf006.b{
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = specAbsenceDispInfo.maxDayObj.maxDay;
                 }
-                if(data.maxDayObj != null){
+                if(maxDay != null){
                     self.maxDay(specAbsenceDispInfo.maxDay);
                     self.dayOfRela(specAbsenceDispInfo.dayOfRela);  
                     self.dataMax(true);  
@@ -523,7 +523,14 @@ module nts.uk.at.view.kaf006.b{
             }
             self.requiredReason(data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
             self.workTimeCode(appAbsenceDto.workTimeCode);
-            let wktimeName = appAbsenceDto.workTimeName || nts.uk.resource.getText('KAL003_120');
+            let workTimeLst = data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.workTimeLst;
+            let workTimeCurrent = _.find(workTimeLst, (o) => o.worktimeCode == self.workTimeCode());
+            let wktimeName = "";
+            if(_.isUndefined(workTimeCurrent)) {
+                wktimeName = nts.uk.resource.getText('KAL003_120');     
+            } else {
+                wktimeName = workTimeCurrent.workTimeDisplayName.workTimeName || nts.uk.resource.getText('KAL003_120');
+            }  
             self.displayWorkTimeName(nts.uk.util.isNullOrEmpty(appAbsenceDto.workTimeCode) ? nts.uk.resource.getText('KAF006_21') : appAbsenceDto.workTimeCode +"　"+ wktimeName);
             let appReasonLst = data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.appReasonLst;
             if(appReasonLst != null && appReasonLst.length > 0){
@@ -806,6 +813,7 @@ module nts.uk.at.view.kaf006.b{
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });
                 });
+                return;
             }
             
             dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
