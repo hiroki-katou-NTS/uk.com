@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import lombok.Getter;
-import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDateTime;
 
@@ -11,7 +10,6 @@ import nts.arc.time.GeneralDateTime;
  * @author tutk
  *
  */
-@Value
 public class DateAndTimePeriod implements DomainValue {
 
 	/**

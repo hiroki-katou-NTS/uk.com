@@ -107,7 +107,7 @@ public class StampSettingPersonHelper {
 					true, 
 					EnumAdaptor.valueOf(0, GoingOutReason.class), 
 					EnumAdaptor.valueOf(0, SetPreClockArt.class),
-					EnumAdaptor.valueOf(0, ChangeClockArt.class),
+					EnumAdaptor.valueOf(1, ChangeClockArt.class),
 					EnumAdaptor.valueOf(0, ChangeCalArt.class));
 		}
 	}
