@@ -70,11 +70,11 @@ module nts.uk.at.view.kdp011.a {
                 
                   if (__viewContext.user.role.attendance != '') {
                     self.selectedIdProcessSelect = ko.observable(1);
-                       {"id":1,"enableProcessSelect":false};
+                      
                 }
                 else {
                     self.selectedIdProcessSelect = ko.observable(2);
-                      {"id":1,"enableProcessSelect":false};
+                    
                 }
 
             }

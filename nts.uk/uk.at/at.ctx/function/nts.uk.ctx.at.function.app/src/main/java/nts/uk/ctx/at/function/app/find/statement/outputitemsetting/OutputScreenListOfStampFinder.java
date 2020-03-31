@@ -139,14 +139,24 @@ public class OutputScreenListOfStampFinder {
 		
 		listEmployeeStampInfo.stream().forEach(item -> {
 			EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+			String workPlaceName = "";
+			val empInfo = listEmpInfo.stream().filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst().get();
+			val checkEmpID = listEmpInfo.stream().filter(c ->c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+			if (checkEmpID.isPresent()){
+				EmployeeInformationImport employeeInformationImport = checkEmpID.get();
+				String checkWorkPlaceCd = employeeInformationImport.getWorkplace().getWorkplaceCode();
+				List<WorkLocation> workLocation =  listWorkLocation.stream().filter( c-> c.getWorkLocationCD().equals(checkWorkPlaceCd)).collect(Collectors.toList());
+				workPlaceName = workLocation.stream().map(c ->c.getWorkLocationName()).collect(Collectors.toList()).get(0).toString();
+				
+			}
 			
-			val empInfo = listEmpInfo.stream().filter(c -> c.getEmployeeId() == item.getEmployeeId()).findFirst().get();
-			val workLocationName = empInfo.getWorkplace().getWorkplaceName();
 			val stampInfoDisp = item.getListStampInfoDisp().get(0);
 			val workTimeCode = item.getListStampInfoDisp().get(0).getStamp().get().getRefActualResults().getWorkTimeCode().get();
 			val workTimeSetting = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode() == workTimeCode).findFirst().get();
 			val overtimeHours = item.getListStampInfoDisp().get(0).getStamp().get().getRefActualResults().getOvertimeDeclaration().get().getOverTime().toString();
 			val lateNightTime = item.getListStampInfoDisp().get(0).getStamp().get().getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().toString();
+			
+			//
 			
 			employeEngravingInfor.setWorkplaceCd(empInfo.getWorkplace().getWorkplaceCode());
 			employeEngravingInfor.setWorkplaceName(empInfo.getWorkplace().getWorkplaceName());
@@ -156,7 +166,7 @@ public class OutputScreenListOfStampFinder {
 			employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
 			employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().value);
 			employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().value);
-			employeEngravingInfor.setInstallPlace(workLocationName);
+			employeEngravingInfor.setInstallPlace(workPlaceName);
 			employeEngravingInfor.setLocalInfor(null);
 			employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
 			employeEngravingInfor.setWorkTimeDisplayName(workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v());
@@ -198,7 +208,7 @@ public class OutputScreenListOfStampFinder {
 		List<CardNoStampInfo> cardNoStampInfos = new ArrayList<>();
 		
 		// 打刻情報リスト
-		Map<String, List<StampInfoDisp>> listStampInfoDispMap = listStampInfoDisp.stream().collect(Collectors.groupingBy(i -> i.toString()));
+		//Map<String, List<StampInfoDisp>> listStampInfoDispMap = listStampInfoDisp.stream().collect(Collectors.groupingBy(i -> i.toString()));
 
 		listStampInfoDisp.stream().forEach(i -> {
 			CardNoStampInfo cardNoStampInfo = new CardNoStampInfo();
@@ -209,20 +219,23 @@ public class OutputScreenListOfStampFinder {
 			// Chuẩn bị data
 			int stampMeans = 0;
 			int authcMethod = 0;
-			String installPlace = "";
+		
 			String localInfor = "";
 			String supportCard = "";
 			String workTimeDisplayName = "";
 			String overtimeHours = "";
 			String lateNightTime = "";
+			String workLocationName = "";
 			if (infoDisp.getStamp().isPresent()) {
 				stampMeans = infoDisp.getStamp().get().getRelieve().getStampMeans().value;
 				authcMethod = infoDisp.getStamp().get().getRelieve().getAuthcMethod().value;
 				
 				val refActualResults = infoDisp.getStamp().get().getRefActualResults();
 				val workLocationCD = refActualResults.getWorkLocationCD();
+				
 				if (workLocationCD.isPresent())
-					installPlace = workLocationCD.get().v();
+					workLocationName = listWorkLocation.stream().filter(c ->c.getWorkLocationCD().v() == workLocationCD.toString())
+					.map(c ->c.getWorkLocationName().v()).findFirst().get();	
 				
 				val locationInfo = infoDisp.getStamp().get().getLocationInfor();
 				if (locationInfo.isPresent()) {
@@ -251,7 +264,7 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setAttendanceAtr(infoDisp.getStampAtr());
 			cardNoStampInfo.setStampMeans(stampMeans);
 			cardNoStampInfo.setAuthcMethod(authcMethod);
-			cardNoStampInfo.setInstallPlace(installPlace);
+			cardNoStampInfo.setInstallPlace(workLocationName);
 			cardNoStampInfo.setLocalInfor(localInfor);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
