@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -16,27 +16,30 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
  * @author tutk
  *
  */
-@Value
 public class StampInfoDisp implements DomainValue {
 
 	/**
 	 * 打刻カード番号
 	 */
+	@Getter
 	private final StampNumber stampNumber;
 
 	/**
 	 * 打刻日時
 	 */
+	@Getter
 	private final GeneralDateTime stampDatetime;
 
 	/**
 	 * 打刻区分
 	 */
+	@Getter
 	private final String stampAtr;
 
 	/**
 	 * 打刻
 	 */
+	@Getter
 	private final Optional<Stamp> stamp;
 
 	public StampInfoDisp(StampNumber stampNumber, GeneralDateTime stampDatetime, String stampAtr, Stamp stamp) {
@@ -68,23 +71,21 @@ public class StampInfoDisp implements DomainValue {
 	 * @param stamp
 	 * @return
 	 */
-	private String createStamp(StampRecord StampRecord, Optional<Stamp> stamp) {
+	private String createStamp(StampRecord stampRecord, Optional<Stamp> stamp) {
 		if (!stamp.isPresent()) {
-			return StampRecord.getRevervationAtr().nameId;
+			return stampRecord.getRevervationAtr().nameId;
 		}
 		String stampTypeDisplayed = stamp.get().getType().createStampTypeDisplay();
-		boolean stampArt = StampRecord.isStampArt();
-		ReservationArt revervationAtr = StampRecord.getRevervationAtr();
+		boolean stampArt = stampRecord.isStampArt();
+		ReservationArt revervationAtr = stampRecord.getRevervationAtr();
 
 		if (stampArt && revervationAtr == ReservationArt.NONE) {
 			return stampTypeDisplayed;
 		} else if (stampArt && revervationAtr != ReservationArt.NONE) {
 			return stampTypeDisplayed + "+" + revervationAtr.nameId;
-		} else if (!stampArt && revervationAtr != ReservationArt.NONE) {
-			return revervationAtr.nameId;
-		}
-		//TH này k xảy ra.
-		return null;
+		} 
+		//else if (!stampArt && revervationAtr != ReservationArt.NONE) {
+		return revervationAtr.nameId;
 	}
 
 }

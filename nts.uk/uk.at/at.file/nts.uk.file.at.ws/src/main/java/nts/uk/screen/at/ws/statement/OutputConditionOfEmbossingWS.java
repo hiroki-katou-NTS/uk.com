@@ -46,6 +46,6 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@POST
 	@Path("stampExport")
 	public ExportServiceResult stampExport(ConditionListOfStampQueryDto dto) {
-		return null;
+		return export.start(dto);
 	}
 }
