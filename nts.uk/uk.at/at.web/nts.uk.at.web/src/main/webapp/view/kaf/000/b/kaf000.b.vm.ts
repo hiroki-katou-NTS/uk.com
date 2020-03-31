@@ -789,6 +789,31 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 return s;
             }        
         }
+        
+        getPhaseLabel(phaseOrder) {
+            let self = this;
+            switch(phaseOrder) {
+                case 1: return nts.uk.resource.getText("KAF000_4"); 
+                case 2: return nts.uk.resource.getText("KAF000_5"); 
+                case 3: return nts.uk.resource.getText("KAF000_6"); 
+                case 4: return nts.uk.resource.getText("KAF000_7"); 
+                case 5: return nts.uk.resource.getText("KAF000_8");    
+                default: return "";
+            }                 
+        }
+        
+        getApproverLabel(loopPhase, loopFrame, loopApprover) {
+            let self = this,
+                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
+            switch(index) {
+                case 1: return nts.uk.resource.getText("KAF000_9"); 
+                case 2: return nts.uk.resource.getText("KAF000_10"); 
+                case 3: return nts.uk.resource.getText("KAF000_11"); 
+                case 4: return nts.uk.resource.getText("KAF000_12"); 
+                case 5: return nts.uk.resource.getText("KAF000_13");    
+                default: return "";
+            }     
+        }
     }
 
     export module model {
