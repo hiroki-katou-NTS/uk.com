@@ -246,12 +246,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//新規モード(new mode)
 		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
 		boolean subVacaTypeUseFlg = false;
-		if(employmentSet.getHolidayOrPauseType() == HolidayType.RESTTIME.value) {
-			subVacaTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
-		}
 		boolean subHdTypeUseFlg = false;
-		if(employmentSet.getHolidayOrPauseType() == HolidayType.SUBSTITUTEHOLIDAY.value) {
-			subHdTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
+		if(employmentSet != null) {
+			if(employmentSet.getHolidayOrPauseType() == HolidayType.RESTTIME.value) {
+				subVacaTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
+			}
+			if(employmentSet.getHolidayOrPauseType() == HolidayType.SUBSTITUTEHOLIDAY.value) {
+				subHdTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
+			}
 		}
 		result = this.checkPriorityHoliday(
 				hdAppSet.getPridigCheck(), 
@@ -930,7 +932,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 代休振休優先消化チェック
 		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
-				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().get();
+				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
 		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
 				mode, 
 				appAbsenceStartInfoOutput.getHdAppSet(), 
@@ -978,6 +980,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public void checkSpecLeaveProcess(String companyID, GeneralDate startDate, GeneralDate endDate,
 			List<GeneralDate> holidayDateLst, Boolean mournerAtr, SpecAbsenceDispInfo specAbsenceDispInfo) {
+		if(specAbsenceDispInfo==null) {
+			return;
+		}
 		// 特別休暇の上限チェック
 		this.checkSpecHoliday(companyID, startDate, endDate, mournerAtr, specAbsenceDispInfo, holidayDateLst);
 	}
@@ -1017,7 +1022,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 					endDate, 
 					holidayDateLst,
 					mournerAtr.get(),
-					appAbsenceStartInfoOutput.getSpecAbsenceDispInfo().get());
+					appAbsenceStartInfoOutput.getSpecAbsenceDispInfo().orElse(null));
 			break;
 		case DIGESTION_TIME:
 			// INPUT．「休暇種類」 = 時間消化
@@ -1073,7 +1078,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
 		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
 		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
-				.findFirst().get();
+				.findFirst().orElse(null);
 		// 選択可能の勤務種類を取得する
 		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
 				employmentSet,

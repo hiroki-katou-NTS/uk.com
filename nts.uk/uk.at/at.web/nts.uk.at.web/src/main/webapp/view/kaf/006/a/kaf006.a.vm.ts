@@ -1221,6 +1221,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                         .then(function() { nts.uk.ui.block.clear(); });
                 });
+                return;
             }
             
             dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
