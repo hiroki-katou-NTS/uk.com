@@ -459,13 +459,17 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 				.str_08(new NoteRetiment(this.str_08)).str_09(new NoteRetiment(this.str_09))
 				.str_10(new NoteRetiment(this.str_10)).approveSid1(this.approveSid1)
 				.approvePerName1(this.approvePerName1)
-				.approveStatus1(EnumAdaptor.valueOf(this.approveStatus1, ApprovalStatus.class))
-				.approveComment1(this.approveComment1).approveSendMailFlg1(this.approveSendMailFlg1)
-				.approveDateTime1(this.approveDateTime1).approveSid2(this.approveSid2)
+				.approveStatus1(this.approveStatus1 == null ? null : EnumAdaptor.valueOf(this.approveStatus1, ApprovalStatus.class))
+				.approveComment1(this.approveComment1)
+				.approveSendMailFlg1(this.approveSendMailFlg1)
+				.approveDateTime1(this.approveDateTime1)
+				.approveSid2(this.approveSid2)
 				.approvePerName2(this.approvePerName2)
-				.approveStatus2(EnumAdaptor.valueOf(this.approveStatus1, ApprovalStatus.class))
-				.approveComment2(this.approveComment2).approveSendMailFlg2(this.approveSendMailFlg2)
-				.approveDateTime2(this.approveDateTime2).rptLayoutId(this.rptLayoutId).build();
+				.approveStatus2(this.approveStatus2 == null ? null : EnumAdaptor.valueOf(this.approveStatus1, ApprovalStatus.class))
+				.approveComment2(this.approveComment2)
+				.approveSendMailFlg2(this.approveSendMailFlg2)
+				.approveDateTime2(this.approveDateTime2)
+				.rptLayoutId(this.rptLayoutId).build();
 	}
 	
 	public void updateEntity(DataBeforeReflectingPerInfo domain) {
@@ -544,13 +548,13 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 		// ver 2
 		this.approveSid1 = domain.approveSid1;
 		this.approvePerName1 = domain.approvePerName1;
-		this.approveStatus1 = domain.approveStatus1.value;
+		this.approveStatus1 = domain.approveStatus1 == null ? null : domain.approveStatus1.value;
 		this.approveComment1 = domain.approveComment1;
 		this.approveSendMailFlg1 = domain.approveSendMailFlg1;
 		this.approveDateTime1 = domain.approveDateTime1;
 		this.approveSid2 = domain.approveSid2;
 		this.approvePerName2 = domain.approvePerName2;
-		this.approveStatus2 = domain.approveStatus2.value;
+		this.approveStatus2 = domain.approveStatus2 == null ? null : domain.approveStatus2.value;
 		this.approveComment2 = domain.approveComment2;
 		this.approveSendMailFlg2 = domain.approveSendMailFlg2;
 		this.approveDateTime2 = domain.approveDateTime2;
@@ -671,13 +675,13 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 		// ver 2
 		entity.approveSid1 = domain.approveSid1;
 		entity.approvePerName1 = domain.approvePerName1;
-		entity.approveStatus1 = domain.approveStatus1.value;
+		entity.approveStatus1 = domain.approveStatus1 == null ? null : domain.approveStatus1.value;
 		entity.approveComment1 = domain.approveComment1;
 		entity.approveSendMailFlg1 = domain.approveSendMailFlg1;
 		entity.approveDateTime1 = domain.approveDateTime1;
 		entity.approveSid2 = domain.approveSid2;
 		entity.approvePerName2 = domain.approvePerName2;
-		entity.approveStatus2 = domain.approveStatus2.value;
+		entity.approveStatus2 = domain.approveStatus2 == null ? null : domain.approveStatus2.value;
 		entity.approveComment2 = domain.approveComment2;
 		entity.approveSendMailFlg2 = domain.approveSendMailFlg2;
 		entity.approveDateTime2 = domain.approveDateTime2;

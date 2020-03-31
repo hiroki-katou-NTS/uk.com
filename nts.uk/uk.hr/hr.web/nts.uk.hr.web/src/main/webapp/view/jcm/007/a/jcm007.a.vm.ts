@@ -68,7 +68,7 @@ module jcm007.a {
             self.empInfoHeaderList = ko.observableArray([]);
 
             self.input = new Input(undefined);
-            self.isNewMode = false;
+            self.isNewMode = true;
 
             self.status_Unregistered = ''; // 0
             self.status_ApprovalPending = getText('JCM007_A3_2'); // 1
@@ -79,8 +79,7 @@ module jcm007.a {
 
             self.selectedTab.subscribe((value) => {
                 if (value == 'tab-2') {
-                    self.isNewMode = false;
-                    self.getListData().done(() => {
+                    self.getListDataOfTab2().done(() => {
                         let itemSelectedTab2 = self.itemSelectedTab2();
                         if (itemSelectedTab2 != null) {
                             if (itemSelectedTab2.status == self.status_ApprovalPending || itemSelectedTab2.status == self.status_Unregistered) {
@@ -119,7 +118,6 @@ module jcm007.a {
                             self.initHeaderInfo();
                             self.initRetirementInfo();
                         }
-
                     });
                 } else if (value == 'tab-1') {
                     self.enable_btnRemove(false);
@@ -148,6 +146,7 @@ module jcm007.a {
 
             self.itemSelectedTab2.subscribe((value) => {
                 if (value == null) return;
+                self.isNewMode = false;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
                     // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
                     self.enable_btnRegister(true);
@@ -304,7 +303,45 @@ module jcm007.a {
             });
             return dfd.promise();
         }
+        
+        getListDataOfTab2() {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
+            service.getData().done((result) => {
+                // goi service アルゴリズム[社員情報リストを取得]を実行する
+                // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
+                if (result.retiredEmployees.length != 0) {
+                    self.enable_tab2(true);
+                    self.visible_tab2(true);
 
+                    self.empInfoHeaderList = result.employeeImports;
+
+                    self.enable_btnRemove(true);
+
+                    self.employeeListTab2 = result.retiredEmployees;
+
+                    $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
+                    
+                } else {
+                    self.enable_tab2(false);
+                    self.visible_tab2(false);
+                    self.newMode();
+                }
+                dfd.resolve();
+                block.clear();
+                
+            }).fail((error) => {
+                console.log('Get Data Tab-2 Fail');
+                dfd.reject();
+                nts.uk.ui.dialog.info(error);
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
+        }
+
+        
         public bindData(): void {
             var self = this;
             $("#gridListEmployeesJcm007").igGrid({
@@ -558,8 +595,7 @@ module jcm007.a {
                     self.visible_tab2(false);    
                 }
                 
-                self.start(null).done(() => {
-                    self.newMode();
+                self.getListDataAfterRegisterNewEmployee().done(() => {
                     dialog.info({ messageId: "Msg_15" });
                 });
                 block.clear();
@@ -568,6 +604,37 @@ module jcm007.a {
                 console.log('REGISTER NEW EMPINFO FAIL!!');
                 block.clear();
                 dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        getListDataAfterRegisterNewEmployee() {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
+            service.getData().done((result) => {
+                if (result.retiredEmployees.length != 0) {
+                    
+                    self.empInfoHeaderList = result.employeeImports;
+
+                    self.employeeListTab2 = result.retiredEmployees;
+
+                    $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
+
+                } else {
+                    self.enable_tab2(false);
+                    self.visible_tab2(false);
+                    self.newMode();
+                }
+                dfd.resolve();
+                block.clear();
+                
+            }).fail((error) => {
+                console.log('Get Data Tab-2 Fail');
+                dfd.reject();
+                nts.uk.ui.dialog.info(error);
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
@@ -682,13 +749,7 @@ module jcm007.a {
 
             if (objResultWhenRetimentChange.releaseDate == null) {
 
-                if (regisType == 2) {
-                    self.registerNewEmployee(command);
-                } else if (regisType == 3) {
-                    self.registerNewRetireesApproved(command);
-                } else if (regisType == 4) {
-                    self.modifyRetireeInformation(command);
-                }
+                self.registerData(regisType, command);
 
             } else if (objResultWhenRetimentChange.releaseDate != null) {
 
@@ -714,13 +775,7 @@ module jcm007.a {
             let dismissalNoticeDateA22235 = moment.utc(self.currentEmployee().dismissalNoticeDate(), DateFormat.DEFAULT_FORMAT);
             if (objResultWhenRetimentChange.dismissalNoticeDate == null) {
                 
-                if (regisType == 2) {
-                    self.registerNewEmployee(command);
-                } else if (regisType == 3) {
-                    self.registerNewRetireesApproved(command);
-                } else if (regisType == 4) {
-                    self.modifyRetireeInformation(command);
-                }
+                self.registerData(regisType, command);
 
             } else if (objResultWhenRetimentChange.dismissalNoticeDate != null) {
 
@@ -752,11 +807,25 @@ module jcm007.a {
                             self.modifyRetireeInformation(command);
                         }
                     }
+                } else {
+
+                    self.registerData(regisType, command);
                 }
             }
         }
         
-        
+        registerData(regisType, command) {
+            let self = this;
+            if (regisType == 2) {
+                self.registerNewEmployee(command);
+            } else if (regisType == 3) {
+                self.registerNewRetireesApproved(command);
+            } else if (regisType == 4) {
+                self.modifyRetireeInformation(command);
+            }
+        }
+
+
         // アルゴリズム[退職者情報の変更]を実行する (Thực hiện thuật toán [Thay đổi thông tin nhân viên người  nghỉ hưu])
         modifyRetireeInformation(command: any): JQueryPromise<any> {
             let self = this;
@@ -853,7 +922,6 @@ module jcm007.a {
 
         setDataHeader(param) {
             let self = this;
-            debugger;
             service.findEmployeeInfo(param).done((data) => {
                 if (!data) {
                     return;

@@ -3,24 +3,14 @@
  */
 package nts.uk.ctx.hr.develop.infra.repository.retiredismissalregulation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.DismissRestrictionTerm;
-import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.DissisalNoticeTerm;
-import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.RestrictionItem;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.RetireDismissalRegulation;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetireDismissalRegulationRepository;
-import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtDismissNoticeTerm;
-import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtDismissNoticeTermPk;
-import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtDismissRestItem;
-import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtDismissRestTerm;
-import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtDismissRestTermPk;
 import nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation.JshmtRetireDismissReg;
 
 /**

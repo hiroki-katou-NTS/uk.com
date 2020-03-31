@@ -238,31 +238,29 @@ public class RetireDismissalRegulationServices {
 							return result;
 
 						} else {
+							
+							result.setProcessingResult(true);
+							result.setReleaseDate(releaseDate);
+							result.setDismissalNoticeAlerm(true);
+							result.setDismissalNoticeDateCheckProcess(true);
 
 							// List<解雇予告条件>から該当条件を取得する(lấy điều kiện tương ứng từ list<DismissalNoticeTerm>)
 							// input dismissalNoticeTermListAfterFilter, listWageType.
 							for (int i = 0; i < listWageType.size(); i++) {
 								WageTypeDto wageTypeDto = listWageType.get(i);
-								if (wageTypeDto.getSid() == sid) {
+								if (wageTypeDto.getSid().equals(sid)) {
 									List<DissisalNoticeTerm> listDissisalNoticeTerm = dismissalNoticeTermListAfterFilter
 											.stream().filter(dis -> dis.getWageType().value == wageTypeDto.getWageType())
 											.collect(Collectors.toList());
 
 									if (!listDissisalNoticeTerm.isEmpty()) {
 										DissisalNoticeTerm disNoticeTerm = listDissisalNoticeTerm.get(0);
-										result.setProcessingResult(true);
-										result.setReleaseDate(releaseDate);
-										result.setDismissalNoticeAlerm(true);
-										result.setDismissalNoticeDateCheckProcess(true);
 										result.setDismissalAllowance(disNoticeTerm.getNoticeTermFlg());
 										if (disNoticeTerm.getNoticeDateTerm().isPresent()) {
 											DismissalNoticeDateCondition disNotDateCon = new DismissalNoticeDateCondition(
 													disNoticeTerm.getNoticeDateTerm().get().getCalculationTerm(),
 													disNoticeTerm.getNoticeDateTerm().get().getDateSettingNum(),
-													disNoticeTerm.getNoticeDateTerm().get().getDateSettingDate()
-															.isPresent()
-																	? disNoticeTerm.getNoticeDateTerm().get().getDateSettingDate()
-																	: Optional.empty());
+													disNoticeTerm.getNoticeDateTerm().get().getDateSettingDate().isPresent() ? disNoticeTerm.getNoticeDateTerm().get().getDateSettingDate() : Optional.empty());
 											result.setDismissalNoticeDateCondition(disNotDateCon);
 										} else {
 											result.setDismissalNoticeDateCondition(null);
@@ -271,29 +269,30 @@ public class RetireDismissalRegulationServices {
 								}
 							}
 							
-							if (!result.getDismissalAllowance()) {
+							if (result.getDismissalAllowance() != null && !result.getDismissalAllowance()) {
 								return result;
 							}else{
 								
 								DismissalNoticeDateCondition disNotice = result.getDismissalNoticeDateCondition();
-								// アルゴリズム [算出日の取得] を実行する (Thực hiện thuật toán "Get CalculationDate")
-								List<EmployeeDateDto> empInput = Arrays.asList(new EmployeeDateDto(sid, retirementDate));
-								DateCaculationTerm dateCaculationTermInput = new DateCaculationTerm(disNotice.getCalculationTerm(), disNotice.getDateSettingNum(), disNotice.getDateSettingDate().isPresent() ?  disNotice.getDateSettingDate() : Optional.empty());
-								List<EmployeeDateDto> empDateResult2 = this.dateCaculationTermService.getDateBySidList(empInput,
-										dateCaculationTermInput);
-								
-								
-								// 公開日を生成する(Tạo releasedate) 公開日
-								GeneralDate dismissalNoticeDate = null;
-								if (!empDateResult2.isEmpty()) {
-									Optional<EmployeeDateDto> empDateResultOpt2 = empDateResult.stream()
-											.filter(p -> p.getEmployeeId().equals(sid)).findFirst();
-									if (empDateResultOpt2.isPresent() && empDateResultOpt2.get().getTargetDate() != null) {
-										dismissalNoticeDate = empDateResultOpt2.get().getTargetDate();
+								if (disNotice != null) {
+									// アルゴリズム [算出日の取得] を実行する (Thực hiện thuật toán "Get CalculationDate")
+									List<EmployeeDateDto> empInput = Arrays.asList(new EmployeeDateDto(sid, retirementDate));
+									DateCaculationTerm dateCaculationTermInput = new DateCaculationTerm(disNotice.getCalculationTerm(), disNotice.getDateSettingNum(), disNotice.getDateSettingDate().isPresent() ?  disNotice.getDateSettingDate() : Optional.empty());
+									List<EmployeeDateDto> empDateResult2 = this.dateCaculationTermService.getDateBySidList(empInput,
+											dateCaculationTermInput);
+									
+									// 公開日を生成する(Tạo releasedate) 公開日
+									GeneralDate dismissalNoticeDate = null;
+									if (!empDateResult2.isEmpty()) {
+										Optional<EmployeeDateDto> empDateResultOpt2 = empDateResult2.stream()
+												.filter(p -> p.getEmployeeId().equals(sid)).findFirst();
+										if (empDateResultOpt2.isPresent() && empDateResultOpt2.get().getTargetDate() != null) {
+											dismissalNoticeDate = empDateResultOpt2.get().getTargetDate();
+										}
 									}
+									
+									result.setDismissalNoticeDate(dismissalNoticeDate);
 								}
-								
-								result.setDismissalNoticeDate(dismissalNoticeDate);
 								
 								return result;
 
