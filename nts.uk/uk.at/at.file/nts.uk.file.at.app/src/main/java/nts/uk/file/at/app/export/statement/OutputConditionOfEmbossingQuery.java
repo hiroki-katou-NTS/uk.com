@@ -25,10 +25,10 @@ public class OutputConditionOfEmbossingQuery {
 	private String endDate;
 	
 	/** The lst employee. */
-	private List<String> lstEmployeeId;
+	private List<EmployeeInfor> lstEmployee;
 	
 	/** The output set code. */
-	private String selectedIdProcessSelect;
+	private String outputSetCode;
 	
 	/** The card num not register. */
 	private boolean cardNumNotRegister;
