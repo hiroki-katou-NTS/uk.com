@@ -49,7 +49,6 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 			+ " AND c.pk.operationMethod = :operationMethod"
 			+ " AND c.pk.pageNo = :pageNo";
 
-
 	/**
 	 * 打刻の前準備(個人)を登録する
 	 * insert KrcctStampDisplay
@@ -65,19 +64,22 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void update(StampSettingPerson stampSettingPerson) {
-		KrcctStampDisplay oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcctStampDisplay.class)
-				.setParameter("companyId", stampSettingPerson.getCompanyId()).setParameter("operationMethod", 1)
-				.getSingle().get();
-		KrcctStampDisplay newData = KrcctStampDisplay.toEntity(stampSettingPerson);
+		
+		Optional<KrcctStampDisplay> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcctStampDisplay.class)
+				.setParameter("companyId", stampSettingPerson.getCompanyId())
+				.setParameter("operationMethod", 1)
+				.getSingle();
+		if(oldData.isPresent()){
+			KrcctStampDisplay newData = KrcctStampDisplay.toEntity(stampSettingPerson);
+			oldData.get().correctionInterval = newData.correctionInterval;
+			oldData.get().histDisplayMethod = newData.histDisplayMethod;
+			oldData.get().resultDisplayTime = newData.resultDisplayTime;
+			oldData.get().textColor = newData.textColor;
+			oldData.get().backGroundColor = newData.backGroundColor;
+			oldData.get().buttonEmphasisArt = newData.buttonEmphasisArt;
+		}
 
-		oldData.correctionInterval = newData.correctionInterval;
-		oldData.histDisplayMethod = newData.histDisplayMethod;
-		oldData.resultDisplayTime = newData.resultDisplayTime;
-		oldData.textColor = newData.textColor;
-		oldData.backGroundColor = newData.backGroundColor;
-		oldData.buttonEmphasisArt = newData.buttonEmphasisArt;
-
-		this.commandProxy().update(oldData);
+		this.commandProxy().update(oldData.get());
 	}
 
 	/**
@@ -86,9 +88,8 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampSettingPerson> getStampSet(String companyId) {
-		Optional<StampSettingPerson> data = this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
-		return data;
 	}
 
 	/**
@@ -108,19 +109,19 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void updatePage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-
-		KrcctStampPageLayout oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
+		Optional<KrcctStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
-				.setParameter("pageNo", layout.getPageNo().v()).getSingle().get();
+				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
+		if(oldData.isPresent()){
 		KrcctStampPageLayout newData = KrcctStampPageLayout.toEntity(layout, companyId);
-		oldData.pageName = newData.pageName;
-		oldData.buttonLayoutType = newData.buttonLayoutType;
-		oldData.pageComment = newData.pageComment;
-		oldData.commentColor = newData.commentColor;
+		oldData.get().pageName = newData.pageName;
+		oldData.get().buttonLayoutType = newData.buttonLayoutType;
+		oldData.get().pageComment = newData.pageComment;
+		oldData.get().commentColor = newData.commentColor;
 
 		newData.lstButtonSet.stream().forEach(x -> {
-			Optional<KrcctStampLayoutDetail> optional = oldData.lstButtonSet.stream()
+			Optional<KrcctStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
 					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
@@ -158,8 +159,8 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 			}
 			
 		});
-
-		this.commandProxy().update(oldData);
+		}
+		this.commandProxy().update(oldData.get());
 	}
 
 	/**
@@ -168,12 +169,11 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo) {
-		Optional<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
 				.getSingle(c -> c.toDomain());
-		return data;
 	}
 	
 	/**
@@ -181,11 +181,10 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPageByCid(String companyId) {
-		Optional<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcctStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.getSingle(c -> c.toDomain());
-		return data;
 	}
 
 	/**
@@ -211,7 +210,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
-				.getSingle(c->c.toDomain());
+				.getSingle(c -> c.toDomain());
 		if (newEntity.isPresent()) {
 			this.commandProxy().remove(KrcctStampPageLayout.class, new KrcctStampPageLayoutPk(companyId,1, pageNo));
 		}

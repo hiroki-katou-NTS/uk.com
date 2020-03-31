@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 @Getter
+@Setter
 @NoArgsConstructor
 public class CardNoStampInfo {
 
@@ -11,7 +13,7 @@ public class CardNoStampInfo {
 	//日時
 	private String dateAndTime;
 	//出退勤区分
-	private boolean attendanceAtr;
+	private String attendanceAtr;
 	//打刻手段
 	private int stampMeans;
 	//認証方法

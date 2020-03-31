@@ -39,7 +39,6 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 	@Override
 	public void insert(StamPromptApplication application) {
 		commandProxy().insertAll(KrcmtPromptApplication.toEntity(application));
-		
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 		List<KrcmtPromptApplication> oldData = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtPromptApplication.class)
 				.setParameter("companyId", companyId).getList();
 		List<KrcmtPromptApplication> newData = KrcmtPromptApplication.toEntity(application);
-		if(newData.size() > 0){
+		if(!newData.isEmpty()){
 			newData.stream().forEach(mapper->{
 				Optional<KrcmtPromptApplication> optional = oldData.stream().filter(x->x.pk.errorType == mapper.pk.errorType).findAny();
 				if(optional.isPresent()){
@@ -70,11 +69,10 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 	 */
 	@Override
 	public Optional<StampResultDisplay> getStampSet(String companyId) {
-		Optional<StampResultDisplay> data = this.queryProxy().query(SELECT_BY_CID_TYPE, KrccpStampFunction.class)
+		return this.queryProxy().query(SELECT_BY_CID_TYPE, KrccpStampFunction.class)
 				.setParameter("companyId", companyId)
 				.setParameter("errorType", 1)
 				.getSingle(c -> c.toDomain());
-		return data;
 	}
 	
 	/**

@@ -182,7 +182,7 @@ module nts.uk.at.view.kdp011.a {
                     }
                 }
             }
-
+    
             /**
             * Export excel
             */
@@ -191,7 +191,8 @@ module nts.uk.at.view.kdp011.a {
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId,
-                    data: any = {};
+                    data: any = {
+                        };
 
                 //                if (!self.validateExportExcel()) {
                 //                    return;
@@ -203,8 +204,12 @@ module nts.uk.at.view.kdp011.a {
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
-                data.outputSetCode = self.selectedOutputItemCode();
-                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
+                data.selectedIdProcessSelect = self.selectedIdProcessSelect();
+                // data.outputSetCode = self.selectedOutputItemCode();
+                if(self.selectedCodeEmployee ==1 )
+                data.cardNumNotRegister = true;
+                else{
+                    data.cardNumNotRegister = false; }
                 service.exportExcel(data).fail((data) => {
                     console.log(data);
                 }).then(() => {
@@ -234,48 +239,6 @@ module nts.uk.at.view.kdp011.a {
             }
 
             /**
-            * Open screen C
-            */
-            private openPreviewScrC(): void {
-                let self = this,
-                    data: any = {};
-                if (!self.validateExportExcel()) {
-                    return;
-                }
-                //parameter
-                data.startDate = self.datepickerValue().startDate;
-                data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
-                data.outputSetCode = self.selectedOutputItemCode();
-                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
-                nts.uk.request.jump("/view/kdp/003/c/index.xhtml", data);
-
-
-            }
-
-            /**
-            * Open screen B
-            */
-            private openScrB(): void {
-                let _self = this;
-                nts.uk.ui.windows.setShared("datakdp003.b", _self.selectedOutputItemCode());
-                nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
-                    let currentStampOutputCd = nts.uk.ui.windows.getShared("datakdp003.a");
-                    if (!_.isNil(currentStampOutputCd)) {
-                        service.findAll().done((lstStampingOutputItem) => {
-                            let arrOutputItemCodeTmp: ItemModel[] = [];
-                            _.forEach(lstStampingOutputItem, function(value) {
-                                arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));
-                            });
-                            _self.lstOutputItemCode(arrOutputItemCodeTmp);
-                            _self.selectedOutputItemCode(currentStampOutputCd);
-                        })
-                    }
-                    nts.uk.ui.block.clear();
-                });
-            }
-
-            /**
             * Subscribe Event
             */
             private conditionBinding(): void {
@@ -290,6 +253,7 @@ module nts.uk.at.view.kdp011.a {
                     self.datepickerValue().endDate = value;
                     self.datepickerValue.valueHasMutated();
                 });
+                
 
                 self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
                     //                    if (newValue) {
@@ -313,11 +277,12 @@ module nts.uk.at.view.kdp011.a {
                     mapCdName[value.code] = value.name;
                 });
 
+                let emloyeeID = [];
                 _.forEach(employeeCd, function(value) {
-                    arrEmployee.push({ employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value] });
+                    emloyeeID.push(mapCdId[value]);
                 });
 
-                return arrEmployee;
+                return emloyeeID;
             }
 
             /**

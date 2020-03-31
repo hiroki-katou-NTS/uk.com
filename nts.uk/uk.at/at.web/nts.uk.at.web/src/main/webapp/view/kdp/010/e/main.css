@@ -1,15 +1,24 @@
-#basic-label, #imprint-leakage-label, #holiday-label, #overtime-label,
-	#basic-label-2, #highlight-label {
+#basic-label, #imprint-leakage-label, #holiday-label, #overtime-label{
 	margin-top: 20px;
 	margin-left: 30px;
 }
 
+#highlight-label{
+	margin-left: 30px;
+}
+#basic-label-2 {
+	margin-top: 40px;
+	margin-left: 30px;
+}
+
 #highlight-radio-1 {
-	margin-left: 250px;
+	margin-top: 15px !important;;
+	margin-left: 167px !important;;
 }
 
 #basic-label-3 {
-	margin-left: 370px;
+	margin-left: 424px;
+	margin-top: -12px;
 }
 
 #imprint-leakage-radio-e {
@@ -17,7 +26,7 @@
 }
 
 #message-3, #message-2, #message-1 {
-	margin-left: 20px;
+	margin-left: 105px;
 }
 
 #third-color-picker {
@@ -29,7 +38,8 @@
 }
 
 .text-end {
-	margin-left: 257px;
+	margin-left: 180px;
+	margin-top: 5px;
 }
 
 .text-color-1 {
@@ -39,5 +49,17 @@
 
 #mess-color-1 {
 	margin-top: -34px;
-	margin-left: 130px;
+	margin-left: 235px;
+}
+
+.langer {
+	margin-left: 180px;
+}
+
+#imprint-leakage-radio-e {
+    margin-left: 53px;
+}
+
+#holiday-radio-e, #overtime-radio-e {
+	margin-left: 52px;
 }
