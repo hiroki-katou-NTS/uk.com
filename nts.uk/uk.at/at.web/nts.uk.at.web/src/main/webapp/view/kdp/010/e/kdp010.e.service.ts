@@ -33,7 +33,7 @@ module nts.uk.at.view.kdp010.e.service {
         return nts.uk.request.ajax("at", paths.findWorkType);
     }
     
-    export function getOptItemByAtr(checkItem) {
+    export function getOptItemByAtr() {
         return nts.uk.request.ajax("at", paths.getOptItemByAtr);
     }
     

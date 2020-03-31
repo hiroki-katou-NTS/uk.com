@@ -67,9 +67,9 @@ public class StampDisplayWS extends WebService {
 	}
 	
 	@POST
-	@Path("getStampPage/{pageNo}")
-	public StampPageLayoutDto getStampPage(@PathParam("pageNo") int pageNo) {
-		return this.finder.getStampPage(pageNo);
+	@Path("getStampPage/{pageNo}/{buttonLayoutType}")
+	public StampPageLayoutDto getStampPage(@PathParam("pageNo") int pageNo, @PathParam("buttonLayoutType") int buttonLayoutType) {
+		return this.finder.getStampPage(pageNo, buttonLayoutType);
 	}
 	
 	@POST

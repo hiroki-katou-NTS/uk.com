@@ -125,10 +125,8 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         }
 
         getWorkTypeList() {
-            var self = this;
-            var dfd = $.Deferred();
-            let data = [1,2,5,6]
-            service.getOptItemByAtr(data).done(function(res) {
+            let self = this,dfd = $.Deferred();
+            service.getOptItemByAtr().done(function(res) {
                 self.workTypeList.removeAll();
                 _.forEach(res, function(item) {
                     self.workTypeList.push({
