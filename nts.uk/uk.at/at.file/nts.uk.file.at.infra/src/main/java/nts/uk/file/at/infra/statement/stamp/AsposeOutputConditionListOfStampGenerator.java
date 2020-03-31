@@ -25,21 +25,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 
 	private static final String TEMPLATE_FILE = "report/KDP011-打刻一覧表_帳票レイアウト（社員別）.xlsx";
 
-	private static final int ROW_OF_PAGE = 39;
-
-	private static final int ROW_OF_SUB_HEADER = 4;
-
-	private static final int DATA_ROW_OF_PAGE = 35;
-
 	private static final int START_ROW = 4;
-
-	/** The stamping output item set repository. */
-
-	// @Inject
-	// private RetrieveNoStampCardRegisteredService stampCardService;
-	//
-	// @Inject
-	// private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,

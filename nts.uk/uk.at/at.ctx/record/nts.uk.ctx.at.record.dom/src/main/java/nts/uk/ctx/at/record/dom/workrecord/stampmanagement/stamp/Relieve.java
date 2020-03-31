@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
@@ -9,19 +9,20 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author tutk
  *
  */
-@Value
 public class Relieve implements DomainValue {
 
 	/**
 	 * 認証方法
 	 * 打刻方法 1 old
 	 */
+	@Getter
 	private final AuthcMethod authcMethod;
 	
 	/**
 	 * 打刻手段
 	 * 打刻方法 2 old
 	 */
+	@Getter
 	private final StampMeans stampMeans;
 
 	public Relieve(AuthcMethod authcMethod, StampMeans stampMeans) {

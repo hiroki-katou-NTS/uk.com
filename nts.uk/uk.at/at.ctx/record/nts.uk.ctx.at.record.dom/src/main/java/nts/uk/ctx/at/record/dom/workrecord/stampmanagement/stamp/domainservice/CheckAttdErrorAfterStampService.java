@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.stamp.application.StamPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
@@ -25,7 +24,15 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 public class CheckAttdErrorAfterStampService {
-	public static List<DailyAttdErrorInfo> name(Require require, String employeeId, int pageNo, int buttonDisNo) {
+	/**
+	 * 	[1] 取得する
+	 * @param require
+	 * @param employeeId
+	 * @param pageNo
+	 * @param buttonDisNo
+	 * @return
+	 */
+	public static List<DailyAttdErrorInfo> get(Require require, String employeeId, int pageNo, int buttonDisNo) {
 		if(needCheckError(require, pageNo, buttonDisNo)) {
 			return Collections.emptyList();
 		}
@@ -57,7 +64,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @param require
 	 * @return
 	 */
-	public static List<StampRecordDis>  getSettingPromptApp(Require require) {
+	private static List<StampRecordDis>  getSettingPromptApp(Require require) {
 		Optional<StamPromptApplication> data =  require.getStampSet();
 		if(!data.isPresent()) {
 			return Collections.emptyList();
@@ -73,7 +80,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @param employeeId
 	 * @return
 	 */
-	public static Optional<DatePeriod> getErrorCheckPeriod(Require require, String employeeId) {
+	private static Optional<DatePeriod> getErrorCheckPeriod(Require require, String employeeId) {
 
 		GeneralDate baseDate = GeneralDate.today();
 
@@ -97,7 +104,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @param period
 	 * @return
 	 */
-	public static List<EmployeeDailyPerError> getDailyErrorByPeriod(Require require, String employeeId,DatePeriod period) {
+	private static List<EmployeeDailyPerError> getDailyErrorByPeriod(Require require, String employeeId,DatePeriod period) {
 		return require.findByPeriodOrderByYmd(employeeId, period);
 	}
 

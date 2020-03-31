@@ -14,5 +14,6 @@ public class ConditionListOfStampQueryDto {
 	public String startDate;
 	public String endDate;
 	public List<String> lstEmployee;
+	public int selectedIdProcessSelect;
 	public boolean cardNumNotRegister;
 }

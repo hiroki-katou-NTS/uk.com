@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.Optional;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -13,28 +13,31 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  * @author tutk
  *
  */
-@Value
 public class RefectActualResult implements DomainValue {
 
 	/**
 	 * 応援カード番号
 	 */
+	@Getter
 	private final Optional<String> cardNumberSupport;
 	
 	/**
 	 * 打刻場所コード
 	 * 勤務場所コード old
 	 */
+	@Getter
 	private final Optional<WorkLocationCD> workLocationCD;
 	
 	/**
 	 * 就業時間帯コード
 	 */
+	@Getter
 	private final Optional<WorkTimeCode> workTimeCode;
 	
 	/**
 	 * 時間外の申告
 	 */
+	@Getter
 	private final Optional<OvertimeDeclaration> overtimeDeclaration;
 
 	public RefectActualResult(String cardNumberSupport, WorkLocationCD workLocationCD,

@@ -15,9 +15,9 @@ public class CardNoStampInfo {
 	//出退勤区分
 	private String attendanceAtr;
 	//打刻手段
-	private int stampMeans;
+	private String stampMeans;
 	//認証方法
-    private int authcMethod;
+    private String authcMethod;
     //設置場所
  	private String installPlace;
  	//位置情報

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 
 import java.util.Optional;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -12,27 +12,32 @@ import nts.uk.shr.com.i18n.TextResource;
  * @author phongtq
  *
  */
-@Value
+
 public class StampType implements DomainValue {
 	
 	/** 勤務種類を半休に変更する */
 	//勤務種類を半休に変更する 1 old
+	@Getter
 	private final boolean changeHalfDay;
 
 	/** 外出区分 */
 	//外出理由 old
+	@Getter
 	private final Optional<GoingOutReason> goOutArt;
 	
 	/** 所定時刻セット区分 */
 	//勤務種類を半休に変更する 2 old
+	@Getter
 	private final SetPreClockArt setPreClockArt;
 	
 	/** 時刻変更区分 */
 	//打刻区分 old
+	@Getter
 	private final ChangeClockArt changeClockArt;
 	
 	/** 計算区分変更対象 */
 	//勤務種類を半休に変更する 3 old
+	@Getter
 	private final ChangeCalArt changeCalArt;
 
 	/**

@@ -13,14 +13,29 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 
 public class AttendanceOneDay {
 
+	/**
+	 * 	年月日
+	 */
 	@Getter
 	private final GeneralDate date;
+	/**
+	 * 	出勤1
+	 */
 	@Getter
 	private final Optional<TimeActualStamp> attendance1;
+	/**
+	 * 	退勤1	
+	 */
 	@Getter
 	private final Optional<TimeActualStamp> leavingStamp1;
+	/**
+	 * 	出勤2
+	 */
 	@Getter
 	private final Optional<TimeActualStamp> attendance2;
+	/**
+	 * 	退勤2
+	 */
 	@Getter
 	private final Optional<TimeActualStamp> leavingStamp2;
 
