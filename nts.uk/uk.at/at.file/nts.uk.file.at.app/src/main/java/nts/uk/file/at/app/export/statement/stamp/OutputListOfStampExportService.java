@@ -2,60 +2,127 @@ package nts.uk.file.at.app.export.statement.stamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.CardNoStampInfo;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.EmployeEngravingInfor;
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampFinder;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class OutputListOfStampExportService extends ExportService<ConditionListOfStampQueryDto> {
 
 	@Inject
 	private OutputConditionListOfStampGenerator generator;
-	
+
 	@Inject
 	private OutputScreenListOfStampFinder finder;
+
+	@Inject
+	private CompanyAdapter company;
 
 	@Override
 	protected void handle(ExportServiceContext<ConditionListOfStampQueryDto> context) {
 		// OutputConditionListOfStampQuery query = context.getQuery();
 		ConditionListOfStampQueryDto query1 = context.getQuery();
-		//
-		//finder.createListOfStampEmpQuery(query1, query1);
-		//Map
-		OutputConditionListOfStampQuery query = new  OutputConditionListOfStampQuery();
-		StampHeader header = new StampHeader();
-		header.setCompanyName("company1");
-		header.setDatePeriodHead("20/12/2020");
-		header.setTitle("title");
-		query.setHeader(header);
-		List<EmployeeInfor> employeeList = new ArrayList<>();
-		for (Integer j = 0; j < 2; j++) {
-			List<StampList> stampLists = new ArrayList<>();
-			for (Integer i = 0; i < 40; i++) {
-				StampList stampList = new StampList();
-				stampList.setClassification(i.toString());
-				stampList.setDate(i.toString());
-				stampList.setInsLocation(i.toString());
-				stampList.setLocationInfor(i.toString());
-				stampList.setMean(i.toString());
-				stampList.setMethod(i.toString());
-				stampList.setMean(i.toString());
-				stampList.setNightTime(i.toString());
-				stampLists.add(stampList);
-			}
-			EmployeeInfor employeeInfor = new EmployeeInfor();
-			employeeInfor.setWorkplace("Workplace");
-			employeeInfor.setCardNo(j.toString());
-			employeeInfor.setEmployee(j.toString());
-			employeeInfor.setStampList(stampLists);
-			employeeList.add(employeeInfor);
+		GeneralDate startDate = GeneralDate.fromString(query1.startDate, "yyyy/MM/dd");
+		GeneralDate endDate = GeneralDate.fromString(query1.endDate, "yyyy/MM/dd");
+		String datePeriod = query1.startDate + "～" + query1.endDate;
+		DatePeriod newDatePerioD = new DatePeriod(startDate, endDate);
+		// Map
+		OutputConditionListOfStampQuery query = null;
+		if (query1.isCardNumNotRegister()) {
+			List<CardNoStampInfo> cardNoStampInfos = finder.createCardNoStampQuery(newDatePerioD);
+			query = convertToDataSource(true, cardNoStampInfos, datePeriod);
+		} else {
+			List<EmployeEngravingInfor> employeEngravingInfors = finder.createListOfStampEmpQuery(newDatePerioD,
+					query1.lstEmployee);
+			query = convertToDataSource(false, employeEngravingInfors, datePeriod);
 		}
-		query.setEmployeeList(employeeList);
 		this.generator.generate(context.getGeneratorContext(), query);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> OutputConditionListOfStampQuery convertToDataSource(boolean isCardNo, List<T> data, String datePeriod) {
+		List<EmployeeInfor> employeeList = new ArrayList<>();
+		OutputConditionListOfStampQuery query = new OutputConditionListOfStampQuery();
+		String companyName = company.getCurrentCompany()
+				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
+		StampHeader header = new StampHeader();
+		header.setCompanyName(companyName);
+		header.setDatePeriodHead(datePeriod);
+		query.setHeader(header);
+		if (isCardNo) {
+			List<CardNoStampInfo> cardNoStampInfos = (List<CardNoStampInfo>) data;
+			Map<String, List<CardNoStampInfo>> cardNoStampInfoMap = cardNoStampInfos.stream()
+					.collect(Collectors.groupingBy(CardNoStampInfo::getCardNo));
+			cardNoStampInfoMap.forEach((key, value) -> {
+				EmployeeInfor employeeInfor = new EmployeeInfor();
+				employeeInfor.setWorkplace(TextResource.localize("KDP011_32") + "　－");
+				employeeInfor.setEmployee(TextResource.localize("KDP011_33") + "　－");
+				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + key);
+				List<StampList> stampLists = new ArrayList<>();
+				value.forEach(i -> {
+					StampList stampList = new StampList();
+					stampList.setDate(i.getDateAndTime());
+					stampList.setTime(i.getDateAndTime());
+					stampList.setClassification(i.getAttendanceAtr());
+					//stampList.setMean(i.getStampMeans());
+					//stampList.setMethod(i.getAuthcMethod());
+					stampList.setInsLocation(i.getInstallPlace());
+					stampList.setLocationInfor(i.getLocalInfor());
+					stampList.setSupportCard(i.getSupportCard());
+					stampList.setWorkingHour(i.getWorkTimeDisplayName());
+					stampList.setOvertimeHour(i.getOvertimeHours());
+					stampList.setNightTime(i.getLateNightTime());
+					stampLists.add(stampList);
+				});
+				employeeInfor.setStampList(stampLists);
+				employeeList.add(employeeInfor);
+			});
+		} else {
+			List<EmployeEngravingInfor> employeEngravingInfors = (List<EmployeEngravingInfor>) data;
+			Map<String, List<EmployeEngravingInfor>> employeEngravingInforMap = employeEngravingInfors.stream()
+					.collect(Collectors.groupingBy(EmployeEngravingInfor::getCardNo));
+			employeEngravingInforMap.forEach((key, value) -> {
+				EmployeeInfor employeeInfor = new EmployeeInfor();
+				employeeInfor.setWorkplace(TextResource.localize("KDP011_32") + "　" + value.get(0).getWorkplaceCd()
+						+ "　" + value.get(0).getWorkplaceName());
+				employeeInfor.setEmployee(TextResource.localize("KDP011_33") + "　" + value.get(0).getEmployeeCode()
+						+ "　" + value.get(0).getEmployeeName());
+				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + key);
+				List<StampList> stampLists = new ArrayList<>();
+				value.forEach(i -> {
+					StampList stampList = new StampList();
+					stampList.setDate(i.getDateAndTime());
+					stampList.setTime(i.getDateAndTime());
+					stampList.setClassification(i.getAttendanceAtr());
+					//stampList.setMean(i.getStampMeans());
+					//stampList.setMethod(i.getAuthcMethod());
+					stampList.setInsLocation(i.getInstallPlace());
+					stampList.setLocationInfor(i.getLocalInfor());
+					stampList.setSupportCard(i.getSupportCard());
+					stampList.setWorkingHour(i.getWorkTimeDisplayName());
+					stampList.setOvertimeHour(i.getOvertimeHours());
+					stampList.setNightTime(i.getLateNightTime());
+					stampLists.add(stampList);
+				});
+				employeeInfor.setStampList(stampLists);
+				employeeList.add(employeeInfor);
+			});
+		}
+		query.setEmployeeList(employeeList);
+		return query;
 	}
 }
