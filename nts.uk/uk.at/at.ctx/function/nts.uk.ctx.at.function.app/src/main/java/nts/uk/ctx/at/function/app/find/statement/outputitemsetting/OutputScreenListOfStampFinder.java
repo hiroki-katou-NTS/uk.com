@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,12 +15,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
-import nts.uk.ctx.at.record.dom.stamp.WorkLocationCd;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -82,6 +79,7 @@ public class OutputScreenListOfStampFinder {
 		result.setCompanyName(companyInfo.getCompanyName());
 		result.setStartDate(period.start());
 		result.setEndDate(period.end());
+		
 		
 		
 		
@@ -164,8 +162,8 @@ public class OutputScreenListOfStampFinder {
 			employeEngravingInfor.setEmployeeName(empInfo.getBusinessName());
 			employeEngravingInfor.setDateAndTime(stampInfoDisp.getStampDatetime().toString());
 			employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
-			employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().value);
-			employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().value);
+			employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name);
+			employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name);
 			employeEngravingInfor.setInstallPlace(workPlaceName);
 			employeEngravingInfor.setLocalInfor(null);
 			employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
@@ -217,8 +215,8 @@ public class OutputScreenListOfStampFinder {
 					.filter(o -> i.getStampNumber().toString().equals(o.getStampNumber().toString())).findFirst().get();
 			
 			// Chuẩn bị data
-			int stampMeans = 0;
-			int authcMethod = 0;
+			String stampMeans = "";
+			String authcMethod = "";
 		
 			String localInfor = "";
 			String supportCard = "";
@@ -227,8 +225,8 @@ public class OutputScreenListOfStampFinder {
 			String lateNightTime = "";
 			String workLocationName = "";
 			if (infoDisp.getStamp().isPresent()) {
-				stampMeans = infoDisp.getStamp().get().getRelieve().getStampMeans().value;
-				authcMethod = infoDisp.getStamp().get().getRelieve().getAuthcMethod().value;
+				stampMeans = infoDisp.getStamp().get().getRelieve().getStampMeans().name;
+				authcMethod = infoDisp.getStamp().get().getRelieve().getAuthcMethod().name;
 				
 				val refActualResults = infoDisp.getStamp().get().getRefActualResults();
 				val workLocationCD = refActualResults.getWorkLocationCD();
@@ -288,7 +286,6 @@ public class OutputScreenListOfStampFinder {
 		private  StampDakokuRepository  stampDakokuRepository;
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
-			// TODO Auto-generated method stub
 			return stampCardRepository.getListStampCard(sid);
 		}
 		@Override
