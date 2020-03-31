@@ -335,7 +335,7 @@ module nts.uk.at.view.kaf006.b{
                 }else{//・その以外 ⇒ 上限日数
                     maxDay = specAbsenceDispInfo.maxDayObj.maxDay;
                 }
-                if(data.maxDayObj != null){
+                if(maxDay != null){
                     self.maxDay(specAbsenceDispInfo.maxDay);
                     self.dayOfRela(specAbsenceDispInfo.dayOfRela);  
                     self.dataMax(true);  
