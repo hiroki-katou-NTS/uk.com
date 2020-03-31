@@ -93,12 +93,13 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	private void createHeader(AsposeCellsReportContext reportContext, OutputConditionListOfStampQuery query) {
 		// A1_1-会社名
 		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0,
-				query.getHeader().getCompanyName());
+				"&9 " + query.getHeader().getCompanyName());
 		// A1_2 タイトル
 		reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1,
-				TextResource.localize("KDP011_1"));
+				"&16&\"ＭＳ ゴシック,Bold\" " + TextResource.localize("KDP011_1"));
 		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
 		/* B1_1, B1_2 */
+		cell.get(0, 0).setStyle(cell.get(0, 0).getStyle());
 		cell.get(0, 0).setValue(TextResource.localize("KDP011_20") + " " + query.getHeader().getDatePeriodHead());
 
 		cell.get(1, 0).setValue(TextResource.localize("KDP011_21"));
