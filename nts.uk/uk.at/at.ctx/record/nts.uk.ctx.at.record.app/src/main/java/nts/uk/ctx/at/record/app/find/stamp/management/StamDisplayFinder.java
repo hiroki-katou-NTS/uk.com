@@ -42,9 +42,9 @@ public class StamDisplayFinder {
 	 * @param pageNo
 	 * @return
 	 */
-	public StampPageLayoutDto getStampPage(int pageNo) {
+	public StampPageLayoutDto getStampPage(int pageNo, int buttonLayoutType) {
 		String companyId = AppContexts.user().companyId();
-		Optional<StampPageLayoutDto> stampPage = repo.getStampSetPage(companyId, pageNo)
+		Optional<StampPageLayoutDto> stampPage = repo.getStampSetPage(companyId, pageNo, buttonLayoutType)
 				.map(mapper -> StampPageLayoutDto.fromDomain(mapper));
 		if (!stampPage.isPresent())
 			return null;

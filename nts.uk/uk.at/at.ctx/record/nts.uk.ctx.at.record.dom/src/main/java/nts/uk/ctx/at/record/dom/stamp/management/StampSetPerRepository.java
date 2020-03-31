@@ -32,7 +32,7 @@ public interface StampSetPerRepository {
 
 	public void updatePage(StampPageLayout layout);
 
-	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo);
+	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo, int buttonLayoutType);
 
 	List<StampPageLayout> getAllStampSetPage(String companyId);
 

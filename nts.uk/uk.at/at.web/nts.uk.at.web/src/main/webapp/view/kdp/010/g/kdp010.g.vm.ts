@@ -21,20 +21,13 @@ module nts.uk.at.view.kdp010.g {
             dataKdpH: KnockoutObservable<model.StampPageCommentCommand> = ko.observable(new model.StampPageCommentCommand({}));
             dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
             isDel: KnockoutObservable<string> = ko.observable(false);
-            buttonInfo: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 2, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 3, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 4, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 5, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 6, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 7, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') },
-                { code: 8, buttonName: ko.observable(''), buttonColor: ko.observable(''), textColor: ko.observable('') }
-            ]);
+            buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+            checkDelG: KnockoutObservable<string> = ko.observable(false);
 
             constructor() {
                 let self = this;
                 self.selectedLayout.subscribe((newValue) => {
+                    self.checkDelG(true);
                     self.getData(newValue);
                     nts.uk.ui.errors.clearAll();
                 })
@@ -51,20 +44,24 @@ module nts.uk.at.view.kdp010.g {
                 let self = this,
                     dfd = $.Deferred();
                 self.getData(self.selectedLayout());
+                let lstButton: model.ItemModel[] = [];
+                for (let i = 1; i < 9; i++) {
+                    lstButton.push(new model.ItemModel(self.selectedLayout(), '', '', ''));
+                }
+                self.buttonInfo(lstButton);
                 dfd.resolve();
                 return dfd.promise();
             }
             getData(newValue: number): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getStampPage(self.selectedPage()).done(function(totalTimeArr) {
+                service.getStampPage(self.selectedPage(), self.selectedLayout()).done(function(totalTimeArr) {
                     if (totalTimeArr) {
                         self.pageName(totalTimeArr.stampPageName);
                         self.commentDaily(totalTimeArr.stampPageComment.pageComment);
                         self.letterColors(totalTimeArr.stampPageComment.commentColor);
                         if (totalTimeArr.lstButtonSet != null) {
                             self.getInfoButton(totalTimeArr.lstButtonSet, totalTimeArr.buttonLayoutType);
-
                         }
                         self.dataShare = totalTimeArr;
                         self.isDel(true);
@@ -85,26 +82,42 @@ module nts.uk.at.view.kdp010.g {
                 return dfd.promise();
             }
 
+            registration() {
+                let self = this, dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
+                if (self.checkDelG() == true) {
+                    $.when(self.deleteBeforeAdd()).done(function() {
+                        self.registrationLayout();
+                        dfd.resolve();
+                    });
+                } else {
+                    self.registrationLayout();
+                    dfd.resolve();
+                }
+
+                return dfd.promise();
+
+            }
 
             /**
              * Pass Data to A
              */
-            public registration() {
+            public registrationLayout() {
                 let self = this;
                 $('#correc-text').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
                 nts.uk.ui.block.invisible();
-                
-                if((self.dataKdpH.length == undefined || self.dataKdpH.length == 0 ) && self.isDel() == true){
-                    let data = {dataShare : self.dataShare,
-                    buttonPositionNo : self.dataShare.lstButtonSet[0].buttonPositionNo
+                if ((self.dataKdpH.length == undefined || self.dataKdpH.length == 0) && self.isDel() == true) {
+                    let data = {
+                        dataShare: self.dataShare,
+                        buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
                     }
                     self.dataKdpH = data;
                 }
                 // Data from Screen 
-                let lstButton = new Array<ButtonSettingsCommand>();
+                let lstButton = new Array<model.ButtonSettingsCommand>();
                 if (self.dataKdpH.buttonPositionNo != undefined) {
                     let lstButtonSet = new Array<>();
                     _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
@@ -127,8 +140,8 @@ module nts.uk.at.view.kdp010.g {
                                     changeCalArt: item.buttonType.stampType.changeCalArt
                                 })
                             }),
-                            usrArt: self.dataKdpH.dataShare.usrArt,
-                            audioType: self.dataKdpH.dataShare.audioType
+                            usrArt: item.usrArt,
+                            audioType: item.audioType
                         });
                         lstButton.push(lstButtonSet);
                     });
@@ -144,8 +157,10 @@ module nts.uk.at.view.kdp010.g {
                     buttonLayoutType: self.selectedLayout(),
                     lstButtonSet: lstButton
                 });
+
                 service.saveStampPage(data).done(function() {
                     self.isDel(true);
+                    self.checkDelG(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -154,6 +169,18 @@ module nts.uk.at.view.kdp010.g {
                 });
             }
 
+            public deleteBeforeAdd() {
+                let self = this;
+                let data = {
+                    pageNo: self.selectedPage()
+                };
+
+                service.deleteStampPage(data).done(function(stampPage) {
+                }).fail(function(error) {
+                    alert(error.message);
+                    dfd.reject(error);
+                });
+            }
 
             public getInfoButton(lstButtonSet: any, buttonLayoutType: number) {
                 let self = this, buttonLength = 0;
@@ -445,6 +472,17 @@ module nts.uk.at.view.kdp010.g {
             //就業
             大2小4 = 0,
             小8 = 1
+        }
+        export class ItemModel {
+            buttonName: string;
+            buttonColor: string;
+            textColor: string;
+
+            constructor(buttonName: string, buttonColor: string, textColor: string) {
+                this.buttonName = ko.observable('') || '';
+                this.buttonColor = ko.observable('') || '';
+                this.textColor = ko.observable('') || '';
+            }
         }
     }
 }

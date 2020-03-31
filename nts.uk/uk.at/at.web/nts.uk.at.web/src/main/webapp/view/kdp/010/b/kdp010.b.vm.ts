@@ -122,16 +122,12 @@ module nts.uk.at.view.kdp010 {
             // List StampPageLayout (ページレイアウト設定)
             lstStampPage: KnockoutObservable<any> = ko.observable({});
             checkInUp: KnockoutObservable<boolean> = ko.observable(false);
-            constructor() {
-                let self = this;
-            }
 
             /**
              * Start page.
              */
             start(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
+                let self = this,dfd = $.Deferred();
 
                 self.getStamp();
                 self.getData();
@@ -143,8 +139,7 @@ module nts.uk.at.view.kdp010 {
              * Get data from db.
              */
             getData(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
+                let self = this,dfd = $.Deferred();
                 service.getStampSetting().done(function(totalTimeArr) {
                     if (totalTimeArr) {
                         self.selectedHighlight(totalTimeArr.buttonEmphasisArt);
@@ -163,8 +158,7 @@ module nts.uk.at.view.kdp010 {
             }
 
             getStamp(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
+                let self = this,dfd = $.Deferred();
                 service.getStampPage().done(function(stampPage) {
                     if (stampPage && stampPage.length > 0)
                         self.checkInUp(true);
