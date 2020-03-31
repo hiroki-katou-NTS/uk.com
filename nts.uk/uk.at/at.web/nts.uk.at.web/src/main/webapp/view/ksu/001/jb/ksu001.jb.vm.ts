@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         selectedTab: KnockoutObservable<string> = ko.observable(getShared('dataForJB').selectedTab);
         workplaceName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceName);
         workplaceCode: KnockoutObservable<string> = ko.observable(getShared('dataForJB').workplaceCode);
+        Jb2_1Name: KnockoutObservable<string> = ko.observable('');
         selectedLinkButton: KnockoutObservable<number> = ko.observable(getShared('dataForJB').selectedLinkButton);
         workplaceId: string = getShared('dataForJB').workplaceId;
         listWorkType: any[] = getShared('dataForJB').listWorkType;
@@ -49,7 +50,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
             self.contextMenu = [
                 { id: "openPopup", text: nts.uk.resource.getText("シフト組み合わせ選択"), action: self.openDialogJC.bind(self) },
-                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove }
+                { id: "delete", text: nts.uk.resource.getText("シフト組み合わせ削除"), action: self.remove.bind(self, event) }
             ];
 
             $("#test2").bind("getdatabutton", function(evt, data) {
@@ -66,6 +67,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             if (self.selectedTab() === 'company') {
                 self.isVisibleWkpName(false);
                 $.when(self.getDataComPattern()).done(() => {
+                    self.Jb2_1Name (nts.uk.resource.getText("Com_Company"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     var test = _.map(data, "groupName")
 
@@ -74,6 +76,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             } else {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpPattern()).done(() => {
+                    self.Jb2_1Name (nts.uk.resource.getText("Com_Workplace"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     self.workplaceName();
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
@@ -293,19 +296,23 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 note: self.note(),
                 listInsertPatternItemCommand: listInsertPatternItemCommand
             }
-
-            service.registerWorkPairPattern(obj).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.isAllowCheckChanged = false;
-                self.handleAfterChangeData();
-                self.isDeleteEnable(true);
-                dfd.resolve();
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                dfd.reject();
-            }).always(() => {
+            if (obj.listInsertPatternItemCommand.length == 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1592" });
                 nts.uk.ui.block.clear();
-            });
+            } else {
+                service.registerWorkPairPattern(obj).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.isAllowCheckChanged = false;
+                    self.handleAfterChangeData();
+                    self.isDeleteEnable(true);
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
             return dfd.promise();
         }
 
@@ -350,12 +357,16 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         }
 
         /** remove data of button table */
-        remove(): JQueryPromise<any> {
+        remove(data: any, event: any): JQueryPromise<any> {
+            let self = this;
             let dfd = $.Deferred();
 
-            setTimeout(function() {
-                dfd.resolve(undefined);
-            }, 10);
+            //get page
+            //self.selectedLinkButton();
+            //get row-colum
+            //Number($(event)[0].dataset.idx);
+            self.dataSource()[self.selectedLinkButton()].splice(Number($(event)[0].dataset.idx), 1);
+            dfd.resolve();
 
             return dfd.promise();
         }
@@ -432,8 +443,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     _.forEach(pattItem.workPairSet, (wPSet) => {
                         //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
                         //                            : arrPairSt.workTypeCode + ']');
-                        
-                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null? wPSet.shiftCode : wPSet.workTypeCode]);
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedTab() === 'company') {
                             let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';

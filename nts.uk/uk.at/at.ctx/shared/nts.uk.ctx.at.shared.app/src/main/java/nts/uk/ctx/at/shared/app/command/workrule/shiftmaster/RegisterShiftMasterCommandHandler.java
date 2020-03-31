@@ -142,6 +142,12 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		}
 
 		@Override
+		public boolean checkExistsByCode(String companyId, String shiftMaterCode) {
+			return shiftMasterRepo.checkExistsByCd(companyId, shiftMaterCode);
+		}
+
+		
+		@Override
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {
 			shiftMasterRepo.insert(shiftMater);
 		}
