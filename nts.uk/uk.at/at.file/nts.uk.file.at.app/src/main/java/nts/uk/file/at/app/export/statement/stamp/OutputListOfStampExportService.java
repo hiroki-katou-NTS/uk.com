@@ -16,7 +16,6 @@ import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.CardNoStampIn
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.EmployeEngravingInfor;
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampFinder;
 import nts.uk.shr.com.company.CompanyAdapter;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -78,8 +77,8 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 					stampList.setDate(i.getDateAndTime());
 					stampList.setTime(i.getDateAndTime());
 					stampList.setClassification(i.getAttendanceAtr());
-					//stampList.setMean(i.getStampMeans());
-					//stampList.setMethod(i.getAuthcMethod());
+					stampList.setMean(i.getStampMeans());
+					stampList.setMethod(i.getAuthcMethod());
 					stampList.setInsLocation(i.getInstallPlace());
 					stampList.setLocationInfor(i.getLocalInfor());
 					stampList.setSupportCard(i.getSupportCard());
@@ -108,8 +107,8 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 					stampList.setDate(i.getDateAndTime());
 					stampList.setTime(i.getDateAndTime());
 					stampList.setClassification(i.getAttendanceAtr());
-					//stampList.setMean(i.getStampMeans());
-					//stampList.setMethod(i.getAuthcMethod());
+					stampList.setMean(i.getStampMeans());
+					stampList.setMethod(i.getAuthcMethod());
 					stampList.setInsLocation(i.getInstallPlace());
 					stampList.setLocationInfor(i.getLocalInfor());
 					stampList.setSupportCard(i.getSupportCard());
