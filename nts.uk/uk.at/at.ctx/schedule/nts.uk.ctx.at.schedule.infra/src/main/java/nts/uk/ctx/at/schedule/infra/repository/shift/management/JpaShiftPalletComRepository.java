@@ -142,6 +142,11 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 			getEntity.get().toEntity(shiftPalletsCom);
 			List<Integer> position = getEntity.get().cmpCombis.stream().map(e -> e.pk.position)
 					.collect(Collectors.toList());
+			// delete position when right click choose 'delete'
+			List<Integer> positionToDelete = getEntity.get().cmpCombis.stream().map(e -> e.pk.position)
+					.filter(item -> !shiftPalletsCom.getShiftPallet().getCombinations().stream()
+							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
+					.collect(Collectors.toList());
 			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
 			List<Shifutoparetto> shifutoparettos = new ArrayList<>();
@@ -179,6 +184,26 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 					.collect(Collectors.toList());
 			shifutoparettoss.addAll(shifutoparettos.stream().filter(i -> !positions.contains(i.positionNumber))
 					.collect(Collectors.toList()));
+			positionToDelete.stream().forEach(i -> {
+				String combiDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI WHERE CID = ? AND PAGE = ? AND POSITION = ? ";
+				String dtlDelete = "DELETE FROM KSCMT_PALETTE_CMP_COMBI_DTL WHERE CID = ? AND PAGE = ? AND POSITION = ? ";
+
+				try {
+					PreparedStatement ps1 = this.connection().prepareStatement(combiDelete);
+					ps1.setString(1, shiftPalletsCom.getCompanyId());
+					ps1.setInt(2, shiftPalletsCom.getPage());
+					ps1.setInt(3, i);
+					ps1.executeUpdate();
+
+					PreparedStatement ps2 = this.connection().prepareStatement(dtlDelete);
+					ps2.setString(1, shiftPalletsCom.getCompanyId());
+					ps2.setInt(2, shiftPalletsCom.getPage());
+					ps2.setInt(3, i);
+					ps2.executeUpdate();
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+			});
 			this.commandProxy().update(getEntity.get());
 			List<KscmtPaletteCmpCombiDtl> cmpCombiDtls = shifutoparettoss.stream().map(i -> KscmtPaletteCmpCombiDtl
 					.fromOneDomain(i.getPage(), i.getPositionNumber(), i.getOrder(), i.getShiftCode()))

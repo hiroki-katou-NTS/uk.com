@@ -12,25 +12,66 @@ module nts.uk.com.view.cmm018.a.sub {
         export class ScreenModel{
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
-            constructor() {
+            intervalDetectResolution: any;
+            constructor() {  
             }
-            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE){
+            // fix bug 109950
+            scrollToIndex(object: any) {
+                let index = 0;
+                // not to use Array.findIndex in IE
+                if (this.lstData() != null) {
+                    for (let i = 0; i < this.lstData().length; ++i) {
+                        if (this.lstData()[i].approvalId == object.approvalId) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }  
+                $('#grid_matome').igGrid("virtualScrollTo", index);
+
+            }
+            reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE): JQueryPromise<void>{
+                var dfd = $.Deferred<void>();
                 let self = this;
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
+                let height = 530;
                 let gridName = '#grid_matome';
+                $('html.sidebar-html').css('overflow','visible');
+                $('div#left-contents').css('margin-top',"0px"); 
                 if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matome';        
                         if(systemAtr == 0) {
-                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;    
+//                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
+//                            width = (screen.width * 1000)/(1920);
+//                            height = (screen.height * 450)/(1080 - 40);
+                            //1920*1040
+                            if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+//                                     width = 750;
+                                     width = 860
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+//                                width = 510;
+                                width = 600;
+                                height = 315;                           
+                            }
+                            
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
                         gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
-                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            width = (screen.width * 900)/(1920);
+                            height = (screen.height * 450)/(1080 - 40);  
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -39,7 +80,20 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
-                            width = screen.width - 430 > 950 ? 950 : screen.width - 430;    
+                           if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                     width = 850;
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+                                width = 600;
+                                height = 315;                           
+                            }
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -55,7 +109,30 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(mode == vmbase.MODE.MATOME) {
                         gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
-                            width = screen.width - 485 > 950 ? 950 : screen.width - 485;    
+                            
+                           if (screen.height == 1080 && screen.width == 1920) {
+                                width = 950;
+                                height = 580;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                width = 800;
+                                height = 285;
+                                $('div#left-contents').css('margin-top',"-20px");
+                               if(window.outerHeight == 728 && window.outerWidth == 1280){
+                                        $('html.sidebar-html').css('overflow','hidden');
+                                }  
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {
+                                width = 550;
+                                height = 285;
+                                $('div#left-contents').css('margin-top',"-20px");
+                               if(window.outerHeight == 728 && window.outerWidth == 1024){
+                                        $('html.sidebar-html').css('overflow','hidden');
+                               }  
+                            }
+
                         } else {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
@@ -81,6 +158,8 @@ module nts.uk.com.view.cmm018.a.sub {
                 if(mode == vmbase.MODE.SHINSEI){
                     heightG = 181;
                 }
+                
+                
               $(gridName).ntsGrid({
                 width: width,
                 height: heightG,
@@ -106,7 +185,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     { name: "MultiColumnHeaders" },
                     { name: 'ColumnFixing', fixingDirection: 'left',
                                             showFixButtons: false,
-                                            columnSettings: [{ columnKey: 'appName', isFixed: true } ]},
+                                            //resize column in gridlist
+                                            columnSettings: [{ columnKey: 'appName', allowResizing: false, minimumWidth: 0 } ]},
                 ],
                  ntsFeatures:[
                     {
@@ -163,6 +243,140 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(5, empRType, appType);
             });
+                // fix bug  109946
+            if (systemAtr == 0) {
+                $(gridName).igGrid("option", "width", width);
+                $(gridName).igGrid("option", "height", height);
+                
+            }
+                
+            $(window).resize(function() {
+                  $('html.sidebar-html').css('overflow','visible')
+                 }); 
+           clearInterval(this.intervalDetectResolution);      
+           this.intervalDetectResolution = (function () {
+                var width1 = screen.width,
+                    height1 = screen.height;
+                setInterval(function () {
+                    if (screen.width !== width1 || screen.height !== height1) {
+                        width1 = screen.width;
+                        height1 = screen.height;
+                        $(window).trigger('resolutionchange');
+                          
+//                        $('div#left-contents').css('margin-top',"0px");  
+                    console.log('height, width: '+width1 +','+height1);
+                    let width = 0;
+                    let height = 0;
+                    if(rootType == vmbase.RootType.COMPANY){
+                    if(mode == vmbase.MODE.MATOME) {
+                        gridName = '#grid_matome';        
+                        if(systemAtr == 0) {
+                             if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+//                                     width = 750;
+                                     width = 860
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+//                                width = 510;
+                                width = 600;
+                                height = 315;                           
+                            }
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }
+                    } else {
+                        gridName = '#grid_matomeB';   
+                        if(systemAtr == 0) {
+                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                        } else {
+                            width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                        }     
+                    }
+                    }else if(rootType == vmbase.RootType.WORKPLACE){
+                        if(mode == vmbase.MODE.MATOME) {
+                            gridName = '#grid_matomeC';    
+                            if(systemAtr == 0) {
+                               if (screen.height == 1080 && screen.width == 1920) {
+                                        width = 950;
+                                        height = 600;
+                                }
+                                //1280 * 768
+                                else if (screen.height == 768 && screen.width == 1280) {
+                                         width = 850;
+                                         height = 315;
+                                }
+                                //1024*768
+                                else if (screen.height == 768 && screen.width == 1024) {           
+                                    width = 600;
+                                    height = 315;                           
+                                }
+                            } else {
+                                width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                            }     
+                        } else {
+                            gridName = '#grid_matomeD'; 
+                            if(systemAtr == 0) {
+                                width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            } else {
+                                width = screen.width - 124 > 950 ? 950 : screen.width - 124;
+                            }       
+                        }
+                    }else{//PERSON
+                        if(mode == vmbase.MODE.MATOME) {
+                            gridName = '#grid_matomeE';   
+                            if(systemAtr == 0) {
+                                if (screen.height == 1080 && screen.width == 1920) {
+                                    width = 950;
+                                    height = 580;
+                                }
+                                //1280 * 768
+                                else if (screen.height == 768 && screen.width == 1280) {
+                                    width = 800;
+                                    height = 285;
+                                    $('div#left-contents').css('margin-top',"-20px");
+                                   if(window.outerHeight == 728 && window.outerWidth == 1280){
+                                            $('html.sidebar-html').css('overflow','hidden');
+                                    }  
+                                }
+                                //1024*768
+                                else if (screen.height == 768 && screen.width == 1024) {
+                                    width = 550;
+                                    height = 285;
+                                    $('div#left-contents').css('margin-top',"-20px");
+                                   if(window.outerHeight == 728 && window.outerWidth == 1024){
+                                            $('html.sidebar-html').css('overflow','hidden');
+                                   }  
+                                }       
+                            } else {
+                                width = screen.width - 195 > 950 ? 950 : screen.width - 195;
+                            }     
+                        } else {
+                            gridName = '#grid_matomeF';     
+                            if(systemAtr == 0) {
+                                width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
+                            } else {
+                                width = screen.width - 195 > 950 ? 950 : screen.width - 195;
+                            }   
+                        }
+                    }
+                    if ($(gridName).igGrid("option", "width") != width){
+                        $(gridName).igGrid("option", "width", width);
+                    }
+                        
+                    if ($(gridName).igGrid("option", "height") != height){
+                        $(gridName).igGrid("option", "height", height);
+                    }          
+                    }
+                }, 50);
+           }());   
+            dfd.resolve();
+            return dfd.promise();
         }
         resize1(){
             let self = this;
