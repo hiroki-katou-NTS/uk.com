@@ -28,6 +28,8 @@ module nts.uk.at.view.kdp011.a {
             isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable(false);
             employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
             showOptionalColumn: KnockoutObservable<boolean> = ko.observable(false);
+            //
+            //enableCCG001: KnockoutObservable<boolean> = ko.observable(true);
             // KCP005 end
 
 
@@ -68,17 +70,18 @@ module nts.uk.at.view.kdp011.a {
 
                 ]);
                 
-                  if (__viewContext.user.role.attendance != '') {
+                  if (__viewContext.user.role.attendance != null) {
                     self.selectedIdProcessSelect = ko.observable(1);
-                      
+                     
                 }
                 else {
                     self.selectedIdProcessSelect = ko.observable(2);
+                      self.listProcessSelect()[0].enable =  ko.observable(false);
                     
                 }
 
             }
-
+            if()
             /**
             * start screen
             */
@@ -179,6 +182,7 @@ module nts.uk.at.view.kdp011.a {
                             arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId });
                         });
                         self.employeeList(arrEmployeelst);
+                        self.selectedCodeEmployee(_.map(arrEmployeelst, "code"));
                     }
                 }
             }
@@ -206,6 +210,11 @@ module nts.uk.at.view.kdp011.a {
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.selectedIdProcessSelect = self.selectedIdProcessSelect();
                 // data.outputSetCode = self.selectedOutputItemCode();
+                if(data.lstEmployee.length == 0){
+                     dialog.alertError({ messageId: "Msg_1204" });
+                     blockUI.clear();
+                     return ;
+                    }
                 if(self.selectedCodeEmployee ==1 )
                 data.cardNumNotRegister = true;
                 else{
@@ -435,11 +444,11 @@ module nts.uk.at.view.kdp011.a {
         }
         class ProcessSelect {
             idProcessSelect: number;
-            nameProcessSelect: string;
+            nameProcessSelect: string;   
             constructor(idProcessSelect, nameProcessSelect) {
                 var self = this;
                 self.idProcessSelect = idProcessSelect;
-                self.nameProcessSelect = nameProcessSelect;
+                self.nameProcessSelect = nameProcessSelect;    
             }
         }
     }
