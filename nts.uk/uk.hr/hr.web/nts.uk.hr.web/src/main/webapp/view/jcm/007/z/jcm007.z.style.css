@@ -1,68 +1,157 @@
 @import url("base.css");
 
-#content {
-	width: 1200px;
-	margin-bottom: 20px;
-	padding: 20px;
+#functions-area {
+	height: 50px !important;
+	overflow-y: hidden;
 }
 
-#content-left {
-	width: 457px;
-	padding: 15px;
+.infoDetail {
+	overflow-y: auto;
+	height: calc(100vh - 350px) !important;
+    margin-top: 10px;
+    width: 545px;
 }
 
-#content-right {
-	margin-left: 30px;
+#tab-1, #tab-2{
+    width: 637px;
+	height: 516px;
+	overflow: visible !important;
+}
+
+#gridListEmployeesContent {
+	height: 450px;
+	width: 716px;
+	position: relative;
+	z-index: 99;
+}
+
+.flex {
+    display: flex;
+    margin-top: 10px;
+}
+
+.header {
+	border: 1px solid #B1B1B1;
+	height: 150px;
+	border-radius: 15px;
+	margin-top: 0px;
+	width: 545px;
+}
+
+
+.approval-panel {
+	margin-top: 6px;
+	border: 1px solid #B1B1B1;
+	height: 150px;
+	border-radius: 15px;
+	margin-top: 0px;
+	width: 618px;
+	padding: 0px 10px;
+}
+
+.header-left{
 	float: left;
-	width: 600px;
-	padding-top: 20px;
+	width: 86%;
+	margin: 10px;
 }
 
-#expand-example th, #expand-example td {
-	padding: 5px 5px;
-	border: 1px solid #ccc;
+.header-right{
+	float: right;
+	margin-right: 7px;
+    margin-top: 7px;
 }
 
-.col_group_1 {
+.avatar{
+	width: 100px;
+    height: 129px;
+    cursor: pointer;
+    border: 1px solid DarkGray;
+    padding: 3px;
+}
+
+.employee {
+	height: 25%;
+}
+
+.department {
+	height: 25%;
+}
+
+.position {
+	height: 25%;
+}
+
+.employment {
+	height: 25%;
+}
+
+.line1{
 	display: inline-block;
-	width: 95px;
-	vertical-align: middle !important;
 }
 
-.col_group_2 {
-	display: inline-block;
-	width: 250px;
-	vertical-align: middle !important;
-}
-
-.col_group_3 {
-	display: inline-block;
-	vertical-align: middle !important;
-	width: 110px;
-	text-align: center;
-}
-
-.content-left {
-	width: 390px;
+.line2{
 	display: inline-block;
 }
 
-.content-right {
-	width: 475px;
+.line3{
 	display: inline-block;
 }
 
-#search_box {
-	height: 94px;
-	border: solid 1px #B1B1B1;
-	padding: 0px 10px 10px 10px;
-	width: 885px;
+.line4{
+	display: inline-block;
 }
 
-#grid {
-	margin-top: 20px;
+.line5{
+	display: inline-block;
 }
 
-#A222_3_1 {
-	width: 177px !important;
+
+
+#retirementDate {
+	width: 50px;
+	margin-left: 7px !important; 
+	margin-bottom: 0px !important;
+}
+
+.checkbox {
+	padding-top: 11px;
+}
+
+.ntsCheckBox span.label {
+    display: inline-block;
+    padding-left: 10px;
+    width: 200px;
+}
+
+.subText  {
+	left: 34px;
+	position: relative;
+	bottom: 8px;
+	color: #0070C0;
+	text-decoration: underline;
+}
+
+.guideDisplay {
+	margin-left: 870px;
+    margin-top: 15px;
+	color: #0070C0;
+	text-decoration: underline;
+}
+
+#gridListEmployees_scroll {
+	height: 323px !important;
+	overflow-y: scroll !important;	
+	overflow-x: hidden;
+}
+
+#gridListEmployees_container {
+	height: 323px !important;
+}
+
+#gridListEmployeesContent {
+    height: 300px !important;
+}
+
+#gridListEmployeesContentIcm007 .ui-iggrid tbody td {
+	white-space: nowrap;
 }
