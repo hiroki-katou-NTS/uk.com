@@ -37,7 +37,7 @@
 				<table class="widget-table">
 					<tbody data-bind="foreach: businessApproval()">
 						<tr data-bind="css: {bgColor2: $parent.check()==true}">
-							<td class="tab" data-bind="text: programId +'_Z'"></td>
+							<td class="tab" data-bind="text: name"></td>
 							<td>
 								<com:ko-if bind="check">
 									<a class="" href="#" data-bind = "click: $parent.openJHN007Z, text: '#{i18n.getText('JCG004_A1_12')}'"></a>
