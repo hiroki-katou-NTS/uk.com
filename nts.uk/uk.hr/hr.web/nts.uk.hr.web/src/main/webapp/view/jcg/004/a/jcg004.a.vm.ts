@@ -22,6 +22,7 @@ module nts.uk.at.view.jcg004.a.viewmodel {
                 self.approvalOfApplication(data.approvalOfApplication);
                 self.businessApproval(data.businessApproval);
                 _.forEach(data.businessApproval, (item) => {
+                    item.name = getText(item.programId + '_' + 'Z');
                     if(item.check){
                         self.check(true);
                     }
