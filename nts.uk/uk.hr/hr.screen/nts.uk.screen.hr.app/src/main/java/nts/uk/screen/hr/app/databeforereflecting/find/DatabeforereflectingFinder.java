@@ -174,8 +174,19 @@ public class DatabeforereflectingFinder {
 		return  result;
 
 	}
-
 	
+	public InterviewSummary getInterviewRecord(String sid) {
+		
+		int interviewCate = 1;
+		boolean getSubInterviewer = false;
+		boolean getDepartment = false;
+		boolean getPosition = false;
+		boolean getEmployment = false;
+		
+		InterviewSummary interviewSummary = this.interview.getInterviewInfo(AppContexts.user().companyId(), interviewCate, Arrays.asList(sid), getSubInterviewer, getDepartment, getPosition, getEmployment);
+		
+		return interviewSummary;
+	}
 
 	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo ) {
 
@@ -237,5 +248,4 @@ public class DatabeforereflectingFinder {
 
 		return result;
 	}
-
 }

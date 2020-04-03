@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmPreCheck;
 import nts.uk.screen.hr.app.databeforereflecting.command.DataBeforeReflectCommand;
@@ -96,6 +97,12 @@ public class DataBeforeReflectingPerInfoWS {
 	@Path("/event-change-retirementdate")
 	public RetirementRelatedInfoDto eventChangeRetirementDate(ChangeRetirementDate changeRetirementDateObj) {
 		return this.finder.processRetirementDateChanges(changeRetirementDateObj);
+	}
+	
+	@POST
+	@Path("/get-interview-record/{sid}")
+	public InterviewSummary getInterviewRecord(@PathParam("sid") String sid) {
+		return this.finder.getInterviewRecord(sid);
 	}
 	
 	
