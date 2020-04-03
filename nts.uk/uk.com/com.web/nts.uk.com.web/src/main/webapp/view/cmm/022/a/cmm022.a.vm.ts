@@ -241,10 +241,6 @@ module nts.uk.com.view.cmm022.a {
                     let data: IDialogToMaster = getShared('DialogBToMaster');
 
                     self.selectedCommonMaster().commonMasterId.valueHasMutated();
-//                    if (data.itemList.length) {
-//                        self.commonMasterItems(data.itemList);
-//                    }
-//                    self.selectedCommonMasterItem().commonMasterItemId(data.commonMasterItemId);
                 });
             }
 
@@ -258,11 +254,7 @@ module nts.uk.com.view.cmm022.a {
                 nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
                     let data: IDialogToMaster = getShared('DialogCToMaster');
                     self.commonMasters(data.masterList);
-                    if (self.selectedCommonMaster().commonMasterId() == data.commonMasterId) {
-                        self.selectedCommonMaster().commonMasterId.valueHasMutated();
-                    } else {
-                        self.selectedCommonMaster().commonMasterId(data.commonMasterId);
-                    }
+                    self.selectedCommonMaster().commonMasterId.valueHasMutated();
                 });
             }
 
