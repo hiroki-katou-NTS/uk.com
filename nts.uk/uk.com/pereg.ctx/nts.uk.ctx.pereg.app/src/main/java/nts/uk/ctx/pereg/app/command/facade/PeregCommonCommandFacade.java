@@ -22,6 +22,8 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.employee.category.EmpCtgFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
@@ -109,6 +111,9 @@ public class PeregCommonCommandFacade {
 	
 	@Inject
 	private GridPeregProcessor gridProcessor;
+	
+	@Inject
+	private FacadeUtils facadeUtils;
 	
 	private final static String nameEndate = "終了日";
 	
@@ -226,7 +231,6 @@ public class PeregCommonCommandFacade {
 			if(itemByCtg.getRecordId() == null || itemByCtg.getRecordId() == "" || itemByCtg.getRecordId().indexOf("noData") > -1 || modeUpdate == 2) {
 				containerAdds.add(c);
 			}
-			
 		});
 		
 		if(containerAdds.size() == 0) {
@@ -258,6 +262,11 @@ public class PeregCommonCommandFacade {
 		containerAdds.stream().forEach(c -> {
 			Optional<GridEmployeeInfoDto> gridEmployeeInfoDto = gridEmpDto.getBodyDatas().stream()
 					.filter(p -> p.getEmployeeId().equals(c.getEmployeeId())).findFirst();
+			List<String> listScreenItem = c.getInputs().getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
+			// Set all default item
+			List<ItemValue>	 listDefault = facadeUtils.getListDefaultItem(c.getInputs().getCategoryCd(), listScreenItem,
+					c.getEmployeeId(), itemsByCtgId.get(c.getInputs().getCategoryId()));
+			c.getInputs().getItems().addAll(listDefault);
 			if(gridEmployeeInfoDto.isPresent()) {
 				if(c.getInputs().getRecordId() == null || c.getInputs().getRecordId() == "" || c.getInputs().getRecordId().indexOf("noData") > -1 || modeUpdate == 2) {
 					itemRequireds.stream().forEach(r ->{
@@ -759,7 +768,7 @@ public class PeregCommonCommandFacade {
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
 		case CONTINUOUSHISTORY:
-			if(stringKey != null) {
+			if(!StringUtil.isNullOrEmpty(stringKey, true)) {
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(), input.getCategoryName(), infoOperateAttr, lstItemInfo,
 						TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")), Optional.ofNullable(reviseInfo));
 			}

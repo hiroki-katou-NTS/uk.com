@@ -1206,7 +1206,15 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
-		
+
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ws', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
+
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ws', version: version
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.app', version: version
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.dom', version: version
@@ -1375,6 +1383,11 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+
+		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		compile group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		compile group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
 	}
 }
 

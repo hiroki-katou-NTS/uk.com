@@ -63,7 +63,7 @@ button.search-btn {
 	margin-top: 14px;
 	float: left;
 	/* min-height: 600px; */
-	width: 873px;
+	width: 880px;
 	position: relative;
 	box-sizing: border-box;
     border: 1px solid #ccc;
@@ -163,6 +163,6 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-    width: 852px !important;
+    width: 857px !important;
 }
 

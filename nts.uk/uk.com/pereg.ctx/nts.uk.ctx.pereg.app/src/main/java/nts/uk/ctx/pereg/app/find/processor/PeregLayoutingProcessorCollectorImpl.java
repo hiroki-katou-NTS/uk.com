@@ -68,6 +68,9 @@ import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealInsQualifiInfoDto;
+import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInforDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
 @Stateless
@@ -78,123 +81,192 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 	/** ctg single finder */
 	private static final List<TypeLiteral<?>> FINDER_CTG_SINGLE_HANDLER_CLASSES = Arrays.asList(
 			// CS00001  社員データ管理
-			new TypeLiteral<PeregFinder<EmployeeDataMngInfoDto>>(){},
+			new TypeLiteral<PeregFinder<EmployeeDataMngInfoDto>>() {
+			},
 			// CS00002 個人基本情報
-			new TypeLiteral<PeregFinder<PersonDto>>(){},
+			new TypeLiteral<PeregFinder<PersonDto>>() {
+			},
 			// CS00003 所属会社履歴
-			new TypeLiteral<PeregFinder<AffCompanyHistInfoDto>>(){},
+			new TypeLiteral<PeregFinder<AffCompanyHistInfoDto>>() {
+			},
 			// CS00004 分類１
-			new TypeLiteral<PeregFinder<AffClassificationDto>>(){},
+			new TypeLiteral<PeregFinder<AffClassificationDto>>() {
+			},
 			// CS00014 雇用
-			new TypeLiteral<PeregFinder<EmploymentHistoryDto>>(){},
+			new TypeLiteral<PeregFinder<EmploymentHistoryDto>>() {
+			},
 			// CS00015 部門本務	
-			new TypeLiteral<PeregFinder<AffDeptHistDto>>(){},
+			new TypeLiteral<PeregFinder<AffDeptHistDto>>() {
+			},
 			// CS00016 職位本務
-			new TypeLiteral<PeregFinder<AffJobTitleDto>>(){},
+			new TypeLiteral<PeregFinder<AffJobTitleDto>>() {
+			},
 			// CS00017 職場
-			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>(){},
+			new TypeLiteral<PeregFinder<AffWorlplaceHistItemDto>>() {
+			},
 			// CS00018 休職休業
-			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
+			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>() {
+			},
 			// CS00019 短時間勤務
-			new TypeLiteral<PeregFinder<ShortWorkTimeDto>>(){},
+			new TypeLiteral<PeregFinder<ShortWorkTimeDto>>() {
+			},
 			// CS00020 労働条件
-			new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
+			new TypeLiteral<PeregFinder<WorkingConditionDto>>() {
+			},
 			// CS00021 勤務種別
-			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){},
+			new TypeLiteral<PeregFinder<BusinessTypeDto>>() {
+			},
 			// CS00022 個人連絡先
-			new TypeLiteral<PeregFinder<PersonContactDto>>(){},
+			new TypeLiteral<PeregFinder<PersonContactDto>>() {
+			},
 			// CS00023 社員連絡先
-			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){},
+			new TypeLiteral<PeregFinder<EmpInfoContactDto>>() {
+			},
 			// CS00024 年休情報
-			new TypeLiteral<PeregFinder<AnnualLeaveDto>>(){},
+			new TypeLiteral<PeregFinder<AnnualLeaveDto>>() {
+			},
 			// CS00025 特別休暇１情報
-			new TypeLiteral<PeregFinder<Specialleave1InformationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave1InformationDto>>() {
+			},
 			// CS00026 特別休暇２情報
-			new TypeLiteral<PeregFinder<Specialleave2informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave2informationDto>>() {
+			},
 			// CS00027 特別休暇３情報
-			new TypeLiteral<PeregFinder<Specialleave3informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave3informationDto>>() {
+			},
 			// CS00028 特別休暇４情報
-			new TypeLiteral<PeregFinder<Specialleave4informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave4informationDto>>() {
+			},
 			// CS00029 特別休暇５情報
-			new TypeLiteral<PeregFinder<Specialleave5informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave5informationDto>>() {
+			},
 			// CS00030 特別休暇６情報
-			new TypeLiteral<PeregFinder<Specialleave6informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave6informationDto>>() {
+			},
 			// CS00031 特別休暇７情報
-			new TypeLiteral<PeregFinder<Specialleave7informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave7informationDto>>() {
+			},
 			// CS00032 特別休暇８情報
-			new TypeLiteral<PeregFinder<Specialleave8informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave8informationDto>>() {
+			},
 			// CS00033 特別休暇９情報
-			new TypeLiteral<PeregFinder<Specialleave9informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave9informationDto>>() {
+			},
 			// CS00034 特別休暇１０情報
-			new TypeLiteral<PeregFinder<Specialleave10informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave10informationDto>>() {
+			},
 			// CS00035 その他休暇情報
-			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>(){},
+			new TypeLiteral<PeregFinder<OtherHolidayInfoDto>>() {
+			},
 			// CS00036 子の看護・介護休暇管理
-			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>(){},
+			new TypeLiteral<PeregFinder<CareLeaveInfoDto>>() {
+			},
 			// CS00049 特別休暇１１情報
-			new TypeLiteral<PeregFinder<Specialleave11informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave11informationDto>>() {
+			},
 			// CS00050 特別休暇１２情報
-			new TypeLiteral<PeregFinder<Specialleave12informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave12informationDto>>() {
+			},
 			// CS00051 特別休暇１３情報
-			new TypeLiteral<PeregFinder<Specialleave13informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave13informationDto>>() {
+			},
 			// CS00052 特別休暇１４情報
-			new TypeLiteral<PeregFinder<Specialleave14informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave14informationDto>>() {
+			},
 			// CS00053 特別休暇１５情報
-			new TypeLiteral<PeregFinder<Specialleave15informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave15informationDto>>() {
+			},
 			// CS00054 特別休暇１６情報
-			new TypeLiteral<PeregFinder<Specialleave16informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave16informationDto>>() {
+			},
 			// CS00055 特別休暇１７情報
-			new TypeLiteral<PeregFinder<Specialleave17informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave17informationDto>>() {
+			},
 			// CS00056 特別休暇１８情報
-			new TypeLiteral<PeregFinder<Specialleave18informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave18informationDto>>() {
+			},
 			// CS00057 特別休暇１９情報
-			new TypeLiteral<PeregFinder<Specialleave19informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave19informationDto>>() {
+			},
 			// CS00058 特別休暇２０情報
-			new TypeLiteral<PeregFinder<Specialleave20informationDto>>(){},
+			new TypeLiteral<PeregFinder<Specialleave20informationDto>>() {
+			},
 			// CS00039  特別休暇１付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto1>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto1>>() {
+			},
 			// CS00040  特別休暇2付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto2>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto2>>() {
+			},
 			// CS00041  特別休暇3付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto3>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto3>>() {
+			},
 			// CS00042  特別休暇4付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto4>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto4>>() {
+			},
 			// CS00043  特別休暇5付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto5>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto5>>() {
+			},
 			// CS00044  特別休暇6付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto6>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto6>>() {
+			},
 			// CS00045  特別休暇7付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto7>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto7>>() {
+			},
 			// CS00046  特別休暇8付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto8>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto8>>() {
+			},
 			// CS00047  特別休暇9付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto9>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto9>>() {
+			},
 			// CS00048  特別休暇１0付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto10>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto10>>() {
+			},
 			// CS00059 特別休暇１１付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto11>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto11>>() {
+			},
 			// CS00060  特別休暇12付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto12>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto12>>() {
+			},
 			// CS00061  特別休暇13付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto13>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto13>>() {
+			},
 			// CS00062  特別休暇14付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto14>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto14>>() {
+			},
 			// CS00063  特別休暇15付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto15>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto15>>() {
+			},
 			// CS00064  特別休暇16付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto16>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto16>>() {
+			},
 			// CS00065  特別休暇17付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto17>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto17>>() {
+			},
 			// CS00066  特別休暇18付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto18>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto18>>() {
+			},
 			// CS00067  特別休暇19付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto19>>() {
+			},
 			// CS00068  特別休暇20付与残数
-			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>(){},
+			new TypeLiteral<PeregFinder<SpecialLeaveGrantDto20>>() {
+			},
 			// CS00069 打刻カード番号
-			new TypeLiteral<PeregFinder<PeregStampCardDto>>(){},
+			new TypeLiteral<PeregFinder<PeregStampCardDto>>() {
+			},
 			// CS00070  労働条件２
-			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>(){});
+			new TypeLiteral<PeregFinder<WorkingCondition2Dto>>() {
+			},
+			//CS00075
+			new TypeLiteral<PeregFinder<EmpCorpHealthOffHisDto>>() {
+			},
+			// CS00082
+			new TypeLiteral<PeregFinder<EmpHealInsQualifiInfoDto>>() {
+			},
+			// CS00092
+			new TypeLiteral<PeregFinder<EmpSocialInsGradeInforDto>>() {
+			}
+	);
 
 	@Override
 	public Set<PeregFinder<?>> peregFinderCollect() {

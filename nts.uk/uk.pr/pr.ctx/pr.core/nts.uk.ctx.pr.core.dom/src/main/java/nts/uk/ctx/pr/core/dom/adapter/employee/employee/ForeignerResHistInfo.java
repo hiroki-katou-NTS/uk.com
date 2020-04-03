@@ -26,7 +26,7 @@ public class ForeignerResHistInfo {
     /**
      * 資格外活動許可の有無
      */
-    private Integer nonQualifPermission;
+    private Integer unqualifiedActivityPermission;
 
     /**
      * 在留期間（西暦）.開始日
@@ -41,10 +41,14 @@ public class ForeignerResHistInfo {
     /**
      * 在留資格
      */
-    private String residenceStatus;
+    private String residenceStatusCode;
+
+    private String residenceStatusName;
 
     /**
      * 国籍・地域
      */
-    private String nationalityRegion;
+    private String nationalityCode;
+
+    private String nationalityName;
 }

@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QqsmtEmpInsEsmHistPk implements Serializable
-{
+public class QqsmtEmpInsEsmHistPk implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -40,5 +39,12 @@ public class QqsmtEmpInsEsmHistPk implements Serializable
     @Basic(optional = false)
     @Column(name = "HIST_ID")
     public String histId;
+
+    /**
+     * 労働保険事業所コード
+     */
+    @Basic(optional = false)
+    @Column(name = "LABOR_INS_CD")
+    public String laborInsCd;
     
 }

@@ -15,7 +15,6 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonRep
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -34,7 +33,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
-	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
+	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid ";
 	
 
 	private static final String SEL = "select DISTINCT r FROM  JhndtReportRegis r";
@@ -48,9 +47,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public int getMaxReportId(String sid, String cid) {
+	public int getMaxReportId(String cid) {
 		Object max = this.queryProxy().query(GET_MAX_REPORT_ID, Object.class).setParameter("cid", cid)
-				.setParameter("sid", sid).getSingleOrNull();
+				.getSingleOrNull();
 		if (max.equals(null)) {
 			return 0;
 		} else {
@@ -182,8 +181,13 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		}
 
 		if (approvalStatus != null) {
-			query += " AND r.aprStatus = %s";
-			query = String.format(query, approvalStatus);
+			if (approvalReport) {
+				query += " AND a.aprStatus = %s";
+				query = String.format(query, approvalStatus);
+			} else {
+				query += " AND r.aprStatus = %s";
+				query = String.format(query, approvalStatus);
+			}
 
 		}
 		

@@ -39,11 +39,11 @@ public class QrsmtEmpInsRptTxtSetting extends UkJpaEntity implements Serializabl
     private String fdNumber;
 
     /**
-     * 改行コード
+     * 改行コード区分
      */
     @Basic(optional = false)
-    @Column(name = "LINE_FEED_CD")
-    private int lineFeedCode;
+    @Column(name = "LINE_FEED_CODE_ATR")
+    private int lineFeedCodeAtr;
 
     @Override
     protected Object getKey() {
@@ -51,10 +51,10 @@ public class QrsmtEmpInsRptTxtSetting extends UkJpaEntity implements Serializabl
     }
 
     public EmpInsReportTxtSetting toDomain() {
-        return new EmpInsReportTxtSetting(this.qrsmtEmpInsRptTxtSettingPk.cid, this.qrsmtEmpInsRptTxtSettingPk.userId, this.officeAtr, this.fdNumber, this.lineFeedCode);
+        return new EmpInsReportTxtSetting(this.qrsmtEmpInsRptTxtSettingPk.cid, this.qrsmtEmpInsRptTxtSettingPk.userId, this.officeAtr, this.fdNumber, this.lineFeedCodeAtr);
     }
 
     public static QrsmtEmpInsRptTxtSetting toEntity(EmpInsReportTxtSetting domain) {
-        return new QrsmtEmpInsRptTxtSetting(new QrsmtEmpInsRptTxtSettingPk(domain.getCid(), domain.getUserId()), domain.getOfficeAtr().value, domain.getFdNumber().v(), domain.getLineFeedCode().value);
+        return new QrsmtEmpInsRptTxtSetting(new QrsmtEmpInsRptTxtSettingPk(domain.getCid(), domain.getUserId()), domain.getOfficeAtr().value, domain.getFdNumber().v(), domain.getLineFeedCodeAtr().value);
     }
 }

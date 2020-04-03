@@ -38,7 +38,7 @@ public class QrsmtEmpAddCgeSetting extends UkJpaEntity implements Serializable {
     * 海外居住者
     */
     @Basic(optional = false)
-    @Column(name = "LIVING_ABROAD_ATR")
+    @Column(name = "RESIDENT_OVERSEAS_ATR")
     public int livingAbroadAtr;
     
     /**
@@ -73,7 +73,7 @@ public class QrsmtEmpAddCgeSetting extends UkJpaEntity implements Serializable {
     * 海外居住者
     */
     @Basic(optional = false)
-    @Column(name = "SPOUSE_LIVING_ABROAD_ATR")
+    @Column(name = "SPOUSE_RESIDENT_OVERSEAS_ATR")
     public int spouseLivingAbroadAtr;
     
     /**

@@ -8,6 +8,7 @@ module jhn001.f.vm {
     import showDialog = nts.uk.ui.dialog;
     import permision = service.getCurrentEmpPermision;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -170,8 +171,9 @@ module jhn001.f.vm {
                     unblock();
                     dfd.resolve();
                 });
-            }).fail((mes) => {
+            }).fail((err) => {
                 console.log('Add file fail');
+                error({ messageId: err.messageId });
                 dfd.reject();
                 unblock();
             });

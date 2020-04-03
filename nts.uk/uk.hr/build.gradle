@@ -478,6 +478,22 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime project (':hr.screen:nts.uk.screen.hr.app')
 		runtime project (':hr.screen:nts.uk.screen.hr.infra')
 		
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
+		
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ws', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
+		
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: version)

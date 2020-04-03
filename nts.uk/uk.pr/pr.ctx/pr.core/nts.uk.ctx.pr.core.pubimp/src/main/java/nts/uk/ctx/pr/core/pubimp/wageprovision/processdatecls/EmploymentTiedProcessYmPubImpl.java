@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.pubimp.wageprovision.processdatecls;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,12 @@ public class EmploymentTiedProcessYmPubImpl implements EmploymentTiedProcessYmPu
 
 	@Inject
 	private EmpTiedProYearRepository repo;
+
+	@Override
+	public Optional<EmploymentTiedProcessYearMonth> getByListEmpCodes(String companyId, List<String> employmentCodes) {
+		return repo.getEmpTiedProYearByEmployment(companyId, employmentCodes.get(0))
+				.map(i -> fromDomain(i));
+	}
 
 	@Override
 	public List<EmploymentTiedProcessYearMonth> getByListProcCateNo(String companyId, List<Integer> processCateNo) {

@@ -59,7 +59,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
             TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
             opts.setSeparator(',');
             opts.setQuoteType(TxtValueQuoteType.NEVER);
-            opts.setEncoding(Encoding.getUTF8());
+            opts.setEncoding(Encoding.getEncoding("Shift_JIS"));
             workbook.save(outputStream, opts);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -154,12 +154,12 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
         cells.get(startRow, 2 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ?
                 checkLength(data.getOfficeNumber2(),4) : checkLength(data.getWelfOfficeNumber2(),4));
         cells.get(startRow, 3 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? checkLength(data.getOfficeNumber(),5) : checkLength(data.getWelfOfficeNumber(),5));
-        cells.get(startRow, 4 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getHealInsNumber() : data.getWelfPenNumber());
+        cells.get(startRow, 4 + columnStart).setValue(endJp2 != null && !data.getEndDate2().equals(data.getEndDate()) ? data.getWelfPenNumber() : data.getHealInsNumber());
         cells.get(startRow, 5 + columnStart).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonNameKana(),25) : checkLength(data.getOldNameKana(),25));
         cells.get(startRow, 6 + columnStart).setValue(ins.getSubmittedName() == SubNameClass.PERSONAL_NAME ? checkLength(data.getPersonName(),12) : checkLength(data.getOldName(),12));
         cells.get(startRow, 7 + columnStart).setValue(dateJp.era().equals(HEISEI) ? 7 : dateJp.era().equals(SHOWA) ? 5 : 9);
         cells.get(startRow, 8 + columnStart).setValue(convertJpDate(dateJp));
-        cells.get(startRow, 9 + columnStart).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? getBasicPenNumber(data.getBasicPenNumber()) : "");
+        cells.get(startRow, 9 + columnStart).setValue(ins.getPrintPersonNumber() != PersonalNumClass.DO_NOT_OUTPUT && ins.getPrintPersonNumber() != PersonalNumClass.OUTPUT_PER_NUMBER ? getBasicPenNumber(data.getBasicPenNumber()) : getBasicPenNumber(""));
         cells.get(startRow, 9 + columnStart).setValue(cells.get(startRow, 9 + columnStart).getStringValue() + ",9");
         cells.get(startRow, 9 + columnStart).setValue(cells.get(startRow, 9 + columnStart).getStringValue() + "," + (endJp2 != null ? convertJpDate(endJp2) : (endJp != null ? convertJpDate(endJp) : "")) );
         cells.get(startRow, 10 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getCause() == null ? "" : data.getCause() : data.getCause2() == null ? "": data.getCause2());
@@ -168,7 +168,7 @@ public class NotificationOfLossInsCSVAposeFileGenerator extends AsposeCellsRepor
                 : ""  : data.getCause2() == null ? "" : data.getCause2() == 4 || data.getCause2() == 5 ? convertJpDate(toJapaneseDate(GeneralDate.fromString(convertDate(data.getEndDate2()),"yyyyMMdd" ))) :  "");
         cells.get(startRow, 11 + columnStart).setValue(cells.get(startRow, 11 + columnStart).getStringValue() + "," + data.getIsMoreEmp());
         cells.get(startRow, 11 + columnStart).setValue(cells.get(startRow, 11 + columnStart).getStringValue() + "," + data.getContinReemAfterRetirement());
-        cells.get(startRow, 12 + columnStart).setValue(ins.getBusinessArrSymbol() == BussEsimateClass.HEAL_INSUR_OFF_ARR_SYMBOL ? data.getOtherReason() : data.getOtherReason2());
+        cells.get(startRow, 12 + columnStart).setValue(endJp2 != null ? data.getOtherReason2() : data.getOtherReason());
         cells.get(startRow, 13 + columnStart).setValue(Objects.toString(endJp2 != null ? data.getCaInsurance2() : data.getCaInsurance(), ""));
         cells.get(startRow, 14 + columnStart).setValue(Objects.toString(endJp2 != null ? data.getNumRecoved2() : data.getNumRecoved(), ""));
         cells.get(startRow, 15 + columnStart).setValue(calculateAge(data.getBirthDay()) ? "1,9" : ",");

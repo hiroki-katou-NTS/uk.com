@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.report.app.find.printconfig.empinsreportsetting;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpInsReportSetting;
 
 @Value
 @AllArgsConstructor
@@ -42,4 +43,16 @@ public class EmpInsReportSettingDto {
      * 変更後氏名印字区分
      */
     private int nameChangeClsAtr;
+
+    public static EmpInsReportSettingDto fromDomain(EmpInsReportSetting domain) {
+        return new EmpInsReportSettingDto(
+          domain.getCid(),
+          domain.getUserId(),
+          domain.getSubmitNameAtr().value,
+          domain.getOutputOrderAtr().value,
+          domain.getOfficeClsAtr().value,
+          domain.getMyNumberClsAtr().value,
+          domain.getNameChangeClsAtr().value
+        );
+    }
 }
