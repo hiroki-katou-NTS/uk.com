@@ -159,6 +159,11 @@ module nts.uk.com.view.cmm022.a {
 
                 return dfd.promise();
             }
+            
+            masterLength() {
+                let self = this;
+                return self.commonMasters().length > 0;
+            }
 
             public saveData() {
                 
