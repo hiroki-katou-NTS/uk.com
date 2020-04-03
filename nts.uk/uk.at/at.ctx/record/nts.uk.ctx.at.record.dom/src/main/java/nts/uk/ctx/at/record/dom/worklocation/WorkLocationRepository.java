@@ -24,7 +24,8 @@ public interface WorkLocationRepository {
 	 */
 	Optional<WorkLocation> findByCode (String companyID, String workLocationCD); 
 	
+	List<WorkLocation> findByCodes(String companyID, List<String> codes);
+
 	Map<String, String> getNameByCode(String companyId, List<String> listWorkLocationCd);
 	
-	List<WorkLocation> findByListEmp (List<String> lstEmp);
 }

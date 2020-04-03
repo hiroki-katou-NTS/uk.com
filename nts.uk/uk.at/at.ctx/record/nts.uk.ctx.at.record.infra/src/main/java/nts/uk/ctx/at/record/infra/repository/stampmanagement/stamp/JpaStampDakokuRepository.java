@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -158,23 +159,22 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
-		
-		return new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
-				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
-						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
-						ChangeCalArt.valueOf(entity.changeCalArt)),
-
-				new RefectActualResult(entity.suportCard,
-						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
-						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-						entity.overTime == null ? null
-								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-										new AttendanceTime(entity.lateNightOverTime))),
-
-				entity.reflectedAtr,
-				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
+		val stampNumber = new StampNumber(entity.pk.cardNumber);
+		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
+		val stampType = new StampType(entity.changeHalfDay,
+				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
+				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+				ChangeCalArt.valueOf(entity.changeCalArt));
+		val refectActualResult = new RefectActualResult(entity.suportCard,
+				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+				entity.overTime == null ? null
+						: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+								new AttendanceTime(entity.lateNightOverTime)));
+		val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
+		return new Stamp(stampNumber, entity.pk.stampDateTime,
+				relieve, stampType, refectActualResult,
+				entity.reflectedAtr, locationInfor
 		);
 	}
 	

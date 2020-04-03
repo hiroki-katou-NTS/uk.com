@@ -25,7 +25,8 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
 	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KwlmtWorkLocation c"
 			+ " WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCDs";
-	
+	private static final String SELECT_BY_CODES = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCD";
+
 	
 	@Override
 	public List<WorkLocation> findAll(String companyID) {
@@ -67,9 +68,13 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	}
 
 	@Override
-	public List<WorkLocation> findByListEmp(List<String> lstEmp) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<WorkLocation> findByCodes(String companyID, List<String> codes) {
+		List<WorkLocation> result = this.queryProxy()
+				.query(SELECT_BY_CODES, KwlmtWorkLocation.class)
+				.setParameter("companyID", companyID)
+				.setParameter("workLocationCD", codes)
+				.getList(c -> toDomain(c));
+		return result;
 	}
 	
 	/*private KwlmtWorkLocation toEntity (WorkLocation domain){
