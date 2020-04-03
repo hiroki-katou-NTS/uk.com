@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application;
 /**
- * 
+ * 事前事後区分
  * @author tutk
  *
  */

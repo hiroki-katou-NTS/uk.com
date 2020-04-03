@@ -48,4 +48,13 @@ public class ApprovalRootState extends AggregateRoot {
 		}
 		return approvalRootState;
 	}
+	
+	public static ApprovalRootState createFromCache(String appID, GeneralDate date, String employeeID, List<ApprovalPhaseState> listApprovalPhaseState) {
+		return new ApprovalRootState(
+				appID, 
+				RootType.EMPLOYMENT_APPLICATION, 
+				date, 
+				employeeID, 
+				listApprovalPhaseState);
+	}
 }

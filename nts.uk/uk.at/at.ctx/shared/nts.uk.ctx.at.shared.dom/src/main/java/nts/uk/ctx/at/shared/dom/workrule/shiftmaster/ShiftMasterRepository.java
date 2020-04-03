@@ -14,6 +14,8 @@ public interface ShiftMasterRepository {
 	public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd);
 
 	public boolean checkExists(String companyId, String workTypeCd, String workTimeCd);
+	
+	public boolean checkExistsByCd(String companyId, String shiftMaterCode);
 
 	public void insert(ShiftMaster shiftMater);
 

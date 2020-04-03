@@ -5,20 +5,21 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.appabsence.ParamCheckRegister;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -34,37 +35,56 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("getAppForLeaveStart")
-	public AppAbsenceDto getAppForLeaveStart(ParamInitAppAbsence param) {
+	public AppAbsenceStartInfoDto getAppForLeaveStart(ParamInitAppAbsence param) {
 		return this.appForLeaveFinder.getAppForLeave(param.getAppDate(),param.getEmployeeID(),param.getEmployeeIDs());
 	}
 	@POST
 	@Path("getAllAppForLeave")
-	public AppAbsenceDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getAppForLeaveAll(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getAllDisplay(param);
 	}
 	@POST
 	@Path("findChangeAppdate")
-	public AppAbsenceDto findChangeAppdate(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeAppDate(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getWorkTypeCode(),param.getHolidayType(),param.getAlldayHalfDay(),param.getPrePostAtr());
+	public AppAbsenceStartInfoDto findChangeAppdate(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getChangeAppDate(
+				param.getStartAppDate(),
+				param.isDisplayHalfDayValue(),
+				param.getEmployeeID(),
+				param.getWorkTypeCode(),
+				param.getHolidayType(),
+				param.getAlldayHalfDay(),
+				param.getPrePostAtr(),
+				param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("getChangeAllDayHalfDay")
-	public AppAbsenceDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+	public AppAbsenceStartInfoDto getChangeAllDayHalfDay(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getChangeByAllDayOrHalfDay(
+				param.getAppAbsenceStartInfoDto(),
+				param.isDisplayHalfDayValue(),
+				param.getAlldayHalfDay(),
+				param.getHolidayType());
 	}
 	@POST
 	@Path("getChangeAllDayHalfDayForDetail")
-	public AppAbsenceDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeByAllDayOrHalfDayForUIDetail(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getHolidayType(),param.getAlldayHalfDay());
+	public AppAbsenceStartInfoDto getChangeByAllDayOrHalfDayForUIDetail(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getChangeByAllDayOrHalfDayForUIDetail(param);
 	}
 	@POST
 	@Path("findChangeDisplayHalfDay")
-	public AppAbsenceDto getChangeDisplayHalfDay(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getChangeDisplayHalfDay(param.getStartAppDate(),param.isDisplayHalfDayValue(),param.getEmployeeID(),param.getWorkTypeCode(),param.getHolidayType(),param.getAlldayHalfDay());
+	public AppAbsenceStartInfoDto getChangeDisplayHalfDay(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getChangeDisplayHalfDay(
+				param.getStartAppDate(),
+				param.isDisplayHalfDayValue(),
+				param.getEmployeeID(),
+				param.getWorkTypeCode(),
+				param.getHolidayType(),
+				param.getAlldayHalfDay(),
+				param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("findChangeWorkType")
-	public AppAbsenceDto getChangeWorkType(ParamGetAllAppAbsence param) {
+	public AppAbsenceStartInfoDto getChangeWorkType(ParamGetAllAppAbsence param) {
 		return this.appForLeaveFinder.getChangeWorkType(param);
 	}
 	@POST
@@ -75,7 +95,7 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getWorkingHours")
 	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType());
+		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType(), param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("insert")
@@ -84,7 +104,7 @@ public class AppForLeaveWebService extends WebService{
 	}
 	@POST
 	@Path("getByAppID")
-	public AppAbsenceDto getByAppID(String appID) {
+	public AppAbsenceDetailDto getByAppID(String appID) {
 		return this.appForLeaveFinder.getByAppID(appID);
 	}
 	
@@ -95,15 +115,21 @@ public class AppForLeaveWebService extends WebService{
 	}
 	
 	@POST
-	@Path("changeRela/{workTypeCD}/{relationCD}")
-	public ChangeRelationShipDto changeRelationShip(@PathParam("workTypeCD") String workTypeCD, @PathParam("relationCD") String relationCD){
-		return appForLeaveFinder.changeRelationShip(workTypeCD, relationCD);
+	@Path("changeRela")
+	public ChangeRelationShipDto changeRelationShip(SpecAbsenceParam specAbsenceParam){
+		return appForLeaveFinder.changeRelationShip(specAbsenceParam);
 	}
 	
 	@POST
-	@Path("checkRegister")
-	public void checkRegister(ParamCheckRegister param){
-		creatAppAbsence.checkRegister(param);
+	@Path("checkBeforeRegister")
+	public AbsenceCheckRegisterDto checkBeforeRegister(CreatAppAbsenceCommand param){
+		return appForLeaveFinder.checkBeforeRegister(param);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdate")
+	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
+		return appForLeaveFinder.checkBeforeUpdate(param);
 	}
 }
 

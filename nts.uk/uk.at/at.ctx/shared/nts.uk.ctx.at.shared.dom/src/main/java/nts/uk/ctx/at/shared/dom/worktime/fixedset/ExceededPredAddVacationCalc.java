@@ -104,7 +104,12 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject implements
 	public ExceededPredAddVacationCalc clone() {
 		ExceededPredAddVacationCalc cloned = new ExceededPredAddVacationCalc();
 		try {
-			cloned.calcMethod = CalcMethodExceededPredAddVacation.valueOf(this.calcMethod.value);
+			if (this.calcMethod == null) {
+				cloned.calcMethod = null;
+			} else {
+				cloned.calcMethod = CalcMethodExceededPredAddVacation.valueOf(this.calcMethod.value);
+			}
+			
 			cloned.otFrameNo = new OTFrameNo(this.otFrameNo.v());
 		}
 		catch (Exception e){

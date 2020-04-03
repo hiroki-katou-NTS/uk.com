@@ -953,7 +953,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				if (!integrationOfDaily.getBreakTime().isEmpty()) {
 
 					Optional<BreakTimeOfDailyPerformance> breakTimeByBreakType = integrationOfDaily.getBreakTime()
-							.stream().filter(breakTime -> breakTime.getBreakType() == flexBreakType).findFirst();
+							.stream().filter(breakTime -> breakTime != null && breakTime.getBreakType() == flexBreakType).findFirst();
 					breakTimeByBreakType.ifPresent(tc -> {
 						// 大塚IW限定処理(休憩を固定で入れる案)
 						// if(flexBreakType.isReferWorkTime()) {

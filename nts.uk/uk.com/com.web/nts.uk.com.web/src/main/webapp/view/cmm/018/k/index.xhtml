@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 990, height: 610 };</script>
+			<script>var dialogSize = { width: 1000, height: 610 };</script>
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="overflow: visible;margin-left: 5px">
+			<div id="contents-area" style="margin-left: 5px">
 				<div class="contentHeader">
 					<!--K1_1-->
 					<div class="titleAppType" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_47')}</div>
@@ -197,7 +197,8 @@
 						</div>
 					</div>
 					<!-- List da chon -->
-					<div id="selected-approver" style="margin-left: 50px;">
+
+					<div id="selected-approver" style="margin-left: 25px;">
 						<!--選択された承認者 -->
 						<!--K2_14-->
 						<div data-bind="ntsFormLabel: {required: false }" style="display: block;">#{i18n.getText('CMM018_111')}</div>

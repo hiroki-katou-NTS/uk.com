@@ -310,7 +310,8 @@ public class ComboBoxRetrieveFactory {
 					}
 				}
 				
-				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
+						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 								workTimeSetting.getWorktimeCode() + JP_SPACE

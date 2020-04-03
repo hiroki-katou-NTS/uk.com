@@ -42,7 +42,7 @@ module cmm044.d.viewmodel {
             var self = this,
                 dfd = $.Deferred();
             var option = {
-                basteDate: new Date(),
+                baseDate: moment().toDate(),
                 employeeIds: employeeIds
             };
             service.findEmployees(option).done(function(res: Array<service.EmployeeResult>) {

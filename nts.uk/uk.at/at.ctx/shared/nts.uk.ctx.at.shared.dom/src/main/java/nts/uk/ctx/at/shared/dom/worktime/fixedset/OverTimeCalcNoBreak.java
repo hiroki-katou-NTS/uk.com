@@ -113,7 +113,12 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject implements Cloneab
 	public OverTimeCalcNoBreak clone() {
 		OverTimeCalcNoBreak cloned = new OverTimeCalcNoBreak();
 		try {
-			cloned.calcMethod = CalcMethodNoBreak.valueOf(this.calcMethod.value);
+			if (this.calcMethod == null) {
+				cloned.calcMethod = null;
+			} else {
+				cloned.calcMethod = CalcMethodNoBreak.valueOf(this.calcMethod.value);
+			}
+			
 			cloned.inLawOT = new OTFrameNo(this.inLawOT.v());
 			cloned.notInLawOT = new OTFrameNo(this.notInLawOT.v());
 		}

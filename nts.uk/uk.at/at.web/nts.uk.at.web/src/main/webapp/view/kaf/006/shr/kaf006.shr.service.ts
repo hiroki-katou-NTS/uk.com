@@ -12,13 +12,12 @@ module nts.uk.at.view.kaf006.shr.service {
         createAbsence: "at/request/application/appforleave/insert",
         deleteOvertime: "at/request/application/overtime/delete",
         updateAbsence: "at/request/application/appforleave/update",
-        checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
-        checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
+        checkBeforeRegister: "at/request/application/appforleave/checkBeforeRegister",
+        checkBeforeUpdate: "at/request/application/appforleave/checkBeforeUpdate",
         findByAppID: "at/request/application/appforleave/getByAppID",
         getChangeAllDayHalfDayForDetail: "at/request/application/appforleave/getChangeAllDayHalfDayForDetail",
         getRecordWork: "at/request/application/overtime/getRecordWork",
-        changeRelaCD: "at/request/application/appforleave/changeRela/{0}/{1}",
-        checkRegister: "at/request/application/appforleave/checkRegister"
+        changeRelaCD: "at/request/application/appforleave/changeRela",
     }
     /** Get TitleMenu */
     export function getAppForLeaveStart(param: any): JQueryPromise<any> {
@@ -86,13 +85,17 @@ module nts.uk.at.view.kaf006.shr.service {
     /**
      * when change relation ship
      */
-    export function changeRelaCD(workTypeCD: string, relationCD: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.changeRelaCD, workTypeCD, relationCD));
+    export function changeRelaCD(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.changeRelaCD, param);
     }
     /**
      * Khi thay doi appDate
      */
     export function checkRegister(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkRegister, param);
+    }
+    
+    export function checkBeforeRegister(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkBeforeRegister, param);
     }
 }

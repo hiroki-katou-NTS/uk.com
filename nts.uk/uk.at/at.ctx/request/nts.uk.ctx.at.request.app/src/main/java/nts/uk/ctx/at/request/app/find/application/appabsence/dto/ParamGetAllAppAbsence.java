@@ -16,4 +16,5 @@ public class ParamGetAllAppAbsence {
 	private int prePostAtr;
 	private String workTimeCode;
 	private String relationCD;
+	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
 }
