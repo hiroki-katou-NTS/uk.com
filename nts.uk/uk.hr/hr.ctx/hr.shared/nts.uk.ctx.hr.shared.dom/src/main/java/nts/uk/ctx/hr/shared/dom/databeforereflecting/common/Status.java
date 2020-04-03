@@ -17,7 +17,8 @@ public enum Status {
 	
 	WaitingReflection(2),
 	
-	Reflected(3);
-
+	Reflected(3),
+	
+	Deny(4);
 	public final int value;
 }
