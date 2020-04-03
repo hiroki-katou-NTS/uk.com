@@ -51,6 +51,7 @@ table.ntsSwapGrid tbody tr td {
 .upDown-container {
 	vertical-align: top;
 	padding-top: 85px !important;
+	height: 180px !important;
 }
 #swap-list-move-data{
 	padding-top: 40px !important;

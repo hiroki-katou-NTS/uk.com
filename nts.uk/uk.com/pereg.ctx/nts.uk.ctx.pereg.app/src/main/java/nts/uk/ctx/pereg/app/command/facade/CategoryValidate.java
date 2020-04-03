@@ -12,12 +12,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;

@@ -5,16 +5,18 @@ module nts.uk.pr.view.qui004.a.viewmodel {
     import model = nts.uk.pr.view.qui004.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
         empInsOutOrder: KnockoutObservableArray<model.ItemModel>;
-        officeCls: KnockoutObservable<model.ItemModel>;
+        officeCls: KnockoutObservableArray<model.ItemModel>;
+        officeClsTxt: KnockoutObservableArray<model.ItemModel>;
         submitNameCls: KnockoutObservableArray<model.ItemModel>;
         printCfg: KnockoutObservableArray<model.ItemModel>;
         lineFeedCodeCls: KnockoutObservableArray<model.ItemModel>;
 
-        screenMode : number;
+        screenMode: number;
         ccg001ComponentOption: GroupOption;
         startDate: KnockoutObservable<string> = ko.observable('');
         startDateJp: KnockoutObservable<string> = ko.observable('');
@@ -26,7 +28,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         /* kcp005 */
         baseDate: any;
         listComponentOption: any;
-        selectedCode: KnockoutObservable<string> = ko.observable('');
+        selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
         multiSelectedCode: KnockoutObservableArray<string>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -35,21 +37,21 @@ module nts.uk.pr.view.qui004.a.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        disableSelection : KnockoutObservable<boolean>;
+        disableSelection: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
-            officeClsAtr: 0,
-            myNumberClsAtr: 1,
+            myNumberClsAtr: 0,
+            officeClsAtr: 1,
             nameChangeClsAtr: 0
         }));
 
         empInsReportTxtSetting: KnockoutObservable<EmpInsReportTxtSetting> = ko.observable(new EmpInsReportTxtSetting({
             lineFeedCode: 0,
-            officeAtr: 0,
-            fdNumber: 0
+            officeAtr: 1,
+            fdNumber: null
         }));
 
 
@@ -65,9 +67,14 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             ]);
 
             self.officeCls = ko.observableArray([
-                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
                 new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
                 new model.ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
+            ]);
+
+            self.officeClsTxt = ko.observableArray([
+                new model.ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+                new model.ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE'))
             ]);
 
             self.submitNameCls = ko.observableArray([
@@ -76,8 +83,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             ]);
 
             self.printCfg = ko.observableArray([
-                new model.ItemModel(0, getText("Enum_PrinfCtg_PRINT")),
-                new model.ItemModel(1, getText("Enum_prinfCtg_DO_NOT_PRINT"))
+                new model.ItemModel(1, getText("Enum_PrinfCtg_PRINT")),
+                new model.ItemModel(0, getText("Enum_prinfCtg_DO_NOT_PRINT"))
             ]);
 
             self.lineFeedCodeCls = ko.observableArray([
@@ -86,28 +93,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 new model.ItemModel(2, getText("QUI004_A222_39"))
             ]);
 
-            self.startDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.endDate.subscribe((data) =>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            self.filingDate.subscribe((data)=>{
-                if(nts.uk.util.isNullOrEmpty(data)){
-                    return;
-                }
-                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
-            });
-
-            let today  = new Date();
+            let today = new Date();
             let start = new Date();
             start.setMonth(start.getMonth() - 1);
             start.setDate(start.getDate() + 1);
@@ -117,19 +103,43 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let dEnd = today.getDate();
             let yyyyS = start.getFullYear();
             let yyyyE = today.getFullYear();
-            self.startDate(yyyyS + "/" +  mmStart + "/" + dStart);
-            self.endDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
-            self.filingDate(yyyyE + "/" + mmEnd  + "/" + dEnd);
+            self.startDate(yyyyS + "/" + mmStart + "/" + dStart);
+            self.endDate(yyyyE + "/" + mmEnd + "/" + dEnd);
+            self.filingDate(yyyyE + "/" + mmEnd + "/" + dEnd);
+
+            self.startDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.endDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+            self.filingDate.subscribe((data) => {
+                if (nts.uk.util.isNullOrEmpty(data)) {
+                    return;
+                }
+                self.filingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
+            });
+
+
             self.loadKCP005();
             self.loadCCG001();
-
             self.initScreen();
         }
 
         exportPDF() {
             let self = this;
-            let dfd = $.Deferred();
-            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
+            if (self.validate()) {
+                return;
+            }
+            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList()).map(i => i.id);
 
             let data: any = {
                 empInsReportSettingCommand: {
@@ -140,28 +150,31 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
                 empInsReportTxtSettingCommand: {
-                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
-                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
-                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
+                    officeAtr: self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber: self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode: self.empInsReportTxtSetting().lineFeedCode()
                 },
                 employeeIds: listEmployeeId,
-                startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
             nts.uk.ui.block.grayout();
             service.exportFilePDF(data).done()
-                .fail(function (result) {
-                    nts.uk.ui.dialog.alertError(result);
+                .fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
-                nts.uk.ui.block.clear();
+                    nts.uk.ui.block.clear();
                 });
         }
 
         exportCSV() {
             let self = this;
+            if (self.validate()) {
+                return;
+            }
             let dfd = $.Deferred();
-            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList());
+            let listEmployeeId = self.getListEmpId(self.selectedCode(), self.employeeList()).map(i => i.id);
 
             let data: any = {
                 empInsReportSettingCommand: {
@@ -172,19 +185,22 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                     nameChangeClsAtr: self.empInsReportSetting().nameChangeClsAtr()
                 },
                 empInsReportTxtSettingCommand: {
-                    officeAtr : self.empInsReportTxtSetting().officeAtr(),
-                    fdNumber : self.empInsReportTxtSetting().fdNumber(),
-                    lineFeedCode : self.empInsReportTxtSetting().lineFeedCode()
+                    officeAtr: self.empInsReportTxtSetting().officeAtr(),
+                    fdNumber: self.empInsReportTxtSetting().fdNumber(),
+                    lineFeedCode: self.empInsReportTxtSetting().lineFeedCode()
                 },
                 employeeIds: listEmployeeId,
-                startDate: moment.utc(self.startDate(), "YYYY/MM/DD") ,
+                startDate: moment.utc(self.startDate(), "YYYY/MM/DD"),
                 endDate: moment.utc(self.endDate(), "YYYY/MM/DD"),
                 fillingDate: moment.utc(self.filingDate(), "YYYY/MM/DD")
             };
+            nts.uk.ui.block.grayout();
             service.exportFileCSV(data)
                 .fail((error) => {
                     dialog.alertError(error);
                     dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
         }
 
@@ -202,8 +218,8 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             let dfd = $.Deferred();
 
             $.when(service.getReportSetting(), service.getReportTxtSetting())
-                .done((reportSetting :IEmpInsReportSetting, reportTxtSetting :IEmpInsReportTxtSetting) =>{
-                    if (reportSetting  && reportTxtSetting) {
+                .done((reportSetting: IEmpInsReportSetting, reportTxtSetting: IEmpInsReportTxtSetting) => {
+                    if (reportSetting && reportTxtSetting) {
                         this.screenMode = ScreenMode.UPDATE_MODE;
                         self.empInsReportSetting(new EmpInsReportSetting(reportSetting));
                         self.empInsReportTxtSetting(new EmpInsReportTxtSetting(reportTxtSetting));
@@ -211,21 +227,21 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                         this.screenMode = ScreenMode.NEW_MODE;
                     }
                     dfd.resolve();
-            }).fail(function (result) {
-                dialog.alertError(result.errorMessage);
-                dfd.reject();
-            });
+                }).fail(function(result) {
+                    dialog.alertError(result.errorMessage);
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
-        loadKCP005(){
+        loadKCP005() {
             let self = this;
             self.baseDate = ko.observable(new Date());
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
-                {code: '1', isAlreadySetting: true},
-                {code: '2', isAlreadySetting: true}
+                { code: '1', isAlreadySetting: true },
+                { code: '2', isAlreadySetting: true }
             ]);
             self.isDialog = ko.observable(true);
             self.isShowNoSelectRow = ko.observable(false);
@@ -246,13 +262,13 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                disableSelection : self.disableSelection(),
+                disableSelection: self.disableSelection(),
                 maxRows: 14
             };
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
-        loadCCG001(){
+        loadCCG001() {
             let self = this;
             self.ccg001ComponentOption = {
                 /** Common properties */
@@ -264,7 +280,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 7,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
@@ -302,7 +318,7 @@ module nts.uk.pr.view.qui004.a.viewmodel {
 
         }
 
-        setEmployee(item){
+        setEmployee(item) {
             let listEmployee = [];
             _.each(item, (item) => {
                 let employee: Employee = new Employee(item.employeeId,
@@ -314,20 +330,30 @@ module nts.uk.pr.view.qui004.a.viewmodel {
             return listEmployee;
         }
 
-        getListEmpId(empCode: Array, listEmp: Array) {
+        getListEmpId(empCode: Array<string>, listEmp: Array<any>) {
             let listEmpId = [];
             _.each(empCode, (item) => {
-                let emp = _.find(listEmp, function (itemEmp) {
+                let emp = _.find(listEmp, function(itemEmp) {
                     return itemEmp.code == item;
                 });
-                listEmpId.push(emp.id);
+                listEmpId.push(emp);
             });
             return listEmpId;
         }
 
-        getStyle(){
+        startDateStyle() {
             let self = this;
-            return self.startDateJp().length > 13 ?  "width:140px; display: inline-block;" : "width:140px; display:inline";
+            return self.startDateJp().length > 13 ? "width:130px; display: inline-block;" : "width:130px; display:inline";
+        }
+        endDateStyle() {
+            let self = this;
+            return self.endDateJp().length > 13 ? "width:130px; display: inline-block;" : "width:130px; display:inline";
+        }
+
+        validate() {
+            errors.clearAll();
+            $(".nts-input").trigger("validate");
+            return errors.hasError();
         }
     }
 
@@ -431,21 +457,21 @@ module nts.uk.pr.view.qui004.a.viewmodel {
     }
 
     export interface IEmpInsReportSetting {
-        submitNameAtr : number;
-        outputOrderAtr : number;
-        officeClsAtr : number;
-        myNumberClsAtr : number;
-        nameChangeClsAtr : number;
+        submitNameAtr: number;
+        outputOrderAtr: number;
+        officeClsAtr: number;
+        myNumberClsAtr: number;
+        nameChangeClsAtr: number;
     }
 
     export class EmpInsReportSetting {
-        submitNameAtr : KnockoutObservable<number>;
-        outputOrderAtr : KnockoutObservable<number>;
-        officeClsAtr : KnockoutObservable<number>;
-        myNumberClsAtr : KnockoutObservable<number>;
+        submitNameAtr: KnockoutObservable<number>;
+        outputOrderAtr: KnockoutObservable<number>;
+        officeClsAtr: KnockoutObservable<number>;
+        myNumberClsAtr: KnockoutObservable<number>;
         nameChangeClsAtr: KnockoutObservable<number>;
 
-        constructor (params : IEmpInsReportSetting) {
+        constructor(params: IEmpInsReportSetting) {
             this.submitNameAtr = ko.observable(params.submitNameAtr);
             this.outputOrderAtr = ko.observable(params.outputOrderAtr);
             this.officeClsAtr = ko.observable(params.officeClsAtr);
@@ -455,16 +481,16 @@ module nts.uk.pr.view.qui004.a.viewmodel {
     }
 
     export interface IEmpInsReportTxtSetting {
-        officeAtr : number;
-        fdNumber : number;
-        lineFeedCode : number;
+        officeAtr: number;
+        fdNumber: number;
+        lineFeedCode: number;
     }
 
     export class EmpInsReportTxtSetting {
-        officeAtr : KnockoutObservable<number>;
-        fdNumber : KnockoutObservable<number>;
-        lineFeedCode : KnockoutObservable<number>;
-        constructor(params : IEmpInsReportTxtSetting) {
+        officeAtr: KnockoutObservable<number>;
+        fdNumber: KnockoutObservable<number>;
+        lineFeedCode: KnockoutObservable<number>;
+        constructor(params: IEmpInsReportTxtSetting) {
             this.officeAtr = ko.observable(params.officeAtr);
             this.fdNumber = ko.observable(params.fdNumber);
             this.lineFeedCode = ko.observable(params.lineFeedCode);

@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo;
 
-import lombok.experimental.var;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
@@ -14,8 +13,6 @@ import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExportAdapter;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeRepository;
-import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExRepository;
-import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsofficeinfo.NotifiOfChangInNameInsPerExportData;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.report.app.command.printconfig.empinsreportsetting.*;
 import nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.*;
@@ -27,7 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
-import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
@@ -36,7 +32,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.Enum.valueOf;
 import static nts.uk.ctx.pr.report.dom.printconfig.empinsreportsetting.EmpSubNameClass.PERSONAL_NAME;
 
 @Stateless
@@ -70,16 +65,10 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
     private JapaneseErasAdapter jpErasAdapter;
 
     @Inject
-    private EmpInsGetInfoRepository empInsGetInfoRepository;
-
-    @Inject
     private CompanyInforAdapter mCompanyInforAdapter;
 
     @Inject
     private EmpEstabInsHistRepository empEstabInsHistRepository;
-
-    @Inject
-    private NotifiOfChangInNameInsPerExRepository empInsReportSettingExRepository;
 
     @Inject
     private EmpInsNumInfoRepository mEmpInsNumInfoRepository;
@@ -99,6 +88,9 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
     @Inject
     private EmpInsLossInfoFileGenerator generator;
 
+    @Inject
+    private RetirementReasonClsInfoRepository retiReasonClsInfoRepository;
+
 
     @Override
     protected void handle(ExportServiceContext<EmpInsLossInfoExportQuery> exportServiceContext) {
@@ -107,7 +99,6 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         GeneralDate fillingDate = exportServiceContext.getQuery().getFillingDate();
         GeneralDate startDate = exportServiceContext.getQuery().getStartDate();
         GeneralDate endDate = exportServiceContext.getQuery().getEndDate();
-        DatePeriod period = new DatePeriod(startDate, endDate);
         List<String> listEmpId = exportServiceContext.getQuery().getEmployeeIds();
         EmpInsRptSettingCommand reportSettingExport = exportServiceContext.getQuery().getEmpInsReportSettingCommand();
         EmpInsRptTxtSettingCommand reportTxtSettingExport = exportServiceContext.getQuery().getEmpInsReportTxtSettingCommand();
@@ -120,13 +111,6 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 reportSettingExport.getOfficeClsAtr(),
                 reportSettingExport.getMyNumberClsAtr(),
                 reportSettingExport.getNameChangeClsAtr()
-        );
-        EmpInsReportTxtSetting reportTxtSetting = new EmpInsReportTxtSetting(
-                cid,
-                userId,
-                reportTxtSettingExport.getOfficeAtr(),
-                reportTxtSettingExport.getFdNumber(),
-                reportTxtSettingExport.getLineFeedCode()
         );
         // 雇用保険届設定更新処理
         if (empInsReportSettingRepository.getEmpInsReportSettingById(cid, userId).isPresent()) {
@@ -148,66 +132,64 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         // 社員雇用保険履歴を取得する
-        List<EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(listEmpId, startDate);
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndEndDateInPeriod(cid, listEmpId, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
         if (empInsHists.isEmpty()) {
-            throw new BusinessException("Msg_51");
+            throw new BusinessException("MsgQ_51");
         }
+        List<String> insHistEmpIds = new ArrayList<>(empInsHists.keySet());
+        CompanyInfor cInfo = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
-        //Loop Employee
-        List<String> empInsHistEmpIds = empInsHists.stream().map(EmpInsHist::getSid).collect(Collectors.toList());
-        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(empInsHistEmpIds);
+        List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
+        List<EmployeeInfoEx> employee = employeeInfoAdapter.findBySIds(insHistEmpIds);
         List<String> pIds = employee.stream().map( e -> e.getPId()).collect(Collectors.toList());
         List<PersonExport> personExports = mPersonExportAdapter.findByPids(employee.stream().map(element -> element.getPId()).collect(Collectors.toList()));
-
-        List<String> empInsHistIds = empInsHists.stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
-
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndEndDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(e -> e.getHistId(), Function.identity()));
         Map<String, CurrentPersonResidence> currentPersonResidence = CurrentPersonResidence
                 .createListPerson(personExportAdapter.findByPids(pIds)).stream().collect(Collectors.toMap(CurrentPersonResidence::getPId, Function.identity()));
+        Map<String, EmpInsLossInfo> empLossInfos = empInsLossInfoRepository.getListEmpInsLossInfo(cid, listEmpId).stream().collect(Collectors.toMap(EmpInsLossInfo::getSId, Function.identity()));
+        Map<String, String> causeOfLossIns = retiReasonClsInfoRepository.getRetirementReasonClsInfoById(cid).stream().collect(Collectors.toMap(e -> e.getRetirementReasonClsCode().v(), e -> e.getRetirementReasonClsName().v()));
+        Map<String, EmpInsNumInfo> empNumInfos = mEmpInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
+        List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
+        Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
 
         List<EmpInsLossInfoExportData> listDataExport = new ArrayList<>();
         employee.forEach( e-> {
             EmpInsLossInfoExportData temp = new EmpInsLossInfoExportData();
             temp.setEmpInsReportSetting(reportSetting);
-            temp.setFormType(1);
             temp.setPeriodOfStay("20190101");
             temp.setWorkCategory(1);
-            temp.setNationality("Unknow");
-            temp.setResidenceStatus("Unknow");
+            temp.setNationality("ベトナム");
+            temp.setResidenceStatus("高度専門職");
             temp.setFillingDate(fillingDate);
+
+            String laborCode = " ";
             //社員IDと期間から社員雇用保険履歴IDを取得
-            Optional<EmpInsHist> empInsHis = empInsHistRepository.getByEmpIdsAndPeriod(e.getEmployeeId(), period);
-            if (!empInsHis.isPresent()) {
-                return;
+            if (empInsHists.containsKey(e.getEmployeeId())) {
+                String insHisId = empInsHists.get(e.getEmployeeId()).getHistoryItem().get(0).identifier();
+                temp.setEmpInsHist(empInsHists.get(e.getEmployeeId()));
+                if (empNumInfos.containsKey(insHisId)) {
+                    temp.setEmpInsNumInfo(empNumInfos.get(insHisId));
+                }
+                if (empInsOffices.containsKey(insHisId)) {
+                    laborCode = empInsOffices.get(insHisId).getLaborInsCd().toString();
+                }
             }
-            temp.setEmpInsHist(empInsHis.get());
 
             //社員IDから雇用保険喪失時情報を取得する
-            Optional<EmpInsLossInfo> lossInfo = empInsLossInfoRepository.getEmpInsLossInfoById(e.getEmployeeId());
-            temp.setEmpInsLossInfo(lossInfo.isPresent() ? lossInfo.get() : null);
-
-            //社員雇用保険履歴IDから雇用保険番号情報を取得する
-            String insHisId = empInsHis.get().getHistoryItem().get(0).identifier();
-            Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getEmployeeId(),insHisId);
-            temp.setEmpInsNumInfo(empInsNumInfo.isPresent() ? empInsNumInfo.get() : null);
+            if (empLossInfos.containsKey(e.getEmployeeId())) {
+                val lossInfo = empLossInfos.get(e.getEmployeeId());
+                temp.setEmpInsLossInfo(lossInfo);
+                if (lossInfo.getCauseOfLossEmpInsurance().isPresent()) {
+                    temp.setRetirementReasonClsInfo(causeOfLossIns.get(lossInfo.getCauseOfLossEmpInsurance().get().v()));
+                }
+            }
 
             if(currentPersonResidence.containsKey(e.getPId())) {
                 temp.setCurrentPersonResidence(currentPersonResidence.get(e.getPId()));
             }
-
-            switch (reportSetting.getOfficeClsAtr()) {
-                case OUTPUT_COMPANY:
-                    CompanyInfor cInfo = mCompanyInforAdapter.getCompanyNotAbolitionByCid(cid);
-                    temp.setCompanyInfor(cInfo);
-                    break;
-                case OUPUT_LABOR_OFFICE:
-                    if (empInsOffices.containsKey(insHisId)) {
-                        String laborInsCode = empInsOffices.get(insHisId).getLaborInsCd().v();
-                        Optional<LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getLaborInsuranceOfficeById(laborInsCode);
-                        temp.setLaborInsuranceOffice(laborInsuranceOffices.isPresent() ? laborInsuranceOffices.get() : null);
-                    }
-                    break;
-                default: break;
+            temp.setCompanyInfor(cInfo);
+            if (laborInsuranceOffices.containsKey(laborCode)) {
+                temp.setLaborInsuranceOffice(laborInsuranceOffices.get(laborCode));
             }
 
             Optional<PersonExport> person = personExports.stream().filter(dataPerson -> dataPerson.getPersonId().equals(e.getPId())).findFirst();
@@ -224,7 +206,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 temp.setOldNameKana(person.get().getPersonNameGroup().getOldName().getFullNameKana());
             }
 
-            temp.setSid(e.getEmployeeId());
+            temp.setEmployeeCode(e.getEmployeeCode());
             listDataExport.add(temp);
         });
 
@@ -237,18 +219,18 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 break;
             }
             case DEPARTMENT_EMPLOYEE:{
-                listDataExport.sort(Comparator.comparing(EmpInsLossInfoExportData::getSid));
+                listDataExport.sort(Comparator.comparing(EmpInsLossInfoExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE_CODE:{
-                listDataExport.sort(Comparator.comparing(EmpInsLossInfoExportData::getSid));
+                listDataExport.sort(Comparator.comparing(EmpInsLossInfoExportData::getEmployeeCode));
                 break;
             }
             case EMPLOYEE:{
                 if(reportSetting.getSubmitNameAtr() == PERSONAL_NAME ){
                     listDataExport.sort((o1, o2) -> {
                         if (o1.getNameKana().compareTo(o2.getNameKana()) == 0) {
-                            return o1.getSid().compareTo(o2.getSid());
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
                         } else {
                             return o1.getNameKana().compareTo(o2.getNameKana());
                         }
@@ -257,7 +239,7 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
                 else{
                     listDataExport.sort((o1, o2) -> {
                         if (o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana()) == 0) {
-                            return o1.getSid().compareTo(o2.getSid());
+                            return o1.getEmployeeCode().compareTo(o2.getEmployeeCode());
                         } else {
                             return o1.getReportFullNameKana().compareTo(o2.getReportFullNameKana());
                         }
@@ -269,11 +251,5 @@ public class EmpInsLossInfoPDFService extends ExportService<EmpInsLossInfoExport
         }
 
         generator.generate(exportServiceContext.getGeneratorContext(), listDataExport);
-    }
-
-
-    private JapaneseDate toJapaneseDate(GeneralDate date) {
-        Optional<JapaneseEraName> era = this.jpErasAdapter.getAllEras().eraOf(date);
-        return era.map(japaneseEraName -> new JapaneseDate(date, japaneseEraName)).orElse(null);
     }
 }

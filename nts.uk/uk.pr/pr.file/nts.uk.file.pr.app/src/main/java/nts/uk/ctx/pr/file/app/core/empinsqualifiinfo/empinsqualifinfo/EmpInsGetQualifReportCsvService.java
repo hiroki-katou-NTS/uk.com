@@ -24,10 +24,6 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpEstabInsHi
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.empinsofficeinfo.EmpInsOffice;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.*;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.japanese.JapaneseDate;
-import nts.uk.shr.com.time.japanese.JapaneseEraName;
-import nts.uk.shr.com.time.japanese.JapaneseEras;
-import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -112,10 +108,10 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
             throw new BusinessException("Msg_812");
         }
 
-        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndStartDate(empIds, startDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
-        /*if (empInsHists.isEmpty()) {
-            throw new BusinessException("Msg_51");
-        }*/
+        Map<String, EmpInsHist> empInsHists = empInsHistRepository.getByEmpIdsAndDate(cid, empIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsHist::getSid, Function.identity()));
+        if (empInsHists.isEmpty()) {
+            throw new BusinessException("MsgQ_51");
+        }
 
         // Pending check マイナンバー印字区分
 
@@ -125,28 +121,46 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
         List<String> empInsHistIds = empInsHists.values().stream().map(e -> e.getHistoryItem().get(0).identifier()).collect(Collectors.toList());
         Map<String, EmpInsNumInfo> empInsNumInfos = empInsNumInfoRepository.getByCidAndHistIds(cid, empInsHistIds).stream().collect(Collectors.toMap(EmpInsNumInfo::getHistId, Function.identity()));
 
-        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndDate(empInsHistIds, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
+        Map<String, EmpInsOffice> empInsOffices = empEstabInsHistRepository.getByHistIdsAndStartDateInPeriod(empInsHistIds, startDate, endDate).stream().collect(Collectors.toMap(EmpInsOffice::getHistId, Function.identity()));
         List<String> laborOfficeCodes = empInsOffices.values().stream().map(e -> e.getLaborInsCd().v()).collect(Collectors.toList());
         Map<String, LaborInsuranceOffice> laborInsuranceOffices = laborInsOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getLaborOfficeCode().v(), Function.identity()));
         CompanyInfor companyInfo = companyInforAdapter.getCompanyNotAbolitionByCid(cid);
 
-        Map<String, PublicEmploymentSecurityOffice> pubEmpSecOffices = pubEmpSecOfficeRepository.getByCidAndCodes(cid, laborOfficeCodes).stream().collect(Collectors.toMap(e -> e.getPublicEmploymentSecurityOfficeCode().v(), Function.identity()));
+
+        List<String> laborInsOffCodes = laborInsuranceOffices.values().stream().map(e -> e.getEmploymentInsuranceInfomation().getOfficeNumber1().map(x -> x.v()).orElse("")
+                                                                                       + e.getEmploymentInsuranceInfomation().getOfficeNumber2().map(x -> x.v()).orElse("")
+                                                                                       + e.getEmploymentInsuranceInfomation().getOfficeNumber3().map(x -> x.v()).orElse("")).collect(Collectors.toList());
+        Map<String, PublicEmploymentSecurityOffice> pubEmpSecOffices = pubEmpSecOfficeRepository.getByCidAndCodes(cid, laborInsOffCodes.stream().map(e -> e.length() >= 4 ? e.substring(0, 4) : e).collect(Collectors.toList())).stream().collect(Collectors.toMap(e -> e.getPublicEmploymentSecurityOfficeCode().v(), Function.identity()));
 
         // dummy param
-        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
-        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1, GeneralDate.fromString("2015/01/01", "yyy/MM/dd"), GeneralDate.fromString("2019/01/01", "yyy/MM/dd"), "高度専門職", "ベトナム");
+        LaborContractHist dummyLaborContractHist = new LaborContractHist("", 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"));
+        ForeignerResHistInfo dummyForResHistInfo = new ForeignerResHistInfo("", 1, 1,
+                GeneralDate.fromString("2015/01/01", "yyy/MM/dd"),
+                GeneralDate.fromString("2019/01/01", "yyy/MM/dd"),
+                "技能", "14", "ベトナム", "704");
 
         Map<String, EmployeeInfoEx> employeeInfos = employeeInfoAdapter.findBySIds(empInsHistEmpIds).stream().collect(Collectors.toMap(EmployeeInfoEx::getEmployeeId, Function.identity()));
         Map<String, PersonExport> personExports = personExportAdapter.findByPids(employeeInfos.values().stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()))
                 .stream().collect(Collectors.toMap(PersonExport::getPersonId, Function.identity()));
 
+        List<SortObject> sortObjects = empInsHists.values().stream().map(e -> new SortObject(
+                empInsNumInfos.containsKey(e.getHistoryItem().get(0).identifier()) ? empInsNumInfos.get(e.getHistoryItem().get(0).identifier()).getEmpInsNumber().v() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeId() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeCode() : "",
+                employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getEmployeeCode() : "",
+                personExports.containsKey(employeeInfos.containsKey(e.getSid()) ? employeeInfos.get(e.getSid()).getPId() : "") ? personExports.get(employeeInfos.get(e.getSid()).getPId()).getPersonNameGroup().getPersonName().getFullNameKana() : ""
+        )).collect(Collectors.toList());
 
         ExportDataCsv dataExport = ExportDataCsv.builder()
                 .fillingDate(fillingDate)
                 .empIds(empIds)
                 .empInsHists(empInsHists)
-                .reportSetting(reportSettingExport)
-                .reportTxtSetting(rptTxtSettingExport)
+                .reportSetting(reportSetting)
+                .reportTxtSetting(reportTxtSetting)
+                .reportSettingExport(reportSettingExport)
+                .reportTxtSettingExport(rptTxtSettingExport)
                 .empInsNumInfos(empInsNumInfos)
                 .empInsGetInfos(empInsGetInfos)
                 .empInsOffices(empInsOffices)
@@ -159,7 +173,10 @@ public class EmpInsGetQualifReportCsvService extends ExportService<EmpInsGetQual
                 .dummyForResHistInfo(dummyForResHistInfo)
                 .startDate(startDate)
                 .endDate(endDate)
+                .sortObjects(sortObjects)
                 .build();
+
+
 
         generator.generate(exportServiceContext.getGeneratorContext(), dataExport);
     }

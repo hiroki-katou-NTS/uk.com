@@ -35,5 +35,15 @@ public class MenuApprovalSettingsInforDto {
 		this.noRankOrder = domain.getNoRankOrder();
 	}
 	
+	public BusinessApprovalSettingsDto toDomain() {
+		return new BusinessApprovalSettingsDto(
+				this.menuApprovalSettings.toDomain(), 
+				this.rptLayoutCD, 
+				this.rptLayoutName, 
+				this.displayName, 
+				this.screenID, 
+				this.useApproval, 
+				this.noRankOrder);
+	}
 	
 }

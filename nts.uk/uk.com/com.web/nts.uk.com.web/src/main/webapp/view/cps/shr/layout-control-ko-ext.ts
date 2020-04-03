@@ -984,7 +984,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                 name: itemName,
                                 value: value,
-                                type: 'date',
+                                type: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'date' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'yearmonth' : 'year'),
                                 startDate: startDate,
                                 endDate: endDate,
                                 constraint: constraint || nameid,
@@ -1012,7 +1012,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
-                                    type: 'date',
+                                    type: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'date' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'yearmonth' : 'year'),
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1036,7 +1036,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
-                                    type: 'date',
+                                    type: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'date' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'yearmonth' : 'year'),
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,

@@ -327,6 +327,9 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                     }else if(topPageCode === "0006"){
                         this.url = origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
                         this.html = '<iframe src="' + this.url + '"/>'; 
+                    }else if(topPageCode === "9999"){
+                        this.url = origin + "/nts.uk.hr.web/view/jcg/004/a/index.xhtml"; 
+                        this.html = '<iframe src="' + this.url + '"/>'; 
                     }
                 }else if(partType === 1){
                     this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+topPageCode;

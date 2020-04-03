@@ -25,9 +25,9 @@
         <div id="functions-area" style = "min-width: 1000px;padding-left: 65px;">
             <button id="A1_1" style="margin-left: 25px;" tabindex="1" class="proceed" data-bind="enable:selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty , click : exportData">#{i18n.getText('QSI003_A1_1')}</button>
 
-            <button id="A1_2" tabindex="2" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI003_2')}</button>
+            <button id="A1_2" tabindex="2" data-bind="enable :selectedCode().length > 0 &amp;&amp; $root.errors.isEmpty, click: openBScreen">#{i18n.getText('QSI003_A1_2')}</button>
 
-            <button id="A1_3" tabindex="3" data-bind = "enable: false" >#{i18n.getText('QSI003_4')}</button>
+            <button id="A1_3" tabindex="3" data-bind = "enable: false" >#{i18n.getText('QSI003_A1_3')}</button>
 
         </div>
         <div id="contents-area" class="fixed-flex-layout">
@@ -43,17 +43,17 @@
             <!-- div right -->
             <div  class="fixed-flex-layout-right" id="A3_1" style="margin-left: 20px">
                 <div class="panel panel-frame " style="width: 460px; height: 455px;">
-                    <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI003_5')}</span>
+                    <span id="A3_2" class="label" style="margin-bottom: 15px;">#{i18n.getText('QSI003_A222_4')}</span>
                     <div class="control-group">
-                        <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_6')}</div>
-                        <div id= "A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',valueFormat: 'YYYYMMDD', constrant: '', required:true ,name: '#{i18n.getText('QSI003_6')}'}"></div>
+                        <div id="A3_3" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_A222_5')}</div>
+                        <div id= "A3_4" style="margin-left:100px;" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD',valueFormat: 'YYYYMMDD', constrant: '', required:true ,name: '#{i18n.getText('QSI003_A222_6')}'}"></div>
                         <span id= "A3_5" style="margin-left:20px" data-bind="text: datePicker"></span>
                     </div>
 
                     <div class="control-group valign-center">
-                        <div id="A3_6" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_7')}</div>
+                        <div id="A3_6" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_A222_8')}</div>
                         <div style="margin-left:72px" class="cf" data-bind="ntsSwitchButton: {
-                            name: '#{i18n.getText('QSI003_7')}',
+                            name: '#{i18n.getText('QSI003_A222_9')}',
                             options: $vm.notificationTarget(),
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -64,9 +64,9 @@
                     </div>
 
                     <div class="control-group valign-center">
-                        <div id="A3_11" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_10')}</div>
+                        <div id="A3_11" data-bind="ntsFormLabel: {constrant: '', required:true}">#{i18n.getText('QSI003_A222_13')}</div>
                         <div id="A3_12" style="margin-left:71px; width: 250px;"  data-bind="ntsComboBox: {
-                            name: '#{i18n.getText('QSI003_11')}',
+                            name: '#{i18n.getText('QSI003_A222_14')}',
                             options: $vm.addressOutClass(),
                             optionsValue: 'code',
                             visibleItemsCount: 5,

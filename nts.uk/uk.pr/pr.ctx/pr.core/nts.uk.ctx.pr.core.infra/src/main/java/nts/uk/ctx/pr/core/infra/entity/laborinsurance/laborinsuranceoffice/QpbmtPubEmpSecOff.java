@@ -29,7 +29,7 @@ public class QpbmtPubEmpSecOff extends UkJpaEntity implements Serializable {
      * 名称
      */
     @Basic(optional = false)
-    @Column(name = "PUB_EMP_SEC_OFF_NAME\n")
+    @Column(name = "PUB_EMP_SEC_OFF_NAME")
     public String pubEmpSecOffName;
 
     @Override

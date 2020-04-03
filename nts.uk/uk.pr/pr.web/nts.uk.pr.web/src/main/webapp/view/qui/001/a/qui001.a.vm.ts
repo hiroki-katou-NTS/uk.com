@@ -20,7 +20,8 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         fillingDate: KnockoutObservable<string> = ko.observable('');
         fillingDateJp: KnockoutObservable<string> = ko.observable('');
 
-        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls());
+        officeInformations: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls32());
+        officeInfos: KnockoutObservable<model.ItemModel> = ko.observable(model.getOfficeCls47());
         outputOrders: KnockoutObservable<model.ItemModel> = ko.observable(model.getEmpInsOutOrder());
         printPersonNumbers: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.isPrintMyNum());
         submittedNames: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSubNameClass());
@@ -30,15 +31,15 @@ module nts.uk.pr.view.qui001.a.viewmodel {
         empInsReportSetting: KnockoutObservable<EmpInsReportSetting> = ko.observable(new EmpInsReportSetting({
             submitNameAtr: 0,
             outputOrderAtr: 0,
-            officeClsAtr: 0,
-            myNumberClsAtr: 1,
+            officeClsAtr: 1,
+            myNumberClsAtr: 0,
             nameChangeClsAtr: 0
         }));
 
         empInsRptTxtSetting: KnockoutObservable<EmpInsRptTxtSetting> = ko.observable(new EmpInsRptTxtSetting({
             lineFeedCode: 0,
             officeAtr: 1,
-            fdNumber: ""
+            fdNumber: null
         }));
 
         /* kcp005 */
@@ -63,21 +64,21 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.startDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.endDate.subscribe((data) =>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.endDateJp("(" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             self.fillingDate.subscribe((data)=>{
                 if(nts.uk.util.isNullOrEmpty(data)){
                     return;
                 }
-                self.fillingDateJp(" (" + nts.uk.time.dateInJapanEmpire(data) + ")");
+                self.fillingDateJp(" (" + nts.uk.time.dateInJapanEmpire(moment.utc(data).format("YYYYMMDD")).toString() + ")");
             });
 
             let today  = new Date();
@@ -103,17 +104,18 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            $.when(service.getEmpInsReportSetting(), service.getEmpInsReportTxtSetting())
-            .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
-                if (setting && txtSetting) {
-                    self.empInsReportSetting(new EmpInsReportSetting(setting));
-                    self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
-                }
-                self.screenMode(model.SCREEN_MODE.NEW);
-
-                dfd.resolve();
-            }).fail(function (result) {
+            $.when(service.getEmpInsRptSetg(), service.getEmpInsReportTxtSetting())
+                .done((setting: IEmpInsReportSetting, txtSetting: IEmpInsRptTxtSetting) => {
+                    self.screenMode(model.SCREEN_MODE.NEW);
+                    if (setting) {
+                        self.empInsReportSetting(new EmpInsReportSetting(setting));
+                        self.screenMode(model.SCREEN_MODE.UPDATE);
+                    }
+                    if (txtSetting) {
+                        self.empInsRptTxtSetting(new EmpInsRptTxtSetting(txtSetting));
+                    }
+                    dfd.resolve();
+                }).fail(function (result) {
                 dialog.alertError(result.errorMessage);
                 dfd.reject();
             });
@@ -166,7 +168,7 @@ module nts.uk.pr.view.qui001.a.viewmodel {
                 showAllClosure: true,
                 showPeriod: false,
                 periodFormatYM: false,
-                tabindex: 9,
+                tabindex: 7,
                 /** Required parameter */
                 baseDate: moment().toISOString(),
                 periodStartDate: moment().toISOString(),
@@ -216,9 +218,14 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             return listEmployee;
         }
 
-        getStyle(){
+        startDateStyle(){
             let self = this;
             return self.startDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
+        }
+
+        endDateStyle() {
+            let self = this;
+            return self.endDateJp().length > 13 ?  "width:120px; display: inline-block;" : "width:120px; display:inline";
         }
 
         exportPDF() {
@@ -263,11 +270,10 @@ module nts.uk.pr.view.qui001.a.viewmodel {
 
         exportCSV() {
             let self = this;
-            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
-            if(empIds.length == 0) {
-                dialog.alertError({ messageId: 'Msg_37' });
+            if (self.validate()) {
                 return;
             }
+            let empIds = self.getSelectedEmpIds(self.selectedCode(), self.employeeList());
             let data = {
                 empInsReportSetting: ko.toJS(self.empInsReportSetting),
                 empInsRptTxtSetting: ko.toJS(self.empInsRptTxtSetting),
@@ -283,7 +289,6 @@ module nts.uk.pr.view.qui001.a.viewmodel {
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
-
         }
 
         validate() {
