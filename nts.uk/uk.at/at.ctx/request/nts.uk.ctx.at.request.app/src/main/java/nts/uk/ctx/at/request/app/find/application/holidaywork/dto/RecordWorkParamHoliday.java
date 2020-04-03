@@ -12,4 +12,6 @@ public class RecordWorkParamHoliday {
 	public String siftCD;
 	public int prePostAtr;
 	public List<CaculationTime> breakTimeHours;
+	public String workTypeCD;
+	public String appID;
 }

@@ -103,6 +103,10 @@ public class RouteConfirmStatus {
 					: ApproverEmpState.PHASE_PASS;
 		}
 		
+		if (!phases.firstPhase().isApprover(approverId)) {
+			return ApproverEmpState.PHASE_LESS;
+		}
+		
 		// 他の確定者がいない
 		if (!progressingPhases.existsOtherConcluder(approverId)) {
 			return ApproverEmpState.PHASE_DURING;

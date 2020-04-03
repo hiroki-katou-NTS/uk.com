@@ -1,56 +1,61 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="ksm015.a.css" />
-			<com:scriptfile path="ksm015.a.start.js" />
-			<com:scriptfile path="ksm015.a.vm.js" />
-			<com:scriptfile path="ksm015.a.service.js" />
-			
-		</ui:define>
-		<ui:define name="content">
-			<div id="functions-area">
-			</div>
-			<div id="contents-area">
-				<!-- A1_4 -->
-				<div class="registration-panel panel panel-frame">
-					<div class="panel-header panel panel-gray-bg">
-						<!-- A1_1 -->
-						<div class="label-custom">#{i18n.getText('KSM015_1')}</div>
-					</div>
-					<div class="panel-content">	
-						<p>#{i18n.getText('KSM015_2')}</p>
-					</div>
-					<div class="panel-footer">
-						<button class="" data-bind="click: gotoKsm015b">#{i18n.getText('KSM015_3')}</button>
-						<span class="caret-right caret-inline"></span>
-					</div>
-				</div>
-				<div class="caret-panel">
-					<span class="caret-right outline"></span>
-				</div>
-				<div class="setting-panel panel panel-frame">
-					<div class="panel-header panel panel-gray-bg">
-						<!-- A1_1 -->
-						<div class="label-custom">#{i18n.getText('KSM015_4')}</div>
-					</div>
-					<div class="panel-content ">	
-						<p>#{i18n.getText('KSM015_5')}</p>
-					</div>
-					<div class="panel-footer">
-						<button class="" data-bind="click: gotoKsm015c">#{i18n.getText('KSM015_6')}</button>
-						<span class="caret-right caret-inline"></span>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksm015.a.css" />
+        <com:scriptfile path="ksm015.a.start.js" />
+        <com:scriptfile path="ksm015.a.vm.js" />
+        <com:scriptfile path="ksm015.a.service.js" />
+      </ui:define>
+      <ui:define name="content">
+        <div id="functions-area"> </div>
+        <div id="contents-area">
+          <!-- A1_4 -->
+          <div id="ksm015a">
+            <div class="registration-panel panel panel-frame">
+              <div class="panel-header panel panel-gray-bg">
+                <!-- A1_1 -->
+                <div class="label-custom">#{i18n.getText('KSM015_1')}</div>
+              </div>
+              <div class="panel-content">
+                <p> <small>#{i18n.getText('KSM015_2')}</small> </p>
+              </div>
+              <div class="panel-footer">
+                <button class="" data-bind="click: gotoKsm015b"
+                  >#{i18n.getText('KSM015_3')}</button
+                >
+                <span class="caret-right caret-inline"></span>
+              </div>
+            </div>
+            <div class="caret-panel">
+              <span class="caret-right outline"></span>
+            </div>
+            <div class="setting-panel panel panel-frame">
+              <div class="panel-header panel panel-gray-bg">
+                <!-- A1_1 -->
+                <div class="label-custom">#{i18n.getText('KSM015_4')}</div>
+              </div>
+              <div class="panel-content ">
+                <p> <small>#{i18n.getText('KSM015_5')}</small></p>
+              </div>
+              <div class="panel-footer">
+                <button class="" data-bind="click: gotoKsm015c"
+                  >#{i18n.getText('KSM015_6')}</button
+                >
+                <span class="caret-right caret-inline"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

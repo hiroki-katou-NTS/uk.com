@@ -146,6 +146,10 @@ public class RouteConfirmStatusPhases {
 		return phases.get(phases.size() - 1);
 	}
 	
+	public RouteConfirmStatusPhase firstPhase() {
+		return phases.get(0);
+	} 
+	
 	/**
 	 * 承認中フェーズのコレクション
 	 */

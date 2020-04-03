@@ -34,6 +34,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pr.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -51,9 +52,12 @@ public class FacadeUtils {
 	
 	@Inject
 	private ComboBoxRetrieveFactory combox;
+
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
-			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075", "CS00092");
 
 	private static final Map<String, String> startDateItemCodes;
 	static {
@@ -78,6 +82,12 @@ public class FacadeUtils {
 		aMap.put("CS00021", "IS00255");
 		// 労働条件２
 		aMap.put("CS00070", "IS00781");
+		//社員健康保険資格情報
+		aMap.put("CS00082", "IS00841");
+
+		aMap.put("CS00075","IS00788");
+
+		aMap.put("CS00092", "IS01016");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -105,6 +115,12 @@ public class FacadeUtils {
 		aMap.put("CS00021", "IS00256");
 		// 労働条件２
 		aMap.put("CS00070", "IS00782");
+		//社員健康保険資格情報
+		aMap.put("CS00082", "IS00842");
+
+		aMap.put("CS00075","IS00789");
+
+		aMap.put("CS00092", "IS01017");
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -991,7 +1007,43 @@ public class FacadeUtils {
 		}
 		return listItemResult;
 	}
-	
+	public List<ItemValue> getListDefaultCS00092(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
+		List<String> itemEnum = Arrays.asList("IS01019");
+		List<ComboBoxObject> comboxs = this.combox.getComboBox(ReferenceTypes.ENUM, "E00042",
+				GeneralDate.today(), AppContexts.user().employeeId(), null, true,
+				PersonEmployeeType.EMPLOYEE, true, "CS00092", GeneralDate.today(),  false);
+		List<ItemValue>  result = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(comboxs)) {
+			listItemIfo.stream().forEach(c ->{
+				if(itemEnum.contains(c.getItemCode())) {
+					String[][] cs00092Item = {
+							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionValue() } };
+					result.addAll(FacadeUtils.createListItems(cs00092Item, listItemIfo));
+				}
+			});
+		}
+		return result;
+	}
+
+	public List<ItemValue> getListDefaultCS00075(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.STRING.value);
+		List<String> itemEnum = Arrays.asList("IS00790");
+		List<ComboBoxObject> comboxs =socialInsuranceOfficeRepository.findByCid(AppContexts.user().companyId())
+				.stream()
+				.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + "　" + x.getName())).collect(Collectors.toList());
+		List<ItemValue> result = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(comboxs)) {
+			listItemIfo.stream().forEach(c ->{
+				if(itemEnum.contains(c.getItemCode())) {
+					String[][] cs00075Item = {
+							{ c.getItemCode(), numberType, comboxs.get(0).getOptionValue(), comboxs.get(0).getOptionText() } };
+					result.addAll(FacadeUtils.createListItems(cs00075Item, listItemIfo));
+				}
+			});
+		}
+		return result;
+	}
 	/**
 	 * dùng cho cps001. cps002
 	 * Get list Default item exclude item in screen

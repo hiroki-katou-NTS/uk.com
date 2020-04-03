@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.query.app.employee.ccg029.Ccg029EmployeeInforDto;
 import nts.uk.query.app.employee.ccg029.Ccg029Employeefinder;
 import nts.uk.query.app.employee.ccg029.Ccg029QueryParam;
-import nts.uk.query.app.employee.ccg029.paramjcm007.Jcm007Param;
 
 @Path("query/ccg029employee")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,11 +25,4 @@ public class Ccg029SearchEmployeeWS {
 		return finder.employeeKeywordSearch(query);
 	}
 	
-	
-	// Get list Employee Info (JCM007)
-	@POST
-	@Path("getEmpInfo")
-	public List<Ccg029EmployeeInforDto> getEmployeeInfo(Jcm007Param query) {
-		return finder.getEmployeeInfoByJcm007(query);
-	}
 }

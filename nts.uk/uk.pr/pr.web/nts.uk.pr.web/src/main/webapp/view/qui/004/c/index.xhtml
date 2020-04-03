@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:ValidatorScript>
-            nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.CauseOfLossEmpInsurance
+            nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsName
             nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.WorkingTime
         </com:ValidatorScript>
         <com:scriptfile path="../share/model.js"/>
@@ -17,7 +17,7 @@
         <com:scriptfile path="qui004.c.service.js"/>
         <com:scriptfile path="qui004.c.start.js"/>
         <com:scriptfile path="qui004.c.vm.js"/>
-        <script>var dialogSize = {width: 800, height: 600};</script>
+        <script>var dialogSize = {width: 760, height: 430};</script>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
         <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
@@ -28,25 +28,25 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button id="C1_1" tabindex="1" data-bind="click: updateEmpInsLossInfo" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI004_C1_1')}</button>
+            <button id="C1_1" tabindex="1" data-bind="click: updateEmpInsLossInfo, enable: $root.errors.isEmpty()" class="proceed" style="margin-left:14px;">#{i18n.getText('QUI004_C1_1')}</button>
             <button id="C1_2" tabindex="2" data-bind="click: cancel">#{i18n.getText('QUI004_C1_2')}</button>
         </div>
         <div id="contents-area" >
-            <div id="main-area">
+            <div id = "main-area">
                 <div id="main-center-area">
                     <div tabindex="4" id="emp-component"></div>
                     <div class="pull-left" style="margin-left: 30px">
-                        <div class="control-group">
+                        <div class="control-group valign-center">
                             <div id="C222_3" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_3')}</div>
                             <div id="C222_4" tabindex="5" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QUI004_C222_4')}',
                         options: requestForInsurances,
                         optionsValue: 'code',
                         optionsText: 'name',
-                        value: requestForInsurance
+                        value: requestForIssuance
                         }"></div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group valign-center">
                             <div id="C222_7" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_7')}</div>
                             <div id="C222_8" tabindex="6" data-bind="ntsSwitchButton: {
                         name: '#{i18n.getText('QUI004_C222_28')}',
@@ -56,9 +56,9 @@
                         value: scheduleForReplenishment
                         }"></div>
                         </div>
-                        <div class="control-group">
-                            <div id="C222_11" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_11')}</div>
-                            <input id="C222_12" tabindex="7" data-bind="ntsTimeEditor: {value: scheduleWorkingHourPerWeek, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
+                        <div class="control-group valign-center">
+                            <div id="C222_11" class="column-first" data-bind="ntsFormLabel:{ constraint: 'WorkingTime' }">#{i18n.getText('QUI004_C222_11')}</div>
+                            <input id="C222_12" tabindex="7" data-bind="ntsTimeEditor: {name: '#{i18n.getText('QUI004_C222_12')}', value: scheduleWorkingHourPerWeek, constraint: 'WorkingTime', inputFormat: 'time', mode: 'time' }"/>
                         </div>
                         <div class="control-group valign-center">
                             <div id="C222_13" class="column-first" data-bind="ntsFormLabel:{ required: false }">#{i18n.getText('QUI004_C222_13')}</div>
@@ -77,9 +77,12 @@
                             <div id="C222_17" tabindex="9" data-bind="ntsComboBox: {
                         name: '#{i18n.getText('QUI004_C222_16')}',
                         options: causeOfLossEmpInsurances,
+                        optionsValue: 'retirementReasonClsCode',
+                        optionsText: 'retirementReasonClsName',
                         value: causeOfLossEmpInsurance,
+                        selectFirstIfNull: true,
                         width: 'auto'
-                        }">></div>
+                        }"></div>
                         </div>
                     </div>
                 </div>

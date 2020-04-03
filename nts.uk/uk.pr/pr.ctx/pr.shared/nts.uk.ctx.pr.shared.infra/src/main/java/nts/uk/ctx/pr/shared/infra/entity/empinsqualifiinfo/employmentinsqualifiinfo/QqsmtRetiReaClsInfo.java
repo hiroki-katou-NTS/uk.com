@@ -24,13 +24,6 @@ public class QqsmtRetiReaClsInfo extends UkJpaEntity implements Serializable {
     public QqsmtRetiReaClsInfoPk qqsmtRetiReaClsInfoPk;
 
     /**
-     * 退職解雇理由区分コード
-     */
-    @Basic(optional = false)
-    @Column(name = "RETI_RES_CLS_CD")
-    public String retirementReasonClsCode;
-
-    /**
      * 退職解雇理由名称
      */
     @Basic(optional = false)
@@ -45,15 +38,14 @@ public class QqsmtRetiReaClsInfo extends UkJpaEntity implements Serializable {
     public RetirementReasonClsInfo toDomain (){
         return new RetirementReasonClsInfo(
                 this.qqsmtRetiReaClsInfoPk.cId,
-                this.retirementReasonClsCode,
+                this.qqsmtRetiReaClsInfoPk.retirementReasonClsCode,
                 this.retirementReasonClsName
         );
     }
 
     public static QqsmtRetiReaClsInfo toEntity (RetirementReasonClsInfo domain) {
         return new QqsmtRetiReaClsInfo(
-                new QqsmtRetiReaClsInfoPk(domain.getCId()),
-                domain.getRetirementReasonClsCode().toString(),
+                new QqsmtRetiReaClsInfoPk(domain.getCId(), domain.getRetirementReasonClsCode().toString()),
                 domain.getRetirementReasonClsName().toString()
         );
     }

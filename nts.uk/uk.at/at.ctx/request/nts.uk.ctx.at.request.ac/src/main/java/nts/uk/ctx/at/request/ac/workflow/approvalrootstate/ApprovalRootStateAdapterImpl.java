@@ -42,10 +42,14 @@ import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalFormExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
+import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 /**
@@ -99,6 +103,33 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, appDate, appID, 0, baseDate);
 
+	}
+	
+	@Override
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID,
+			List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
+		List<ApprovalPhaseStateExport> convertLst = listApprovalPhaseState.stream()
+				.map(x -> new ApprovalPhaseStateExport(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrameExport(
+								y.getFrameOrder(), 
+								y.getListApprover().stream().map(z -> new ApproverStateExport(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+										z.getAgentID(), 
+										z.getApproverName(), 
+										z.getRepresenterID(), 
+										z.getRepresenterName(), 
+										z.getApprovalDate(), 
+										z.getApprovalReason()))
+								.collect(Collectors.toList()), 
+								y.getConfirmAtr(), 
+								y.getAppDate()))
+						.collect(Collectors.toList())))
+				.collect(Collectors.toList());
+		approvalRootStatePub.insertFromCache(companyID, appID, date, employeeID, convertLst);
 	}
 
 	@Override
@@ -324,4 +355,5 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 					}).collect(Collectors.toList()));
 		}).collect(Collectors.toList());
 	}
+
 }

@@ -58,12 +58,4 @@ public interface OvertimeService {
 	 */
 	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 	
-	/**
-	 * 12.マスタ勤務種類、就業時間帯データをチェック
-	 * @param companyID
-	 * @param wkTypeCode
-	 * @param wkTimeCode
-	 * @return
-	 */
-	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode);
 }

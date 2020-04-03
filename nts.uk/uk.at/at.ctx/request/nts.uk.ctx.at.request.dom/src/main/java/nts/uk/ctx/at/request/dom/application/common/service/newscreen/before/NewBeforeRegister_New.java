@@ -5,7 +5,11 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 
 /**
  * 
@@ -24,7 +28,7 @@ public interface NewBeforeRegister_New {
 	 * @param targetApp
 	 * @param overTimeAtr, If APP_TYPE = 0 thì mới có overTime Atr, còn các loại đơn khác thì truyền 0 vào
 	 */
-    public void processBeforeRegister(Application_New application,int overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);
+    public void processBeforeRegister(Application_New application, OverTimeAtr overTimeAtr, boolean checkOver1Year, List<GeneralDate> lstDateHd);
 	/**
 	 * 1.入社前退職チェック
 	 * @param companyID 会社ID
@@ -51,7 +55,7 @@ public interface NewBeforeRegister_New {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr);
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr);
 	
 	/**
 	 * 3.確定チェック
@@ -62,4 +66,10 @@ public interface NewBeforeRegister_New {
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate);
 	
 	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate);
+	
+	/**
+	 * 2-1.新規画面登録前の処理
+	 */
+	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
+			Application_New application, OverTimeAtr overTimeAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd);
 }

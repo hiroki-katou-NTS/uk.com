@@ -18,7 +18,7 @@ public class AppDisplaySetting extends DomainObject {
 	/**
 	 * 事前事後区分表示
 	 */
-	private DisplayAtr prePostAtr;
+	private DisplayAtr prePostAtrDisp;
 	
 	/**
 	 * 就業時間帯の検索

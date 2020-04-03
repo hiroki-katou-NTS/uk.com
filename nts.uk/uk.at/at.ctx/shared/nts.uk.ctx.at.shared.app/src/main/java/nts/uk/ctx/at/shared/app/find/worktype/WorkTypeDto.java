@@ -40,12 +40,21 @@ public class WorkTypeDto {
 	private List<WorkTypeSetDto> workTypeSets;
 
 	public static WorkTypeDto fromDomain(WorkType workType) {
-		return new WorkTypeDto(workType.getCompanyId(), workType.getWorkTypeCode().v(), workType.getName().v(),
-				workType.getAbbreviationName().v(), workType.getSymbolicName().v(), workType.getDeprecate().value,
-				workType.getMemo().v(), workType.getDailyWork().getWorkTypeUnit().value,
-				workType.getDailyWork().getOneDay().value, workType.getDailyWork().getMorning().value,
-				workType.getDailyWork().getAfternoon().value, workType.getCalculateMethod().value,
-				workType.getDispOrder(), null);
+		return new WorkTypeDto(
+				workType.getCompanyId(), 
+				workType.getWorkTypeCode().v(), 
+				workType.getName().v(),
+				workType.getAbbreviationName() == null ? null : workType.getAbbreviationName().v(), 
+				workType.getSymbolicName() == null ? null : workType.getSymbolicName().v(), 
+				workType.getDeprecate() == null ? 0 : workType.getDeprecate().value,
+				workType.getMemo() == null ? null : workType.getMemo().v(), 
+				workType.getDailyWork().getWorkTypeUnit().value,
+				workType.getDailyWork().getOneDay().value, 
+				workType.getDailyWork().getMorning().value,
+				workType.getDailyWork().getAfternoon().value, 
+				workType.getCalculateMethod() == null ? 0 : workType.getCalculateMethod().value,
+				workType.getDispOrder(), 
+				null);
 	}
 
 	public WorkTypeDto(String companyId, String workTypeCode, String name, String abbreviationName) {
@@ -58,5 +67,19 @@ public class WorkTypeDto {
 	public static WorkTypeDto fromDomainWorkTypeLanguage(WorkType workType) {
 		return new WorkTypeDto(workType.getCompanyId(), workType.getWorkTypeCode().v(), workType.getName().v(),
 				workType.getAbbreviationName().v());
+	}
+	
+	public WorkType toDomain() {
+		WorkType workType = WorkType.createSimpleFromJavaType(
+				workTypeCode, 
+				name, 
+				abbreviationName, 
+				symbolicName, 
+				memo, 
+				workAtr, 
+				oneDayCls, 
+				morningCls, 
+				afternoonCls);
+		return workType;
 	}
 }
