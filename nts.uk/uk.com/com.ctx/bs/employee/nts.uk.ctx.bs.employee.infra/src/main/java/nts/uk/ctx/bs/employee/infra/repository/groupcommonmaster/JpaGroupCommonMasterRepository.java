@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.groupcommonmaster;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -7,19 +8,22 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.ContractCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterCode;
-import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemCode;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterItemName;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.CommonMasterName;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMaster;
+import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterItem;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.GroupCommonMasterRepository;
 import nts.uk.ctx.bs.employee.dom.groupcommonmaster.NotUseCompanyList;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterCategory;
+import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterCategoryPK;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterItem;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUse;
 import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUsePK;
@@ -27,13 +31,13 @@ import nts.uk.ctx.bs.employee.infra.entity.groupcommonmaster.BsymtGpMasterNotUse
 @Stateless
 public class JpaGroupCommonMasterRepository extends JpaRepository implements GroupCommonMasterRepository {
 
-	private static final String GET_BY_CONTRACT_CODE = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode";
+	private static final String GET_BY_CONTRACT_CODE = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.pk.contractCode = :contractCode";
 
 	private static final String GET_ITEM_BY_CONTRACT_CODE_AND_LIST_MASTER_ID = "SELECT mi FROM BsymtGpMasterItem mi WHERE mi.contractCode = :contractCode AND mi.commonMasterId IN :commonMasterIds";
 
 	private static final String GET_NOT_USE_BY_LIST_ITEM_ID = "SELECT nu FROM BsymtGpMasterNotUse nu WHERE nu.pk.commonMasterItemId IN :commonMasterItemIds";
 
-	private static final String GET_BY_CONTRACT_CODE_AND_ID = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.contractCode = :contractCode AND mc.commonMasterId = :commonMasterId";
+	private static final String GET_BY_CONTRACT_CODE_AND_ID = "SELECT mc FROM BsymtGpMasterCategory mc WHERE mc.pk.contractCode = :contractCode AND mc.pk.commonMasterId = :commonMasterId";
 
 	private static final String GET_ENABLE_ITEM = "SELECT mi FROM BsymtGpMasterItem mi "
 			+ "WHERE mi.contractCode = :contractCode " + "AND mi.commonMasterId = :commonMasterId "
@@ -79,7 +83,8 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 	}
 
 	private BsymtGpMasterCategory mapCategory(GroupCommonMaster domain) {
-		return new BsymtGpMasterCategory(domain.getContractCode().v(), domain.getCommonMasterId(),
+		return new BsymtGpMasterCategory(
+				new BsymtGpMasterCategoryPK(domain.getCommonMasterId(), domain.getContractCode().v()),
 				domain.getCommonMasterCode().v(), domain.getCommonMasterName().v(), domain.getCommonMasterMemo());
 	}
 
@@ -180,8 +185,8 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	private GroupCommonMaster toCategoryDomain(BsymtGpMasterCategory entity) {
 
-		GroupCommonMaster domain = new GroupCommonMaster(new ContractCode(entity.getContractCode()),
-				entity.getCommonMasterId(), new CommonMasterCode(entity.getCommonMasterCode()),
+		GroupCommonMaster domain = new GroupCommonMaster(new ContractCode(entity.getPk().getContractCode()),
+				entity.getPk().getCommonMasterId(), new CommonMasterCode(entity.getCommonMasterCode()),
 				new CommonMasterName(entity.getCommonMasterName()), entity.getCommonMasterMemo());
 
 		return domain;
@@ -267,6 +272,80 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 				.setParameter("baseDate", baseDate).setParameter("companyId", companyId).getList().stream()
 				.map(x -> toItemDomain(x)).collect(Collectors.toList());
 
+	}
+
+	@Override
+	public void updateGroupCommonMaster(String contractCd, List<GroupCommonMaster> domains) {		
+		for(GroupCommonMaster item: domains) {
+			// update commonMaster .find(item.getCommonMasterId(), BsymtGpMasterCategory.class);
+			Optional<BsymtGpMasterCategory> findItem = this.queryProxy().find(new BsymtGpMasterCategoryPK(item.getCommonMasterId(), contractCd) , BsymtGpMasterCategory.class);
+			if(!findItem.isPresent()) {
+				throw new BusinessException("don't exist in BsymtGpMasterCategory");
+			}
+			BsymtGpMasterCategory categories = mapCategory(item);
+			this.commandProxy().update(categories);
+		}
+	}
+
+	@Override
+	public void addCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains) {
+		List<BsymtGpMasterItem> listMasterItem = new ArrayList<>();
+		// add items
+		for(GroupCommonMasterItem item: domains) {
+			if(item.getCommonMasterItemId() == null) {
+				BsymtGpMasterItem entity = mapItem(contractCd, commonMasterId, new GroupCommonMasterItem(IdentifierUtil.randomUniqueId(), item.getCommonMasterItemCode(), item.getCommonMasterItemName(), item.getDisplayNumber(), item.getUsageStartDate(), item.getUsageEndDate()));
+				listMasterItem.add(entity);
+			}else {
+				BsymtGpMasterItem entity = mapItem(contractCd, commonMasterId, item);
+				listMasterItem.add(entity);
+			}
+		}
+		
+		this.commandProxy().insertAll(listMasterItem);
+				
+	}
+
+	@Override
+	public void updateCommonMasterItem(String contractCd, String commonMasterId, List<GroupCommonMasterItem> domains) {
+		List<BsymtGpMasterItem> listItemAdd = new ArrayList<>();
+		for(GroupCommonMasterItem item: domains) {
+			Optional<BsymtGpMasterItem> findMasterItem = this.queryProxy().find(item.getCommonMasterItemId(), BsymtGpMasterItem.class);
+			if(findMasterItem.isPresent()) {
+				BsymtGpMasterItem convertToEntity = mapItem(contractCd, commonMasterId, item);
+				listItemAdd.add(convertToEntity);
+			}
+		}
+		if(!listItemAdd.isEmpty()) {
+			this.commandProxy().updateAll(listItemAdd);
+		}
+	}
+
+	@Override
+	public List<GroupCommonMaster> getCommonMaster(String contractCd) {
+		List<GroupCommonMaster> commonMasters = this.queryProxy()
+				.query(GET_BY_CONTRACT_CODE, BsymtGpMasterCategory.class).setParameter("contractCode", contractCd)
+				.getList().stream().map(x -> toCategoryDomain(x)).collect(Collectors.toList());
+
+		if (CollectionUtil.isEmpty(commonMasters)) {
+			return commonMasters;
+		}
+		
+		// setMasterItems(contractCode, commonMasters);
+		List<String> commonMasterIds = commonMasters.stream().map(x -> x.getCommonMasterId())
+				.collect(Collectors.toList());
+
+		List<BsymtGpMasterItem> commonMasterItems = this.queryProxy()
+				.query(GET_ITEM_BY_CONTRACT_CODE_AND_LIST_MASTER_ID, BsymtGpMasterItem.class)
+				.setParameter("contractCode", contractCd).setParameter("commonMasterIds", commonMasterIds).getList();
+
+		commonMasters.forEach(commonMaster -> {
+			List<GroupCommonMasterItem> items = commonMasterItems.stream()
+					.filter(item -> item.getCommonMasterId().equals(commonMaster.getCommonMasterId()))
+					.map(item -> toItemDomain(item)).collect(Collectors.toList());
+			commonMaster.setCommonMasterItems(items);
+		});
+
+		return commonMasters;
 	}
 
 }

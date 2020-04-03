@@ -6,7 +6,7 @@ module nts.uk.pr.view.qui001.a {
             exportCsv: "ctx/pr/report/printconfig/empinsreportsetting/export-csv-qui001",
             getEmpInsReportTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-txt-stg",
             exportPDF: "ctx/pr/report/printconfig/empinsreportsetting/export-pdf-qui001",
-            getEmpInsReportSetting: "ctx/pr/report/printconfig/empinsurreportcreset/start",
+            getEmpInsRptStg: "ctx/pr/report/printconfig/empinsurreportcreset/get-emp-ins-rpt-stg",
 
             addEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/add-emp-ins-rpt-txt-stg",
             updateEmpInsRptTxtSetting: "ctx/pr/report/printconfig/empinsurreportcreset/update-emp-ins-rpt-txt-stg"
@@ -16,8 +16,8 @@ module nts.uk.pr.view.qui001.a {
             return ajax("pr", paths.getEmpInsReportTxtSetting);
         }
 
-        export function getEmpInsReportSetting(): JQueryPromise<any> {
-            return ajax("pr", paths.getEmpInsReportSetting);
+        export function getEmpInsRptSetg(): JQueryPromise<any> {
+            return ajax("pr", paths.getEmpInsRptStg);
         }
 
         export function exportCSV(data: any): JQueryPromise<any> {

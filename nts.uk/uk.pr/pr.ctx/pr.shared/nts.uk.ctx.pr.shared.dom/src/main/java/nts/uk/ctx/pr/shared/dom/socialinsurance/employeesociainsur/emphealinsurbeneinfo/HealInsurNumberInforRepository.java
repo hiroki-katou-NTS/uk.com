@@ -11,12 +11,19 @@ public interface HealInsurNumberInforRepository
 
     List<HealInsurNumberInfor> getAllHealInsurNumberInfor();
 
-    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String historyId);
+    Optional<HealInsurNumberInfor> getHealInsurNumberInforById(String empId, String hisId);
 
-    void add(HealInsurNumberInfor domain);
+    List<HealInsurNumberInfor> findByHistoryId(List<String> hisId);
+
+    Optional<HealInsurNumberInfor> getHealInsNumberInfoById(String cid, String empId);
+
+    void add(HealInsurNumberInfor numberInfor);
+
+    void addAll(List<HealInsurNumberInfor> domains);
 
     void update(HealInsurNumberInfor domain);
 
-    void remove(String historyId);
+    void updateAll (List<HealInsurNumberInfor> numberInfors);
 
+    void remove(String historyId);
 }

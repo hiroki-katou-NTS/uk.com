@@ -24,14 +24,14 @@ public class RetirementReasonClsInfo extends AggregateRoot{
     /**
      * 退職解雇理由名称
      */
-    private CauseOfLossEmpInsurance retirementReasonClsName;
+    private RetirementReasonClsName retirementReasonClsName;
 
     public RetirementReasonClsInfo() {};
 
     public RetirementReasonClsInfo(String cId, String reasonTermination, String retirementReasonClsName){
         this.cId = cId;
         this.retirementReasonClsCode = new RetirementReasonClsCode(reasonTermination);
-        this.retirementReasonClsName = new CauseOfLossEmpInsurance(retirementReasonClsName);
+        this.retirementReasonClsName = new RetirementReasonClsName(retirementReasonClsName);
     }
 
 }

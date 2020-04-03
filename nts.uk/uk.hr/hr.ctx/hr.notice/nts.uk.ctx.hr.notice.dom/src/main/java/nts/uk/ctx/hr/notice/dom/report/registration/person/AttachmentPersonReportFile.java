@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.hr.shared.dom.primitiveValue.AttachedFileName;
 
 /**
  * @author laitv
@@ -20,7 +21,7 @@ public class AttachmentPersonReportFile extends AggregateRoot{
 	private int docID; //書類ID
 	private String docName; //書類名
 	private String fileId; //ファイルID
-	private String fileName; //ファイル名
+	private AttachedFileName fileName; //ファイル名
 	private boolean fileAttached; //ファイル添付済     0:未添付、1:添付済み	
 	private GeneralDateTime fileStorageDate; //ファイル格納日時
 	private String mimeType; //MIMEタイプ
@@ -31,7 +32,7 @@ public class AttachmentPersonReportFile extends AggregateRoot{
 	private String sampleFileName; //サンプルファイル名
 	
 	public AttachmentPersonReportFile(String cid, int reportID, int docID, String docName, String fileId,
-			String fileName, boolean fileAttached, GeneralDateTime fileStorageDate, String mimeType,
+			AttachedFileName fileName, boolean fileAttached, GeneralDateTime fileStorageDate, String mimeType,
 			String fileTypeName, int fileSize, boolean delFlg, String sampleFileID, String sampleFileName) {
 		super();
 		this.cid = cid;
@@ -53,7 +54,7 @@ public class AttachmentPersonReportFile extends AggregateRoot{
 	public static AttachmentPersonReportFile createFromJavaType(String cid, int reportID, int docID, String docName, String fileId,
 			String fileName, boolean fileAttached, GeneralDateTime fileStorageDate, String mimeType,
 			String fileTypeName, int fileSize, boolean delFlg, String sampleFileID, String sampleFileName){
-		return new AttachmentPersonReportFile(cid, reportID, docID, docName, fileId, fileName, fileAttached,
+		return new AttachmentPersonReportFile(cid, reportID, docID, docName, fileId, new AttachedFileName(fileName), fileAttached,
 				fileStorageDate, mimeType, fileTypeName, fileSize, delFlg, sampleFileID, sampleFileName);
 	}
 }

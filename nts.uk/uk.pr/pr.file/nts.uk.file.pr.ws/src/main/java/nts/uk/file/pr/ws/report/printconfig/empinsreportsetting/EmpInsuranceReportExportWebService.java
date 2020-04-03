@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQ
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsGetQualifReportQuery;
 import nts.uk.ctx.pr.file.app.core.empinsqualifiinfo.empinsqualifinfo.EmpInsLossInfoPDFService;
 import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoExportQuery;
-import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsReportTxtSettingCsvExportService;
+import nts.uk.file.pr.app.report.printconfig.empinsreportsetting.EmpInsLossInfoCsvExportService;
 
 @Path("ctx/pr/report/printconfig/empinsreportsetting")
 @Produces("application/json")
@@ -29,7 +29,7 @@ public class EmpInsuranceReportExportWebService extends WebService {
 	private EmpInsGetQualifReportCsvService qui001CsvService;
 
 	@Inject
-	private EmpInsReportTxtSettingCsvExportService qui004CsvService;
+	private EmpInsLossInfoCsvExportService qui004CsvService;
 
 	@Inject
 	private EmpInsLossInfoPDFService qui004PdfService;

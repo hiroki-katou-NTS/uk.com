@@ -4,12 +4,14 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoEx;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.ForeignerResHistInfo;
 import nts.uk.ctx.pr.core.dom.adapter.person.PersonExport;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PublicEmploymentSecurityOffice;
 import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.CurrentPersonResidence;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsNumInfo;
+import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.ScheduleForReplenishment;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.WorkingTime;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -124,11 +126,45 @@ public class EmpInsLossInfoExportRow {
 	 * 公共職業安定所.名称
 	 */
 	private String publicEmploymentSecurityOfficeName;
+	
+	private LaborInsuranceOffice laborInsuranceOffice;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String nationalityName;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String nationalityCode;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String statusOfResidenceCode;
+
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private String statusOfResidenceName;
+
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private GeneralDate periodOfStayEnd;
+	
+	/**
+	 * 外国人在留履歴情報
+	 */
+	private Integer unqualifiedActivityPermission;
+
+	private Integer contractWorkAtr;
 
 	public EmpInsLossInfoExportRow(String employeeId, EmployeeInfoEx employeeInfo, DateHistoryItem empInsHist,
 			CompanyInfor companyInfo, EmpInsNumInfo empInsNumInfo, LaborInsuranceOffice laborInsuranceOffice,
 			EmpInsLossInfo empInsLossInfo, PublicEmploymentSecurityOffice pubEmpSecOffice, PersonExport personInfo,
-			CurrentPersonResidence currentAddressInfo) {
+			CurrentPersonResidence currentAddressInfo, ForeignerResHistInfo forResHistInfo) {
 		super();
 		this.employeeId = employeeId;
 		this.employeeCode = employeeInfo.getEmployeeCode();
@@ -141,14 +177,14 @@ public class EmpInsLossInfoExportRow {
 				.map(n -> n + "").orElse("") : "";
 		this.employeeInsurancePeriodStart = empInsHist.start();
 		this.employeeInsurancePeriodEnd = empInsHist.end();
-		this.causeOfLossAtr = empInsLossInfo != null ? empInsLossInfo.getCauseOfLossAtr().map(c -> c.value).orElse(null) : null;
-		this.scheduleOfReplenishment = empInsLossInfo != null ? empInsLossInfo.getScheduleForReplenishment().map(s -> s.value == 1 ? "有" : "無")
+		this.causeOfLossAtr = empInsLossInfo != null ? empInsLossInfo.getCauseOfLoss().map(c -> c.value).orElse(null) : null;
+		this.scheduleOfReplenishment = empInsLossInfo != null ? empInsLossInfo.getScheduleForReplenishment().map(s -> s.value == ScheduleForReplenishment.YES.value ? "有" : "無")
 				.orElse("") : "";
 		this.personNameKana = personInfo.getPersonNameGroup().getPersonName().getFullNameKana();
 		this.personReportNameKana = personInfo.getPersonNameGroup().getTodokedeFullName().getFullNameKana();
 		this.personName = personInfo.getPersonNameGroup().getPersonName().getFullName();
 		this.personReportName = personInfo.getPersonNameGroup().getTodokedeFullName().getFullName();
-		this.personNameRomanji = personInfo.getPersonNameGroup().getPersonRomanji().getFullName();
+		this.personNameRomanji = personInfo.getPersonNameGroup().getPersonRomanji().getFullName().replaceAll("　", " ");
 		this.personGender = personInfo.getGender();
 		this.personBirthDay = personInfo.getBirthDate();
 		this.personCurrentAddress = currentAddressInfo.getAddress1() + currentAddressInfo.getAddress2();
@@ -157,5 +193,13 @@ public class EmpInsLossInfoExportRow {
 		this.causeOfLossInsurance = empInsLossInfo != null ? empInsLossInfo.getCauseOfLossEmpInsurance().map(c -> c.v()).orElse("") : "";
 		this.scheduleWorkingHourPerWeek = empInsLossInfo != null ? empInsLossInfo.getScheduleWorkingHourPerWeek().orElse(null) : null;
 		this.publicEmploymentSecurityOfficeName = pubEmpSecOffice != null ? pubEmpSecOffice.getPublicEmploymentSecurityOfficeName().v() : "";
+		this.laborInsuranceOffice = laborInsuranceOffice;
+		this.nationalityCode = forResHistInfo.getNationalityCode();
+		this.nationalityName = forResHistInfo.getNationalityName();
+		this.statusOfResidenceCode = forResHistInfo.getResidenceStatusCode();
+        this.statusOfResidenceName = forResHistInfo.getResidenceStatusName();
+		this.periodOfStayEnd = forResHistInfo.getEndDate();
+		this.unqualifiedActivityPermission = forResHistInfo.getUnqualifiedActivityPermission();
+		this.contractWorkAtr = forResHistInfo.getContractWorkAtr();
 	}
 }
