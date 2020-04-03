@@ -10,14 +10,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.pereg.dom.filemanagement.services.PersonFileManagementDto;
 import nts.uk.ctx.pereg.dom.filemanagement.services.PersonFileManagementService;
-import nts.uk.query.app.employee.ccg029.paramjcm007.Jcm007Param;
-import nts.uk.query.app.employee.ccg029.paramjcm007.Jcm007ParamData;
 import nts.uk.query.model.employee.EmployeeAuthAdapter;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
@@ -145,61 +142,4 @@ public class Ccg029Employeefinder {
 		return result;
 	}
 	
-	public List<Ccg029EmployeeInforDto> getEmployeeInfoByJcm007(Jcm007Param query){
-		
-		List<Jcm007ParamData> listParam = query.getListParam();
-		if (listParam.isEmpty()) {
-			return new ArrayList<>();
-		}
-		
-		List<String> listSid = listParam.stream().map(i -> i.getSid()).collect(Collectors.toList());
-		List<String> listPid = listParam.stream().map(c->c.getPid()).collect(Collectors.toList());
-		
-		Map<String, Jcm007ParamData> mapBySid = listParam.stream().collect(Collectors.toMap(Jcm007ParamData::getSid, c->c));
-		
-		EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()
-				.employeeIds(listSid)
-				.referenceDate(GeneralDate.today())
-				.toGetWorkplace(true)
-				.toGetDepartment(false)
-				.toGetPosition(true)
-				.toGetEmployment(true)
-				.toGetClassification(true)
-				.toGetEmploymentCls(true).build();
-		// <<Public>> 社員の情報を取得する
-		List<EmployeeInformation> employeeInformation = employeeInformationRepo.find(employeeInformationQuery);
-		
-		List<Ccg029EmployeeInforDto> result = new ArrayList<>();
-		
-		//[RQ624]個人IDから個人ファイル管理を取得する
-		List<PersonFileManagementDto> personFileManagements = personFileManagementService.getPersonalFileManagementFromPID(listPid);
-		Map<String, PersonFileManagementDto> personFileManagementsMap = personFileManagements.stream().collect(Collectors.toMap(PersonFileManagementDto::getPId, c->c));
-		
-		for (EmployeeInformation empInfo : employeeInformation) {
-			
-			String pid = mapBySid.get(empInfo.getEmployeeId()).pid;
-			Ccg029EmployeeInforDto emp = new Ccg029EmployeeInforDto(
-					pid
-					,empInfo.getEmployeeId()
-					,empInfo.getEmployeeCode()
-					,empInfo.getBusinessName()
-					,empInfo.getBusinessNameKana());
-			
-			if(empInfo.getWorkplace().isPresent()) {
-				emp.setWorkplace(empInfo.getWorkplace().get());
-			}
-			if(empInfo.getDepartment().isPresent()) {
-				emp.setDepartment(empInfo.getDepartment().get());
-			}
-			if(empInfo.getEmployment().isPresent()) {
-				emp.setEmployment(empInfo.getEmployment().get());
-			}
-			if(empInfo.getPosition().isPresent()) {
-				emp.setPosition(empInfo.getPosition().get());
-			}
-			emp.setPersonalFileManagement(personFileManagementsMap.getOrDefault(pid, new PersonFileManagementDto(null, Optional.empty(), Optional.empty(), new ArrayList<>())));
-			result.add(emp);
-		}
-		return result;
-	}
 }

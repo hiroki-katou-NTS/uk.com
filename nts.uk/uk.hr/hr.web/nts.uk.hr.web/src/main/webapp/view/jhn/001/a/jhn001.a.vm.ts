@@ -12,6 +12,7 @@ module jhn001.a.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import jump = nts.uk.request.jump;
 
     const __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -24,20 +25,24 @@ module jhn001.a.viewmodel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout());
         reportClsId: KnockoutObservable<string> = ko.observable('');
 
-        enaGoBack: KnockoutObservable<boolean> = ko.observable(false);
         enaSave: KnockoutObservable<boolean> = ko.observable(true);
         enaSaveDraft: KnockoutObservable<boolean> = ko.observable(true);
         enaAttachedFile: KnockoutObservable<boolean> = ko.observable(true);
         enaRemove: KnockoutObservable<boolean> = ko.observable(true);
-
+        
+        showBtnBack: KnockoutObservable<boolean> = ko.observable(false);
+        showBtnRemove: KnockoutObservable<boolean> = ko.observable(false);
+        
         listItemDf = [];
         missingDocName = '';
         reportIdFromJhn003 = null;
+        isNewMode = false;
+        isUpdateMode = false;
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
-            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 200, hidden: false },
-            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 140, hidden: false, formatter: _.escape }
+            { headerText: text('JHN001_A221_4_1'), key: 'reportName', width: 190, hidden: false },
+            { headerText: text('JHN001_A221_4_2'), key: 'remark', width: 130, hidden: false, formatter: _.escape }
         ]);
 
         constructor(reportId) {
@@ -54,6 +59,22 @@ module jhn001.a.viewmodel {
 
             if (reportId) {
                 self.reportIdFromJhn003 = reportId;
+                self.isNewMode = false;
+                self.isUpdateMode = true;
+            }else {
+                self.reportIdFromJhn003 = null;
+                self.isNewMode = true;
+                self.isUpdateMode = false;
+            }
+            
+            if (self.isNewMode) {
+                self.showBtnBack(false);
+                self.showBtnRemove(false);
+            }
+
+            if (self.isUpdateMode) {
+                self.showBtnBack(true);
+                self.showBtnRemove(true);
             }
 
             self.reportClsId.subscribe(id => {
@@ -77,14 +98,17 @@ module jhn001.a.viewmodel {
                     }
 
                     // A1.6
-                    if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
-                        self.enaRemove(false);
-                    } else {
-                        self.enaRemove(true);
+                    if(self.isUpdateMode){
+                        if (objReport.reportId == null || objReport.reportId == '' || objReport.reportId == undefined || (objReport.aprStatus != null && objReport.aprStatus != 0)) {
+                            self.showBtnRemove(false);
+                        } else {
+                            self.showBtnRemove(true);
+                        }
                     }
 
+                    
                     let query = {
-                        reportId: string = objReport.reportId,
+                        reportId: string = self.isUpdateMode?  objReport.reportId : null,
                         reportLayoutId: number = objReport.reportClsId
                     };
 
@@ -94,7 +118,14 @@ module jhn001.a.viewmodel {
                             self.layout().listItemCls(data.classificationItems || []);
 
                             if (data.classificationItems.length > 0) {
+                               
+                                $('.layout-control .drag-panel').attr(`style`, `height: 100% !important;` + `padding: 10 !important;`);
+                                
                                 self.setListItemDf(data.classificationItems);
+                            } else {
+                                
+                                $('.layout-control .drag-panel').attr(`style`,  `height: 0 !important;` + `padding: 0 !important;`);
+
                             }
 
                             // set sendBackComment header A222_2_1
@@ -128,6 +159,9 @@ module jhn001.a.viewmodel {
                         self.layout().listItemCls.removeAll();
                         unblock();
                     });
+                    self.setHightContent();
+                }else{
+                    self.newMode();
                 }
             });
 
@@ -257,14 +291,20 @@ module jhn001.a.viewmodel {
                 if (listReportDarft.length > 0) {
                     subModal('/view/jhn/001/b/index.xhtml', { title: '' }).onClosed(() => {
                         let dataShare = getShared('JHN001B_PARAMS');
+                        let reportId = dataShare.reportId;
+                        
+                        // chỉ trường hơp continue thì mới nhảy vào mode update, còn các trường hợp khác là newMode
+                        if (dataShare.isContinue == true) {
+                            self.isNewMode = false;
+                            self.isUpdateMode = true;
+                        }
+                        
                         if (dataShare.hasRemove == true) {
                             // get lai danh sach report
-                            let reportId = dataShare.reportId;
                             self.start(reportId, false);
                         } else {
                             // khong phai get lai danh sach report , truong hop close thi khong lam gi ca.
                             if (dataShare.isContinue == true) {
-                                let reportId = dataShare.reportId;
                                 let objReport = _.find(self.layouts(), function(o) { return o.reportId == reportId; });
                                 if (objReport) {
                                     self.reportClsId(objReport.id);
@@ -312,9 +352,9 @@ module jhn001.a.viewmodel {
                     });
                     _.each(_data, d => layouts.push(d));
                     if (_data) {
-                        if (reportId == undefined || reportId == null) {
+                        if (reportId == undefined || reportId == null || reportId == "null" || reportId == "undefined" ) {
                             if (self.reportClsId() == "" || self.reportClsId() == null ) {
-                                self.reportClsId(_data[0].reportClsId);
+                                self.reportClsId(null);
                             } else {
                                 let reportClsId = self.reportClsId();
                                 self.reportClsId(null);
@@ -325,10 +365,12 @@ module jhn001.a.viewmodel {
                             let objReport = _.find(_data, function(o) { return o.reportId == reportId; })
 
                             if (objReport == undefined || objReport == null) {
-                                self.reportClsId(_data[0].reportClsId);
+                                self.reportClsId(null);
+                            }else{
+                                self.reportClsId(objReport.reportClsId);
                             }
 
-                            self.reportClsId(objReport.reportClsId);
+                           
                         }
                     }
                 } else {
@@ -351,10 +393,26 @@ module jhn001.a.viewmodel {
                 layouts = self.layouts;
 
             self.layout().listItemCls.removeAll();
-            self.layout().sendBackComment('');
-            self.layout().message('');
+            $('.layout-control .drag-panel').attr(`style`, `height: 0 !important;` + `padding: 0 !important;`);
+            self.layout().sendBackComment(text('JHN001_A222_2_1')  + ' : ' );
+            self.layout().message(text('JHN001_A222_1_1')  + ' : ' );
+            self.layout().reportNameLabel('');
             self.layout().listDocument([]);
+            self.layout().approvalRootState([]);
+            self.showBtnBack(false);
+            self.showBtnRemove(false);
 
+        }
+        
+        setHightContent() {
+            let self = this;
+            const $content = $('#contents-area');
+
+            if ($content.length) {
+                const bound = $content.get(0).getBoundingClientRect();
+
+                $content.css('height', `calc(100vh - ${bound.top + 20}px)`);
+            }
         }
 
         save() {
@@ -404,8 +462,11 @@ module jhn001.a.viewmodel {
                 // push data layout to webservice
                 block();
                 service.saveData(command).done(() => {
-                    info({ messageId: "Msg_15" }).then(function() {
-                        self.enaRemove(true);
+                    info({ messageId: "MsgJ_36" }).then(function() {
+                        
+                        self.showBtnBack(true);
+                        self.showBtnRemove(true);
+                        
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
@@ -463,7 +524,6 @@ module jhn001.a.viewmodel {
                 block();
                 service.saveDraftData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.enaRemove(true);
                         self.start(null, false);
                     });
                 }).fail((mes: any) => {
@@ -559,8 +619,9 @@ module jhn001.a.viewmodel {
 
                 service.removeData(objRemove).done(() => {
                     info({ messageId: "MsgJ_40" }).then(function() {
-                        self.reportClsId(null);
-                        self.start(null , false);
+                        
+                        jump("hr", "/view/jhn/003/a/index.xhtml");
+                        
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -586,7 +647,8 @@ module jhn001.a.viewmodel {
         message: KnockoutObservable<string> = ko.observable('');
         sendBackComment: KnockoutObservable<string> = ko.observable('');
         reportNameLabel: KnockoutObservable<string> = ko.observable('');
-
+        reportNameVisible: KnockoutObservable<boolean> = ko.observable(false);
+        
         listDocument: any = ko.observableArray([]);
         
         approvalRootState: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -594,6 +656,14 @@ module jhn001.a.viewmodel {
 
         constructor() {
             let self = this;
+            
+            self.reportNameLabel.subscribe(name => {
+                if (name == '' || name == null || name == undefined) {
+                    self.reportNameVisible(false);
+                } else {
+                    self.reportNameVisible(true);
+                }
+            });
         }
 
         clickSampleFileName() {

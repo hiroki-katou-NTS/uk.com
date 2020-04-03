@@ -14,7 +14,9 @@ import nts.arc.time.GeneralDateTime;
  */
 public interface RegistrationPersonReportRepository {
 
-	List<RegistrationPersonReport> getListByCid(String sid);
+	List<RegistrationPersonReport> getListByCid(String cid);
+	
+	List<RegistrationPersonReport> getListByCidandSid(String cid, String inputSid);
 	
 	List<RegistrationPersonReport> getListReportSaveDraft(String sid);
 	
