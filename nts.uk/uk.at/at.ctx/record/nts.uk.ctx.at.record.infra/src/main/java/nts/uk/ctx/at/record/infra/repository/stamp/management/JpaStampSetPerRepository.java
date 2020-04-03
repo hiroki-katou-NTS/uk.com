@@ -94,6 +94,17 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
 	}
+	
+	/**
+	 * 打刻の前準備(個人)を表示する
+	 * get Stamp Setting Person
+	 */
+	@Override
+	public Optional<StampSettingPerson> getStampSetting(String companyId) {
+		List<StampPageLayout> layouts = getAllStampSetPage(companyId);
+		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+				.setParameter("companyId", companyId).getSingle(c -> c.toDomain(layouts));
+	}
 
 	/**
 	 * 打刻レイアウトの設定内容を追加する

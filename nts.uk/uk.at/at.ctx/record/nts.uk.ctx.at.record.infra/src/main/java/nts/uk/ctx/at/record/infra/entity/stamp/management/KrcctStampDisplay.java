@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ColorSetting;
 import nts.uk.ctx.at.record.dom.stamp.management.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.stamp.management.HistoryDisplayMethod;
 import nts.uk.ctx.at.record.dom.stamp.management.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.stamp.management.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
@@ -83,6 +86,20 @@ public class KrcctStampDisplay extends ContractUkJpaEntity{
 								new ColorCode(this.textColor), 
 								new ColorCode(this.backGroundColor)), 
 						new ResultDisplayTime(this.resultDisplayTime)));
+	}
+	
+	public StampSettingPerson toDomain(List<StampPageLayout> layouts){
+		return new StampSettingPerson(
+				pk.companyId, 
+				buttonEmphasisArt, 
+				new StampingScreenSet(
+						EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class), 
+						new CorrectionInterval(this.correctionInterval), 
+						new ColorSetting(
+								new ColorCode(this.textColor), 
+								new ColorCode(this.backGroundColor)), 
+						new ResultDisplayTime(this.resultDisplayTime)),
+				layouts);
 	}
 	
 	public static KrcctStampDisplay toEntity(StampSettingPerson person){

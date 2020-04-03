@@ -40,4 +40,6 @@ public interface StampSetPerRepository {
 
 	void delete(String companyId, int pageNo);
 
+	Optional<StampSettingPerson> getStampSetting(String companyId);
+
 }

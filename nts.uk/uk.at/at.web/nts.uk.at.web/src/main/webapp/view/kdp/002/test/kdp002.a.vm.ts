@@ -5,8 +5,8 @@ module nts.uk.at.view.kdp002.a {
         export class ScreenModel {
             public startPage(): JQueryPromise<void>  {
                let self = this;
+               var dfd = $.Deferred<void>();
 
-               let dfd = $.Deferred<void>();
                 service.startPage().done((res) => {
                     console.log(res);
                     dfd.resolve();
@@ -16,15 +16,10 @@ module nts.uk.at.view.kdp002.a {
 
                }
 
-           clickProcess(data: any) : any{
-             let dfd = $.Deferred();
-                console.log(data);
-                let disable: boolean = false;
-                if(data == 'TextA') disable = true;
-                dfd.resolve({disable: disable});
-                
-
-              return dfd.promise();          
+            public openKDP002A() {
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/a/index.xhtml').onClosed(function (): any {
+                    
+                });          
            }
 
         }
