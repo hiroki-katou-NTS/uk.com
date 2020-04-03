@@ -12,4 +12,10 @@ public interface HRDevMenuRepository {
 	 * @author yennth
 	 */
 	List<HRDevMenu> findByAvailable();
+	
+	
+	/**
+	 * find programId
+	 */
+	List<String> findProgramId(List<Integer> eventIds);
 }

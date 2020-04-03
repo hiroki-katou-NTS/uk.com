@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.develop.infra.repository.sysoperationset.eventmanage;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -63,5 +64,15 @@ public class JpaEventOperationRepository extends JpaRepository implements EventO
 		entity.useEvent = x.getUseEvent().value;
 		entity.ccd = x.getCcd();
 		return entity;
+	}
+
+	private static final String FIND_BY_CID = "SELECT o from JcmstEventOperation o " 
+			+ "WHERE o.jcmstEventOperationPK.companyId = :companyId "
+			+ "AND o.useEvent = 1";
+	@Override
+	public List<Integer> findByCid(String companyId) {
+		return this.queryProxy().query(FIND_BY_CID, JcmstEventOperation.class)
+		.setParameter("companyId", companyId)
+		.getList(c->c.jcmstEventOperationPK.eventId);
 	}
 }

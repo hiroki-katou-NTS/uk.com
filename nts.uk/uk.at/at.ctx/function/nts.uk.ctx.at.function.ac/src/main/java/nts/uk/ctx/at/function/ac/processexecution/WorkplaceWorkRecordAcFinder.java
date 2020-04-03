@@ -23,9 +23,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 
-//	@Inject
-//	private SyWorkplacePub syWorkplacePub;
-	
 	@Inject
 	private WorkplacePub workplacePub;
 

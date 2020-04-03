@@ -7,8 +7,8 @@ import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.OnHoldFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
 import nts.uk.ctx.hr.shared.dom.personalinfo.retirementinfo.RetirementCategory;
 
 //個人情報反映前データ_定年退職者情報

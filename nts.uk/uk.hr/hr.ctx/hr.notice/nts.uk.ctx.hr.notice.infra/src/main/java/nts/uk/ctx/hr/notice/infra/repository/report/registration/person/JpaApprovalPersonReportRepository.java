@@ -177,4 +177,15 @@ public class JpaApprovalPersonReportRepository extends JpaRepository implements 
 		this.commandProxy().updateAll(entities);
 
 	}
+	
+	private static final String CHECKEXIT = "select c FROM  JhndtReportApproval c "
+			+ "Where c.pk.cid = :cid and c.pk.aprSid = :aprSid and c.aprStatus = 1";
+
+	@Override
+	public boolean checkExit(String cid, String aprSid) {
+		return !this.queryProxy().query(CHECKEXIT, JhndtReportApproval.class)
+				.setParameter("cid", cid)
+				.setParameter("aprSid", aprSid)
+				.getList().isEmpty();
+	}
 }

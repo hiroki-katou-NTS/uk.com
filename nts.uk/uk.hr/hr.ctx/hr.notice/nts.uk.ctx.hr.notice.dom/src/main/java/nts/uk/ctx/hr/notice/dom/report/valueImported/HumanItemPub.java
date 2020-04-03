@@ -12,6 +12,8 @@ public interface HumanItemPub {
 	
 	DateRangeItemImport getDateRangeItemByCtgId(String categoryId);
 	
+	List<DateRangeItemImport> getDateRangeItemByListCtgId(List<String> categoryIds);
+	
 	String getItemDfId(String ctgId , String itemCd);
 	
 }

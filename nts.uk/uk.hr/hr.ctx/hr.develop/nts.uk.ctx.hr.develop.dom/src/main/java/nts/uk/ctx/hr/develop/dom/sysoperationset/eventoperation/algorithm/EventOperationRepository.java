@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.algorithm;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.hr.develop.dom.sysoperationset.eventoperation.EventOperation;
@@ -25,4 +26,8 @@ public interface EventOperationRepository {
 	 * @author yennth
 	 */
 	void update(EventOperation eventOperation);
+	/**
+	 * find EventId by companyId
+	 */
+	List<Integer> findByCid(String companyId);
 }

@@ -55,6 +55,10 @@ public class EmpInsReportSettingFinder {
 
     }
 
+    public EmpInsReportSettingDto getEmpInsRptSetg() {
+        return mEmpInsReportSettingRepository.getEmpInsReportSettingById(AppContexts.user().companyId(), AppContexts.user().userId()).map(item -> EmpInsReportSettingDto.fromDomain(item)).orElse(null);
+    }
+
     public List<PersonDto> getPerson(List<String> employeeId){
         List<EmployeeInfoEx> employeeInfo= employeeInfoAdapter.findBySIds(employeeId);
         List<PersonExport> person = personExportAdapter.findByPids(employeeInfo.stream().map(EmployeeInfoEx::getPId).collect(Collectors.toList()));

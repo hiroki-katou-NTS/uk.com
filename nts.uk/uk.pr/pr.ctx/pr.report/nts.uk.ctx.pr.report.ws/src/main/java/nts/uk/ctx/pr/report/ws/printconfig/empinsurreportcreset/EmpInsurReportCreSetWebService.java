@@ -35,6 +35,12 @@ public class EmpInsurReportCreSetWebService {
     }
 
     @POST
+    @Path("/get-emp-ins-rpt-stg")
+    public EmpInsReportSettingDto getEmpInsReportSetting() {
+        return finder.getEmpInsRptSetg();
+    }
+
+    @POST
     @Path("/get-emp-ins-rpt-txt-stg")
     public EmpInsReportTxtSettingDto getEmpInsReportTxtSetting() {
         return txtSettingFinder.getEmpInsReportTxtSetting();

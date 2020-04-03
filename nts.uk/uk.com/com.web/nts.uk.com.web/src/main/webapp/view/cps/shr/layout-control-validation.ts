@@ -214,7 +214,20 @@ module nts.layout {
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
         get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param),
-        checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`)
+        checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`),
+
+        // getHealInsStandCompMonth
+        getHealInsStandCompMonth: (param: IHealInsStandMonParam) => ajax('pr', `ctx/core/socialinsurance/healthinsurance/getHealInsStandCompMonth`, param),
+
+        // getHealthInsuranceStandardGradePerMonth
+        getHealthInsuranceStandardGradePerMonth: (param: IHealInsStandMonParam) => ajax('pr', `ctx/core/socialinsurance/healthinsurance/getHealthInsuranceStandardGradePerMonth`, param),
+
+        // getMonthlyPensionInsStandardRemuneration
+        getMonthlyPensionInsStandardRemuneration: (param: IHealInsStandMonParam) => ajax('pr', `ctx/core/socialinsurance/healthinsurance/getMonthlyPensionInsStandardRemuneration`, param),
+
+        // getWelfarePensionStandardGradePerMonth
+        getWelfarePensionStandardGradePerMonth: (param: IHealInsStandMonParam) => ajax('pr', `ctx/core/socialinsurance/healthinsurance/getWelfarePensionStandardGradePerMonth`, param),
+
     }
 
     export class validation {
@@ -229,7 +242,7 @@ module nts.layout {
                 self.radio();
                 self.button();
                 self.combobox();
-               
+
                 self.grand_combobox();
                 self.grand_radio();
                 //self.relate_radio();
@@ -241,6 +254,11 @@ module nts.layout {
                 self.setTable();
                 self.grantInformation();
                 self.specialLeaveInformation();
+
+                self.getHealInsStandCompMonth();
+                self.getHealthInsuranceStandardGradePerMonth();
+                self.getMonthlyPensionInsStandardRemuneration();
+                self.getWelfarePensionStandardGradePerMonth();
 
                 self.time_range();
 
@@ -484,7 +502,7 @@ module nts.layout {
                                                 }else{
                                                     c.data.editable(false);
                                                 }
-                                                
+
                                             }
                                         }
                                     }
@@ -497,8 +515,8 @@ module nts.layout {
 
             _(radios).each(radio => validation(radio));
         }
-        
-        
+
+
         grand_combobox = () => {
             let self = this,
                 finder = self.finder,
@@ -583,7 +601,7 @@ module nts.layout {
                         comboboxCode: 'IS00624',
                         relateCode: ['IS00623','IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }],
-              
+
                 validation = (combobox: IGrandCombobox) => {
                     let cb: IFindData = finder.find(combobox.rdctCode || combobox.ctgCode, combobox.comboboxCode),
                         ctrls: Array<IFindData> = _.map(combobox.relateCode, x => finder.find(combobox.ctgCode, x));
@@ -602,7 +620,7 @@ module nts.layout {
                 };
             _(comboboxs).each(cbx => validation(cbx));
         }
-        
+
 
         relate_radio = () => {
             let self = this,
@@ -1548,11 +1566,11 @@ module nts.layout {
                                     }
                                 }
                             }).viewModel.currentEmployee).hireDate;
-                        
+
                         if (__viewContext.viewModel.wrkPlaceStartDate()) {
                             baseDateParam = __viewContext.viewModel.wrkPlaceStartDate();
                         }
-                        
+
                         if (!!CS00017_IS00082) {
                             let startValue = CS00017_IS00082.data.value();
                             baseDateParam = startValue;
@@ -1747,7 +1765,7 @@ module nts.layout {
                                     if (getShared('CDL008Cancel')) {
                                         return;
                                     }
-    
+
                                     //view all code of selected item
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
@@ -1781,7 +1799,7 @@ module nts.layout {
                                     if (getShared('CDL008Cancel')) {
                                         return;
                                     }
-    
+
                                     //view all code of selected item
                                     let output = getShared('outputCDL008');
                                     if (!_.isNil(output)) {
@@ -1793,7 +1811,7 @@ module nts.layout {
                     });
             }
             let getComboData = () => {
-                
+
                 let startDate = CS00020_IS00119 ? CS00020_IS00119.data.value() : undefined,
                     wokPlace = CS00017_IS00084 ? CS00017_IS00084.data.value() : undefined,
                     empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
@@ -1802,23 +1820,23 @@ module nts.layout {
                     if (!(startDate && !(startDate instanceof Date) && moment.utc(startDate, _.indexOf(startDate, "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(startDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/))) {
                         return;
                     }
-                
+
                     if (!startDate){
                         startDate = CS00070_IS00781 ? CS00070_IS00781.data.value() : undefined;
                     }
-                
+
                     if (!startDate && location.href.indexOf('/view/cps/002') > -1) {
                         startDate = __viewContext.viewModel.currentEmployee().hireDate();
                     }
                     if (location.href.indexOf('/view/cps/001') > -1 && __viewContext.viewModel.layout.mode() == 'layout') {
                         realBaseDate = __viewContext.viewModel.layout.standardDate()
                     }
-                 
+
                     _(workingCondInfo).each(ctgInfo => {
-                        
+
                         let workTypeCd: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeCode),
                             workTypeTime: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeTime);
-                        
+
                         if (workTypeCd) {
                             let comboData = ko.toJS(workTypeCd.data);
 
@@ -1837,7 +1855,7 @@ module nts.layout {
                                 workTypeCd.data.lstComboBoxValue(data);
                             });;
                         }
-                        
+
                         if (workTypeTime) {
                             let comboData = ko.toJS(workTypeTime.data);
                             fetch.get_cb_data({
@@ -1863,7 +1881,7 @@ module nts.layout {
 
                 });
             }
-            
+
             if (CS00020_IS00119) {
                 CS00020_IS00119.data.value.subscribe(x => {
                     getComboData();
@@ -1920,14 +1938,14 @@ module nts.layout {
                         || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-                    
+
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
-                    
+
                      let conTimePrimi = CS00020_IS00253 ? __viewContext.primitiveValueConstraints[CS00020_IS00253.data.constraint] : null;
                     // Value is not match with primitive
                     if ((conTime && isNaN(conTime) || (conTime && (conTime < conTimePrimi.min || conTime > conTimePrimi.max)))) {
@@ -1939,18 +1957,18 @@ module nts.layout {
                         || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
                         return;
                     }
-                    
+
                     // If input date out of range
                     if (startWork && (!moment.utc(startWork)._isValid || moment.utc(startWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
                         || moment.utc(startWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
                         return;
                     }
-                    
+
                     if (endWork && (!moment.utc(endWork)._isValid || moment.utc(endWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
                         || moment.utc(endWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
                         return;
                     }
-                    
+
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
@@ -1974,7 +1992,7 @@ module nts.layout {
 
                 CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 CS00024_IS00280.data.value.valueHasMutated();
-                
+
                  if (CS00003_IS00020) {
                     CS00003_IS00020.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 }
@@ -2287,12 +2305,12 @@ module nts.layout {
                                 || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
                                 return;
                             }
-                            
+
                             if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                     || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
                                     return;
                             }
-                            
+
                             if (yearRefDates && (!moment.utc(yearRefDates)._isValid || moment.utc(yearRefDates).diff(moment.utc('1900/01/01'), 'days', true) < 0
                                     || moment.utc(yearRefDates).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
                                     return;
@@ -2352,6 +2370,294 @@ module nts.layout {
                 };
 
             _(specialLeaInfos).each(specialLeaInfo => validation(specialLeaInfo));
+        }
+
+        // getHealInsStandCompMonth
+        getHealInsStandCompMonth = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                healInsStandMonInfos: Array<IHealInsStandMonInfo> = [{
+                    ctgCode: 'CS00092',
+                    startYM: 'IS01016',
+                    healInsGrade: 'IS01020',
+                    healInsStandMonthlyRemune: 'IS01021',
+                    pensionInsGrade: 'IS01022',
+                    pensionInsStandCompenMonthly: 'IS01023'
+                }
+                ],
+
+                validation = (healInsStandMonInfo: IHealInsStandMonInfo) => {
+                    let healInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsGrade),
+                        startYM: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.startYM),
+                        pensionInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsGrade),
+                        pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
+                        healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
+
+                    if (healInsGrade) {
+                        $(healInsGrade.id).on('blur', () => {
+                        // healInsGrade.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
+                            // obj để get dữ liệu
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                                // IS01016
+                                startYMParam = ko.toJS(startYM.data.value),
+                                // IS01020
+                                healInsGradeParam = healInsGrade ? ko.toJS(healInsGrade.data.value) : null,
+                                // IS01021
+                                healInsStandMonthlyRemuneParam = healInsStandMonthlyRemune ? ko.toJS(healInsStandMonthlyRemune.data.value) : null,
+                                // IS01022
+                                pensionInsGradeParam = pensionInsGrade ? ko.toJS(pensionInsGrade.data.value) : null,
+                                // IS01023
+                                pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
+
+                            fetch.getHealInsStandCompMonth({
+                                sid: sid,
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
+                                healInsGrade: healInsGradeParam,
+                                healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
+                                pensionInsGrade: pensionInsGradeParam,
+                                pensionInsStandCompenMonthly: pensionInsStandCompenMonthlyParam
+                            }).done(res => {
+                                if (healInsStandMonthlyRemune) {
+                                    if (res) {
+                                        healInsStandMonthlyRemune.data.value(res);
+                                    } else {
+                                        healInsStandMonthlyRemune.data.value('');
+                                    }
+                                }
+                            });
+                        });
+
+                        //healInsGrade.data.value.valueHasMutated();
+                    }
+                };
+
+            _(healInsStandMonInfos).each(healInsStandMonInfo => validation(healInsStandMonInfo));
+        }
+
+        // getHealthInsuranceStandardGradePerMonth
+        getHealthInsuranceStandardGradePerMonth = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                healInsStandMonInfos: Array<IHealInsStandMonInfo> = [{
+                    ctgCode: 'CS00092',
+                    startYM: 'IS01016',
+                    healInsGrade: 'IS01020',
+                    healInsStandMonthlyRemune: 'IS01021',
+                    pensionInsGrade: 'IS01022',
+                    pensionInsStandCompenMonthly: 'IS01023'
+                }
+                ],
+
+                validation = (healInsStandMonInfo: IHealInsStandMonInfo) => {
+                    let healInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsGrade),
+                        startYM: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.startYM),
+                        pensionInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsGrade),
+                        pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
+                        healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
+
+                    if (healInsStandMonthlyRemune) {
+                        $(healInsStandMonthlyRemune.id).on('blur', () => {
+                        // healInsStandMonthlyRemune.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
+                            // obj để get dữ liệu
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                                // IS01016
+                                startYMParam = ko.toJS(startYM.data.value),
+                                // IS01020
+                                healInsGradeParam = healInsGrade ? ko.toJS(healInsGrade.data.value) : null,
+                                // IS01021
+                                healInsStandMonthlyRemuneParam = healInsStandMonthlyRemune ? ko.toJS(healInsStandMonthlyRemune.data.value) : null,
+                                // IS01022
+                                pensionInsGradeParam = pensionInsGrade ? ko.toJS(pensionInsGrade.data.value) : null,
+                                // IS01023
+                                pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
+
+
+                            fetch.getHealthInsuranceStandardGradePerMonth({
+                                sid: sid,
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
+                                healInsGrade: healInsGradeParam,
+                                healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
+                                pensionInsGrade: pensionInsGradeParam,
+                                pensionInsStandCompenMonthly: pensionInsStandCompenMonthlyParam
+                            }).done(res => {
+                                if (res) {
+                                    if (healInsGrade) {
+                                        healInsGrade.data.value(res.healthInsuranceGrade);
+                                    }
+                                    healInsStandMonthlyRemune.data.value(res.standardMonthlyFee);
+                                } else {
+                                    if (healInsGrade) {
+                                        healInsGrade.data.value('');
+                                    }
+                                    healInsStandMonthlyRemune.data.value('');
+                                }
+                            });
+                        });
+
+                        //healInsStandMonthlyRemune.data.value.valueHasMutated();
+                    }
+                };
+
+            _(healInsStandMonInfos).each(healInsStandMonInfo => validation(healInsStandMonInfo));
+        }
+
+        // getMonthlyPensionInsStandardRemuneration
+        getMonthlyPensionInsStandardRemuneration  = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                healInsStandMonInfos: Array<IHealInsStandMonInfo> = [{
+                    ctgCode: 'CS00092',
+                    startYM: 'IS01016',
+                    healInsGrade: 'IS01020',
+                    healInsStandMonthlyRemune: 'IS01021',
+                    pensionInsGrade: 'IS01022',
+                    pensionInsStandCompenMonthly: 'IS01023'
+                }
+                ],
+
+                validation = (healInsStandMonInfo: IHealInsStandMonInfo) => {
+                    let healInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsGrade),
+                        startYM: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.startYM),
+                        pensionInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsGrade),
+                        pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
+                        healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
+
+                    if (pensionInsGrade) {
+                        $(pensionInsGrade.id).on('blur', () => {
+                        // pensionInsGrade.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
+                            // obj để get dữ liệu
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                                // IS01016
+                                startYMParam = ko.toJS(startYM.data.value),
+                                // IS01020
+                                healInsGradeParam = healInsGrade ? ko.toJS(healInsGrade.data.value) : null,
+                                // IS01021
+                                healInsStandMonthlyRemuneParam = healInsStandMonthlyRemune ? ko.toJS(healInsStandMonthlyRemune.data.value) : null,
+                                // IS01022
+                                pensionInsGradeParam = pensionInsGrade ? ko.toJS(pensionInsGrade.data.value) : null,
+                                // IS01023
+                                pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
+
+
+                            fetch.getMonthlyPensionInsStandardRemuneration({
+                                sid: sid,
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
+                                healInsGrade: healInsGradeParam,
+                                healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
+                                pensionInsGrade: pensionInsGradeParam,
+                                pensionInsStandCompenMonthly: pensionInsStandCompenMonthlyParam
+                            }).done(res => {
+                                if (pensionInsStandCompenMonthly) {
+                                    if (res) {
+                                        pensionInsStandCompenMonthly.data.value(res);
+                                    } else {
+                                        pensionInsStandCompenMonthly.data.value('');
+                                    }
+                                }
+                            });
+                        });
+
+                        //pensionInsGrade.data.value.valueHasMutated();
+                    }
+                };
+
+            _(healInsStandMonInfos).each(healInsStandMonInfo => validation(healInsStandMonInfo));
+        }
+
+        // getWelfarePensionStandardGradePerMonth
+        getWelfarePensionStandardGradePerMonth = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                healInsStandMonInfos: Array<IHealInsStandMonInfo> = [{
+                    ctgCode: 'CS00092',
+                    startYM: 'IS01016',
+                    healInsGrade: 'IS01020',
+                    healInsStandMonthlyRemune: 'IS01021',
+                    pensionInsGrade: 'IS01022',
+                    pensionInsStandCompenMonthly: 'IS01023'
+                }
+                ],
+
+                validation = (healInsStandMonInfo: IHealInsStandMonInfo) => {
+                    let healInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsGrade),
+                        startYM: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.startYM),
+                        pensionInsGrade: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsGrade),
+                        pensionInsStandCompenMonthly: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.pensionInsStandCompenMonthly),
+                        healInsStandMonthlyRemune: IFindData = finder.find(healInsStandMonInfo.ctgCode, healInsStandMonInfo.healInsStandMonthlyRemune)
+
+                    if (pensionInsStandCompenMonthly) {
+                        $(pensionInsStandCompenMonthly.id).on('blur', () => {
+                        // pensionInsStandCompenMonthly.data.value.subscribe(x => {
+
+                            if (!moment.utc(startYM)._isValid
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(ko.toJS(moment.utc(startYM.data.value(), "YYYYMMDD").toDate())).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                                return;
+                            }
+
+                            // obj để get dữ liệu
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                                // IS01016
+                                startYMParam = ko.toJS(startYM.data.value),
+                                // IS01020
+                                healInsGradeParam = healInsGrade ? ko.toJS(healInsGrade.data.value) : null,
+                                // IS01021
+                                healInsStandMonthlyRemuneParam = healInsStandMonthlyRemune ? ko.toJS(healInsStandMonthlyRemune.data.value) : null,
+                                // IS01022
+                                pensionInsGradeParam = pensionInsGrade ? ko.toJS(pensionInsGrade.data.value) : null,
+                                // IS01023
+                                pensionInsStandCompenMonthlyParam = pensionInsStandCompenMonthly ? ko.toJS(pensionInsStandCompenMonthly.data.value) : null
+
+
+                            fetch.getWelfarePensionStandardGradePerMonth({
+                                sid: sid,
+                                startYM: moment.utc(startYMParam, "YYYYMMDD").toDate(),
+                                healInsGrade: healInsGradeParam,
+                                healInsStandMonthlyRemune: healInsStandMonthlyRemuneParam,
+                                pensionInsGrade: pensionInsGradeParam,
+                                pensionInsStandCompenMonthly: pensionInsStandCompenMonthlyParam
+                            }).done(res => {
+
+                                if (res) {
+                                    if (pensionInsGrade) {
+                                        pensionInsGrade.data.value(res.welfarePensionGrade);
+                                    }
+                                    pensionInsStandCompenMonthly.data.value(res.standardMonthlyFee);
+                                } else {
+                                    if (pensionInsGrade) {
+                                        pensionInsGrade.data.value('');
+                                    }
+                                    pensionInsStandCompenMonthly.data.value('');
+                                }
+                            });
+                        });
+
+                        //pensionInsStandCompenMonthly.data.value.valueHasMutated();
+                    }
+                };
+
+            _(healInsStandMonInfos).each(healInsStandMonInfo => validation(healInsStandMonInfo));
         }
 
         time_range = () => {
@@ -2751,7 +3057,7 @@ module nts.layout {
         radioCode: string;
         relateCode: Array<string>
     }
-    
+
     interface IGrandCombobox {
         ctgCode: string;
         rdctCode?: string;
@@ -2811,7 +3117,7 @@ module nts.layout {
         method: EDIT_METHOD;
         digitsNumber: number;
     }
-    
+
     interface IWorkingConditionInfo {
         category: string;
         workTypeCode: string;
@@ -2822,5 +3128,33 @@ module nts.layout {
         AfterZero = 2,
         PreviousSpace = 3,
         AfterSpace = 4
+    }
+
+    interface IHealInsStandMonInfo {
+        ctgCode: string;
+        // IS01016
+        startYM: string;
+        // IS01020
+        healInsGrade: string;
+        // IS01021
+        healInsStandMonthlyRemune: string;
+        // IS01022
+        pensionInsGrade: string;
+        // IS01023
+        pensionInsStandCompenMonthly: string;
+    }
+
+    interface IHealInsStandMonParam {
+        sid: string;
+        // IS01016
+        startYM: Date;
+        // IS01020
+        healInsGrade: number;
+        // IS01021
+        healInsStandMonthlyRemune: number;
+        // IS01022
+        pensionInsGrade: number;
+        // IS01023
+        pensionInsStandCompenMonthly: number;
     }
 }

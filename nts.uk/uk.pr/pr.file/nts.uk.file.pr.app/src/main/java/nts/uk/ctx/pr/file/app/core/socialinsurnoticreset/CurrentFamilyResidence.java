@@ -80,6 +80,8 @@ public class CurrentFamilyResidence {
         this.address2Kana = "オオカサシキタクオウギマチ1-1-21";
         this.address1 = "大阪府";
         this.address2 = "大阪市北区扇町1-1-21";
+        this.name = "氏名　ダミー";
+        this.nameKana = "シメイ　ダミー";
         this.reportNameKana = "トドケデ　ダミー";
         this.reportName = "届出　ダミー";
         this.isLivingTogether = false; //living separately
@@ -96,8 +98,6 @@ public class CurrentFamilyResidence {
         CurrentFamilyResidence c = new CurrentFamilyResidence();
         c.setPersonId(personId);
         c.setFamilyId(Integer.parseInt(fList.get(0).getFamilyId()));
-        c.setName(fList.get(0).getFullName()!= null && fList.get(0).getFullName().length() > 0 ? fList.get(0).getFullName() : "");
-        c.setNameKana(fList.get(0).getFullNameKana()!= null && fList.get(0).getFullNameKana().length() > 0 ? fList.get(0).getFullNameKana() : "");
         c.setBirthDate(fList.get(0).getBirthday() != null ? GeneralDate.fromString(fList.get(0).getBirthday(), "yyyy/MM/dd"): null);
         return c;
     }

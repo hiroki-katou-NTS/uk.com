@@ -216,30 +216,25 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
-//			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
-//			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
-//			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-//			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
-//			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
-//				ApprovalFrame approvalFrame = new ApprovalFrame();
-//				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
-//				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
-//				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-//				approvalFrame.setListApproverState(new ArrayList<>());
-//				appFrameInstance.getListApprover().forEach(approver -> {
-//					ApproverInfor approverState = new ApproverInfor();
-//					approverState.setRootStateID("");
-//					approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
-//					approverState.setFrameOrder(appFrameInstance.getFrameOrder());
-//					approverState.setCompanyID(appRootInstance.getCompanyID());
-//					approverState.setDate(appRootConfirm.getRecordDate());
-//					approverState.setApproverID(approver);
-//					approvalFrame.getListApproverState().add(approverState);
-//				});
-//				approvalPhaseState.getListApprovalFrame().add(approvalFrame);
-//			});
-//			approvalRootState.getListApprovalPhaseState().add(approvalPhaseState);
+			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
+			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
+			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
+			approvalPhaseState.setListApprovalFrame(new ArrayList<>());
+			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
+				ApprovalFrame approvalFrame = new ApprovalFrame();
+				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
+				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
+				approvalFrame.setLstApproverInfo(new ArrayList<>());
+				appFrameInstance.getListApprover().forEach(approver -> {
+					ApproverInfor approverState = new ApproverInfor();
+					approverState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
+					approverState.setApproverID(approver);
+					approvalFrame.getLstApproverInfo().add(approverState);
+				});
+				approvalPhaseState.getListApprovalFrame().add(approvalFrame);
+			});
+			approvalRootState.getListApprovalPhaseState().add(approvalPhaseState);
 		});
 		// ドメインモデル「就業実績確認状態」の値をoutput「承認ルートインスタンス」に入れる
 		appRootConfirm.getListAppPhase().forEach(appPhaseConfirm -> {
@@ -252,11 +247,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
 							.filter(y -> y.getFrameOrder()==appFrameConfirm.getFrameOrder()).findAny();
 					if(opApprovalFrame.isPresent()){
-//						ApprovalFrame approvalFrame = opApprovalFrame.get();
-//						approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-//						approvalFrame.setApprovalDate(appFrameConfirm.getApprovalDate());
-//						approvalFrame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
-//						approvalFrame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
+						ApprovalFrame approvalFrame = opApprovalFrame.get();
+						if(!CollectionUtil.isEmpty(approvalFrame.getLstApproverInfo())) {
+							approvalFrame.getLstApproverInfo().get(0).setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approvalFrame.getLstApproverInfo().get(0).setApproverID(appFrameConfirm.getApproverID().orElse(""));
+							approvalFrame.getLstApproverInfo().get(0).setAgentID(appFrameConfirm.getRepresenterID().orElse(""));
+						}
+						approvalFrame.setAppDate(appFrameConfirm.getApprovalDate());
 					}
 				});
 			}
@@ -547,11 +544,11 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			if(approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED){
 				break;
 			}
-//			Optional<ApprovalFrame> frameApproved = approvalPhaseState.getListApprovalFrame().stream()
-//					.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED).findAny();
-//			if(frameApproved.isPresent()){
-//				break;
-//			}
+			Optional<ApprovalFrame> frameApproved = approvalPhaseState.getListApprovalFrame().stream()
+					.filter(x -> x.isApproved(approvalPhaseState.getApprovalForm())).findAny();
+			if(frameApproved.isPresent()){
+				break;
+			}
 		}
 		// output「ルート状況」をセットする
 		if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.UNAPPROVED){

@@ -18,7 +18,7 @@ module nts.uk.pr.view.qui001.share.model {
     // 23: 出力順
     export function getEmpInsOutOrder(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
+            // new ItemModel(0, getText('Enum_EmpInsOutOrder_INSURANCE_NUMBER')),
             new ItemModel(1, getText('Enum_EmpInsOutOrder_DEPARTMENT_EMPLOYEE')),
             new ItemModel(2, getText('Enum_EmpInsOutOrder_EMPLOYEE_CODE')),
             new ItemModel(3, getText('Enum_EmpInsOutOrder_EMPLOYEE'))
@@ -27,20 +27,26 @@ module nts.uk.pr.view.qui001.share.model {
     // 25: 印字区分
     export function isPrintMyNum(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_26')),
-            new ItemModel(1, getText('QUI001_A222_27'))
+            new ItemModel(1, getText('QUI001_A222_26')),
+            new ItemModel(0, getText('QUI001_A222_27'))
         ];
     }
 
     // 32: 事業所区分
-    export function getOfficeCls(): Array<ItemModel> {
+    export function getOfficeCls32(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
             new ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE')),
             new ItemModel(2, getText('Enum_OfficeCls_DO_NOT_OUTPUT'))
         ];
     }
 
+    export function getOfficeCls47(): Array<ItemModel> {
+        return [
+            new ItemModel(1, getText('Enum_OfficeCls_OUTPUT_COMPANY')),
+            new ItemModel(0, getText('Enum_OfficeCls_OUPUT_LABOR_OFFICE'))
+        ];
+    }
     // 48: 事業所情報
 
     export function getSubNameClass(): Array<ItemModel> {
@@ -52,8 +58,8 @@ module nts.uk.pr.view.qui001.share.model {
 
     export function getChangedName(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_A222_35')),
-            new ItemModel(1, getText('QUI001_A222_36'))
+            new ItemModel(1, getText('QUI001_A222_35')),
+            new ItemModel(0, getText('QUI001_A222_36'))
         ];
     }
 
@@ -90,8 +96,8 @@ module nts.uk.pr.view.qui001.share.model {
 
     export function contrPeriPrintAtr(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QUI001_C222_28')),
-            new ItemModel(1, getText('QUI001_C222_29'))
+            new ItemModel(1, getText('QUI001_C222_28')),
+            new ItemModel(0, getText('QUI001_C222_29'))
         ];
     }
 
