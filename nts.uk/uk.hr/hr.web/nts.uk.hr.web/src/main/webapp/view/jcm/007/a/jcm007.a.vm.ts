@@ -454,6 +454,25 @@ module jcm007.a {
             let emp = ko.toJS(self.currentEmployee());
             let itemSelectedTab1 = self.itemSelectedTab1();
             let itemSelectedTab2 = self.itemSelectedTab2();
+            console.log(itemSelectedTab1);
+            console.log(itemSelectedTab2);
+            
+            // 社員が選択されているかのチェック(check xem employee có đang được chọn hay không)
+            if (self.selectedTab() == 'tab-1') {
+                if (itemSelectedTab1 == null) {
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JCM007_12" });
+                    return;
+                }
+            }
+            
+            if (self.selectedTab() == 'tab-2') {
+                if (itemSelectedTab2 == null) {
+                    nts.uk.ui.dialog.error({ messageId: "MsgJ_JCM007_12" });
+                    return;
+                }
+            }
+            
+           
 
             // validate check empty  
             if (((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) || (self.selectedTab() == 'tab-2')) {
