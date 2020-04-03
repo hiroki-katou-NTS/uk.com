@@ -183,9 +183,9 @@ module jcm007.a {
         public exportExcel(): void {
 
             block.grayout();
-            service.exportExcel().done(() => {
+            service.exportExcel().always(() => {
                 block.clear();
-            });
+            });;
         }
 
         // select emp ben tab-1

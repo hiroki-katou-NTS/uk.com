@@ -16,8 +16,6 @@ module jcm007.z {
 
         currentEmployee: KnockoutObservable<EmployeeModel>= ko.observable(new EmployeeModel(''));
 
-        enable_btnRemove: KnockoutObservable<boolean> = ko.observable(false);
-        enable_btnRegister: KnockoutObservable<boolean>= ko.observable(true);
 
         // tab 2
         employees = [];
@@ -49,11 +47,7 @@ module jcm007.z {
                 if (value == null) return;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
                     // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
-                    self.enable_btnRegister(true);
-                    self.enable_btnRemove(true);
                 } else if (value.status == self.status_WaitingReflection) {
-                    self.enable_btnRegister(false);
-                    self.enable_btnRemove(false);
                 }
                 let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == value.sid; });
                 if (objHeader) {
@@ -79,7 +73,10 @@ module jcm007.z {
         }
         
         approvalEnabled() {
-            return true;
+            let self =this,
+            status = self.selectedEmp().status;
+            
+            return status == self.status_ApprovalPending || status == self.status_Unregistered
         }
 
         releaseApprovalEnabled() {
@@ -96,12 +93,10 @@ module jcm007.z {
                 let selectedEmp = self.selectedEmp();
                 if (selectedEmp != null) {
                     if (selectedEmp.status == self.status_ApprovalPending || selectedEmp.status == self.status_Unregistered) {
-                        self.enable_btnRegister(true);
-                        self.enable_btnRemove(true);
+                     
 
                     } else if (selectedEmp.status == self.status_WaitingReflection) {
-                        self.enable_btnRegister(false);
-                        self.enable_btnRemove(false);
+                       
                     }
 
                     let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == selectedEmp.sid; });
@@ -394,8 +389,6 @@ module jcm007.z {
             service.registerNewRetireesApproved(command).done(() => {
                 console.log('UPDATE DONE!!');
                 self.start(command.historyId).done(() => {
-                    self.enable_btnRegister(true);
-                    self.enable_btnRemove(true);
 
                 });
                 block.clear();
