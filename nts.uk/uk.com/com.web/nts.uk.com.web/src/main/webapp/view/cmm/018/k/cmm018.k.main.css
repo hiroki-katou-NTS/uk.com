@@ -38,6 +38,7 @@ table.ntsSwapGrid tbody tr td {
 }
 .settingApprover {
 	margin-top: 10px !important;
+	height: 300px;
 }
 .titleSelect {
 	width: 320px !important;
