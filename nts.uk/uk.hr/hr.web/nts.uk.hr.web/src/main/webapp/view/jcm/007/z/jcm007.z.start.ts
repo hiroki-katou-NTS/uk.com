@@ -1,13 +1,9 @@
-module jcm007.z {
-    let __viewContext: any = window['__viewContext'] || {};
-
-    __viewContext.ready(function() {
-
-        __viewContext['viewModel'] = new vm.ViewModel();
-
-        __viewContext['viewModel'].start().done(function() {
-            __viewContext.bind(__viewContext['viewModel']);
-        });
-        
+__viewContext.ready(function() {
+    var screenModel = new jcm007.z.ViewModel();
+    screenModel.start().done(function(){
+        __viewContext.bind(screenModel);
+        $('#gridListEmployeesContentIcm007').focus();
     });
-}
+   
+});
+   

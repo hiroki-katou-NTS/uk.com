@@ -186,9 +186,9 @@ module jcm007.a {
 
         public exportExcel(): void {
             block.grayout();
-            service.exportExcel().done(() => {
+            service.exportExcel().always(() => {
                 block.clear();
-            });
+            });;
         }
 
         public getInterViewRecord(sid) {

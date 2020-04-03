@@ -14,6 +14,8 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmPreCheck;
+import nts.uk.screen.hr.app.databeforereflecting.command.ApprovedCommand;
+import nts.uk.screen.hr.app.databeforereflecting.command.ApprovedCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.DataBeforeReflectCommand;
 import nts.uk.screen.hr.app.databeforereflecting.command.ModifyRetireeInformationCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
@@ -48,6 +50,9 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@Inject
 	private AlgorithmPreCheck preCheck;
+	
+	@Inject
+	private ApprovedCommandHandler approve;
 
 	@POST
 	@Path("/getData")
@@ -97,6 +102,12 @@ public class DataBeforeReflectingPerInfoWS {
 	@Path("/event-change-retirementdate")
 	public RetirementRelatedInfoDto eventChangeRetirementDate(ChangeRetirementDate changeRetirementDateObj) {
 		return this.finder.processRetirementDateChanges(changeRetirementDateObj);
+	}
+
+	@POST
+	@Path("/approved")
+	public void eventChangeRetirementDate(ApprovedCommand command) {
+		this.approve.handle(command);
 	}
 	
 	@POST
