@@ -63,8 +63,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/checkStatusRegistration/{sid}")
-	public void checkStatusRegistration(@PathParam("sid") String sid) {
-		 this.checkStatusRegis.CheckStatusRegistration(sid);
+	public JavaTypeResult<Boolean> checkStatusRegistration(@PathParam("sid") String sid) {
+		return new JavaTypeResult<Boolean>(this.checkStatusRegis.checkStatusRegistration(sid));
 	}
 	
 	@POST

@@ -149,7 +149,6 @@ module jcm007.a {
 
             self.itemSelectedTab2.subscribe((value) => {
                 if (value == null) return;
-                self.isNewMode = false;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
                     // アルゴリズム[退職者情報の表示」を実行する] (Thực hiện thuật toán [Hiển thị thông tin người nghỉ hưu」)
                     self.enable_btnRegister(true);
@@ -179,7 +178,8 @@ module jcm007.a {
                 if(dataDetail){
                     self.setDataDetail(dataDetail);
                 }
-
+                
+                self.isNewMode = false;
                 $('#retirementDateId').focus();
             });
         }
@@ -232,34 +232,34 @@ module jcm007.a {
             if (self.isNewMode) {
                 // アルゴリズム[登録状況チェック]を実行する(Thực hiện thuật toán "Check tình trạng đăng ký ")
                 block.grayout();
-                service.CheckStatusRegistration(data.employeeId).done(() => {
+                service.checkStatusRegistration(data.employeeId).done((result: any) => {
                     console.log('CheckStatusRegis DONE');
+                    console.log('result: ' + result);
+                    if (result) {
+                        // アルゴリズム[新規画面の表示]を実行する(Thực hiện thuật toán [hiển thị màn hình mới])
+                        this.initRetirementInfo();
+                        let param = {
+                            employeeId: data.employeeId,
+                            personId: data.personalId,
+                            baseDate: moment(new Date()).format("YYYY/MM/DD"),
+                            getDepartment: true,
+                            getPosition: true,
+                            getEmployment: true
+                        };
 
-                    // アルゴリズム[新規画面の表示]を実行する(Thực hiện thuật toán [hiển thị màn hình mới])
-                    this.initRetirementInfo();
-
-                    let param = {
-                        employeeId: data.employeeId,
-                        personId: data.personalId,
-                        baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                        getDepartment: true,
-                        getPosition: true,
-                        getEmployment: true
-                    };
-
-                    // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
-                    self.setDataHeader(param);
-
+                        // アルゴリズム[社員情報の表示]を実行する (Thực hiện thuật toán "Hiển thị thông tin employee")
+                        self.setDataHeader(param);
+                    }
                 }).fail((error) => {
                     console.log('CheckStatusRegis FAIL');
                     block.clear();
-                    nts.uk.ui.dialog.info(error);
+                    nts.uk.ui.dialog.error(error);
                     return;
                 }).always(() => {
                     block.clear();
                 });
             }
-            
+
             self.getInterViewRecord(data.employeeId);
         }
 
@@ -471,8 +471,6 @@ module jcm007.a {
                     return;
                 }
             }
-            
-           
 
             // validate check empty  
             if (((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) || (self.selectedTab() == 'tab-2')) {
@@ -552,7 +550,7 @@ module jcm007.a {
                 command.other_6 = 0;
             }
 
-            if ((self.selectedTab() == 'tab-1') && (self.isNewMode) && (itemSelectedTab1 != null)) {
+            if ((self.selectedTab() == 'tab-1') && (self.isNewMode)) {
 
                 //2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
                 command.sId = itemSelectedTab1.employeeId;
@@ -562,7 +560,7 @@ module jcm007.a {
                 // アルゴリズム[退職者情報の新規登録」を実行する (Thực hiện thuật toán [đăng ký mới thông tin người nghỉ hưu」)
                 self.preCheckAndRegisterNewEmp(command);
 
-            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
+            } else if (self.selectedTab() == 'tab-2'
                 && itemSelectedTab2.notificationCategory == self.notify_Ctg_Report
                 && itemSelectedTab2.status == self.status_Unregistered) {
 
@@ -577,8 +575,7 @@ module jcm007.a {
                     self.enable_disableInput(true);
                 });
 
-            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2 != null
-                && itemSelectedTab2.status != self.status_Unregistered) {
+            } else if (self.selectedTab() == 'tab-2' && itemSelectedTab2.status != self.status_Unregistered) {
 
                 // 4.退職者情報を修正する(Sửa thông tin người nghỉ hưu)
                 command.historyId = itemSelectedTab2.historyId;
@@ -975,12 +972,32 @@ module jcm007.a {
                 let histId = itemSelectedTab2.historyId;
                 let lengthListItemTab2 = self.employeeListTab2.length;
                 let indexItemDelete = _.findIndex(ko.toJS(dataSource), function(item: any) { return item.historyId == histId; });
+                let itemEnd = false;
+                if(indexItemDelete == lengthListItemTab2 -1){
+                    itemEnd= true;
+                }
 
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.grayout();
-                    service.remove(histId).done(() => {
-                        dialog.info({ messageId: "Msg_16" });
+                    service.remove(histId).done((result : boolean) => {
                         console.log('REMOVE DONE!!');
+                        if (result){ 
+                            self.getListDataAfterRemove().done(() => {
+                                if(itemEnd){
+                                    
+                                }else{
+                                    
+                                }
+                                dialog.info({ messageId: "Msg_16" });
+                            });
+                        } else {
+                            self.itemSelectedTab2(null); 
+                            self.enable_tab2(false);
+                            self.visible_tab2(false); 
+                            self.newMode();  
+                            dialog.info({ messageId: "Msg_16" });
+                        }
+                        
                         if (lengthListItemTab2 === 1) {
                             self.isNewMode = true;
                             self.itemSelectedTab2(null);
@@ -992,11 +1009,7 @@ module jcm007.a {
                             let itemSelectedAfterRemove = dataSource[indexItemDelete + 1];
                             self.getListData(itemSelectedAfterRemove.historyId, true);
                         }
-
                         block.clear();
-
-
-
                     }).fail((mes) => {
                         console.log('REMOVE FAIL!!');
                         block.clear();
@@ -1005,6 +1018,38 @@ module jcm007.a {
 
                 });
             }
+        }
+        
+         // get lại list sau khi xóa
+        getListDataAfterRemove() {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            block.grayout();
+            service.getData().done((result) => {
+                if (result.retiredEmployees.length != 0) {
+                    
+                    self.empInfoHeaderList = result.employeeImports;
+
+                    self.employeeListTab2 = result.retiredEmployees;
+
+                    $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
+
+                } else {
+                    self.enable_tab2(false);
+                    self.visible_tab2(false);
+                    self.newMode();
+                }
+                dfd.resolve();
+                block.clear();
+                
+            }).fail((error) => {
+                console.log('Get Data Tab-2 Fail');
+                dfd.reject();
+                nts.uk.ui.dialog.info(error);
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
         }
 
         setDataHeader(param) {
