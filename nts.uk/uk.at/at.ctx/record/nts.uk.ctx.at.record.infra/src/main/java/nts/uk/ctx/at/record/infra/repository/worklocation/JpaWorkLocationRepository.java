@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
@@ -69,11 +70,14 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public List<WorkLocation> findByCodes(String companyID, List<String> codes) {
-		List<WorkLocation> result = this.queryProxy()
+		val query = this.queryProxy()
 				.query(SELECT_BY_CODES, KwlmtWorkLocation.class)
-				.setParameter("companyID", companyID)
-				.setParameter("workLocationCD", codes)
-				.getList(c -> toDomain(c));
+				.setParameter("companyID", companyID);
+		if (codes == null || codes.isEmpty())
+			query.setParameter("workLocationCD", "''");
+		else
+			query.setParameter("workLocationCD", codes);
+		List<WorkLocation> result = query.getList(c -> toDomain(c));
 		return result;
 	}
 	

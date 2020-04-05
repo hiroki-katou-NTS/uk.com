@@ -213,12 +213,12 @@ module nts.uk.at.view.kdp011.a {
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.selectedIdProcessSelect = self.selectedIdProcessSelect();
                 // data.outputSetCode = self.selectedOutputItemCode();
-                if(data.lstEmployee.length == 0){
+                if(data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2){
                      dialog.alertError({ messageId: "Msg_1204" });
                      blockUI.clear();
                      return ;
                     }
-                if(self.selectedCodeEmployee ==1 )
+                if(self.selectedIdProcessSelect() ==1 )
                 data.cardNumNotRegister = true;
                 else{
                     data.cardNumNotRegister = false; }
