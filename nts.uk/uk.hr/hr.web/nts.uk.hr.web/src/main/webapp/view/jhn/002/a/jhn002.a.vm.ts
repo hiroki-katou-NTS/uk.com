@@ -31,7 +31,7 @@ module jhn002.a.viewmodel {
 
         listItemDf = [];
         missingDocName = '';
-        reportIdFromJhn003 = null;
+        reportIdFromUrl = null;
 
         reportColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', key: 'id', width: 0, hidden: true },
@@ -52,7 +52,7 @@ module jhn002.a.viewmodel {
             Page.NORMAL);
 
             if (reportId) {
-                self.reportIdFromJhn003 = reportId;
+                self.reportIdFromUrl = reportId;
             }
 
             self.reportClsId.subscribe(id => {
@@ -133,7 +133,7 @@ module jhn002.a.viewmodel {
                 }
             });
 
-            self.start(self.reportIdFromJhn003, true);
+            self.start(self.reportIdFromUrl);
         }
 
         setListItemDf(clsItems: any) {
@@ -269,7 +269,7 @@ module jhn002.a.viewmodel {
             });
         }
 
-        start(reportId , opendialogB): JQueryPromise<any> {
+        start(reportId): JQueryPromise<any> {
             let self = this,
                 layout = self.layout,
                 layouts = self.layouts,
@@ -322,10 +322,6 @@ module jhn002.a.viewmodel {
                 } else {
                     self.newMode();
                     unblock();
-                }
-                
-                if(opendialogB == true){
-                    self.getEmployeeAgent();    
                 }
 
                 dfd.resolve();
@@ -409,7 +405,7 @@ module jhn002.a.viewmodel {
                 block();
                 service.saveData(command).done(() => {
                     info({ messageId: "Msg_15" }).then(function() {
-                        self.start(null, false);
+                        self.start(null);
                     });
                 }).fail((mes: any) => {
                     unblock();
@@ -470,7 +466,7 @@ module jhn002.a.viewmodel {
                     let param = { layoutReportId: self.reportClsId(), reportId: reportId };
                     self.getListDocument(param);
                 } else {
-                    self.start(reportId, false).done(() => {
+                    self.start(reportId).done(() => {
                         let param = { layoutReportId: self.reportClsId(), reportId: reportId };
                         self.getListDocument(param);
                     });

@@ -4,8 +4,7 @@ module jhn002.a.service {
 
     let paths = {
         getListReport:          'hr/notice/report/regis/person/getAll',
-        getListReportSaveDraft: 'hr/notice/report/regis/person/getAll-SaveDraft',
-        getReportDetails:       'hr/notice/report/item/findOne',
+        getReportDetails:       'hr/notice/report/regis/report/agent/findOne',
         saveData:               'hr/notice/report/regis/report/agent/save',       
         getListDoc:             'hr/notice/report/regis/person/document/findAll',
         layout: {
