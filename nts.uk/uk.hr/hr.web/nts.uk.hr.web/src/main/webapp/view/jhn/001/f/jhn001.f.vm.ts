@@ -40,6 +40,7 @@ module jhn001.f.vm {
         dataShare       = null;
         totalFileSize   = 0;
         missingDocName  = '';
+        fromJhn002      = false;
 
 
         constructor() {
@@ -76,6 +77,8 @@ module jhn001.f.vm {
             self.dataShare = dataShare;
             self.reportId  = dataShare.reportId;
             self.layoutReportId  = dataShare.layoutReportId;
+            self.fromJhn002  = dataShare.fromJhn002;
+            
             let param = { reportId: dataShare.reportId, layoutReportId: dataShare.layoutReportId };
 
             block();
@@ -158,7 +161,8 @@ module jhn001.f.vm {
                 reportID: self.reportId, //届出ID int
                 layoutReportId: self.layoutReportId,
                 missingDocName : missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1),
-                dataLayout: self.dataShare.command
+                dataLayout: self.dataShare.command,
+                fromJhn002 : self.fromJhn002
             }
 
             // save file to domain AttachmentPersonReportFile

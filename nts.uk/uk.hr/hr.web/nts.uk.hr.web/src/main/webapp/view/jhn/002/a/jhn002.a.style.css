@@ -35,7 +35,7 @@
 	margin-left: 45px !important;
 }
 
-#JHN002_A221_1 {
+#B221 {
 	margin-left: 10px;
 	margin-top: 12px;
 	padding: 20px;
@@ -43,7 +43,7 @@
 	width: 380px !important;
 }
 
-#JHN002_A221_3 {
+#B221_3{
 	width: 100% !important;
 }
 
@@ -58,7 +58,7 @@ button.search-btn {
 	width: 77px;
 }
 
-#JHN002_DETAIL {
+#B222 {
 	margin-left: -20px; 
 	margin-top: 14px;
 	float: left;
@@ -106,10 +106,6 @@ div#B221.relative.bg-green.caret-right.caret-background {
 	width: 450px;
 }
 
-div.drag-panel{
-	max-height: 365px ;
-    height: 365px;
-}
 
 .nosetarea {
 	width: 810px;
@@ -141,12 +137,12 @@ div.drag-panel{
 	height: 25px;
 }
 
-#table-list-doc {
-	margin-top: 8px;
-	margin-left: 125px;
+#label-1 {
+	float: left;
+	margin-left: 14.5px;
 }
 
-#table-list-Appr {
+#table-1 {
 	margin-top: 8px;
 	margin-left: 125px;
 }
@@ -163,28 +159,20 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-    width: 792px !important;
+	width: 795px !important;
+	border: 0px solid #ccc !important;
 }
 
-#listDoc {
-	margin-top: 10px;
+.layout-control div.ui-sortable {
+    overflow-y: unset !important;
 }
 
-#listAppr {
-	margin-top: 10px;
-}
-
-#JHN002_A222_6 {
-	float: left;
-	margin-left: 14.5px;
-}
-
-#JHN002_A23_1 {
-	float: left;
-	margin-left: 14.5px;
-}
-
-#JHN002_A221_3 > div:nth-child(1) > span > input {
+#B221_3 > div:nth-child(1) > span > input {
 	width: 245px !important;
 }
 
+.goBackDisable {
+	pointer-events: none;
+    cursor: default;
+    color: #888888;
+}

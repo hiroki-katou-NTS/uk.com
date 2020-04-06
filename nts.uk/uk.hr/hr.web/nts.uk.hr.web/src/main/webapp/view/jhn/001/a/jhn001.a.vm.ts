@@ -528,6 +528,7 @@ module jhn001.a.viewmodel {
             let param = {
                 reportId: number = objReport.reportId,
                 layoutReportId: number = reportLayoutId,
+                fromJhn002 : boolean = false,
                 command: command
             };
 

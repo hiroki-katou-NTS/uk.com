@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
@@ -51,7 +52,7 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
  *
  */
 @Stateless
-public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReportInputContainer>{
+public class SaveAgentRegisPersonReportHandler extends CommandHandlerWithResult<SaveReportInputContainer, Integer> {
 	
 	@Inject
 	private RegistrationPersonReportRepository repo;
@@ -74,18 +75,21 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 
 	// アルゴリズム「届出情報を登録」を実行する (Thực hiện thuật toán "Đăng ký thông tin report")
 	@Override
-	protected void handle(CommandHandlerContext<SaveReportInputContainer> context) {
+	protected Integer handle(CommandHandlerContext<SaveReportInputContainer> context) {
 		SaveReportInputContainer command = context.getCommand();
+		Integer reportId = null;
 		if (command.reportID == null) {
 			// insert
-			insertData(command);
+			reportId  = insertData(command);
 		}else {
 			// update
-			updateData(command);
+			reportId = updateData(command);
 		}
+		
+		return reportId;
 	}
 	
-	public void insertData(SaveReportInputContainer data) {
+	public Integer insertData(SaveReportInputContainer data) {
 		String inputSid = AppContexts.user().employeeId();
 		String applicantSid = data.appSid; 
 		String cid = AppContexts.user().companyId();
@@ -112,7 +116,7 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 				.reportCode(data.reportCode)
 				.reportName(data.reportName)
 				.reportDetail(null) // chưa đặt hàng lần này
-				.regStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration)
+				.regStatus(RegistrationStatus.Registration)
 				.aprStatus(ApprovalStatusForRegis.Not_Started)
 				.draftSaveDate(GeneralDateTime.now())
 				.missingDocName(data.missingDocName)
@@ -145,6 +149,8 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.add(personReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    return reportIDNew;
 	    
 	    // アルゴリズム「[RQ631]申請書の承認者と状況を取得する」を実行する 
 	    // Thực hiện thuật toán"[RQ631]Lấy trạng thái và người phê duyệt Application form)
@@ -306,7 +312,7 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 		return listReportItem;
 	}
 	
-	public void updateData(SaveReportInputContainer data) {
+	public Integer updateData(SaveReportInputContainer data) {
 		Integer reportId = data.reportID;
 		String cid = AppContexts.user().companyId();
 		String inputSid = AppContexts.user().employeeId();
@@ -315,7 +321,7 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 		
 		Optional<RegistrationPersonReport> domainReportOpt = repo.getDomainByReportId(cid, reportId);
 		if (!domainReportOpt.isPresent()) {
-			return;
+			return 0;
 		}
 		
 		if (rootSateId == null) {
@@ -338,7 +344,7 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 		domainReport.setReportLayoutID(data.reportLayoutID);
 		domainReport.setReportCode(data.reportCode);
 		domainReport.setReportName(data.reportName);
-		domainReport.setRegStatus(data.isSaveDraft == 1 ? RegistrationStatus.Save_Draft : RegistrationStatus.Registration);
+		domainReport.setRegStatus(RegistrationStatus.Registration);
 		domainReport.setDraftSaveDate(GeneralDateTime.now());
 		domainReport.setMissingDocName(data.missingDocName);
 		domainReport.setRootSateId(domainReport.getRootSateId() == null ? IdentifierUtil.randomUniqueId() : domainReport.getRootSateId());
@@ -378,6 +384,8 @@ public class SaveAgentRegisPersonReportHandler extends CommandHandler<SaveReport
 		// (Đăng ký nội dung nhập ở panel report với key là reportID và Thông tin chung của nhân viên vào 「人事届出の登録」、「届出の項目」)
 		repo.update(domainReport);
 	    reportItemRepo.addAll(listReportItem);
+	    
+	    return reportId;
 	}
 	
 	private EmployeeInfo getPersonInfo(String sid, String cid){
