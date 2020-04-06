@@ -327,4 +327,8 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		}
 		return cloned;
 	}
+	
+	public void setStartDateClock(int value) {
+		this.startDateClock = new TimeWithDayAttr(value);
+	}
 }
