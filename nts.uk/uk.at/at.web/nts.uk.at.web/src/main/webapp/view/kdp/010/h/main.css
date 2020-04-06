@@ -46,3 +46,8 @@
 .box{
 	margin-left: 6px !important;
 }
+
+.ui-igcombo-list{
+	max-height: 125px !important;
+	max-width: 140px !important;
+}
