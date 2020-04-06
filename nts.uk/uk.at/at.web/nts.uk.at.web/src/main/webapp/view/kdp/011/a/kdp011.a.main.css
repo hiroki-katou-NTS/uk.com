@@ -80,3 +80,20 @@ div.data{
 tbody{
 	border: 1px solid #dddddd;
 }
+.mark-overlay{
+	position: absolute;
+	top: 0px;
+	bottom :0px;
+	left: 0px;
+	right: 0px;
+	background: #fff;
+	opacity: 0.7; 
+	z-index: 10;
+}
+.employee-list-container{
+	position: relative;
+}
+#com-ccg001.disabled {
+	opacity: 0.3;
+	pointer-events: none;
+}

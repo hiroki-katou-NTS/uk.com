@@ -18,11 +18,16 @@ import nts.uk.file.at.app.export.statement.stamp.StampList;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-
+/**
+ * 
+ * @author HieuLt
+ *
+ */
 @Stateless
 public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReportGenerator
 		implements OutputConditionListOfStampGenerator {
 
+	
 	private static final String TEMPLATE_FILE = "report/KDP011-打刻一覧表_帳票レイアウト（社員別）.xlsx";
 
 	private static final int START_ROW = 4;

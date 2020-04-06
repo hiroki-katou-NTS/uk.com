@@ -37,7 +37,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author HieuLT
+ *
+ */
 @Stateless
 public class OutputScreenListOfStampFinder {
 
@@ -137,51 +141,53 @@ public class OutputScreenListOfStampFinder {
 		List<String> listWorkTimeCode = listWorkTime.stream().map(c -> c.v()).collect(Collectors.toList());
 		List<WorkTimeSetting> listWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), listWorkTimeCode);
 		
-		listEmployeeStampInfo.stream().forEach(item -> {
+		for (val item : listEmployeeStampInfo) {
 			EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
 			EmployeeInformationImport empInfo = listEmpInfo.stream().filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst().orElse(null);
 			
-			// TODO: Check get(0) hay get theo điều kiện gì
-			val stampInfoDisp = item.getListStampInfoDisp().get(0);
-			val workLocationCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkLocationCD().get();
-			val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-			val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+			// StampInfoDisp
+			for (val stampInfoDisp : item.getListStampInfoDisp()) {
+				val workLocationCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkLocationCD().get();
+				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+				
+				// Local Infor
+				val localInfor = (optWorkLocation.isPresent()) ? optWorkLocation.get().getLatitude().v() + "-" + optWorkLocation.get().getLongitude().v() : "";
+				
+				// Support Card
+				val optSupportCard = stampInfoDisp.getStamp().get().getRefActualResults().getCardNumberSupport();
+				
+				// WorkTime Name
+				val optWorkTimeCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkTimeCode();
+				val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
+				val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+				
+				// Overtime Hour & Late Night Time
+				val optOvertimeDeclaration = stampInfoDisp.getStamp().get().getRefActualResults().getOvertimeDeclaration();			
+				val overtimeHours = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverTime().toString() : "";
+				val lateNightTime = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverLateNightTime().toString() : "";
+				
+				// Set data
+				employeEngravingInfor.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
+				employeEngravingInfor.setWorkplaceName((empInfo != null) ? empInfo.getWorkplace().getWorkplaceName() : "");
+				employeEngravingInfor.setEmployeeCode((empInfo != null) ? empInfo.getEmployeeCode() : "");
+				employeEngravingInfor.setEmployeeName((empInfo != null) ? empInfo.getBusinessName() : "");
+				employeEngravingInfor.setDateAndTime(stampInfoDisp.getStampDatetime().toString());
+				employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
+				employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name);
+				employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name);
+				employeEngravingInfor.setInstallPlace(workLocationName);
+				employeEngravingInfor.setLocalInfor(localInfor);
+				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
+				employeEngravingInfor.setSupportCard(optSupportCard.orElse(""));
+				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
+				employeEngravingInfor.setOvertimeHours(overtimeHours);
+				employeEngravingInfor.setLateNightTime(lateNightTime);
+				
+				result.add(employeEngravingInfor);
+			}
+		}
 			
-			// Local Infor
-			val localInfor = (optWorkLocation.isPresent()) ? optWorkLocation.get().getLatitude().v() + "-" + optWorkLocation.get().getLongitude().v() : "";
-			
-			// Support Card
-			val optSupportCard = stampInfoDisp.getStamp().get().getRefActualResults().getCardNumberSupport();
-			
-			// WorkTime Name
-			val optWorkTimeCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkTimeCode();
-			val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
-			val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
-			
-			// Overtime Hour & Late Night Time
-			val optOvertimeDeclaration = stampInfoDisp.getStamp().get().getRefActualResults().getOvertimeDeclaration();			
-			val overtimeHours = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverTime().toString() : "";
-			val lateNightTime = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverLateNightTime().toString() : "";
-			
-			// Set data
-			employeEngravingInfor.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
-			employeEngravingInfor.setWorkplaceName((empInfo != null) ? empInfo.getWorkplace().getWorkplaceName() : "");
-			employeEngravingInfor.setEmployeeCode((empInfo != null) ? empInfo.getEmployeeCode() : "");
-			employeEngravingInfor.setEmployeeName((empInfo != null) ? empInfo.getBusinessName() : "");
-			employeEngravingInfor.setDateAndTime(stampInfoDisp.getStampDatetime().toString());
-			employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
-			employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name);
-			employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name);
-			employeEngravingInfor.setInstallPlace(workLocationName);
-			employeEngravingInfor.setLocalInfor(localInfor);
-			employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
-			employeEngravingInfor.setSupportCard(optSupportCard.orElse(""));
-			employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
-			employeEngravingInfor.setOvertimeHours(overtimeHours);
-			employeEngravingInfor.setLateNightTime(lateNightTime);
-			
-			result.add(employeEngravingInfor);
-		});		
 		return result;
 	}
 	

@@ -73,11 +73,13 @@ module nts.uk.at.view.kdp011.a {
                     self.selectedIdProcessSelect = ko.observable(1);
                     self.selectedIdProcessSelect.subscribe(function(value) {
                         if (value == 1) {
-                            $("#com-ccg001").fadeOut();
-                            $("#employee-list").fadeOut();
+                            $("#com-ccg001").addClass("disabled");
+                            $(".mark-overlay").show();
+                           
                         } else {
-                            $("#com-ccg001").fadeIn();
-                            $("#employee-list").fadeIn();
+                            $("#com-ccg001").removeClass("disabled");
+                            $(".mark-overlay").hide();
+                            
                         }
                     });
                     self.selectedIdProcessSelect.valueHasMutated();

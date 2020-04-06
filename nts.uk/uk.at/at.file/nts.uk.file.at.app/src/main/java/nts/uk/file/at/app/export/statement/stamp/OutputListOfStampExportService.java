@@ -17,7 +17,11 @@ import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.EmployeEngrav
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampFinder;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.i18n.TextResource;
-
+/**
+ * 
+ * @author HieuLT
+ *
+ */
 @Stateless
 public class OutputListOfStampExportService extends ExportService<ConditionListOfStampQueryDto> {
 
