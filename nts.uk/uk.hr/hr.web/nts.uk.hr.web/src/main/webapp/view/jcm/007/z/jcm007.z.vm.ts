@@ -73,10 +73,10 @@ module jcm007.z {
         }
         
         approvalEnabled() {
-            let self =this,
-            status = self.selectedEmp().status;
-            
-            return status == self.status_ApprovalPending || status == self.status_Unregistered
+            let self = this,
+                status = !!self.selectedEmp() ? self.selectedEmp().status : null;
+
+            return status == self.status_ApprovalPending || status == self.status_Unregistered;
         }
 
         releaseApprovalEnabled() {
@@ -153,13 +153,12 @@ module jcm007.z {
             let self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
-            service.getData().done((result) => {
+            service.startPage().done((result) => {
                 // goi service アルゴリズム[社員情報リストを取得]を実行する
                 // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
 
                     self.empInfoHeaderList = result.employeeImports;
 
-                     self.enable_btnRemove(true);
 
                     self.employees = result.retiredEmployees;
 
@@ -669,7 +668,6 @@ module jcm007.z {
 
         initHeaderInfo() {
             let self = this;
-            self.enable_btnRemove(false);
             self.currentEmployee().avatarPerson('images/avatar.png');
             self.currentEmployee().codeNameEmp('');
             self.currentEmployee().department('');

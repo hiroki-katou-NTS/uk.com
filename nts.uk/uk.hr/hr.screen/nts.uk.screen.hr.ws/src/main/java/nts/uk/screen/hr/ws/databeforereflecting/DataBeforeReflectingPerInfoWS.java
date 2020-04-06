@@ -116,5 +116,11 @@ public class DataBeforeReflectingPerInfoWS {
 		return this.finder.getInterviewRecord(sid);
 	}
 	
+	@POST
+	@Path("/start-page")
+	public DataBeforeReflectResultDto startPageZ() {
+		return this.finder.startPageZ();
+	}
+	
 	
 }

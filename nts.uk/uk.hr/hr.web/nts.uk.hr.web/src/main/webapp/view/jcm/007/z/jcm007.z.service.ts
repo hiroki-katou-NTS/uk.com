@@ -13,11 +13,12 @@ module jcm007.z.service {
         'remove': 'databeforereflecting/remove/{0}',
         'exportExcel': 'file/hr/report/databeforereflecting/export',
         'eventChangeRetirementDate': 'databeforereflecting/event-change-retirementdate',
-        'approved': 'databeforereflecting/approved'
+        'approved': 'databeforereflecting/approved',
+        'startPage': 'databeforereflecting/start-page'
     }
 
-    export function getData(): JQueryPromise<any> {
-        return ajax(paths.getData);
+    export function startPage(): JQueryPromise<any> {
+        return ajax(paths.startPage);
     }
 
     export function findEmployeeInfo(data): JQueryPromise<any> {
