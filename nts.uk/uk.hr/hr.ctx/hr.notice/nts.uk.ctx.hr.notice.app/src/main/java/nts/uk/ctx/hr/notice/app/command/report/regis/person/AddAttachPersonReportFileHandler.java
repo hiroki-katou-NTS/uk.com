@@ -64,6 +64,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 	protected String handle(CommandHandlerContext<AddDocumentReportCommand> context) {
 		AddDocumentReportCommand command = context.getCommand();
 		GeneralDateTime fileStorageDate = GeneralDateTime.now();
+		Boolean fromJhn002 = command.fromJhn002;
 		
 		String cid = AppContexts.user().companyId();
 		try {
@@ -82,7 +83,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			
 			repoReportFile.add(domain);
 			
-			saveDraft(command.dataLayout, reportIdNew, command.missingDocName);
+			saveDraft(command.dataLayout, reportIdNew, command.missingDocName, fromJhn002);
 			
 			return reportIdNew.toString();
 		} else {
@@ -105,7 +106,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 	}
 	
 
-	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName) {
+	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName, Boolean fromJhn002) {
 		String cid = AppContexts.user().companyId();
 		
 		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
@@ -130,17 +131,18 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 				.inputScd(employeeInfo.inputScd)
 				.inputBussinessName(employeeInfo.inputBussinessName)
 				.inputDate(GeneralDateTime.now())
-				.appPid(employeeInfo.appliPerId)
-				.appSid(employeeInfo.appliPerSid)
-				.appScd(employeeInfo.appliPerScd)
-				.appBussinessName(employeeInfo.appliPerBussinessName)
+				
+				.appPid(fromJhn002 ? null : employeeInfo.appliPerId)
+				.appSid(fromJhn002 ? null : employeeInfo.appliPerSid)
+				.appScd(fromJhn002 ? null : employeeInfo.appliPerScd)
+				.appBussinessName(fromJhn002 ? null : employeeInfo.appliPerBussinessName)
 				.appDate(GeneralDateTime.now())
-				.appDevId(employeeInfo.appDevId)
-				.appDevCd(employeeInfo.appDevCd)
-				.appDevName(employeeInfo.appDevName)
-				.appPosId(employeeInfo.appPosId)
-				.appPosCd(employeeInfo.appPosCd)
-				.appPosName(employeeInfo.appPosName)
+				.appDevId(fromJhn002 ? null : employeeInfo.appDevId)
+				.appDevCd(fromJhn002 ? null : employeeInfo.appDevCd)
+				.appDevName(fromJhn002 ? null : employeeInfo.appDevName)
+				.appPosId(fromJhn002 ? null : employeeInfo.appPosId)
+				.appPosCd(fromJhn002 ? null : employeeInfo.appPosCd)
+				.appPosName(fromJhn002 ? null : employeeInfo.appPosName)
 				.reportType(EnumAdaptor.valueOf(data.reportType, ReportType.class))
 				.sendBackSID(data.sendBackSID)
 				.sendBackComment(data.sendBackComment)
