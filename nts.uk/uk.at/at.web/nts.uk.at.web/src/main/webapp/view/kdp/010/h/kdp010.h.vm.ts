@@ -39,16 +39,18 @@ module nts.uk.at.view.kdp010.h {
             lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
             lstDataShare: KnockoutObservableArray<any> = ko.observableArray();
             lstData: KnockoutObservableArray<any> = ko.observableArray();
+            isFocus: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 let self = this;
                 self.selectedDay.subscribe((newValue) => {
                     self.getDataFromContents(newValue);
                 })
-                
+
                 self.selectedHighlight.subscribe((newValue) => {
-                    if(self.selectedHighlight() == 1)
-                    nts.uk.ui.errors.clearAll();
+                    if (self.selectedHighlight() == 1)
+                        nts.uk.ui.errors.clearAll();
                 })
+                $('.ntsRadioBox').focus();
             }
             /**
              * start page  
@@ -76,6 +78,9 @@ module nts.uk.at.view.kdp010.h {
                             self.selectedAudio(data.audioType)
                     }
                 }
+                $(document).ready(function() {
+                    $('#highlight-radio').focus();
+                });
             }
 
             /**
@@ -111,7 +116,7 @@ module nts.uk.at.view.kdp010.h {
 
                 });
 
-                if (self.dataShare.dataShare == undefined || self.dataShare.dataShare.lstButtonSet == undefined ) {
+                if (self.dataShare.dataShare == undefined || self.dataShare.dataShare.lstButtonSet == undefined) {
                     self.dataShare = self.dataStampPage;
                 }
 

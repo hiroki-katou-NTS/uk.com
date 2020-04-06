@@ -23,16 +23,20 @@ module nts.uk.at.view.kdp010.g {
             isDel: KnockoutObservable<string> = ko.observable(false);
             buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
             checkDelG: KnockoutObservable<string> = ko.observable(false);
+            checkLayout: KnockoutObservable<string> = ko.observable(false);
+            currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
 
             constructor() {
                 let self = this;
                 self.selectedLayout.subscribe((newValue) => {
                     self.checkDelG(true);
                     self.getData(newValue);
+                    self.checkLayout(true);
                     nts.uk.ui.errors.clearAll();
                 })
 
                 self.selectedPage.subscribe((newValue) => {
+                        self.checkLayout(false);
                     self.startPage();
                     nts.uk.ui.errors.clearAll();
                 })
@@ -55,8 +59,9 @@ module nts.uk.at.view.kdp010.g {
             getData(newValue: number): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getStampPage(self.selectedPage(), self.selectedLayout()).done(function(totalTimeArr) {
-                    if (totalTimeArr) {
+                service.getStampPage(self.selectedPage()).done(function(totalTimeArr) {
+
+                    if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
                         self.pageName(totalTimeArr.stampPageName);
                         self.commentDaily(totalTimeArr.stampPageComment.pageComment);
                         self.letterColors(totalTimeArr.stampPageComment.commentColor);
@@ -74,6 +79,16 @@ module nts.uk.at.view.kdp010.g {
                         self.letterColors("#000000");
                         self.dataShare = [];
                     }
+
+                    if (totalTimeArr ) {
+                        if (self.checkLayout() == false)
+                        self.selectedLayout(totalTimeArr.buttonLayoutType);
+                        else 
+                        self.selectedLayout(newValue);
+                    } else {
+                        self.selectedLayout(0);
+                    }
+                    $('#combobox').focus();
                     dfd.resolve();
                 }).fail(function(error) {
                     alert(error.message);
@@ -84,7 +99,6 @@ module nts.uk.at.view.kdp010.g {
 
             registration() {
                 let self = this, dfd = $.Deferred();
-                nts.uk.ui.block.invisible();
                 if (self.checkDelG() == true) {
                     $.when(self.deleteBeforeAdd()).done(function() {
                         self.registrationLayout();
@@ -109,15 +123,23 @@ module nts.uk.at.view.kdp010.g {
                     return;
                 }
                 nts.uk.ui.block.invisible();
-                if ((self.dataKdpH.length == undefined || self.dataKdpH.length == 0) && self.isDel() == true) {
+                if ((self.dataKdpH == undefined || self.dataKdpH.length == 0) && self.isDel() == true) {
                     let data = {
                         dataShare: self.dataShare,
                         buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
                     }
                     self.dataKdpH = data;
                 }
+                if ((self.dataKdpH == undefined) && self.isDel() == false) {
+                    let data = {
+                        dataShare: [],
+                        buttonPositionNo: self.selectedLayout()
+                    }
+                    self.dataKdpH = data;
+                }
                 // Data from Screen 
                 let lstButton = new Array<model.ButtonSettingsCommand>();
+                
                 if (self.dataKdpH.buttonPositionNo != undefined) {
                     let lstButtonSet = new Array<>();
                     _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
@@ -161,6 +183,7 @@ module nts.uk.at.view.kdp010.g {
                 service.saveStampPage(data).done(function() {
                     self.isDel(true);
                     self.checkDelG(false);
+                    self.currentSelectLayout(self.selectedLayout());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -220,7 +243,7 @@ module nts.uk.at.view.kdp010.g {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteStampPage(data).done(function(stampPage) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.getData(self.selectedPage());
+                        self.getData(self.selectedLayout());
                         dfd.resolve();
                     }).fail(function(error) {
                         alert(error.message);
@@ -281,7 +304,7 @@ module nts.uk.at.view.kdp010.g {
             textColor: KnockoutObservable<string>;
 
             constructor(param: IButtonInfo) {
-                this.buttonName = ko.observable(param.buttonName) || '';
+                this.buttonName = ko.observable(param.buttonName) || ko.observable('');
                 this.buttonColor = ko.observable(param.buttonColor) || '';
                 this.textColor = ko.observable(param.textColor) || '';
 
@@ -320,7 +343,7 @@ module nts.uk.at.view.kdp010.g {
 
         interface IStampPageLayoutCommand {
             pageNo: number;
-            stampPageName: number;
+            stampPageName: string;
             stampPageComment: StampPageCommentCommand;
             buttonLayoutType: number;
             lstButtonSet: Array<ButtonSettingsCommand>;
@@ -341,8 +364,8 @@ module nts.uk.at.view.kdp010.g {
         }
 
         interface IStampPageCommentCommand {
-            pageComment: number;
-            commentColor: number;
+            pageComment: string;
+            commentColor: string;
         }
 
         // ButtonSettingsCommand

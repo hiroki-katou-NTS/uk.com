@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 
-@StringMaxLength(100)
+@StringMaxLength(200)
 public class PageComment extends StringPrimitiveValue<PageComment>{
 	
 	private static final long serialVersionUID = 1L;

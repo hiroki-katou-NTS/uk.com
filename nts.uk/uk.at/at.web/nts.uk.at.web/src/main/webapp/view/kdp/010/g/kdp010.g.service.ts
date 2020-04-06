@@ -18,7 +18,7 @@ module nts.uk.at.view.kdp010.g.service {
         return nts.uk.request.ajax("at", paths.deleteStampPage, command);
     }
 
-    export function getStampPage(pageNo : number, buttonLayoutType : number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo + "/" + buttonLayoutType);
+    export function getStampPage(pageNo : number): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
     }
 }

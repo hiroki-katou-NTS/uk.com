@@ -40,7 +40,8 @@
 												optionsValue: 'id',
 												optionsText: 'name',
 												value: selectedHighlight,
-												enable: true }"></div>
+												enable: true },
+												hasFocus: isFocus"></div>
 						</td>
 					</tr>
 					<tr>
@@ -58,9 +59,10 @@
 											optionsValue: 'value',
 											value: selectedDay,
 											optionsText: 'name',
+											visibleItemsCount: 5,
 											enable: selectedHighlight() == 1,
 											columns: [
-												{ prop: 'name', length: 5 },
+												{ prop: 'name' },
 											]}"></div>
 						</td>
 					</tr>
@@ -127,9 +129,10 @@
 											optionsValue: 'value',
 											value: selectedAudio,
 											optionsText: 'name',
+											visibleItemsCount: 15,
 											enable: true,
 											columns: [
-												{ prop: 'name', length: 3 },
+												{ prop: 'name' },
 											]}"></div>
 						</td>
 

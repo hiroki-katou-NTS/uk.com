@@ -113,8 +113,8 @@ module nts.uk.at.view.kdp010 {
             backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
             // B10_2
             optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 0, name: nts.uk.resource.getText("KDP010_39") },
-                { id: 1, name: nts.uk.resource.getText("KDP010_40") }
+                { id: 1, name: nts.uk.resource.getText("KDP010_39") },
+                { id: 0, name: nts.uk.resource.getText("KDP010_40") }
             ]);
             selectedHighlight: KnockoutObservable<number> = ko.observable(0);
             // B7_2
@@ -128,10 +128,8 @@ module nts.uk.at.view.kdp010 {
              */
             start(): JQueryPromise<any> {
                 let self = this,dfd = $.Deferred();
-
                 self.getStamp();
                 self.getData();
-
                 return dfd.promise();
             }
 
@@ -150,6 +148,7 @@ module nts.uk.at.view.kdp010 {
                         self.stampValue(totalTimeArr.resultDisplayTime);
                     }
                     dfd.resolve();
+                    $('#correc-input').focus();
                 }).fail(function(error) {
                     alert(error.message);
                     dfd.reject(error);

@@ -68,7 +68,7 @@
 							</div>
 							<div id="correc-text-b">
 								<!-- B4_2 -->
-								<input tabindex="3" class="nts-input"
+								<input id = "correc-input" tabindex="3" class="nts-input"
 									data-bind="ntsNumberEditor: {value: correcValue, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
@@ -142,10 +142,10 @@
 								class="large">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
 							<!-- B20_2 -->	
 							<com:ko-if bind = "checkInUp() == true">
-							<label id="background-color" tabindex="7" style="color: blue;">#{i18n.getText('KDP010_52')}</label>
+							<label id="background-color" tabindex="7" style="color: blue;">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
 							<com:ko-if bind = "checkInUp() == false">
-							<label id="background-color" tabindex="7" style="color: red;">#{i18n.getText('KDP010_53')}</label>
+							<label id="background-color" tabindex="7" style="color: red;">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
 							
 						</td>
