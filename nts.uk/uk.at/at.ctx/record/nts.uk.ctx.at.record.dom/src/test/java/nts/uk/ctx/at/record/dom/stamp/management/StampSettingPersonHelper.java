@@ -169,7 +169,7 @@ public class StampSettingPersonHelper {
 				EnumAdaptor.valueOf(0, AudioType.class)));
 		StampPageLayout pageLayout = new StampPageLayout(
 				new PageNo(pageNo), 
-				new StampPageName("DUMMY2"),
+				new StampPageName("NEW_DUMMY2"),
 				new StampPageComment(
 						new PageComment("DUMMY"), 
 						new ColorCode("DUMMY")),

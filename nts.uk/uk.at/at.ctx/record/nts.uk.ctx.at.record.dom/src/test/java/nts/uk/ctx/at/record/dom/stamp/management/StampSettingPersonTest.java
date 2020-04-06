@@ -50,42 +50,6 @@ public class StampSettingPersonTest {
 		assertThat(settingPerson.getButtonSet(1, 0)).isNotPresent();
 	}
 
-	@Test
-	public void testGetButtonSet_filter() {
-
-		StampSettingPerson settingPerson = new StampSettingPerson("000000000000-0001", // dummy
-				true, // dummy
-				StampScreen.DUMMY, // dummy
-				Arrays.asList(new StampPageLayout(new PageNo(1), new StampPageName("DUMMY"), Comment.DUMMY,
-						EnumAdaptor.valueOf(0, ButtonLayoutType.class), Arrays.asList(Button.DUMMY))));
-
-		assertThat(settingPerson.getLstStampPageLayout().get(0).getLstButtonSet())
-				.extracting(b -> b.getButtonPositionNo().v(),
-						b -> b.getButtonDisSet().getButtonNameSet().getButtonName().get().v(),
-						b -> b.getButtonDisSet().getButtonNameSet().getTextColor().v(),
-						b -> b.getButtonDisSet().getBackGroundColor().v(),
-						b -> b.getButtonType().getStampType().get().isChangeHalfDay(),
-						b -> b.getButtonType().getStampType().get().getChangeClockArt().value,
-						b -> b.getButtonType().getStampType().get().getChangeCalArt().value,
-						b -> b.getButtonType().getStampType().get().getGoOutArt().get().value,
-						b -> b.getButtonType().getStampType().get().getSetPreClockArt().value, b -> b.getUsrArt().value,
-						b -> b.getAudioType().value)
-				.containsExactly(tuple(1, "DUMMY", "DUMMY", "DUMMY", true, 0, 0, 0, 0, 0, 0)).first().isNotNull();
-	}
-
-	@Test
-	public void testGetButtonSet_filter_second() {
-
-		StampSettingPerson settingPerson = new StampSettingPerson("000000000000-0001", // dummy
-				true, // dummy
-				StampScreen.DUMMY, Arrays.asList(Layout.DUMMY));
-
-		assertThat(settingPerson.getLstStampPageLayout())
-				.extracting(b -> b.getPageNo().v(), b -> b.getStampPageName().v(),
-						b -> b.getStampPageComment().getPageComment().v(),
-						b -> b.getStampPageComment().getCommentColor().v(), b -> b.getButtonLayoutType().value)
-				.containsExactly(tuple(1, "DUMMY", "DUMMY", "DUMMY", 0));
-	}
 
 	@Test
 	public void insert() {
@@ -104,7 +68,7 @@ public class StampSettingPersonTest {
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(1, 1);
 
 		settingPerson.update(pageLayout);
-		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getPageNo().v() == 1)).isNotEmpty();
+		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getStampPageName().v().equals("NEW_DUMMY2"))).isNotEmpty();
 	}
 
 	@Test

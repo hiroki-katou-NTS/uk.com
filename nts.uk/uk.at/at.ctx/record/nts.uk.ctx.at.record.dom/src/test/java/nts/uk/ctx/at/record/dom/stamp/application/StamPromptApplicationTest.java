@@ -33,9 +33,4 @@ public class StamPromptApplicationTest {
 		assertThat(data2.getErrorAlarm().get(0)).isEqualTo("D001", "D003");
 	}
 	
-	@Test
-	public void testEnum_1() {
-		CheckErrorType data = CheckErrorType.valueOf(0);
-		assertThat(data.value).isEqualTo(0);
-	}
 }
