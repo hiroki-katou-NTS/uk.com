@@ -171,12 +171,11 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 * get Stamp Page Layout
 	 */
 	@Override
-	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo, int buttonLayoutType) {
-		return this.queryProxy().query(SELECT_BY_CID_LAYOUT, KrcctStampPageLayout.class)
+	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo) {
+		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
-				.setParameter("buttonLayoutType", buttonLayoutType)
 				.getSingle(c -> c.toDomain());
 	}
 	
