@@ -6,21 +6,21 @@ module nts.uk.at.view.kdp002.a {
 
             stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
             stampClock: StampClock = new StampClock();
+            stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
             constructor() {
                 
             }
 
             public startPage(): JQueryPromise<void>  {
                let self = this;
-
                let dfd = $.Deferred<void>();
                 service.startPage().done((res) => {
                     self.stampSetting(res.stampSetting);
+                    self.stampTab().bindData(res.stampSetting.pageLayouts);
                     dfd.resolve();
                 }); 
 
                 return dfd.promise();
-
                }
 
            clickProcess(data: any) : any{
@@ -32,6 +32,10 @@ module nts.uk.at.view.kdp002.a {
                 
 
               return dfd.promise();          
+           }
+
+           logObject(obj) {
+                return ko.toJSON(obj);
            }
 
         }

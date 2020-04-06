@@ -39,7 +39,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author anhdt
- * 
+ * 打刻入力(個人)の設定を取得する
  */
 @Stateless
 public class StampSettingsEmbossFinder {
@@ -68,7 +68,7 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
-	// 打刻入力(個人)の設定を取得する
+	// 
 	public KDP002AStartPageSettingDto getSettings() {
 
 		String companyId = AppContexts.user().companyId();
