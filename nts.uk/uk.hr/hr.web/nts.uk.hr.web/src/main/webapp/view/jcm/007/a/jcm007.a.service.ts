@@ -24,7 +24,7 @@ module jcm007.a.service {
         return ajax(paths.findEmployeeInfo, data);
     }
 
-    export function CheckStatusRegistration(sid: any): JQueryPromise<any> {
+    export function checkStatusRegistration(sid: any): JQueryPromise<any> {
         return ajax('hr', format(paths.checkStatusRegistration, sid));
     }
 

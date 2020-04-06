@@ -5,7 +5,6 @@ import javax.ejb.Stateless;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 
 @Stateless
 public class AlgorithmPreCheck {
@@ -20,9 +19,7 @@ public class AlgorithmPreCheck {
 		GeneralDate releaseDate = GeneralDate.fromString(input.releaseDate, "yyyy/MM/dd"); // A222_14
 		
 		// 社員が選択されているかのチェック(check xem employee có đang được chọn hay không)
-		if (StringUtil.isNullOrEmpty(input.getSId(), false)) {
-			throw new BusinessException("MsgJ_JCM007_12");
-		}
+		// cái này check dười client rồi.
 
 		BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
 
