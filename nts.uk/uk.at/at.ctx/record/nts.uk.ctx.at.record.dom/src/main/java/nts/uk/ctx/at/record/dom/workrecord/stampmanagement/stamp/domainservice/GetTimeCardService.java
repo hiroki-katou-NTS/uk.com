@@ -19,10 +19,10 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
  */
 public class GetTimeCardService {
 
-	public static TimeCard getTimeCard(Require required, String employeeId, YearMonth yearMonth) {
+	public static TimeCard getTimeCard(Require require, String employeeId, YearMonth yearMonth) {
 		DatePeriod datePeriod = calculatePeriod(yearMonth);
 
-		List<TimeLeavingOfDailyPerformance> listTimeLeavingOfDailyPer = required.findbyPeriodOrderByYmd(employeeId,
+		List<TimeLeavingOfDailyPerformance> listTimeLeavingOfDailyPer = require.findbyPeriodOrderByYmd(employeeId,
 				datePeriod);
 
 		List<AttendanceOneDay> listAttendanceOneDay = getListAttendanceOneDay(listTimeLeavingOfDailyPer);

@@ -35,7 +35,7 @@ public class RetrieveNoStampCardRegisteredService {
 		for (StampRecord stampRecord : listStampRecord) {
 			for (Stamp stamp : listStamp) {
 				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
-						&& stampRecord.getStampDateTime().equals(stamp.getStampDateTime())) {
+						&& stampRecord.getStampDateTime().clockHourMinuteSecond().equals(stamp.getStampDateTime().clockHourMinuteSecond())) {
 					datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
 							stampRecord, Optional.of(stamp)));
 					break;
