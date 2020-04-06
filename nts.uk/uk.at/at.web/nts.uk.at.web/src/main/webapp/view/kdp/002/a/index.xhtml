@@ -19,6 +19,8 @@
         <com:scriptfile path="kdp002.a.vm.js" />
         <com:scriptfile path="kdp002.a.start.js" />
         <com:scriptfile path="kdp002.a.model.js" />
+        <com:scriptfile path="kdp002.a.ebs.info.model.js" />
+        
       </ui:define>
 
       <ui:define name="content">
@@ -43,22 +45,25 @@
                 <span id="stamp-time-text" data-bind="text: stampClock.displayTime"></span>
               </div>
               <!-- A2 -->
-              <div id="stamp-desc">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Voluptates quisquam maxime ex doloremque vero architecto nostrum
-                fugiat sint. Explicabo aliquam tempora minus alias reiciendis
-                excepturi fugiat non cupiditate. Sint, at.
-              </div>
             </div>
             <div class="panel">
+              <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
+                <span data-bind="text: stampTab().stampPageComment"></span>
+              </div>
               <ui:include src="stamp-tab.xhtml" />
             </div>
           </div>
           <div class="pull-left" id="stamp-info">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed eius
-            quod beatae pariatur vitae recusandae, accusantium voluptatibus
-            ipsum ipsam magni? Totam ad quasi beatae laudantium, esse quaerat
-            rerum mollitia corporis.
+            <table id="gridlist-tbl" data-bind="ntsGridList: {
+              width: 380,
+              height: 485,
+              options: [],
+              optionsValue: 'shiftMasterCode',
+              columns: ko.observableArray(searchOptions.gridColums),
+              multiple: false,
+              value: selectedShiftMaster,
+              mode: 'filter'
+            }"></table>
           </div>
         </div>
       </ui:define>

@@ -30,10 +30,10 @@ interface ButtonSetting {
     usrArt: number;
     audioType: number;
 }
+
 const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
 const TIME_FORMAT = 'HH:mm';
 class StampClock {
-
     time: KnockoutObservable<Date> = ko.observable(new Date());
     displayDate: KnockoutObservable<String>;
     displayTime: KnockoutObservable<String>;
@@ -54,19 +54,20 @@ class StampClock {
 }
 
 class StampTab {
-
-    tabs: KnockoutObservableArray<NtsTabPanelModel>;
-    selectedTab: KnockoutObservable<string>;
-    stampPageComment: KnockoutObservable<string>;
-    layouts: KnockoutObservableArray<PageLayout>;
+    tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray([]);
+    selectedTab: KnockoutObservable<string> = ko.observable('');
+    stampPageComment: KnockoutObservable<string> = ko.observable('');
+    stampPageCommentColor: KnockoutObservable<string> = ko.observable('');
+    layouts: KnockoutObservableArray<PageLayout> = ko.observableArray([]);
+    
     constructor() {
         let self = this;
-        self.tabs = ko.observableArray([]);
-        self.layouts = ko.observableArray([]);
-        self.selectedTab = ko.observable('tab-1');
-        self.stampPageComment = ko.observable('');
         self.selectedTab.subscribe((val) => {
-
+            let stampTab = _.find(self.tabs(), (tab) => { return tab.id == val });
+            if(stampTab) {
+                self.stampPageComment(stampTab.stampPageComment);
+                self.stampPageCommentColor(stampTab.color);
+            }
         });
     }
 
@@ -75,22 +76,25 @@ class StampTab {
         let tabs = [];
         self.layouts(layouts);
         for (let idx = 1; idx <= 5; idx++) {
-            let layout = _.findLast(layouts, (ly) => { return ly.pageNo === idx });
-            tabs.push({ id: 'tab-' + idx, 
-                        title: layout ? layout.stampPageName : '', 
-                        content: layout ? '.tab-content-' + layout.pageNo : '',
-                        enable: ko.observable(_.isNull(layout)), 
-                        visible: ko.observable(_.isNull(layout))});
+            let layout = _.find(layouts, (ly) => { return ly.pageNo === idx });
+            if(layout) {
+                tabs.push({ id: 'tab-' + idx, 
+                            title: layout ? layout.stampPageName : '', 
+                            content: layout ? '.tab-content-' + layout.pageNo : '',
+                            stampPageComment: layout.stampPageComment,
+                            color: layout.stampPageCommentColor,
+                            enable: ko.observable(true), 
+                            visible: ko.observable(true)});
+            }
         };
+        console.log(tabs);
         self.tabs(tabs);
         self.selectedTab('tab-' + layouts[0].pageNo);
+        self.selectedTab.valueHasMutated();
     }
 
     public checkVisible(pageNo: number) {
         let self = this;
-        // console.log(self.layouts());
-        // console.log(_.findLast(self.layouts(), (ly) => { ly.pageNo === pageNo }));
-        // return _.isNull(_.findLast(self.layouts(), (ly) => { ly.pageNo === pageNo }));
-        return true;
+        return _.find(self.layouts(), (ly) => { return ly.pageNo === pageNo });
     }
 }

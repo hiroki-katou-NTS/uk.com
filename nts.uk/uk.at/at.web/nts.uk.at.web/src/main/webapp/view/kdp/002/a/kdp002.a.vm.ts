@@ -29,8 +29,6 @@ module nts.uk.at.view.kdp002.a {
                 let disable: boolean = false;
                 if(data == 'TextA') disable = true;
                 dfd.resolve({disable: disable});
-                
-
               return dfd.promise();          
            }
 
