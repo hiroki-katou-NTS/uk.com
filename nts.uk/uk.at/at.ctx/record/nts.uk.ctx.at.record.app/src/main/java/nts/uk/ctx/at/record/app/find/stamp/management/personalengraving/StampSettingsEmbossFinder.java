@@ -80,11 +80,19 @@ public class StampSettingsEmbossFinder {
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
 		// 3
-		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
-		TimeCard timeCard = GetTimeCardService.getTimeCard(required, employeeId, GeneralDate.today().yearMonth());
+		TimeCard timeCard = getTimeCard(employeeId, GeneralDate.today());
 
 		// 4
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
+		List<StampDataOfEmployees> employeeStampDatas = getEmployeeStampDatas(period, employeeId);
+
+		// 5
+		StampToSuppress stampToSuppress = getStampToSuppress(employeeId);
+
+		return new KDP002AStartPageSettingDto(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
+	}
+	
+	public List<StampDataOfEmployees> getEmployeeStampDatas(DatePeriod period, String employeeId) {
 		List<StampDataOfEmployees> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
 				stampDakokuRepo);
@@ -95,15 +103,19 @@ public class StampSettingsEmbossFinder {
 				employeeStampDatas.add(employeeStampData.get());
 			}
 		}
-
-		// 5
+		return employeeStampDatas;
+	}
+	
+	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
 				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo);
 		
-		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
-
-		return new KDP002AStartPageSettingDto(stampSetting, stampResultDisplay, timeCard);
-
+		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
+	} 
+	
+	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
+		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
+		return GetTimeCardService.getTimeCard(required, employeeId, date.yearMonth());
 	}
 
 	@AllArgsConstructor

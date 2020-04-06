@@ -19,7 +19,7 @@ public class StamPromptApplicationTest {
 
 	@Test
 	public void getters() {
-		StamPromptApplication settingPerson = StamPrompt.DUMMY;
+		StampPromptApplication settingPerson = StamPrompt.DUMMY;
 		NtsAssert.invokeGetters(settingPerson);
 	}
 	

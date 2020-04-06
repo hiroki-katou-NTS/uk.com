@@ -13,7 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.application.CheckErrorType;
 import nts.uk.ctx.at.record.dom.stamp.application.MessageContent;
 import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -55,7 +55,7 @@ public class KrcmtPromptApplication extends ContractUkJpaEntity{
 				listStamp.getPromptingMssage().getMessageColor().v() );
 	}
 
-	public static List<KrcmtPromptApplication> toEntity(StamPromptApplication application) {
+	public static List<KrcmtPromptApplication> toEntity(StampPromptApplication application) {
 		// TODO Auto-generated method stub
 		List<KrcmtPromptApplication> lstPrompt = new ArrayList<>();
 		for(StampRecordDis listStamp : application.getLstStampRecordDis()){

@@ -11,7 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @Getter
-public class StamPromptApplication  implements DomainAggregate{
+public class StampPromptApplication  implements DomainAggregate {
 
 	/** 会社ID */
 	private final String companyId;
@@ -19,7 +19,7 @@ public class StamPromptApplication  implements DomainAggregate{
 	/** 申請促すエラーリスト */
 	private List<StampRecordDis> lstStampRecordDis;
 
-	public StamPromptApplication(String companyId, List<StampRecordDis> lstStampRecordDis) {
+	public StampPromptApplication(String companyId, List<StampRecordDis> lstStampRecordDis) {
 		this.companyId = companyId;
 		this.lstStampRecordDis = lstStampRecordDis;
 	}

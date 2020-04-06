@@ -1,22 +1,81 @@
 .img-link {
-	position: absolute;
-	top: 5%;
-	width: 100% !important;
-	left: 0%;
+    position: absolute;
+    top: 5%;
+    width: 100% !important;
+    left: 0%;
 }
 
 .text-button {
-	position: absolute;
-	bottom: -5%;
-	width: 100%;
-	left: 0%;
+    position: absolute;
+    bottom: -5%;
+    width: 100%;
+    left: 0%;
 }
 
 .td-button {
-	padding-left: 3px;
-	padding-top: 5px;
+    padding-left: 3px;
+    padding-top: 5px;
 }
 
 .button {
-	border-radius: 5px;
+    border-radius: 5px;
+}
+
+.stamp-rec-btn {
+    height: 80px;
+    width: 230px; 
+}
+
+.btn1,
+.btn2 {
+    height: 80px;
+    width: 230px;
+}
+
+.btn3,
+.btn4,
+.btn5,
+.btn6 {
+    height: 80px;
+    width: 230px;
+    margin-top: 5px;
+}
+
+.btn2,
+.btn4,
+.btn6 {
+    margin-left: 10px;
+}
+
+.btn5,
+.btn3,
+.btn1 {
+    margin-left: 9px;
+}
+.stamp-square-btn {
+    width: 100px;
+    height: 100px;
+}
+.btn_2,
+.btn_3,
+.btn_4 {
+    margin-top: 18px;
+    margin-left: 5px;
+}
+
+.btn_6,
+.btn_7,
+.btn_8 {
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+.btn_1 {
+    margin-top: 18px;
+    margin-left: 33px;
+}
+
+.btn_5 {
+    margin-left: 33px;
+    margin-top: 20px;
 }

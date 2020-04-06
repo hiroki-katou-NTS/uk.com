@@ -10,8 +10,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptAppRepository;
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampFunction;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaStamPromptAppRepository extends JpaRepository implements StamPromptAppRepository{
+public class JpaStamPromptAppRepository extends JpaRepository implements StampPromptAppRepository{
 	
 	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtPromptApplication c ";
 	
@@ -37,7 +37,7 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 	 * 打刻の前準備(オプション)を登録する
 	 */
 	@Override
-	public void insert(StamPromptApplication application) {
+	public void insert(StampPromptApplication application) {
 		commandProxy().insertAll(KrcmtPromptApplication.toEntity(application));
 	}
 
@@ -45,7 +45,7 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 	 * 打刻の前準備(オプション)を登録する
 	 */
 	@Override
-	public void update(StamPromptApplication application) {
+	public void update(StampPromptApplication application) {
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtPromptApplication> oldData = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtPromptApplication.class)
 				.setParameter("companyId", companyId).getList();
@@ -86,5 +86,14 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StamPro
 			return Collections.emptyList();
 
 		return data.stream().collect(Collectors.toList());
+	}
+	
+	/**
+	 * get all Stamp Set Page
+	 */
+	@Override
+	public Optional<StampPromptApplication> getStampPromptApp(String companyId) {
+		List<StampRecordDis> data = getAllStampSetPage(companyId);
+		return Optional.ofNullable(new StampPromptApplication(companyId, data));
 	}
 }

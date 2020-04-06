@@ -1,30 +1,46 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<com:stylefile path="../../share/kdp.main.css" />
-			<com:scriptfile path="../../share/kdpbutton.vm.js" />
-			<com:stylefile path="kdp002.a.main.css" />
-			<com:scriptfile path="kdp002.a.service.js" />
-			<com:scriptfile path="kdp002.a.vm.js" />
-			<com:scriptfile path="kdp002.a.start.js" />
-		</ui:define>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>
+                var dialogSize = {
+                    width: 1080,
+                    height: 620
+                };
+            </script>
+            <com:stylefile path="../../share/kdp.main.css" />
+            <com:scriptfile path="../../share/kdpbutton.vm.js" />
+            <com:stylefile path="kdp002.a.main.css" />
+            <com:scriptfile path="kdp002.a.service.js" />
+            <com:scriptfile path="kdp002.a.vm.js" />
+            <com:scriptfile path="kdp002.a.start.js" />
+            <com:scriptfile path="kdp002.a.model.js" />
+        </ui:define>
 
-		<ui:define name="content">
-			<div id="functions-area"></div>
+        <ui:define name="content">
+            <div id="functions-area"></div>
 
-			<div id="content-area">
-			    <div id="gen">aaaaaaa</div>
-				<div id="genText"></div>
-			</div>
-
-
-		</ui:define>
-	</ui:composition>
+            <div id="content-area" class="cf">
+                <div class="pull-left" id="stamp-input">
+                    <div class="panel" id="stamp-date" data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
+                        <span data-bind="text: stampClock.displayDate"></span>
+                    </div>
+                    <div class="panel" id="stamp-time" data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
+                        <span data-bind="text: stampClock.displayTime"></span>
+                    </div>
+                    <div class="panel">
+                        <ui:include src="stamp-button.xhtml" />
+                    </div>
+                </div>
+                <div class="pull-left" id="stamp-info">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed eius quod beatae pariatur vitae recusandae, accusantium voluptatibus ipsum ipsam magni? Totam ad quasi beatae laudantium, esse quaerat rerum mollitia corporis.
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
 </body>
+
 </html>
