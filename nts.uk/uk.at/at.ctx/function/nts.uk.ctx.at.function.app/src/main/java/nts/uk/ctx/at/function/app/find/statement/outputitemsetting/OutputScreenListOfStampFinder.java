@@ -93,10 +93,9 @@ public class OutputScreenListOfStampFinder {
 		List<String> listWorkLocationCode = new  ArrayList<>();
 		
 		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository, stampDakokuRepository);
-		Optional<EmployeeStampInfo> optEmployeeStampInfo;
 		for (GeneralDate date : datePerriod.datesBetween()) {
 			for (String employeeId : listEmp) {
-				optEmployeeStampInfo = GetListStampEmployeeService.get(require, employeeId, date);
+				Optional<EmployeeStampInfo> optEmployeeStampInfo = GetListStampEmployeeService.get(require, employeeId, date);
 				if (optEmployeeStampInfo.isPresent()) {
 					val employeeStampInfo = optEmployeeStampInfo.get();
 					listEmployeeStampInfo.add(employeeStampInfo);
@@ -114,46 +113,38 @@ public class OutputScreenListOfStampFinder {
 				}
 			}
 		}
-		List<String> newListEmp1 = listEmployeeStampInfo.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> listEmployeeId = listEmployeeStampInfo.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		//2 <call> List＜社員の打刻情報＞.社員ID :List<社員情報>
 		// <<Public>> 社員の情報を取得する
-		List<EmployeeInformationImport> listEmpInfo = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(newListEmp1, datePerriod.end(), true, false, true, false, false, false));
+		List<EmployeeInformationImport> listEmpInfo = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(listEmployeeId, datePerriod.end(), true, false, true, false, false, false));
 		
 		//3 get* List<社員の打刻情報>．勤務場所コード  : List< 勤務場所>	
 		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
-		val test = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v() == "0001").findFirst();
 		
 		//4 get* List<社員の打刻情報>.就業時間帯コード : List< 就業時間帯>
 		List<RefectActualResult> listRefectActualResult = listEmployeeStampInfo.stream()
-						.flatMap(c -> {	       
+						.flatMap(c -> {
 							List<RefectActualResult> stampInfos = c.getListStampInfoDisp().stream()
-									.map(t -> t.getStamp())
-									.filter( s -> s.isPresent())
-									.map( r -> r.get().getRefActualResults())
-									.collect(Collectors.toList());
+									.map(t -> t.getStamp()).filter( s -> s.isPresent())
+									.map( r -> r.get().getRefActualResults()).collect(Collectors.toList());
 							return stampInfos.stream();
 						})
 						.collect(Collectors.toList());
-		
 		List<WorkTimeCode> listWorkTime = listRefectActualResult.stream()
-				.map(c-> c.getWorkTimeCode())
-				.filter(t -> t.isPresent())
-				.distinct()
-				.map( g -> g.get())
-				.collect(Collectors.toList());
-		List<String> listWorkTimeCode = listWorkTime.stream().map( c -> c.v()).collect(Collectors.toList());
+				.map(c -> c.getWorkTimeCode()).filter(t -> t.isPresent())
+				.distinct().map(g -> g.get()).collect(Collectors.toList());
+		List<String> listWorkTimeCode = listWorkTime.stream().map(c -> c.v()).collect(Collectors.toList());
 		List<WorkTimeSetting> listWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), listWorkTimeCode);
-		
 		
 		listEmployeeStampInfo.stream().forEach(item -> {
 			EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
-			EmployeeInformationImport empInfo = listEmpInfo.stream().filter(c ->c.getEmployeeId().equals(item.getEmployeeId())).findFirst().orElse(null);
+			EmployeeInformationImport empInfo = listEmpInfo.stream().filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst().orElse(null);
 			
 			// TODO: Check get(0) hay get theo điều kiện gì
 			val stampInfoDisp = item.getListStampInfoDisp().get(0);
 			val workLocationCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkLocationCD().get();
-			val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v() == workLocationCode.v()).findFirst();
+			val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
 			val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
 			
 			// Local Infor
@@ -164,7 +155,7 @@ public class OutputScreenListOfStampFinder {
 			
 			// WorkTime Name
 			val optWorkTimeCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkTimeCode();
-			val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode() == optWorkTimeCode.get()).findFirst();
+			val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
 			val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
 			
 			// Overtime Hour & Late Night Time
@@ -190,12 +181,9 @@ public class OutputScreenListOfStampFinder {
 			employeEngravingInfor.setLateNightTime(lateNightTime);
 			
 			result.add(employeEngravingInfor);
-			
-		});
-		
+		});		
 		return result;
 	}
-	
 	
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod){
 		//RetrieveNoStampCardRegisteredService
@@ -249,9 +237,10 @@ public class OutputScreenListOfStampFinder {
 				val refActualResults = infoDisp.getStamp().get().getRefActualResults();
 				val workLocationCD = refActualResults.getWorkLocationCD();
 				
-				if (workLocationCD.isPresent())
-					workLocationName = listWorkLocation.stream().filter(c ->c.getWorkLocationCD().v() == workLocationCD.toString())
-					.map(c ->c.getWorkLocationName().v()).findFirst().get();	
+				if (workLocationCD.isPresent()) {
+					val optWorkLocation = listWorkLocation.stream().filter(c ->c.getWorkLocationCD().v().equals(workLocationCD.get().v())).findFirst();
+					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+				}
 				
 				val locationInfo = infoDisp.getStamp().get().getLocationInfor();
 				if (locationInfo.isPresent()) {
@@ -263,7 +252,7 @@ public class OutputScreenListOfStampFinder {
 				
 				val workTimeCode = refActualResults.getWorkTimeCode();
 				if (workTimeCode.isPresent()) {
-					workTimeDisplayName = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v() == workTimeCode.get().v())
+					workTimeDisplayName = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
 															 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst().get();
 				}
 				

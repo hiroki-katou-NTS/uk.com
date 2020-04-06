@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
@@ -26,7 +26,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
 	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KwlmtWorkLocation c"
 			+ " WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCDs";
-	private static final String SELECT_BY_CODES = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCD";
+	private static final String SELECT_BY_CODES = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
 
 	
 	@Override
@@ -70,28 +70,23 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public List<WorkLocation> findByCodes(String companyID, List<String> codes) {
-		val query = this.queryProxy()
-				.query(SELECT_BY_CODES, KwlmtWorkLocation.class)
-				.setParameter("companyID", companyID);
-		if (codes == null || codes.isEmpty())
-			query.setParameter("workLocationCD", "''");
-		else
-			query.setParameter("workLocationCD", codes);
+		String queryString = SELECT_BY_CODES;
+		
+		TypedQueryWrapper<KwlmtWorkLocation> query = null;
+		if (codes == null || codes.isEmpty()) {
+			query = this.queryProxy()
+					.query(queryString, KwlmtWorkLocation.class)
+					.setParameter("companyID", companyID);
+		} else {
+			queryString += " AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCD";
+			query = this.queryProxy()
+					.query(queryString, KwlmtWorkLocation.class)
+					.setParameter("companyID", companyID)
+					.setParameter("workLocationCD", codes);
+		}
+				
 		List<WorkLocation> result = query.getList(c -> toDomain(c));
 		return result;
 	}
-	
-	/*private KwlmtWorkLocation toEntity (WorkLocation domain){
-		return new KwlmtWorkLocation(
-				new KwlmtWorkLocationPK(domain.getCompanyID(), domain.getWorkLocationCD()),
-				domain.getWorkLocationName(),
-				domain.getHoriDistance(),
-				domain.getVertiDistance(),
-				domain.getLatitude().v(),
-				domain.getLongitude().v()
-				);
-	}*/
-	
-	
 
 }

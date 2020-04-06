@@ -49,7 +49,6 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 			query = convertToDataSource(false, employeEngravingInfors, datePeriod);
 		}
 		this.generator.generate(context.getGeneratorContext(), query);
-
 	}
 
 	@SuppressWarnings("unchecked")
