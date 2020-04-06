@@ -8,7 +8,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class StamPromptApplicationHelper {
 
 	public static class StamPrompt {
-		public static StamPromptApplication DUMMY = new StamPromptApplication(
+		public static StampPromptApplication DUMMY = new StampPromptApplication(
 				"000000000000-0001", 
 				Arrays.asList(
 						new StampRecordDis(

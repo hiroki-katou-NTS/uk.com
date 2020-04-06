@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -65,7 +65,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @return
 	 */
 	private static List<StampRecordDis>  getSettingPromptApp(Require require) {
-		Optional<StamPromptApplication> data =  require.getStampSet();
+		Optional<StampPromptApplication> data =  require.getStampSet();
 		if(!data.isPresent()) {
 			return Collections.emptyList();
 		}
@@ -171,7 +171,7 @@ public class CheckAttdErrorAfterStampService {
 		 * @param companyId
 		 * @return
 		 */
-		Optional<StamPromptApplication> getStampSet();
+		Optional<StampPromptApplication> getStampSet();
 
 		/**
 		 * [R-2] 当月の締め期間を取得する ClosureService

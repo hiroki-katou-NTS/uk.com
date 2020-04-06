@@ -3,69 +3,24 @@ module nts.uk.at.view.kdp002.a {
     export module viewmodel {
         
         export class ScreenModel {
+
+            stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
+            stampClock: StampClock = new StampClock();
+            constructor() {
+                
+            }
+
             public startPage(): JQueryPromise<void>  {
                let self = this;
-               var dfd = $.Deferred<void>();
-                       let data: any = {
-                        width: 200,
-                        heighRow: 50,
-                        maxColumn: 2,
-                        clickProcess: self.clickProcess,
-                        infoButton: [{
-                            idButton: 'idA',
-                            background: 'green',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'TextA'
-                        },
-                        {
-                            idButton: 'idAA',
-                            background: 'green',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'TextA'
-                        },
-                        {
-                            idButton: 'idCCCC',
-                            background: 'green',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'TextA',
-                            buttonEmpty: true
-                        },
-                        {
-                            idButton: 'idCCCC',
-                            background: 'green',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'TextA',
-                            buttonEmpty: true
-                        },
-                        {
-                            background: '#8B7373',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'TextB',
-                            idButton: 'idB',
-                        },
-                        {
-                            background: 'gray',
-                            textColor: 'red',
-                            iconClass: 'img-link img-icon icon-download',
-                            textSize: 18,
-                            contentText: 'Textc',
-                            idButton: 'idC',
-                        }
-                        ]
-                    };
-                $("#genText").ntsGridButton(data);
-                dfd.resolve();
+
+               let dfd = $.Deferred<void>();
+                service.startPage().done((res) => {
+                    self.stampSetting(res.stampSetting);
+                    dfd.resolve();
+                }); 
+
                 return dfd.promise();
+
                }
 
            clickProcess(data: any) : any{
@@ -78,6 +33,7 @@ module nts.uk.at.view.kdp002.a {
 
               return dfd.promise();          
            }
+
         }
         
     }

@@ -173,7 +173,7 @@ public class GetStampTypeToSuppressService {
 		return new StampToSuppress(goingToWork, departure, goOut, turnBack);
 	}
 
-	private static interface Require extends GetEmpStampDataService.Require {
+	public static interface Require extends GetEmpStampDataService.Require {
 
 		/**
 		 * [R-1] 個人利用の打刻設定 StampSetPerRepository

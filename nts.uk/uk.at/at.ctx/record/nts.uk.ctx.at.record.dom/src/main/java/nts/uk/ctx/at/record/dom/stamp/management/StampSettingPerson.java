@@ -12,7 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author phongtq
  *
  */
-public class StampSettingPerson implements DomainAggregate{
+public class StampSettingPerson implements DomainAggregate {
 	
 	/** 会社ID */
 	@Getter

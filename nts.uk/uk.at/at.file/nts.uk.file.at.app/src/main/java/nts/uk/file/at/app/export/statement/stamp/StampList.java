@@ -17,4 +17,12 @@ public class StampList {
 	private String overtimeHour;
 	private String nightTime;
 
+	public void setDate(String datetime) {
+		this.date = datetime.split(" ")[0];
+	}
+	
+	public void setTime(String datetime) {
+		this.time = datetime.split(" ")[1];
+	}
+	
 }

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptAppRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddStamPromptApplicationCommandHandler extends CommandHandler<AddStamPromptApplicationCommad>{
 
 	@Inject
-	private StamPromptAppRepository repo;
+	private StampPromptAppRepository repo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AddStamPromptApplicationCommad> context) {

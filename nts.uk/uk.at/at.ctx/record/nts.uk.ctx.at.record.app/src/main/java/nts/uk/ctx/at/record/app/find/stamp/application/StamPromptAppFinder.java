@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.stamp.application.StamPromptAppRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 打刻の前準備(オプション)を表示する of StampFunctionFinder
@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class StamPromptAppFinder {
 	
 	@Inject
-	private StamPromptAppRepository repository;
+	private StampPromptAppRepository repository;
 
 	public List<StampPronptAppDto> getStampSet(){
 		String companyId = AppContexts.user().companyId();

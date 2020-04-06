@@ -85,7 +85,7 @@ public class Stamp implements DomainAggregate {
 		this.type = type;
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = reflectedCategory;
-		this.locationInfor = Optional.of(locationInfor);
+		this.locationInfor = Optional.ofNullable(locationInfor);
 	}
 	
 	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
@@ -97,7 +97,7 @@ public class Stamp implements DomainAggregate {
 		this.type = type;
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = false;
-		this.locationInfor = Optional.of(locationInfor);
+		this.locationInfor = Optional.ofNullable(locationInfor);
 	}
 	
 	public void setAttendanceTime(AttendanceTime attendanceTime) {

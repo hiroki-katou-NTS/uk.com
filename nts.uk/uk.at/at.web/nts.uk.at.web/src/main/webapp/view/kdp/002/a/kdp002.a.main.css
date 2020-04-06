@@ -1,3 +1,24 @@
-#genText{
-	margin-left: 20px;
+#genText {
+    margin-left: 20px;
+}
+
+#stamp-input {
+    width: 700px;
+}
+
+#stamp-info {
+    width: 300px;
+}
+
+#functions-area {
+    height: 0px;
+}
+
+#stamp-date {
+    text-align: center;
+}
+
+#stamp-time {
+    text-align: center;
+    margin-top: 10px;
 }
