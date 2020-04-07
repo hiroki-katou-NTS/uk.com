@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 990, height: 610 };</script>
+			<script>var dialogSize = { width: 1000, height: 610 };</script>
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="overflow: visible;margin-left: 5px">
+			<div id="contents-area" style="margin-left: 5px">
 				<div class="contentHeader">
 					<!--K1_1-->
 					<div class="titleAppType" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_47')}</div>
@@ -52,7 +52,8 @@
 						<div class="titleSelect" data-bind="ntsFormLabel: {required: false, text: k2_1 }"></div>
 						<!--選択された承認者 -->
 						<!--K2_14-->
-						<div class="approverSelect" data-bind="ntsFormLabel: {required: false, text: k2_2 }"></div>
+						<div class="approverSelect" style="margin-left: 0px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
+						<div class="approverSelect" style="margin-left: 30px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() != 0"></div>
 						<br />
 						<!-- List Approver -->
 						<!-- TH SETTING CA NHAN -->
@@ -187,7 +188,7 @@
 												rows: 14}">
 						</table>
 					</div>
-					<div style="width: 75px; margin-top: 125px; margin-left: 20px">
+					<div id="prev-next-button" style="width: 75px; margin-top: 125px; margin-left: 20px">
 						<div>
 							<button class="auto-height" style="width:75px;" data-bind="click: nextItem"><i class="img-icon icon-next label"></i></button>
 						</div>
@@ -196,7 +197,7 @@
 						</div>
 					</div>
 					<!-- List da chon -->
-					<div style="margin-left: 25px;">
+					<div id="selected-approver" style="margin-left: 25px;">
 						<!--選択された承認者 -->
 						<!--K2_14-->
 						<div data-bind="ntsFormLabel: {required: false }" style="display: block;">#{i18n.getText('CMM018_111')}</div>

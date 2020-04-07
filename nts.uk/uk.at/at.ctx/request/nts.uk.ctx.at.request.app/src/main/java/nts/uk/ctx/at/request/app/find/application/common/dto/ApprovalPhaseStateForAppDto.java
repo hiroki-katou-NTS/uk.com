@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +36,6 @@ public class ApprovalPhaseStateForAppDto {
 				phaseOrder, 
 				EnumAdaptor.valueOf(approvalAtrValue, ApprovalBehaviorAtrImport_New.class),
 				EnumAdaptor.valueOf(approvalFormValue, ApprovalFormImport.class), 
-				Collections.emptyList());
+				listApprovalFrame.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

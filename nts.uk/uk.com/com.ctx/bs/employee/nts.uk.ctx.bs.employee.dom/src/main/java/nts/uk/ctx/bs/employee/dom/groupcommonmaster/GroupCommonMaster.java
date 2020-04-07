@@ -49,5 +49,9 @@ public class GroupCommonMaster extends AggregateRoot {
 		this.commonMasterName = commonMasterName;
 		this.commonMasterMemo = commonMasterMemo;
 	}
-
+	
+	public static GroupCommonMaster creatFromJavaType(String contractCode, String commonMasterId, String commonMasterCode,
+			String commonMasterName, String commonMasterMemo) {
+		return new GroupCommonMaster( new ContractCode(contractCode), commonMasterId, new CommonMasterCode(commonMasterCode), new CommonMasterName(commonMasterName), commonMasterMemo);
+	}
 }

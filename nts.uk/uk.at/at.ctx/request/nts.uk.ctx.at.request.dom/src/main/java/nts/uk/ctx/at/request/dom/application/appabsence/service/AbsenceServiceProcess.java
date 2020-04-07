@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -22,7 +23,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode);
 	
-	void createAbsence(AppAbsence domain, Application_New newApp);
+	void createAbsence(AppAbsence domain, Application_New newApp, ApprovalRootStateImport_New approvalRootState);
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック

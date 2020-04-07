@@ -11,9 +11,8 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.Reco
 public class BaseDateGetImpl implements BaseDateGet {
 
 	@Override
-	public GeneralDate getBaseDate(Optional<GeneralDate> date) {
+	public GeneralDate getBaseDate(Optional<GeneralDate> date, RecordDate recordDate) {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval root )
-		RecordDate recordDate = RecordDate.SYSTEM_DATE;
 		if(recordDate == RecordDate.APP_DATE){
 			// 申請対象日のパラメータがあるかチェックする ( Check if there is a parameter on the application target date )
 			if(date.isPresent()){

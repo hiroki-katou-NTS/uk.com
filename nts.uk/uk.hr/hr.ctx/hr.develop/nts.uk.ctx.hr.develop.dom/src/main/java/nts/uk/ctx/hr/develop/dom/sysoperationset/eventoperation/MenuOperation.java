@@ -25,18 +25,18 @@ public class MenuOperation extends AggregateRoot{
 	private AvailableEvent useNotice;
 	
 	// 下位序列承認無
-	private Boolean noRankOrder;
+	private boolean noRankOrder;
 	// 会社コード
 	private BigInteger ccd;
 	
 	public static MenuOperation createFromJavaType(String programId, int useMenu, String companyId, 
-													int useApproval, int useNotice, Integer noRankOrder, BigInteger ccd) {
+													int useApproval, int useNotice, int noRankOrder, BigInteger ccd) {
 		return new MenuOperation(new ProgramId(programId),
 				EnumAdaptor.valueOf(useMenu, AvailableEvent.class),
 				companyId,
 				EnumAdaptor.valueOf(useApproval, AvailableEvent.class),
 				EnumAdaptor.valueOf(useNotice, AvailableEvent.class),
-				noRankOrder == null ? null : noRankOrder == 1,
+				noRankOrder == 1,
 				ccd);
 	}
 }

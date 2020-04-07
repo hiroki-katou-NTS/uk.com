@@ -15,7 +15,6 @@ import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonRep
 import nts.uk.ctx.hr.notice.dom.report.registration.person.RegistrationPersonReportRepository;
 import nts.uk.ctx.hr.notice.dom.report.registration.person.enu.ApprovalStatusForRegis;
 import nts.uk.ctx.hr.notice.infra.entity.report.registration.person.JhndtReportRegis;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -28,13 +27,17 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			+ "Where c.pk.cid = :cid "
 			+ "ORDER BY c.reportName ASC";
 	
+	private static final String getListReportByCIdSid = "select c FROM  JhndtReportRegis c "
+			+ "Where c.pk.cid = :cid and c.inputSid = :inputSid "
+			+ "ORDER BY c.reportName ASC";
+	
 	private static final String getListReportSaveDraft = "select c FROM  JhndtReportRegis c " 
 			+ " Where c.pk.cid = :cid "
 			+ " and c.regStatus = 1 and c.delFlg = 0 ORDER BY c.draftSaveDate ASC ";
 	
 	private static final String getDomainDetail = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.reportLayoutID = :reportLayoutID ";
 	private static final String getDomainByReportId = "select c FROM  JhndtReportRegis c Where c.pk.cid = :cid and c.pk.reportId = :reportId ";
-	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid and a.inputSid = :sid";
+	private static final String GET_MAX_REPORT_ID = "SELECT MAX(a.pk.reportId) FROM JhndtReportRegis a WHERE a.pk.cid = :cid ";
 	
 
 	private static final String SEL = "select DISTINCT r FROM  JhndtReportRegis r";
@@ -48,9 +51,9 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public int getMaxReportId(String sid, String cid) {
+	public int getMaxReportId(String cid) {
 		Object max = this.queryProxy().query(GET_MAX_REPORT_ID, Object.class).setParameter("cid", cid)
-				.setParameter("sid", sid).getSingleOrNull();
+				.getSingleOrNull();
 		if (max.equals(null)) {
 			return 0;
 		} else {
@@ -62,6 +65,14 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 	public List<RegistrationPersonReport> getListByCid(String cid) {
 		return this.queryProxy().query(getListReportByCId, JhndtReportRegis.class)
 				.setParameter("cid", cid).getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<RegistrationPersonReport> getListByCidandSid(String cid, String inputSid) {
+		return this.queryProxy().query(getListReportByCIdSid, JhndtReportRegis.class)
+				.setParameter("cid", cid)
+				.setParameter("inputSid", inputSid)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -118,6 +129,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			JhndtReportRegis entity = entityOpt.get();
 			updateEntity(entity, domain);
 			this.commandProxy().update(entity);
+			this.getEntityManager().flush();
 		}
 	}
 
@@ -145,6 +157,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		entity.reportType  = domain.getReportType().value;
 		entity.sendBackSID  = domain.getSendBackSID();
 		entity.sendBackComment = domain.getSendBackComment();
+		entity.aprStatus = domain.getAprStatus().value;
 	}
 
 	@Override
@@ -174,7 +187,7 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			query += " LEFT JOIN JhndtReportApproval a" + " ON r.pk.reportId = a.pk.reportID";
 		}
 
-		query += " WHERE r.pk.cid = :cId AND r.appDate BETWEEN :startDate AND :endDate";
+		query += " WHERE r.pk.cid = :cId AND r.appDate >= :startDate AND r.appDate <= :endDate AND r.delFlg = 0";
 
 		if (reportId != null) {
 			query += " AND r.reportLayoutID = %s";
@@ -182,8 +195,13 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 		}
 
 		if (approvalStatus != null) {
-			query += " AND r.aprStatus = %s";
-			query = String.format(query, approvalStatus);
+			if (approvalReport) {
+				query += " AND a.aprStatus = %s";
+				query = String.format(query, approvalStatus);
+			} else {
+				query += " AND r.aprStatus = %s";
+				query = String.format(query, approvalStatus);
+			}
 
 		}
 		
@@ -196,8 +214,10 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 				query = String.format(query, inputName, inputName);
 			}
 		}
-		
-
+		// set start date la dau ngay
+		startDate = GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 00, 00, 00);
+		// set end date la cuoi ngay
+		endDate = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59);
 		return this.queryProxy().query(query, JhndtReportRegis.class).setParameter("cId", cId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}
@@ -227,8 +247,6 @@ public class JpaRegistrationPersonReportRepository extends JpaRepository impleme
 			this.commandProxy().update(entity);
 		}
 	}
-	
-	
-	
+
 
 }

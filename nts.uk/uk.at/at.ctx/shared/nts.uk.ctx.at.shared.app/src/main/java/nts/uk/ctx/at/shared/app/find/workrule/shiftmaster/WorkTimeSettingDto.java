@@ -15,7 +15,7 @@ public class WorkTimeSettingDto {
 	
 	public WorkTimeSettingDto (WorkTimeSetting domain) {
 		this.workTimeCode = domain.getWorktimeCode().v();
-		this.workTimeName = domain.getWorkTimeDisplayName().getWorkTimeAbName().v();
+		this.workTimeName = domain.getWorkTimeDisplayName().getWorkTimeName().v();
 	}
 	
 	public WorkTimeSettingDto (String workTimeCode, String workTimeName) {

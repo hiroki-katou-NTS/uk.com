@@ -85,22 +85,15 @@ public class NotifiOfChangInNameInsPerPDFService extends ExportService<NotifiOfC
             temp.setChangeDate(empIds.stream().filter(eChangDate->eChangDate.getEmployeeId().equals(e.getSid())).findFirst().get().getChangeDate());
             temp.setFillingDate(fillingDate.toString());
             temp.setEmpInsReportSetting(empInsReportSetting);
-            switch (empInsReportSetting.getOfficeClsAtr()){
-                case OUTPUT_COMPANY:{
-                    temp.setCompanyInfor(companyInfor);
-                    break;
-                }
-                case OUPUT_LABOR_OFFICE:{
-                    List<LaborInsuranceOffice> lstLaborInsuranceOffice =  empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getSid(),fillingDate);
-                    temp.setLaborInsuranceOffice(lstLaborInsuranceOffice.isEmpty() ? null : lstLaborInsuranceOffice.get(0));
-                    break;
-                }
-                case DO_NOT_OUTPUT:{
-                    break;
-                }
-            }
+
+            temp.setCompanyInfor(companyInfor);
+
+            List<LaborInsuranceOffice> lstLaborInsuranceOffice =  empInsReportSettingExRepository.getListEmpInsHistByDate(cid,e.getSid(),fillingDate);
+            temp.setLaborInsuranceOffice(lstLaborInsuranceOffice.isEmpty() ? null : lstLaborInsuranceOffice.get(0));
+
             Optional<EmpInsNumInfo> empInsNumInfo = mEmpInsNumInfoRepository.getEmpInsNumInfoById(cid,e.getSid(),e.getHistoryItem().get(0).identifier());
             temp.setEmpInsNumInfo(empInsNumInfo.orElseGet(() -> new EmpInsNumInfo(e.getHistoryItem().get(0).identifier(), "")));
+
             // dummy data thuật toán ドメインモデル「外国人在留履歴情報」を取得する
             Optional<EmployeeInfoEx> employee = employeeList.stream().filter(item-> item.getEmployeeId().equals(e.getSid())).findFirst();
             if(employee.isPresent()) {

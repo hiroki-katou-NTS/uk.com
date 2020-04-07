@@ -169,9 +169,9 @@
 						</div>
 						<!-- SCREEN B -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode" style="margin-top: 10px;">
-							<div style="display: inline-flex">
+							<div style="">
 							<!-- B2: List gridList -->
-							<div id = "left-contents" style="width: 320px;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
+							<div id = "left-contents" style="float: left;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
 								<div style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
@@ -198,7 +198,7 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px;" data-bind="with: $parent.viewmodelSubB">
+							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 340px;" data-bind="with: $parent.viewmodelSubB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>

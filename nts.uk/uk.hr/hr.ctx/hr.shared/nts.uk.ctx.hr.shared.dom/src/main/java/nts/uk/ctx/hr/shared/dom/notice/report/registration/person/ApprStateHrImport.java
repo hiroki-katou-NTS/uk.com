@@ -15,6 +15,8 @@ public class ApprStateHrImport {
 	private GeneralDate appDate;
 	/**対象者ID*/
 	private String employeeID;
+	/**反映前flg*/
+	private boolean reflectFlag;
 	/**承認フェーズ*/
 	private List<PhaseSttHrImport> lstPhaseState = new ArrayList<>();
 }

@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -122,7 +123,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			List<GeneralDate> dateLst, AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// 基準日として扱う日の取得
-		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst());
+		RecordDate recordDate = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate();
+		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst(), recordDate);
 		// 社員IDから申請承認設定情報の取得
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSetting approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
@@ -141,7 +143,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 雇用別申請承認設定を取得する
 		List<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
-		output.setEmploymentSet(CollectionUtil.isEmpty(employmentSetLst) ? null : employmentSetLst.stream().findFirst().get());
+		output.setEmploymentSet(employmentSetLst);
 		
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
@@ -233,16 +235,20 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput) {
+			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
 			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
 					.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
-			return this.getAppDispInfoRelatedDate(
-					companyID, "", dateLst, appType, 
+			AppDispInfoWithDateOutput result = this.getAppDispInfoRelatedDate(
+					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), dateLst, appType, 
 					appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp(), 
 					appTypeSetting.getDisplayInitialSegment());
+			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
+			appDispInfoWithDateOutput.setAchievementOutputLst(result.getAchievementOutputLst());
+			appDispInfoWithDateOutput.setAppDetailContentLst(result.getAppDetailContentLst());
+			return appDispInfoWithDateOutput;
 		} else {
 			// 申請表示情報(基準日関係あり)を取得する
 			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);
@@ -250,24 +256,27 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public boolean appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
-		boolean masterUnregistered = true;
+	public ApplyWorkTypeOutput appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD) {
+		Optional<WorkType> workTypeInLst = wkTypes.stream()
+				.filter(wk -> wk.getWorkTypeCode().v().equals(wkTypeCD))
+				.findAny();
+		if(workTypeInLst.isPresent()) {
+			// INPUT.勤務種類(List)内にINPUT.選択済勤務種類コードが含まれる((trong INPUT.workType(list) có chứa selectedWorkTypeCode)
+			return new ApplyWorkTypeOutput(wkTypes, false);
+		}
+		
 		// ドメインモデル「勤務種類」を取得する(Lấy domain [WorkType])
-		Optional<WorkType> WkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
-		boolean isInList = false;
-		if(WkTypeOpt.isPresent()){
-			  isInList = wkTypes.stream()
-					.filter(wk -> wk.getWorkTypeCode().equals(WkTypeOpt.get().getWorkTypeCode()))
-					.collect(Collectors.toList()).isEmpty();
+		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
+		if(!wkTypeOpt.isPresent()) {
+			// マスタ未登録←true(master Unregistered ←true)
+			return new ApplyWorkTypeOutput(wkTypes, true);
 		}
-
-		if (isInList) {
-			// INPUT.勤務種類(List)に勤務種類を追加する(Thêm workType vào INPUT.workType(list))
-			wkTypes.add(WkTypeOpt.get());
-
-			masterUnregistered = false;
-		}
-		return masterUnregistered;
+		// INPUT.勤務種類(List)に勤務種類を追加する(Thêm workType vào INPUT.workType(list))
+		wkTypes.add(wkTypeOpt.get());
+		// INPUT.勤務種類(List)をソートする(Sort INPUT.workType(List))
+		wkTypes.sort(Comparator.comparing(x -> x.getWorkTypeCode().v()));
+		// マスタ未登録←false(master Unregistered ←false)
+		return new ApplyWorkTypeOutput(wkTypes, false);
 	}
 
 }

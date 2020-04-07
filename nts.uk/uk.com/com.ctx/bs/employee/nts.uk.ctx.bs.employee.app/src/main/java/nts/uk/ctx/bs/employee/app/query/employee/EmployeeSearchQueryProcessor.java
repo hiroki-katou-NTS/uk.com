@@ -28,6 +28,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
@@ -76,6 +77,9 @@ public class EmployeeSearchQueryProcessor {
 	/** The job title history repository. */
 	@Inject
 	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
+	
+	@Inject
+	private AffJobTitleHistoryItemRepository affJobTitleHistoryItemRepository;
 
 	/** The workplace history repository. */
 	@Inject
@@ -590,12 +594,12 @@ public class EmployeeSearchQueryProcessor {
 			}
 
 			// check exist job title history
-			if (mapJobTitleHistory.containsKey(employeeData.getEmployeeId())
-					&& mapJobTitle.containsKey(
-							mapJobTitleHistory.get(employeeData.getEmployeeId()).getEmployeeId())) {
-				AffJobTitleHistory jobTitleHistory = mapJobTitleHistory
-						.get(employeeData.getEmployeeId());
-				JobTitleInfo jobTitleInfo = mapJobTitle.get(jobTitleHistory.getEmployeeId());
+			if (mapJobTitleHistory.containsKey(employeeData.getEmployeeId())) {
+				String jobTitleId = this.affJobTitleHistoryItemRepository
+						.findByHitoryId(mapJobTitleHistory.get(employeeData.getEmployeeId())
+								.getHistoryItems().get(0).identifier())
+						.get().getJobTitleId();
+				JobTitleInfo jobTitleInfo = mapJobTitle.get(jobTitleId);
 				data.setJobTitleId(jobTitleInfo.getJobTitleId());
 				data.setJobTitleCode(jobTitleInfo.getJobTitleCode().v());
 				data.setJobTitleName(jobTitleInfo.getJobTitleName().v());

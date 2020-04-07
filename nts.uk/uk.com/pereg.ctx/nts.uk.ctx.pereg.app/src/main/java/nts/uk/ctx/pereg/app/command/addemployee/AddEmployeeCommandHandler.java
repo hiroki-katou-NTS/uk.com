@@ -104,7 +104,12 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00021", "IS00255");
 		// 労働条件２
 		aMap.put("CS00070", "IS00781");
+		// 社員社保事業所
+		aMap.put("CS00075", "IS00788");
+		// 社員健康保険資格情報
+		aMap.put("CS00082", "IS00841");
 
+		aMap.put("CS00092", "IS01016");
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
 
@@ -199,7 +204,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<ItemsByCategory> CS00020Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
 		
 		Optional<ItemsByCategory> CS00070Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
-		
+
+		Optional<ItemsByCategory> CS00075Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00075")).findFirst();
+
 		Optional<ItemsByCategory> affComHist = command.getInputs().stream()
 				.filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
 		if (!affComHist.isPresent()) {
@@ -319,7 +326,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			inputs.add(CS00020);
 			}
 		}
-		
+
+
 
 		for (ItemsByCategory input : inputs) {
 			// prepare data
@@ -364,7 +372,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00019": // ShortWorkTimeHistory
 			case "CS00020": // WorkingCondition
 			case "CS00021": // BusinessTypeOfEmployeeHistory
+			case "CS00092":
 			case "CS00070": // WorkingCondition
+			case "CS00075": // EmpCorpHealthHistory
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode == null? inputCompanyDate: startDateItemCode, null), Optional.empty());

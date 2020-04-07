@@ -294,6 +294,30 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				rootType,
 				baseDate);
 	}
+	
+	@Override
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID,
+			List<ApprovalPhaseStateExport> listApprovalPhaseState) {
+		List<ApprovalPhaseState> convertLst = listApprovalPhaseState.stream()
+				.map(x -> ApprovalPhaseState.createFormTypeJava(
+						x.getPhaseOrder(), 
+						x.getApprovalAtr().value, 
+						x.getApprovalForm().value, 
+						x.getListApprovalFrame().stream().map(y -> ApprovalFrame.convert(
+								y.getFrameOrder(), 
+								y.getConfirmAtr(), 
+								y.getAppDate(), 
+								y.getListApprover().stream().map(z -> ApproverInfor.convert(
+										z.getApproverID(), 
+										z.getApprovalAtr().value, 
+										z.getAgentID(), 
+										z.getApprovalDate(), 
+										z.getApprovalReason()))
+								.collect(Collectors.toList())))
+						.collect(Collectors.toList())))
+				.collect(Collectors.toList());
+		approvalRootStateService.insertFromCache(companyID, appID, date, employeeID, convertLst);
+	}
 
 	@Override
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
@@ -1072,13 +1096,13 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
 						switch (statusOfRepresenter) {
 						case RETIREMENT:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_49") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_49") + "）");
 							break;
 						case LEAVE_OF_ABSENCE:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_45") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_45") + "）");
 							break;
 						case HOLIDAY:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_47") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_47") + "）");
 							break;
 						default:
 							break;

@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingPerInfo;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.DataBeforeReflectingRepository;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.RequestFlag;
-import nts.uk.ctx.hr.shared.dom.databeforereflecting.service.DataBeforeReflectingPerInfoService;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingRepository;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service.DataBeforeReflectingPerInfoService;
 import nts.uk.ctx.hr.shared.dom.personalinfo.retirementinfo.RetirementCategory;
 import nts.uk.shr.com.context.AppContexts;
 

@@ -49,7 +49,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         jobPath: KnockoutObservable<number> = ko.observable(0);
         wagePaymentMode: KnockoutObservable<number> = ko.observable(0);
         employmentStatus: KnockoutObservable<number> = ko.observable(0);
-        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(0);
+        contrPeriPrintAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             var self = this;
@@ -119,21 +119,27 @@ module nts.uk.pr.view.qui001.c.viewmodel {
                 sId: self.selectedItem(),
                 acquiAtr: self.acquiAtr(),
                 jobPath: self.jobPath(),
-                workingTime: self.workingTime() > 0 ? self.workingTime() : null,
+                workingTime: self.workingTime() >= 0 ? self.workingTime() : null,
                 jobAtr: self.jobAtr(),
-                payWage: self.payWage() > 0 ? self.payWage() : null,
+                payWage: self.payWage() >= 0 ? self.payWage() : null,
                 insCauseAtr: self.insCauseAtr(),
                 wagePaymentMode: self.wagePaymentMode(),
                 employmentStatus: self.employmentStatus(),
                 contrPeriPrintAtr: self.contrPeriPrintAtr(),
                 screenMode: self.screenMode()
             };
+            nts.uk.ui.block.grayout();
             service.register(empInsGetInfo).done(function () {
+                nts.uk.ui.block.clear();
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
+                    $('#emp-component').focus();
+                    close();
                 });
             }).fail(error => {
                 dialog.alertError(error);
+            }).always(()=>{
+                nts.uk.ui.errors.clearAll();
             });
             $('#emp-component').focus();
         }
@@ -141,7 +147,10 @@ module nts.uk.pr.view.qui001.c.viewmodel {
         startPage(sId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             service.start(sId).done(function (data: any) {
+                nts.uk.ui.block.clear();
+                self.screenMode(model.SCREEN_MODE.NEW);
                 if (data) {
                     self.sId(data.sId);
                     self.acquiAtr(data.acquiAtr);
@@ -160,6 +169,8 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             }).fail(error => {
                 dialog.alertError(error);
                 dfd.reject();
+            }).always(() => {
+                nts.uk.ui.errors.clearAll();
             });
             return dfd.promise();
         }
@@ -180,7 +191,7 @@ module nts.uk.pr.view.qui001.c.viewmodel {
             self.insCauseAtr(0);
             self.wagePaymentMode(0);
             self.employmentStatus(0);
-            self.contrPeriPrintAtr(0);
+            self.contrPeriPrintAtr(1);
         }
     }
 

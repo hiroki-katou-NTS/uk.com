@@ -26,10 +26,10 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtEmpInsHist f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid IN :sids AND f.startDate <= :baseDate AND  f.endDate >= :baseDate ";
     private static final String SELECT_BY_KEY_HIS = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsHistPk.cid =:cid AND  f.empInsHistPk.sid =:sid AND  f.empInsHistPk.histId =:histId ";
-    private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate <= :startDate AND f.endDate >= :startDate";
+    private static final String SELECT_BY_EMP_IDS_AND_DATE = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.sid IN :sids AND f.startDate >= :startDate AND f.startDate <= :endDate";
     private static final String SELECT_BY_HIST_IDS = SELECT_ALL_QUERY_STRING + " WHERE f.empInsHistPk.cid = :cid AND f.empInsHistPk.histId IN :histIds";
 	private static final String SELECT_BY_EMP_AND_PERIOD = SELECT_ALL_QUERY_STRING
-			+ " WHERE f.empInsHistPk.sid = :sid AND f.endDate >= :startDate AND f.endDate <= :endDate";
+			+ " WHERE f.empInsHistPk.sid = :sid AND f.startDate <= :endDate AND f.endDate >= :endDate";
 
 	@Override
 	public List<EmpInsHist> getAllEmpInsHist() {
@@ -38,12 +38,15 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 
 
 	@Override
-	public List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate) {
+	public List<EmpInsHist> getByEmpIdsAndDate(String cid, List<String> empIds, GeneralDate startDate, GeneralDate endDate) {
 		List<EmpInsHist> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitIdList -> {
 			result.addAll(toEmpInsHistDomain(this.queryProxy().query(SELECT_BY_EMP_IDS_AND_DATE, QqsmtEmpInsHist.class)
-					.setParameter("cid", AppContexts.user().companyId()).setParameter("sids", splitIdList)
-					.setParameter("startDate", startDate).getList()));
+					.setParameter("cid", cid)
+					.setParameter("sids", splitIdList)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
+					.getList()));
 		});
 		return result;
 	}
@@ -101,10 +104,10 @@ public class JpaEmpInsHistRepository extends JpaRepository implements EmpInsHist
 	}
 
 	@Override
-	public Optional<EmpInsHist> getByEmpIdsAndPeriod(String sId, DatePeriod period) {
+	public Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate startDate, GeneralDate endDate) {
 		List<QqsmtEmpInsHist> empInsHists = this.queryProxy().query(SELECT_BY_EMP_AND_PERIOD, QqsmtEmpInsHist.class)
-				.setParameter("sid", sId).setParameter("startDate", period.start())
-				.setParameter("endDate", period.end()).getList();
+				.setParameter("sid", sId)
+				.setParameter("endDate", endDate).getList();
 		if (empInsHists != null && !empInsHists.isEmpty()) {
 			return Optional.of(toEmploymentHistory(empInsHists));
 		}

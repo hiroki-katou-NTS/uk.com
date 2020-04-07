@@ -23,7 +23,6 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -39,9 +38,6 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Inject
 	private SyEmployeePub syEmpPub;
-	
-//	@Inject
-//	private SyWorkplacePub wpkPub;
 	
 	@Inject
 	private WorkplacePub wkpPubNew;

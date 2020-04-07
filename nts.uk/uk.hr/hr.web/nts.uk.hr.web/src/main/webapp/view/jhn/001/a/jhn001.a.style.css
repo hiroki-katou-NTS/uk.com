@@ -40,7 +40,7 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	width: 400px !important;
+	width: 380px !important;
 }
 
 #B221_3{
@@ -59,11 +59,11 @@ button.search-btn {
 }
 
 #B222 {
-	margin-left: -10px; 
+	margin-left: -20px; 
 	margin-top: 14px;
 	float: left;
 	/* min-height: 600px; */
-	width: 873px;
+	width: 815px;
 	position: relative;
 	box-sizing: border-box;
     border: 1px solid #ccc;
@@ -106,10 +106,6 @@ div#B221.relative.bg-green.caret-right.caret-background {
 	width: 450px;
 }
 
-div.drag-panel{
-	max-height: 365px ;
-    height: 365px;
-}
 
 .nosetarea {
 	width: 810px;
@@ -163,6 +159,20 @@ div.drag-panel{
 }
 
 .layout-control .drag-panel {
-    width: 852px !important;
+	width: 795px !important;
+	border: 0px solid #ccc !important;
 }
 
+.layout-control div.ui-sortable {
+    overflow-y: unset !important;
+}
+
+#B221_3 > div:nth-child(1) > span > input {
+	width: 245px !important;
+}
+
+.goBackDisable {
+	pointer-events: none;
+    cursor: default;
+    color: #888888;
+}

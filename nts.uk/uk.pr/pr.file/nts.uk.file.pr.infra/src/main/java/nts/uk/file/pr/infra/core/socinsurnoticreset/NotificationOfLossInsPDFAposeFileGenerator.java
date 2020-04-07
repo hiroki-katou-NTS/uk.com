@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -18,6 +19,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -164,8 +166,11 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),1) : "");
         worksheets.getRangeByName(sheetName + "!D1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),2) :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
-        worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getAdd_1() + company.getAdd_2() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getAdd1() + data.getAdd2() : "");
+        Style style = worksheets.getRangeByName(sheetName + "!D1_6").get(0,0).getStyle();
+        style.setTextWrapped(true);
+        worksheets.getRangeByName(sheetName + "!D1_6").setStyle(style);
+        worksheets.getRangeByName(sheetName + "!D1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (company.getAdd_1() + "\n" + company.getAdd_2()) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (data.getAdd1() + "\n" + data.getAdd2()) : "");
         worksheets.getRangeByName(sheetName + "!D1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!D1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
@@ -227,7 +232,7 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         return "";
     }
 
-    private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff){
+    private void fillCompanyHealthy(WorksheetCollection worksheets, InsLossDataExport data, GeneralDate baseDate, CompanyInfor company, String sheetName, boolean isHeal, BusinessDivision typeOff) throws UnsupportedEncodingException {
         JapaneseDate dateJp = toJapaneseDate(baseDate);
         worksheets.getRangeByName(sheetName + "!A1_1_1").setValue(dateJp.year() + 1);
         worksheets.getRangeByName(sheetName + "!A1_1_2").setValue(dateJp.month());
@@ -239,8 +244,11 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),1) : "");
         worksheets.getRangeByName(sheetName + "!A1_5_2").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? formatPortCd(company.getPostCd(),2) :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? formatPortCd(data.getPortCd(),2) : "");
-        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getAdd_1() + company.getAdd_2() :
-                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getAdd1() + data.getAdd2() : "");
+        Style style = worksheets.getRangeByName(sheetName + "!A1_6").get(0,0).getStyle();
+        style.setTextWrapped(true);
+        worksheets.getRangeByName(sheetName + "!A1_6").setStyle(style);
+        worksheets.getRangeByName(sheetName + "!A1_6").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? (formatTooLongText(company.getAdd_1(), 60) + "\n" +(company.getAdd_2() != null ? company.getAdd_2() : "")) :
+                typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? (formatTooLongText(data.getAdd1(), 60) + "\n" + (data.getAdd2() != null ? data.getAdd2() : "")) : "");
         worksheets.getRangeByName(sheetName + "!A1_7").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getCompanyName() :
                 typeOff == BusinessDivision.OUTPUT_SIC_INSURES ? data.getCompanyName() : "");
         worksheets.getRangeByName(sheetName + "!A1_8").setValue(typeOff == BusinessDivision.OUTPUT_COMPANY_NAME ? company.getRepname() :
@@ -513,5 +521,25 @@ public class NotificationOfLossInsPDFAposeFileGenerator extends AsposeCellsRepor
         return result.toString();
     }
 
-
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
+    }
 }

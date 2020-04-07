@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,17 @@ public class SpecAbsenceDispInfoDto {
 		result.maxDay = specAbsenceDispInfo.getMaxDay().orElse(null);
 		result.dayOfRela = specAbsenceDispInfo.getDayOfRela().orElse(null);
 		result.dateSpecHdRelationLst = specAbsenceDispInfo.getDateSpecHdRelationLst().orElse(null);
+		return result;
+	}
+	
+	public SpecAbsenceDispInfo toDomain() {
+		SpecAbsenceDispInfo result = new SpecAbsenceDispInfo();
+		result.setSpecHdForEventFlag(specHdForEventFlag);
+		result.setSpecHdEvent(specHdEvent == null ? Optional.empty() : Optional.of(specHdEvent.toDomain()));
+		result.setFrameNo(Optional.of(frameNo));
+		result.setMaxDay(Optional.of(maxDay));
+		result.setDayOfRela(Optional.of(dayOfRela));
+		result.setDateSpecHdRelationLst(dateSpecHdRelationLst == null ? Optional.empty() : Optional.of(dateSpecHdRelationLst));
 		return result;
 	}
 	

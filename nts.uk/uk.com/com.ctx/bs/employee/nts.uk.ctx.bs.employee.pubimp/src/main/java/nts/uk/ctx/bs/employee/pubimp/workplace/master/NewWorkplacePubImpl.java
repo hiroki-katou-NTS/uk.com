@@ -175,7 +175,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		// ドメインモデル「職場構成」を取得する(lấy domain 「WorkplaceConfig」)
 		Optional<WorkplaceConfiguration> opWorkplaceConfig = workplaceConfigurationRepository.findByDate(companyID, date);
 		if(!opWorkplaceConfig.isPresent()) {
-			throw new RuntimeException("error workplace config");
+			return new ArrayList<String>();
 		}
 		// ドメインモデル「職場情報」を取得する
 		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.getAllActiveWorkplaceByCompany(

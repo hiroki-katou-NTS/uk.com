@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.service.export.AppRootStateConfirmExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
@@ -15,7 +16,6 @@ import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
-import nts.arc.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -109,6 +109,8 @@ public interface ApprovalRootStatePub {
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate);
 	
 	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Integer rootType, GeneralDate baseDate);
+	
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState);
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)

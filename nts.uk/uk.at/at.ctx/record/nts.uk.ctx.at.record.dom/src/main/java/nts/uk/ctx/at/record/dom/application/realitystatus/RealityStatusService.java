@@ -64,7 +64,6 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkPlaceConfigImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkplaceConfigAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceHierarchyImport;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
