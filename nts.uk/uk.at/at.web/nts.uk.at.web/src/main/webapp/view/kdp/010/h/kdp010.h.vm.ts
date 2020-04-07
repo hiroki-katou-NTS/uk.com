@@ -71,11 +71,12 @@ module nts.uk.at.view.kdp010.h {
                 if (self.dataShare.dataShare != undefined) {
                     let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
                     if (data) {
-                        self.letterColors(data.buttonDisSet.buttonNameSet.textColor),
-                            self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName),
-                            self.backgroundColors(data.buttonDisSet.backGroundColor),
-                            self.selectedStamping(data.buttonType.stampType.goOutArt),
-                            self.selectedAudio(data.audioType)
+                            self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
+                            self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
+                            self.backgroundColors(data.buttonDisSet.backGroundColor);
+                            self.selectedStamping(data.buttonType.stampType.goOutArt);
+                            self.selectedAudio(data.audioType);
+                            self.selectedHighlight(data.usrArt);
                     }
                 }
                 $(document).ready(function() {
@@ -89,7 +90,7 @@ module nts.uk.at.view.kdp010.h {
             public passData(): void {
                 let self = this;
                 $('#correc').trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
+                if (nts.uk.ui.errors.hasError() && self.selectedHighlight() == 1) {
                     return;
                 }
                 self.dataStampPage = ({

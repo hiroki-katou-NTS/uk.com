@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 
-@IntegerRange(min = 1, max = 360)
+@IntegerRange(min = 0, max = 360)
 public class ResultDisplayTime extends IntegerPrimitiveValue<ResultDisplayTime> {
 
 	/**

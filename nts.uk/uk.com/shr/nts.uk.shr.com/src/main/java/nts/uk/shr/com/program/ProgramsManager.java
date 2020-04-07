@@ -2411,8 +2411,17 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     /**
      * KDP010
      */
-    public static final Program KDP010B = new Program(WebAppId.AT, ProgramIdConsts.KDP010B, "KDP010_2",
+    public static final Program KDP010B = new Program(WebAppId.AT, ProgramIdConsts.KDP010B, "KDP010_3",
             "/view/kdp/010/b/index.xhtml");
+    
+    public static final Program KDP010E = new Program(WebAppId.AT, ProgramIdConsts.KDP010E, "KDP010_6",
+            "/view/kdp/010/e/index.xhtml");
+    
+    public static final Program KDP010G = new Program(WebAppId.AT, ProgramIdConsts.KDP010G, "KDP010_8",
+            "/view/kdp/010/g/index.xhtml");
+    
+    public static final Program KDP010H = new Program(WebAppId.AT, ProgramIdConsts.KDP010B, "KDP010_9",
+            "/view/kdp/010/h/index.xhtml");
 
     /**
      * KDP011

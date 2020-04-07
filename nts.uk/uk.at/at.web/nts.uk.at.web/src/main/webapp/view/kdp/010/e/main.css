@@ -52,7 +52,7 @@
 	margin-left: 235px;
 }
 
-.langer {
+.small {
 	margin-left: 180px;
 }
 
@@ -62,4 +62,8 @@
 
 #holiday-radio-e, #overtime-radio-e {
 	margin-left: 52px;
+}
+
+.text-adt{
+	margin-left: 10px;
 }

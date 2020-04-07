@@ -86,7 +86,10 @@ module nts.uk.at.view.kdp010.g {
                         else
                             self.selectedLayout(newValue);
                     } else {
-                        self.selectedLayout(0);
+                        if(self.checkLayout() == false)
+                            self.selectedLayout(0);
+                        else
+                            self.selectedLayout(newValue);
                     }
                     $('#combobox').focus();
                     dfd.resolve();
@@ -196,9 +199,6 @@ module nts.uk.at.view.kdp010.g {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
                     nts.uk.ui.block.clear();
-                    $(document).ready(function() {
-                        $('#combobox').focus();
-                    });
                 });
             }
 

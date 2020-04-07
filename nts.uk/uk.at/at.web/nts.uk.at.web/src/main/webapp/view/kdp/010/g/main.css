@@ -51,3 +51,30 @@
 	margin-top: 119px;
 }
 
+.btn_2, .btn_3, .btn_4 {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 5px;
+}
+
+.btn_6, .btn_7, .btn_8 {
+	width: 100px;
+	height: 100px;
+	margin-top: 20px;
+	margin-left: 5px;
+}
+
+.btn_1 {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+}
+
+.btn_5 {
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+	margin-top: 20px;
+}

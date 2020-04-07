@@ -51,6 +51,9 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             let self = this, dfd = $.Deferred();
             self.getStampApp();
             $.when(self.getWorkTypeList()).done(function() {
+                $(document).ready(function() {
+                    $('#imprint-leakage-radio-e').focus();
+                });
                 dfd.resolve();
             });
             return dfd.promise();
@@ -58,8 +61,10 @@ module nts.uk.at.view.kdp010.e.viewmodel {
 
         registration() {
             let self = this, dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
             $.when(self.deleteStampFunc(), self.registrationApp()).done(function() {
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 self.registrationFunc();
                 dfd.resolve();
             });
@@ -72,6 +77,15 @@ module nts.uk.at.view.kdp010.e.viewmodel {
          */
         registrationApp() {
             let self = this;
+            $(document).ready(function() {
+                $('#message-text-1').trigger("validate");
+                $('#message-text-2').trigger("validate");
+                $('#message-text-3').trigger("validate");
+            });
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             nts.uk.ui.block.invisible();
             // Data from Screen 
             let StampRecordDisCommand = {
@@ -125,7 +139,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         }
 
         getWorkTypeList() {
-            let self = this,dfd = $.Deferred();
+            let self = this, dfd = $.Deferred();
             service.getOptItemByAtr().done(function(res) {
                 self.workTypeList.removeAll();
                 _.forEach(res, function(item) {
@@ -148,7 +162,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             let dfd = $.Deferred();
             service.getStampApp().done(function(totalStamp) {
                 if (totalStamp.length > 0) {
-
+                    totalStamp = _.sortBy(totalStamp, item => item.checkErrorType)
                     self.selectedImprint(totalStamp[0].useArt);
                     self.messageValueFirst(totalStamp[0].messageContent);
                     self.firstColors(totalStamp[0].messageColor);
@@ -222,9 +236,9 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         }
 
         /**
-         * Open Dialog KDL002
+         * Open Dialog KDL021
          */
-        openKDL002Dialog() {
+        openKDL021Dialog() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
@@ -237,7 +251,9 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                if (data.length > 5) {                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" });
+                if (data.length > 5) {                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" }).then(() => {
+                            nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml');
+                        });
                     return;
                 }
                 self.generateNameCorrespondingToAttendanceItem(data);
