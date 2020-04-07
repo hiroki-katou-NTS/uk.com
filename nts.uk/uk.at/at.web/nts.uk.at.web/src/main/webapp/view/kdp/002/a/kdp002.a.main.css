@@ -3,7 +3,7 @@
 }
 
 #stamp-input {
-  width: 800px;
+  width: 560px;
 }
 
 #stamp-info {
@@ -35,4 +35,18 @@
 }
 #stamp-time-text {
   font-size: 5rem !important;
+}
+.full-width{
+  width: 100%;
+}
+
+#stamp-history-tbl #tbl-header, #tbl-header-time {
+  border: 1px solid #CCC;
+  background-color: #CFF1A5;
+  padding: 5px 0 5px 5px;
+  text-align: center;
+}
+
+#tbl-header {
+  font-weight: bold;
 }

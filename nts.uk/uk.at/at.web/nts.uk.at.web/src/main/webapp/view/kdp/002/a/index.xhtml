@@ -10,8 +10,9 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 1200, height: 820 };
+          var dialogSize = { width: 990, height: 620 };
         </script>
+        <com:scriptfile set="IGNITE" />
         <com:stylefile path="../../share/kdp.main.css" />
         <com:scriptfile path="../../share/kdpbutton.vm.js" />
         <com:stylefile path="kdp002.a.main.css" />
@@ -20,7 +21,6 @@
         <com:scriptfile path="kdp002.a.start.js" />
         <com:scriptfile path="kdp002.a.model.js" />
         <com:scriptfile path="kdp002.a.ebs.info.model.js" />
-        
       </ui:define>
 
       <ui:define name="content">
@@ -54,16 +54,7 @@
             </div>
           </div>
           <div class="pull-left" id="stamp-info">
-            <table id="gridlist-tbl" data-bind="ntsGridList: {
-              width: 380,
-              height: 485,
-              options: [],
-              optionsValue: 'shiftMasterCode',
-              columns: ko.observableArray(searchOptions.gridColums),
-              multiple: false,
-              value: selectedShiftMaster,
-              mode: 'filter'
-            }"></table>
+            <ui:include src="emboss-info.xhtml" />
           </div>
         </div>
       </ui:define>

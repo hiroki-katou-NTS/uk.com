@@ -1,0 +1,37 @@
+<div class="panel">
+  <table id="stamp-history-tbl">
+    <tr>
+      <th id="tbl-header">
+        <span>#{i18n.getText('KDP002_25')}</span>
+      </th>
+    </tr>
+    <tr>
+      <td id="tbl-header-time">
+        <div
+          id="daterangepicker"
+          tabindex="1"
+          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: embossModel().dateValue, maxRange: 'oneMonth'}"
+        ></div>
+        <button class="small" style="margin-top: 3px">#{i18n.getText('KDP002_27')}</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="full-width">
+          <table
+            id="stamp-history-list"
+            data-bind="ntsGridList: {
+            width: 400,								
+            height: 380,
+            dataSource: stampHistoryGrid().items,
+            primaryKey: 'code',
+            columns: stampHistoryGrid().columns,
+            multiple: false,
+            value: stampHistoryGrid().currentCode
+          }"
+          ></table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

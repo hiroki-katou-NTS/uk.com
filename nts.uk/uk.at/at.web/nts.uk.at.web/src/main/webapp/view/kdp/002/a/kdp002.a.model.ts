@@ -93,7 +93,7 @@ class StampTab {
         self.selectedTab.valueHasMutated();
     }
 
-    public checkVisible(pageNo: number) {
+    public getPageLayout(pageNo: number) {
         let self = this;
         return _.find(self.layouts(), (ly) => { return ly.pageNo === pageNo });
     }

@@ -3,19 +3,20 @@
   tabindex="2"
   data-bind="ntsTabPanel: { dataSource: stampTab().tabs, active: stampTab().selectedTab }"
 >
-  <div class="tab-content-1" data-bind="visible: stampTab().checkVisible(1)">
-    1
+  <div class="tab-content-1" data-bind="visible: stampTab().getPageLayout(1)">
+    <!-- <stamp-layout-button data-bind="attr:{'params':  stampTab().tabs}" ></stamp-layout-button> -->
+    <stamp-layout-button params="data: stampTab().getPageLayout(1)"></stamp-layout-button>
   </div>
-  <div class="tab-content-2" data-bind="visible : stampTab().checkVisible(2)">
-    2
+  <div class="tab-content-2" data-bind="visible : stampTab().getPageLayout(2)">
+    <stamp-layout-button params="data: stampTab().getPageLayout(2)"></stamp-layout-button>
   </div>
-  <div class="tab-content-3" data-bind="visible : stampTab().checkVisible(3)">
-    3
+  <div class="tab-content-3" data-bind="visible : stampTab().getPageLayout(3)">
+    <stamp-layout-button params="data: stampTab().getPageLayout(3)"></stamp-layout-button>
   </div>
-  <div class="tab-content-4" data-bind="visible : stampTab().checkVisible(4)">
-    4
+  <div class="tab-content-4" data-bind="visible : stampTab().getPageLayout(4)">
+    <stamp-layout-button params="data: stampTab().getPageLayout(4)"></stamp-layout-button>
   </div>
-  <div class="tab-content-5" data-bind="visible : stampTab().checkVisible(5)">
-    5
+  <div class="tab-content-5" data-bind="visible : stampTab().getPageLayout(5)">
+    <stamp-layout-button params="data: stampTab().getPageLayout(5)"></stamp-layout-button>
   </div>
 </div>
