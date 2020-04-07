@@ -226,8 +226,8 @@ module nts.uk.at.view.kdp011.a {
                     data.cardNumNotRegister = false;
                 }
                 service.exportExcel(data).fail(function(error) {
-                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });   
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

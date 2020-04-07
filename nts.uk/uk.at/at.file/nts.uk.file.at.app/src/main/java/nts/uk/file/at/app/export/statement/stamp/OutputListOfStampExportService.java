@@ -45,6 +45,7 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 		DatePeriod newDatePerioD = new DatePeriod(startDate, endDate);
 		// Map
 		OutputConditionListOfStampQuery query = null;
+		//selectedIdProcessSelect == 1 THCardNo : 2 == listEmployee
 		if (query1.selectedIdProcessSelect == 1) {
 			List<CardNoStampInfo> cardNoStampInfos = finder.createCardNoStampQuery(newDatePerioD);
 			if(cardNoStampInfos.isEmpty()){
@@ -103,7 +104,7 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 		} else {
 			List<EmployeEngravingInfor> employeEngravingInfors = (List<EmployeEngravingInfor>) data;
 			Map<String, List<EmployeEngravingInfor>> employeEngravingInforMap = employeEngravingInfors.stream()
-					.collect(Collectors.groupingBy(EmployeEngravingInfor::getEmployeeCode));
+					.collect(Collectors.groupingBy(EmployeEngravingInfor::getCardNo));
 			employeEngravingInforMap.forEach((key, value) -> {
 				EmployeeInfor employeeInfor = new EmployeeInfor();
 				employeeInfor.setWorkplace(TextResource.localize("KDP011_32") + "　" + value.get(0).getWorkplaceCd()

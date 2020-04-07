@@ -22,7 +22,7 @@ public class StampList {
 	}
 	
 	public void setTime(String datetime) {
-		this.time = datetime.split(" ")[1];
+		this.time = datetime.split(" ")[1].substring(0, 5);
 	}
 	
 }
