@@ -338,6 +338,10 @@ module jcm007.a {
 
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
                     
+                    self.itemSelectedTab2(self.employeeListTab2[0]);
+                    
+                    $("#gridListEmployeesJcm007").igGridSelection("selectRow", 0);
+                    
                 } else {
                     self.enable_tab2(false);
                     self.visible_tab2(false);
@@ -970,12 +974,13 @@ module jcm007.a {
                                     self.itemSelectedTab2(self.employeeListTab2[lengthListItemTab2AfterDel - 1]);
                                      $("#gridListEmployeesJcm007").igGridSelection("selectRow", lengthListItemTab2AfterDel - 1);
                                 } else {
-                                    self.itemSelectedTab2(self.employeeListTab2[indexItemDelete - 1]);
-                                    $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemDelete - 1);
+                                    self.itemSelectedTab2(self.employeeListTab2[indexItemDelete]);
+                                    $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemDelete);
                                 }
                                 dialog.info({ messageId: "Msg_16" });
                             });
                         } else {
+                            self.itemSelectedTab1(null);
                             self.itemSelectedTab2(null); 
                             self.enable_tab2(false);
                             self.visible_tab2(false); 
@@ -1084,15 +1089,14 @@ module jcm007.a {
             let self = this;
             self.isNewMode = true;
             
-            self.initHeaderInfo();
-            self.initRetirementInfo();
-            
             self.itemSelectedTab1(null);
             self.itemSelectedTab2(null);
             $("#gridListEmployees").igGridSelection("clearSelection");
             $("#gridListEmployeesJcm007").igGridSelection("clearSelection");
             
             self.selectedTab('tab-1');
+            self.initHeaderInfo();
+            self.initRetirementInfo();
             nts.uk.ui.errors.clearAll();
         }
 
