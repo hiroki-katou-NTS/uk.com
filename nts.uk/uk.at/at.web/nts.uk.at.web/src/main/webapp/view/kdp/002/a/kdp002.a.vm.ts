@@ -26,12 +26,7 @@ module nts.uk.at.view.kdp002.a {
                }
 
            clickProcess(data: any) : any{
-             let dfd = $.Deferred();
-                console.log(data);
-                let disable: boolean = false;
-                if(data == 'TextA') disable = true;
-                dfd.resolve({disable: disable});
-              return dfd.promise();          
+             console.log("CLICKKKKKKKKKKKKK");        
            }
 
            logObject(obj) {

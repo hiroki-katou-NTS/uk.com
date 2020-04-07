@@ -5,7 +5,7 @@
 >
   <div class="tab-content-1" data-bind="visible: stampTab().getPageLayout(1)">
     <!-- <stamp-layout-button data-bind="attr:{'params':  stampTab().tabs}" ></stamp-layout-button> -->
-    <stamp-layout-button params="data: stampTab().getPageLayout(1)"></stamp-layout-button>
+    <stamp-layout-button params="data: stampTab().getPageLayout(1), clickBinding: clickProcess"></stamp-layout-button>
   </div>
   <div class="tab-content-2" data-bind="visible : stampTab().getPageLayout(2)">
     <stamp-layout-button params="data: stampTab().getPageLayout(2)"></stamp-layout-button>

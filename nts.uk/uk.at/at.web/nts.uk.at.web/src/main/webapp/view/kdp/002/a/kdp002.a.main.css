@@ -9,12 +9,9 @@
 #stamp-info {
   width: 400px;
 }
-
-/* #functions-area {
-  height: 0px;
-  border-bottom: none;
-  padding-top: 0px;
-} */
+#stamp-desc{
+  height: 30px;
+}
 
 #stamp-date {
   text-align: center;

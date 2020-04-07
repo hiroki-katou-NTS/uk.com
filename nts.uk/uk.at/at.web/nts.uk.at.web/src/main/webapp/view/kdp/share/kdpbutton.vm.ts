@@ -6,28 +6,30 @@ module nts.uk.at.view.kdp.share {
     export class StampButtonLayOut {
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number>;
-        
+        clickBinding
         constructor(params: any) {
             let self = this;
+            console.log(params);
             if(params.data()) {
-                console.log(params.data().buttonSettings);
-                self.buttonSettings(params.data().buttonSettings);
+                let layout = params.data();
+                self.buttonLayoutType = ko.observable(layout.buttonLayoutType);
+                self.correntBtnSetting(layout.buttonSettings, params.clickBinding);
             };
         }
 
-        public getButtonSetting(btnPos: number) {
+        public correntBtnSetting(btnSets: Array<ButtonSetting>, clickBinding: any) {
             let self = this;
-            return _.find(self.buttonSettings(), (btn) => {return btn.btnPositionNo  === btnPos});
-        }
-
-        public correntBtnSetting(btnSettings: Array<ButtonSetting>) {
-            let self = this;
-            if(self.buttonLayoutType() === layoutType.LARGE_2_SMALL_4) {
-                for (let idx = 1; idx < 6; idx++) {
-                    // const element = array[idx];
-                    
+            let btnList = [];
+            let btnNum = self.buttonLayoutType() === layoutType.LARGE_2_SMALL_4 ? 6 : 8;
+            for (let idx = 1; idx <= btnNum; idx++) {
+                let btn = _.find(btnSets, (btn) => {return btn.btnPositionNo  === idx});
+                if(btn) {
+                    btn.clickBinding = clickBinding;
                 }
+                btnList.push(btn ? btn : {btnPositionNo: -1, btnName: '', btnBackGroundColor: '', btnTextColor: '', clickBinding: ''});
             }
+            console.log(btnList);
+            self.buttonSettings(btnList);
         }
     }
 }
@@ -49,11 +51,34 @@ interface ButtonSetting {
 
 ko.components.register('stamp-layout-button', {
     viewModel: nts.uk.at.view.kdp.share.StampButtonLayOut, template: `
-    <com:ko-if bind="buttonSettings().length > 0">
-        <div class="btn-grid-container" data-bind="foreach: buttonSettings">
-                <button class="stamp-rec-btn" id=""
-                    data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }"></button>
-        </div>
+    <com:ko-if bind="(buttonSettings().length > 0)">
+        
+        <com:ko-if bind="(buttonLayoutType() != 1)">
+            <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
+                <div class="stamp-rec-btn-container pull-left">
+
+                    <com:ko-if bind="(btnPositionNo != -1)">
+                        <button class="stamp-rec-btn" id=""
+                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: clickBinding"></button>
+                    </com:ko-if>
+                
+                </div>
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="(buttonLayoutType() == 1)">
+            <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
+                <div class="stamp-square-btn-container pull-left">
+
+                    <com:ko-if bind="(btnPositionNo != -1)">
+                        <button class="stamp-rec-btn" id=""
+                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }"></button>
+                    </com:ko-if>
+                
+                </div>
+            </div>
+        </com:ko-if>
+        
     </com:ko-if>
 `});
 
