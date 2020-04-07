@@ -1,12 +1,16 @@
 module nts.uk.at.view.kdp.share {
+    const layoutType = {
+        LARGE_2_SMALL_4: 0,
+        SMALL_8:1
+    }
     export class StampButtonLayOut {
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number>;
         
         constructor(params: any) {
             let self = this;
-            console.log(params.data());
             if(params.data()) {
+                console.log(params.data().buttonSettings);
                 self.buttonSettings(params.data().buttonSettings);
             };
         }
@@ -16,6 +20,15 @@ module nts.uk.at.view.kdp.share {
             return _.find(self.buttonSettings(), (btn) => {return btn.btnPositionNo  === btnPos});
         }
 
+        public correntBtnSetting(btnSettings: Array<ButtonSetting>) {
+            let self = this;
+            if(self.buttonLayoutType() === layoutType.LARGE_2_SMALL_4) {
+                for (let idx = 1; idx < 6; idx++) {
+                    // const element = array[idx];
+                    
+                }
+            }
+        }
     }
 }
 
@@ -37,9 +50,9 @@ interface ButtonSetting {
 ko.components.register('stamp-layout-button', {
     viewModel: nts.uk.at.view.kdp.share.StampButtonLayOut, template: `
     <com:ko-if bind="buttonSettings().length > 0">
-        <div class="btn-grid-container" data-bind="foreach: buttonSettings()">
+        <div class="btn-grid-container" data-bind="foreach: buttonSettings">
                 <button class="stamp-rec-btn" id=""
-                    data-bind="text: $data.buttonName, style:{ 'background-color' :  $data.buttonColor, color :  $data.textColor }"></button>
+                    data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }"></button>
         </div>
     </com:ko-if>
 `});

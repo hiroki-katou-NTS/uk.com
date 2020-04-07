@@ -3,11 +3,13 @@ package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSetPerRepository;
@@ -25,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * @author anhdt 打刻漏れの内容を取得する
  */
+@Stateless
 public class GetOmissionContentsFinder {
 
 	@Inject
@@ -42,11 +45,11 @@ public class GetOmissionContentsFinder {
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
 
-	public Object getOmissionContents(int pageNo, int buttonDisNo) {
+	public DailyAttdErrorInfoDto getOmissionContents(int pageNo, int buttonDisNo) {
 		String employeeId = AppContexts.user().employeeId();
 		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
 				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
-		return CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo);
+		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo));
 	}
 
 	@AllArgsConstructor
@@ -98,7 +101,7 @@ public class GetOmissionContentsFinder {
 
 		@Override
 		public Optional<StampSettingPerson> getStampSetPer() {
-			return stampSetPerRepo.getStampSet(AppContexts.user().companyId());
+			return stampSetPerRepo.getStampSetting(AppContexts.user().companyId());
 		}
 
 	}

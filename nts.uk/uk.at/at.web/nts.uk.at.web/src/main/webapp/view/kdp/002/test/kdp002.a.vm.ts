@@ -32,10 +32,16 @@ module nts.uk.at.view.kdp002.a {
 
             public openKDP002T() {
                 let self = this;
-                nts.uk.ui.windows.setShared('KDP010_2T', self.dataScreenT(), true);
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                    
-                });          
+                let data = {
+                    pageNo: 1,
+                    buttonDisNo: 1
+                }
+                service.getError(data).done((res) => {
+                    nts.uk.ui.windows.setShared('KDP010_2T', res, true);
+                    nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+                        
+                    });
+                });
             }
 
         }
