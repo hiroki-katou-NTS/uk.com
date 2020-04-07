@@ -200,9 +200,9 @@ module nts.uk.at.view.kdp010 {
             }
 
             /**
-             * Open E dialog to set condition list.
+             * Open G dialog to set condition list.
              */
-            openEDialog() {
+            openGDialog() {
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
                 let self = this;
                     self.getStamp();   

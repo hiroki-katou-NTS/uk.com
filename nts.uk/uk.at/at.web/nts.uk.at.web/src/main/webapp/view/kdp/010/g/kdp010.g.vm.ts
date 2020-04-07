@@ -36,7 +36,7 @@ module nts.uk.at.view.kdp010.g {
                 })
 
                 self.selectedPage.subscribe((newValue) => {
-                        self.checkLayout(false);
+                    self.checkLayout(false);
                     self.startPage();
                     nts.uk.ui.errors.clearAll();
                 })
@@ -80,11 +80,11 @@ module nts.uk.at.view.kdp010.g {
                         self.dataShare = [];
                     }
 
-                    if (totalTimeArr ) {
+                    if (totalTimeArr) {
                         if (self.checkLayout() == false)
-                        self.selectedLayout(totalTimeArr.buttonLayoutType);
-                        else 
-                        self.selectedLayout(newValue);
+                            self.selectedLayout(totalTimeArr.buttonLayoutType);
+                        else
+                            self.selectedLayout(newValue);
                     } else {
                         self.selectedLayout(0);
                     }
@@ -102,6 +102,9 @@ module nts.uk.at.view.kdp010.g {
                 if (self.checkDelG() == true) {
                     $.when(self.deleteBeforeAdd()).done(function() {
                         self.registrationLayout();
+                        $(document).ready(function() {
+                            $('#combobox').focus();
+                        });
                         dfd.resolve();
                     });
                 } else {
@@ -139,7 +142,7 @@ module nts.uk.at.view.kdp010.g {
                 }
                 // Data from Screen 
                 let lstButton = new Array<model.ButtonSettingsCommand>();
-                
+
                 if (self.dataKdpH.buttonPositionNo != undefined) {
                     let lstButtonSet = new Array<>();
                     _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
@@ -184,11 +187,18 @@ module nts.uk.at.view.kdp010.g {
                     self.isDel(true);
                     self.checkDelG(false);
                     self.currentSelectLayout(self.selectedLayout());
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                         $(document).ready(function() {
+                        $('#combobox').focus();
+                    });});
+
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
                     nts.uk.ui.block.clear();
+                    $(document).ready(function() {
+                        $('#combobox').focus();
+                    });
                 });
             }
 
@@ -242,7 +252,10 @@ module nts.uk.at.view.kdp010.g {
                 };
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteStampPage(data).done(function(stampPage) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                         $(document).ready(function() {
+                        $('#combobox').focus();
+                    });});
                         self.getData(self.selectedLayout());
                         dfd.resolve();
                     }).fail(function(error) {
