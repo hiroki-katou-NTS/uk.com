@@ -14,6 +14,7 @@ interface PageLayout {
     stampPageComment: string;
     stampPageCommentColor: string;
     buttonLayoutType: number;
+    buttonSettings: Array<ButtonSetting>;
 }
 
 interface ButtonSetting {
@@ -29,6 +30,7 @@ interface ButtonSetting {
     changeCalArt: number;
     usrArt: number;
     audioType: number;
+    onClick: any;
 }
 
 const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
@@ -95,6 +97,32 @@ class StampTab {
 
     public getPageLayout(pageNo: number) {
         let self = this;
-        return _.find(self.layouts(), (ly) => { return ly.pageNo === pageNo });
+        let layout = _.find(self.layouts(), (ly) => { return ly.pageNo === pageNo }); 
+
+        if(layout) {
+            let btnSettings = layout.buttonSettings;
+            btnSettings.forEach(btn => {
+                if(btn.btnPositionNo == 1) {
+                    btn.onClick = self.clickBtn1;
+                }
+                if(btn.btnPositionNo == 2) {
+                    btn.onClick = self.clickBtn2;
+                }
+            });
+            layout.buttonSettings = btnSettings;
+        }
+
+        return layout;
     }
+
+    public clickBtn1() {
+        nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function (): any {
+            console.log("Lam cai gi thi lam di ko thi thoi ko lam nua");
+        }); 
+    }
+
+    public clickBtn2() {
+        console.log("Btn2 click");
+    }
+
 }
