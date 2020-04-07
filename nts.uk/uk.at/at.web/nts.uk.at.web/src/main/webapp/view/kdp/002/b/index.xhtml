@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+<link rel="stylesheet"
+	href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 480, height: 580 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kdp/002/b/main.css" />
+			<com:scriptfile path="kdp002.b.vm.js" />
+			<com:scriptfile path="kdp002.b.start.js" />
+			<com:scriptfile path="kdp002.b.service.js" />
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType
+			</com:EnumScript>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.stamp.management.StampPageName
+				nts.uk.ctx.at.record.dom.stamp.management.PageComment
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="right-area">
+					<table class="basic-items">
+						<tr>
+							<td><span id="label-b1-1">#{i18n.getText('KDP002_37')}</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class = "item-screen">
+									<!-- B2_1 -->
+									<div id="label-b2-2"
+										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_38')}</div>
+									<!-- B2_2 -->
+									<span id="text-b2-2" data-bind="text: workTypeNames"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class = "item-screen">
+									<!-- B3_1 -->
+									<div id="correc-label1"
+										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_39')}
+									</div>
+									<!-- B3_2 -->
+									<span id="label-b3-2" data-bind="text: dayName"></span>
+									<!-- B3_3 -->
+									<span id="text-b3-3" data-bind="text: timeName"></span>
+								</div>
+							</td>
+
+						</tr>
+						<tr>
+							<!-- B4_1 -->
+							<td>
+							<div class = "item-screen">
+							<div id="label-b3-1"
+									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_40')}</div>
+							<!-- B4_2 -->
+							<span id="text-b4-2" data-bind="text: checkHandName"></span>
+							</div>
+							
+							</td>
+						</tr>
+						<tr>
+							<!-- B5_1 -->
+							<td>
+							<div class = "item-screen">
+							<div id="text-b5-2"
+									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_41')}</div>
+							<!-- B5_2 -->
+							<span id="label-b5-2" data-bind="text: numberName"></span>
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- B6_1 -->
+							<td>
+							<div class = "item-screen">
+							<div id="color"
+									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_42')}</div>
+							<!-- B6_2 -->
+							<span id="text-b6-2" data-bind="text: laceName"></span>
+							</div>
+							</td>
+						</tr>
+
+					</table>
+
+				</div>
+				<!-- G7 -->
+				<div>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+								height: 150,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns2,
+								multiple: false,
+								value: currentCode
+							}"></table>
+					<span id="text-b20-1" data-bind="text: laceName" style="margin-top:10px "></span> <span
+						id="text-b20-2" data-bind="text: laceName" style="margin-top:10px; margin-left: 20px"></span>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class = "large" tabindex="9" id="close-button"
+					data-bind="click: closeDialog">#{i18n.getText('KSM011_73')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
