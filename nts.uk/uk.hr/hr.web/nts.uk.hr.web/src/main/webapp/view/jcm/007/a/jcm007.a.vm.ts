@@ -300,30 +300,6 @@ module jcm007.a {
 
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
 
-
-                    if (historyId && isAfterRemove) {
-                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                        if (itemSelected){
-                            let indexItemSelected = _.findIndex(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                            self.itemSelectedTab2(itemSelected);
-                            self.setDataDetail(itemSelected);
-                            $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemSelected);
-                        } else {
-                            self.initHeaderInfo();
-                            self.initRetirementInfo();
-                            self.itemSelectedTab2(null);
-                        }
-                    } else if (historyId) {
-                        let itemSelected = _.find(self.employeeListTab2, function(o) { return o.historyId == historyId; });
-                        if (itemSelected) {
-                            self.itemSelectedTab2(itemSelected);
-                            self.setDataDetail(itemSelected);
-                        } else {
-                            self.initHeaderInfo();
-                            self.initRetirementInfo();
-                            self.itemSelectedTab2(null);
-                        }
-                    }
                     self.newMode();
                 } else {
                     self.enable_tab2(false);
@@ -972,21 +948,30 @@ module jcm007.a {
                 let histId = itemSelectedTab2.historyId;
                 let lengthListItemTab2 = self.employeeListTab2.length;
                 let indexItemDelete = _.findIndex(ko.toJS(dataSource), function(item: any) { return item.historyId == histId; });
-                let itemEnd = false;
-                if(indexItemDelete == lengthListItemTab2 -1){
-                    itemEnd= true;
-                }
-
+                let itemEndOfList = (indexItemDelete == lengthListItemTab2 -1) ? true : false;
+                let itemStartOfList = (indexItemDelete == 0) ? true : false;
+                
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.grayout();
                     service.remove(histId).done((result : boolean) => {
                         console.log('REMOVE DONE!!');
                         if (result){ 
                             self.getListDataAfterRemove().done(() => {
-                                if(itemEnd){
-                                    
-                                }else{
-                                    
+                                let lengthListItemTab2AfterDel = self.employeeListTab2.length;
+                                if (lengthListItemTab2AfterDel == 0) {
+                                    self.itemSelectedTab2(null);
+                                    self.enable_tab2(false);
+                                    self.visible_tab2(false);
+                                    self.newMode();
+                                } else if (lengthListItemTab2AfterDel == 1 || itemStartOfList) {
+                                    self.itemSelectedTab2(self.employeeListTab2[0]);
+                                    $("#gridListEmployeesJcm007").igGridSelection("selectRow", 0);
+                                } else if (itemEndOfList) {
+                                    self.itemSelectedTab2(self.employeeListTab2[lengthListItemTab2AfterDel - 1]);
+                                     $("#gridListEmployeesJcm007").igGridSelection("selectRow", lengthListItemTab2AfterDel - 1);
+                                } else {
+                                    self.itemSelectedTab2(self.employeeListTab2[indexItemDelete - 1]);
+                                    $("#gridListEmployeesJcm007").igGridSelection("selectRow", indexItemDelete - 1);
                                 }
                                 dialog.info({ messageId: "Msg_16" });
                             });
@@ -998,25 +983,12 @@ module jcm007.a {
                             dialog.info({ messageId: "Msg_16" });
                         }
                         
-                        if (lengthListItemTab2 === 1) {
-                            self.isNewMode = true;
-                            self.itemSelectedTab2(null);
-                            self.start(null);
-                        } else if (lengthListItemTab2 - 1 == indexItemDelete) {
-                            let itemSelectedAfterRemove = dataSource[indexItemDelete - 1];
-                            self.getListData(itemSelectedAfterRemove.historyId, true);
-                        } else {
-                            let itemSelectedAfterRemove = dataSource[indexItemDelete + 1];
-                            self.getListData(itemSelectedAfterRemove.historyId, true);
-                        }
                         block.clear();
                     }).fail((mes) => {
                         console.log('REMOVE FAIL!!');
                         block.clear();
                     });
-                }).ifNo(() => {
-
-                });
+                }).ifNo(() => { return; });
             }
         }
         
@@ -1035,6 +1007,7 @@ module jcm007.a {
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
 
                 } else {
+                    self.itemSelectedTab2(null); 
                     self.enable_tab2(false);
                     self.visible_tab2(false);
                     self.newMode();
@@ -1075,6 +1048,7 @@ module jcm007.a {
 
         setDataDetail(dataDetail: any) {
             let self = this;
+            self.currentEmployee().notCallRetirementDateChange = true;
             self.currentEmployee().retirementDate(dataDetail.retirementDate);
             self.currentEmployee().releaseDate(dataDetail.releaseDate);
 
@@ -1103,6 +1077,7 @@ module jcm007.a {
             self.currentEmployee().leaveConsiderableTime_5Val(dataDetail.naturalUnaReasons_5Val == null ? '' : dataDetail.naturalUnaReasons_5Val);
             self.currentEmployee().other_6(dataDetail.naturalUnaReasons_6 == 0 ? false : true);
             self.currentEmployee().other_6Val(dataDetail.naturalUnaReasons_6Val == null ? '' : dataDetail.naturalUnaReasons_6Val);
+            self.currentEmployee().notCallRetirementDateChange  =  false;
         }
 
         newMode() {
@@ -1323,6 +1298,7 @@ module jcm007.a {
         enable_other6: KnockoutObservable<boolean> = ko.observable(true);
 
         objResultWhenRetimentChange: any;
+        notCallRetirementDateChange : boolean;
 
         constructor(param: IEmployee) {
             let self = this;
@@ -1333,6 +1309,7 @@ module jcm007.a {
             self.scd = param.scd;
             self.pid = param.pid;
             self.bussinessName = param.bussinessName;
+            self.notCallRetirementDateChange = false;
 
             self.pendingFlag = param.pendingFlag;
             self.status = param.status;
@@ -1396,12 +1373,16 @@ module jcm007.a {
             //xử lý subscribe
             self.retirementDate.subscribe((value) => {
                 console.log("retirementDate change");
+                if (self.notCallRetirementDateChange) {
+                    console.log("notCallRetirementDateChange");
+                    return;
+                }
                 if(self.sid == undefined || value == "")
                     return;
                 
                 block.grayout();
                 let object = {
-                    retirementDate : self.retirementDate(), // A222_12  退職日
+                    retirementDate : value, // A222_12  退職日
                     retirementType : self.selectedCode_Retiment(),        // A222_16 退職区分
                     sid            : self.sid,                 // 社員ID = 選択中社員の社員ID(EmployeeID = EmployeeID của employee dang chon)
                     cid            : null,                 // 会社ID = ログイン会社ID(CompanyID = LoginCompanyID) lấy trên server
