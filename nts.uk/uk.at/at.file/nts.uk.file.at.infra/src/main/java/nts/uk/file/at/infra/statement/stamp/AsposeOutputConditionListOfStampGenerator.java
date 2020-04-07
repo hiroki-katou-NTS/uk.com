@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.aspose.cells.Color;
+
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -150,60 +152,84 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// カードNo.
 				cell.get(3, 3).setValue(employeeInfor.getCardNo());
 			}
+			
 			if (i == totalPage) {
 				stampList = employeeInfor.getStampList().subList(start, employeeInfor.getStampList().size());
 			} else {
 				stampList = employeeInfor.getStampList().subList(start, 35 * i);
 				start = 35 * i;
 			}
+			
 			for (int j = 0; j < stampList.size(); j++) {
+				// Tạo màu background
+				Color bgColor = (j % 2 == 0) ? Color.fromArgb(221, 235, 247) : Color.fromArgb(221, 235, 247);
+				val dateStyle = printStyle.getDateStyle();
+				dateStyle.setBackgroundArgbColor(255);
+				dateStyle.setForegroundColor(Color.getRed());
+
+				val stampStyle = printStyle.getStampStyle();
+				stampStyle.setBackgroundColor(bgColor);
+				stampStyle.setForegroundColor(Color.getRed());
+				val claStyle = printStyle.getClaStyle();
+				claStyle.setBackgroundColor(bgColor);
+				val meanStyle = printStyle.getMeanStyle();
+				meanStyle.setBackgroundColor(bgColor);
+				val methodStyle = printStyle.getMethodStyle();
+				methodStyle.setBackgroundColor(bgColor);
+				val insStyle = printStyle.getInsStyle();
+				insStyle.setBackgroundColor(bgColor);
+				val locStyle = printStyle.getLocStyle();
+				locStyle.setBackgroundColor(bgColor);
+				val cardStyle = printStyle.getCardStyle();
+				cardStyle.setBackgroundColor(bgColor);
+				val wHourStyle = printStyle.getWHourStyle();
+				wHourStyle.setBackgroundColor(bgColor);
+				val overStyle = printStyle.getOverStyle();
+				overStyle.setBackgroundColor(bgColor);
+				val nightStyle = printStyle.getNightStyle();
+				nightStyle.setBackgroundColor(bgColor);
+
 				// 年月日
-				cell.get(rows, 0).setStyle(printStyle.getDateStyle());
+				cell.get(rows, 0).setStyle(dateStyle);
 				cell.get(rows, 0).setValue(stampList.get(j).getDate());
 				// 時刻
-				cell.get(rows, 1).setStyle(printStyle.getStampStyle());
+				cell.get(rows, 1).setStyle(stampStyle);
 				cell.get(rows, 1).setValue(stampList.get(j).getTime());
 				// 出退勤区分
-				cell.get(rows, 2).setStyle(printStyle.getClaStyle());
+				cell.get(rows, 2).setStyle(claStyle);
 				cell.get(rows, 2).setValue(stampList.get(j).getClassification());
 				// 打刻手段
-				cell.get(rows, 3).setStyle(printStyle.getMeanStyle());
+				cell.get(rows, 3).setStyle(meanStyle);
 				cell.get(rows, 3).setValue(stampList.get(j).getMean());
 				// 認証方法
-				cell.get(rows, 4).setStyle(printStyle.getMethodStyle());
+				cell.get(rows, 4).setStyle(methodStyle);
 				cell.get(rows, 4).setValue(stampList.get(j).getMethod());
 				// 設置場所
-				cell.get(rows, 5).setStyle(printStyle.getInsStyle());
+				cell.get(rows, 5).setStyle(insStyle);
 				cell.get(rows, 5).setValue(stampList.get(j).getInsLocation());
 				// 位置情報
-				cell.get(rows, 6).setStyle(printStyle.getLocStyle());
+				cell.get(rows, 6).setStyle(locStyle);
 				cell.get(rows, 6).setValue(stampList.get(j).getLocationInfor());
 				// 応援カード
-				cell.get(rows, 7).setStyle(printStyle.getCardStyle());
+				cell.get(rows, 7).setStyle(cardStyle);
 				cell.get(rows, 7).setValue(stampList.get(j).getSupportCard());
 				// 就業時間帯
-				cell.get(rows, 8).setStyle(printStyle.getWHourStyle());
+				cell.get(rows, 8).setStyle(wHourStyle);
 				cell.get(rows, 8).setValue(stampList.get(j).getWorkingHour());
 				// 残業時間
-				cell.get(rows, 9).setStyle(printStyle.getOverStyle());
+				cell.get(rows, 9).setStyle(overStyle);
 				cell.get(rows, 9).setValue(stampList.get(j).getOvertimeHour());
 				// 深夜時間
-				cell.get(rows, 10).setStyle(printStyle.getNightStyle());
+				cell.get(rows, 10).setStyle(nightStyle);
 				cell.get(rows, 10).setValue(stampList.get(j).getNightTime());
 				rows += 1;
 			}
+			
 			if (i == totalPage && stampList.size() < 35) {
 				rows += 35 - stampList.size();
 			}
 		}
 		return rows;
-	}
-
-	@Override
-	public void generateExcelScreen(FileGeneratorContext generatorContext,
-			List<OutputConditionListOfStampQuery> dataSource) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -68,18 +68,18 @@ module nts.uk.at.view.kdp011.a {
                     new ProcessSelect(2, nts.uk.resource.getText('KDP011_15'))
 
                 ]);
-                
+
                 if (__viewContext.user.role.attendance != null) {
                     self.selectedIdProcessSelect = ko.observable(1);
                     self.selectedIdProcessSelect.subscribe(function(value) {
                         if (value == 1) {
                             $("#com-ccg001").addClass("disabled");
                             $(".mark-overlay").show();
-                           
+
                         } else {
                             $("#com-ccg001").removeClass("disabled");
                             $(".mark-overlay").hide();
-                            
+
                         }
                     });
                     self.selectedIdProcessSelect.valueHasMutated();
@@ -90,7 +90,7 @@ module nts.uk.at.view.kdp011.a {
                     self.listProcessSelect()[0].enable = ko.observable(false);
                 }
             }
-            
+
             /**
             * start screen
             */
@@ -103,7 +103,7 @@ module nts.uk.at.view.kdp011.a {
                 $.when(service.initScreen(), service.restoreCharacteristic(companyId, userId))
                     .done((dataStartPage, dataCharacteristic) => {
                         // get data from server
-                        self.datepickerValue({startDate: dataStartPage.startDate, endDate: dataStartPage.endDate});
+                        self.datepickerValue({ startDate: dataStartPage.startDate, endDate: dataStartPage.endDate });
 
                         let arrOutputItemCodeTmp: ItemModel[] = [];
                         _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
@@ -192,7 +192,7 @@ module nts.uk.at.view.kdp011.a {
                     }
                 }
             }
-    
+
             /**
             * Export excel
             */
@@ -215,20 +215,22 @@ module nts.uk.at.view.kdp011.a {
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.selectedIdProcessSelect = self.selectedIdProcessSelect();
                 // data.outputSetCode = self.selectedOutputItemCode();
-                if(data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2){
-                     dialog.alertError({ messageId: "Msg_1204" });
-                     blockUI.clear();
-                     return ;
-                    }
-                if(self.selectedIdProcessSelect() ==1 )
-                data.cardNumNotRegister = true;
-                else{
-                    data.cardNumNotRegister = false; }
-                service.exportExcel(data).fail((data) => {
-                    console.log(data);
-                }).then(() => {
+                if (data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2) {
+                    dialog.alertError({ messageId: "Msg_1204" });
                     blockUI.clear();
-                })
+                    return;
+                }
+                if (self.selectedIdProcessSelect() == 1)
+                    data.cardNumNotRegister = true;
+                else {
+                    data.cardNumNotRegister = false;
+                }
+                service.exportExcel(data).fail(function(error) {
+                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });   
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
 
             /**
@@ -435,11 +437,11 @@ module nts.uk.at.view.kdp011.a {
         }
         class ProcessSelect {
             idProcessSelect: number;
-            nameProcessSelect: string;   
+            nameProcessSelect: string;
             constructor(idProcessSelect, nameProcessSelect) {
                 var self = this;
                 self.idProcessSelect = idProcessSelect;
-                self.nameProcessSelect = nameProcessSelect;    
+                self.nameProcessSelect = nameProcessSelect;
             }
         }
     }

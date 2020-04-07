@@ -1,46 +1,72 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-<body>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
     <ui:composition template="../../../../master/dialog.xhtml">
-        <ui:define name="htmlHead">
-            <script>
-                var dialogSize = {
-                    width: 1080,
-                    height: 620
-                };
-            </script>
-            <com:stylefile path="../../share/kdp.main.css" />
-            <com:scriptfile path="../../share/kdpbutton.vm.js" />
-            <com:stylefile path="kdp002.a.main.css" />
-            <com:scriptfile path="kdp002.a.service.js" />
-            <com:scriptfile path="kdp002.a.vm.js" />
-            <com:scriptfile path="kdp002.a.start.js" />
-            <com:scriptfile path="kdp002.a.model.js" />
-        </ui:define>
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 1200, height: 820 };
+        </script>
+        <com:stylefile path="../../share/kdp.main.css" />
+        <com:scriptfile path="../../share/kdpbutton.vm.js" />
+        <com:stylefile path="kdp002.a.main.css" />
+        <com:scriptfile path="kdp002.a.service.js" />
+        <com:scriptfile path="kdp002.a.vm.js" />
+        <com:scriptfile path="kdp002.a.start.js" />
+        <com:scriptfile path="kdp002.a.model.js" />
+        <com:scriptfile path="kdp002.a.ebs.info.model.js" />
+        
+      </ui:define>
 
-        <ui:define name="content">
-            <div id="functions-area"></div>
+      <ui:define name="content">
+        <div id="functions-area"></div>
 
-            <div id="content-area" class="cf">
-                <div class="pull-left" id="stamp-input">
-                    <div class="panel" id="stamp-date" data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-                        <span data-bind="text: stampClock.displayDate"></span>
-                    </div>
-                    <div class="panel" id="stamp-time" data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-                        <span data-bind="text: stampClock.displayTime"></span>
-                    </div>
-                    <div class="panel">
-                        <ui:include src="stamp-button.xhtml" />
-                    </div>
-                </div>
-                <div class="pull-left" id="stamp-info">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sed eius quod beatae pariatur vitae recusandae, accusantium voluptatibus ipsum ipsam magni? Totam ad quasi beatae laudantium, esse quaerat rerum mollitia corporis.
-                </div>
+        <div id="content-area" class="cf">
+          <!-- A1 -->
+          <div class="pull-left" id="stamp-input">
+            <div id="stamp-header">
+              <div
+                class="panel"
+                id="stamp-date"
+                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }"
+              >
+                <span id="stamp-date-text" data-bind="text: stampClock.displayDate"></span>
+              </div>
+              <div
+                class="panel"
+                id="stamp-time"
+                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }"
+              >
+                <span id="stamp-time-text" data-bind="text: stampClock.displayTime"></span>
+              </div>
+              <!-- A2 -->
             </div>
-        </ui:define>
+            <div class="panel">
+              <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
+                <span data-bind="text: stampTab().stampPageComment"></span>
+              </div>
+              <ui:include src="stamp-tab.xhtml" />
+            </div>
+          </div>
+          <div class="pull-left" id="stamp-info">
+            <table id="gridlist-tbl" data-bind="ntsGridList: {
+              width: 380,
+              height: 485,
+              options: [],
+              optionsValue: 'shiftMasterCode',
+              columns: ko.observableArray(searchOptions.gridColums),
+              multiple: false,
+              value: selectedShiftMaster,
+              mode: 'filter'
+            }"></table>
+          </div>
+        </div>
+      </ui:define>
     </ui:composition>
-</body>
-
+  </body>
 </html>

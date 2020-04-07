@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -44,13 +45,19 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 		DatePeriod newDatePerioD = new DatePeriod(startDate, endDate);
 		// Map
 		OutputConditionListOfStampQuery query = null;
-		if (query1.isCardNumNotRegister()) {
+		if (query1.selectedIdProcessSelect == 1) {
 			List<CardNoStampInfo> cardNoStampInfos = finder.createCardNoStampQuery(newDatePerioD);
+			if(cardNoStampInfos.isEmpty()){
+				throw new BusinessException("Msg_1617");
+			}
 			query = convertToDataSource(true, cardNoStampInfos, datePeriod);
 		} else {
-			List<EmployeEngravingInfor> employeEngravingInfors = finder.createListOfStampEmpQuery(newDatePerioD,
-					query1.lstEmployee);
+			List<EmployeEngravingInfor> employeEngravingInfors = finder.createListOfStampEmpQuery(newDatePerioD, query1.lstEmployee);
+			if(employeEngravingInfors.isEmpty()){
+				throw new BusinessException("Msg_1617");
+			}
 			query = convertToDataSource(false, employeEngravingInfors, datePeriod);
+			
 		}
 		this.generator.generate(context.getGeneratorContext(), query);
 	}

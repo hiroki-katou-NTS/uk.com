@@ -251,7 +251,7 @@ public class OutputScreenListOfStampFinder {
 				val locationInfo = infoDisp.getStamp().get().getLocationInfor();
 				if (locationInfo.isPresent()) {
 					val positionInfo = locationInfo.get().getPositionInfor();
-					localInfor = positionInfo.getLatitude() + "-" + positionInfo.getLongitude();
+					localInfor = positionInfo.getLatitude() + " " + positionInfo.getLongitude();
 				}
 				
 				supportCard = refActualResults.getCardNumberSupport().get();
