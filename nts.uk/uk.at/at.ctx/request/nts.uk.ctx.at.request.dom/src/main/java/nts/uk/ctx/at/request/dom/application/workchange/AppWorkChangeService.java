@@ -14,6 +14,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AppWorkChangeService {
 	
+	/**
+	 * 勤務変更申請画面初期（新規）
+	 * @param companyID 会社ID
+	 * @param employeeIDLst 申請者リスト
+	 * @param dateLst 申請対象日リスト
+	 * @return
+	 */
 	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst);
 	
 	/**
@@ -45,4 +52,13 @@ public interface AppWorkChangeService {
 	 */
 	public ChangeWkTypeTimeOutput changeWorkTypeWorkTime(String companyID, String workTypeCD, Optional<String> workTimeCD, 
 			AppWorkChangeSet appWorkChangeSet);
+	
+	/**
+	 * 申請日を変更する(thay đổi ngày nộp đơn)
+	 * @param companyID 会社ID
+	 * @param dateLst 申請対象日リスト
+	 * @param appWorkChangeDispInfo 勤務変更申請の表示情報
+	 * @return
+	 */
+	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo appWorkChangeDispInfo);
 }

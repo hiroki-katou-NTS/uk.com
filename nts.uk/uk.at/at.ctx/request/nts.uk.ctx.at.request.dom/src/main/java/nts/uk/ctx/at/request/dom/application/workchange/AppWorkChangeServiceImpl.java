@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
@@ -188,6 +189,22 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		}
 		// 取得した「必須任意不要区分」と「所定時間設定」を返す
 		return result;
+	}
+
+	@Override
+	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst,
+			AppWorkChangeDispInfo appWorkChangeDispInfo) {
+		// 共通インタラクション「申請日を変更する」を実行する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+				companyID, 
+				dateLst, 
+				dateLst.stream().findFirst().get(),
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
+		// 「勤務変更申請の表示情報」を更新する
+		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		return appWorkChangeDispInfo;
 	}
 
 }

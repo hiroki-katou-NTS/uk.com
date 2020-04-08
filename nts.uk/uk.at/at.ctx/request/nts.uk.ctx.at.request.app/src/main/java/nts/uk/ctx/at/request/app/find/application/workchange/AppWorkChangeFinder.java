@@ -12,8 +12,10 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDi
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -41,10 +43,35 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 	
-	public AppWorkChangeDispInfoDto getStartNew(WorkChangeInitNewParam param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
 		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst, dateLst);
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
+	}
+	
+	public AppWorkChangeDispInfoDto changeAppDate(AppWorkChangeParam param) {
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
+		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService
+				.changeAppDate(companyID, dateLst, param.appWorkChangeDispInfoDto.toDomain());
+		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
+	}
+	
+	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
+		AppWorkChangeDispInfoDto result = param.appWorkChangeDispInfoDto;
+		String companyID = AppContexts.user().companyId();
+		ChangeWkTypeTimeOutput changeWkTypeTimeOutput = appWorkChangeService.changeWorkTypeWorkTime(
+				companyID, 
+				result.workTypeCD, 
+				Optional.of(result.workTimeCD), 
+				result.appWorkChangeSet.toDomain());
+		result.setupType = changeWkTypeTimeOutput.getSetupType().value;
+		PredetemineTimeSettingDto predetemineTimeSettingDto = null;
+		if(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().isPresent()) {
+			changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get().saveToMemento(predetemineTimeSettingDto);
+		}
+		result.predetemineTimeSetting = predetemineTimeSettingDto;
+		return result;
 	}
 }
