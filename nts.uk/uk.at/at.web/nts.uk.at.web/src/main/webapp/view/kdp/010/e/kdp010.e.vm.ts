@@ -40,18 +40,20 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             { id: 1, name: nts.uk.resource.getText("KDP010_84") }
         ]);
         selectedImp: KnockoutObservable<number> = ko.observable(0);
+        
+        dataKdl: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             let self = this;
-            
+
             self.messageValueFirst.subscribe(function(codeChanged: string) {
-                     self.messageValueFirst($.trim(self.messageValueFirst()));
-                });
+                self.messageValueFirst($.trim(self.messageValueFirst()));
+            });
             self.messageValueSecond.subscribe(function(codeChanged: string) {
-                     self.messageValueSecond($.trim(self.messageValueSecond()));
-                });
+                self.messageValueSecond($.trim(self.messageValueSecond()));
+            });
             self.messageValueThird.subscribe(function(codeChanged: string) {
-                     self.messageValueThird($.trim(self.messageValueThird()));
-                });
+                self.messageValueThird($.trim(self.messageValueThird()));
+            });
         }
 
         /**
@@ -59,6 +61,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
          */
         start(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.clear();
             self.getStampApp();
             $.when(self.getWorkTypeList()).done(function() {
                 $(document).ready(function() {
@@ -75,7 +78,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            $.when(self.registrationApp(),self.deleteStampFunc()).done(function() {
+            $.when(self.registrationApp(), self.deleteStampFunc()).done(function() {
                 if (nts.uk.ui.errors.hasError()) {
                     nts.uk.ui.block.clear();
                     return;
@@ -250,7 +253,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         /**
          * Open Dialog KDL021
          */
-        openKDL021Dialog() {
+        openKDL021Dialog(datas : any) {
             let self = this;
             nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
@@ -258,18 +261,19 @@ module nts.uk.at.view.kdp010.e.viewmodel {
             nts.uk.ui.windows.setShared('Multiple', true);
             nts.uk.ui.windows.setShared('DailyMode', 0);
             nts.uk.ui.windows.setShared('AllAttendanceObj', workTypeCodes);
-            nts.uk.ui.windows.setShared('SelectedAttendanceId', self.currentItem().dailyList(), true);
+            
+            if(datas ==1) {
+                let data021 = self.dataKdl.map(i=>Number(i))
+                nts.uk.ui.windows.setShared('SelectedAttendanceId', data021, true);
+            }
+            else{
+                nts.uk.ui.windows.setShared('SelectedAttendanceId', self.currentItem().dailyList(), true);
+            }    
 
             nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
                 nts.uk.ui.block.clear();
-                var data = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                if (data.length > 5) {                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" }).then(() => {
-                        nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml');
-                        var data = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                    });
-                    return;
-                }
-                self.generateNameCorrespondingToAttendanceItem(data);
+                self.dataKdl = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                self.generateNameCorrespondingToAttendanceItem(self.dataKdl);
             });
             nts.uk.ui.block.clear();
         }
@@ -281,6 +285,12 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         private generateNameCorrespondingToAttendanceItem(listAttendanceItemCode: Array<any>): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            if (self.dataKdl && self.dataKdl.length > 5) {
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" }).then(() => {
+                        self.openKDL021Dialog(1);
+                    });
+                    return;
+                }
             if (listAttendanceItemCode && listAttendanceItemCode.length > 0) {
                 service.getAttendNameByIds(listAttendanceItemCode).done((dailyAttendanceItemNames) => {
                     if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
