@@ -151,7 +151,7 @@ public class HolidayShipmentScreenBFinder {
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
 				//[No.506]振休残数を取得する
-				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
+				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
 				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}

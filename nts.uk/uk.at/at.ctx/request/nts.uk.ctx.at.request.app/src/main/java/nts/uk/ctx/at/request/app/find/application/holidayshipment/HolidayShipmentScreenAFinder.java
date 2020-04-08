@@ -200,7 +200,7 @@ public class HolidayShipmentScreenAFinder {
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
 		//[No.506]振休残数を取得する
-		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
+		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
 		result.setAbsRecMng(absRecMng);
 		
 		return result;
