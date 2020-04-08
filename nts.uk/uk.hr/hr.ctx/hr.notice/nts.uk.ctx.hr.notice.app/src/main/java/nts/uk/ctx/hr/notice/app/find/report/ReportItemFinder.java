@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.ietf.jgss.Oid;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -124,9 +122,14 @@ public class ReportItemFinder {
 			reportClsOpt.get().setPReportName(new String_Any_20(registrationPersonReport.get().getReportName()));
 			
 		 } else {
+
+			Optional<RegistrationPersonReport> domain = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportLayoutId());
+			if (domain.isPresent()) {
+				appSid = domain.get().getAppSid();
+				appBussinessName = domain.get().getAppBussinessName();
+			}
 			
-			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
-					params.getReportLayoutId());
+			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid, params.getReportLayoutId());
 			
 		}
 		 
