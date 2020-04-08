@@ -12,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
+import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDisplayNameAdapter;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -44,13 +45,20 @@ public class GetOmissionContentsFinder {
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
+	
+	@Inject
+	private AppDisplayNameAdapter appDisplayAdapter;
 
 	public DailyAttdErrorInfoDto getOmissionContents(int pageNo, int buttonDisNo) {
 		String employeeId = AppContexts.user().employeeId();
 		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
 				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
-		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo));
+		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo), appDisplayAdapter.getAppDisplay());
 	}
+	// アルゴリズム「申請種類を取得する」を実行する
+//	private getApplicationType() {
+//		
+//	}
 
 	@AllArgsConstructor
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {

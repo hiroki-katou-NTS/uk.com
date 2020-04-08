@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.DailyAttdErrorInfo;
 
 /**
@@ -15,11 +16,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.D
 public class DailyAttdErrorInfoDto {
 	
 	private List<DailyAttdErrorInfoTemp> dailyAttdErrorInfos = new ArrayList<>();
+	private List<AppDispNameExp> appDispNames;
 	
-	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list) {
+	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list, List<AppDispNameExp> appDispNames) {
 		for (DailyAttdErrorInfo e : list) {
 			this.dailyAttdErrorInfos.add(new DailyAttdErrorInfoTemp(e));
 		}
+		this.appDispNames = appDispNames;
 	}
 	
 	@Getter
