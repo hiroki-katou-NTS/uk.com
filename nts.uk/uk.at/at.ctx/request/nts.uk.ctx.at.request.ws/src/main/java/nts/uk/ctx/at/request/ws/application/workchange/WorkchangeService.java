@@ -12,12 +12,14 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeInitNewParam;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/workchange")
@@ -40,7 +42,7 @@ public class WorkchangeService extends WebService {
 	AppWorkChangeRecordWorkInfoFinder workInfoFinder;
 
 	@Inject
-	AppWorkChangeSetFinder appWorkFinder;
+	AppWorkChangeFinder appWorkFinder;
 
 	/**
 	 * 起動する アルゴリズム「勤務変更申請画面初期（新規）」を実行する
@@ -98,6 +100,12 @@ public class WorkchangeService extends WebService {
 	@Path("isTimeRequired")
 	public boolean isTimeRequired(String workTypeCD) {
 		return appWorkFinder.isTimeRequired(workTypeCD);
+	}
+	
+	@POST
+	@Path("startNew")
+	public AppWorkChangeDispInfoDto getStartNew(WorkChangeInitNewParam param) {
+		return appWorkFinder.getStartNew(param);
 	}
 
 }
