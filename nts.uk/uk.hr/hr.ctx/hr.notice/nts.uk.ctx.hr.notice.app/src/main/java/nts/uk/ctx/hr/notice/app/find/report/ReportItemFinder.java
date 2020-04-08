@@ -123,7 +123,7 @@ public class ReportItemFinder {
 			
 		 } else {
 
-			Optional<RegistrationPersonReport> domain = this.registrationPersonReportRepo.getDomainByReportId(cid, params.getReportLayoutId());
+			Optional<RegistrationPersonReport> domain = this.registrationPersonReportRepo.getDomain(cid, params.getReportLayoutId());
 			if (domain.isPresent()) {
 				appSid = domain.get().getAppSid();
 				appBussinessName = domain.get().getAppBussinessName();
