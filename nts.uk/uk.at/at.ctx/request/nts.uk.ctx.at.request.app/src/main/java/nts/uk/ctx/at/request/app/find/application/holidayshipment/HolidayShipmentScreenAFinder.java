@@ -21,9 +21,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInformationApplication;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
@@ -46,6 +48,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
@@ -72,8 +75,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -137,6 +142,12 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject 
+	private WorkingConditionService workingConditionService;
+	
+	@Inject
+	private AppAbsenceFinder appAbsenceFinder;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -809,5 +820,70 @@ public class HolidayShipmentScreenAFinder {
 		}
 
 	}
+	
+	// Refactor Code KAF011
+	public void startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
+		
+		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
+		
+		//振休管理チェック (Check quản lý nghỉ bù)
+		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
+		
+		//1.振出申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application làm bù (New )(có liên quan application ngày đối tượng )
+		DisplayInformationApplication applicationForWithdrawal = this.applicationForWithdrawal(
+				companyId,
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(),
+				null,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst()
+				);
+		
+		//1.振休申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application nghỉ bù (New )(có liên quan application ngày đối tượng )
+		
+		
+		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
+		
+		
+		//一番近い期限日を取得する
+	}
+	
+	//1.振出申請（新規）起動処理(申請対象日関係あり)
+	public DisplayInformationApplication applicationForWithdrawal(String companyId, String employeeId, GeneralDate baseDate, String employmentCode, List<WorkTimeSetting> workTimeLst) {
+	
+		DisplayInformationApplication result = new DisplayInformationApplication();
+		
+		//社員の労働条件を取得する(Lấy điều kiện lao động của employee)
+		Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+		
+		if(workingConditionItem.isPresent()) {
+			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode());
+		}else {
+			result.setSelectionWorkTime(Optional.of(workTimeLst.get(0).getWorktimeCode()));
+		}
+		
+		//振出用勤務種類の取得(Lấy worktype của làm bù)
+		
+		
+		
+		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
+		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType().get().v(), result.getSelectionWorkTime().get().v());
+		result.setStartTime(Optional.of(prescribedTimezoneSetting.getLstTimezone().get(0).getStart()));
+		result.setEndTime(Optional.of(prescribedTimezoneSetting.getLstTimezone().get(0).getEnd()));
+		
+		return result;
+	}
 
+	//1.振休申請（新規）起動処理(申請対象日関係あり)
+	public DisplayInformationApplication applicationForHoliday() {
+		DisplayInformationApplication result = new DisplayInformationApplication();
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
 }
