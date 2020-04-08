@@ -42,6 +42,16 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         selectedImp: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             let self = this;
+            
+            self.messageValueFirst.subscribe(function(codeChanged: string) {
+                     self.messageValueFirst($.trim(self.messageValueFirst()));
+                });
+            self.messageValueSecond.subscribe(function(codeChanged: string) {
+                     self.messageValueSecond($.trim(self.messageValueSecond()));
+                });
+            self.messageValueThird.subscribe(function(codeChanged: string) {
+                     self.messageValueThird($.trim(self.messageValueThird()));
+                });
         }
 
         /**
@@ -61,8 +71,13 @@ module nts.uk.at.view.kdp010.e.viewmodel {
 
         registration() {
             let self = this, dfd = $.Deferred();
-            $.when(self.deleteStampFunc(), self.registrationApp()).done(function() {
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            $.when(self.registrationApp(),self.deleteStampFunc()).done(function() {
                 if (nts.uk.ui.errors.hasError()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
                 self.registrationFunc();
@@ -77,12 +92,9 @@ module nts.uk.at.view.kdp010.e.viewmodel {
          */
         registrationApp() {
             let self = this;
-            $(document).ready(function() {
-                $('#message-text-1').trigger("validate");
-                $('#message-text-2').trigger("validate");
-                $('#message-text-3').trigger("validate");
-            });
-
+            $('#message-text-2').ntsEditor('validate');
+            $('.text-color-1').find('#message-1').find('#message-text-1').ntsEditor('validate');
+            $('#message-text-3').ntsEditor('validate');
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -252,8 +264,9 @@ module nts.uk.at.view.kdp010.e.viewmodel {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('selectedChildAttendace');
                 if (data.length > 5) {                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" }).then(() => {
-                            nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml');
-                        });
+                        nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml');
+                        var data = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                    });
                     return;
                 }
                 self.generateNameCorrespondingToAttendanceItem(data);
