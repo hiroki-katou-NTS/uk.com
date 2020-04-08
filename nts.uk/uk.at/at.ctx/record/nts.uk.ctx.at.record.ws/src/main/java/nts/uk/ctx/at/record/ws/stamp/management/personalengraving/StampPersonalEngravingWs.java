@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSet
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/record/stamp/management/personal")
@@ -57,7 +58,7 @@ public class StampPersonalEngravingWs extends WebService {
 	
 	@POST
 	@Path("stamp/getStampData")
-	public List<StampDataOfEmployeesDto> getStampData(EmployeeStampDataRequest request) {
+	public List<StampRecordDto> getStampData(EmployeeStampDataRequest request) {
 		return this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
 	}
 	

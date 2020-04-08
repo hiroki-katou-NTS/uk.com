@@ -47,3 +47,7 @@
 #tbl-header {
   font-weight: bold;
 }
+.inline-bl{
+  display: inline-block;
+  width: 30px;
+}
