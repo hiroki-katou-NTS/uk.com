@@ -187,6 +187,8 @@ module nts.uk.at.view.kdp011.a {
                         _.forEach(data.listEmployee, function(value) {
                             arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId });
                         });
+                        self.datepickerValue({ startDate: data.periodStart.substring(0, 10).split('-').join('/'), 
+                            endDate: data.periodEnd.substring(0, 10).split('-').join('/') });
                         self.employeeList(arrEmployeelst);
                         self.selectedCodeEmployee(_.map(arrEmployeelst, "code"));
                     }
@@ -216,7 +218,9 @@ module nts.uk.at.view.kdp011.a {
                 data.selectedIdProcessSelect = self.selectedIdProcessSelect();
                 // data.outputSetCode = self.selectedOutputItemCode();
                 if (data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2) {
-                    dialog.alertError({ messageId: "Msg_1204" });
+                    dialog.alertError({ messageId: "Msg_1204" }).then(function(){
+                        $( '#employee-list' ).focusComponent();
+                    });
                     blockUI.clear();
                     return;
                 }
@@ -240,7 +244,9 @@ module nts.uk.at.view.kdp011.a {
                 let self = this;
                 if (!self.checkedCardNOUnregisteStamp()) {
                     if (_.isEmpty(self.selectedCodeEmployee())) {
-                        dialog.alertError({ messageId: "Msg_1204" });
+                        dialog.alertError({ messageId: "Msg_1204" }).then(function(){
+                            $( '#employee-list' ).focusComponent();
+                        });
                         return false;
                     }
                 }

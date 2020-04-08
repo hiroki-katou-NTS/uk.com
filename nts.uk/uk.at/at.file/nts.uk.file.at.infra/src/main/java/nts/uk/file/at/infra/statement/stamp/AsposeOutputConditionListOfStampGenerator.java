@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Color;
 
 import lombok.SneakyThrows;
@@ -20,6 +21,7 @@ import nts.uk.file.at.app.export.statement.stamp.StampList;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+
 /**
  * 
  * @author HieuLt
@@ -29,7 +31,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReportGenerator
 		implements OutputConditionListOfStampGenerator {
 
-	
 	private static final String TEMPLATE_FILE = "report/KDP011-打刻一覧表_帳票レイアウト（社員別）.xlsx";
 
 	private static final int START_ROW = 4;
@@ -126,8 +127,8 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	private int generateData(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
 			PrintStyle printStyle) {
 		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-		int totalPage = employeeInfor.getStampList().size() / 35
-				+ (employeeInfor.getStampList().size() % 35 == 0 ? 0 : 1);
+		int totalPage = employeeInfor.getStampList().size() / 32
+				+ (employeeInfor.getStampList().size() % 32 == 0 ? 0 : 1);
 		int start = 0;
 		List<StampList> stampList;
 		int rows = startRow;
@@ -152,42 +153,65 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// カードNo.
 				cell.get(3, 3).setValue(employeeInfor.getCardNo());
 			}
-			
+
 			if (i == totalPage) {
 				stampList = employeeInfor.getStampList().subList(start, employeeInfor.getStampList().size());
 			} else {
-				stampList = employeeInfor.getStampList().subList(start, 35 * i);
-				start = 35 * i;
+				stampList = employeeInfor.getStampList().subList(start, 32 * i);
+				start = 32 * i;
 			}
-			
+
 			for (int j = 0; j < stampList.size(); j++) {
-				// Tạo màu background
-				Color bgColor = (j % 2 == 0) ? Color.fromArgb(221, 235, 247) : Color.fromArgb(221, 235, 247);
 				val dateStyle = printStyle.getDateStyle();
-				dateStyle.setBackgroundArgbColor(255);
-				dateStyle.setForegroundColor(Color.getRed());
+				// dateStyle.setForegroundColor(bgColor);
+				// dateStyle.setBackgroundArgbColor(255);
+				// dateStyle.setForegroundColor(Color.getRed());
 
 				val stampStyle = printStyle.getStampStyle();
-				stampStyle.setBackgroundColor(bgColor);
-				stampStyle.setForegroundColor(Color.getRed());
+				// stampStyle.setBackgroundColor(bgColor);
+				// stampStyle.setForegroundColor(Color.getRed());
 				val claStyle = printStyle.getClaStyle();
-				claStyle.setBackgroundColor(bgColor);
+				// claStyle.setBackgroundColor(bgColor);
 				val meanStyle = printStyle.getMeanStyle();
-				meanStyle.setBackgroundColor(bgColor);
+				// meanStyle.setBackgroundColor(bgColor);
 				val methodStyle = printStyle.getMethodStyle();
-				methodStyle.setBackgroundColor(bgColor);
+				// methodStyle.setBackgroundColor(bgColor);
 				val insStyle = printStyle.getInsStyle();
-				insStyle.setBackgroundColor(bgColor);
+				// insStyle.setBackgroundColor(bgColor);
 				val locStyle = printStyle.getLocStyle();
-				locStyle.setBackgroundColor(bgColor);
+				// locStyle.setBackgroundColor(bgColor);
 				val cardStyle = printStyle.getCardStyle();
-				cardStyle.setBackgroundColor(bgColor);
+				// cardStyle.setBackgroundColor(bgColor);
 				val wHourStyle = printStyle.getWHourStyle();
-				wHourStyle.setBackgroundColor(bgColor);
+				// wHourStyle.setBackgroundColor(bgColor);
 				val overStyle = printStyle.getOverStyle();
-				overStyle.setBackgroundColor(bgColor);
+				// overStyle.setBackgroundColor(bgColor);
 				val nightStyle = printStyle.getNightStyle();
-				nightStyle.setBackgroundColor(bgColor);
+				// nightStyle.setBackgroundColor(bgColor);
+				// Tạo màu background
+				Color bgColor = j % 2 != 0 ? Color.fromArgb(221, 235, 247) : Color.getWhite();
+				dateStyle.setForegroundColor(bgColor);
+				dateStyle.setPattern(BackgroundType.SOLID);
+				stampStyle.setForegroundColor(bgColor);
+				stampStyle.setPattern(BackgroundType.SOLID);
+				claStyle.setForegroundColor(bgColor);
+				claStyle.setPattern(BackgroundType.SOLID);
+				meanStyle.setForegroundColor(bgColor);
+				meanStyle.setPattern(BackgroundType.SOLID);
+				methodStyle.setForegroundColor(bgColor);
+				methodStyle.setPattern(BackgroundType.SOLID);
+				insStyle.setForegroundColor(bgColor);
+				insStyle.setPattern(BackgroundType.SOLID);
+				locStyle.setForegroundColor(bgColor);
+				locStyle.setPattern(BackgroundType.SOLID);
+				cardStyle.setForegroundColor(bgColor);
+				cardStyle.setPattern(BackgroundType.SOLID);
+				wHourStyle.setForegroundColor(bgColor);
+				wHourStyle.setPattern(BackgroundType.SOLID);
+				overStyle.setForegroundColor(bgColor);
+				overStyle.setPattern(BackgroundType.SOLID);
+				nightStyle.setForegroundColor(bgColor);
+				nightStyle.setPattern(BackgroundType.SOLID);
 
 				// 年月日
 				cell.get(rows, 0).setStyle(dateStyle);
@@ -224,9 +248,9 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				cell.get(rows, 10).setValue(stampList.get(j).getNightTime());
 				rows += 1;
 			}
-			
-			if (i == totalPage && stampList.size() < 35) {
-				rows += 35 - stampList.size();
+
+			if (i == totalPage && stampList.size() < 32) {
+				rows += 32 - stampList.size();
 			}
 		}
 		return rows;
