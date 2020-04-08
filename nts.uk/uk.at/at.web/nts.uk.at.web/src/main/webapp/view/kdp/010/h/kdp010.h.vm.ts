@@ -49,8 +49,6 @@ module nts.uk.at.view.kdp010.h {
                 self.selectedHighlight.subscribe((newValue) => {
                     if (self.selectedHighlight() == 1)
                         nts.uk.ui.errors.clearAll();
-                    else
-                        self.simpleValue('');
                 })
                 $('.ntsRadioBox').focus();
             }
@@ -81,6 +79,7 @@ module nts.uk.at.view.kdp010.h {
                             self.selectedAudio(data.audioType);
                             self.selectedHighlight(data.usrArt); 
                         } else {
+                            self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
                             self.selectedStamping(data.buttonType.stampType.goOutArt);
                             self.selectedAudio(data.audioType);
                             self.selectedHighlight(data.usrArt);                            
@@ -103,7 +102,6 @@ module nts.uk.at.view.kdp010.h {
                 }
                 if (self.selectedHighlight() == 0){
                     self.letterColors("#999");
-                    self.simpleValue('');
                     self.backgroundColors("#999")
                 }
                 self.dataStampPage = ({
