@@ -102,7 +102,11 @@ module nts.uk.at.view.kdp010.g {
 
             registration() {
                 let self = this, dfd = $.Deferred();
-                if (self.checkDelG() == true) {
+                if(!self.dataShare || self.dataShare.length == 0 ){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1627" });
+                    return;
+                }
+                if (self.checkDelG() == true ) {
                     $.when(self.deleteBeforeAdd()).done(function() {
                         self.registrationLayout();
                         $(document).ready(function() {
@@ -226,7 +230,8 @@ module nts.uk.at.view.kdp010.g {
                 } else {
                     for (let i = 0; i < 8; i++) {
                         self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
-                        if (lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null) {
+                        let lstBtn = lstButtonSet.filter(x => x.buttonPositionNo == i + 1);
+                        if (lstBtn[0] == null || (lstBtn[0] !=null &&  lstBtn[0].usrArt == 0)) {
                             self.buttonInfo()[i].buttonColor("#999");
                             self.buttonInfo()[i].buttonName(null);
                             self.buttonInfo()[i].textColor("#999");

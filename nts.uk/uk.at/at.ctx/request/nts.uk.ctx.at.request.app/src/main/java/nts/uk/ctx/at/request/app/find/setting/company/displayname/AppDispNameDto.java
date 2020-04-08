@@ -15,6 +15,7 @@ public class AppDispNameDto {
 	private int appType;
 	// 表示名
 	private String dispName;
+	
 	public static AppDispNameDto convertToDto(AppDispName domain){
 		return new AppDispNameDto(domain.getCompanyId(), domain.getAppType().value, 
 				domain.getDispName() == null ? null : domain.getDispName().v());

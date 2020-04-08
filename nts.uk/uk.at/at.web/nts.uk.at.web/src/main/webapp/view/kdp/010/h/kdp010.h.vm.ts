@@ -49,6 +49,8 @@ module nts.uk.at.view.kdp010.h {
                 self.selectedHighlight.subscribe((newValue) => {
                     if (self.selectedHighlight() == 1)
                         nts.uk.ui.errors.clearAll();
+                    else
+                        self.simpleValue('');
                 })
                 $('.ntsRadioBox').focus();
             }
@@ -70,13 +72,19 @@ module nts.uk.at.view.kdp010.h {
                 self.buttonPositionNo(self.dataShare.buttonPositionNo);
                 if (self.dataShare.dataShare != undefined) {
                     let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
-                    if (data) {
+                    if (data ) {
+                        if(data.usrArt == 1){
                             self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
                             self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
                             self.backgroundColors(data.buttonDisSet.backGroundColor);
                             self.selectedStamping(data.buttonType.stampType.goOutArt);
                             self.selectedAudio(data.audioType);
-                            self.selectedHighlight(data.usrArt);
+                            self.selectedHighlight(data.usrArt); 
+                        } else {
+                            self.selectedStamping(data.buttonType.stampType.goOutArt);
+                            self.selectedAudio(data.audioType);
+                            self.selectedHighlight(data.usrArt);                            
+                        }
                     }
                 }
                 $(document).ready(function() {
@@ -92,6 +100,11 @@ module nts.uk.at.view.kdp010.h {
                 $('#correc').trigger("validate");
                 if (nts.uk.ui.errors.hasError() && self.selectedHighlight() == 1) {
                     return;
+                }
+                if (self.selectedHighlight() == 0){
+                    self.letterColors("#999");
+                    self.simpleValue('');
+                    self.backgroundColors("#999")
                 }
                 self.dataStampPage = ({
                     buttonPositionNo: self.buttonPositionNo(),

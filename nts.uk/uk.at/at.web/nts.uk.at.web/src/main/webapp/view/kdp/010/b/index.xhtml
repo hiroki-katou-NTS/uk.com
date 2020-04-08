@@ -69,7 +69,7 @@
 							<div id="correc-text-b">
 								<!-- B4_2 -->
 								<input id = "correc-input" tabindex="3" class="nts-input"
-									data-bind="ntsNumberEditor: {value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+									data-bind="ntsNumberEditor: {name: '#[KDP010_16]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
@@ -113,7 +113,7 @@
 							</div> 
 							<div id = "stamp-texts-note" tabindex="5">
 							<!-- B7_2 --> <input class="nts-input" id="stamp-texts" 
-							data-bind="ntsNumberEditor: {value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
 							<!-- B7_3 -->
 							<label id="text-note">#{i18n.getText('KDP010_30')}</label>
 							</div>

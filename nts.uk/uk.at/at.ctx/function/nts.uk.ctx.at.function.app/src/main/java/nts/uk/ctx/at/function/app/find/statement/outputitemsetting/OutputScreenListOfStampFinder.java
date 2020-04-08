@@ -164,8 +164,8 @@ public class OutputScreenListOfStampFinder {
 				
 				// Overtime Hour & Late Night Time
 				val optOvertimeDeclaration = stampInfoDisp.getStamp().get().getRefActualResults().getOvertimeDeclaration();			
-				val overtimeHours = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverTime().toString() : "";
-				val lateNightTime = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverLateNightTime().toString() : "";
+				val overtimeHours = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverTime().v() : 0;
+				val lateNightTime = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverLateNightTime().v() : 0;
 				
 				// Set data
 				employeEngravingInfor.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
@@ -181,14 +181,14 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
 				employeEngravingInfor.setSupportCard(optSupportCard.orElse(""));
 				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
-				employeEngravingInfor.setOvertimeHours(overtimeHours);
-				employeEngravingInfor.setLateNightTime(lateNightTime);
+				employeEngravingInfor.setOvertimeHours(getTimeString(overtimeHours));
+				employeEngravingInfor.setLateNightTime(getTimeString(lateNightTime));
 				
 				result.add(employeEngravingInfor);
 			}
 		}
 			
-		return result;
+		return result;                                                                                                                                                                                                                                                                     
 	}
 	
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod){
@@ -229,8 +229,8 @@ public class OutputScreenListOfStampFinder {
 			String localInfor = "";
 			String supportCard = "";
 			String workTimeDisplayName = "";
-			String overtimeHours = "";
-			String lateNightTime = "";
+			Integer overtimeHours = 0;
+			Integer lateNightTime = 0;
 			String workLocationName = "";
 			if (stampInfoDisp.getStamp().isPresent()) {
 			
@@ -261,8 +261,8 @@ public class OutputScreenListOfStampFinder {
 				
 				val overtimeDeclaration = refActualResults.getOvertimeDeclaration();
 				if (overtimeDeclaration.isPresent()) {
-					overtimeHours = overtimeDeclaration.get().getOverTime().toString();
-					lateNightTime = overtimeDeclaration.get().getOverLateNightTime().toString();
+					overtimeHours = overtimeDeclaration.get().getOverTime().v();
+					lateNightTime = overtimeDeclaration.get().getOverLateNightTime().v();
 				}
 			}
 			
@@ -276,12 +276,18 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setLocalInfor(localInfor);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
-			cardNoStampInfo.setOvertimeHours(overtimeHours);
-			cardNoStampInfo.setLateNightTime(lateNightTime);
+			cardNoStampInfo.setOvertimeHours(getTimeString(overtimeHours));
+			cardNoStampInfo.setLateNightTime(getTimeString(lateNightTime));
 			cardNoStampInfos.add(cardNoStampInfo);
 		}
 				
 		return cardNoStampInfos;
+	}
+	
+	public String getTimeString(Integer t) {
+		int hours = t / 60; 
+		int minutes = t % 60;
+		return String.format("%02d:%02d", hours, minutes);
 	}
 	
 	

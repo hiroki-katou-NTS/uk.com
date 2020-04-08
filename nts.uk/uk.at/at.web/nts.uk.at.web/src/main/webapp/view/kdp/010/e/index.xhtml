@@ -35,7 +35,12 @@
 						<div id="mess-color-1">
 							<!-- E4_6 -->
 							<input tabindex="4" id="message-text-1"
-								data-bind="ntsTextEditor: {required: true, value: messageValueFirst, constraint: 'MessageContent', enable: selectedImprint() == 1}" />
+								data-bind="ntsTextEditor: {
+								name: '#[KDP010_62]',
+								required: true, 
+								value: messageValueFirst, 
+								constraint: 'MessageContent', 
+								enable: selectedImprint() == 1}" />
 							<!-- E4_7 -->
 							<div id="first-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: firstColors, enable: selectedImprint() == 1, width: 50, name:'#[KDP010_63]' }" />
@@ -63,7 +68,7 @@
 						<div id="mess-color-1">
 							<!-- E5_6 -->
 							<input tabindex="6" id="message-text-2"
-								data-bind="ntsTextEditor: {required: true, value: messageValueSecond, constraint: 'MessageContent', enable: selectedHoliday() == 1}" />
+								data-bind="ntsTextEditor: {name: '#[KDP010_62]', required: true, value: messageValueSecond, constraint: 'MessageContent', enable: selectedHoliday() == 1}" />
 							<!-- E5_7 -->
 							<div id="second-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: secondColors, enable: selectedHoliday() == 1, width: 50, name:'#[KDP010_63]' }" />
@@ -89,7 +94,7 @@
 						<div id="mess-color-1">
 							<!-- E6_6 -->
 							<input tabindex="8" id="message-text-3"
-								data-bind="ntsTextEditor: {required: true, value: messageValueThird, constraint: 'MessageContent', enable: selectedOvertime() == 1 }" />
+								data-bind="ntsTextEditor: {name: '#[KDP010_62]',required: true, value: messageValueThird, constraint: 'MessageContent', enable: selectedOvertime() == 1 }" />
 							<!-- E6_7 -->
 							<div id="third-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: thirdColors, enable: selectedOvertime() == 1, width: 50, name:'#[KDP010_63]' }" />
