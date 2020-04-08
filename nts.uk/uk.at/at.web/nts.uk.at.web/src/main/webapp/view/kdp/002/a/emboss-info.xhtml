@@ -10,9 +10,11 @@
         <div
           id="daterangepicker"
           tabindex="1"
-          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: embossModel().dateValue, maxRange: 'oneMonth'}"
+          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: embossModel().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
         ></div>
-        <button class="small" style="margin-top: 3px">#{i18n.getText('KDP002_27')}</button>
+        <button class="small" style="margin-top: 3px;" data-bind="click: getStampData " >
+          #{i18n.getText('KDP002_27')}
+        </button>
       </td>
     </tr>
     <tr>
@@ -23,11 +25,11 @@
             data-bind="ntsGridList: {
             width: 400,								
             height: 380,
-            dataSource: stampHistoryGrid().items,
+            dataSource: stampGrid().items,
             primaryKey: 'code',
-            columns: stampHistoryGrid().columns,
+            columns: stampGrid().columns,
             multiple: false,
-            value: stampHistoryGrid().currentCode
+            value: stampGrid().currentCode
           }"
           ></table>
         </div>

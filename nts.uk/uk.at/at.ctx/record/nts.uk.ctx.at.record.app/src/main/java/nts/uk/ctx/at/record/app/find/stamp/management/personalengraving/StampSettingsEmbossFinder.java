@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.G
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetTimeCardService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataOfEmployees;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -73,6 +75,15 @@ public class StampSettingsEmbossFinder {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
+		
+		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampCardRepo);
+		
+		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
+		
+		if(!isAvailable) {
+			throw new BusinessException("Msg_433");
+		}
+		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
 
@@ -197,6 +208,19 @@ public class StampSettingsEmbossFinder {
 			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
 		}
 
+	}
+	
+	@AllArgsConstructor
+	private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
+		
+		@Inject
+		private StampCardRepository stampCardRepo;
+		
+		@Override
+		public List<StampCard> getListStampCard(String sid) {
+			return stampCardRepo.getListStampCard(sid);
+		}
+		
 	}
 
 }

@@ -1,21 +1,9 @@
+
 class EmbossInfoModel {
-    dateValue: KnockoutObservable<any> = ko.observable({});
-    startDateString: KnockoutObservable<string> = ko.observable("");
-    endDateString: KnockoutObservable<string> = ko.observable("");
-    
+    dateValue: KnockoutObservable<any>;
     constructor() {
-
-        let self = this;    
-        self.startDateString.subscribe(function(value){
-            self.dateValue().startDate = value;
-            self.dateValue.valueHasMutated();        
-        });
-        
-        self.endDateString.subscribe(function(value){
-            self.dateValue().endDate = value;   
-            self.dateValue.valueHasMutated();      
-        });
-
+        let self = this;
+        self.dateValue = ko.observable({startDate: moment().add(-3, 'days').format('YYYY/MM/DD'), endDate: moment().format('YYYY/MM/DD')});
     }
 }
 

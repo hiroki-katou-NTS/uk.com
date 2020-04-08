@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
  * @author anhdt
  * 打刻入力の打刻履歴一覧を表示する
  */
+@Stateless
 public class EmployeeStampDatasFinder {
 	
 	@Inject
