@@ -156,66 +156,68 @@ module nts.uk.at.view.kdp010.h {
                     changeClockArt: 1,
                     changeCalArt: 1
                 };
+               
+                
                 switch (self.selectedDay()) {
                     case 1:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: null, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 2:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 1, reservationArt: 0 };
                         break;
                     case 3:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 4:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 5:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 6:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: 2, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 7:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 8:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 9:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 10:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 11:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 12:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[10].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 13:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[11].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 14:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 15:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 16:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[12].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 17:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 18:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: null };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
-                        self.lstData = { changeClockArt: null, changeCalArt: null, changeCalArt: null, changeHalfDay: 0, reservationArt: 1 };
+                        self.lstData = { changeClockArt: null, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 1 };
                         break;
                     case 20:
-                        self.lstData = { changeClockArt: null, changeCalArt: null, changeCalArt: null, changeHalfDay: 0, reservationArt: 2 };
+                        self.lstData = { changeClockArt: null, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 2 };
                         break;
                 }
             }
