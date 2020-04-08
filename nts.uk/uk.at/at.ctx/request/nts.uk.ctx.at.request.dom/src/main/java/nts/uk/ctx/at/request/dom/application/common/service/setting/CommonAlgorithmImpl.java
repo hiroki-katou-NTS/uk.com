@@ -170,6 +170,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		output.setBaseDate(baseDate);
 		output.setAchievementOutputLst(appDispInfoWithDateOutput.getAchievementOutputLst());
 		output.setAppDetailContentLst(appDispInfoWithDateOutput.getAppDetailContentLst());
+		output.setEmpHistImport(empHistImport);
 		// 「申請表示情報(基準日関係あり)」を返す
 		return output;
 	}

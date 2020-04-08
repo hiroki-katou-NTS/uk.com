@@ -10,6 +10,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
@@ -79,6 +80,11 @@ public class AppDispInfoWithDateDto {
 	 */
 	public List<AppDetailContent> appDetailContentLst;
 	
+	/**
+	 * 社員所属雇用履歴を取得
+	 */
+	public SEmpHistImportDto empHistImport;
+	
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
@@ -93,6 +99,7 @@ public class AppDispInfoWithDateDto {
 		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate().toString("yyyy/MM/dd");
 		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst().stream().map(x -> AchievementDto.convertFromAchievementOutput(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
+		appDispInfoWithDateDto.empHistImport = SEmpHistImportDto.fromDomain(appDispInfoWithDateOutput.getEmpHistImport());
 		return appDispInfoWithDateDto;
 	}
 	
@@ -128,6 +135,7 @@ public class AppDispInfoWithDateDto {
 		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		output.setAchievementOutputLst(achievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		output.setAppDetailContentLst(appDetailContentLst);
+		output.setEmpHistImport(empHistImport.toDomain());
 		return output;
 	}
 	
