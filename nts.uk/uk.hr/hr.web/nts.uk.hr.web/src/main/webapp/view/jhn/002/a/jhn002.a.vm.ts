@@ -79,7 +79,7 @@ module jhn002.a.viewmodel {
                     }
 
                     let query = {
-                        reportId: string = objReport.reportId,
+                        reportId: string = null,
                         reportLayoutId: number = objReport.reportClsId
                     };
 
