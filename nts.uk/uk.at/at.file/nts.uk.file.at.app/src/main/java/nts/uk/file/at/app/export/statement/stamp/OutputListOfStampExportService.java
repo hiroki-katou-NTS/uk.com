@@ -111,7 +111,7 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 						+ "　" + value.get(0).getWorkplaceName());
 				employeeInfor.setEmployee(TextResource.localize("KDP011_33") + "　" + value.get(0).getEmployeeCode()
 						+ "　" + value.get(0).getEmployeeName());
-				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + key);
+				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + value.get(0).getCardNo());
 				List<StampList> stampLists = new ArrayList<>();
 				value.forEach(i -> {
 					StampList stampList = new StampList();
