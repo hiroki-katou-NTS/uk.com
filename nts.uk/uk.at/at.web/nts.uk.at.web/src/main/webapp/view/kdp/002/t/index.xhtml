@@ -24,35 +24,40 @@
 			<div id="label-title">
 					<label class="basic-label" data-bind="text:$data.dataShare.messageContent , style:{ color :  $data.dataShare.messageColor }"></label>
 				</div>
-				<com:ko-if bind="$data.dataShare.listRequired.length >=6 ">
+				<com:ko-if bind="dataShare.listRequired.length > 5 ">
 				<div id="label-title-2">
 					<label class="basic-label">#{i18n.getText('KDP002_95')}</label>
 				</div>
 				</com:ko-if>
+				<!-- <com:ko-else bind="$data.dataShare.listRequired.length < 7 ">
+				<div id="label-title-2">
+					<label class="basic-label"></label>
+				</div>
+				</com:ko-else> -->
 				<!-- G7 -->
 				<div>
 					<table>
 						<tr>
 							<td>
 
-								<button class="btn-name btn_1" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  dataShare.listRequired[0].buttonColor(), color :  dataShare.listRequired[0].textColor() }" id="button1"></button>
+								<button class="proceed btn-name btn_1" data-bind = "text: dataShare.listRequired[0].buttonName" id="button1"></button>
 							</td>
 							<td>
-								<button class="btn-name btn_2" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  $data.dataShare.listRequired[0].buttonColor(), color :  $data.dataShare.listRequired[0].textColor() }" id="button2"></button>
+								<button class="proceed btn-name btn_2" data-bind = "text: dataShare.listRequired[1].buttonName" id="button2"></button>
 							</td>
 							<td>
-								<button class="btn-name btn_3" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  $data.dataShare.listRequired[0].buttonColor(), color :  $data.dataShare.listRequired[0].textColor() }" id="button3"></button>
+								<button class="proceed btn-name btn_3" data-bind = "text: dataShare.listRequired[2].buttonName" id="button3"></button>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<button class="btn-name btn_5" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  $data.dataShare.listRequired[0].buttonColor(), color :  $data.dataShare.listRequired[0].textColor() }" id="button5"></button>
+								<button class="proceed btn-name btn_5" data-bind = "text: dataShare.listRequired[3].buttonName" id="button5"></button>
 							</td>
 							<td>
-								<button class="btn-name btn_6" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  $data.dataShare.listRequired[0].buttonColor(), color :  $data.dataShare.listRequired[0].textColor() }" id="button6"></button>
+								<button class="proceed btn-name btn_6" data-bind = "text: dataShare.listRequired[4].buttonName" id="button6"></button>
 							</td>
 							<td>
-								<button class="btn-name btn_7" data-bind = "text: dataShare.listRequired[0].buttonName, style:{ 'background-color' :  $data.dataShare.listRequired[0].buttonColor(), color :  $data.dataShare.listRequired[0].textColor() }" id="button7"></button>
+								<button class="proceed btn-name btn_7" data-bind = "text: dataShare.listRequired[5].buttonName" id="button7"></button>
 							</td>
 						</tr>
 					</table>

@@ -138,7 +138,6 @@ module nts.uk.at.view.kdp010.e.viewmodel {
 
         registrationFunc() {
             let self = this;
-            nts.uk.ui.block.invisible();
             // Data from Screen 
             let StampRecordDisCommand = {
                 usrAtr: self.selectedImp(),

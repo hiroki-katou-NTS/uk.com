@@ -169,7 +169,7 @@ module nts.uk.at.view.kdp010.g {
                             buttonType: new model.ButtonTypeCommand({
                                 reservationArt: item.buttonType.reservationArt,
                                 stampType: new model.StampTypeCommand({
-                                    changeHalfDay: item.buttonType.stampType.changeHalfDay,
+                                    changeHalfDay: item.buttonType.stampType.changeHalfDay ==0 ?false:true,
                                     goOutArt: item.buttonType.stampType.goOutArt,
                                     setPreClockArt: item.buttonType.stampType.setPreClockArt,
                                     changeClockArt: item.buttonType.stampType.changeClockArt,

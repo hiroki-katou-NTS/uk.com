@@ -19,11 +19,11 @@ public class StampTypeDto {
 	private Optional<Integer> goOutArt;
 	
 	/** 所定時刻セット区分 */
-	private int setPreClockArt;
+	private Integer setPreClockArt;
 	
 	/** 時刻変更区分 */
-	private int changeClockArt;
+	private Integer changeClockArt;
 	
 	/** 計算区分変更対象 */
-	private int changeCalArt;
+	private Integer changeCalArt;
 }

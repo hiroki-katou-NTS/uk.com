@@ -17,16 +17,16 @@ public class StampTypeCommand {
 	private Integer goOutArt;
 	
 	/** 所定時刻セット区分 */
-	private int setPreClockArt;
+	private Integer setPreClockArt;
 	
 	/** 時刻変更区分 */
-	private int changeClockArt;
+	private Integer changeClockArt;
 	
 	/** 計算区分変更対象 */
-	private int changeCalArt;
+	private Integer changeCalArt;
 
-	public StampTypeCommand(boolean changeHalfDay, Integer goOutArt, int setPreClockArt, int changeClockArt,
-			int changeCalArt) {
+	public StampTypeCommand(boolean changeHalfDay, Integer goOutArt, Integer setPreClockArt, Integer changeClockArt,
+			Integer changeCalArt) {
 		this.changeHalfDay = changeHalfDay;
 		this.goOutArt = goOutArt;
 		this.setPreClockArt = setPreClockArt;
