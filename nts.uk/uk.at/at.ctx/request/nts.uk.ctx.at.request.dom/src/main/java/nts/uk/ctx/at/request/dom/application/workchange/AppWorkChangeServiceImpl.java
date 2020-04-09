@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDisp
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.InitDisplayWorktimeAtr;
@@ -57,7 +59,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-
+	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
+		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
+	}
 	@Override
 	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
 		AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
@@ -70,9 +74,17 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				true);
 		// ドメインモデル「勤務変更申請設定」を取得する
 		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
+		List<AppEmploymentSetting> employmentSetLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
+//		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
+//				.findFirst().orElse(null);
+		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+			geWorkTypeObjAppHoliday(x,ApplicationType.WORK_CHANGE_APPLICATION).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
+				
+				).findFirst();
+		AppEmploymentSetting employmentSet = setting.get();
 		// 勤務種類を取得
-		List<WorkType> workTypeLst = this.getWorkTypeLst(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet()
-				.stream().filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().orElse(null));
+		List<WorkType> workTypeLst = this.getWorkTypeLst(employmentSet);
 		// 勤務種類・就業時間帯の初期選択項目を取得する
 		String employeeID = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
 		GeneralDate date = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
@@ -104,8 +116,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
-		List<String> workTypeCDLst = appEmploymentSetting.getLstWorkType().stream()
-				.map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+		List<String> workTypeCDLst = appEmploymentSetting.getListWTOAH().get(0).getWorkTypeList();
 		return workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
 	}
 

@@ -60,9 +60,13 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		List<WorkType> result = new ArrayList<>();
 		//ドメインモデル「休暇申請対象勤務種類」を取得する
 		List<String> lstWorkTypeCodes = new ArrayList<>();
+		List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentWorkType.getListWTOAH()) ? null : appEmploymentWorkType.getListWTOAH()
+				.stream().map(x -> new AppEmployWorkType(companyID, appEmploymentWorkType.getEmploymentCode(), x.getAppType(),
+						x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+				.collect(Collectors.toList());
 		if(appEmploymentWorkType!=null){
-			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getLstWorkType())){
-				for(AppEmployWorkType appEmployWorkType : appEmploymentWorkType.getLstWorkType()){
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)){
+				for(AppEmployWorkType appEmployWorkType : lstEmploymentWorkType){
 					if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
 						lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
 					}

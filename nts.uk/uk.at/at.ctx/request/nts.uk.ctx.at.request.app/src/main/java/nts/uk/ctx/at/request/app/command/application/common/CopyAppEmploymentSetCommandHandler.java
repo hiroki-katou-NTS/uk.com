@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.PreBeforeApplicationService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
@@ -25,8 +26,10 @@ public class CopyAppEmploymentSetCommandHandler extends CommandHandler<CopyAppEm
 		CopyAppEmploymentSetCommand command = context.getCommand();
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
-		List<AppEmploymentSetting> sourceData = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
-		service.copyEmploymentSetting(companyId, sourceData, command.getTargetEmploymentCodes(), command.isOveride());
+//		List<AppEmploymentSetting> sourceData = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
+		List<AppEmploymentSetting> sourceData1 = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
+		//service.copyEmploymentSetting(companyId, sourceData, command.getTargetEmploymentCodes(), command.isOveride());
+		service.copyEmploymentSettingNew(companyId, sourceData1, command.getTargetEmploymentCodes(), command.isOveride());
 	}
 
 }
