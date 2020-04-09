@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
@@ -98,4 +99,12 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public List<GeneralDate> checkHoliday(String employeeID, DatePeriod period);
+	
+	/**
+	 * 勤務変更申請画面初期（更新）
+	 * @param companyID 会社ID
+	 * @param appID 申請ID
+	 * @return
+	 */
+	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID);
 }

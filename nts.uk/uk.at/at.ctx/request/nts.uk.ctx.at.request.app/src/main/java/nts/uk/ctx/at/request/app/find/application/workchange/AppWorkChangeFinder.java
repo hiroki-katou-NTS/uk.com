@@ -15,6 +15,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCommand;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
@@ -165,5 +167,11 @@ public class AppWorkChangeFinder {
 				workChangeDomain);
 		
 		return WorkChangeCheckRegisterDto.fromDomain(output);
+	}
+	
+	public AppWorkChangeDetailDto startDetailScreen(String appID) {
+		String companyID = AppContexts.user().companyId();
+		AppWorkChangeDetailOutput output = appWorkChangeService.startDetailScreen(companyID, appID);
+		return AppWorkChangeDetailDto.fromDomain(output);
 	}
 }

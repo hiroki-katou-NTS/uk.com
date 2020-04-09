@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
@@ -72,6 +74,12 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private NewBeforeRegister_New newBeforeRegister;
+	
+	@Inject
+	private DetailAppCommonSetService detailAppCommonSetService;
+	
+	@Inject
+	private IAppWorkChangeRepository appWorkChangeRepository;
 
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
@@ -330,6 +338,29 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			throw new BusinessException("Msg_1459",dateListString);
 		}
         return result;
+	}
+
+	@Override
+	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID) {
+		AppWorkChangeDetailOutput result = new AppWorkChangeDetailOutput();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
+		// 詳細画面起動前申請共通設定を取得する
+		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
+		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
+		AppWorkChange appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, appID).get();
+		// ドメインモデル「勤務変更申請設定」より取得する 
+		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
+		// 勤務種類を取得する
+		AppEmploymentSetting appEmploymentSetting = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
+		List<WorkType> workTypeLst = this.getWorkTypeLst(appEmploymentSetting);
+		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットする
+		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSet);
+		appWorkChangeDispInfo.setWorkTypeLst(workTypeLst);
+		// 「勤務変更申請の表示情報」と「勤務変更申請」を返す
+		result.setAppWorkChangeDispInfo(appWorkChangeDispInfo);
+		result.setAppWorkChange(appWorkChange);
+		return result;
 	}
 
 }

@@ -17,8 +17,8 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -72,8 +72,8 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("getWorkchangeByAppID/{appId}")
-	public WorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
-		return detailFinder.getWorkChangeDetailById(appId);
+	public AppWorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
+		return appWorkFinder.startDetailScreen(appId);
 	}
 
 	/**
