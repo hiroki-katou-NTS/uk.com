@@ -10,6 +10,7 @@ public class StampList {
 	private String classification;
 	private String mean;
 	private String method;
+	private String cardNo;
 	private String insLocation;
 	private String locationInfor;
 	private String supportCard;

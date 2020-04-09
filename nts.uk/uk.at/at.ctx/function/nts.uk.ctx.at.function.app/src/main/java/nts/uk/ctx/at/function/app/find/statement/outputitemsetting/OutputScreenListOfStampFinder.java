@@ -141,12 +141,12 @@ public class OutputScreenListOfStampFinder {
 		List<String> listWorkTimeCode = listWorkTime.stream().map(c -> c.v()).collect(Collectors.toList());
 		List<WorkTimeSetting> listWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), listWorkTimeCode);
 		
-		for (val item : listEmployeeStampInfo) {
-			EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+		for (val item : listEmployeeStampInfo) {	
 			EmployeeInformationImport empInfo = listEmpInfo.stream().filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst().orElse(null);
 			
 			// StampInfoDisp
 			for (val stampInfoDisp : item.getListStampInfoDisp()) {
+				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
 				val workLocationCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
 				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
