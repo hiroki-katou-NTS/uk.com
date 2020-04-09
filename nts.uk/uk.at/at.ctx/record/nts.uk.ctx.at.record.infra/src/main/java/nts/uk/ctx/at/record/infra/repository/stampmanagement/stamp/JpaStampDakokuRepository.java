@@ -25,7 +25,6 @@ import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -149,12 +148,12 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				new BigDecimal(stamp.getLocationInfor().isPresent()
-						? stamp.getLocationInfor().get().getPositionInfor().getLongitude()
-						: null),
-				new BigDecimal(stamp.getLocationInfor().isPresent()
-						? stamp.getLocationInfor().get().getPositionInfor().getLatitude()
-						: null),
+				stamp.getLocationInfor().isPresent()
+						? new BigDecimal( stamp.getLocationInfor().get().getPositionInfor().getLongitude())
+						: null,
+				stamp.getLocationInfor().isPresent()
+						? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude())
+						: null,
 				stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
 	}
 

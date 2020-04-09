@@ -34,8 +34,6 @@ class EmbossGridInfo {
             ]);
             self.bindItemData(start.timeCard.listAttendances);
         }
-
-        self.items = ko.observableArray([]);
     }
 
     bindItemData(items: Array<any>) {

@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Data
 public class RegisterStampDataCommand {
 
-	private GeneralDateTime datetime;
+	private String datetime;
 	private Integer authcMethod;
 	private Integer stampMeans;
 
@@ -65,15 +65,23 @@ public class RegisterStampDataCommand {
 	public RefectActualResult toRefectActualResult() {
 		return new RefectActualResult(cardNumberSupport, new WorkLocationCD(workLocationCD),
 				new WorkTimeCode(workTimeCode),
-				new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)));
+				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null);
 	}
 	
 	public GeoCoordinate toGeoCoordinate() {
+		if(latitude == null || longitude == null) {
+			return null;
+		}
 		return new GeoCoordinate(latitude, longitude);
 	}
 	
 	public EmpInfoTerminalCode toEmpInfoTerCode(){
-		return new EmpInfoTerminalCode(empInfoTerCode);
+		return empInfoTerCode != null ? new EmpInfoTerminalCode(empInfoTerCode) : null;
+	}
+	
+	public GeneralDateTime retriveDateTime() {
+		return GeneralDateTime.fromString(this.datetime, "yyyy/MM/dd HH:mm:ss");
+		
 	}
 
 }

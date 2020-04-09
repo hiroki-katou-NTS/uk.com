@@ -5,7 +5,8 @@ module nts.uk.at.view.kdp002.a {
     export module service {
         let url = {
             startPage: 'at/record/stamp/management/personal/startPage',
-            getStampData: 'at/record/stamp/management/personal/stamp/getStampData'
+            getStampData: 'at/record/stamp/management/personal/stamp/getStampData',
+            stampInput: 'at/record/stamp/management/personal/stamp/input'
         }
 
         export function startPage(): JQueryPromise<any> {
@@ -14,6 +15,10 @@ module nts.uk.at.view.kdp002.a {
 
         export function getStampData(data): JQueryPromise<any> {
             return ajax("at", url.getStampData, data);
+        }
+
+        export function stampInput(data): JQueryPromise<any> {
+            return ajax("at", url.stampInput, data);
         }
     }
 

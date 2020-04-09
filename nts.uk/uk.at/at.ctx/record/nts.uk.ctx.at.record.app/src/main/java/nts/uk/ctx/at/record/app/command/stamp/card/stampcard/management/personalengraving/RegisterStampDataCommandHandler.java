@@ -50,9 +50,9 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 				stampCardRepository, stampDakokuRepo, stampRecordRepo, createDailyResultDomainSv);
 
 		RegisterStampDataCommand cmd = context.getCommand();
-		String employeeId = AppContexts.user().companyId();
-
-		StampDataReflectResult result = CreateStampDataForEmployeesService.create(required, employeeId, cmd.getDatetime(),
+		String employeeId = AppContexts.user().employeeId();
+		
+		StampDataReflectResult result = CreateStampDataForEmployeesService.create(required, employeeId, cmd.retriveDateTime(),
 				cmd.toRelieve(), cmd.toButtonType(), Optional.ofNullable(cmd.toRefectActualResult()),
 				Optional.ofNullable(cmd.toGeoCoordinate()), Optional.ofNullable(cmd.toEmpInfoTerCode()));
 		

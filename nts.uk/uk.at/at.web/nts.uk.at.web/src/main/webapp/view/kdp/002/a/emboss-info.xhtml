@@ -13,7 +13,7 @@
           tabindex="1"
           data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
         ></div>
-        <button class="small" style="margin-top: 3px;" data-bind="click: getStampData " >
+        <button class="small" id="get-stamp-data" style="margin-top: 3px;" data-bind="click: getStampData " >
           #{i18n.getText('KDP002_27')}
         </button>
       </td>

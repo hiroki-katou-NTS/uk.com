@@ -16,7 +16,7 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.startPage()
-                    .done((res) => {
+                    .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res));
@@ -68,10 +68,28 @@ module nts.uk.at.view.kdp002.a {
                 return layout;
             }
         
-            public clickBtn1() {
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function (): any {
-                    console.log("Lam cai gi thi lam di ko thi thoi ko lam nua");
-                }); 
+            public clickBtn1(vm) {
+                let button = this;
+                console.log(vm());
+                let data = {
+                    datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
+                    authcMethod:0,
+                    stampMeans:3,
+                    reservationArt: button.btnReservationArt,
+                    changeHalfDay: button.changeHalfDay,
+                    goOutArt: button.goOutArt,
+                    setPreClockArt: button.setPreClockArt,
+                    changeClockArt: button.changeClockArt,
+                    changeCalArt: button.changeCalArt
+                };
+                service.stampInput(data).done((res) => {
+                    nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+                    //    $('#get-stamp-data').trigger('click');
+                        vm().getStampData();
+                    }); 
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                });
             }
         
             public clickBtn2() {

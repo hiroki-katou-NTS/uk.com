@@ -6,9 +6,10 @@ module nts.uk.at.view.kdp.share {
     export class StampButtonLayOut {
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number> = ko.observable(0);
-        clickBinding
+        parentVM: KnockoutObservable<any>;
         constructor(params: any) {
             let self = this;
+            self.parentVM = ko.observable(params.parent.content);
             console.log(params.data());
             if(params.data()) {
                 let layout = params.data();
@@ -57,7 +58,7 @@ ko.components.register('stamp-layout-button', {
             <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
                 <div class="stamp-rec-btn-container pull-left">
                         <button class="stamp-rec-btn" id=""
-                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: onClick, visible: btnPositionNo != -1"></button>
+                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: function(data, event) { onClick($parent.parentVM) }, visible: btnPositionNo != -1"></button>
                 </div>
             </div>
         </div>
@@ -66,7 +67,7 @@ ko.components.register('stamp-layout-button', {
             <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
                 <div class="stamp-square-btn-container pull-left">
                         <button class="stamp-rec-btn" id=""
-                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: onClick, visible: btnPositionNo != -1"></button>
+                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: function(data, event) { onClick($parent.parentVM) }, visible: btnPositionNo != -1"></button>
                 </div>
             </div>
         </div>
