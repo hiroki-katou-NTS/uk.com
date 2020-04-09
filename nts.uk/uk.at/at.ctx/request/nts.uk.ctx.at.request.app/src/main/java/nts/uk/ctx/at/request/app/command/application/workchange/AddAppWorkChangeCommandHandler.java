@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.ArrayList;
 /*import java.util.ArrayList;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -20,14 +19,15 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -36,7 +36,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -46,18 +45,15 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private IWorkChangeRegisterService workChangeRegisterService;
 	@Inject
 	private IFactoryApplication IfacApp;
-//	@Inject
-//	private CollectAchievement collectAchievement;
-//	@Inject
-//	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
-	@Inject 
-	private OtherCommonAlgorithm  otherCommonAlgorithm;
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private AppWorkChangeService appWorkChangeService;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -126,44 +122,10 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				workChangeCommand.getBackHomeAtr2());
 		
 		//1日休日のチェック
-        List<GeneralDate> lstDateHd = checkHoliday(companyId,applicantSID,addCommand);
+        List<GeneralDate> lstDateHd = appWorkChangeService.checkHoliday(
+        		applicantSID, 
+        		new DatePeriod(addCommand.getApplication().getStartDate(), addCommand.getApplication().getEndDate()));
 		//ドメインモデル「勤務変更申請設定」の新規登録をする
         return workChangeRegisterService.registerData(workChangeDomain, app, addCommand.isCheckOver1Year(), lstDateHd);
-	}
-
-	
-	/**
-	 * 1日休日のチェック
-	 * @param applicantSID 
-	 * @param SID
-	 * @param AddAppWorkChangeCommand
-	 */
-	private List<GeneralDate> checkHoliday(String companyId, String applicantSID, AddAppWorkChangeCommand addCommand) {
-		boolean isCheck = addCommand.getWorkChange().getExcludeHolidayAtr() == 1;
-		// INPUT．休日除くチェック区分をチェックする
-        if (!isCheck) return new ArrayList<>();
-        //申請期間から休日の申請日を取得する
-        GeneralDate startDate = addCommand.getApplication().getStartDate();
-
-		GeneralDate endDate = addCommand.getApplication().getEndDate();
-		
-		List<GeneralDate> dateClears = otherCommonAlgorithm.lstDateIsHoliday(companyId, applicantSID,
-				new DatePeriod(startDate, endDate));
-		
-		int totalDate = startDate.daysTo(endDate) + 1;
-
-		if (dateClears.size() == totalDate) {
-			//日付一覧(output)の件数 > 0
-			String dateListString = "";
-
-			for (int i = 0; i < dateClears.size(); i++) {
-				if (dateListString != "") {
-					dateListString += "、";
-				}
-				dateListString += dateClears.get(i).toString("yyyy/MM/dd");
-			}
-			throw new BusinessException("Msg_1459",dateListString);
-		}
-        return dateClears;
 	}
 }

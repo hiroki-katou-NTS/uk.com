@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/workchange")
@@ -30,7 +31,7 @@ public class WorkchangeService extends WebService {
 	AppWorkChangeCommonSetFinder commonFinder;
 
 	@Inject
-	AddAppWorkChangeCommandHandler addHandler;
+	private AddAppWorkChangeCommandHandler addHandler;
 
 	@Inject
 	UpdateAppWorkChangeCommandHandler updateHandler;
@@ -118,6 +119,12 @@ public class WorkchangeService extends WebService {
 	@Path("changeWorkSelection")
 	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
 		return appWorkFinder.changeWorkSelection(param);
+	}
+	
+	@POST
+	@Path("checkBeforeRegister")
+	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
+		return appWorkFinder.checkBeforeRegister(command);
 	}
 
 }
