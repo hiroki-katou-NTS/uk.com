@@ -61,9 +61,8 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		transaction.execute(() -> {
 			atom.run();
 		});
+		
 		return new RegisterStampDataResult(employeeId, result.getReflectDate());
-		
-		
 	}
 
 	@AllArgsConstructor

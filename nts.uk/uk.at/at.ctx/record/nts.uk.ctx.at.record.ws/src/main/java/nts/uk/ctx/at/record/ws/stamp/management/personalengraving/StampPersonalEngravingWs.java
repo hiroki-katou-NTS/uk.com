@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.GetOmiss
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSettingsEmbossFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.shr.com.context.AppContexts;
 

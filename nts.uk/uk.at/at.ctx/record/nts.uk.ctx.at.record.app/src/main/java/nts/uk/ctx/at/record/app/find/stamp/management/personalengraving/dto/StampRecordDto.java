@@ -5,12 +5,12 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.OvertimeDeclaration;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 
 /**
  * @author anhdt
