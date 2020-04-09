@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
  * 
  *  打刻入力(個人)の打刻ボタンを抑制の表示をする
  */
+@Stateless
 public class StampDisplayButtonFinder {
 	
 	@Inject

@@ -5,11 +5,11 @@ module nts.uk.at.view.kdp.share {
     }
     export class StampButtonLayOut {
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
-        buttonLayoutType: KnockoutObservable<number>;
+        buttonLayoutType: KnockoutObservable<number> = ko.observable(0);
         clickBinding
         constructor(params: any) {
             let self = this;
-            console.log(params);
+            console.log(params.data());
             if(params.data()) {
                 let layout = params.data();
                 self.buttonLayoutType = ko.observable(layout.buttonLayoutType);

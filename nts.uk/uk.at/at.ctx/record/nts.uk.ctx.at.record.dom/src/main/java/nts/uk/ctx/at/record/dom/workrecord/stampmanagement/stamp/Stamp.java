@@ -112,5 +112,9 @@ public class Stamp implements DomainAggregate {
 		this.workLocationName = workLocationName;
 	} 
 	
+	public String retriveCardNumber() {
+		return this.getCardNumber().v();
+	}
+	
 	
 }

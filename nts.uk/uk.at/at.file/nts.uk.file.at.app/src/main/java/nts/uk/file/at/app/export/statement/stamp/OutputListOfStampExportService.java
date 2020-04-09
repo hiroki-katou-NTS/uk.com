@@ -104,14 +104,14 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 		} else {
 			List<EmployeEngravingInfor> employeEngravingInfors = (List<EmployeEngravingInfor>) data;
 			Map<String, List<EmployeEngravingInfor>> employeEngravingInforMap = employeEngravingInfors.stream()
-					.collect(Collectors.groupingBy(EmployeEngravingInfor::getCardNo));
+					.collect(Collectors.groupingBy(EmployeEngravingInfor::getEmployeeCode));
 			employeEngravingInforMap.forEach((key, value) -> {
 				EmployeeInfor employeeInfor = new EmployeeInfor();
 				employeeInfor.setWorkplace(TextResource.localize("KDP011_32") + "　" + value.get(0).getWorkplaceCd()
 						+ "　" + value.get(0).getWorkplaceName());
 				employeeInfor.setEmployee(TextResource.localize("KDP011_33") + "　" + value.get(0).getEmployeeCode()
 						+ "　" + value.get(0).getEmployeeName());
-				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + key);
+				employeeInfor.setCardNo(TextResource.localize("KDP011_34") + "　" + value.get(0).getCardNo());
 				List<StampList> stampLists = new ArrayList<>();
 				value.forEach(i -> {
 					StampList stampList = new StampList();

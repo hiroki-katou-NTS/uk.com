@@ -23,7 +23,7 @@ public class KDP002AStartPageSettingDto {
 	private StampSettingDto stampSetting;
 	private StampResultDisplayDto stampResultDisplay;
 	
-	private List<StampDataOfEmployeesDto> stampDataOfEmployees = new ArrayList<>();
+	private List<StampRecordDto> stampDataOfEmployees = new ArrayList<>();
 	
 	private StampToSuppressDto stampToSuppress;
 
@@ -37,7 +37,7 @@ public class KDP002AStartPageSettingDto {
 		this.stampToSuppress = new StampToSuppressDto(stampToSuppress);
 		
 		for (StampDataOfEmployees stampData : employeeStampDatas) {
-			this.stampDataOfEmployees.add(new StampDataOfEmployeesDto(stampData));
+			this.stampDataOfEmployees.addAll(new StampDataOfEmployeesDto(stampData).getStampRecords());
 		}
 
 	}
