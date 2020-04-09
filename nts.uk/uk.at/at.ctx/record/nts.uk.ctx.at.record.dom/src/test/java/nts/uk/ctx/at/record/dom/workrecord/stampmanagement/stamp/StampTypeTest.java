@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,9 +11,9 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.shr.com.i18n.TextResource;
@@ -172,7 +171,7 @@ public class StampTypeTest {
         		ChangeClockArt.valueOf(3), //dummy
         		ChangeCalArt.valueOf(0));
 		String stampAtr = stampType.getChangeClockArt().nameId;
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "+(" + stampType.getGoOutArt().get().nameId + ")");
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "(" + stampType.getGoOutArt().get().nameId + ")");
 	}
 	
 	/**
@@ -239,7 +238,7 @@ public class StampTypeTest {
         		ChangeClockArt.valueOf(3), //dummy
         		ChangeCalArt.valueOf(2));
 		String stampAtr = stampType.getChangeClockArt().nameId;
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "+(" + stampType.getGoOutArt().get().nameId + ")"+ "+" + stampType.getChangeCalArt().nameId);
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "(" + stampType.getGoOutArt().get().nameId + ")"+ "+" + stampType.getChangeCalArt().nameId);
 	}
 	
 	/**
@@ -266,7 +265,7 @@ public class StampTypeTest {
         		ChangeClockArt.valueOf(3), //dummy
         		ChangeCalArt.valueOf(0));
 		String stampAtr = stampType.getChangeClockArt().nameId;
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "+(" + stampType.getGoOutArt().get().nameId + ")"+ "+" + TextResource.localize("KDP011_39"));
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "(" + stampType.getGoOutArt().get().nameId + ")"+ "+" + TextResource.localize("KDP011_39"));
 	}
 	/**
 	 * setPreClockArt == SetPreClockArt.NONE
@@ -293,6 +292,29 @@ public class StampTypeTest {
         		ChangeCalArt.valueOf(2));
 		String stampAtr = stampType.getChangeClockArt().nameId;
 		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "+" + stampType.getChangeCalArt().nameId+ "+" + TextResource.localize("KDP011_39"));
+	}
+	
+	/**
+	 * setPreClockArt == SetPreClockArt.NONE
+	 * changeCalArt != ChangeCalArt.BRARK
+	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
+	 * 
+	 * goOutArt != null
+	 * changeCalArt != ChangeCalArt.NONE
+	 * changeHalfDay = true;
+	 */
+	@Test
+	public void testCreateStampTypeDisplay_12(@Mocked final TextResource tr) {
+		StampType stampType = StampHelper.getStampTypeHaveInput(
+        		true, 
+        		GoingOutReason.valueOf(1),//dummy
+        		SetPreClockArt.valueOf(0),
+        		ChangeClockArt.valueOf(3), //dummy
+        		ChangeCalArt.valueOf(2));
+		String stampAtr = stampType.getChangeClockArt().nameId;
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo(stampAtr+ "(" + stampType.getGoOutArt().get().nameId + ")"
+				+ "+" + stampType.getChangeCalArt().nameId 
+				+ "+" + TextResource.localize("KDP011_39") );
 	}
 	
 	/**
@@ -327,7 +349,8 @@ public class StampTypeTest {
 	 * changeHalfDay == false;
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
-	 * changeClockArt == ChangeClockArt.GOING_TO_WORK 
+	 * changeClockArt != ChangeClockArt.GOING_TO_WORK
+	 * changeClockArt != ChangeClockArt.FIX  
 	 * changeCalArt != ChangeCalArt.NONE
 	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
 	 */
@@ -407,6 +430,25 @@ public class StampTypeTest {
         		SetPreClockArt.valueOf(0),
         		ChangeClockArt.valueOf(6), 
         		ChangeCalArt.valueOf(3));
+		assertThat(stampType.checkBookAuto()).isFalse();
+	}
+	
+	/**
+	 * changeHalfDay == false;
+	 * setPreClockArt == SetPreClockArt.NONE
+	 * 
+	 * changeClockArt == ChangeClockArt.GOING_TO_WORK
+	 * changeCalArt != ChangeCalArt.NONE
+	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
+	 */
+	@Test
+	public void testCheckBookAuto_8() {
+		StampType stampType = StampHelper.getStampTypeHaveInput(
+				false, 
+        		null,//dummy
+        		SetPreClockArt.valueOf(0),
+        		ChangeClockArt.valueOf(0), 
+        		ChangeCalArt.valueOf(2));
 		assertThat(stampType.checkBookAuto()).isFalse();
 	}
 	

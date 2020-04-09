@@ -7,7 +7,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -69,12 +68,6 @@ public class Stamp implements DomainAggregate {
 	@Getter
 	private Optional<AttendanceTime> attendanceTime = Optional.empty();
 	
-	@Getter
-	private String employeeId;
-	
-	@Getter
-	private WorkLocationName workLocationName;
-
 	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
 			RefectActualResult refActualResults, boolean reflectedCategory,
 			StampLocationInfor locationInfor) {
@@ -104,14 +97,6 @@ public class Stamp implements DomainAggregate {
 		this.attendanceTime = Optional.ofNullable(attendanceTime);
 	}
 
-	public void setEmployeeId(String employeeId) {
-		this.employeeId = employeeId;
-	}
-
-	public void setWorkLocationName(WorkLocationName workLocationName) {
-		this.workLocationName = workLocationName;
-	} 
-	
 	public String retriveCardNumber() {
 		return this.getCardNumber().v();
 	}

@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class EmpStampDto {
 
 	private String cardNumber;
-	private String stampDate;
-	private String stampTime;
+//	private String stampDate;
+//	private String stampTime;
 	private Integer authcMethod;
 	private Integer stampMeans;
 	
@@ -38,8 +38,8 @@ public class EmpStampDto {
 
 	public EmpStampDto(Stamp stamp) {
 		this.cardNumber = stamp.getCardNumber().v();
-		this.stampDate = stamp.getStampDateTime().toString("yyyy/MM/dd");
-		this.stampTime = stamp.getStampDateTime().toString("HH:mm");
+//		this.stampDate = stamp.getStampDateTime().toString("yyyy/MM/dd");
+//		this.stampTime = stamp.getStampDateTime().toString("HH:mm");
 		this.authcMethod = stamp.getRelieve().getAuthcMethod().value;
 		this.stampMeans = stamp.getRelieve().getStampMeans().value;
 

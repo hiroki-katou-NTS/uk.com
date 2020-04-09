@@ -6,8 +6,7 @@ module nts.uk.at.view.kdp002.a {
             stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
             stampClock: StampClock = new StampClock();
             stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
-            embossModel: KnockoutObservable<EmbossInfoModel> = ko.observable(new EmbossInfoModel());
-            stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable(new EmbossGridInfo());
+            stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
 
             constructor() {
                 let self = this;
@@ -20,6 +19,7 @@ module nts.uk.at.view.kdp002.a {
                     .done((res) => {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
+                        self.stampGrid(new EmbossGridInfo(res));
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -39,14 +39,8 @@ module nts.uk.at.view.kdp002.a {
 
                 let self = this;
                 nts.uk.ui.block.grayout();
-                service.getStampData(self.embossModel().dateValue()).done((stampDatas) => {
-                    let idx = 1;
-                    stampDatas.forEach(stampData => {
-                        stampData.code = ++idx;
-                        stampData.stampDate = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
-                        stampData.stampHowAndTime = "<div class='inline-bl'>" + stampData.stampHow + "</div>" + stampData.stampTime;
-                    });
-                    self.stampGrid().items(stampDatas);
+                service.getStampData(self.stampGrid().dateValue()).done((stampDatas) => {
+                    self.stampGrid().bindItemData(stampDatas);
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(() => {
@@ -54,8 +48,36 @@ module nts.uk.at.view.kdp002.a {
                 });
             }
 
-            clickProcess(data: any): any {
-                console.log("CLICKKKKKKKKKKKKK");
+            public getPageLayout(pageNo: number) {
+                let self = this;
+                let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo }); 
+        
+                if(layout) {
+                    let btnSettings = layout.buttonSettings;
+                    btnSettings.forEach(btn => {
+                        if(btn.btnPositionNo == 1) {
+                            btn.onClick = self.clickBtn1;
+                        }
+                        if(btn.btnPositionNo == 2) {
+                            btn.onClick = self.clickBtn2;
+                        }
+                    });
+                    layout.buttonSettings = btnSettings;
+                }
+        
+                return layout;
+            }
+        
+            public clickBtn1() {
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function (): any {
+                    console.log("Lam cai gi thi lam di ko thi thoi ko lam nua");
+                }); 
+            }
+        
+            public clickBtn2() {
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+                    console.log("Lam cai gi thi lam di ko thi thoi ko lam nua");
+                }); 
             }
 
         }

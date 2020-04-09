@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -76,7 +77,7 @@ public class StampType implements DomainValue {
 		String stampAtr = this.changeClockArt.nameId;
 
 		if (this.goOutArt.isPresent()) {
-			stampAtr = stampAtr + "+(" + this.goOutArt.get().nameId + ")";
+			stampAtr = stampAtr + "(" + this.goOutArt.get().nameId + ")";
 		}
 
 		if (this.changeCalArt != ChangeCalArt.NONE) {

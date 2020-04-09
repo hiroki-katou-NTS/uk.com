@@ -5,6 +5,7 @@ import org.junit.Test;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
  * 

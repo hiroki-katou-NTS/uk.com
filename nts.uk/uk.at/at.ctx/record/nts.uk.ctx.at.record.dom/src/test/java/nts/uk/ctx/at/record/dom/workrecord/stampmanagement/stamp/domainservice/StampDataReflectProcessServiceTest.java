@@ -9,8 +9,10 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -68,8 +70,11 @@ public class StampDataReflectProcessServiceTest {
 		};
 		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp);
 		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
-		AtomTask persist = stampDataReflectResult.getAtomTask();
-		persist.run();
+		NtsAssert.atomTask(
+				() -> stampDataReflectResult.getAtomTask(),
+				any -> require.insert((StampRecord) any.get()),
+				any -> require.insert((Stamp) any.get())
+				);
 	}
 	/**
 	 * employeeId not null
@@ -80,15 +85,22 @@ public class StampDataReflectProcessServiceTest {
 		Optional<String> employeeId = Optional.of("employeeId");//dummy
 		StampRecord stampRecord = StampRecordHelper.getStampRecord();//dummy
 		Optional<Stamp> stamp = Optional.of(StampHelper.getStampDefault());
-		new Expectations() {
+		new Verifications(){
 			{
 				require.insert((StampRecord)any);
+				times = 0; 
 			}
 		};
 		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp);
 		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
 		AtomTask persist = stampDataReflectResult.getAtomTask();
 		persist.run();
+		new Verifications() {
+			{
+				require.insert((StampRecord)any);
+				times = 1; 
+			}
+		};
 	}
 
 }

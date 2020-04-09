@@ -8,7 +8,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
  * 
@@ -55,22 +54,6 @@ public class StampTest {
 		Stamp stamp = StampHelper.getStampDefault();
 		stamp.setAttendanceTime(attendanceTime);
 		assertThat(stamp.getAttendanceTime().get()).isEqualTo(attendanceTime);
-	}
-	
-	@Test
-	public void testSetEmployeeId() {
-		String employeeId = "employeeId999";//dummy
-		Stamp stamp = StampHelper.getStampDefault();
-		stamp.setEmployeeId(employeeId);
-		assertThat(stamp.getEmployeeId()).isEqualTo(employeeId);
-	}
-	
-	@Test
-	public void testSetWorkLocationName() {
-		WorkLocationName workLocationName = new WorkLocationName("workLocationName");//dummy
-		Stamp stamp = StampHelper.getStampDefault();
-		stamp.setWorkLocationName(workLocationName);
-		assertThat(stamp.getWorkLocationName()).isEqualTo(workLocationName);
 	}
 
 }

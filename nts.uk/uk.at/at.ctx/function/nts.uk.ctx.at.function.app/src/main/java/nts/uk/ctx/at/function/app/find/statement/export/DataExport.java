@@ -235,41 +235,42 @@ public class DataExport {
 				dataReturn.add(dto);
 			});
 		} else {
-			lstStamp.stream().forEach(objStampItem -> {
-				String employeeId = objStampItem.getEmployeeId();
-				if (mapEmpIdWkps.get(employeeId) != null) {
-					mapEmpIdWkps.get(employeeId).forEach(obj -> {
-						String wkpId = obj.getWorkplaceId();
-						// Check workplace is exist
-						if (mapWkpIdWkpInfo.containsKey(wkpId)) {
-							dateStampItem = objStampItem.getStampDateTime().toDate();
-							// Date period Employee corresponding to workplace
-							DatePeriod wkpDatePeriod = obj.getPeriod();
-							WkpInfoHistImport obj2 = mapWkpIdWkpInfo.get(wkpId).get(0);
-							if (wkpDatePeriod.start().beforeOrEquals(dateStampItem)
-									&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
-							/*
-							 * && wkpDatePeriod.start().after(obj2.getPeriod().start()) &&
-							 * wkpDatePeriod.end().before(obj2.getPeriod().end())
-							 */
-							) {
-								StatementList dto = new StatementList();
-								dto.setWkpCode(obj2.getWkpCode());
-								dto.setWkpName(obj2.getWkpDisplayName());
-								dto.setEmpCode(mapEmpIdCd.get(employeeId));
-								dto.setEmpName(mapEmpIdName.get(employeeId));
-								dto.setCardNo(objStampItem.getCardNumber().v());
-								dto.setDate(objStampItem.getStampDateTime());
-								dto.setAtdType(getAtdType(
-										EnumAdaptor.valueOf(objStampItem.getType().getChangeClockArt().value, StampAtr.class)));
-								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getRefActualResults().getWorkTimeCode().get().v()));
-								dto.setTime(convertToTime(objStampItem.getStampDateTime().clockHourMinute().v()));
-								dataReturn.add(dto);
-							}
-						}
-					});
-				}
-			});
+			//comment vi k duoc su dung nữa
+//			lstStamp.stream().forEach(objStampItem -> {
+//				String employeeId = objStampItem.getEmployeeId();
+//				if (mapEmpIdWkps.get(employeeId) != null) {
+//					mapEmpIdWkps.get(employeeId).forEach(obj -> {
+//						String wkpId = obj.getWorkplaceId();
+//						// Check workplace is exist
+//						if (mapWkpIdWkpInfo.containsKey(wkpId)) {
+//							dateStampItem = objStampItem.getStampDateTime().toDate();
+//							// Date period Employee corresponding to workplace
+//							DatePeriod wkpDatePeriod = obj.getPeriod();
+//							WkpInfoHistImport obj2 = mapWkpIdWkpInfo.get(wkpId).get(0);
+//							if (wkpDatePeriod.start().beforeOrEquals(dateStampItem)
+//									&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
+//							/*
+//							 * && wkpDatePeriod.start().after(obj2.getPeriod().start()) &&
+//							 * wkpDatePeriod.end().before(obj2.getPeriod().end())
+//							 */
+//							) {
+//								StatementList dto = new StatementList();
+//								dto.setWkpCode(obj2.getWkpCode());
+//								dto.setWkpName(obj2.getWkpDisplayName());
+//								dto.setEmpCode(mapEmpIdCd.get(employeeId));
+//								dto.setEmpName(mapEmpIdName.get(employeeId));
+//								dto.setCardNo(objStampItem.getCardNumber().v());
+//								dto.setDate(objStampItem.getStampDateTime());
+//								dto.setAtdType(getAtdType(
+//										EnumAdaptor.valueOf(objStampItem.getType().getChangeClockArt().value, StampAtr.class)));
+//								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getRefActualResults().getWorkTimeCode().get().v()));
+//								dto.setTime(convertToTime(objStampItem.getStampDateTime().clockHourMinute().v()));
+//								dataReturn.add(dto);
+//							}
+//						}
+//					});
+//				}
+//			});
 		}
 
 		return dataReturn;

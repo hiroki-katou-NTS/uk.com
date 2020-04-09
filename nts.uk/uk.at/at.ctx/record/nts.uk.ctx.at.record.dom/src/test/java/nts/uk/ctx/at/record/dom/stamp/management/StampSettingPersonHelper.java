@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
