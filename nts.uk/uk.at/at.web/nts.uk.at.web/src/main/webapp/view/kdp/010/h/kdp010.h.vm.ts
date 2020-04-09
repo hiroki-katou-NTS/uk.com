@@ -29,6 +29,8 @@ module nts.uk.at.view.kdp010.h {
             // H7_2
             optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
             selectedAudio: KnockoutObservable<number> = ko.observable(0);
+            
+            defaultData: KnockoutObservable<number> = ko.observable('');
 
             buttonPositionNo: KnockoutObservable<number> = ko.observable('');
             dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
@@ -45,6 +47,10 @@ module nts.uk.at.view.kdp010.h {
                 self.selectedDay.subscribe((newValue) => {
                     self.getDataFromContents(newValue);
                 })
+                
+                self.simpleValue.subscribe(function(codeChanged: string) {
+                        self.simpleValue($.trim(self.simpleValue()));
+                    });
 
                 self.selectedHighlight.subscribe((newValue) => {
                     if (self.selectedHighlight() == 1)
@@ -59,6 +65,7 @@ module nts.uk.at.view.kdp010.h {
                 let self = this,
                     dfd = $.Deferred();
                 self.getDataStamp();
+                self.getDataFromContents(1);
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -71,19 +78,12 @@ module nts.uk.at.view.kdp010.h {
                 if (self.dataShare.dataShare != undefined) {
                     let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
                     if (data ) {
-                        if(data.usrArt == 1){
                             self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
                             self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
                             self.backgroundColors(data.buttonDisSet.backGroundColor);
                             self.selectedStamping(data.buttonType.stampType.goOutArt);
                             self.selectedAudio(data.audioType);
                             self.selectedHighlight(data.usrArt); 
-                        } else {
-                            self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
-                            self.selectedStamping(data.buttonType.stampType.goOutArt);
-                            self.selectedAudio(data.audioType);
-                            self.selectedHighlight(data.usrArt);                            
-                        }
                     }
                 }
                 $(document).ready(function() {
@@ -99,10 +99,6 @@ module nts.uk.at.view.kdp010.h {
                 $('#correc').trigger("validate");
                 if (nts.uk.ui.errors.hasError() && self.selectedHighlight() == 1) {
                     return;
-                }
-                if (self.selectedHighlight() == 0){
-                    self.letterColors("#999");
-                    self.backgroundColors("#999")
                 }
                 self.dataStampPage = ({
                     buttonPositionNo: self.buttonPositionNo(),
@@ -149,75 +145,66 @@ module nts.uk.at.view.kdp010.h {
 
             public getDataFromContents(number: value): void {
                 let self = this;
-                self.lstData = {
-                    reservationArt: 1,
-                    changeHalfDay: 1,
-                    setPreClockArt: 1,
-                    changeClockArt: 1,
-                    changeCalArt: 1
-                };
-               
-                
                 switch (self.selectedDay()) {
                     case 1:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.defaultData(), setPreClockArt: self.defaultData(), changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 2:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 1, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.defaultData(), setPreClockArt: self.defaultData(), changeHalfDay: 1, reservationArt: 0 };
                         break;
                     case 3:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 4:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 5:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 6:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: null, setPreClockArt: 2, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: '', setPreClockArt: 2, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 7:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 8:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 9:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 10:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 11:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 12:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 13:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 14:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 15:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 16:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[12].value, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[12].value, changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 17:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 18:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: null, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: '', changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
-                        self.lstData = { changeClockArt: null, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 1 };
+                        self.lstData = { changeClockArt: '', changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 1 };
                         break;
                     case 20:
-                        self.lstData = { changeClockArt: null, changeCalArt: null, setPreClockArt: null, changeHalfDay: 0, reservationArt: 2 };
+                        self.lstData = { changeClockArt: '', changeCalArt: '', setPreClockArt: '', changeHalfDay: 0, reservationArt: 2 };
                         break;
                 }
             }

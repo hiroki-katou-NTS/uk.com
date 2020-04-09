@@ -34,6 +34,10 @@ module nts.uk.at.view.kdp010.g {
                     self.checkLayout(true);
                     nts.uk.ui.errors.clearAll();
                 })
+                
+                self.pageName.subscribe(function(codeChanged: string) {
+                    self.pageName($.trim(self.pageName()));
+                });
 
                 self.selectedPage.subscribe((newValue) => {
                     self.checkLayout(false);
@@ -86,7 +90,7 @@ module nts.uk.at.view.kdp010.g {
                         else
                             self.selectedLayout(newValue);
                     } else {
-                        if(self.checkLayout() == false)
+                        if (self.checkLayout() == false)
                             self.selectedLayout(0);
                         else
                             self.selectedLayout(newValue);
@@ -102,11 +106,11 @@ module nts.uk.at.view.kdp010.g {
 
             registration() {
                 let self = this, dfd = $.Deferred();
-                if(!self.dataShare || self.dataShare.length == 0 ){
+                if (!self.dataShare || self.dataShare.length == 0) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_1627" });
                     return;
                 }
-                if (self.checkDelG() == true ) {
+                if (self.checkDelG() == true) {
                     $.when(self.deleteBeforeAdd()).done(function() {
                         self.registrationLayout();
                         $(document).ready(function() {
@@ -195,9 +199,10 @@ module nts.uk.at.view.kdp010.g {
                     self.checkDelG(false);
                     self.currentSelectLayout(self.selectedLayout());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                         $(document).ready(function() {
-                        $('#combobox').focus();
-                    });});
+                        $(document).ready(function() {
+                            $('#combobox').focus();
+                        });
+                    });
 
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -231,7 +236,7 @@ module nts.uk.at.view.kdp010.g {
                     for (let i = 0; i < 8; i++) {
                         self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
                         let lstBtn = lstButtonSet.filter(x => x.buttonPositionNo == i + 1);
-                        if (lstBtn[0] == null || (lstBtn[0] !=null &&  lstBtn[0].usrArt == 0)) {
+                        if (lstBtn[0] == null || (lstBtn[0] != null && lstBtn[0].usrArt == 0)) {
                             self.buttonInfo()[i].buttonColor("#999");
                             self.buttonInfo()[i].buttonName(null);
                             self.buttonInfo()[i].textColor("#999");
@@ -258,9 +263,10 @@ module nts.uk.at.view.kdp010.g {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteStampPage(data).done(function(stampPage) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                         $(document).ready(function() {
-                        $('#combobox').focus();
-                    });});
+                            $(document).ready(function() {
+                                $('#combobox').focus();
+                            });
+                        });
                         self.getData(self.selectedLayout());
                         dfd.resolve();
                     }).fail(function(error) {
@@ -304,7 +310,14 @@ module nts.uk.at.view.kdp010.g {
                         self.dataShare = self.dataKdpH.dataShare == undefined ? self.dataKdpH : self.dataKdpH.dataShare;
                         if (self.dataKdpH.dataShare) {
                             let dataH = self.dataKdpH.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
+                            if(dataH.usrArt == 0){
+                            self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor("#999");
+                                self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor("#999");
+                                return;  
+                            }
+                            
                         }
+                        
                         self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
                         self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
                         self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
