@@ -664,8 +664,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 		if (indexPCLogOnInfo == -1) {
 			if ("PCログオン".equals(inOrOutClass)) {
@@ -889,8 +887,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
@@ -1225,8 +1221,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 
 		int numberOfReflectionStamp = 0;
@@ -1309,8 +1303,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 
 		int numberOfReflectionStamp = 0;
@@ -1532,8 +1524,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 		int numberOfReflectionStamp = 0;
 		if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()) {
@@ -1611,8 +1601,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 
 		int numberOfReflectionStamp = 0;
@@ -2134,8 +2122,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 		stamps.add(stamp);
 		return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(new TimeActualStamp(
 				(o.getGoOut() != null && o.getGoOut().isPresent() && o.getGoOut().get().getActualStamp() != null
@@ -2236,8 +2222,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
@@ -2337,8 +2321,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
@@ -2420,8 +2402,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-		stamp.setEmployeeId(x.getEmployeeId());
-		stamp.setWorkLocationName(x.getWorkLocationName());
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
@@ -2635,9 +2615,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 							x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
 					stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
-					stamp.setEmployeeId(x.getEmployeeId());
-					stamp.setWorkLocationName(x.getWorkLocationName());
-
 				}
 
 			}

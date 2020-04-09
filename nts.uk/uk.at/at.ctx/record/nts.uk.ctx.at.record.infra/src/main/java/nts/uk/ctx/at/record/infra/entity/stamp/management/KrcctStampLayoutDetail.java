@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;

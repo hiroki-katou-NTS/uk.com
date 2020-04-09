@@ -21,8 +21,8 @@ public enum ChangeClockArt {
 	/** 入門 */
 	OVER_TIME(2,"入門"),
 
-	/** 退門出 */
-	BRARK(3,"退門出"),
+	/** 退門 */
+	BRARK(3,"退門"),
 
 	/** 外出 */
 	GO_OUT(4,"外出"),

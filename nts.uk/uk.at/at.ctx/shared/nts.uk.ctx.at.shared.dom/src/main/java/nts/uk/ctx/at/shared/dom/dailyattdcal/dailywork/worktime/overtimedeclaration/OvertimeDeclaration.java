@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;

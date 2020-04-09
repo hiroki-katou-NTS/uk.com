@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -17,7 +19,9 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
 /**
  * 
@@ -56,7 +60,8 @@ public class CreateStampDataForEmployeesServiceTest {
 	/**
 	 * require.getListStampCard(employeeId) not empty
 	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType() == true;
+	 * ButtonType buttonType.getStampType().isPensent() == true;
+	 * positionInfo.isPresent() == true
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_2() {
@@ -79,14 +84,20 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		CreateStampDataForEmployeesService.create(require, employeeId,
+		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
 				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
+		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		NtsAssert.atomTask(
+				() -> stampDataReflectResult.getAtomTask(),
+				any -> require.insert((StampRecord) any.get()),
+				any -> require.insert((Stamp) any.get())
+		);
 	}
 	
 	/**
 	 * require.getListStampCard(employeeId) not empty
 	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType() == true;
+	 * ButtonType buttonType.getStampType().isPensent() == true;
 	 * positionInfo.isPresent() == false
 	 */
 	@Test
@@ -110,14 +121,21 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		CreateStampDataForEmployeesService.create(require, employeeId,
+		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
 				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
+		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		NtsAssert.atomTask(
+				() -> stampDataReflectResult.getAtomTask(),
+				any -> require.insert((StampRecord) any.get()),
+				any -> require.insert((Stamp) any.get())
+		);
+		
 	}
 	
 	/**
 	 * require.getListStampCard(employeeId) not empty
 	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType() == false;
+	 * ButtonType buttonType.getStampType().isPensent() == false;
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_4() {
@@ -140,8 +158,13 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		CreateStampDataForEmployeesService.create(require, employeeId,
+		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
 				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
+		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		NtsAssert.atomTask(
+				() -> stampDataReflectResult.getAtomTask(),
+				any -> require.insert((StampRecord) any.get())
+		);
 	}
 	
 	
