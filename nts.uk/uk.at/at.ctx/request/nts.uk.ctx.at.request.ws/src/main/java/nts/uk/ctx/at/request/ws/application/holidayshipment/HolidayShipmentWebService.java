@@ -27,10 +27,12 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolid
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -65,6 +67,12 @@ public class HolidayShipmentWebService extends WebService {
 	@Path("start")
 	public HolidayShipmentDto startPage(StartScreenAParam param) {
 		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
+	}
+	
+	@POST
+	@Path("startPageARefactor")
+	public DisplayInforWhenStarting startPageARefactor(startPageARefactorParam param) {
+		return this.screenAFinder.startPageARefactor(AppContexts.user().companyId(), param.getSIDs(), param.getAppDate());
 	}
 
 	@POST
@@ -159,6 +167,12 @@ class StartScreenAParam {
 	private List<String> sIDs;
 	private GeneralDate appDate;
 	private int uiType;
+}
+
+@Value
+class startPageARefactorParam {
+	private List<String> sIDs;
+	private List<GeneralDate> appDate;
 }
 
 @Value

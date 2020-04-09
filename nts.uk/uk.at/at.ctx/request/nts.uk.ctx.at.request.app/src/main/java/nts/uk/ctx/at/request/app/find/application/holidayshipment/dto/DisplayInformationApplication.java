@@ -24,6 +24,10 @@ public class DisplayInformationApplication {
 	private Optional<TimeWithDayAttr> startTime;
 	
 	private Optional<TimeWithDayAttr> endTime;
+	
+	private Optional<TimeWithDayAttr> startTime2;
+	
+	private Optional<TimeWithDayAttr> endTime2;
 }
 
 
