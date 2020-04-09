@@ -198,7 +198,7 @@ module nts.uk.at.view.kdp010.h {
                         self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 18:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
                         self.lstData = { changeClockArt: null, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
