@@ -166,7 +166,9 @@ module jhn001.f.vm {
                 layoutReportId: self.layoutReportId,
                 missingDocName : missingDocName = '' ? missingDocName : missingDocName.substring(0, missingDocName.length - 1),
                 dataLayout: self.dataShare.command,
-                fromJhn002 : self.fromJhn002
+                fromJhn002 : self.fromJhn002,
+                agentName : self.agentName,
+                agentSid : self.agentSid,
             }
 
             // save file to domain AttachmentPersonReportFile
