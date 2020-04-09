@@ -81,11 +81,15 @@ public class StampSettingsEmbossFinder {
 		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
 		
 		if(!isAvailable) {
-			throw new BusinessException("Msg_433");
+			throw new BusinessException("Msg_1645");
 		}
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
+		
+		if(!stampSetting.isPresent()) {
+			throw new BusinessException("Msg_1644");
+		}
 
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
