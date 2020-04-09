@@ -474,8 +474,13 @@ module jhn002.a.viewmodel {
                 reportId: number = objReport.reportId,
                 layoutReportId: number = reportLayoutId,
                 fromJhn002 : boolean = true,
+                agentName : self.layout().agentName(),
+                agentSid  : self.layout().agentSid(),
                 command: command
             };
+            
+            let agentName = self.layout().agentName();
+            let agentSid  = self.layout().agentSid();
 
             setShared("JHN001F_PARAMS", param);
 
@@ -485,6 +490,8 @@ module jhn002.a.viewmodel {
                 if (objReport && self.reportClsId() == objReport.id) {
                     let param = { layoutReportId: self.reportClsId(), reportId: reportId };
                     self.getListDocument(param);
+                    self.layout().agentName(agentName);
+                    self.layout().agentSid(agentSid);
                 } else {
                     self.start(reportId).done(() => {
                         let param = { layoutReportId: self.reportClsId(), reportId: reportId };

@@ -572,7 +572,9 @@ module jhn001.a.viewmodel {
                 reportId: number = objReport.reportId,
                 layoutReportId: number = reportLayoutId,
                 fromJhn002 : boolean = false,
-                command: command
+                command: command,
+                agentName : '', 
+                agentSid  : '',
             };
 
             setShared("JHN001F_PARAMS", param);

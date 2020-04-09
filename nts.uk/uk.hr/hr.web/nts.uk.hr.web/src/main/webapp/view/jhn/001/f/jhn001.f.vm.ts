@@ -41,6 +41,8 @@ module jhn001.f.vm {
         totalFileSize   = 0;
         missingDocName  = '';
         fromJhn002      = false;
+        agentName       = null;
+        agentSid        = null;
 
 
         constructor() {
@@ -78,6 +80,8 @@ module jhn001.f.vm {
             self.reportId  = dataShare.reportId;
             self.layoutReportId  = dataShare.layoutReportId;
             self.fromJhn002  = dataShare.fromJhn002;
+            self.agentName  = dataShare.agentName;
+            self.agentSid  = dataShare.agentSid;
             
             let param = { reportId: dataShare.reportId, layoutReportId: dataShare.layoutReportId };
 

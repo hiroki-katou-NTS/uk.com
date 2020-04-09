@@ -65,6 +65,8 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 		AddDocumentReportCommand command = context.getCommand();
 		GeneralDateTime fileStorageDate = GeneralDateTime.now();
 		Boolean fromJhn002 = command.fromJhn002;
+		String agentName   = command.agentName;
+		 String agentSid   = command.agentSid;
 		
 		String cid = AppContexts.user().companyId();
 		try {
@@ -83,7 +85,7 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 			
 			repoReportFile.add(domain);
 			
-			saveDraft(command.dataLayout, reportIdNew, command.missingDocName, fromJhn002);
+			saveDraft(command.dataLayout, reportIdNew, command.missingDocName, fromJhn002, agentName, agentSid);
 			
 			return reportIdNew.toString();
 		} else {
@@ -106,12 +108,17 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 	}
 	
 
-	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName, Boolean fromJhn002) {
+	public void saveDraft(SaveReportInputContainer data, Integer reportIDNew, String missingDocName, Boolean fromJhn002,String agentName,String agentSid) {
 		String cid = AppContexts.user().companyId();
 		
 		// アルゴリズム[社員IDから社員情報全般を取得する]を実行する
 		// (Thực hiện thuật toán "[Lấy thông tin chung của nhân viên từ ID nhân viên]")
 		EmployeeInfo employeeInfo = this.getPersonInfo();
+		EmployeeInfo empInfoAgent = null;
+		
+		if (agentSid != null && agentSid != "") {
+			empInfoAgent = empInfoAdaptor.getInfoEmp(agentSid, cid, GeneralDate.today());
+		}
 		
 		RegistrationPersonReport personReport = RegistrationPersonReport.builder()
 				.cid(cid)
@@ -132,17 +139,17 @@ public class AddAttachPersonReportFileHandler extends CommandHandlerWithResult<A
 				.inputBussinessName(employeeInfo.inputBussinessName)
 				.inputDate(GeneralDateTime.now())
 				
-				.appPid(fromJhn002 ? null : employeeInfo.appliPerId)
-				.appSid(fromJhn002 ? null : employeeInfo.appliPerSid)
-				.appScd(fromJhn002 ? null : employeeInfo.appliPerScd)
-				.appBussinessName(fromJhn002 ? null : employeeInfo.appliPerBussinessName)
+				.appPid(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appliPerId)  : (employeeInfo.appliPerId))
+				.appSid(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appliPerSid) : (employeeInfo.appliPerSid))
+				.appScd(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appliPerScd) : (employeeInfo.appliPerScd))
+				.appBussinessName(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appliPerBussinessName) : (employeeInfo.appliPerBussinessName))
 				.appDate(GeneralDateTime.now())
-				.appDevId(fromJhn002 ? null : employeeInfo.appDevId)
-				.appDevCd(fromJhn002 ? null : employeeInfo.appDevCd)
-				.appDevName(fromJhn002 ? null : employeeInfo.appDevName)
-				.appPosId(fromJhn002 ? null : employeeInfo.appPosId)
-				.appPosCd(fromJhn002 ? null : employeeInfo.appPosCd)
-				.appPosName(fromJhn002 ? null : employeeInfo.appPosName)
+				.appDevId(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appDevId) : (employeeInfo.appDevId))
+				.appDevCd(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appDevCd) : (employeeInfo.appDevCd))
+				.appDevName(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appDevName) : (employeeInfo.appDevName))
+				.appPosId(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appPosId) : (employeeInfo.appPosId))
+				.appPosCd(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appPosCd) : (employeeInfo.appPosCd))
+				.appPosName(fromJhn002 ? (empInfoAgent == null ? null : empInfoAgent.appPosName) : (employeeInfo.appPosName))
 				.reportType(EnumAdaptor.valueOf(data.reportType, ReportType.class))
 				.sendBackSID(data.sendBackSID)
 				.sendBackComment(data.sendBackComment)
