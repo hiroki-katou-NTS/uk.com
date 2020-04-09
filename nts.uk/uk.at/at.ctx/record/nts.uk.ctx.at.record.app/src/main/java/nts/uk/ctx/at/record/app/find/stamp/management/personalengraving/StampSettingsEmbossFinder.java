@@ -90,7 +90,9 @@ public class StampSettingsEmbossFinder {
 		if(!stampSetting.isPresent()) {
 			throw new BusinessException("Msg_1644");
 		}
-
+		
+		List<StampCard> stampCards = stampCardRepo.getListStampCard(employeeId);
+		
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
@@ -104,7 +106,7 @@ public class StampSettingsEmbossFinder {
 		// 5
 		StampToSuppress stampToSuppress = getStampToSuppress(employeeId);
 
-		return new KDP002AStartPageSettingDto(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
+		return new KDP002AStartPageSettingDto(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress, stampCards);
 	}
 	
 	public List<StampDataOfEmployees> getEmployeeStampDatas(DatePeriod period, String employeeId) {

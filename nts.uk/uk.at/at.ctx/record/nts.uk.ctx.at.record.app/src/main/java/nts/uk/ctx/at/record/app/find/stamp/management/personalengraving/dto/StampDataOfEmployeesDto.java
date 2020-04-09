@@ -22,7 +22,7 @@ public class StampDataOfEmployeesDto {
 	private String employeeId;
 	private String date;
 	private List<StampRecordDto> stampRecords = new ArrayList<>();
-	private List<EmpStampDto> stamps = new ArrayList<>();
+	private List<EmpStampCardDto> stamps = new ArrayList<>();
 	
 	public StampDataOfEmployeesDto (StampDataOfEmployees domain) {
 		this.employeeId = domain.getEmployeeId();

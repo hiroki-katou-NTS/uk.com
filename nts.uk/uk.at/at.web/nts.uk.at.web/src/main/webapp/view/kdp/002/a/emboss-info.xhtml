@@ -18,11 +18,7 @@
         </button>
       </td>
       <td id="tbl-header-time" data-bind="visible: stampGrid().displayMethod() === 2">
-        <div
-          id="daterangepicker"
-          tabindex="1"
-          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
-        ></div>
+        <div data-bind="ntsDatePicker: { value: stampGrid().yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYY/MM', showJumpButtons: true }"></div>
       </td>
     </tr>
     <tr>

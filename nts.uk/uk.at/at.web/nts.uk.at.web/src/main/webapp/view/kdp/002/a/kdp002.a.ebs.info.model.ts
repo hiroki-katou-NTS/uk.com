@@ -6,13 +6,15 @@ class EmbossGridInfo {
     displayMethod: KnockoutObservable<any>;
     displayType: any = {HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2};
     dateValue: KnockoutObservable<any>;
+    yearMonth: KnockoutObservable<any>;
 
     constructor(start: IStartPage) {
         let self = this;
         let setting = start.stampSetting;
         self.displayMethod = ko.observable(setting.historyDisplayMethod);
         self.dateValue = ko.observable({startDate: moment().add(-3, 'days').format('YYYY/MM/DD'), endDate: moment().format('YYYY/MM/DD')});
-
+        self.yearMonth = ko.observable(moment().format('YYYY/MM'));
+        
         if(self.displayMethod() == self.displayType.DISPLAY) {
             self.columns([
                 { headerText: 'コード', key: 'code', width:100, hidden: true },
