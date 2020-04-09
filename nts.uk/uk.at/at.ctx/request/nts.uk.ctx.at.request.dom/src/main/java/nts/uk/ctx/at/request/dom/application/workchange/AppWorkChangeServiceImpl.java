@@ -89,15 +89,15 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				true);
 		// ドメインモデル「勤務変更申請設定」を取得する
 		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
-		List<AppEmploymentSetting> employmentSetLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
+		AppEmploymentSetting employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
 //		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
 //				.findFirst().orElse(null);
-		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-			geWorkTypeObjAppHoliday(x,ApplicationType.WORK_CHANGE_APPLICATION).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
-				
-				).findFirst();
-		AppEmploymentSetting employmentSet = setting.get();
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,ApplicationType.WORK_CHANGE_APPLICATION).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = setting.get();
 		// 勤務種類を取得
 		List<WorkType> workTypeLst = this.getWorkTypeLst(employmentSet);
 		// 勤務種類・就業時間帯の初期選択項目を取得する

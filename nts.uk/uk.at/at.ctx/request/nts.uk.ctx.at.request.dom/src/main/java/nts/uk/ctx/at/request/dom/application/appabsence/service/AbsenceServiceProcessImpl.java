@@ -606,13 +606,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
-		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-			geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().get().value == holidayType.value : geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().get().value == holidayType.value : false
-				
-				).findFirst();
-		AppEmploymentSetting employmentSet = setting.get();
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().get().value == holidayType.value : geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().get().value == holidayType.value : false
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = setting.get();
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
 		// 勤務種類を取得する
@@ -943,13 +943,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// 代休振休優先消化チェック
 //		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
 //				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
-		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-			geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : false
-				
-				).findFirst();
-		AppEmploymentSetting employmentSet = setting.get();
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : false
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = setting.get();
 		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
 				mode, 
 				appAbsenceStartInfoOutput.getHdAppSet(), 
@@ -1093,15 +1093,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
-		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
 //		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
 //				.findFirst().orElse(null);
-		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
-				
-				).findFirst();
-		AppEmploymentSetting employmentSet = setting.get();
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = employmentSetLst;
 		// 選択可能の勤務種類を取得する
 		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
 				employmentSet,

@@ -473,14 +473,14 @@ public class AppAbsenceFinder {
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
 	}
-	private boolean checkHdType(List<AppEmploymentSetting> appEmploymentSetting, int hdType){
+	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
 		
-		Optional<AppEmploymentSetting> setting = appEmploymentSetting.stream().filter(x -> 
-		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-			geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().get().value == hdType : geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().get().value == hdType : false
-				
-				).findFirst();
-		AppEmploymentSetting appSetting = setting.get();
+//		Optional<AppEmploymentSetting> setting = appEmploymentSetting.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().get().value == hdType : geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().get().value == hdType : false
+//				
+//				).findFirst();
+		AppEmploymentSetting appSetting = appEmploymentSetting;
 		if(!CollectionUtil.isEmpty(appSetting.getListWTOAH())) {
 			if(appSetting.getListWTOAH().get(0).getHolidayAppType().isPresent() ? (appSetting.getListWTOAH().get(0).getHolidayAppType().get().value == hdType): false){
 				//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
@@ -493,7 +493,7 @@ public class AppAbsenceFinder {
 		return true;
 	}
 	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
-			List<HolidayAppTypeName> holidayAppTypes, List<AppEmploymentSetting> appEmploymentSetting){
+			List<HolidayAppTypeName> holidayAppTypes, AppEmploymentSetting appEmploymentSetting){
 		List<Integer> holidayAppTypeCodes = new ArrayList<>();
 		for(int hdType = 0; hdType <=7; hdType ++){
 			if(hdType == 5 || hdType == 6){
