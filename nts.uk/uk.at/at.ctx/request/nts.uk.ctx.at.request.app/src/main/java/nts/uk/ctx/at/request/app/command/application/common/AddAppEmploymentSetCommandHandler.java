@@ -10,10 +10,13 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -28,17 +31,28 @@ public class AddAppEmploymentSetCommandHandler extends CommandHandler<List<AppEm
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		List<AppEmploymentSetCommand> listEmployments = context.getCommand();
-		List<AppEmploymentSetting> insertDatas = listEmployments.stream().map(item -> {
-			return new AppEmploymentSetting(companyId, item.getEmploymentCode(),
-					EnumAdaptor.valueOf(item.getAppType(), ApplicationType.class), item.getHolidayOrPauseType(),
-					item.getHolidayTypeUseFlg(), item.isDisplayFlag(), item.getLstWorkType().stream().map(typeItem -> {
-						return AppEmployWorkType.createSimpleFromJavaType(companyId,
-								typeItem.getEmploymentCode(), typeItem.getAppType(), typeItem.getHolidayOrPauseType(),
-								typeItem.getWorkTypeCode());
-					}).collect(Collectors.toList()));
-		}).collect(Collectors.toList());
-
-		employmentSetting.insert(insertDatas);
+//		List<AppEmploymentSetting> insertDatas = listEmployments.stream().map(item -> {
+//			return new AppEmploymentSetting(companyId, item.getEmploymentCode(),
+//					EnumAdaptor.valueOf(item.getAppType(), ApplicationType.class), item.getHolidayOrPauseType(),
+//					item.getHolidayTypeUseFlg(), item.isDisplayFlag(), item.getLstWorkType().stream().map(typeItem -> {
+//						return AppEmployWorkType.createSimpleFromJavaType(companyId,
+//								typeItem.getEmploymentCode(), typeItem.getAppType(), typeItem.getHolidayOrPauseType(),
+//								typeItem.getWorkTypeCode());
+//					}).collect(Collectors.toList()));
+//		}).collect(Collectors.toList());
+		AppEmploymentSetting insertData = new AppEmploymentSetting(companyId, !CollectionUtil.isEmpty(listEmployments) ? listEmployments.get(0).getEmploymentCode(): "", 
+				listEmployments.stream().map(x-> { 
+					return new WorkTypeObjAppHoliday(!CollectionUtil.isEmpty(x.getLstWorkType()) ? x.getLstWorkType().stream().map(y -> y.getWorkTypeCode()).collect(Collectors.toList()) : null, 
+							EnumAdaptor.valueOf(x.getAppType(), ApplicationType.class),
+							x.isDisplayFlag(),
+							x.getAppType() == 1 ? x.getHolidayOrPauseType() : null,
+							x.getHolidayTypeUseFlg() == null ? false : x.getHolidayTypeUseFlg(),
+							x.getAppType() == 10 ? x.getHolidayOrPauseType(): null);
+						}).collect(Collectors.toList())
+				);
+//		employmentSetting.insert(insertDatas);
+		
+		employmentSetting.insert(insertData);
 	}
 
 }
