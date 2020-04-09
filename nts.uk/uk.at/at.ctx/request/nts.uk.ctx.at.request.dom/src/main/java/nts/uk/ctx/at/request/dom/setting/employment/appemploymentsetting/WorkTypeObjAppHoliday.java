@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 @Getter
 @Setter
 @NoArgsConstructor
+//申請別対象勤務種類
 public class WorkTypeObjAppHoliday {
 	public WorkTypeObjAppHoliday(List<String> lstWorkType, ApplicationType appType, boolean workTypeSetDisplayFlg,
 			Integer holidayOrPauseType, boolean holidayTypeUseFlg, Integer swingout) {
@@ -34,17 +35,18 @@ public class WorkTypeObjAppHoliday {
 		}
 		
 	}
-
+//	申請別対象勤務種類
 	List<String> workTypeList;
 	
-	//enum 
+//	申請種類
 	private ApplicationType appType;
-	
+//	表示する勤務種類を設定する
 	private Boolean workTypeSetDisplayFlg;
+//	休暇申請種類
 	
 	private Optional<HdAppType> holidayAppType;
-	
+//	休暇種類を利用しない
 	private Optional<Boolean> holidayTypeUseFlg;
-	
+//	振休振出区分
 	private Optional<BreakOutType> swingOutAtr;
 }
