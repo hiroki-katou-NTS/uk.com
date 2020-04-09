@@ -201,10 +201,10 @@ module nts.uk.at.view.kdp010.h {
                         self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
-                        self.lstData = { changeClockArt: null, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
                         break;
                     case 20:
-                        self.lstData = { changeClockArt: null, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 2 };
+                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 2 };
                         break;
                 }
             }
@@ -347,19 +347,19 @@ module nts.uk.at.view.kdp010.h {
         changeCalArt: number;
 
         constructor(param: IStampTypeCommand) {
-            this.changeHalfDay = param.changeHalfDay || null;
-            this.goOutArt = param.goOutArt || null;
-            this.setPreClockArt = param.setPreClockArt|| null;
-            this.changeClockArt = param.changeClockArt|| null;
-            this.changeCalArt = param.changeCalArt|| null;
+            this.changeHalfDay = param.changeHalfDay;
+            this.goOutArt = param.goOutArt;
+            this.setPreClockArt = param.setPreClockArt;
+            this.changeClockArt = param.changeClockArt;
+            this.changeCalArt = param.changeCalArt;
         }
     }
 
     interface IStampTypeCommand {
-        changeHalfDay?: boolean;
-        goOutArt?: number ;
-        setPreClockArt?: number;
-        changeClockArt?: number;
-        changeCalArt?: number;
+        changeHalfDay: boolean;
+        goOutArt: number ;
+        setPreClockArt: number;
+        changeClockArt: number;
+        changeCalArt: number;
     }
 }

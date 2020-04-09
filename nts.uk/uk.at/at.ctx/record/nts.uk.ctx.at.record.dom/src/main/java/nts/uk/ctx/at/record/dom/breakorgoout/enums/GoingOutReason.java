@@ -15,13 +15,13 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 public enum GoingOutReason {
 	
 	/* 私用 */
-	PRIVATE(0, "Enum_Private", "私用"),
+	PRIVATE(0, "私用", "Enum_Private"),
 	/* 公用 */
-	PUBLIC(1,"Enum_Public", "公用"),
+	PUBLIC(1, "公用","Enum_Public"),
 	/* 有償 */
-	COMPENSATION(2, "Enum_Compensation", "有償"),
+	COMPENSATION(2, "有償", "Enum_Compensation"),
 	/* 組合 */
-	UNION(3, "Enum_Union", "組合");
+	UNION(3, "組合", "Enum_Union");
 	
 	public final int value;
 	
