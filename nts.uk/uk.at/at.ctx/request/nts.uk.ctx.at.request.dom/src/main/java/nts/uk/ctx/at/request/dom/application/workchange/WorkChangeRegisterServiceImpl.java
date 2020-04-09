@@ -9,25 +9,20 @@ import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
 public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService {
-
-	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
 
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerService;
@@ -49,10 +44,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
-    public ProcessResult registerData(AppWorkChange workChange, Application_New app, boolean checkOver1Year, List<GeneralDate> lstDateHd) {
-
-		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        newBeforeRegister.processBeforeRegister(app, OverTimeAtr.ALL, checkOver1Year, lstDateHd);
+    public ProcessResult registerData(AppWorkChange workChange, Application_New app, List<GeneralDate> lstDateHd) {
 		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
 		appRepository.insert(app);

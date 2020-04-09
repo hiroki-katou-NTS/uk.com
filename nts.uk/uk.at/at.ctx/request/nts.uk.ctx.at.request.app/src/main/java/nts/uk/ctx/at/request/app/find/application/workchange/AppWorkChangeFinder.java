@@ -106,7 +106,7 @@ public class AppWorkChangeFinder {
 		String appID = IdentifierUtil.randomUniqueId();
 		// 入力者 = 申請者
 		// 申請者
-		String applicantSID = command.getEmployeeID() != null ? command.getEmployeeID(): AppContexts.user().employeeId();
+		String applicantSID = appCommand.getApplicantSID() != null ? appCommand.getApplicantSID() : AppContexts.user().employeeId();
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()

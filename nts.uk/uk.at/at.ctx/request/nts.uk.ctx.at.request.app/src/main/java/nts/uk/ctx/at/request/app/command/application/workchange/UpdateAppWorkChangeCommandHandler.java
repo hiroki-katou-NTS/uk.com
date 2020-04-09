@@ -70,7 +70,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		// 申請ID
 		String appID = appCommand.getApplicationID();
 		
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
+		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(User.APPLICANT, 0);
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 		if(output.getOutputMode()==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
