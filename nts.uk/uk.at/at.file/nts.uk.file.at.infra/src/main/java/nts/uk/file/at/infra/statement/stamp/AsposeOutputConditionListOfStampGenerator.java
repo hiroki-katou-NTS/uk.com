@@ -133,6 +133,12 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		List<StampList> stampList;
 		int rows = startRow;
 		for (int i = 1; i <= totalPage; i++) {
+			if (i == totalPage) {
+				stampList = employeeInfor.getStampList().subList(start, employeeInfor.getStampList().size());
+			} else {
+				stampList = employeeInfor.getStampList().subList(start, 32 * i);
+				start = 32 * i;
+			}
 			if (rows > 4) {
 				cell.copyRow(cell, 0, rows);
 				cell.copyRow(cell, 1, rows + 1);
@@ -143,7 +149,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// 社員名
 				cell.get(rows + 3, 0).setValue(employeeInfor.getEmployee());
 				// カードNo.
-				cell.get(rows + 3, 3).setValue(employeeInfor.getCardNo());
+				cell.get(rows + 3, 3).setValue(employeeInfor.getCardNo() != null ? employeeInfor.getCardNo() : employeeInfor.getStampList().get(start).getCardNo());
 				rows += 4;
 			} else {
 				// 職場名
@@ -151,14 +157,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// 社員名
 				cell.get(3, 0).setValue(employeeInfor.getEmployee());
 				// カードNo.
-				cell.get(3, 3).setValue(employeeInfor.getCardNo());
-			}
-
-			if (i == totalPage) {
-				stampList = employeeInfor.getStampList().subList(start, employeeInfor.getStampList().size());
-			} else {
-				stampList = employeeInfor.getStampList().subList(start, 32 * i);
-				start = 32 * i;
+				cell.get(3, 3).setValue(employeeInfor.getCardNo() != null ? employeeInfor.getCardNo() : employeeInfor.getStampList().get(start).getCardNo());
 			}
 
 			for (int j = 0; j < stampList.size(); j++) {
