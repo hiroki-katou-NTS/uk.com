@@ -37,11 +37,7 @@ public class StampDataOfEmployeesDto {
 			Stamp stamp = cardNumberStamp.get(stampRecord.getStampNumber().v());
 			this.stampRecords.add(new StampRecordDto(stampRecord, stamp));
 		}
-		
-//		for(Stamp stamp : domain.getListStamp()) {
-//			this.stamps.add(new EmpStampDto(stamp));
-//		}
-		
+				
 	}
 	
 	public static <T> Predicate<T> distinctByKey(

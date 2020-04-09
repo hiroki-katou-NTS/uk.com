@@ -1,20 +1,28 @@
-<div class="panel">
+<div class="panel" data-bind="visible: stampGrid().displayMethod() !== 0">
   <table id="stamp-history-tbl">
     <tr>
       <th id="tbl-header">
-        <span>#{i18n.getText('KDP002_25')}</span>
+        <span data-bind="visible: stampGrid().displayMethod() === 1">#{i18n.getText('KDP002_25')}</span>
+        <span data-bind="visible: stampGrid().displayMethod() === 2">#{i18n.getText('KDP002_28')}</span>
       </th>
     </tr>
     <tr>
-      <td id="tbl-header-time">
+      <td id="tbl-header-time" data-bind="visible: stampGrid().displayMethod() === 1">
         <div
           id="daterangepicker"
           tabindex="1"
-          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: embossModel().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
+          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
         ></div>
         <button class="small" style="margin-top: 3px;" data-bind="click: getStampData " >
           #{i18n.getText('KDP002_27')}
         </button>
+      </td>
+      <td id="tbl-header-time" data-bind="visible: stampGrid().displayMethod() === 2">
+        <div
+          id="daterangepicker"
+          tabindex="1"
+          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
+        ></div>
       </td>
     </tr>
     <tr>
