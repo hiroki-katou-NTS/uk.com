@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,8 +8,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -16,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
@@ -57,6 +68,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	
+	@Inject
+	private NewBeforeRegister_New newBeforeRegister;
 
 	@Override
 	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
@@ -205,6 +219,105 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 「勤務変更申請の表示情報」を更新する
 		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		return appWorkChangeDispInfo;
+	}
+
+	@Override
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application,
+			AppWorkChange appWorkChange) {
+		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
+		// 登録時チェック処理（勤務変更申請）
+		this.checkRegisterWorkChange(application, appWorkChange);
+		// 休日の申請日を取得する
+		List<GeneralDate> lstDateHd = this.checkHoliday(
+				application.getEmployeeID(), 
+				new DatePeriod(application.getStartDate().get(), application.getEndDate().get()));
+		// 登録時チェック処理（全申請共通）
+		List<ConfirmMsgOutput> confirmMsgLst = newBeforeRegister.processBeforeRegister_New(
+				companyID, 
+				EmploymentRootAtr.APPLICATION, 
+				false, 
+				application, 
+				null, 
+				errorFlag, 
+				lstDateHd);
+		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
+		output.setConfirmMsgLst(confirmMsgLst);
+		output.setHolidayDateLst(lstDateHd);
+		return output;
+	}
+
+	@Override
+	public void checkRegisterWorkChange(Application_New application, AppWorkChange appWorkChange) {
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
+		List<String> errorLst = this.detailWorkHoursCheck(application, appWorkChange);
+		if(!CollectionUtil.isEmpty(errorLst)) {
+			// 全てのエラーを「エラーリスト」で表示する
+			for(String error : errorLst) {
+				bundledBusinessExceptions.addMessage(error);
+			}
+			throw bundledBusinessExceptions;
+		}
+	}
+
+	@Override
+	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange appWorkChange) {
+		List<String> errorLst = new ArrayList<>();
+		// INPUT．「申請．申請開始日」と「INPUT．「申請．申請終了日」をチェックする
+		if(application.getEndDate().isPresent() && 
+				application.getStartDate().get().after(application.getEndDate().get())) {
+			// エラーメッセージ(Msg_150)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_150");
+		}
+		// INPUT．「勤務変更申請．勤務時間開始1」と「INPUT．「勤務変更申請．勤務時間終了1」の大小チェック
+		if(appWorkChange.getWorkTimeStart1() > appWorkChange.getWorkTimeEnd1())  {
+			// エラーメッセージ(Msg_579)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_579");
+		}
+		// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
+		if(appWorkChange.getWorkTimeStart2() > appWorkChange.getWorkTimeEnd2())  {
+			// エラーメッセージ(Msg_580)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_580");
+		}
+		// INPUT．「勤務変更申請．勤務時間終了1」と「INPUT．「勤務変更申請．勤務時間開始2」の大小チェック
+		if(appWorkChange.getWorkTimeEnd1() > appWorkChange.getWorkTimeStart2())  {
+			// エラーメッセージ(Msg_581)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_581");
+		}
+		// INPUT．「勤務変更申請．勤務時間開始1」の入力範囲チェック
+		if(appWorkChange.getWorkTimeStart1() < 5 * 60) {
+			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_307");
+		}
+		// INPUT．「勤務変更申請．勤務時間終了1」の入力範囲チェック
+		if(appWorkChange.getWorkTimeEnd1() > 29 * 60) {
+			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
+			errorLst.add("Msg_307");
+		}
+		return errorLst.stream().distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public List<GeneralDate> checkHoliday(String employeeID, DatePeriod period) {
+		String companyID = AppContexts.user().companyId();
+		// Output．日付一覧<List>　＝　Empty
+		List<GeneralDate> result = new ArrayList<>();
+		// 申請期間から休日の申請日を取得する
+		result = otherCommonAlgorithm.lstDateIsHoliday(companyID, employeeID, period);
+
+		if (result.size() == period.datesBetween().size()) {
+			//日付一覧(output)の件数 > 0
+			String dateListString = "";
+
+			for (int i = 0; i < result.size(); i++) {
+				if (dateListString != "") {
+					dateListString += "、";
+				}
+				dateListString += result.get(i).toString("yyyy/MM/dd");
+			}
+			throw new BusinessException("Msg_1459",dateListString);
+		}
+        return result;
 	}
 
 }

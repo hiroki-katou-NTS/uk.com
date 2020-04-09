@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
@@ -61,4 +65,37 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo appWorkChangeDispInfo);
+	
+	/**
+	 * 登録前のエラーチェック処理
+	 * @param companyID 会社ID
+	 * @param errorFlag 承認ルートエラー情報
+	 * @param application 申請
+	 * @param appWorkChange 勤務変更申請
+	 * @return
+	 */
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application, AppWorkChange appWorkChange);
+	
+	/**
+	 * 登録時チェック処理（勤務変更申請）
+	 * @param application 申請
+	 * @param appWorkChange 勤務変更申請
+	 */
+	public void checkRegisterWorkChange(Application_New application, AppWorkChange appWorkChange);
+	
+	/**
+	 * 勤務変更申請就業時間チェックの内容
+	 * @param application 申請
+	 * @param appWorkChange 勤務変更申請
+	 * @return
+	 */
+	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange appWorkChange);
+	
+	/**
+	 * 1日休日のチェック
+	 * @param employeeID 社員ID
+	 * @param period 期間
+	 * @return
+	 */
+	public List<GeneralDate> checkHoliday(String employeeID, DatePeriod period);
 }
