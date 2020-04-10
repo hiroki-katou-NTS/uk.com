@@ -34,7 +34,7 @@ public class WorkchangeService extends WebService {
 	private AddAppWorkChangeCommandHandler addHandler;
 
 	@Inject
-	UpdateAppWorkChangeCommandHandler updateHandler;
+	private UpdateAppWorkChangeCommandHandler updateHandler;
 
 	@Inject
 	WorkChangeDetailFinder detailFinder;
@@ -124,6 +124,12 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("checkBeforeRegister")
 	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
+		return appWorkFinder.checkBeforeRegister(command);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdate")
+	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand command) {
 		return appWorkFinder.checkBeforeRegister(command);
 	}
 

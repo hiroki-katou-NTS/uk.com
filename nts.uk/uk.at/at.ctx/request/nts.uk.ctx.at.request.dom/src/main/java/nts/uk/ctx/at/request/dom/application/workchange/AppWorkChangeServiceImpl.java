@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -80,6 +81,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private IAppWorkChangeRepository appWorkChangeRepository;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
@@ -360,6 +364,26 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 「勤務変更申請の表示情報」と「勤務変更申請」を返す
 		result.setAppWorkChangeDispInfo(appWorkChangeDispInfo);
 		result.setAppWorkChange(appWorkChange);
+		return result;
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application,
+			AppWorkChange appWorkChange, boolean agentAtr) {
+		List<ConfirmMsgOutput> result = new ArrayList<>();
+		// 詳細画面の登録時チェック処理（全申請共通）
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyID, 
+				application.getEmployeeID(), 
+				application.getAppDate(), 
+				EmploymentRootAtr.APPLICATION.value, 
+				application.getAppID(), 
+				application.getPrePostAtr(), 
+				application.getVersion(), 
+				appWorkChange.getWorkTypeCd(), 
+				appWorkChange.getWorkTimeCd());
+		// 登録時チェック処理（勤務変更申請）
+		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
 	}
 

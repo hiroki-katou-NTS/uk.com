@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
@@ -107,4 +108,15 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID);
+	
+	/**
+	 * 更新前のエラーチェック処理
+	 * @param companyID 会社ID
+	 * @param application 申請
+	 * @param appWorkChange 勤務変更申請
+	 * @param agentAtr 代行申請区分
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application, 
+			AppWorkChange appWorkChange, boolean agentAtr);
 }
