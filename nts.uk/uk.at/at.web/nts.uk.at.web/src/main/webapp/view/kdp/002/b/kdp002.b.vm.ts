@@ -3,7 +3,7 @@ module nts.uk.at.view.kdp002.b {
         export class ScreenModel {
             
             // B2_2
-            workTypeNames: KnockoutObservable<string> = ko.observable("基本給");
+            employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
             // B3_2
             dayName: KnockoutObservable<string> = ko.observable("基本給");
             // B3_3
@@ -14,36 +14,103 @@ module nts.uk.at.view.kdp002.b {
             numberName: KnockoutObservable<string> = ko.observable("基本給");
             // G6_2
             laceName: KnockoutObservable<string> = ko.observable("基本給");
-
+            
             items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>  = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
-
+            
+            listStampRecord :KnockoutObservableArray<any> = ko.observableArray([]);
+            currentDate: KnockoutObservable<string> = ko.observable(moment(new Date()).add(-3, 'days').format("YYYY/MM/DD")+" ～ "+moment(new Date()).format("YYYY/MM/DD"));
+            currentStampData: KnockoutObservable<any>  = ko.observable();
+            resultDisplayTime : KnockoutObservable<number>  = ko.observable(0);
+            disableResultDisplayTime : KnockoutObservable<boolean>  = ko.observable(true);
             constructor() {
                 let self = this;
-                for (let i = 1; i < 6; i++) {
-                    self.items.push(new model.ItemModels('00' + i, '基本給', "description " + i));
-                }
+                self.resultDisplayTime(nts.uk.ui.windows.getShared("resultDisplayTime"));
+                self.disableResultDisplayTime(self.resultDisplayTime()>0?true:false);
 
                 self.columns2 = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KDP002_45") , key: 'code', width: 100},
-                    { headerText: nts.uk.resource.getText("KDP002_46"), key: 'name', width: 100 },
-                    { headerText: nts.uk.resource.getText("KDP002_47"), key: 'description', width: 150 }
+                    { headerText: "id" , key: 'id', width: 100,hidden: true},
+                    { headerText: "<div style='text-align: center;'>"+nts.uk.resource.getText("KDP002_45")+ "</div>" , key: 'stampDate', width: 130},
+                    { headerText: "<div style='text-align: center;'>"+nts.uk.resource.getText("KDP002_46")+ "</div>", key: 'stampHowAndTime', width: 90 },
+                    { headerText: "<div style='text-align: center;'>"+nts.uk.resource.getText("KDP002_47")+ "</div>", key: 'timeStampType', width: 130 }
                 ]);
+                self.currentCode.subscribe(newValue => {
+                    if (newValue != null && newValue != "") {
+                        self.getDataById(newValue);
+                    }
+                });
             }
+            
             /**
              * start page  
              */
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                dfd.resolve();
+                let dfdGetAllStampingResult = self.getAllStampingResult();
+                let dfdGetEmpInfo = self.getEmpInfo(); 
+                $.when(dfdGetAllStampingResult,dfdGetEmpInfo).done(function (dfdGetAllStampingResultData,dfdGetEmpInfoData){
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
-            getData(newValue: number): JQueryPromise<any> {
+            getDataById(id:any): JQueryPromise<any> {
+                let self = this;
+                for (let j = 0; j < _.size(self.items()); j++) {
+                    if(self.items()[j].id == id){
+                        for (let i = 0; i < _.size(self.listStampRecord()); i++) {
+                            if(self.listStampRecord()[i].stampDate == self.items()[j].date && self.listStampRecord()[i].stampTime == self.items()[j].time){
+                             self.currentStampData(self.listStampRecord()[i]);
+                            break;   
+                            }
+                        }
+                        break;
+                    } 
+                }
+            }
+            getAllStampingResult(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                service.getAllStampingResult().done(function(data) {
+                    _.forEach(data, (a) => {
+                        _.forEach(a.stampDataOfEmployeesDto.stampRecords, (sr) => {
+                            self.listStampRecord.push(sr);
+                        });
+                    });
+                    if (_.size(self.listStampRecord()) > 0) {
+                        self.laceName(data[0].workPlaceName);
+                        self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampDate', 'stampTime'], ['desc', 'desc']));
+                        _.forEach(self.listStampRecord(), (sr) => {
+                            let changeClockArtDisplay = "<div class='full-width' style='text-align: center'> " + sr.changeClockArtName + " </div>";
+                            if (sr.changeClockArt == 0) {
+                                changeClockArtDisplay = "<div class='full-width' style='text-align: left'> " + sr.changeClockArtName + " </div>";
+                            } else if (sr.changeClockArt == 1) {
+                                changeClockArtDisplay = "<div class='full-width' style='text-align: right'> " + sr.changeClockArtName + " </div>";
+                            }
+                            self.items.push(new model.ItemModels(
+                                nts.uk.time.applyFormat("Short_YMDW", sr.stampDate),
+                                "<div class='inline-bl'>" + sr.stampHow + "</div>" + sr.stampTime,
+                                changeClockArtDisplay,
+                                sr.stampDate,
+                                sr.stampTime
+                            ));
+                        });
+                        self.currentCode(self.items()[0].id);
+                        dfd.resolve();
+                    }
+                });
+                return dfd.promise();
+            }
+            getEmpInfo(): JQueryPromise<any> { 
+                let self = this;
+                let dfd = $.Deferred();
+                let employeeId = __viewContext.user.employeeId;
+                service.getEmpInfo(employeeId).done(function(data) {
+                    self.employeeCodeName(data.employeeCode +" "+ data.personalName);
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -58,13 +125,19 @@ module nts.uk.at.view.kdp002.b {
     export module model {
 
         export class ItemModels {
-            code: string;
-            name: string;
-            description: string;
-            constructor(code: string, name: string, description: string) {
-                this.code = code;
-                this.name = name;
-                this.description = description;
+            id:string;
+            stampDate: string;
+            stampHowAndTime: string;
+            timeStampType: string;
+            date:string;
+            time:string
+            constructor(stampDate: string, stampHowAndTime: string, timeStampType: string,date:string,time:string) {
+                this.id = nts.uk.util.randomId();
+                this.stampDate = stampDate;
+                this.stampHowAndTime = stampHowAndTime;
+                this.timeStampType = timeStampType;
+                this.date = date;
+                this.time = time;
             }
         }
     }

@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * «ScreenQuery» 打刻結果の打刻情報を取得する
  * @author HieuLT
  *
  */
@@ -34,6 +34,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DisplayScreenStampingResultFinder {
 
 	// 勤務場所
+	@Inject
 	private WorkLocationRepository workLocationRepository;
 	@Inject
 	private StampCardRepository stampCardRepository;
