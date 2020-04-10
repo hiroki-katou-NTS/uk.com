@@ -330,6 +330,7 @@ module jhn002.a.viewmodel {
                             if (objReport == undefined || objReport == null) {
                                 self.reportClsId(null);
                             }else{
+                                self.reportClsId(null);
                                 self.reportClsId(objReport.reportClsId);
                             }
 
