@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
@@ -88,6 +89,10 @@ public class StampSettingsEmbossFinder {
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
 		
 		if(!stampSetting.isPresent()) {
+			throw new BusinessException("Msg_1644");
+		}
+		
+		if(CollectionUtil.isEmpty(stampSetting.get().getLstStampPageLayout()) ) {
 			throw new BusinessException("Msg_1644");
 		}
 		

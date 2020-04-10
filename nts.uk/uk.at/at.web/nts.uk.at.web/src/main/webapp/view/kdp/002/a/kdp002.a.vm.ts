@@ -55,12 +55,13 @@ module nts.uk.at.view.kdp002.a {
                 if(layout) {
                     let btnSettings = layout.buttonSettings;
                     btnSettings.forEach(btn => {
-                        if(btn.btnPositionNo == 1) {
-                            btn.onClick = self.clickBtn1;
-                        }
-                        if(btn.btnPositionNo == 2) {
-                            btn.onClick = self.clickBtn2;
-                        }
+                        // if(btn.btnPositionNo == 1) {
+                        //     btn.onClick = self.clickBtn1;
+                        // }
+                        // if(btn.btnPositionNo == 2) {
+                        //     btn.onClick = self.clickBtn2;
+                        // }
+                        btn.onClick = self.clickBtn1;
                     });
                     layout.buttonSettings = btnSettings;
                 }
@@ -70,7 +71,6 @@ module nts.uk.at.view.kdp002.a {
         
             public clickBtn1(vm) {
                 let button = this;
-                console.log(vm());
                 let data = {
                     datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
                     authcMethod:0,
