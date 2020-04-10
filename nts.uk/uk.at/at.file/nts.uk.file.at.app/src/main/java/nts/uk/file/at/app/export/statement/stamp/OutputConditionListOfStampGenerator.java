@@ -9,6 +9,6 @@ public interface OutputConditionListOfStampGenerator {
 	 * @param fileGeneratorContext
 	 * @param query
 	 */
-	StampGeneratorExportDto  generate(FileGeneratorContext fileGeneratorContext, OutputConditionListOfStampQuery query);
+	StampGeneratorExportDto  generate(FileGeneratorContext fileGeneratorContext, OutputConditionListOfStampQuery query, boolean isCardNo);
 
 }

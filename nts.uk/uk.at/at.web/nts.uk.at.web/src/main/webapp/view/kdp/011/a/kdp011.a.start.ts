@@ -5,6 +5,7 @@ module nts.uk.at.view.kdp011.a {
         blockUI.grayout();
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(){
+            screenModel.isStartPage = false;
             __viewContext.bind(screenModel);
             $('#btnExportExcel').focus();
             screenModel.executeComponent().done(() => {

@@ -52,15 +52,16 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 				throw new BusinessException("Msg_1617");
 			}
 			query = convertToDataSource(true, cardNoStampInfos, datePeriod);
+			this.generator.generate(context.getGeneratorContext(), query, true);
 		} else {
 			List<EmployeEngravingInfor> employeEngravingInfors = finder.createListOfStampEmpQuery(newDatePerioD, query1.lstEmployee);
 			if(employeEngravingInfors.isEmpty()){
 				throw new BusinessException("Msg_1617");
 			}
 			query = convertToDataSource(false, employeEngravingInfors, datePeriod);
+			this.generator.generate(context.getGeneratorContext(), query, false);
 			
 		}
-		this.generator.generate(context.getGeneratorContext(), query);
 	}
 
 	@SuppressWarnings("unchecked")
