@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.stamp.application.AddStamFunctionCommad;
+import nts.uk.ctx.at.record.app.command.stamp.application.AddStamFunctionCommand;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamFunctionCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamPromptApplicationCommad;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamPromptApplicationCommandHandler;
@@ -56,7 +56,7 @@ public class StampFunctionWS extends WebService{
 	
 	@POST
 	@Path("saveStampFunc")
-	public void saveStampFunc(AddStamFunctionCommad command) {
+	public void saveStampFunc(AddStamFunctionCommand command) {
 		this.functionCommandHandler.handle(command);
 	}
 	

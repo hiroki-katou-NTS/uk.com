@@ -16,14 +16,14 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class AddStamFunctionCommandHandler extends CommandHandler<AddStamFunctionCommad>{
+public class AddStamFunctionCommandHandler extends CommandHandler<AddStamFunctionCommand>{
 
 	@Inject
 	private StampResultDisplayRepository repo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<AddStamFunctionCommad> context) {
-		AddStamFunctionCommad command = context.getCommand();
+	protected void handle(CommandHandlerContext<AddStamFunctionCommand> context) {
+		AddStamFunctionCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		Optional<StampResultDisplay> stampPage = repo.getStampSet(companyId);
 		if(stampPage.isPresent())

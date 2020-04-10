@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.stamp.application;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -19,7 +20,7 @@ public class KrccpStampRecordDis  extends ContractUkJpaEntity{
 	@EmbeddedId
     public KrccpStampRecordDisPk pk;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID")
     })

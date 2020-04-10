@@ -42,6 +42,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
         selectedImp: KnockoutObservable<number> = ko.observable(0);
         
         dataKdl: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         constructor() {
             let self = this;
 
@@ -138,10 +139,19 @@ module nts.uk.at.view.kdp010.e.viewmodel {
 
         registrationFunc() {
             let self = this;
+            let lstDisplayItem: StampAttenDisplayCommand[] = [];
+            let lstDisplay = new Array<>();
+             _.forEach(self.currentItem().dailyList(), function(item) {
+                    lstDisplay = new StampAttenDisplayCommand({
+                        displayItemId : item
+                    });
+                 lstDisplayItem.push(lstDisplay);
+                });
+            
             // Data from Screen 
             let StampRecordDisCommand = {
                 usrAtr: self.selectedImp(),
-                lstDisplayItemId: self.currentItem().dailyList()
+                lstDisplayItemId: lstDisplayItem
             };
             service.saveStampFunc(StampRecordDisCommand).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -354,5 +364,15 @@ module nts.uk.at.view.kdp010.e.viewmodel {
     export interface IDailyItemSetDto {
         attendanceItemId?: string;
     }
+    
+export class StampAttenDisplayCommand {
+        displayItemId: number;
+        constructor(param: IStampAttenDisplayCommand) {
+            this.displayItemId = param.displayItemId;
+        }
+    }
 
+    export interface IStampAttenDisplayCommand {
+        displayItemId?: number;
+    }
 }
