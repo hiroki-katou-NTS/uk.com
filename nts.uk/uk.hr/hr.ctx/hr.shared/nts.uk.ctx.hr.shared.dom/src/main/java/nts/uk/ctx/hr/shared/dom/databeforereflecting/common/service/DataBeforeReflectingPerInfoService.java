@@ -27,6 +27,18 @@ public class DataBeforeReflectingPerInfoService {
 		return listDataBeforeReflectPerInfo;
 	}
 	
+	// 個人情報反映前データの取得
+	public List<DataBeforeReflectingPerInfo> getDataBeforeReflectPerInfo(String cid, Integer workId, String sid,
+			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
+
+		// ドメイン [個人情報反映前データ] を取得する (Get domain "Data before reflecting personal
+		// information/data trước khi phản ánh thông tin cá nhân")
+		List<DataBeforeReflectingPerInfo> listDataBeforeReflectPerInfo = repo.getDataByApproveSid(cid, workId, sid,
+				includReflected, sortByColumnName, orderType);
+
+		return listDataBeforeReflectPerInfo;
+	}
+	
 	// 個人情報反映前データの追加
 	public void addDataBeforeReflectingPerInfo (List<DataBeforeReflectingPerInfo> listDomain) {
 		repo.addData(listDomain);

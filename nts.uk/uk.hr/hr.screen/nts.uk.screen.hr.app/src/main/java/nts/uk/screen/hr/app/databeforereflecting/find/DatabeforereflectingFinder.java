@@ -103,12 +103,11 @@ public class DatabeforereflectingFinder {
 	public DataBeforeReflectResultDto startPageZ() {
 		String cID = AppContexts.user().companyId();
 
-		List<String> listSid = Arrays.asList(AppContexts.user().employeeId());
-
 		Optional<Boolean> includReflected = Optional.of(true);
 
 		// アルゴリズム[承認データの取得]を実行する(Thực hiện thuật toán [lấy ApprovalData])
-		List<RetiredEmployeeInfoResult> retirementInfos = convertToDto(getApprovalData(cID, listSid, includReflected));
+		List<RetiredEmployeeInfoResult> retirementInfos = convertToDtoZScreen(getApprovalData(cID, AppContexts.user().employeeId(), includReflected),
+				AppContexts.user().employeeId());
 
 		if (retirementInfos.isEmpty()) {
 			throw new BusinessException("MsgJ_JCM007_11");
@@ -127,16 +126,102 @@ public class DatabeforereflectingFinder {
 		boolean getPosition = true;
 		boolean getEmployment = true;
 
-		this.interview.getInterviewInfo(cID, interviewCate, listSid, getSubInterviewer, getDepartment, getPosition,
-				getEmployment);
+		InterviewSummary interviewSummary = this.interview.getInterviewInfo(cID, interviewCate, Arrays.asList(AppContexts.user().employeeId()),
+				getSubInterviewer, getDepartment, getPosition, getEmployment);
 
 		return DataBeforeReflectResultDto.builder().retiredEmployees(retirementInfos).employeeImports(employeeImports)
-				.build();
+				.interviewSummary(interviewSummary).build();
 	}
 
-	private List<RetirementInformation> getApprovalData(String cID, List<String> listSid, Optional<Boolean> includReflected) {
+	private List<RetiredEmployeeInfoResult> convertToDtoZScreen(List<RetirementInformation> listRetirementInfo,
+			String employeeId) {
+
+		List<RetiredEmployeeInfoResult> result = listRetirementInfo.stream().map(i -> {
+			RetiredEmployeeInfoResult obj = new RetiredEmployeeInfoResult();
+			obj.historyId = i.historyId;
+			obj.contractCode = i.contractCode;
+			obj.companyId = i.companyId;
+			obj.companyCode = i.companyCode;
+			obj.workId = i.workId;
+			obj.workName = i.workName;
+			obj.inputDate = i.inputDate;
+			obj.pendingFlag = i.pendingFlag;
+			obj.histId_Refer = i.histId_Refer;
+			obj.releaseDate = i.releaseDate;
+			obj.pId = i.pId;
+			obj.sId = i.sId;
+			obj.scd = i.scd;
+			obj.employeeName = i.personName;
+			obj.retirementDate = i.retirementDate;
+			obj.retirementCategory = i.retirementCategory.value;
+			obj.retirementReasonCtg1 = Integer.valueOf(i.retirementReasonCtgCode1);
+			obj.retirementReasonCtgName1 = i.retirementReasonCtgName1;
+			obj.retirementReasonCtg2 = Integer.valueOf(i.retirementReasonCtgCode2);
+			obj.retirementReasonCtgName2 = i.retirementReasonCtgName2;
+			obj.retirementRemarks = i.retirementRemarks;
+			obj.retirementReasonVal = i.retirementReasonVal;
+			obj.dismissalNoticeDate = i.dismissalNoticeDate;
+			obj.dismissalNoticeDateAllow = i.dismissalNoticeDateAllow;
+			obj.reaAndProForDis = i.reaAndProForDis;
+			obj.naturalUnaReasons_1 = i.naturalUnaReasons_1;
+			obj.naturalUnaReasons_2 = i.naturalUnaReasons_2;
+			obj.naturalUnaReasons_3 = i.naturalUnaReasons_3;
+			obj.naturalUnaReasons_4 = i.naturalUnaReasons_4;
+			obj.naturalUnaReasons_5 = i.naturalUnaReasons_5;
+			obj.naturalUnaReasons_6 = i.naturalUnaReasons_6;
+			obj.naturalUnaReasons_1Val = i.naturalUnaReasons_1Val;
+			obj.naturalUnaReasons_2Val = i.naturalUnaReasons_2Val;
+			obj.naturalUnaReasons_3Val = i.naturalUnaReasons_3Val;
+			obj.naturalUnaReasons_4Val = i.naturalUnaReasons_4Val;
+			obj.naturalUnaReasons_5Val = i.naturalUnaReasons_5Val;
+			obj.naturalUnaReasons_6Val = i.naturalUnaReasons_6Val;
+
+			if (i.notificationCategory == 0) {
+				obj.notificationCategory = "";
+			} else if (i.notificationCategory == 1) {
+				obj.notificationCategory = TextResource.localize("JCM007_B3_1");
+			}
+			// vì có 1 form thôi mà tận 2 người approvel nên phải code thế này
+
+			if (employeeId.equals(i.approveSid1) || employeeId.equals(i.approveSid2)) {
+				if (employeeId.equals(i.approveSid1)) {
+
+					obj.approveSid = i.approveSid1;
+					obj.approveStatus = i.approveStatus1;
+					obj.approveComment = i.approveComment1;
+					obj.approveSendMailFlg = i.approveSendMailFlg1;
+					obj.status = TextResource.localize("JCM007_B3_2");
+				}
+
+				if (employeeId.equals(i.approveSid2)) {
+
+					obj.approveSid = i.approveSid2;
+					obj.approveStatus = i.approveStatus2;
+					obj.approveComment = i.approveComment2;
+					obj.approveSendMailFlg = i.approveSendMailFlg2;
+					obj.status = TextResource.localize("JCM007_B3_3");
+
+				}
+
+			} else {
+				if (i.status == 0) {
+					obj.status = "";
+				} else if (i.status == 1) {
+					obj.status = TextResource.localize("JCM007_A3_2");
+				} else if (i.status == 2) {
+					obj.status = TextResource.localize("JCM007_A3_3");
+				}
+			}
+
+			return obj;
+		}).collect(Collectors.toList());
+
+		return result;
+
+	}
+	private List<RetirementInformation> getApprovalData(String cID, String sid, Optional<Boolean> includReflected) {
 		
-		return this.retirementInfoService.getRetirementInfo(cID, listSid, includReflected);
+		return this.retirementInfoService.getApproveData(cID, sid, includReflected);
 	}
 	
 	// 退職者登録一覧の取得
@@ -188,7 +273,8 @@ public class DatabeforereflectingFinder {
 		return interviewSummary;
 	}
 
-	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo ) {
+	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo,
+			String... sID) {
 
 		List<RetiredEmployeeInfoResult> result = listRetirementInfo.stream().map(i -> {
 			RetiredEmployeeInfoResult obj = new RetiredEmployeeInfoResult();
@@ -229,6 +315,7 @@ public class DatabeforereflectingFinder {
 			obj.naturalUnaReasons_4Val = i.naturalUnaReasons_4Val;
 			obj.naturalUnaReasons_5Val = i.naturalUnaReasons_5Val;
 			obj.naturalUnaReasons_6Val = i.naturalUnaReasons_6Val;
+			
 			if (i.status == 0) {
 				obj.status = "";
 			} else if (i.status == 1) {

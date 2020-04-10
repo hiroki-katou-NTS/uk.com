@@ -465,7 +465,7 @@ public class PreReflecData extends UkJpaEntity implements Serializable {
 				.approveDateTime1(this.approveDateTime1)
 				.approveSid2(this.approveSid2)
 				.approvePerName2(this.approvePerName2)
-				.approveStatus2(this.approveStatus2 == null ? null : EnumAdaptor.valueOf(this.approveStatus1, ApprovalStatus.class))
+				.approveStatus2(this.approveStatus2 == null ? null : EnumAdaptor.valueOf(this.approveStatus2, ApprovalStatus.class))
 				.approveComment2(this.approveComment2)
 				.approveSendMailFlg2(this.approveSendMailFlg2)
 				.approveDateTime2(this.approveDateTime2)

@@ -41,7 +41,7 @@ public class ApprovedCommandHandler extends CommandHandler<ApprovedCommand> {
 		// hưu sang danh sách dữ liệu trước khi phản ánh thông tin cá nhân/data
 		// before reflecting personal information)
 
-		Optional<DataBeforeReflectingPerInfo> drOpt = this.drRepo.getByHistId(cmd.getHistoryId());
+		Optional<DataBeforeReflectingPerInfo> drOpt = this.drRepo.getByHistId(cmd.getHisId());
 
 		if (!drOpt.isPresent()) {
 			return;
@@ -60,34 +60,32 @@ public class ApprovedCommandHandler extends CommandHandler<ApprovedCommand> {
 
 	private void setApprovalData(DataBeforeReflectingPerInfo dr, ApprovedCommand cmd, String sId) {
 
-		ApprovalStatus approveStatus = EnumAdaptor.valueOf(cmd.getApprovalStatus(), ApprovalStatus.class);
+		ApprovalStatus approveStatus = EnumAdaptor.valueOf(cmd.getApprovalType(), ApprovalStatus.class);
 
-		if (dr.getApproveSid1().equals(sId)) {
+		if (dr.getApproveSid1() != null && dr.getApproveSid1().equals(sId)) {
 			// <条件1>
 			dr.setApproveStatus1(approveStatus);
-			dr.setApproveComment1(cmd.getComment());
+			dr.setApproveComment1(cmd.getApproveComment());
 			dr.setApproveDateTime1(GeneralDateTime.now());
-			dr.setApproveSendMailFlg1(cmd.isSendEmail());
+			dr.setApproveSendMailFlg1(cmd.isApproveSendMailFlg());
 			return;
 		}
 
-		if (dr.getApproveSid2().equals(sId)) {
+		if (dr.getApproveSid2() != null && dr.getApproveSid2().equals(sId)) {
 			// <条件2>
 			dr.setApproveStatus2(approveStatus);
-			dr.setApproveComment2(cmd.getComment());
+			dr.setApproveComment2(cmd.getApproveComment());
 			dr.setApproveDateTime2(GeneralDateTime.now());
-			dr.setApproveSendMailFlg2(cmd.isSendEmail());
+			dr.setApproveSendMailFlg2(cmd.isApproveSendMailFlg());
 			return;
 		}
-
-		if (dr.getApproveSid1() != null && dr.getApproveStatus1().equals(ApprovalStatus.Approved_WaitingForReflection)
-				&& dr.getApproveSid2() != null
-				&& dr.getApproveStatus2().equals(ApprovalStatus.Approved_WaitingForReflection)) {
+		if (dr.getApproveSid1() != null && dr.getApproveStatus1().equals(ApprovalStatus.Approved)
+				&& dr.getApproveSid2() != null && dr.getApproveStatus2().equals(ApprovalStatus.Approved)) {
 			// <条件3>
 			dr.setStattus(Status.WaitingReflection);
 			return;
 		}
-		
+
 		dr.setStattus(Status.Registered);
 
 	}

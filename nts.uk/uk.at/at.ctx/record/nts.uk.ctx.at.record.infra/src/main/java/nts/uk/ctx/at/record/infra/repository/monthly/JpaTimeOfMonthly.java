@@ -140,7 +140,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
-					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("closureDay", closureDate.getClosureDay().v())			
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> toDomain(c)));
 		});
@@ -188,7 +188,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			int tmp = o1.getKrcdtMonMergePk().getEmployeeId().compareTo(o2.getKrcdtMonMergePk().getEmployeeId());
 			if (tmp != 0) return tmp;
 			tmp = o1.getKrcdtMonMergePk().getYearMonth() - o2.getKrcdtMonMergePk().getYearMonth();
-			if (tmp != 0) return tmp;
+			if (tmp != 0) return tmp;	
 			return o1.getStartYmd().compareTo(o2.getStartYmd());
 		});
 		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
@@ -196,7 +196,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 	/** 検索　（基準日） */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	@Override
+	@Override				
 	public List<TimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
 		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)

@@ -27,6 +27,9 @@ public interface DataBeforeReflectingRepository {
 	List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,List<String> listPid,
 			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType);
 	
+	List<DataBeforeReflectingPerInfo> getDataByApproveSid(String cid, Integer workId, String sid,
+			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType);
+	
 	Optional<DataBeforeReflectingPerInfo> getByHistId(String histId);
 	
 	boolean checkExitByWorkIdCidSid(String cId, String sid);

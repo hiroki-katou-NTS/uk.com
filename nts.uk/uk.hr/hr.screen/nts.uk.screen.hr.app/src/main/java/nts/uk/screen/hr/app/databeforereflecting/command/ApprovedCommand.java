@@ -5,15 +5,15 @@ import lombok.Data;
 @Data
 public class ApprovedCommand {
 	// 処理区分
-	int approvalStatus;
+	int approvalType;
 
 	// 履歴ID
-	String historyId;
+	String hisId;
 
 	// コメント
-	String comment;
+	String approveComment;
 
 	// メール送信済みフラグ
-	boolean sendEmail;
+	boolean approveSendMailFlg;
 
 }

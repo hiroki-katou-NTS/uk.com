@@ -29,9 +29,11 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 			+ " WHERE 1=1 and c.workId = :workId " + " and c.companyId = :cid "
 			+ " and c.stattus != 3 ORDER BY date_01 ASC;";
 
-	public static final String DELETE_BY_HIST_ID = "DELETE FROM PreReflecData c WHERE c.historyId = :histId";
+	public static final String DELETE_BY_HIST_ID = "DELETE FROM PreReflecData c WHERE c.preReflecDataPk.historyId = :histId";
 	
-	public static final String SELECT_BY_HIST_ID = "SELECT c FROM PreReflecData c WHERE c.historyId = :histId";
+	public static final String SELECT_BY_HIST_ID = "SELECT c FROM PreReflecData c WHERE c.preReflecDataPk.historyId = :histId";
+	
+	public static final String SELECT_QUERY = "SELECT c FROM PreReflecData c WHERE 1=1";
 	
 	@Override
 	public void addData(List<DataBeforeReflectingPerInfo> listDomain) {
@@ -147,16 +149,88 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 	public List<DataBeforeReflectingPerInfo> getData(String cid, Integer workId, List<String> listSid,List<String> listPid,
 			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
 
-		String sql = "SELECT c FROM PreReflecData c WHERE 1=1 ";
+		String sql = SELECT_QUERY;
 
-		if (!StringUtil.isNullOrEmpty(cid, true)) {
-			sql = sql + " and c.companyId  = '" + cid + "'";
+		sql += getCidSql(cid);
+
+		sql += getWorkIdSql(workId);
+
+		sql += getListSidSql(listSid);
+
+		sql += getPidSql(listPid, listSid);
+
+		sql += getIncludReflectedSql(includReflected);
+
+		sql += getSortByColumnNameSql(sortByColumnName);
+		
+		sql += getOrderTypeSql(sortByColumnName, orderType);
+		
+
+		EntityManager em = this.getEntityManager();
+		TypedQuery<PreReflecData> query = em.createQuery(sql, PreReflecData.class);
+
+		List<PreReflecData> listEntity = query.getResultList();
+
+		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> dm.toDomain())
+				.collect(Collectors.toList());
+
+		return listDomain;
+	}
+	
+	
+
+	private String getOrderTypeSql(Optional<String> sortByColumnName, Optional<String> orderType) {
+		String result = "";
+		if (sortByColumnName.isPresent() && orderType.isPresent()) {
+			result = " " + orderType.get();
 		}
+		return result;
+	}
 
-		if (workId != null) {
-			sql = sql + " and c.workId  = '" + workId + "'";
+	private String getSortByColumnNameSql(Optional<String> sortByColumnName) {
+		String result = "";
+		if (sortByColumnName.isPresent()) {
+			result = " ORDER BY c." + sortByColumnName.get();
 		}
+		return result;
+	}
 
+	private String getIncludReflectedSql(Optional<Boolean> includReflected) {
+		String result = "";
+
+		if ((!includReflected.isPresent()) || (includReflected.isPresent() && includReflected.get() == false)) {
+			result = " and c.stattus != 3 ";
+		}
+		return result;
+	}
+
+	private String getPidSql(List<String> listPid, List<String> listSid) {
+		String result = "";
+		if (!listPid.isEmpty()) {
+			String inClause = "";
+			if (listSid.size() == 1) {
+				inClause = inClause + "('" + listPid.get(0) + "')";
+			} else {
+				for (int i = 0; i < listPid.size(); i++) {
+					if (i == 0) {
+						inClause = inClause + "('" + listPid.get(0) + "'";
+					} else if (i == listPid.size() - 1) {
+						inClause = inClause + ",'" + listPid.get(i) + "')";
+					} else {
+						inClause = inClause + ",'" + listPid.get(i) + "'";
+					}
+				}
+			}
+
+			result = " and c.pId IN " + inClause;
+		}
+		return result;
+	}
+
+	private String getListSidSql(List<String> listSid) {
+		
+		String result = "";
+		
 		if (!listSid.isEmpty()) {
 			String inClause = "";
 			if (listSid.size() ==  1) {
@@ -173,49 +247,28 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 				}
 			}
 			
-			sql = sql + " and c.sId IN " + inClause ;
+			result = " and c.sId IN " + inClause;
 		}
-		
-		if (!listPid.isEmpty()) {
-			String inClause = "";
-			if (listSid.size() ==  1) {
-				inClause = inClause + "('" + listPid.get(0) + "')"  ;
-			}else{
-				for (int i = 0; i < listPid.size(); i++) {
-					if (i == 0) {
-						inClause = inClause + "('" + listPid.get(0) + "'"  ;
-					} else if (i == listPid.size() - 1) {
-						inClause = inClause + ",'" + listPid.get(i) + "')"  ;
-					} else {
-						inClause = inClause + ",'" + listPid.get(i) + "'"  ;
-					}
-				}
-			}
-			
-			sql = sql + " and c.pId IN " + inClause ;
-		}
+		return result;
+	}
 
-		if ((!includReflected.isPresent()) || (includReflected.isPresent() && includReflected.get() == false)) {
-			sql = sql + " and c.stattus != 3 ";
+	private String getWorkIdSql(Integer workId) {
+		String result = "";
+
+		if (workId != null) {
+			result = " and c.workId  = '" + workId + "'";
+		}
+		return result;
+	}
+
+	private String getCidSql(String cid) {
+
+		String result = "";
+		if (!StringUtil.isNullOrEmpty(cid, true)) {
+			result = " and c.companyId  = '" + cid + "'";
 		}
 
-		if (sortByColumnName.isPresent()) {
-			sql = sql + " ORDER BY c." + sortByColumnName.get() ;
-		}
-
-		if (sortByColumnName.isPresent() && orderType.isPresent()) {
-			sql = sql + " " + orderType.get() ;
-		}
-
-		EntityManager em = this.getEntityManager();
-		TypedQuery<PreReflecData> query = em.createQuery(sql, PreReflecData.class);
-
-		List<PreReflecData> listEntity = query.getResultList();
-
-		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> dm.toDomain())
-				.collect(Collectors.toList());
-
-		return listDomain;
+		return result;
 	}
 
 	@Override
@@ -238,6 +291,35 @@ public class JpaDataBeforeReflectingRepositoryImpl extends JpaRepository impleme
 		}
 		
 		return true;
+	}
+
+	@Override
+	public List<DataBeforeReflectingPerInfo> getDataByApproveSid(String cid, Integer workId, String sid,
+			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
+		String sql = SELECT_QUERY;
+
+		sql += getCidSql(cid);
+
+		sql += getWorkIdSql(workId);
+
+		sql += " AND (c.approveSid1 = '"+ sid +"' AND  c.approveStatus1 != 2) OR (c.approveSid2 = '"+ sid +"' AND  c.approveStatus2 != 2)";
+
+		sql += getIncludReflectedSql(includReflected);
+
+		sql += getSortByColumnNameSql(sortByColumnName);
+		
+		sql += getOrderTypeSql(sortByColumnName, orderType);
+		
+
+		EntityManager em = this.getEntityManager();
+		TypedQuery<PreReflecData> query = em.createQuery(sql, PreReflecData.class);
+
+		List<PreReflecData> listEntity = query.getResultList();
+
+		List<DataBeforeReflectingPerInfo> listDomain = listEntity.stream().map(dm -> dm.toDomain())
+				.collect(Collectors.toList());
+
+		return listDomain;
 	}
 
 }

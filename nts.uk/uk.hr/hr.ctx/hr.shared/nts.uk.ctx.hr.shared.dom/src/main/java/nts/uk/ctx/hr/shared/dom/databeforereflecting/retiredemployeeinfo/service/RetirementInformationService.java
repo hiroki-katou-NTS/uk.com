@@ -46,6 +46,15 @@ public class RetirementInformationService {
 				includReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
 		return convertData(listDataBeforeReflectPerInfo);
 	}
+	
+	// 承認データの取得
+	public List<RetirementInformation> getApproveData(String cid, String sID, Optional<Boolean> includReflected) {
+
+		List<DataBeforeReflectingPerInfo> listDataBeforeReflectPerInfo = dataBeforeReflectPerInfoService
+				.getDataBeforeReflectPerInfo(cid, 1, sID, includReflected,
+						Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
+		return convertData(listDataBeforeReflectPerInfo);
+	}
 
 	// Convert DataBeforeReflectingPerInfo list into RetirementInformation list
 	private List<RetirementInformation> convertData(List<DataBeforeReflectingPerInfo> listDataBeforeReflectPerInfo) {
@@ -94,7 +103,14 @@ public class RetirementInformationService {
 			obj.naturalUnaReasons_4Val = i.str_07 == null ? "" : i.str_07.toString();
 			obj.naturalUnaReasons_5Val = i.str_08 == null ? "" : i.str_08.toString();
 			obj.naturalUnaReasons_6Val = i.str_09 == null ? "" : i.str_09.toString();
-
+			obj.approveSid1 = i.approveSid1;
+			obj.approveStatus1 = i.approveStatus1 != null ? i.approveStatus1.value : null;
+			obj.approveComment1 = i.approveComment1;
+			obj.approveSendMailFlg1 = i.approveSendMailFlg1;
+			obj.approveSid2 = i.approveSid2;
+			obj.approveStatus2 = i.approveStatus2 != null ? i.approveStatus2.value : null;
+			obj.approveComment2 = i.approveComment2;
+			obj.approveSendMailFlg2 = i.approveSendMailFlg2;
 			return obj;
 		}).collect(Collectors.toList());
 

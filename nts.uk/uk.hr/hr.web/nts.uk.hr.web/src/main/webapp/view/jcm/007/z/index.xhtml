@@ -27,16 +27,16 @@
 					href="javascript:history.back()"
 					data-bind="ntsLinkButton: {} , click: backTopScreenTopReport">#{i18n.getText('JCM007_B221_1_1')}</a>
 				<!-- B1_2 -->
-				<button id="reset" tabindex="30" class="group-button-1"
-					data-bind="click: approval ,enable: approvalEnabled() ">
+				<button id="reset" tabindex="30" class="proceed group-button-1"
+					data-bind="click: approved ,enable: approvedEnabled() ">
 					#{i18n.getText('JCM007_B221_1_2')}</button>
 				<!-- B1_3 -->
-				<button id="register" tabindex="31" class="proceed group-button-1"
-					data-bind="click: remand , enable:  remandEnabled() ">
+				<button id="register" tabindex="31" class=" group-button-1"
+					data-bind="click: release , enable:  releaseEnabled() ">
 					#{i18n.getText('JCM007_B221_1_3')}</button>
 				<!-- B1_4 -->
 				<button id="export" tabindex="32" class="group-button-1"
-					data-bind="click:releaseApproval , enable:  releaseApprovalEnabled()">#{i18n.getText('JCM007_B1_4')}</button>
+					data-bind="click: returnEvent , enable:  returnEnabled()">#{i18n.getText('JCM007_B1_4')}</button>
 
 
 				<span class = "guideDisplay"  data-bind="visible: false"> 操作ガイド　表示 </span>
@@ -51,7 +51,7 @@
 							<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('JCM007_B221_1_1')}
 							</div>
 							<div
-								data-bind="ntsCheckBox: { checked: sendMail , enable : true  }">#{i18n.getText('JCM007_B221_1_2')}</div>
+								data-bind="ntsCheckBox: { checked: currentEmployee().approveSendMailFlg , enable : true  }">#{i18n.getText('JCM007_B221_1_2')}</div>
 						</div>
 						<div class="div_line">
 							<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('JCM007_B221_1_3')}
@@ -60,7 +60,7 @@
 							<div style="margin-left: 86px">
 								<textarea
 									data-bind="ntsMultilineEditor: {
-									value: comment ,
+									value:currentEmployee().approveComment ,
 									name: '#[JCM007_B221_1_4]' ,
 									option: {
 										resizeable: false,
@@ -254,7 +254,9 @@
 														immediate: false}" />
 								</div>
 							</div>
-	
+							<div class="div_line" data-bind="visible:$parent.showInteviewLinkButton()">
+								<a data-bind="ntsLinkButton: { jump: '#' }">#{i18n.getText('JCM007_B222_27')}</a>
+							</div>
 						</div>
 					
 						<div data-bind="visible: visible_Dismissal " style="margin-top: 10px; margin-bottom: 10px">
