@@ -37,7 +37,9 @@ public class StampSettingDto {
 			this.backGroundColor = colorSetting.getBackGroundColor().v();
 			this.resultDisplayTime = screenSet.getResultDisplayTime().v();
 			
-			for(StampPageLayout layout : domain.getLstStampPageLayout()) {
+			List<StampPageLayout> layouts = domain.getLstStampPageLayout();
+			layouts.sort((l1, l2) -> l1.getPageNo().v().compareTo(l2.getPageNo().v()));
+			for(StampPageLayout layout : layouts) {
 				this.pageLayouts.add(new StampPageLayoutDto(layout));
 			}
 		}
