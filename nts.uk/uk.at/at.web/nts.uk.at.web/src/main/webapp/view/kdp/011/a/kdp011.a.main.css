@@ -90,6 +90,16 @@ tbody{
 	opacity: 0.7; 
 	z-index: 10;
 }
+.mark-overlay-employee{
+	position: inherit;
+	top: 0px;
+	bottom :0px;
+	left: 0px;
+	right: 0px;
+	background: #fff;
+	opacity: 0.7; 
+	z-index: 10;
+}
 .employee-list-container{
 	position: relative;
 }

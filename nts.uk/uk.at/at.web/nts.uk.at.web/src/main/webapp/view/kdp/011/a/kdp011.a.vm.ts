@@ -12,35 +12,36 @@ module nts.uk.at.view.kdp011.a {
             // CCG001
             ccg001ComponentOption: GroupOption;
 
-            datepickerValue: KnockoutObservable<any> = ko.observable({});
-            startDateString: KnockoutObservable<string> = ko.observable("");
-            endDateString: KnockoutObservable<string> = ko.observable("");
+            datepickerValue: KnockoutObservable<any> = ko.observable( {} );
+            startDateString: KnockoutObservable<string> = ko.observable( "" );
+            endDateString: KnockoutObservable<string> = ko.observable( "" );
 
             // KCP005 start
             listComponentOption: any;
-            selectedCodeEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
-            isShowAlreadySet: KnockoutObservable<boolean> = ko.observable(false);
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-            isDialog: KnockoutObservable<boolean> = ko.observable(true);
-            isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable(true);
-            isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
-            isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(true);
-            isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable(false);
-            employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
-            showOptionalColumn: KnockoutObservable<boolean> = ko.observable(false);
+            selectedCodeEmployee: KnockoutObservableArray<string> = ko.observableArray( [] );
+            isShowAlreadySet: KnockoutObservable<boolean> = ko.observable( false );
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray( [] );
+            isDialog: KnockoutObservable<boolean> = ko.observable( true );
+            isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable( true );
+            isMultiSelect: KnockoutObservable<boolean> = ko.observable( true );
+            isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable( true );
+            isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable( false );
+            employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>( [] );
+            showOptionalColumn: KnockoutObservable<boolean> = ko.observable( false );
             //
             //enableCCG001: KnockoutObservable<boolean> = ko.observable(true);
             // KCP005 end
 
-            lstOutputItemCode: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-            selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
+            lstOutputItemCode: KnockoutObservableArray<ItemModel> = ko.observableArray( [] );
+            selectedOutputItemCode: KnockoutObservable<string> = ko.observable( '' );
 
-            checkedCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable(false);
-            enableCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable(true);
+            checkedCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable( false );
+            enableCardNOUnregisteStamp: KnockoutObservable<boolean> = ko.observable( true );
             // Process Select 
             itemList: KnockoutObservableArray<any>
             selectedIdProcessSelect: KnockoutObservable<number>;
-            enableProcessSelect: KnockoutObservable<boolean> = ko.observable(true);
+            enableProcessSelect: KnockoutObservable<boolean> = ko.observable( true );
+            isStartPage = true;
             constructor() {
                 let self = this;
                 //CCG 001 
@@ -63,31 +64,38 @@ module nts.uk.at.view.kdp011.a {
 
                 self.conditionBinding();
                 //Process Select
-                self.listProcessSelect = ko.observableArray([
-                    new ProcessSelect(1, nts.uk.resource.getText('KDP011_14')),
-                    new ProcessSelect(2, nts.uk.resource.getText('KDP011_15'))
+                self.listProcessSelect = ko.observableArray( [
+                    new ProcessSelect( 1, nts.uk.resource.getText( 'KDP011_14' ) ),
+                    new ProcessSelect( 2, nts.uk.resource.getText( 'KDP011_15' ) )
 
-                ]);
+                ] );
 
-                if (__viewContext.user.role.attendance != null) {
-                    self.selectedIdProcessSelect = ko.observable(1);
-                    self.selectedIdProcessSelect.subscribe(function(value) {
-                        if (value == 1) {
-                            $("#com-ccg001").addClass("disabled");
-                            $(".mark-overlay").show();
+                if ( __viewContext.user.role.attendance != null ) {
+                    self.selectedIdProcessSelect = ko.observable( 1 );
+                    self.selectedIdProcessSelect.subscribe( function( value ) {
+                        if ( value == 1 ) {
+                            $( "#com-ccg001" ).addClass( "disabled" );
+                            $( ".mark-overlay-employee" ).hide();
+                            $( ".mark-overlay" ).show();
 
-                        } else {
-                            $("#com-ccg001").removeClass("disabled");
-                            $(".mark-overlay").hide();
+                        } else if ( value == 2 && nts.uk.ui.errors.hasError() ) {
+                            $( "#com-ccg001" ).addClass( "disabled" );
+                            $( ".mark-overlay" ).hide();
+                            $( ".mark-overlay-employee" ).show();
+
+                        } else if ( value == 2 && !nts.uk.ui.errors.hasError() ) {
+                            $( "#com-ccg001" ).removeClass( "disabled" );
+                            $( ".mark-overlay-employee" ).hide();
+                            $( ".mark-overlay" ).hide();
 
                         }
-                    });
+                    } );
                     self.selectedIdProcessSelect.valueHasMutated();
                 }
                 // Có quền Attendant
                 else {
-                    self.selectedIdProcessSelect = ko.observable(2);
-                    self.listProcessSelect()[0].enable = ko.observable(false);
+                    self.selectedIdProcessSelect = ko.observable( 2 );
+                    self.listProcessSelect()[0].enable = ko.observable( false );
                 }
             }
 
@@ -100,28 +108,28 @@ module nts.uk.at.view.kdp011.a {
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
-                $.when(service.initScreen(), service.restoreCharacteristic(companyId, userId))
-                    .done((dataStartPage, dataCharacteristic) => {
+                $.when( service.initScreen(), service.restoreCharacteristic( companyId, userId ) )
+                    .done(( dataStartPage, dataCharacteristic ) => {
                         // get data from server
-                        self.datepickerValue({ startDate: dataStartPage.startDate, endDate: dataStartPage.endDate });
+                        self.datepickerValue( { startDate: dataStartPage.startDate, endDate: dataStartPage.endDate } );
 
                         let arrOutputItemCodeTmp: ItemModel[] = [];
-                        _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
-                            arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));
-                        });
-                        self.lstOutputItemCode(arrOutputItemCodeTmp);
+                        _.forEach( dataStartPage.lstStampingOutputItemSetDto, function( value ) {
+                            arrOutputItemCodeTmp.push( new ItemModel( value.stampOutputSetCode, value.stampOutputSetName ) );
+                        } );
+                        self.lstOutputItemCode( arrOutputItemCodeTmp );
 
                         // get data from characteris
-                        if (!_.isUndefined(dataCharacteristic)) {
-                            self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
-                            self.selectedOutputItemCode(dataCharacteristic.outputSetCode);
+                        if ( !_.isUndefined( dataCharacteristic ) ) {
+                            self.checkedCardNOUnregisteStamp( dataCharacteristic.cardNumNotRegister );
+                            self.selectedOutputItemCode( dataCharacteristic.outputSetCode );
                         }
 
                         // enable button when exist Authority of employment form                                        
-                        self.enableCardNOUnregisteStamp(dataStartPage.existAuthEmpl);
+                        self.enableCardNOUnregisteStamp( dataStartPage.existAuthEmpl );
 
                         dfd.resolve();
-                    })
+                    } )
                 return dfd.promise();
             }
 
@@ -132,11 +140,11 @@ module nts.uk.at.view.kdp011.a {
                 var dfd = $.Deferred<void>();
                 let self = this;
                 blockUI.grayout();
-                $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption),
-                    $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {
+                $.when( $( '#com-ccg001' ).ntsGroupComponent( self.ccg001ComponentOption ),
+                    $( '#employee-list' ).ntsListComponent( self.listComponentOption ) ).done(() => {
                         self.changeHeightKCP005();
                         dfd.resolve();
-                    });
+                    } );
                 return dfd.promise();
             }
 
@@ -182,15 +190,17 @@ module nts.uk.at.view.kdp011.a {
                     * Self-defined function: Return data from CCG001
                     * @param: data: the data return from CCG001
                     */
-                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    returnDataFromCcg001: function( data: Ccg001ReturnedData ) {
                         let arrEmployeelst: UnitModel[] = [];
-                        _.forEach(data.listEmployee, function(value) {
-                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId });
-                        });
-                        self.datepickerValue({ startDate: data.periodStart.substring(0, 10).split('-').join('/'), 
-                            endDate: data.periodEnd.substring(0, 10).split('-').join('/') });
-                        self.employeeList(arrEmployeelst);
-                        self.selectedCodeEmployee(_.map(arrEmployeelst, "code"));
+                        _.forEach( data.listEmployee, function( value ) {
+                            arrEmployeelst.push( { code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId } );
+                        } );
+                        self.datepickerValue( {
+                            startDate: data.periodStart.substring( 0, 10 ).split( '-' ).join( '/' ),
+                            endDate: data.periodEnd.substring( 0, 10 ).split( '-' ).join( '/' )
+                        } );
+                        self.employeeList( arrEmployeelst );
+                        self.selectedCodeEmployee( _.map( arrEmployeelst, "code" ) );
                     }
                 }
             }
@@ -209,32 +219,32 @@ module nts.uk.at.view.kdp011.a {
                 //                    return;
                 //                }
                 blockUI.grayout();
-                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
-                service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
+                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing( userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp() );
+                service.saveCharacteristic( companyId, userId, outputConditionEmbossing );
 
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
+                data.lstEmployee = self.convertDataEmployee( self.employeeList(), self.selectedCodeEmployee() );
                 data.selectedIdProcessSelect = self.selectedIdProcessSelect();
                 // data.outputSetCode = self.selectedOutputItemCode();
-                if (data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2) {
-                    dialog.alertError({ messageId: "Msg_1204" }).then(function(){
+                if ( data.lstEmployee.length == 0 && data.selectedIdProcessSelect == 2 ) {
+                    dialog.alertError( { messageId: "Msg_1204" } ).then( function() {
                         $( '#employee-list' ).focusComponent();
-                    });
+                    } );
                     blockUI.clear();
                     return;
                 }
-                if (self.selectedIdProcessSelect() == 1)
+                if ( self.selectedIdProcessSelect() == 1 )
                     data.cardNumNotRegister = true;
                 else {
                     data.cardNumNotRegister = false;
                 }
-                service.exportExcel(data).fail(function(error) {
+                service.exportExcel( data ).fail( function( error ) {
                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                }).always(() => {
+                    nts.uk.ui.dialog.alertError( { messageId: error.messageId } );
+                } ).always(() => {
                     nts.uk.ui.block.clear();
-                });
+                } );
             }
 
             /**
@@ -242,17 +252,17 @@ module nts.uk.at.view.kdp011.a {
             */
             private validateExportExcel(): boolean {
                 let self = this;
-                if (!self.checkedCardNOUnregisteStamp()) {
-                    if (_.isEmpty(self.selectedCodeEmployee())) {
-                        dialog.alertError({ messageId: "Msg_1204" }).then(function(){
+                if ( !self.checkedCardNOUnregisteStamp() ) {
+                    if ( _.isEmpty( self.selectedCodeEmployee() ) ) {
+                        dialog.alertError( { messageId: "Msg_1204" } ).then( function() {
                             $( '#employee-list' ).focusComponent();
-                        });
+                        } );
                         return false;
                     }
                 }
 
-                if (_.isEmpty(self.selectedOutputItemCode())) {
-                    dialog.alertError({ messageId: "Msg_1617" });
+                if ( _.isEmpty( self.selectedOutputItemCode() ) ) {
+                    dialog.alertError( { messageId: "Msg_1617" } );
                     return false;
                 }
 
@@ -266,29 +276,41 @@ module nts.uk.at.view.kdp011.a {
             private conditionBinding(): void {
                 let self = this;
 
-                self.datepickerValue.subscribe(function(value) {
-                    self.startDateString(moment(value.startDate));
-                    self.endDateString(moment(value.endDate));
-                });
+                self.datepickerValue.subscribe( function( value ) {
+                    if ( self.isStartPage == false ) {
+                        if ( nts.uk.ui.errors.hasError() && self.selectedIdProcessSelect() == 2 ) {
+                            $( "#com-ccg001" ).addClass( "disabled" );
+                            $( ".mark-overlay" ).hide();
+                            $( ".mark-overlay-employee" ).show();
+                            return;
+                        } else if ( !nts.uk.ui.errors.hasError() && self.selectedIdProcessSelect() == 2 ) {
+                            $( "#com-ccg001" ).removeClass( "disabled" );
+                            $( ".mark-overlay" ).hide();
+                            $( ".mark-overlay-employee" ).hide();
+                        }
+                    }
+                    self.startDateString( moment( value.startDate ) );
+                    self.endDateString( moment( value.endDate ) );
+                } );
             }
 
             /**
             * convert data to data object matching java
             */
-            private convertDataEmployee(data: UnitModel[], employeeCd: string[]): EmployeeInfor[] {
+            private convertDataEmployee( data: UnitModel[], employeeCd: string[] ): EmployeeInfor[] {
                 let mapCdId: { [key: string]: string; } = {};
                 let mapCdName: { [key: string]: string; } = {};
 
                 let arrEmployee: EmployeeInfor[] = [];
-                _.forEach(data, function(value) {
+                _.forEach( data, function( value ) {
                     mapCdId[value.code] = value.id;
                     mapCdName[value.code] = value.name;
-                });
+                } );
 
                 let emloyeeID = [];
-                _.forEach(employeeCd, function(value) {
-                    emloyeeID.push(mapCdId[value]);
-                });
+                _.forEach( employeeCd, function( value ) {
+                    emloyeeID.push( mapCdId[value] );
+                } );
 
                 return emloyeeID;
             }
@@ -299,10 +321,10 @@ module nts.uk.at.view.kdp011.a {
             private changeHeightKCP005(): void {
                 let _document: any = document,
                     isIE = /*@cc_on!@*/false || !!_document.documentMode;
-                if (isIE) {
-                    let heightKCP = $('div[id$=displayContainer]').height();
-                    $('div[id$=displayContainer]').height(heightKCP + 3);
-                    $('div[id$=scrollContainer]').height(heightKCP + 3);
+                if ( isIE ) {
+                    let heightKCP = $( 'div[id$=displayContainer]' ).height();
+                    $( 'div[id$=displayContainer]' ).height( heightKCP + 3 );
+                    $( 'div[id$=scrollContainer]' ).height( heightKCP + 3 );
                 }
             }
         }
@@ -351,7 +373,7 @@ module nts.uk.at.view.kdp011.a {
             isTab2Lazy?: boolean;
 
             /** Data returned */
-            returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
+            returnDataFromCcg001: ( data: Ccg001ReturnedData ) => void;
         }
 
         export interface EmployeeSearchDto {
@@ -402,7 +424,7 @@ module nts.uk.at.view.kdp011.a {
             code: string;
             name: string;
 
-            constructor(code: string, name: string) {
+            constructor( code: string, name: string ) {
                 this.code = code;
                 this.name = name;
             }
@@ -413,7 +435,7 @@ module nts.uk.at.view.kdp011.a {
             outputSetCode: string;
             cardNumNotRegister: boolean;
 
-            constructor(userID: string, outputSetCode: string, cardNumNotRegister: boolean) {
+            constructor( userID: string, outputSetCode: string, cardNumNotRegister: boolean ) {
                 this.userID = userID;
                 this.outputSetCode = outputSetCode;
                 this.cardNumNotRegister = cardNumNotRegister;
@@ -425,7 +447,7 @@ module nts.uk.at.view.kdp011.a {
             endDate: string;
             lstStampingOutputItemSetDto: StampingOutputItemSetDto[];
 
-            constructor(startDate: string, endDate: string, lstStampingOutputItemSetDto: StampingOutputItemSetDto[]) {
+            constructor( startDate: string, endDate: string, lstStampingOutputItemSetDto: StampingOutputItemSetDto[] ) {
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.lstStampingOutputItemSetDto = lstStampingOutputItemSetDto;
@@ -436,7 +458,7 @@ module nts.uk.at.view.kdp011.a {
             stampOutputSetName: string;
             stampOutputSetCode: string;
 
-            constructor(stampOutputSetName: string, stampOutputSetCode: string) {
+            constructor( stampOutputSetName: string, stampOutputSetCode: string ) {
                 this.stampOutputSetName = stampOutputSetName;
                 this.stampOutputSetCode = stampOutputSetCode;
             }
@@ -444,7 +466,7 @@ module nts.uk.at.view.kdp011.a {
         class ProcessSelect {
             idProcessSelect: number;
             nameProcessSelect: string;
-            constructor(idProcessSelect, nameProcessSelect) {
+            constructor( idProcessSelect, nameProcessSelect ) {
                 var self = this;
                 self.idProcessSelect = idProcessSelect;
                 self.nameProcessSelect = nameProcessSelect;

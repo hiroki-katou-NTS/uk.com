@@ -1,11 +1,16 @@
 package nts.uk.file.at.infra.statement.stamp;
 
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
+import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
 
 import lombok.SneakyThrows;
@@ -37,7 +42,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,
-			OutputConditionListOfStampQuery query) {
+			OutputConditionListOfStampQuery query, boolean isCardNo) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			createHeader(reportContext, query);
 			val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
@@ -78,7 +83,11 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			printStyle.getNightStyle().setTextWrapped(false);
 			int row = START_ROW;
 			for (int i = 0; i < query.getEmployeeList().size(); i++) {
-				row = generateData(row, reportContext, query.getEmployeeList().get(i), printStyle);
+				if (isCardNo) {
+					row = generateDataCard(row, reportContext, query.getEmployeeList().get(i), printStyle);
+				} else {
+					row = generateDataEmp(row, reportContext, query.getEmployeeList().get(i), printStyle);
+				}
 			}
 			reportContext.getWorkbook().getWorksheets().get(0).setName(TextResource.localize("KDP011_1"));
 			reportContext.processDesigner();
@@ -124,7 +133,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	}
 
 	@SneakyThrows
-	private int generateData(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
+	private int generateDataCard(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
 			PrintStyle printStyle) {
 		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
 		int totalPage = employeeInfor.getStampList().size() / 32
@@ -149,7 +158,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// 社員名
 				cell.get(rows + 3, 0).setValue(employeeInfor.getEmployee());
 				// カードNo.
-				cell.get(rows + 3, 3).setValue(employeeInfor.getCardNo() != null ? employeeInfor.getCardNo() : employeeInfor.getStampList().get(start).getCardNo());
+				cell.get(rows + 3, 3).setValue(employeeInfor.getCardNo());
 				rows += 4;
 			} else {
 				// 職場名
@@ -157,102 +166,163 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				// 社員名
 				cell.get(3, 0).setValue(employeeInfor.getEmployee());
 				// カードNo.
-				cell.get(3, 3).setValue(employeeInfor.getCardNo() != null ? employeeInfor.getCardNo() : employeeInfor.getStampList().get(start).getCardNo());
+				cell.get(3, 3).setValue(employeeInfor.getCardNo());
 			}
 
-			for (int j = 0; j < stampList.size(); j++) {
-				val dateStyle = printStyle.getDateStyle();
-				// dateStyle.setForegroundColor(bgColor);
-				// dateStyle.setBackgroundArgbColor(255);
-				// dateStyle.setForegroundColor(Color.getRed());
-
-				val stampStyle = printStyle.getStampStyle();
-				// stampStyle.setBackgroundColor(bgColor);
-				// stampStyle.setForegroundColor(Color.getRed());
-				val claStyle = printStyle.getClaStyle();
-				// claStyle.setBackgroundColor(bgColor);
-				val meanStyle = printStyle.getMeanStyle();
-				// meanStyle.setBackgroundColor(bgColor);
-				val methodStyle = printStyle.getMethodStyle();
-				// methodStyle.setBackgroundColor(bgColor);
-				val insStyle = printStyle.getInsStyle();
-				// insStyle.setBackgroundColor(bgColor);
-				val locStyle = printStyle.getLocStyle();
-				// locStyle.setBackgroundColor(bgColor);
-				val cardStyle = printStyle.getCardStyle();
-				// cardStyle.setBackgroundColor(bgColor);
-				val wHourStyle = printStyle.getWHourStyle();
-				// wHourStyle.setBackgroundColor(bgColor);
-				val overStyle = printStyle.getOverStyle();
-				// overStyle.setBackgroundColor(bgColor);
-				val nightStyle = printStyle.getNightStyle();
-				// nightStyle.setBackgroundColor(bgColor);
-				// Tạo màu background
-				Color bgColor = j % 2 != 0 ? Color.fromArgb(221, 235, 247) : Color.getWhite();
-				dateStyle.setForegroundColor(bgColor);
-				dateStyle.setPattern(BackgroundType.SOLID);
-				stampStyle.setForegroundColor(bgColor);
-				stampStyle.setPattern(BackgroundType.SOLID);
-				claStyle.setForegroundColor(bgColor);
-				claStyle.setPattern(BackgroundType.SOLID);
-				meanStyle.setForegroundColor(bgColor);
-				meanStyle.setPattern(BackgroundType.SOLID);
-				methodStyle.setForegroundColor(bgColor);
-				methodStyle.setPattern(BackgroundType.SOLID);
-				insStyle.setForegroundColor(bgColor);
-				insStyle.setPattern(BackgroundType.SOLID);
-				locStyle.setForegroundColor(bgColor);
-				locStyle.setPattern(BackgroundType.SOLID);
-				cardStyle.setForegroundColor(bgColor);
-				cardStyle.setPattern(BackgroundType.SOLID);
-				wHourStyle.setForegroundColor(bgColor);
-				wHourStyle.setPattern(BackgroundType.SOLID);
-				overStyle.setForegroundColor(bgColor);
-				overStyle.setPattern(BackgroundType.SOLID);
-				nightStyle.setForegroundColor(bgColor);
-				nightStyle.setPattern(BackgroundType.SOLID);
-
-				// 年月日
-				cell.get(rows, 0).setStyle(dateStyle);
-				cell.get(rows, 0).setValue(stampList.get(j).getDate());
-				// 時刻
-				cell.get(rows, 1).setStyle(stampStyle);
-				cell.get(rows, 1).setValue(stampList.get(j).getTime());
-				// 出退勤区分
-				cell.get(rows, 2).setStyle(claStyle);
-				cell.get(rows, 2).setValue(stampList.get(j).getClassification());
-				// 打刻手段
-				cell.get(rows, 3).setStyle(meanStyle);
-				cell.get(rows, 3).setValue(stampList.get(j).getMean());
-				// 認証方法
-				cell.get(rows, 4).setStyle(methodStyle);
-				cell.get(rows, 4).setValue(stampList.get(j).getMethod());
-				// 設置場所
-				cell.get(rows, 5).setStyle(insStyle);
-				cell.get(rows, 5).setValue(stampList.get(j).getInsLocation());
-				// 位置情報
-				cell.get(rows, 6).setStyle(locStyle);
-				cell.get(rows, 6).setValue(stampList.get(j).getLocationInfor());
-				// 応援カード
-				cell.get(rows, 7).setStyle(cardStyle);
-				cell.get(rows, 7).setValue(stampList.get(j).getSupportCard());
-				// 就業時間帯
-				cell.get(rows, 8).setStyle(wHourStyle);
-				cell.get(rows, 8).setValue(stampList.get(j).getWorkingHour());
-				// 残業時間
-				cell.get(rows, 9).setStyle(overStyle);
-				cell.get(rows, 9).setValue(stampList.get(j).getOvertimeHour());
-				// 深夜時間
-				cell.get(rows, 10).setStyle(nightStyle);
-				cell.get(rows, 10).setValue(stampList.get(j).getNightTime());
-				rows += 1;
-			}
+			int count = printData(rows, cell, printStyle, stampList);
 
 			if (i == totalPage && stampList.size() < 32) {
-				rows += 32 - stampList.size();
+				rows = count + 32 - stampList.size();
 			}
 		}
 		return rows;
+	}
+
+	private int generateDataEmp(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
+			PrintStyle printStyle) {
+		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
+		Map<String, List<StampList>> cardGroup = employeeInfor.getStampList().stream()
+				.collect(Collectors.groupingBy(StampList::getCardNo));
+		Map<Integer, List<StampList>> pages = createPages(cardGroup);
+		
+		AtomicInteger rows = new AtomicInteger(startRow);
+		
+		pages.forEach((k, v) -> {
+			try {
+				if (rows.get() > 4) {
+					cell.copyRow(cell, 0, rows.get());
+					cell.copyRow(cell, 1, rows.get() + 1);
+					cell.copyRow(cell, 2, rows.get() + 2);
+					cell.copyRow(cell, 3, rows.get() + 3);
+					// 職場名
+					cell.get(rows.get() + 2, 0).setValue(employeeInfor.getWorkplace());
+					// 社員名
+					cell.get(rows.get() + 3, 0).setValue(employeeInfor.getEmployee());
+					// カードNo.
+					cell.get(rows.get() + 3, 3).setValue(v.get(0).getCardNo());
+					rows.set(rows.get() + 4);
+				} else {
+					// 職場名
+					cell.get(2, 0).setValue(employeeInfor.getWorkplace());
+					// 社員名
+					cell.get(3, 0).setValue(employeeInfor.getEmployee());
+					// カードNo.
+					cell.get(3, 3).setValue(v.get(0).getCardNo());
+				}
+
+				int count = printData(rows.get(), cell, printStyle, v);
+				if (v.size() < 32) {
+					rows.set(count + (32 - v.size()));
+				}
+			} catch (Exception ex) {
+			}
+		});
+		return rows.get();
+	}
+
+	// print data for each rows
+	private int printData(int rows, Cells cell, PrintStyle printStyle, List<StampList> stampList) {
+		for (int j = 0; j < stampList.size(); j++) {
+			val dateStyle = printStyle.getDateStyle();
+
+			val stampStyle = printStyle.getStampStyle();
+			val claStyle = printStyle.getClaStyle();
+			val meanStyle = printStyle.getMeanStyle();
+			val methodStyle = printStyle.getMethodStyle();
+			val insStyle = printStyle.getInsStyle();
+			val locStyle = printStyle.getLocStyle();
+			val cardStyle = printStyle.getCardStyle();
+			val wHourStyle = printStyle.getWHourStyle();
+			val overStyle = printStyle.getOverStyle();
+			val nightStyle = printStyle.getNightStyle();
+			// Tạo màu background
+			Color bgColor = j % 2 != 0 ? Color.fromArgb(221, 235, 247) : Color.getWhite();
+			dateStyle.setForegroundColor(bgColor);
+			dateStyle.setPattern(BackgroundType.SOLID);
+			stampStyle.setForegroundColor(bgColor);
+			stampStyle.setPattern(BackgroundType.SOLID);
+			claStyle.setForegroundColor(bgColor);
+			claStyle.setPattern(BackgroundType.SOLID);
+			meanStyle.setForegroundColor(bgColor);
+			meanStyle.setPattern(BackgroundType.SOLID);
+			methodStyle.setForegroundColor(bgColor);
+			methodStyle.setPattern(BackgroundType.SOLID);
+			insStyle.setForegroundColor(bgColor);
+			insStyle.setPattern(BackgroundType.SOLID);
+			locStyle.setForegroundColor(bgColor);
+			locStyle.setPattern(BackgroundType.SOLID);
+			cardStyle.setForegroundColor(bgColor);
+			cardStyle.setPattern(BackgroundType.SOLID);
+			wHourStyle.setForegroundColor(bgColor);
+			wHourStyle.setPattern(BackgroundType.SOLID);
+			overStyle.setForegroundColor(bgColor);
+			overStyle.setPattern(BackgroundType.SOLID);
+			nightStyle.setForegroundColor(bgColor);
+			nightStyle.setPattern(BackgroundType.SOLID);
+
+			// 年月日
+			cell.get(rows, 0).setStyle(dateStyle);
+			cell.get(rows, 0).setValue(stampList.get(j).getDate());
+			// 時刻
+			cell.get(rows, 1).setStyle(stampStyle);
+			cell.get(rows, 1).setValue(stampList.get(j).getTime());
+			// 出退勤区分
+			cell.get(rows, 2).setStyle(claStyle);
+			cell.get(rows, 2).setValue(stampList.get(j).getClassification());
+			// 打刻手段
+			cell.get(rows, 3).setStyle(meanStyle);
+			cell.get(rows, 3).setValue(stampList.get(j).getMean());
+			// 認証方法
+			cell.get(rows, 4).setStyle(methodStyle);
+			cell.get(rows, 4).setValue(stampList.get(j).getMethod());
+			// 設置場所
+			cell.get(rows, 5).setStyle(insStyle);
+			cell.get(rows, 5).setValue(stampList.get(j).getInsLocation());
+			// 位置情報
+			cell.get(rows, 6).setStyle(locStyle);
+			cell.get(rows, 6).setValue(stampList.get(j).getLocationInfor());
+			// 応援カード
+			cell.get(rows, 7).setStyle(cardStyle);
+			cell.get(rows, 7).setValue(stampList.get(j).getSupportCard());
+			// 就業時間帯
+			cell.get(rows, 8).setStyle(wHourStyle);
+			cell.get(rows, 8).setValue(stampList.get(j).getWorkingHour());
+			// 残業時間
+			cell.get(rows, 9).setStyle(overStyle);
+			cell.get(rows, 9).setValue(stampList.get(j).getOvertimeHour());
+			// 深夜時間
+			cell.get(rows, 10).setStyle(nightStyle);
+			cell.get(rows, 10).setValue(stampList.get(j).getNightTime());
+			rows += 1;
+		}
+		return rows;
+	}
+
+	// create page to print in case: employee
+	private Map<Integer, List<StampList>> createPages(Map<String, List<StampList>> cardGroup) {
+		AtomicInteger pages = new AtomicInteger(1);
+		Map<Integer, List<StampList>> employeeList = new HashMap<>();
+		cardGroup.forEach((k, v) -> {
+			if (v.size() > 32) {
+				int start = 0;
+				int totalPage = v.size() / 32 + (v.size() % 32 == 0 ? 0 : 1);
+				List<StampList> stampList;
+				for (int i = 1; i <= totalPage; i++) {
+					if (i == totalPage) {
+						stampList = v.subList(start, v.size());
+					} else {
+						stampList = v.subList(start, 32 * i);
+						start = 32 * i;
+					}
+					employeeList.put(pages.get(), stampList);
+					pages.getAndIncrement();
+				}
+			} else {
+				employeeList.put(pages.get(), v);
+				pages.getAndIncrement();
+			}
+		});
+		return employeeList;
 	}
 
 }
