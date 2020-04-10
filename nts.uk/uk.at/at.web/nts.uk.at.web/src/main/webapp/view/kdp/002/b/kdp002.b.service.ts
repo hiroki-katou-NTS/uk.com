@@ -3,7 +3,10 @@ module nts.uk.at.view.kdp002.b.service {
         saveStampPage: "at/record/stamp/management/saveStampPage",
         getStampSetting: "at/record/stamp/management/getStampSetting",
         getStampPage: "at/record/stamp/management/getStampPage",
-        deleteStampPage: "at/record/stamp/management/delete"
+        deleteStampPage: "at/record/stamp/management/delete",
+        getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult",
+        getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
+        
     }
 
     export function saveStampPage(data: any): JQueryPromise<any> {
@@ -20,5 +23,12 @@ module nts.uk.at.view.kdp002.b.service {
 
     export function getStampPage(pageNo : number): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
+    }
+    
+    export function getAllStampingResult(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAllStampingResult); 
+    }
+    export function getEmpInfo(id: string) {
+        return nts.uk.request.ajax("com", paths.getInfo+id); 
     }
 }

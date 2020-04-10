@@ -42,6 +42,7 @@ public class StampRecordDto {
 	private Integer goOutArt;
 	private Integer setPreClockArt;
 	private Integer changeClockArt;
+	private String changeClockArtName;
 	private Integer changeCalArt;
 
 	private String cardNumberSupport;
@@ -82,6 +83,7 @@ public class StampRecordDto {
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
+			this.changeClockArtName = type.getChangeClockArt().nameId;
 			this.changeCalArt = type.getChangeCalArt().value;
 
 			RefectActualResult raResult = stamp.getRefActualResults();

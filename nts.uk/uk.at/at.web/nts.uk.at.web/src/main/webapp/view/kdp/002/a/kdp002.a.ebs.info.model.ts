@@ -26,11 +26,11 @@ class EmbossGridInfo {
         } else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
             self.columns([
                 { headerText: 'コード', key: 'code', width:100, hidden: true },
-                { headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 60 }, 
-                { headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 60 }, 
-                { headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 60 },
-                { headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']) + '2', key: 'workIn2', width: 60 }, 
-                { headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']) + '2', key: 'workOut2', width: 60 }
+                { headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 80 }, 
+                { headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 80 }, 
+                { headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 80 },
+                { headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 80 }, 
+                { headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 80 }
             ]);
             self.bindItemData(start.timeCard.listAttendances);
         }

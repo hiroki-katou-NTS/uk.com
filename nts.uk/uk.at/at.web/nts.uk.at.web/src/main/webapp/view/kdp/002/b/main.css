@@ -1,17 +1,39 @@
-  .item-screen, #single-list_container{
+.item-screen, #single-list_container {
 	margin-top: 10px !important;
 }
 
-#text-b6-2, #text-b2-2, #text-b3-2, #label-b3-2{
+#single-list_container {
+	margin-left: 20px !important;
+}
+
+#text-b6-2, #text-b2-2, #text-b3-2, #label-b3-2 {
 	margin-left: 72px;
 }
 
-#label-b5-2 , #text-b3-3{
+#label-b5-2, #text-b3-3 {
 	margin-left: 41px;
 }
- #text-b4-2{
- margin-left: 43px;
- }
- #contents-area{
- margin-left: 25px !important;
- }
+
+#text-b4-2 {
+	margin-left: 43px;
+}
+
+#contents-area {
+	margin-left: 25px !important;
+}
+
+#table-stamp {
+	height: 200px;
+	width: 400px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+#text-b8-1 {
+	margin-left: 30px;
+}
+
+.inline-bl{
+  display: inline-block;
+  width: 30px;
+}

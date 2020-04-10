@@ -153,7 +153,11 @@ public class OutputScreenListOfStampFinder {
 				
 				// Local Infor
 				val localInfor = (optWorkLocation.isPresent()) ? optWorkLocation.get().getLatitude().v() + " " + optWorkLocation.get().getLongitude().v() : "";
-				
+				val localInforStamp = stampInfoDisp.getStamp().isPresent() ? stampInfoDisp.getStamp().get() : null;
+				 val localInfo = localInforStamp.getLocationInfor().isPresent() ? localInforStamp.getLocationInfor() : null;
+				 val localInfoS = localInfo.isPresent() ? localInfo.get() : null;
+				  val local = localInfoS.getPositionInfor().getLatitude() + " " + localInfoS.getPositionInfor().getLongitude();
+				 
 				// Support Card
 				val optSupportCard = stampInfoDisp.getStamp().get().getRefActualResults().getCardNumberSupport();
 				
@@ -177,7 +181,7 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name);
 				employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name);
 				employeEngravingInfor.setInstallPlace(workLocationName);
-				employeEngravingInfor.setLocalInfor(localInfor);
+				employeEngravingInfor.setLocalInfor(local);
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
 				employeEngravingInfor.setSupportCard(optSupportCard.orElse(""));
 				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
