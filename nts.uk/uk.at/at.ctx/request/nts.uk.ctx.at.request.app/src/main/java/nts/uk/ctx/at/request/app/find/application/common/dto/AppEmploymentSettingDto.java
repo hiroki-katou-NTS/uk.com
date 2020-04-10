@@ -9,8 +9,6 @@ import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 
@@ -49,19 +47,6 @@ public class AppEmploymentSettingDto {
 	 */
 	List<AppEmployWorkTypeDto> lstWorkType;
 	
-//	public static AppEmploymentSettingDto fromDomain(AppEmploymentSetting domain){
-//		return new AppEmploymentSettingDto(domain.getCompanyID(), 
-//				domain.getEmploymentCode(), 
-//				domain.getAppType().value, 
-//				domain.getHolidayOrPauseType(), 
-//				domain.getHolidayTypeUseFlg(), 
-//				domain.isDisplayFlag(), 
-//				domain.getLstWorkType()
-//					.stream()
-//					.map(item -> AppEmployWorkTypeDto.fromDomain(item))
-//					.collect(Collectors.toList())
-//				);
-//	}
 	public static List<AppEmploymentSettingDto> fromDomain(List<AppEmploymentSetting> domainList){
 		List<AppEmploymentSettingDto> list = new ArrayList<AppEmploymentSettingDto>();
 		domainList.stream().forEach(x -> {
@@ -83,7 +68,6 @@ public class AppEmploymentSettingDto {
 	public static AppEmploymentSettingDto fromDomain(AppEmploymentSetting domain){
 		AppEmploymentSettingDto item = new AppEmploymentSettingDto();
 		
-			List<WorkTypeObjAppHoliday> listWTOAH = domain.getListWTOAH();
 			if (!domain.getListWTOAH().isEmpty()) {
 				 
 					WorkTypeObjAppHoliday y = domain.getListWTOAH().get(0);
@@ -93,7 +77,7 @@ public class AppEmploymentSettingDto {
 									y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
 							);
 					
-				
+					item = i;
 			}
 		
 		return item;
@@ -102,19 +86,6 @@ public class AppEmploymentSettingDto {
 	}
 	
 	public AppEmploymentSetting toDomain() {
-//		return new AppEmploymentSetting(
-//				companyID, 
-//				employmentCode, 
-//				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-//				holidayOrPauseType, 
-//				holidayTypeUseFlg, 
-//				displayFlag, 
-//				lstWorkType.stream().map(x -> AppEmployWorkType.createSimpleFromJavaType(
-//						x.getCompanyID(), 
-//						x.getEmploymentCode(), 
-//						x.getAppType(), 
-//						x.getHolidayOrPauseType(), 
-//						x.getWorkTypeCode())).collect(Collectors.toList()));
 		List<WorkTypeObjAppHoliday> list = new ArrayList<>();
 		WorkTypeObjAppHoliday workTypeObjAppHoliday = new WorkTypeObjAppHoliday(
 				CollectionUtil.isEmpty(lstWorkType) ?  null : lstWorkType.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList()),

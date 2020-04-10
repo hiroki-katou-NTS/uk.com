@@ -5,23 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.eclipse.persistence.internal.xr.CollectionResult;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BreakOrRestTime;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqdtAppEmployWorktype;
 import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqdtAppEmployWorktypePK;
@@ -66,15 +63,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		return this.queryProxy().query(FIND,KrqdtAppEmployWorktype.class)
 				.setParameter("companyID", companyID).setParameter("employmentCode", employmentCode).setParameter("appType", appType).getList(c -> convertToDomain(c));
 	}
-	
-//	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode, int appType){
-//		return this.queryProxy().query(FIND_EMPLOYMENT_SET, KrqstAppEmploymentSet.class)
-//				.setParameter("companyId", companyId)
-//				.setParameter("employmentCode", employmentCode)
-//				.setParameter("appType", appType)
-//				.getList(c -> toDomain(c));
-//				
-//	}
+
 	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode, int appType){
 		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_SET, KrqstAppEmploymentSet.class)
 				.setParameter("companyId", companyId)
@@ -97,20 +86,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		return listReturn;
 				
 	}
-//	public List<AppEmploymentSetting_New> getEmploymentSettingRef(String companyId){
-//		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_COMPANYID, KrqstAppEmploymentSet.class)
-//				.setParameter("companyId", companyId)
-//				.getList();
-//		List<AppEmploymentSetting_New> listReturn = toDomain(list, companyId);
-//		return listReturn;
-//	}
-//	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode){
-//		return this.queryProxy().query(FIND_EMPLOYMENT_BY_EMPLOYMENTCD, KrqstAppEmploymentSet.class)
-//				.setParameter("companyId", companyId)
-//				.setParameter("employmentCode", employmentCode)
-//				.getList(c -> toDomain(c));
-//				
-//	}
+
 	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode){
 		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_EMPLOYMENTCD, KrqstAppEmploymentSet.class)
 				.setParameter("companyId", companyId)
@@ -126,11 +102,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	/**
 	 * Insert list employment setting
 	 */
-//	public void insert(List<AppEmploymentSetting> employmentList){
-//		commandProxy().insertAll(employmentList.stream()
-//				.map(item -> toEntity(item))
-//				.collect(Collectors.toList()));
-//	}
+
 	public void insert(AppEmploymentSetting domain){
 		List<KrqstAppEmploymentSet> updateLst;
 		if(!CollectionUtil.isEmpty(domain.getListWTOAH())) {
@@ -151,35 +123,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		}
 			
 	}
-	
-//	public void update(List<AppEmploymentSetting> employmentList){
-//		//Update workType code
-//		updateWorkType(employmentList);
-//		//Update employment setting
-//		List<KrqstAppEmploymentSet> updateLst = employmentList.stream()
-//				.map(item -> {
-//					Optional<KrqstAppEmploymentSet> updateItemOp = queryProxy().find(new KrqstAppEmploymentSetPK(
-//																			item.getCompanyID(), 
-//																			item.getEmploymentCode(), 
-//																			item.getAppType().value, 
-//																			item.getHolidayOrPauseType()), KrqstAppEmploymentSet.class);
-//					if (updateItemOp.isPresent()) {
-//						KrqstAppEmploymentSet updateItem = updateItemOp.get();
-//						Integer holidayTypeUseFlg = null;
-//						if (item.getHolidayTypeUseFlg() != null) {
-//							holidayTypeUseFlg = item.getHolidayTypeUseFlg().booleanValue() ? 1: 0;
-//						}
-//						//updateItem.setVersion(item.getVersion());
-//						updateItem.setHolidayTypeUseFlg(item.getHolidayOrPauseType());
-//						updateItem.setDisplayFlag(item.isDisplayFlag() == true ? 1 : 0);
-//						updateItem.setHolidayTypeUseFlg(holidayTypeUseFlg);						
-//						return updateItem;
-//					}
-//					return toEntity(item);			
-//				})
-//				.collect(Collectors.toList());
-//		commandProxy().updateAll(updateLst);
-//	}
+
 	public void update(AppEmploymentSetting domain) {
 		updateWorkType(domain);
 		List<KrqstAppEmploymentSet> updateLst;
@@ -235,14 +179,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		}
 		this.commandProxy().insertAll(list);
 	}
-	public void remove(String companyId, String employmentCode){		
-		/*List<KrqstAppEmploymentSet> deleteList = this.queryProxy().query(FIND_EMPLOYMENT_BY_EMPLOYMENTCD, KrqstAppEmploymentSet.class)
-				.setParameter("companyId", companyId)
-				.setParameter("employmentCode", employmentCode)
-				.getList();
-		if (!CollectionUtil.isEmpty(deleteList)) {
-			this.commandProxy().removeAll(deleteList);
-		}*/		
+	public void remove(String companyId, String employmentCode){			
 		//Delete Employment
 		this.getEntityManager().createQuery(DELETE_EMPLOYMENT_SET).setParameter("companyId", companyId)
 		.setParameter("employmentCode", employmentCode)
@@ -253,24 +190,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		.executeUpdate();
 		this.getEntityManager().flush();
 	}
-//	private void updateWorkType(List<AppEmploymentSetting> employmentList){
-//		for (AppEmploymentSetting appEmploymentSetting : employmentList) {
-//			//Delete all workType
-//			deleteWorkType(appEmploymentSetting.getCompanyID(), appEmploymentSetting.getEmploymentCode(), 
-//					appEmploymentSetting.getAppType().value, appEmploymentSetting.getHolidayOrPauseType());
-//			//Insert new workType
-//			List<KrqdtAppEmployWorktype> listEntities = appEmploymentSetting.getLstWorkType().stream()
-//					.map(item -> {return new KrqdtAppEmployWorktype(
-//							new KrqdtAppEmployWorktypePK(item.getCompanyID(), 
-//									item.getEmploymentCode(),
-//									item.getAppType().value,
-//									item.getHolidayOrPauseType(),
-//									item.getWorkTypeCode()),
-//							null);})
-//					.collect(Collectors.toList());
-//			this.commandProxy().insertAll(listEntities);			
-//		}		
-//	}
+
 	private void deleteWorkType(String companyId, String employmentCode, int appType, int holidayOrPauseType){
 		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET).setParameter("companyId", companyId)
 		.setParameter("employmentCode", employmentCode)
@@ -284,33 +204,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	 * @param domain
 	 * @return
 	 */
-//	private static KrqstAppEmploymentSet toEntity(AppEmploymentSetting domain){
-//		Integer holidayTypeUseFlg = null;
-//		if (domain.getHolidayTypeUseFlg() != null) {
-//			holidayTypeUseFlg = domain.getHolidayTypeUseFlg().booleanValue() ? 1: 0;
-//		}
-//		return new KrqstAppEmploymentSet(domain.getVersion(),
-//				new KrqstAppEmploymentSetPK(domain.getCompanyID(), 
-//						domain.getEmploymentCode(), 
-//						domain.getAppType().value, 
-//						domain.getHolidayOrPauseType()), 
-//				holidayTypeUseFlg,
-//				domain.isDisplayFlag() == true ? 1 : 0, 
-//				domain.getLstWorkType()
-//				.stream()
-//				.map(item -> {return new KrqdtAppEmployWorktype(
-//						new KrqdtAppEmployWorktypePK(item.getCompanyID(), 
-//								item.getEmploymentCode(),
-//								item.getAppType().value,
-//								item.getHolidayOrPauseType(),
-//								item.getWorkTypeCode()),
-//						null);})
-//				.collect(Collectors.toList()));
-//	}
-//	
-//	private static KrqstAppEmploymentSet toEntityNew(AppEmploymentSetting domain){
-//		return null;
-//	}
+
 	
 	private AppEmployWorkType convertToDomain(KrqdtAppEmployWorktype entity){
 		return AppEmployWorkType.createSimpleFromJavaType(entity.getKrqdtAppEmployWorktypePK().getCid(),
@@ -320,49 +214,21 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 				entity.getKrqdtAppEmployWorktypePK().getWorkTypeCode());
 	}
 	
-	// remove
-//	private AppEmploymentSetting toDomain(KrqstAppEmploymentSet entity) {
-//		
-//	
-//		boolean holidayTypeUseFlg = false;
-//		//if(Optional.ofNullable(entity.getHolidayTypeUseFlg()) != null || entity.getHolidayTypeUseFlg() == 0) {
-//		if(entity.getHolidayTypeUseFlg() == null || entity.getHolidayTypeUseFlg() == 0) {
-//			holidayTypeUseFlg = false;
-//		}else {
-//			holidayTypeUseFlg = true;
-//		}
-//		List<AppEmployWorkType> lstAppEmployWorkType = entity.krqdtAppEmployWorktype.stream()
-//				.map(x -> AppEmployWorkType.createSimpleFromJavaType(x.getKrqdtAppEmployWorktypePK().getCid(),
-//						x.getKrqdtAppEmployWorktypePK().getEmploymentCode(),
-//						x.getKrqdtAppEmployWorktypePK().getAppType(),
-//						x.getKrqdtAppEmployWorktypePK().getHolidayOrPauseType(),
-//						x.getKrqdtAppEmployWorktypePK().getWorkTypeCode())
-//				).collect(Collectors.toList());
-//		
-//		
-//		return new AppEmploymentSetting(entity.getKrqstAppEmploymentSetPK().getCid(),
-//				entity.getKrqstAppEmploymentSetPK().getEmploymentCode(),
-//				EnumAdaptor.valueOf(entity.getKrqstAppEmploymentSetPK().getAppType(), ApplicationType.class),
-//				entity.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(),
-//				holidayTypeUseFlg,
-//				entity.getDisplayFlag() == 0 ? false: true,
-//				lstAppEmployWorkType);
-//	}
 	private List<AppEmploymentSetting> toDomain(List<KrqstAppEmploymentSet> list, String companyId){
-		Map<String, Map<String,List<WorkTypeObjAppHoliday>>> maps = new HashMap();
+		Map<String, Map<String,List<WorkTypeObjAppHoliday>>> maps = new HashMap<>();
 		list.stream().forEach(x -> {
 			String cid = x.getKrqstAppEmploymentSetPK().getCid();
 			String empCode = x.getKrqstAppEmploymentSetPK().getEmploymentCode();
 			WorkTypeObjAppHoliday i = new WorkTypeObjAppHoliday();
 			i.setAppType(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getAppType(), ApplicationType.class));
 			if(x.getKrqstAppEmploymentSetPK().getAppType() == 1) {
-				i.setHolidayAppType(Optional.of(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(), HdAppType.class)));				
+				i.setHolidayAppType(Optional.of(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(), HolidayType.class)));				
 			}else {
 				i.setHolidayAppType(Optional.ofNullable(null));
 			}
 			i.setHolidayTypeUseFlg(Optional.of((x.getHolidayTypeUseFlg() == null || x.getHolidayTypeUseFlg() == 0) ? false : true));
 			if(x.getKrqstAppEmploymentSetPK().getAppType() == 10) {
-				i.setSwingOutAtr(Optional.of(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(), BreakOutType.class)));			
+				i.setSwingOutAtr(Optional.of(EnumAdaptor.valueOf(x.getKrqstAppEmploymentSetPK().getHolidayOrPauseType(), BreakOrRestTime.class)));			
 			}else {
 				i.setSwingOutAtr(Optional.ofNullable(null));
 			}
@@ -383,7 +249,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			}else {
 				List<WorkTypeObjAppHoliday> list1 = new ArrayList<>();
 				list1.add(i);
-				Map<String,List<WorkTypeObjAppHoliday>> map = new HashMap();
+				Map<String,List<WorkTypeObjAppHoliday>> map = new HashMap<>();
 				map.put(empCode, list1);
 				maps.put(cid, map);
 			}
