@@ -30,7 +30,10 @@ public class StampPageLayoutDto {
 		this.stampPageCommentColor = pageComment.getCommentColor().v();
 		this.buttonLayoutType = layout.getButtonLayoutType().value;
 		
-		for (ButtonSettings btnSet : layout.getLstButtonSet()) {
+		List<ButtonSettings> btnSets = layout.getLstButtonSet();
+		
+		btnSets.sort((b1, b2) -> b1.getButtonPositionNo().v().compareTo(b2.getButtonPositionNo().v()));
+		for (ButtonSettings btnSet : btnSets) {
 			this.buttonSettings.add(new ButtonSettingDto(btnSet));
 		}
 		
