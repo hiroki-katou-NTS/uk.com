@@ -79,7 +79,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	// [1] insert(打刻)
 	@Override
 	public void insert(Stamp stamp) {
-		this.commandProxy().insert(toEntity(stamp));
+		KrcdtStamp entity = toEntity(stamp);
+		this.commandProxy().insert(entity);
 	}
 
 	// [2] delete(打刻)

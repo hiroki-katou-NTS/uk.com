@@ -56,4 +56,7 @@ public class StampRecord implements DomainAggregate {
 		this.empInfoTerCode = empInfoTerCode;
 	}
 
+	public String retriveKey() {
+		return this.getStampNumber()+ this.getStampDateTime().toString();
+	}
 }

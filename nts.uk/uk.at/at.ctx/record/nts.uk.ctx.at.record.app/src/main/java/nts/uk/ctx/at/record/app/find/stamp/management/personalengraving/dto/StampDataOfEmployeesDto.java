@@ -29,11 +29,11 @@ public class StampDataOfEmployeesDto {
 		
 		Map<String, Stamp> cardNumberStamp = domain.getListStamp()
 				 .stream()
-				 .filter(distinctByKey(s -> s.retriveCardNumber()))
-				 .collect(Collectors.toMap(Stamp::retriveCardNumber, s -> s));
+				 .filter(distinctByKey(s -> s.retriveKey()))
+				 .collect(Collectors.toMap(Stamp::retriveKey, s -> s));
 
 		for(StampRecord stampRecord : domain.getListStampRecord()) {
-			Stamp stamp = cardNumberStamp.get(stampRecord.getStampNumber().v());
+			Stamp stamp = cardNumberStamp.get(stampRecord.retriveKey());
 			this.stampRecords.add(new StampRecordDto(stampRecord, stamp));
 		}
 				

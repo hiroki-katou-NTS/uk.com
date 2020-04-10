@@ -44,6 +44,13 @@ class EmbossGridInfo {
                 stampData.code = ++idx;
                 stampData.stampDate = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
                 stampData.stampHowAndTime = "<div class='inline-bl'>" + stampData.stampHow + "</div>" + stampData.stampTime;
+                if(stampData.changeClockArt == 0) {
+                    stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.timeStampType + '</div>';
+                } else if (stampData.changeClockArt == 1) {
+                    stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.timeStampType + '</div>';
+                } else {
+                    stampData.timeStampType = `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>';
+                }
             });
 
             self.items(items);

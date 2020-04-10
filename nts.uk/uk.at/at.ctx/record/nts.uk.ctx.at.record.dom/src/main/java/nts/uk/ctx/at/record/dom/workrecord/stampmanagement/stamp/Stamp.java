@@ -97,9 +97,8 @@ public class Stamp implements DomainAggregate {
 		this.attendanceTime = Optional.ofNullable(attendanceTime);
 	}
 
-	public String retriveCardNumber() {
-		return this.getCardNumber().v();
+	public String retriveKey() {
+		return this.getCardNumber().v() + this.getStampDateTime().toString();
 	}
-	
 	
 }
