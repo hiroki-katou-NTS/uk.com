@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.stamp.personalengraving.query;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
@@ -85,15 +87,15 @@ public class StampResultConfirmationQuery {
 		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), param.getAttendanceItems())
 			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
 						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
-				.findFirst().orElseGet(null);
-		List<ItemValue> itemValues = dailyResult.getItems();
+				.findFirst().orElse(null);
+		List<ItemValue> itemValues = dailyResult != null ? dailyResult.getItems() : Collections.emptyList();
 		// 4
 		List<String> itemIds = new ArrayList<>();
-		itemIds.add(itemValues.stream().filter(i -> i.getItemId() == 28).findFirst().orElseGet(null).getValue());
+		itemIds.add(!CollectionUtil.isEmpty(itemValues) ? itemValues.stream().filter(i -> i.getItemId() == 28).findFirst().orElse(null).getValue() : "");
 		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, itemIds);
 		// 5
 		itemIds.clear();
-		itemIds.add(itemValues.stream().filter(i -> i.getItemId() == 29).findFirst().orElseGet(null).getValue());
+		itemIds.add(!CollectionUtil.isEmpty(itemValues) ? itemValues.stream().filter(i -> i.getItemId() == 29).findFirst().orElse(null).getValue() : "");
 		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
 		
