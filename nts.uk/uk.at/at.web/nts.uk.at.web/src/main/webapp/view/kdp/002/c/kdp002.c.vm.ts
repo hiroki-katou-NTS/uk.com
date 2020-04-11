@@ -42,6 +42,16 @@ module nts.uk.at.view.kdp002.c {
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                let itemIds = nts.uk.ui.windows.setShared("KDP010_2C");
+                let data = {
+                    // stampDate: moment().format("YYYY/MM/DD"),
+                    attendanceItems: itemIds
+                }
+                
+                service.startScreen(data).done((res) => {
+                    console.log(res);
+                });
+                
                 dfd.resolve();
                 return dfd.promise();
             }

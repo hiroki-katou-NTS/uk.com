@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.workplace.SWkpHistImported;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 /**

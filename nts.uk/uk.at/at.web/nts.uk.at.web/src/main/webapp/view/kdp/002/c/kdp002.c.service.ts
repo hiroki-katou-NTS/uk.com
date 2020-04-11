@@ -1,13 +1,13 @@
 module nts.uk.at.view.kdp002.c.service {
     let paths: any = {
-        saveStampPage: "at/record/stamp/management/saveStampPage",
+        startScreen: "screen/at/personalengraving/startCScreen",
         getStampSetting: "at/record/stamp/management/getStampSetting",
         getStampPage: "at/record/stamp/management/getStampPage",
         deleteStampPage: "at/record/stamp/management/delete"
     }
 
-    export function saveStampPage(data: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.saveStampPage, data);
+    export function startScreen(data: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.startScreen, data);
     }
 
     export function getStampSetting(): JQueryPromise<any> {

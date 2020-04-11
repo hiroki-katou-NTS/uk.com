@@ -4,7 +4,7 @@ module nts.uk.at.view.kdp002.a {
         
         export class ScreenModel {
             dataScreenT: KnockoutObservable<any> = ko.observable({});
-            
+            dataScreenC: KnockoutObservable<any> = ko.observable({});
             constructor() {
                 let self = this;
                 
@@ -17,6 +17,7 @@ module nts.uk.at.view.kdp002.a {
                 service.startPage().done((res) => {
                     console.log(res);
                     self.dataScreenT(res.stampToSuppress);
+                    self.dataScreenC(res.stampResultDisplay.displayItemId);
                     dfd.resolve();
                 }); 
 
@@ -31,7 +32,7 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public openKDP002T() {
-                let self = this;
+               
                 let data = {
                     pageNo: 1,
                     buttonDisNo: 1
@@ -42,6 +43,14 @@ module nts.uk.at.view.kdp002.a {
                         
                     });
                 });
+            }
+
+            public openKDP002C() {
+                let self = this;
+                nts.uk.ui.windows.setShared('KDP010_2C', self.dataScreenC(), true);
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+                    
+                });          
             }
 
         }

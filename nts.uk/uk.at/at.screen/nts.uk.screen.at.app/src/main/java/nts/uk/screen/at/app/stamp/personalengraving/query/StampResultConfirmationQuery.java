@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.stamp.personalengraving.query;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,14 +8,30 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.assertj.core.util.Arrays;
-
+import lombok.AllArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualDay;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,26 +45,89 @@ public class StampResultConfirmationQuery {
 	private DisplayScreenStampingResultFinder displayScreenStamping;
 	
 	@Inject
-	private ConfirmStatusActualDay confirmStatusActualDay;
-	
-	@Inject
 	private CompanyDailyItemService companyDailyItemService;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	
-	private Object getStampResultConfirm(StampResultConfirmRequest param) {
-		// 1
-		List<DisplayScreenStampingResultDto> screenDisplay = displayScreenStamping.getDisplay(param.toStampDatePeriod());
-		// 2
-//		List<ConfirmStatusActualResult> confirmStatusAcResults = confirmStatusActualDay.
+	@Inject
+	private WorkTimeSettingRepository workTimeRepo;
+	
+	@Inject
+	private DailyRecordWorkFinder fullFinder;
+	
+	@Inject
+	private ClosureService closereSv;
+	
+	@Inject
+	private SyWorkplaceAdapter syWorkplaceAdapter;
+	
+	@Inject
+	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
 		String cid = AppContexts.user().companyId();
 		String authorityId = AppContexts.user().roles().forAttendance();
+		String sid = AppContexts.user().employeeId();
+		
+		// 1
+		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
+		
+		// 2
+		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange);
+		ConfirmStatusActualResult confirmStatusAcResults = ConfirmStatusOfDayService.get(required, cid, sid, GeneralDateTime.now().toDate());
+		
 		List<AttItemName> getDailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
 		
-//		workTypeRepo.getCodeNameWorkType(cid, getDailyItems.stream().filter(i -> i.getAttendanceItemId() == 28).findFirst().orElseGet(null).);
+		// 3
+		List<String> sids = new ArrayList<>();
+		sids.add(sid);
+		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), param.getAttendanceItems())
+			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
+						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
+				.findFirst().orElseGet(null);
+		List<ItemValue> itemValues = dailyResult.getItems();
+		// 4
+		List<String> itemIds = new ArrayList<>();
+		itemIds.add(itemValues.stream().filter(i -> i.getItemId() == 28).findFirst().orElseGet(null).getValue());
+		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, itemIds);
+		// 5
+		itemIds.clear();
+		itemIds.add(itemValues.stream().filter(i -> i.getItemId() == 29).findFirst().orElseGet(null).getValue());
+		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
-		return null;
+		
+		return new StampResultConfirmDto(screenDisplays, getDailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults);
+	}
+	
+	@AllArgsConstructor
+	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {
+		
+		@Inject
+		private ClosureService closereSv;
+		
+		@Inject
+		private SyWorkplaceAdapter syWorkplaceAdapter;
+		
+		@Inject
+		private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+		
+		@Override
+		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
+			return closereSv.getClosureDataByEmployee(employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<SWkpHistRcImported> findBySid(String employeeId, GeneralDate baseDate) {
+			return syWorkplaceAdapter.findBySid(employeeId, baseDate);
+		}
+
+		@Override
+		public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
+				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
+			return confirmStatusActualDayChange.processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt);
+		}
+		
 	}
 	
 }

@@ -16,6 +16,6 @@ public class StampResultConfirmRequest {
 	private List<Integer> attendanceItems;
 	
 	public DatePeriod toStampDatePeriod() {
-		return new DatePeriod(GeneralDate.fromString(stampDate, "yyyy/MM/dd"), GeneralDate.fromString(stampDate, "yyyy/MM/dd"));
+		return new DatePeriod(GeneralDate.today(), GeneralDate.today());
 	}
 }
