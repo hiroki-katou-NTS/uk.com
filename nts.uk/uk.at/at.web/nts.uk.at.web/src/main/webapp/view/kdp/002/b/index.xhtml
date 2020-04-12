@@ -11,7 +11,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 630 };</script>
+			<script>var dialogSize = { width: 530, height: 630 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/002/b/main.css" />
 			<com:scriptfile path="kdp002.b.vm.js" />
@@ -53,9 +53,9 @@
 										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_39')}
 									</div>
 									<!-- B3_2 -->
-									<span id="label-b3-2" data-bind="text: currentStampData().stampDate"></span>
+									<span id="label-b3-2" data-bind="html: currentStampData().stampDate"></span>
 									<!-- B3_3 -->
-									<span id="text-b3-3" style="font-size: 15px;" data-bind="text: currentStampData().stampTime"></span>
+									<span id="text-b3-3" style="font-size: 15px;font-weight: bold;" data-bind="text: currentStampData().stampTime"></span>
 								</div>
 							</td>
 
@@ -113,7 +113,7 @@
 
 				</div>
 				<com:ko-if bind="disableResultDisplayTime">
-					<div style="margin-top: 10px;" >
+					<div style="margin-top: 10px;font-weight: bold;" >
 						<span id="text-b20-1" data-bind="text: resultDisplayTime"
 						style="margin-top: 10px"></span> <span
 							id="text-b20-2" style="margin-top:10px; margin-left: 20px">#{i18n.getText('KDP002_48')}</span>
