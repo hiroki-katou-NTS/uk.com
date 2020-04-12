@@ -15,13 +15,13 @@ public class TimeActualStampDto {
 	
 	private Integer numberOfReflectionStamp;
 	
-	private String actualAfterRoundingTime;
-	private String actualTimeWithDay;
+	private Integer actualAfterRoundingTime;
+	private Integer actualTimeWithDay;
 	private String actualLocationCode;
 	private Integer actualStampSourceInfo;
 	
-	private String stampAfterRoundingTime;
-	private String stampTimeWithDay;
+	private Integer stampAfterRoundingTime;
+	private Integer stampTimeWithDay;
 	private String stampLocationCode;
 	private Integer stampStampSourceInfo;
 	
@@ -32,8 +32,8 @@ public class TimeActualStampDto {
 			Optional<WorkStamp> oActualWt = domain.getActualStamp();
 			if(oActualWt.isPresent()) {
 				WorkStamp actualWt = oActualWt.get();
-				this.actualAfterRoundingTime = actualWt.getAfterRoundingTime().getFullText();
-				this.actualTimeWithDay = actualWt.getTimeWithDay().getFullText();
+				this.actualAfterRoundingTime = actualWt.getAfterRoundingTime().v();
+				this.actualTimeWithDay = actualWt.getTimeWithDay().v();
 				this.actualLocationCode = actualWt.getLocationCode().isPresent() ? actualWt.getLocationCode().get().v() : null;
 				this.actualStampSourceInfo = actualWt.getStampSourceInfo().value;
 			}
@@ -41,8 +41,8 @@ public class TimeActualStampDto {
 			Optional<WorkStamp> oStampWt = domain.getStamp();
 			if(oStampWt.isPresent()) {
 				WorkStamp stampWt = oStampWt.get();
-				this.stampAfterRoundingTime = stampWt.getAfterRoundingTime().getFullText();
-				this.stampTimeWithDay = stampWt.getTimeWithDay().getFullText();
+				this.stampAfterRoundingTime = stampWt.getAfterRoundingTime().v();
+				this.stampTimeWithDay = stampWt.getTimeWithDay().v();
 				this.stampLocationCode = stampWt.getLocationCode().isPresent() ? stampWt.getLocationCode().get().v() : null;
 				this.stampStampSourceInfo = stampWt.getStampSourceInfo().value;
 			}

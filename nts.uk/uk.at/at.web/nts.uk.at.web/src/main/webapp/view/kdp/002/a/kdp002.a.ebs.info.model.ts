@@ -27,11 +27,11 @@ class EmbossGridInfo {
         } else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
             self.columns([
                 { headerText: 'コード', key: 'code', width:100, hidden: true },
-                { headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 80 }, 
+                { headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 60 }, 
                 { headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 80 }, 
                 { headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 80 },
                 { headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 80 }, 
-                { headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 80 }
+                { headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 100 }
             ]);
             self.bindItemData(start.timeCard.listAttendances);
         }
@@ -60,6 +60,10 @@ class EmbossGridInfo {
             items.forEach(timeCard => {
                 timeCard.code = ++idx;
                 timeCard.date = moment(timeCard.date).format(DATE_AND_DAY_FORMAT);
+                timeCard.workIn1 = timeCard.workIn1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn1) : null;
+                timeCard.workOut1 =  timeCard.workOut1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut1) : null;
+                timeCard.workIn2 = timeCard.workIn2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn2) : null;
+                timeCard.workOut2 = timeCard.workOut2 ?  nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut2) : null;
             });
             console.log(items);
             self.items(items);
