@@ -70,7 +70,6 @@ module nts.uk.at.view.kdp002.b {
                         for (let i = 0; i < _.size(self.listStampRecord()); i++) {
                             if(self.listStampRecord()[i].stampDate == self.items()[j].date && self.listStampRecord()[i].stampTime == self.items()[j].time){
                              self.currentStampData(self.listStampRecord()[i]);
-                             if(self.currentStampData().stam
                             break;   
                             }
                         }
