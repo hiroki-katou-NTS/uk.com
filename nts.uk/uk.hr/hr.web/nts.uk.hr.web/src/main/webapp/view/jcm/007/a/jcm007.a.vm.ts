@@ -16,10 +16,11 @@ module jcm007.a {
 
         currentEmployee: KnockoutObservable<EmployeeModel>;
 
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-        selectedTab: KnockoutObservable<string>;
-        enable_btnRemove: KnockoutObservable<boolean>;
-        enable_btnRegister: KnockoutObservable<boolean>;
+        tabs : KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        selectedTab :  KnockoutObservable<string>;
+        enable_btnRemove : KnockoutObservable<boolean>;
+        enable_btnRegister : KnockoutObservable<boolean>;
+        enable_btnExportExcel : KnockoutObservable<boolean>;
 
         // tab 2
         employeeListTab2: [];
@@ -63,6 +64,7 @@ module jcm007.a {
 
             self.enable_btnRegister = ko.observable(true);
             self.enable_btnRemove = ko.observable(false);
+            self.enable_btnExportExcel = ko.observable(false);
 
             self.itemSelectedTab1 = ko.observable(null);
             self.itemSelectedTab2 = ko.observable(null);
@@ -285,6 +287,7 @@ module jcm007.a {
                 if (result.retiredEmployees.length != 0) {
                     self.enable_tab2(true);
                     self.visible_tab2(true);
+                    self.enable_btnExportExcel(true);
 
                     self.empInfoHeaderList = result.employeeImports;
                     
@@ -304,6 +307,7 @@ module jcm007.a {
                 } else {
                     self.enable_tab2(false);
                     self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);
                     self.newMode();
                 }
                 dfd.resolve();
@@ -329,6 +333,7 @@ module jcm007.a {
                 if (result.retiredEmployees.length != 0) {
                     self.enable_tab2(true);
                     self.visible_tab2(true);
+                    self.enable_btnExportExcel(true);
 
                     self.empInfoHeaderList = result.employeeImports;
 
@@ -345,6 +350,7 @@ module jcm007.a {
                 } else {
                     self.enable_tab2(false);
                     self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);
                     self.newMode();
                 }
                 dfd.resolve();
@@ -621,9 +627,11 @@ module jcm007.a {
                 if(result){
                     self.enable_tab2(true);
                     self.visible_tab2(true);
+                    self.enable_btnExportExcel(true);
                 }else{
                     self.enable_tab2(false);
-                    self.visible_tab2(false);    
+                    self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);    
                 }
                 
                 self.getListDataAfterRegisterNewEmployee().done(() => {
@@ -647,6 +655,8 @@ module jcm007.a {
             service.getData().done((result) => {
                 if (result.retiredEmployees.length != 0) {
                     
+                    self.enable_btnExportExcel(true);
+                    
                     self.empInfoHeaderList = result.employeeImports;
 
                     self.employeeListTab2 = result.retiredEmployees;
@@ -656,6 +666,7 @@ module jcm007.a {
                 } else {
                     self.enable_tab2(false);
                     self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);
                     self.newMode();
                 }
                 dfd.resolve();
@@ -901,6 +912,8 @@ module jcm007.a {
                 if (result.retiredEmployees.length != 0) {
                     
                     self.isNewMode = false;
+                    
+                    self.enable_btnExportExcel(true);
 
                     self.empInfoHeaderList = result.employeeImports;
 
@@ -922,6 +935,7 @@ module jcm007.a {
                 } else {
                     self.enable_tab2(false);
                     self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);
                     self.newMode();
                 }
                 dfd.resolve();
@@ -959,7 +973,8 @@ module jcm007.a {
                     block.grayout();
                     service.remove(histId).done((result : boolean) => {
                         console.log('REMOVE DONE!!');
-                        if (result){ 
+                        if (result){
+                            self.enable_btnExportExcel(true); 
                             self.getListDataAfterRemove().done(() => {
                                 let lengthListItemTab2AfterDel = self.employeeListTab2.length;
                                 if (lengthListItemTab2AfterDel == 0) {
@@ -984,6 +999,7 @@ module jcm007.a {
                             self.itemSelectedTab2(null); 
                             self.enable_tab2(false);
                             self.visible_tab2(false); 
+                            self.enable_btnExportExcel(false);
                             self.newMode();  
                             dialog.info({ messageId: "Msg_16" });
                         }
@@ -1004,7 +1020,7 @@ module jcm007.a {
             block.grayout();
             service.getData().done((result) => {
                 if (result.retiredEmployees.length != 0) {
-                    
+                    self.enable_btnExportExcel(true);
                     self.empInfoHeaderList = result.employeeImports;
 
                     self.employeeListTab2 = result.retiredEmployees;
@@ -1015,6 +1031,7 @@ module jcm007.a {
                     self.itemSelectedTab2(null); 
                     self.enable_tab2(false);
                     self.visible_tab2(false);
+                    self.enable_btnExportExcel(false);
                     self.newMode();
                 }
                 dfd.resolve();
