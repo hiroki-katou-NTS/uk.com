@@ -10,13 +10,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmDateCheck;
+import nts.arc.layer.app.command.JavaTypeResult;
+import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
+import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.algorithm.RetirementRelatedInfoDto;
 import nts.uk.screen.hr.app.databeforereflecting.command.AlgorithmPreCheck;
+import nts.uk.screen.hr.app.databeforereflecting.command.ApprovedCommand;
+import nts.uk.screen.hr.app.databeforereflecting.command.ApprovedCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.DataBeforeReflectCommand;
 import nts.uk.screen.hr.app.databeforereflecting.command.ModifyRetireeInformationCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.RegisterNewEmpCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.RemoveCommandHandler;
 import nts.uk.screen.hr.app.databeforereflecting.command.UpdateEmpApprovedCommandHandler;
+import nts.uk.screen.hr.app.databeforereflecting.find.ChangeRetirementDate;
 import nts.uk.screen.hr.app.databeforereflecting.find.CheckStatusRegistration;
 import nts.uk.screen.hr.app.databeforereflecting.find.DataBeforeReflectResultDto;
 import nts.uk.screen.hr.app.databeforereflecting.find.DatabeforereflectingFinder;
@@ -47,7 +52,7 @@ public class DataBeforeReflectingPerInfoWS {
 	private AlgorithmPreCheck preCheck;
 	
 	@Inject
-	private AlgorithmDateCheck dateCheck;
+	private ApprovedCommandHandler approve;
 
 	@POST
 	@Path("/getData")
@@ -58,8 +63,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/checkStatusRegistration/{sid}")
-	public void checkStatusRegistration(@PathParam("sid") String sid) {
-		 this.checkStatusRegis.CheckStatusRegistration(sid);
+	public JavaTypeResult<Boolean> checkStatusRegistration(@PathParam("sid") String sid) {
+		return new JavaTypeResult<Boolean>(this.checkStatusRegis.checkStatusRegistration(sid));
 	}
 	
 	@POST
@@ -70,8 +75,8 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/register-new-employee")
-	public void registerNewEmployee(DataBeforeReflectCommand command) {
-		this.addCommand.handle(command);
+	public JavaTypeResult<Boolean> registerNewEmployee(DataBeforeReflectCommand command) {
+		return new JavaTypeResult<Boolean>(this.addCommand.handle(command));
 	}
 
 	@POST
@@ -82,13 +87,40 @@ public class DataBeforeReflectingPerInfoWS {
 	
 	@POST
 	@Path("/modify-retiree-information")
-	public void modifyRetireeInformation(DataBeforeReflectCommand command) {
-		this.modifyRetireeInfo.handle(command);
+	public JavaTypeResult<Boolean> modifyRetireeInformation(DataBeforeReflectCommand command) {
+		return new JavaTypeResult<Boolean>(this.modifyRetireeInfo.handle(command));
 	}
 
 	@POST
 	@Path("/remove/{hisId}")
-	public void remove(@PathParam("hisId") String hisId) {
-		this.removeCommnad.remove(hisId);
+	public JavaTypeResult<Boolean> remove(@PathParam("hisId") String hisId) {
+		return new JavaTypeResult<Boolean>(this.removeCommnad.handle(hisId));
 	}
+	
+	//jcm007 update ver 2 
+	@POST
+	@Path("/event-change-retirementdate")
+	public RetirementRelatedInfoDto eventChangeRetirementDate(ChangeRetirementDate changeRetirementDateObj) {
+		return this.finder.processRetirementDateChanges(changeRetirementDateObj);
+	}
+
+	@POST
+	@Path("/approved")
+	public void eventChangeRetirementDate(ApprovedCommand command) {
+		this.approve.handle(command);
+	}
+	
+	@POST
+	@Path("/get-interview-record/{sid}")
+	public InterviewSummary getInterviewRecord(@PathParam("sid") String sid) {
+		return this.finder.getInterviewRecord(sid);
+	}
+	
+	@POST
+	@Path("/start-page")
+	public DataBeforeReflectResultDto startPageZ() {
+		return this.finder.startPageZ();
+	}
+	
+	
 }

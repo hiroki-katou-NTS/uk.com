@@ -128,5 +128,20 @@ public class RetiredEmployeeInfoResult {
 
 	// 解雇の理由6_文字列
 	public String naturalUnaReasons_6Val;
+	
+	// 承認者社員ID
+	public String approveSid;
+
+	// 承認者社員名
+	public String approvePerName;
+
+	// 承認ステータス
+	public Integer approveStatus;
+
+	// 承認コメント
+	public String approveComment;
+
+	// 承認メール送信済みフラグ
+	public boolean approveSendMailFlg;
 
 }
