@@ -1,9 +1,9 @@
 module nts.uk.at.view.kdp002.c {
     export module viewmodel {
         export class ScreenModel {
-            
+
             // B2_2
-            workTypeNames: KnockoutObservable<string> = ko.observable("基本給");
+            employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
             // B3_2
             dayName: KnockoutObservable<string> = ko.observable("基本給");
             // B3_3
@@ -15,14 +15,14 @@ module nts.uk.at.view.kdp002.c {
             // G6_2
             laceName: KnockoutObservable<string> = ko.observable("基本給");
 
-            workName1 : KnockoutObservable<string> = ko.observable("基本給");
-            
-            workName2 : KnockoutObservable<string> = ko.observable("基本給");
-            
-            
+            workName1: KnockoutObservable<string> = ko.observable("基本給");
+
+            workName2: KnockoutObservable<string> = ko.observable("基本給");
+
+
             items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
             columns2: KnockoutObservableArray<NtsGridListColumn>;
-            currentCode: KnockoutObservable<any>  = ko.observable();
+            currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
 
             constructor() {
@@ -32,7 +32,7 @@ module nts.uk.at.view.kdp002.c {
                 }
 
                 self.columns2 = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KDP002_59") , key: 'code', width: 200},
+                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'code', width: 200 },
                     { headerText: nts.uk.resource.getText("KDP002_60"), key: 'name', width: 150 }
                 ]);
             }
@@ -42,22 +42,36 @@ module nts.uk.at.view.kdp002.c {
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                let itemIds = nts.uk.ui.windows.setShared("KDP010_2C");
+                let itemIds = nts.uk.ui.windows.getShared("KDP010_2C");
                 let data = {
-                    // stampDate: moment().format("YYYY/MM/DD"),
+                    stampDate: moment().format("YYYY/MM/DD"),
                     attendanceItems: itemIds
                 }
-                
+
                 service.startScreen(data).done((res) => {
                     console.log(res);
+                    if (res) {
+                        self.dayName(res.stampRecords[0].stampDate);
+                        self.timeName(res.stampRecords[0].stampTime);
+                        self.checkHandName();
+                        self.numberName();
+                        self.laceName();
+                        self.workName1(res.workTypes[0].name);
+                        self.workName2(res.workTimeTypes[0].name);
+                    }
                 });
-                
+
                 dfd.resolve();
                 return dfd.promise();
             }
-            getData(newValue: number): JQueryPromise<any> {
+            getEmpInfo(): JQueryPromise<any> { 
                 let self = this;
                 let dfd = $.Deferred();
+                let employeeId = __viewContext.user.employeeId;
+                service.getEmpInfo(employeeId).done(function(data) {
+                    self.employeeCodeName(data.employeeCode +" "+ data.personalName);
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 

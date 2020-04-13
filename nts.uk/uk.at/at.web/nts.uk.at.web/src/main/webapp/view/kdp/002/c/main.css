@@ -40,7 +40,20 @@
 
 td[aria-describedby="single-list_code"] {
 	background-color: #cff1a5 !important;
+	height: 23px !important;
+}
+
+td[aria-describedby="single-list_name"] {
+	height: 23px !important;
 }
 #single-list_scrollContainer{
 	overflow: hidden !important;
 } 
+
+#text-b20{
+	margin-top: 15px;
+}
+
+#single-list_headers_v{
+	width: 350px;
+}

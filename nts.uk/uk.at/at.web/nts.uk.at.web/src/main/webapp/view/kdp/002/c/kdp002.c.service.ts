@@ -3,7 +3,8 @@ module nts.uk.at.view.kdp002.c.service {
         startScreen: "screen/at/personalengraving/startCScreen",
         getStampSetting: "at/record/stamp/management/getStampSetting",
         getStampPage: "at/record/stamp/management/getStampPage",
-        deleteStampPage: "at/record/stamp/management/delete"
+        deleteStampPage: "at/record/stamp/management/delete",
+        getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
     }
 
     export function startScreen(data: any): JQueryPromise<any> {
@@ -15,10 +16,16 @@ module nts.uk.at.view.kdp002.c.service {
     }
     
     export function deleteStampPage(command: any) {
-        return nts.uk.request.ajax("at", paths.deleteStampPage, command);
+       urn nts.uk.request.ajax("at", paths.deleteStampPage, command);
     }
 
     export function getStampPage(pageNo : number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
+        return nts.uk.request.ajx("at", paths.getStampPage + "/" + pageNo);
     }
+
+    export function getEmpInfo(id: string) {
+        return nts.uk.request.ajax("com", paths.getInfo + id);
+    }
+
+        
 }

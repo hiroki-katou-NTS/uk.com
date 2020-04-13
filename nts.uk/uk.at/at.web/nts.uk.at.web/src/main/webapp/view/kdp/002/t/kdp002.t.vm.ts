@@ -5,6 +5,7 @@ module nts.uk.at.view.kdp002.t {
             labelNames: KnockoutObservable<string> = ko.observable('');
             labelColor: KnockoutObservable<string> = ko.observable('');
             buttonInfo: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+            share: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor() {
             }
             /**
@@ -13,51 +14,52 @@ module nts.uk.at.view.kdp002.t {
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                self.dataShare = nts.uk.ui.windows.getShared('KDP010_2');
+                self.share = nts.uk.ui.windows.getShared('KDP010_2T');
                 let lstButton: ItemModel[] = [];
                 for (let i = 1; i < 6; i++) {
                     lstButton.push(new ItemModel('', '', ''));
                 }
                 self.buttonInfo(lstButton);
-                if (!self.dataShare) {
+                if (!self.share) {
                     self.dataShare = {
                         messageContent: '個人の打刻入力で利用する設定です',
                         messageColor: '#0033cc',
                         listRequired: [{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         },{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         },{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         },{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         },{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         },{
-                            buttonName: ko.observable('個人の打'),
-                            buttonColor: ko.observable('#ccccff'),
-                            textColor: ko.observable('#0033cc')
+                            buttonName: ko.observable('個人の打')
                         }]
                     }
+                }else {
+                    self.dataShare = {
+                        messageContent: self.share.dailyAttdErrorInfos.messageContent,
+                        messageColor: self.share.dailyAttdErrorInfos.messageColor,
+                        listRequired: [{
+                            buttonName: ko.observable(self.share.appDispNames[0].dispName)
+                        },{
+                            buttonName: ko.observable(self.share.appDispNames[1].dispName)
+                        },{
+                            buttonName: ko.observable(self.share.appDispNames[2].dispName)
+                        },{
+                            buttonName: ko.observable(self.share.appDispNames[3].dispName)
+                        },{
+                            buttonName: ko.observable(self.share.appDispNames[4].dispName)
+                        },{
+                            buttonName: ko.observable(self.share.appDispNames[5].dispName)
+                        }]
+                    }
+                    
                 }
 
                 dfd.resolve();
-                return dfd.promise();
-            }
-            getData(newValue: number): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                
                 return dfd.promise();
             }
 
@@ -69,7 +71,7 @@ module nts.uk.at.view.kdp002.t {
                 let shareG = {
                 messageContent: self.labelNames(),
                 messageColor: self.labelColor(),
-                listRequired: self.buttonInfo()    };
+                listRequired: self.dataShare.listRequired    };
                 nts.uk.ui.windows.setShared('KDP010_T', shareG);
                 nts.uk.ui.windows.close();
             }

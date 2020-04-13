@@ -8,6 +8,7 @@ import lombok.Data;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.request.app.find.application.common.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -20,6 +21,7 @@ public class StampResultConfirmDto {
 	private List<AttItemName> dailyItems;
 	private List<ItemValueDto> itemValues = new ArrayList<>();
 	private List<WorkDto> workTypes = new ArrayList<>();
+	private List<WorkTimeDto> workTimeTypes = new ArrayList<>();
 	private ConfirmResultDto confirmResult;
 
 	public StampResultConfirmDto(List<DisplayScreenStampingResultDto> screenDisplays, List<AttItemName> dailyItems,
@@ -40,8 +42,8 @@ public class StampResultConfirmDto {
 		}
 
 		for (WorkTimeSetting item : workTimes) {
-			this.workTypes
-					.add(new WorkDto(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()));
+			this.workTimeTypes
+					.add(new WorkTimeDto(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()));
 		}
 
 		this.confirmResult = new ConfirmResultDto(cfsr.getEmployeeId(), cfsr.getDate().toString(), cfsr.isStatus(),
@@ -60,6 +62,13 @@ public class StampResultConfirmDto {
 	@Data
 	@AllArgsConstructor
 	class WorkDto {
+		private String code;
+		private String name;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	class WorkTimeDto {
 		private String code;
 		private String name;
 	}

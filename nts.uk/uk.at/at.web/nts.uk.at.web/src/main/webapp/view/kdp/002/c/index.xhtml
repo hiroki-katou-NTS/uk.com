@@ -34,7 +34,7 @@
 									<div id="label-b2-2"
 										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_51')}</div>
 									<!-- C2_2 -->
-									<span id="text-b2-2" data-bind="text: workTypeNames"></span>
+									<span id="text-b2-2" data-bind="text: employeeCodeName"></span>
 								</div>
 							</td>
 						</tr>
@@ -92,10 +92,11 @@
 									id="text-adt" data-bind="text: workName2"></span></th>
 							</tr>
 							<tr>
-								<th id="item-table-2" class="ui-widget-header">#{i18n.getText('KDP002_57')}</th>
-								<th id="item-table-2" class="ui-widget-header"><span
-									id="text-adt" data-bind="text: timeName1"></span> <span
-									id="text-adt" data-bind="text: timeName2"></span></th>
+								<th id="item-table-2" class="ui-widget-header">#{i18n.getText('KDP002_57')}
+
+									<span id="text-adt" data-bind="text: timeName"></span> <span
+									id="text-adt" data-bind="text: timeName"></span>
+								</th>
 							</tr>
 						</thead>
 					</table>
@@ -108,15 +109,18 @@
 								multiple: false,
 								value: currentCode
 							}"></table>
+							<div id = "text-b20">
 					<span id="text-b20-1">#{i18n.getText('KDP002_61')}</span> <span
 						id="text-b20-2" style="margin-top: 10px; margin-left: 20px">
 						#{i18n.getText('KDP002_99')}</span>
+					</div>
+					
 				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed large" tabindex="9" id="close-button"
 					data-bind="click: closeDialog">#{i18n.getText('KDP002_62')}</button>
-				<button  tabindex="9" id="close-button"
+				<button tabindex="9" id="close-button"
 					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
 			</div>
 		</ui:define>
