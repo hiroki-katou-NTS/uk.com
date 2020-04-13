@@ -17,8 +17,8 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class Closure.
@@ -84,6 +84,7 @@ public class Closure extends AggregateRoot {
 		return this.closureHistories.stream().filter(his -> his.getClosureYMD().beforeOrEquals(baseDate)).findFirst()
 				.get();
 	}
+	
 
 	/**
 	 * 指定した年月が含まれる締め変更履歴を取得する
@@ -388,4 +389,10 @@ public class Closure extends AggregateRoot {
 		YearMonth endYearMonth = closureHistory.getEndYearMonth();
 		return startYearMonth.lessThan(currentMonth) && endYearMonth.greaterThan(currentMonth);
 	}
+
+	public Closure(ClosureId closureId) {
+		super();
+		this.closureId = closureId;
+	}
+	
 }

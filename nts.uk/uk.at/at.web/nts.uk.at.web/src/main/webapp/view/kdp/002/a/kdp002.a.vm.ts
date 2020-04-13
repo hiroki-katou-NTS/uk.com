@@ -7,7 +7,7 @@ module nts.uk.at.view.kdp002.a {
             stampClock: StampClock = new StampClock();
             stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
-
+            stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             constructor() {
                 let self = this;
             }
@@ -23,6 +23,9 @@ module nts.uk.at.view.kdp002.a {
                         self.stampGrid().yearMonth.subscribe((val) => {
                            self.getTimeCardData();
                         });
+                        let stampToSuppress = res.stampToSuppress;
+                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
+                        self.stampToSuppress(stampToSuppress);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {

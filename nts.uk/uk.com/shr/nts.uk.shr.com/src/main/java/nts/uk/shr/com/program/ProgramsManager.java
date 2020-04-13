@@ -2929,13 +2929,13 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
      * KDP002
      */
 	public static final Program KDP002A = new Program(WebAppId.AT, ProgramIdConsts.KDP002A, "KDP002_1",
-			"/view/ksm/015/a/index.xhtml");
+			"/view/kdp/002/a/index.xhtml");
 	public static final Program KDP002B = new Program(WebAppId.AT, ProgramIdConsts.KDP002B, "KDP002_5",
-			"/view/ksm/015/b/index.xhtml");
+			"/view/kdp/002/b/index.xhtml");
 	public static final Program KDP002C = new Program(WebAppId.AT, ProgramIdConsts.KDP002C, "KDP002_6",
-			"/view/ksm/015/c/index.xhtml");
+			"/view/kdp/002/c/index.xhtml");
 	public static final Program KDP002T = new Program(WebAppId.AT, ProgramIdConsts.KDP002T, "KDP002_23",
-			"/view/ksm/015/t/index.xhtml");
+			"/view/kdp/002/t/index.xhtml");
 
 	
     /**

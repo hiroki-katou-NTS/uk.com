@@ -140,7 +140,7 @@ module nts.uk.at.view.kdp010 {
                 let self = this,dfd = $.Deferred();
                 service.getStampSetting().done(function(totalTimeArr) {
                     if (totalTimeArr) {
-                        self.selectedHighlight(totalTimeArr.buttonEmphasisArt);
+                        self.selectedHighlight(totalTimeArr.buttonEmphasisArt ? 1 : 0);
                         self.selectedStamping(totalTimeArr.historyDisplayMethod);
                         self.correcValue(totalTimeArr.correctionInterval);
                         self.letterColors(totalTimeArr.textColor);
