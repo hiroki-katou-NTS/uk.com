@@ -58,7 +58,11 @@
   width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 #stamp-history-tbl th {
+  text-align: center;
+}
+#time-card-list td {
   text-align: center;
 }

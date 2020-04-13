@@ -20,6 +20,9 @@ module nts.uk.at.view.kdp002.a {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res));
+                        self.stampGrid().yearMonth.subscribe((val) => {
+                           self.getTimeCardData();
+                        });
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -28,6 +31,21 @@ module nts.uk.at.view.kdp002.a {
                     });
 
                 return dfd.promise();
+            }
+
+            public getTimeCardData() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let data = {
+                    date: self.stampGrid().yearMonth() + '/15'
+                };
+                service.getTimeCardData(data).done((timeCard) => {
+                    self.stampGrid().bindItemData(timeCard.listAttendances);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
 
             public getStampData() {
@@ -55,12 +73,6 @@ module nts.uk.at.view.kdp002.a {
                 if(layout) {
                     let btnSettings = layout.buttonSettings;
                     btnSettings.forEach(btn => {
-                        // if(btn.btnPositionNo == 1) {
-                        //     btn.onClick = self.clickBtn1;
-                        // }
-                        // if(btn.btnPositionNo == 2) {
-                        //     btn.onClick = self.clickBtn2;
-                        // }
                         btn.onClick = self.clickBtn1;
                     });
                     layout.buttonSettings = btnSettings;

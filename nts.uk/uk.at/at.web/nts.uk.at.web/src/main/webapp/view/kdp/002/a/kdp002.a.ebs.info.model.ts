@@ -1,3 +1,4 @@
+const DATE_AND_DAY_FORMAT = 'D(ddd)';
 class EmbossGridInfo {
     
     columns: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -7,7 +8,7 @@ class EmbossGridInfo {
     displayType: any = {HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2};
     dateValue: KnockoutObservable<any>;
     yearMonth: KnockoutObservable<any>;
-
+    
     constructor(start: IStartPage) {
         let self = this;
         let setting = start.stampSetting;
@@ -58,8 +59,9 @@ class EmbossGridInfo {
             let idx = 1;
             items.forEach(timeCard => {
                 timeCard.code = ++idx;
-                
+                timeCard.date = moment(timeCard.date).format(DATE_AND_DAY_FORMAT);
             });
+            console.log(items);
             self.items(items);
         }
     }
