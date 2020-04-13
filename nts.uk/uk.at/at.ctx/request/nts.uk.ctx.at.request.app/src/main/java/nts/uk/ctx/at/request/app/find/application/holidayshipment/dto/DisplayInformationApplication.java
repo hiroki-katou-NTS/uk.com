@@ -6,8 +6,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @NoArgsConstructor
 public class DisplayInformationApplication {
 
-	private List<WorkType> workTypeList;
+	private List<WorkTypeDto> workTypeList;
 	
 	private Optional<WorkTypeCode> selectionWorkType;
 	

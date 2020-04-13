@@ -967,7 +967,7 @@ public class HolidayShipmentScreenAFinder {
 		//振出用勤務種類の取得(Lấy worktype của làm bù)
 		List<WorkType> workTypeForWorkingDay = this.getWorkTypeForWorkingDay(companyId, employmentCode, null);
 		
-		result.setWorkTypeList(workTypeForWorkingDay);
+		result.setWorkTypeList(workTypeForWorkingDay.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		result.setSelectionWorkType(Optional.of(workTypeForWorkingDay.get(0).getWorkTypeCode()));
 		
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
@@ -1015,30 +1015,33 @@ public class HolidayShipmentScreenAFinder {
 		// ドメインモデル「申請別対象勤務種類」を取得する
 		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		Optional<AppEmploymentSetting> empSetOpt = lstEmploymentWt.stream().filter(x -> x.getEmploymentCode().equals(employmentCode)).findFirst();
-		AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
-		List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
-		appEmploymentSetting.setListWTOAH(new ArrayList<>());
-		appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
-		if (empSetOpt.isPresent()) {
-			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
-				if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
-					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
-							.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
-									x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
-							.collect(Collectors.toList());
-					if(lstEmploymentWorkType !=null) {
-						
-						return wkTypes.stream()
-								.filter(x -> lstEmploymentWorkType.stream()
-										.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
-										.isPresent())
+		if(empSetOpt.isPresent()) {
+			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
+			appEmploymentSetting.setListWTOAH(new ArrayList<>());
+			appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
+			if (empSetOpt.isPresent()) {
+				if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+					if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+						List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
+								.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
+										x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
 								.collect(Collectors.toList());
+						if(lstEmploymentWorkType !=null) {
+							
+							return wkTypes.stream()
+									.filter(x -> lstEmploymentWorkType.stream()
+											.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+											.isPresent())
+									.collect(Collectors.toList());
+						}
+					} else {
+						return wkTypes;
 					}
-				} else {
-					return wkTypes;
 				}
+			} else {
+				return wkTypes;
 			}
-			
 		} else {
 			return wkTypes;
 		}
@@ -1052,7 +1055,7 @@ public class HolidayShipmentScreenAFinder {
 		//振休用勤務種類の取得(Lấy worktype nghỉ bù)
 		List<WorkType> workTypeForHoliday = this.getWorkTypeForHoliday(companyId, employmentCode, null);
 		
-		result.setWorkTypeList(workTypeForHoliday);
+		result.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		
 		return result;
 	}

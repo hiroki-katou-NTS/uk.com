@@ -74,7 +74,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
 			return listReturn;
 		}
-		return null;
+		return new ArrayList<>();
 				
 	}
 	public List<AppEmploymentSetting> getEmploymentSetting(String companyId){

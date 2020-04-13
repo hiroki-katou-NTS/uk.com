@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,7 +75,7 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("startPageARefactor")
 	public DisplayInforWhenStarting startPageARefactor(startPageARefactorParam param) {
-		return this.screenAFinder.startPageARefactor(AppContexts.user().companyId(), param.getSIDs(), param.getAppDate());
+		return this.screenAFinder.startPageARefactor(AppContexts.user().companyId(), Arrays.asList(AppContexts.user().employeeId()), param.getAppDate());
 	}
 
 	@POST
@@ -117,6 +119,13 @@ public class HolidayShipmentWebService extends WebService {
 	@Path("find_by_id")
 	public HolidayShipmentDto findByID(StartScreenBParam param) {
 		return this.screenBFinder.findByID(param.getAppID());
+	}
+	
+	
+	@POST
+	@Path("startPageBRefactor")
+	public DisplayInforWhenStarting startPageBRefactor(StartScreenBParam param) {
+		return this.screenBFinder.startPageBRefactor(param.getAppID());
 	}
 
 	@POST
