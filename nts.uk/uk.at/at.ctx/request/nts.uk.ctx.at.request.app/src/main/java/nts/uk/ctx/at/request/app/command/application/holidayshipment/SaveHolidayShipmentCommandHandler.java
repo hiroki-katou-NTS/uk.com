@@ -29,14 +29,17 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -174,10 +177,10 @@ public class SaveHolidayShipmentCommandHandler
 			GeneralDate recDate, GeneralDate absDate, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
-		// アルゴリズム「登録前エラーチェック（新規）」を実行する
-		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
-		//振休残数不足チェック
-		checkForlackOfRest(companyID, sID, command);
+//		// アルゴリズム「登録前エラーチェック（新規）」を実行する
+//		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
+//		//振休残数不足チェック
+//		checkForlackOfRest(companyID, sID, command);
 		if (isSaveBothApp(comType)) {
 			// アルゴリズム「振休申請・振出申請の同時登録」を実行する
 			return registerBothApp(command, companyID, sID, absDate, recDate, appReason);
@@ -193,6 +196,57 @@ public class SaveHolidayShipmentCommandHandler
 		}
 		return null;
 	}
+	
+	public List<ConfirmMsgOutput> processBeforeRegister_New(SaveHolidayShipmentCommand command){
+		
+		String companyID = AppContexts.user().companyId();
+
+		String sID = command.getAppCmd().getEmployeeID() != null ? command.getAppCmd().getEmployeeID()
+				: AppContexts.user().employeeId();// Sua ho
+		GeneralDate absDate = command.getAbsCmd().getAppDate();
+		GeneralDate recDate = command.getRecCmd().getAppDate();
+		int comType = command.getComType();
+		List<ConfirmMsgOutput> result = new ArrayList<>();
+		
+		// アルゴリズム「事前条件チェック」を実行する
+		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
+		// アルゴリズム「登録前エラーチェック（新規）」を実行する
+		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
+		//振休残数不足チェック
+		checkForlackOfRest(companyID, sID, command);
+		
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		
+		if (isSaveRec(comType)) {
+			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
+					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
+			List<ConfirmMsgOutput> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+					companyID, 
+					EmploymentRootAtr.APPLICATION, 
+					false, 
+					commonApp, 
+					null, 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					new ArrayList<>());
+			result.addAll(listConfirmMsg);
+		}
+		if (isSaveAbs(comType)) {
+			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
+					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
+			List<ConfirmMsgOutput> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+					companyID, 
+					EmploymentRootAtr.APPLICATION, 
+					false, 
+					commonApp, 
+					null, 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					new ArrayList<>());
+			result.addAll(listConfirmMsg);
+		}
+		
+		return result;
+	}
+	
 
 	private void checkForlackOfRest(String companyID, String sID, SaveHolidayShipmentCommand command) {
 		//4.社員の当月の期間を算出する

@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmen
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -100,6 +101,12 @@ public class HolidayShipmentWebService extends WebService {
 		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
 	}
 
+	@POST
+	@Path("processBeforeRegister_New")
+	public List<ConfirmMsgOutput> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
+		return saveHandler.processBeforeRegister_New(command);
+	}
+	
 	@POST
 	@Path("save")
 	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
