@@ -169,10 +169,10 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				cell.get(3, 3).setValue(employeeInfor.getCardNo());
 			}
 
-			int count = printData(rows, cell, printStyle, stampList);
+			rows = printData(rows, cell, printStyle, stampList);
 
 			if (i == totalPage && stampList.size() < 32) {
-				rows = count + 32 - stampList.size();
+				rows = rows + 32 - stampList.size();
 			}
 		}
 		return rows;
@@ -210,9 +210,9 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 					cell.get(3, 3).setValue(v.get(0).getCardNo());
 				}
 
-				int count = printData(rows.get(), cell, printStyle, v);
+				rows.set(printData(rows.get(), cell, printStyle, v));
 				if (v.size() < 32) {
-					rows.set(count + (32 - v.size()));
+					rows.set(rows.get() + (32 - v.size()));
 				}
 			} catch (Exception ex) {
 			}
