@@ -43,7 +43,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	public List<AppEmploymentSettingDto> employmentSet;
+	public AppEmploymentSettingDto employmentSet;
 	
 	/**
 	 * 就業時間帯の設定
@@ -88,8 +88,9 @@ public class AppDispInfoWithDateDto {
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
-		appDispInfoWithDateDto.employmentSet = CollectionUtil.isEmpty(appDispInfoWithDateOutput.getEmploymentSet()) ? Collections.emptyList() : 
-			appDispInfoWithDateOutput.getEmploymentSet().stream().map(x -> AppEmploymentSettingDto.fromDomain(x)).collect(Collectors.toList());
+//		appDispInfoWithDateDto.employmentSet = CollectionUtil.isEmpty(appDispInfoWithDateOutput.getEmploymentSet()) ? Collections.emptyList() : 
+//			appDispInfoWithDateOutput.getEmploymentSet().stream().map(x -> AppEmploymentSettingDto.fromDomain(x)).collect(Collectors.toList());
+		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
 		appDispInfoWithDateDto.workTimeLst = appDispInfoWithDateOutput.getWorkTimeLst().stream()
 				.map(x -> AppDispInfoWithDateDto.fromDomainWorkTime(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.listApprovalPhaseState = appDispInfoWithDateOutput.getApprovalRootState() == null ? Collections.emptyList() : 
@@ -126,7 +127,7 @@ public class AppDispInfoWithDateDto {
 	public AppDispInfoWithDateOutput toDomain() {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
-		output.setEmploymentSet(employmentSet == null ? Collections.emptyList() : employmentSet.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		output.setEmploymentSet(employmentSet.toDomain());
 		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
 		output.setApprovalRootState(new ApprovalRootStateImport_New(
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));

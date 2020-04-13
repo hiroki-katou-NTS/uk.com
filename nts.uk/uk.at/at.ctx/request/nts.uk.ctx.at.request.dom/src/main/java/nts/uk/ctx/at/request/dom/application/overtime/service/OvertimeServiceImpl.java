@@ -101,7 +101,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if (sEmpHistImport != null 
 				&& !CollectionUtil.isEmpty(appEmploymentSettings)) {
 			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
+			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get(0).getListWTOAH()) ? null : appEmploymentSettings.get(0).getListWTOAH()
+					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, x.getAppType(),
+							x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+					.collect(Collectors.toList());
 			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
 				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
 				List<String> workTypeCodes = new ArrayList<>();

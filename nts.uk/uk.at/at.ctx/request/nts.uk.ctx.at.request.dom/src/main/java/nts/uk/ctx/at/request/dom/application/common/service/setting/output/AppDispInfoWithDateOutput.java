@@ -36,7 +36,7 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	private List<AppEmploymentSetting> employmentSet;
+	private AppEmploymentSetting employmentSet;
 	
 	/**
 	 * 就業時間帯の設定

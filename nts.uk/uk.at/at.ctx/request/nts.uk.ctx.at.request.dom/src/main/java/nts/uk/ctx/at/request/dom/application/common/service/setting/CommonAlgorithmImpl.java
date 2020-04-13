@@ -143,8 +143,11 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 雇用別申請承認設定を取得する
 		List<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
-		output.setEmploymentSet(employmentSetLst);
-		
+		if(!CollectionUtil.isEmpty(employmentSetLst)) {
+			// just have 1 record
+			output.setEmploymentSet(employmentSetLst.get(0));
+		}
+	
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
 		if(mode) {

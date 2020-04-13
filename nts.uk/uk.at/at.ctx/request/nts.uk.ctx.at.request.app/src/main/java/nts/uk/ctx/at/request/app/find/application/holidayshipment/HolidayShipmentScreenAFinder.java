@@ -22,7 +22,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
@@ -63,8 +62,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -72,7 +73,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -802,23 +802,37 @@ public class HolidayShipmentScreenAFinder {
 			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
 
 		// ドメインモデル「申請別対象勤務種類」を取得する
-		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
-				.filter(x -> x.getEmploymentCode().equals(employmentCode))
-				.filter(x -> x.getHolidayOrPauseType() == breakOutType).findFirst();
-		if (empSetOpt.isPresent()) {
-			AppEmploymentSetting empSet = empSetOpt.get();
-			if (empSet.isDisplayFlag()) {
-				return wkTypes.stream()
-						.filter(x -> empSet.getLstWorkType().stream()
-								.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
-								.isPresent())
-						.collect(Collectors.toList());
-			} else {
+				Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
+						.filter(x -> x.getEmploymentCode().equals(employmentCode))
+						.findFirst();
+				AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+				List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
+				appEmploymentSetting.setListWTOAH(new ArrayList<>());
+				appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
+				if (empSetOpt.isPresent()) {
+					if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+						if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+							List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
+									.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
+											x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+									.collect(Collectors.toList());
+							if(lstEmploymentWorkType !=null) {
+								
+								return wkTypes.stream()
+										.filter(x -> lstEmploymentWorkType.stream()
+												.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+												.isPresent())
+										.collect(Collectors.toList());
+							}
+						} else {
+							return wkTypes;
+						}
+					}
+					
+				} else {
+					return wkTypes;
+				}
 				return wkTypes;
-			}
-		} else {
-			return wkTypes;
-		}
 
 	}
 
@@ -1000,21 +1014,35 @@ public class HolidayShipmentScreenAFinder {
 	public List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType, List<WorkType> wkTypes) {
 		// ドメインモデル「申請別対象勤務種類」を取得する
 		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		Optional<AppEmploymentSetting> empSetOpt = lstEmploymentWt.stream().filter(x -> x.getHolidayOrPauseType() == breakOutType).findFirst();
+		Optional<AppEmploymentSetting> empSetOpt = lstEmploymentWt.stream().filter(x -> x.getEmploymentCode().equals(employmentCode)).findFirst();
+		AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+		List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
+		appEmploymentSetting.setListWTOAH(new ArrayList<>());
+		appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
 		if (empSetOpt.isPresent()) {
-			AppEmploymentSetting empSet = empSetOpt.get();
-			if (empSet.isDisplayFlag()) {
-				return wkTypes.stream()
-						.filter(x -> empSet.getLstWorkType().stream()
-								.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
-								.isPresent())
-						.collect(Collectors.toList());
-			} else {
-				return wkTypes;
+			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+				if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
+							.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
+									x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+							.collect(Collectors.toList());
+					if(lstEmploymentWorkType !=null) {
+						
+						return wkTypes.stream()
+								.filter(x -> lstEmploymentWorkType.stream()
+										.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+										.isPresent())
+								.collect(Collectors.toList());
+					}
+				} else {
+					return wkTypes;
+				}
 			}
+			
 		} else {
 			return wkTypes;
 		}
+		return wkTypes;
 	
 	}
 

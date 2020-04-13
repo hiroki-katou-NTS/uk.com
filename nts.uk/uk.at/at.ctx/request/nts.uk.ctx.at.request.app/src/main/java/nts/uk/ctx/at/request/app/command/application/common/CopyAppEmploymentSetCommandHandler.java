@@ -25,8 +25,8 @@ public class CopyAppEmploymentSetCommandHandler extends CommandHandler<CopyAppEm
 		CopyAppEmploymentSetCommand command = context.getCommand();
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
-		List<AppEmploymentSetting> sourceData = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
-		service.copyEmploymentSetting(companyId, sourceData, command.getTargetEmploymentCodes(), command.isOveride());
+		List<AppEmploymentSetting> sourceData1 = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
+		service.copyEmploymentSettingNew(companyId, sourceData1, command.getTargetEmploymentCodes(), command.isOveride());
 	}
 
 }
