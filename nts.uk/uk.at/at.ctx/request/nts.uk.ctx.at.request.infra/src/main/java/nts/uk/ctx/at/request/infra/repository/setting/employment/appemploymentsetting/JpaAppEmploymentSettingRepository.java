@@ -39,7 +39,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	private static final String FIND;
 	static{
 		StringBuilder query = new StringBuilder();
-		query.append(FINDER_ALL);
+		query.append(FINDER_ALL); 
 		query.append(" WHERE e.krqdtAppEmployWorktypePK.cid = :companyID");
 		query.append(" AND e.krqdtAppEmployWorktypePK.employmentCode = :employmentCode");
 		query.append(" AND e.krqdtAppEmployWorktypePK.appType = :appType");
@@ -162,10 +162,9 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		List<KrqdtAppEmployWorktype> list = new ArrayList<>();
 		if (!CollectionUtil.isEmpty(domain.getListWTOAH())) {
 			domain.getListWTOAH().stream().map(x -> {
-				
-				if(!CollectionUtil.isEmpty(x.getWorkTypeList())){
-					deleteWorkType(domain.getCompanyID(), domain.getEmploymentCode(), 
-							x.getAppType().value, x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value : x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value : 9);
+				deleteWorkType(domain.getCompanyID(), domain.getEmploymentCode(), 
+						x.getAppType().value, x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value : x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value : 9);
+				if(!CollectionUtil.isEmpty(x.getWorkTypeList())){	
 					return x.getWorkTypeList().stream().map( y-> new KrqdtAppEmployWorktype(new KrqdtAppEmployWorktypePK(
 							domain.getCompanyID(),
 							domain.getEmploymentCode(),
