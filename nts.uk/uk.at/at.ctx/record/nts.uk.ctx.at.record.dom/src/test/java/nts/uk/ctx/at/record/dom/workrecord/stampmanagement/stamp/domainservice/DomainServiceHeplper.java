@@ -8,6 +8,10 @@ import java.util.Optional;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusLock;
 import nts.uk.ctx.at.record.dom.stamp.application.CheckErrorType;
 import nts.uk.ctx.at.record.dom.stamp.application.MessageContent;
 import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
@@ -165,6 +169,18 @@ public class DomainServiceHeplper {
 			));
 		return new TimeLeavingOfDailyPerformance("employeeId", new WorkTimes(1), timeLeavingWorks, GeneralDate.today());
 		
+	}
+	
+	public static SWkpHistRcImported getSWkpHistRcImportedDefault() {
+		SWkpHistRcImported data = new SWkpHistRcImported(new DatePeriod(GeneralDate.today(), GeneralDate.today()),
+				"employeeId", "workplaceId", "workplaceCode", "workplaceName", "wkpDisplayName");
+		return data;
+	}
+	public static DailyLock getDailyLockDefault() {
+		DailyLock data = new DailyLock(
+				"employeeId", GeneralDate.today(), 
+				StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK, StatusLock.LOCK);
+		return data;
 	}
 
 }
