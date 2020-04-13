@@ -4,11 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 
 /**
@@ -28,10 +31,16 @@ public class ConfirmStatusOfDayService {
 	 * @return
 	 */
 	public static ConfirmStatusActualResult get(Require require,String companyId,String employeeId,GeneralDate baseDate) {
-//		Closure closure = require.getClosureDataByEmployee(employeeId, baseDate);
-//		Optional<SWkpHistRcImported> optSWkpHistRcImported = require.findBySid( employeeId, baseDate);
-		
-		List<ConfirmStatusActualResult> data = require.processConfirmStatus(companyId, employeeId, Arrays.asList(employeeId), Optional.of(new DatePeriod(baseDate, baseDate)), Optional.empty());
+		Closure closure = require.getClosureDataByEmployee(employeeId, baseDate);
+		Optional<SWkpHistRcImported> optSWkpHistRcImported = require.findBySid( employeeId, baseDate);
+		if(!optSWkpHistRcImported.isPresent()) {
+			throw new BusinessException("Msg_427");
+		}
+		StatusActualDay statusActualDay = new StatusActualDay(employeeId, baseDate, optSWkpHistRcImported.get().getWorkplaceId(), closure.getClosureId().value);
+		DailyLock dailyLock = require.getDailyLock(statusActualDay);
+		List<ConfirmStatusActualResult> data = require.processConfirmStatus(companyId, employeeId,
+				Arrays.asList(employeeId), Optional.of(new DatePeriod(baseDate, baseDate)), Optional.empty(),
+				Optional.of(dailyLock));
 		if(data.isEmpty()) {
 			return new ConfirmStatusActualResult();
 		}
@@ -57,6 +66,13 @@ public class ConfirmStatusOfDayService {
 		Optional<SWkpHistRcImported> findBySid(String employeeId, GeneralDate baseDate);
 		
 		/**
+		 * [R-3] 日の実績の状況を取得する   IGetDailyLock
+		 * @param satusActual
+		 * @return
+		 */
+		DailyLock getDailyLock(StatusActualDay satusActual);
+		
+		/**
 		 * [R-4] 日の実績の確認状況を取得する   ConfirmStatusActualDayChange
 		 * @param companyId
 		 * @param empTarget
@@ -65,7 +81,8 @@ public class ConfirmStatusOfDayService {
 		 * @param yearMonthOpt
 		 * @return
 		 */
-		List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
-				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt);
+		public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
+				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt,
+				Optional<DailyLock> dailyLockOpt);
 	}
 }
