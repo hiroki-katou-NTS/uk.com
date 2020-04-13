@@ -264,8 +264,14 @@ public class OutputScreenListOfStampFinder {
 				
 				val workTimeCode = refActualResults.getWorkTimeCode();
 				if (workTimeCode.isPresent()) {
-					workTimeDisplayName = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
-															 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst().get();
+
+					val workTimeDisplayNameCheck = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
+														 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst();
+					if(workTimeDisplayNameCheck.isPresent()){
+						workTimeDisplayName = workTimeDisplayNameCheck.get();
+					}
+					
+
 				}
 				
 				val overtimeDeclaration = refActualResults.getOvertimeDeclaration();
