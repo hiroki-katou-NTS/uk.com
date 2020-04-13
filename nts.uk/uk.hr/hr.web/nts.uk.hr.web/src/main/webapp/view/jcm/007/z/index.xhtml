@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment
+					nts.uk.ctx.hr.shared.dom.primitiveValue.String_Any_400
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="jcm007.z.style.css" />
@@ -51,7 +52,7 @@
 							<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('JCM007_B221_1_1')}
 							</div>
 							<div
-								data-bind="ntsCheckBox: { checked: currentEmployee().approveSendMailFlg , enable : true  }">#{i18n.getText('JCM007_B221_1_2')}</div>
+								data-bind="ntsCheckBox: { checked: currentEmployee().approveSendMailFlg , enable : checkboxAndCommentEnabled  }">#{i18n.getText('JCM007_B221_1_2')}</div>
 						</div>
 						<div class="div_line">
 							<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('JCM007_B221_1_3')}
@@ -66,7 +67,8 @@
 										resizeable: false,
 										width: '325px',
 									},
-									enable : true ,
+									enable : checkboxAndCommentEnabled ,
+									constraint: 'String_Any_400',
 									readonly: false}" />
 							</div>
 						</div>

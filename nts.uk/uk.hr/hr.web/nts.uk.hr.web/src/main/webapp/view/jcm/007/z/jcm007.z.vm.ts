@@ -73,6 +73,11 @@ module jcm007.z {
 
                 $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', dataSource);
                 //đoạn này set selected ID
+                
+                 //đang không selected vào item nào thì return luôn
+                if(!self.currentEmployee().hisId){
+                    return;
+                }
                 //nếu item selected cũ không còn trong list thì mới phải set lại selected ID , không thì thôi
                 if (!_.find(dataSource, ['historyId', self.currentEmployee().hisId])) {
 
