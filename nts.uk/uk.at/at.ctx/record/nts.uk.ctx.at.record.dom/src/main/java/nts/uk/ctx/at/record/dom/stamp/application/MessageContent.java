@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author phongtq
  *
  */
-@StringMaxLength(200)
+@StringMaxLength(100)
 public class MessageContent extends StringPrimitiveValue<MessageContent>{
 	
 	private static final long serialVersionUID = 1L;

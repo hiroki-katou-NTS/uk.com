@@ -76,6 +76,15 @@ interface IStartPage {
     timeCard: ITimeCard;
     stampSetting: IStampSettingPerson;
     stampDataOfEmployees: IStampHistoryInfo;
+    stampToSuppress: IStampToSuppress;
+}
+
+interface IStampToSuppress {
+    isUse: boolean;
+    goingToWork: boolean;
+    departure: boolean;
+    goOut: boolean;
+    turnBack: boolean;
 }
 
 interface ITimeCard {
