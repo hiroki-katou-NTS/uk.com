@@ -21,6 +21,9 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.IGetDailyLock;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -66,6 +69,9 @@ public class StampResultConfirmationQuery {
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 	
+	@Inject
+	private IGetDailyLock iGetDailyLock;
+	
 	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
 		String cid = AppContexts.user().companyId();
 		String authorityId = AppContexts.user().roles().forAttendance();
@@ -75,7 +81,7 @@ public class StampResultConfirmationQuery {
 		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
 		
 		// 2
-		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange);
+		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange, iGetDailyLock);
 		ConfirmStatusActualResult confirmStatusAcResults = ConfirmStatusOfDayService.get(required, cid, sid, GeneralDateTime.now().toDate());
 		
 		List<AttItemName> getDailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
@@ -113,6 +119,9 @@ public class StampResultConfirmationQuery {
 		@Inject
 		private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 		
+		@Inject
+		private IGetDailyLock iGetDailyLock;
+		
 		@Override
 		public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
 			return closereSv.getClosureDataByEmployee(employeeId, baseDate);
@@ -124,9 +133,15 @@ public class StampResultConfirmationQuery {
 		}
 
 		@Override
+		public DailyLock getDailyLock(StatusActualDay satusActual) {
+			return iGetDailyLock.getDailyLock(satusActual);
+		}
+
+		@Override
 		public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
-				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt) {
-			return confirmStatusActualDayChange.processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt);
+				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt,
+				Optional<DailyLock> dailyLockOpt) {
+			return confirmStatusActualDayChange.processConfirmStatus(companyId, empTarget, employeeIds, periodOpt, yearMonthOpt, dailyLockOpt);
 		}
 		
 	}

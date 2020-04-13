@@ -14,11 +14,14 @@ import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personal
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personalengraving.RegisterStampDataResult;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDataRequest;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeTimeCardRequest;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.GetOmissionContentsFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSettingsEmbossFinder;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.TimeCardFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.TimeCardDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/record/stamp/management/personal")
@@ -36,6 +39,9 @@ public class StampPersonalEngravingWs extends WebService {
 	
 	@Inject
 	private EmployeeStampDatasFinder employeeStampDatasFinder;
+	
+	@Inject
+	private TimeCardFinder timeCardFinder;
 	
 	@POST
 	@Path("startPage")
@@ -59,6 +65,12 @@ public class StampPersonalEngravingWs extends WebService {
 	@Path("stamp/getStampData")
 	public List<StampRecordDto> getStampData(EmployeeStampDataRequest request) {
 		return this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
+	}
+	
+	@POST
+	@Path("stamp/getTimeCard")
+	public TimeCardDto getTimeCard(EmployeeTimeCardRequest request) {
+		return this.timeCardFinder.getTimeCard(AppContexts.user().employeeId(), request.toDatePeriod());
 	}
 	
 }

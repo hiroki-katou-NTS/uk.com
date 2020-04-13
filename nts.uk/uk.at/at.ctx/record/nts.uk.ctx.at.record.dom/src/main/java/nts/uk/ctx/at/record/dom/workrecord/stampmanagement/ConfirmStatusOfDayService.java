@@ -81,7 +81,7 @@ public class ConfirmStatusOfDayService {
 		 * @param yearMonthOpt
 		 * @return
 		 */
-		public List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
+		List<ConfirmStatusActualResult> processConfirmStatus(String companyId, String empTarget,
 				List<String> employeeIds, Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt,
 				Optional<DailyLock> dailyLockOpt);
 	}

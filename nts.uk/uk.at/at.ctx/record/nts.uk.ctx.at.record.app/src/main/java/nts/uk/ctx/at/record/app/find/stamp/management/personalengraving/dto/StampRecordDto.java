@@ -107,7 +107,7 @@ public class StampRecordDto {
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
-			this.timeStampType = getCorectTtimeStampType();
+			this.timeStampType = this.changeClockArtName;
 		}
 	}
 

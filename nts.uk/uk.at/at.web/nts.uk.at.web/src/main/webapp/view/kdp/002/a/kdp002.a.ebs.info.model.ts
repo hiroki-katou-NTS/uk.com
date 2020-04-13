@@ -55,7 +55,12 @@ class EmbossGridInfo {
 
             self.items(items);
         } else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
-
+            let idx = 1;
+            items.forEach(timeCard => {
+                timeCard.code = ++idx;
+                
+            });
+            self.items(items);
         }
     }
 
@@ -74,10 +79,10 @@ interface ITimeCard {
 
 interface IAttendanceOneDay {
     date: string;
-    attendance1: ITimeActualStamp;
-    leavingStamp1: ITimeActualStamp;
-    attendance2: ITimeActualStamp;
-    leavingStamp2: ITimeActualStamp;
+    workIn1: string;
+    workOut1: string;
+    workIn2: string;
+    workOut2: string;
 }
 
 interface ITimeActualStamp {
