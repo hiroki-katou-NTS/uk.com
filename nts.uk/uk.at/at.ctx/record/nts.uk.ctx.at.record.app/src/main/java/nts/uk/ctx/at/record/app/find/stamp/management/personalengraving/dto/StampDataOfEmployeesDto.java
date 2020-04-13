@@ -31,12 +31,14 @@ public class StampDataOfEmployeesDto {
 				 .stream()
 				 .filter(distinctByKey(s -> s.retriveKey()))
 				 .collect(Collectors.toMap(Stamp::retriveKey, s -> s));
-
-		for(StampRecord stampRecord : domain.getListStampRecord()) {
+		
+		List<StampRecord> stampRecords = domain.getListStampRecord();
+		stampRecords.sort((d1, d2) -> d2.getStampDateTime().compareTo(d1.getStampDateTime()));
+		for(StampRecord stampRecord : stampRecords) {
 			Stamp stamp = cardNumberStamp.get(stampRecord.retriveKey());
 			this.stampRecords.add(new StampRecordDto(stampRecord, stamp));
 		}
-				
+		
 	}
 	
 	public static <T> Predicate<T> distinctByKey(

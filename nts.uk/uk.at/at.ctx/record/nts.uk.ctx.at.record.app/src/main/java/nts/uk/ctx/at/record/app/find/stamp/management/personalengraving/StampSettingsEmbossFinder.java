@@ -118,13 +118,16 @@ public class StampSettingsEmbossFinder {
 		List<StampDataOfEmployees> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
 				stampDakokuRepo);
-		for (GeneralDate date : period.datesBetween()) {
+		List<GeneralDate> betweens = period.datesBetween();
+		betweens.sort((d1, d2) -> d2.compareTo(d1));
+		for (GeneralDate date : betweens) {
 			Optional<StampDataOfEmployees> employeeStampData = GetEmpStampDataService.get(empStampDataR, employeeId,
 					date);
 			if (employeeStampData.isPresent()) {
 				employeeStampDatas.add(employeeStampData.get());
 			}
 		}
+		
 		return employeeStampDatas;
 	}
 	

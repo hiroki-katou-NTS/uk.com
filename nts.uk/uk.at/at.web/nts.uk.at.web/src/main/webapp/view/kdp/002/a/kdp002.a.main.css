@@ -51,3 +51,14 @@
   display: inline-block;
   width: 30px;
 }
+.ui-widget.ui-tabs > .ui-tabs-nav > li {
+  max-width: 101px;
+}
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+  width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#stamp-history-tbl th {
+  text-align: center;
+}
