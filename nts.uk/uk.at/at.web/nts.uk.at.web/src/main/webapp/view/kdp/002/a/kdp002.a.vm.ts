@@ -8,6 +8,7 @@ module nts.uk.at.view.kdp002.a {
             stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
+            stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
             constructor() {
                 let self = this;
             }
@@ -26,6 +27,7 @@ module nts.uk.at.view.kdp002.a {
                         let stampToSuppress = res.stampToSuppress;
                         stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
                         self.stampToSuppress(stampToSuppress);
+                        self.stampResultDisplay(res.stampResultDisplay);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -98,13 +100,29 @@ module nts.uk.at.view.kdp002.a {
                     changeCalArt: button.changeCalArt
                 };
                 service.stampInput(data).done((res) => {
-                    nts.uk.ui.windows.setShared("resultDisplayTime",  vm().stampSetting().resultDisplayTime);
-                    nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-                    
-                        vm().getStampData();
-                    }); 
+                    if(vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+                        vm.openScreenC();
+                    } else {
+                        vm.openScreenB();
+                    }
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                });
+            }
+
+            public openScreenB() {
+                let self = this;
+                nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+                    self.getStampData();
+                }); 
+            }
+
+            public openScreenC() {
+                let self = this;
+                nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+                    self.getStampData();
                 });
             }
         

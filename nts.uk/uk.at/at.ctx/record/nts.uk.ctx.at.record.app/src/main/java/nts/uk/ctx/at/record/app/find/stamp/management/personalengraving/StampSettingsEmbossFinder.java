@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -82,7 +83,7 @@ public class StampSettingsEmbossFinder {
 		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
 		
 		if(!isAvailable) {
-			throw new BusinessException("Msg_1645");
+			throw new BusinessException("Msg_1619");
 		}
 		
 		// 1
@@ -93,7 +94,7 @@ public class StampSettingsEmbossFinder {
 		}
 		
 		if(CollectionUtil.isEmpty(stampSetting.get().getLstStampPageLayout()) ) {
-			throw new BusinessException("Msg_1644");
+			throw new BusinessException( I18NText.getText("Msg_1645", I18NText.getText("KDP002_1")));
 		}
 		
 		List<StampCard> stampCards = stampCardRepo.getListStampCard(employeeId);

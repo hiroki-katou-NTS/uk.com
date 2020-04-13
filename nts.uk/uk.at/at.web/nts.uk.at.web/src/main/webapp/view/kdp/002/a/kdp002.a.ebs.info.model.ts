@@ -77,6 +77,14 @@ interface IStartPage {
     stampSetting: IStampSettingPerson;
     stampDataOfEmployees: IStampHistoryInfo;
     stampToSuppress: IStampToSuppress;
+    stampResultDisplay: IStampResultDisplay;
+
+}
+
+interface IStampResultDisplay {
+    companyId: string;
+    notUseAttr: number;
+    displayItemId: Array<number>;
 }
 
 interface IStampToSuppress {
