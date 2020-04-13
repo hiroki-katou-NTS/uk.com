@@ -4,7 +4,7 @@ module nts.uk.at.view.kdp002.c.service {
         getStampSetting: "at/record/stamp/management/getStampSetting",
         getStampPage: "at/record/stamp/management/getStampPage",
         deleteStampPage: "at/record/stamp/management/delete",
-        getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
+        getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
     }
 
     export function startScreen(data: any): JQueryPromise<any> {
@@ -16,7 +16,7 @@ module nts.uk.at.view.kdp002.c.service {
     }
     
     export function deleteStampPage(command: any) {
-       urn nts.uk.request.ajax("at", paths.deleteStampPage, command);
+       return nts.uk.request.ajax("at", paths.deleteStampPage, command);
     }
 
     export function getStampPage(pageNo : number): JQueryPromise<any> {

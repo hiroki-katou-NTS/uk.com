@@ -3,21 +3,25 @@ module nts.uk.at.view.kdp002.c {
         export class ScreenModel {
 
             // B2_2
-            employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
+            employeeCodeName: KnockoutObservable<string> = ko.observable("");
             // B3_2
-            dayName: KnockoutObservable<string> = ko.observable("基本給");
+            dayName: KnockoutObservable<string> = ko.observable("");
             // B3_3
-            timeName: KnockoutObservable<string> = ko.observable("基本給");
+            timeName: KnockoutObservable<string> = ko.observable("");
             // G4_2
-            checkHandName: KnockoutObservable<string> = ko.observable("基本給");
+            checkHandName: KnockoutObservable<string> = ko.observable("");
             // G5_2
-            numberName: KnockoutObservable<string> = ko.observable("基本給");
+            numberName: KnockoutObservable<string> = ko.observable("");
             // G6_2
-            laceName: KnockoutObservable<string> = ko.observable("基本給");
+            laceName: KnockoutObservable<string> = ko.observable("");
 
-            workName1: KnockoutObservable<string> = ko.observable("基本給");
+            workName1: KnockoutObservable<string> = ko.observable("");
 
-            workName2: KnockoutObservable<string> = ko.observable("基本給");
+            workName2: KnockoutObservable<string> = ko.observable("");
+            
+            timeName1: KnockoutObservable<string> = ko.observable("");
+            
+            timeName2: KnockoutObservable<string> = ko.observable("");
 
 
             items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
@@ -47,17 +51,27 @@ module nts.uk.at.view.kdp002.c {
                     stampDate: moment().format("YYYY/MM/DD"),
                     attendanceItems: itemIds
                 }
-
+                self.getEmpInfo();
+        
                 service.startScreen(data).done((res) => {
                     console.log(res);
                     if (res) {
-                        self.dayName(res.stampRecords[0].stampDate);
-                        self.timeName(res.stampRecords[0].stampTime);
-                        self.checkHandName();
+                        let dateDisplay =res.stampRecords[0].stampDate;
+                        let sizeRecord = res.stampRecords.length;
+                        if (moment(res.stampRecords[0].stampDate).day() == 6) {
+                            dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
+                        } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
+                            dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
+                        }
+                        self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
                         self.numberName();
                         self.laceName();
-                        self.workName1(res.workTypes[0].name);
-                        self.workName2(res.workTimeTypes[0].name);
+                        self.dayName(res.workTypes.length > 0 ? res.workTypes[0].name : '');
+                        self.timeName(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name: '');
+                        self.timeName1(res.stampRecords.length > 0 ? res.stampRecords[sizeRecord - 1].stampTime : '');
+                        self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
+                        self.workName1(res.stampRecords.length > 0 ? res.stampRecords[0].stampArtName : '');
+                        self.workName2(res.stampRecords.length > 0 ? res.stampRecords[0].changeClockArtName : '');
                     }
                 });
 

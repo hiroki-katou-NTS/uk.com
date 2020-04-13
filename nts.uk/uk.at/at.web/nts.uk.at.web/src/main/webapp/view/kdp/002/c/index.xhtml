@@ -46,9 +46,9 @@
 										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_52')}
 									</div>
 									<!-- B3_2 -->
-									<span id="label-b3-2" data-bind="text: dayName"></span>
+									<span id="label-b3-2" data-bind="html: dayName"></span>
 									<!-- B3_3 -->
-									<span id="text-b3-3" data-bind="text: timeName"></span>
+									<span id="text-b3-3" style="font-size: 15px;font-weight: bold;" data-bind="text: timeName"></span>
 								</div>
 							</td>
 
@@ -60,7 +60,7 @@
 									<div id="label-b3-1"
 										data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_53')}</div>
 									<!-- B4_2 -->
-									<span id="text-b4-2" data-bind="text: checkHandName"></span>
+									<span id="text-b4-2" style="color:#0033cc; font-size: 15px;" data-bind="text: checkHandName"></span>
 								</div>
 
 							</td>
@@ -93,11 +93,11 @@
 							</tr>
 							<tr>
 								<th id="item-table-2" class="ui-widget-header">#{i18n.getText('KDP002_57')}
-
-									<span id="text-adt" data-bind="text: timeName"></span> <span
-									id="text-adt" data-bind="text: timeName"></span>
+								<span id="text-adt" data-bind="text: timeName1"></span> <span
+									id="text-adt" data-bind="text: timeName2"></span>
 								</th>
 							</tr>
+							
 						</thead>
 					</table>
 					<table id="single-list"

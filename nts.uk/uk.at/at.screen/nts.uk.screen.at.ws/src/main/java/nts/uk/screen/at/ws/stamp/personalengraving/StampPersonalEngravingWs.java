@@ -29,6 +29,13 @@ public class StampPersonalEngravingWs {
 	public StampResultConfirmDto startScreen(StampResultConfirmRequest param) throws InterruptedException {
 		return stampResultConfirmationQuery.getStampResultConfirm(param);
 	}
+//	@POST
+//	@Path("startCScreen")
+//	public StampResultConfirmDto startScreen(List<Integer> attendanceItems) throws InterruptedException {
+//		StampResultConfirmRequest param = new StampResultConfirmRequest(GeneralDate.today().toString(), attendanceItems);
+//		return stampResultConfirmationQuery.getStampResultConfirm(param);
+//		
+//	}
 	
 	@POST
 	@Path("registerDailyIdentify")
