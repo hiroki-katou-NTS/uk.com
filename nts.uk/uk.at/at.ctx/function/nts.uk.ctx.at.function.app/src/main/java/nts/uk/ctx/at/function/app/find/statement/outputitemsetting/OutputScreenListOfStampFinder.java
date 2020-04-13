@@ -146,28 +146,33 @@ public class OutputScreenListOfStampFinder {
 			
 			// StampInfoDisp
 			for (val stampInfoDisp : item.getListStampInfoDisp()) {
+				if (!stampInfoDisp.getStamp().isPresent()) continue;
+				val stamp = stampInfoDisp.getStamp().get();
+				
+				String local = "";
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
-				val workLocationCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkLocationCD().get();
+				val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
 				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
 				
 				// Local Infor
-				val localInfor = (optWorkLocation.isPresent()) ? optWorkLocation.get().getLatitude().v() + " " + optWorkLocation.get().getLongitude().v() : "";
-				val localInforStamp = stampInfoDisp.getStamp().isPresent() ? stampInfoDisp.getStamp().get() : null;
-				 val localInfo = localInforStamp.getLocationInfor().isPresent() ? localInforStamp.getLocationInfor() : null;
-				 val localInfoS = localInfo.isPresent() ? localInfo.get() : null;
-				  val local = localInfoS.getPositionInfor().getLatitude() + " " + localInfoS.getPositionInfor().getLongitude();
+				val optLocalInfo = stamp.getLocationInfor();
+				if(optLocalInfo.isPresent()){
+					 val localInfo = optLocalInfo.get();
+					 local = localInfo.getPositionInfor().getLatitude() + " " + localInfo.getPositionInfor().getLongitude();
+				 }
+				
 				 
 				// Support Card
-				val optSupportCard = stampInfoDisp.getStamp().get().getRefActualResults().getCardNumberSupport();
+				val optSupportCard = stamp.getRefActualResults().getCardNumberSupport();
 				
 				// WorkTime Name
-				val optWorkTimeCode = stampInfoDisp.getStamp().get().getRefActualResults().getWorkTimeCode();
+				val optWorkTimeCode = stamp.getRefActualResults().getWorkTimeCode();
 				val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
 				val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
 				
 				// Overtime Hour & Late Night Time
-				val optOvertimeDeclaration = stampInfoDisp.getStamp().get().getRefActualResults().getOvertimeDeclaration();			
+				val optOvertimeDeclaration = stamp.getRefActualResults().getOvertimeDeclaration();			
 				val overtimeHours = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverTime().v() : 0;
 				val lateNightTime = (optOvertimeDeclaration.isPresent()) ? optOvertimeDeclaration.get().getOverLateNightTime().v() : 0;
 				
@@ -178,8 +183,8 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setEmployeeName((empInfo != null) ? empInfo.getBusinessName() : "");
 				employeEngravingInfor.setDateAndTime(stampInfoDisp.getStampDatetime().toString());
 				employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
-				employeEngravingInfor.setStampMeans(stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name);
-				employeEngravingInfor.setAuthcMethod(stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name);
+				employeEngravingInfor.setStampMeans(stamp.getRelieve().getStampMeans().name);
+				employeEngravingInfor.setAuthcMethod(stamp.getRelieve().getAuthcMethod().name);
 				employeEngravingInfor.setInstallPlace(workLocationName);
 				employeEngravingInfor.setLocalInfor(local);
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
