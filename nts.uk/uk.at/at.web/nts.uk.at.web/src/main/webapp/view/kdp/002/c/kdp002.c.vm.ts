@@ -48,7 +48,7 @@ module nts.uk.at.view.kdp002.c {
                     dfd = $.Deferred();
                 let itemIds = nts.uk.ui.windows.getShared("KDP010_2C");
                 let data = {
-                    stampDate: moment().format("YYYY/MM/DD"),
+                    //stampDate: moment().format("YYYY/MM/DD"),
                     attendanceItems: itemIds
                 }
                 self.getEmpInfo();
