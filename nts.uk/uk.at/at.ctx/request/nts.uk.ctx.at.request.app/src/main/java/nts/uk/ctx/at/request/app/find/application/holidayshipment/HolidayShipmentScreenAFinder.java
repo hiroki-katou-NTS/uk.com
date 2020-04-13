@@ -25,8 +25,10 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInformationApplication;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.RemainingHolidayInfor;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTypeKAF011;
@@ -49,6 +51,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
@@ -57,8 +61,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -67,6 +73,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -150,6 +157,9 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private AppAbsenceFinder appAbsenceFinder;
+	
+	@Inject 
+	private AppEmploymentSettingRepository appEmploymentSetting;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -276,6 +286,76 @@ public class HolidayShipmentScreenAFinder {
 		return getWkTimeInfoInitValue(companyID, workTypeCD, wkTimeCD);
 
 	}
+	
+	public DisplayInforWhenStarting changeWorkingDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
+		
+		String companyId = AppContexts.user().companyId();
+		//基準申請日の決定
+		GeneralDate referenceDate = this.DetRefDate(workingDate, holidayDate);
+		
+		List<GeneralDate> listTagetDate = new ArrayList<>();
+		listTagetDate.add(workingDate);
+		listTagetDate.add(holidayDate);
+		
+		//申請日を変更する(Thay đổi Applicationdate)
+		AppDispInfoWithDateOutput AppDateProcess = commonAlgorithm.changeAppDateProcess(
+				companyId, 
+				listTagetDate, 
+				referenceDate, 
+				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, 
+				displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(), 
+				displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
+		//「振休振出申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」 
+		displayInforWhenStarting.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(AppDateProcess);
+		//INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする 
+		if(displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.APP_DATE) {
+			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
+			DisplayInformationApplication applicationForWorkingDay = this.applicationForWorkingDay(
+					companyId,
+					displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
+					displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(),
+					displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
+					displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getWorkTimeLst()
+					);
+			//「振休振出申請起動時の表示情報」．振出申請起動時の表示情報=上記取得した「振出申請起動時の表示情報」
+			displayInforWhenStarting.setApplicationForWorkingDay(applicationForWorkingDay);
+		}
+		return displayInforWhenStarting;
+	}
+	
+	public DisplayInforWhenStarting changeHolidayDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
+		
+		String companyId = AppContexts.user().companyId();
+		//基準申請日の決定
+		GeneralDate referenceDate = this.DetRefDate(workingDate, holidayDate);
+		
+		List<GeneralDate> listTagetDate = new ArrayList<>();
+		listTagetDate.add(workingDate);
+		listTagetDate.add(holidayDate);
+		
+		//申請日を変更する(Thay đổi Applicationdate)
+		AppDispInfoWithDateOutput AppDateProcess = commonAlgorithm.changeAppDateProcess(
+				companyId, 
+				listTagetDate, 
+				referenceDate, 
+				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, 
+				displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(), 
+				displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
+		//「振休振出申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」 
+		displayInforWhenStarting.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(AppDateProcess);
+		//INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする 
+		if(displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.APP_DATE) {
+			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
+			DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(
+					companyId,
+					displayInforWhenStarting.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode()
+					);
+			//「振休振出申請起動時の表示情報」．振休申請起動時の表示情報=上記取得した「振休申請起動時の表示情報」
+			displayInforWhenStarting.setApplicationForHoliday(applicationForHoliday);
+		}
+		return displayInforWhenStarting;
+	}
+	
 
 	public HolidayShipmentDto changeAppDate(GeneralDate recDate, GeneralDate absDate, int comType, int uiType) {
 		
@@ -838,34 +918,40 @@ public class HolidayShipmentScreenAFinder {
 	}
 	
 	// Refactor Code KAF011
-	public void startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
-		
+	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
+		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
+		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		
 		//振休管理チェック (Check quản lý nghỉ bù)
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
 		
 		//1.振出申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application làm bù (New )(có liên quan application ngày đối tượng )
-		DisplayInformationApplication applicationForWithdrawal = this.applicationForWithdrawal(
-				companyId,
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(),
-				null,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst()
-				);
+		DisplayInformationApplication applicationForWorkingDay = this.applicationForWorkingDay(
+																		companyId,
+																		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
+																		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(),
+																		null,
+																		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst()
+																		);
+		result.setApplicationForWorkingDay(applicationForWorkingDay);
 		
 		//1.振休申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application nghỉ bù (New )(có liên quan application ngày đối tượng )
-		
+		DisplayInformationApplication applicationForHoliday = this.applicationForHoliday(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+		result.setApplicationForHoliday(applicationForHoliday);
 		
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
-		
+		AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(lstEmployee.get(0), GeneralDate.today());
 		
 		//一番近い期限日を取得する
+		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain, null));
+		
+		return result;
 	}
 	
 	//1.振出申請（新規）起動処理(申請対象日関係あり)
-	public DisplayInformationApplication applicationForWithdrawal(String companyId, String employeeId, GeneralDate baseDate, String employmentCode, List<WorkTimeSetting> workTimeLst) {
+	public DisplayInformationApplication applicationForWorkingDay(String companyId, String employeeId, GeneralDate baseDate, String employmentCode, List<WorkTimeSetting> workTimeLst) {
 	
 		DisplayInformationApplication result = new DisplayInformationApplication();
 		
@@ -879,27 +965,120 @@ public class HolidayShipmentScreenAFinder {
 		}
 		
 		//振出用勤務種類の取得(Lấy worktype của làm bù)
+		List<WorkType> workTypeForWorkingDay = this.getWorkTypeForWorkingDay(companyId, employmentCode, null);
 		
-		
+		result.setWorkTypeList(workTypeForWorkingDay);
+		result.setSelectionWorkType(Optional.of(workTypeForWorkingDay.get(0).getWorkTypeCode()));
 		
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType().get().v(), result.getSelectionWorkTime().get().v());
-		result.setStartTime(Optional.of(prescribedTimezoneSetting.getLstTimezone().get(0).getStart()));
-		result.setEndTime(Optional.of(prescribedTimezoneSetting.getLstTimezone().get(0).getEnd()));
-		
+		for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
+			if(time.getWorkNo() == 1) {
+				result.setStartTime(Optional.of(time.getStart()));
+				result.setEndTime(Optional.of(time.getEnd()));
+			}
+			if(time.getWorkNo() == 2) {
+				result.setStartTime2(Optional.of(time.getStart()));
+				result.setEndTime2(Optional.of(time.getEnd()));
+			}
+		}
 		return result;
+	}
+	
+	//振出用勤務種類の取得
+	public List<WorkType> getWorkTypeForWorkingDay(String companyId, String employmentCode, String wkTypeCD) {
+		List<WorkType> result = wkTypeRepo.findWorkTypeForShorting(companyId);
+		
+		// アルゴリズム「対象勤務種類の抽出」を実行する
+		List<WorkType> outputWkTypes = this.extractTargetWkTypes(companyId, employmentCode, BreakOutType.WORKING_DAY.value, result);
+
+		boolean isWkTypeCDNotNullOrEmpty = !StringUtils.isEmpty(wkTypeCD);
+		if (isWkTypeCDNotNullOrEmpty ) {
+			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
+			ApplyWorkTypeOutput applyWorkType = commonAlgorithm.appliedWorkType(companyId, outputWkTypes, wkTypeCD);
+			outputWkTypes = applyWorkType.getWkTypes();
+		}
+		// sort by CD
+		List<WorkType> disOrderList = outputWkTypes.stream().filter(w -> w.getDispOrder() != null)
+				.sorted(Comparator.comparing(WorkType::getDispOrder)).collect(Collectors.toList());
+
+		List<WorkType> wkTypeCDList = outputWkTypes.stream().filter(w -> w.getDispOrder() == null)
+				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
+
+		disOrderList.addAll(wkTypeCDList);
+		return result;
+
+	}
+
+	//アルゴリズム「対象勤務種類の抽出」を実行する(Thực hiện thuật toán [trích xuất worktype])
+	public List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType, List<WorkType> wkTypes) {
+		// ドメインモデル「申請別対象勤務種類」を取得する
+		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+		Optional<AppEmploymentSetting> empSetOpt = lstEmploymentWt.stream().filter(x -> x.getEmploymentCode().equals(employmentCode)).findFirst();
+		AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+		List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
+		appEmploymentSetting.setListWTOAH(new ArrayList<>());
+		appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
+		if (empSetOpt.isPresent()) {
+			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+				if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
+							.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
+									x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+							.collect(Collectors.toList());
+					if(lstEmploymentWorkType !=null) {
+						
+						return wkTypes.stream()
+								.filter(x -> lstEmploymentWorkType.stream()
+										.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+										.isPresent())
+								.collect(Collectors.toList());
+					}
+				} else {
+					return wkTypes;
+				}
+			}
+			
+		} else {
+			return wkTypes;
+		}
+		return wkTypes;
+	
 	}
 
 	//1.振休申請（新規）起動処理(申請対象日関係あり)
-	public DisplayInformationApplication applicationForHoliday() {
+	public DisplayInformationApplication applicationForHoliday(String companyId, String employmentCode) {
 		DisplayInformationApplication result = new DisplayInformationApplication();
+		//振休用勤務種類の取得(Lấy worktype nghỉ bù)
+		List<WorkType> workTypeForHoliday = this.getWorkTypeForHoliday(companyId, employmentCode, null);
+		
+		result.setWorkTypeList(workTypeForHoliday);
+		
 		return result;
 	}
 	
-	
-	
-	
-	
-	
-	
+	//振出用勤務種類の取得
+	public List<WorkType> getWorkTypeForHoliday(String companyId, String employmentCode, String wkTypeCD) {
+		List<WorkType> result = wkTypeRepo.findWorkTypeForPause(companyId);
+		
+		// アルゴリズム「対象勤務種類の抽出」を実行する
+		List<WorkType> outputWkTypes = this.extractTargetWkTypes(companyId, employmentCode, BreakOutType.HOLIDAY.value, result);
+
+		boolean isWkTypeCDNotNullOrEmpty = !StringUtils.isEmpty(wkTypeCD);
+		if (isWkTypeCDNotNullOrEmpty ) {
+			// アルゴリズム「申請済み勤務種類の存在判定と取得」を実行する
+			ApplyWorkTypeOutput applyWorkType = commonAlgorithm.appliedWorkType(companyId, outputWkTypes, wkTypeCD);
+			outputWkTypes = applyWorkType.getWkTypes();
+		}
+		// sort by CD
+		List<WorkType> disOrderList = outputWkTypes.stream().filter(w -> w.getDispOrder() != null)
+				.sorted(Comparator.comparing(WorkType::getDispOrder)).collect(Collectors.toList());
+
+		List<WorkType> wkTypeCDList = outputWkTypes.stream().filter(w -> w.getDispOrder() == null)
+				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
+
+		disOrderList.addAll(wkTypeCDList);
+		return result;
+
+	}
 }
