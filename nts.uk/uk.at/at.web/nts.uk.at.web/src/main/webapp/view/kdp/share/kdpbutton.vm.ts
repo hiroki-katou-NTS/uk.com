@@ -3,7 +3,7 @@ module nts.uk.at.view.kdp.share {
         LARGE_2_SMALL_4: 0,
         SMALL_8:1
     }
-    const DEFAULT_GRAY = '#999999';
+    const DEFAULT_GRAY = '#E8E9EB';
     export class StampButtonLayOut {
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number> = ko.observable(0);
@@ -34,7 +34,7 @@ module nts.uk.at.view.kdp.share {
                 let btnBackGroundColor = btn ? btn.btnBackGroundColor : '';
                 // let btnTextColor = btn ? btn.btnTextColor : '';
                 if(self.useHighlightFunction().isUse && btn) {
-                    btnBackGroundColor = '';
+                    btnBackGroundColor = DEFAULT_GRAY;
                     // btnTextColor = '';
                     if ( btn.changeClockArt == 0 ) {
                         btnBackGroundColor = self.useHighlightFunction().goingToWork ? btn.btnBackGroundColor : DEFAULT_GRAY;
@@ -105,7 +105,7 @@ ko.components.register('stamp-layout-button', {
         </div>
 
         <div data-bind="visible: buttonLayoutType() == 1">
-            <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
+            <div class="btn-grid-container square-container cf" data-bind="foreach: buttonSettings">
                 <div class="stamp-square-btn-container pull-left">
                         <button class="stamp-rec-btn" id=""
                             data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: function(data, event) { onClick($parent.parentVM) }, visible: btnPositionNo != -1"></button>

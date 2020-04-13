@@ -100,7 +100,7 @@ module nts.uk.at.view.kdp002.a {
                 service.stampInput(data).done((res) => {
                     nts.uk.ui.windows.setShared("resultDisplayTime",  vm().stampSetting().resultDisplayTime);
                     nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-                    //    $('#get-stamp-data').trigger('click');
+                    
                         vm().getStampData();
                     }); 
                 }).fail((res) => {

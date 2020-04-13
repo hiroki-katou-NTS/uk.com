@@ -101,19 +101,16 @@ public class DisplayScreenStampingResultFinder {
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
-			// TODO Auto-generated method stub
 			return stampCardRepository.getListStampCard(sid);
 		}
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			// TODO Auto-generated method stub
 			return stampRecordRepository.get(stampNumbers, date);
 		}
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			// TODO Auto-generated method stub
 			return stampDakokuRepository.get(stampNumbers, date);
 		}
 
