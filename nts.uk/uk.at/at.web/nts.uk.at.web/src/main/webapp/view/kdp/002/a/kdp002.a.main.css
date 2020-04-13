@@ -10,7 +10,9 @@
   width: 400px;
 }
 #stamp-desc{
-  height: 30px;
+  height: 40px;
+  width: 100%;
+  word-break: break-word;
 }
 
 #stamp-date {
