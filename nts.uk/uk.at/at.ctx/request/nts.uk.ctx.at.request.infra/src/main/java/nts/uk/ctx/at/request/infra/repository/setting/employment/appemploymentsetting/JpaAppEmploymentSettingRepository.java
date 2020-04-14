@@ -64,11 +64,25 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 				.setParameter("companyID", companyID).setParameter("employmentCode", employmentCode).setParameter("appType", appType).getList(c -> convertToDomain(c));
 	}
 
-	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode, int appType){
+	public Optional<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode, int appType){
 		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_SET, KrqstAppEmploymentSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employmentCode", employmentCode)
 				.setParameter("appType", appType)
+				.getList();
+		List<AppEmploymentSetting> listReturn;
+		if(!list.isEmpty()) {			
+			listReturn = toDomain(list, companyId);	
+			return Optional.ofNullable(listReturn.get(0));
+		}else {
+			return Optional.ofNullable(null);
+		}
+				
+	}
+	public List<AppEmploymentSetting> getEmploymentSetting(String companyId){
+		
+		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_COMPANYID, KrqstAppEmploymentSet.class)
+				.setParameter("companyId", companyId)
 				.getList();
 		if(!list.isEmpty()) {			
 			List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
@@ -77,26 +91,20 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		return new ArrayList<>();
 				
 	}
-	public List<AppEmploymentSetting> getEmploymentSetting(String companyId){
-		
-		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_COMPANYID, KrqstAppEmploymentSet.class)
-				.setParameter("companyId", companyId)
-				.getList();
-		List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
-		return listReturn;
-				
-	}
 
-	public List<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode){
+	public Optional<AppEmploymentSetting> getEmploymentSetting(String companyId, String employmentCode){
 		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_EMPLOYMENTCD, KrqstAppEmploymentSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employmentCode", employmentCode)
 				.getList();
+		List<AppEmploymentSetting> listReturn;
 		if(!list.isEmpty()) {			
-			List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
-			return listReturn;
+			listReturn = toDomain(list, companyId);	
+			return Optional.ofNullable(listReturn.get(0));
+		}else {
+			return Optional.ofNullable(null);
 		}
-		 return null;
+		
 				
 	}
 	/**

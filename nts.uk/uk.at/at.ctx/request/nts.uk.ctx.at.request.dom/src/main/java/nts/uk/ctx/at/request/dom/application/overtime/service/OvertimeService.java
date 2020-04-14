@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -25,7 +26,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings);
+	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings);
 	
 	/**
 	 * 08_就業時間帯取得

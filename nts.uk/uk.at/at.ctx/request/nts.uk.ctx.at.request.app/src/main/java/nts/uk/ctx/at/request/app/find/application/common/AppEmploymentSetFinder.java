@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.common;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,9 +42,9 @@ public class AppEmploymentSetFinder {
 	public List<AppEmploymentSettingDto> findEmploymentSetByCode(String employmentCode){
 		//会社ID
 		String companyId =  AppContexts.user().companyId();
-		List<AppEmploymentSetting> appEmploymentList = appEmploymentSetRepository.getEmploymentSetting(companyId, employmentCode);
+		Optional<AppEmploymentSetting> appEmploymentList = appEmploymentSetRepository.getEmploymentSetting(companyId, employmentCode);
 		
-		if(!CollectionUtil.isEmpty(appEmploymentList)) {
+		if(appEmploymentList.isPresent()) {
 			return AppEmploymentSettingDto.fromDomain(appEmploymentList);
 		}
 		return null;

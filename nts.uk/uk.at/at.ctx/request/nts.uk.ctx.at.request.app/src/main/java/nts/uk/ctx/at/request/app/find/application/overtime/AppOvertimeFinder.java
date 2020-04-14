@@ -251,9 +251,9 @@ public class AppOvertimeFinder {
 		List<ApplicationDeadlineDto> applicationDeadlineDto = overtimeSettingData.getAppCommonSettingOutput()
 				.getApplicationDeadlines().stream().map(item -> ApplicationDeadlineDto.convertToDto(item))
 				.collect(Collectors.toList());
-		List<AppEmploymentSettingDto> appEmploymentSettingDto = overtimeSettingData.getAppCommonSettingOutput()
-				.getAppEmploymentWorkType().stream().map(item -> AppEmploymentSettingDto.fromDomain(item))
-				.collect(Collectors.toList());
+		List<AppEmploymentSettingDto> appEmploymentSettingDto = AppEmploymentSettingDto.fromDomain(overtimeSettingData.getAppCommonSettingOutput().getAppEmploymentWorkType());
+		AppEmploymentSettingDto.fromDomain( overtimeSettingData.getAppCommonSettingOutput()
+				.getAppEmploymentWorkType().get());
 		AppCommonSettingOutputDto appCommonSettingOutputDto = new AppCommonSettingOutputDto(
 				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate().toString(DATE_FORMAT), applicationSettingDto,
 				approvalFunctionSettingDto, appTypeDiscreteSettingDto, applicationDeadlineDto, appEmploymentSettingDto);
@@ -550,7 +550,7 @@ public class AppOvertimeFinder {
 		overTimeDto.setSiftType(new SiftType(workTimeCD, workTimeName));
 		
 		// 07_勤務種類取得: lay loai di lam 
-		List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+		Optional<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 		List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getEmployeeID(),approvalFunctionSetting,appEmploymentWorkType);
 		
 		List<String> workTypeCodes = new ArrayList<>();
@@ -1625,7 +1625,7 @@ public class AppOvertimeFinder {
 			result.setAgreementTimeDto(AgreeOverTimeDto.fromDomain(opAgreeOverTimeOutput.get()));
 		}
 		
-		List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+		Optional<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 		// 07_勤務種類取得: lay loai di lam 
 		List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID, approvalFunctionSetting, appEmploymentWorkType);
 		List<String> workTypeCodes = new ArrayList<>();

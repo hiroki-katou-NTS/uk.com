@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -50,25 +51,46 @@ public class AppEmploymentSettingDto {
 	public static List<AppEmploymentSettingDto> fromDomain(List<AppEmploymentSetting> domainList){
 		List<AppEmploymentSettingDto> list = new ArrayList<AppEmploymentSettingDto>();
 		domainList.stream().forEach(x -> {
-			List<WorkTypeObjAppHoliday> listWTOAH = x.getListWTOAH();
-			if (!x.getListWTOAH().isEmpty()) {
-				 
-				listWTOAH.stream().forEach(y ->{
-					AppEmploymentSettingDto item = new AppEmploymentSettingDto(x.getCompanyID(), x.getEmploymentCode(),
-							y.getAppType().value, y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, y.getHolidayTypeUseFlg().get(), y.getWorkTypeSetDisplayFlg(),
-							y.getWorkTypeList() == null ? null : y.getWorkTypeList().stream().map(a -> new AppEmployWorkTypeDto(x.getCompanyID(),x.getEmploymentCode(),
-									y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
-							);
-					list.add(item);
-				});
-			}
+			if(!CollectionUtil.isEmpty(x.getListWTOAH())) {
+				List<WorkTypeObjAppHoliday> listWTOAH = x.getListWTOAH();		 
+					listWTOAH.stream().forEach(y ->{
+						AppEmploymentSettingDto item = new AppEmploymentSettingDto(x.getCompanyID(), x.getEmploymentCode(),
+								y.getAppType().value, y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, y.getHolidayTypeUseFlg().get(), y.getWorkTypeSetDisplayFlg(),
+								y.getWorkTypeList() == null ? null : y.getWorkTypeList().stream().map(a -> new AppEmployWorkTypeDto(x.getCompanyID(),x.getEmploymentCode(),
+										y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
+								);
+						if(item != null) {							
+							list.add(item);
+						}
+					});
+				}		
 		});
+		return list;
+	}
+	public static List<AppEmploymentSettingDto> fromDomain(Optional<AppEmploymentSetting> domainList){
+		List<AppEmploymentSettingDto> list = new ArrayList<AppEmploymentSettingDto>();
+			if(domainList.isPresent()) {		
+				if(!CollectionUtil.isEmpty(domainList.get().getListWTOAH())) {
+					List<WorkTypeObjAppHoliday> listWTOAH = domainList.get().getListWTOAH();		 
+					listWTOAH.stream().forEach(y ->{
+						AppEmploymentSettingDto item = new AppEmploymentSettingDto(domainList.get().getCompanyID(), domainList.get().getEmploymentCode(),
+								y.getAppType().value, y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, y.getHolidayTypeUseFlg().get(), y.getWorkTypeSetDisplayFlg(),
+										y.getWorkTypeList() == null ? null : y.getWorkTypeList().stream().map(a -> new AppEmployWorkTypeDto(domainList.get().getCompanyID(),domainList.get().getEmploymentCode(),
+												y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
+								);
+						if(item != null) {							
+							list.add(item);
+						}
+					});
+				}		
+			}
+		
 		return list;
 	}
 	public static AppEmploymentSettingDto fromDomain(AppEmploymentSetting domain){
 		AppEmploymentSettingDto item = new AppEmploymentSettingDto();
 		
-			if (!domain.getListWTOAH().isEmpty()) {
+			if (domain != null) {
 				 
 					WorkTypeObjAppHoliday y = domain.getListWTOAH().get(0);
 					AppEmploymentSettingDto i = new AppEmploymentSettingDto(domain.getCompanyID(), domain.getEmploymentCode(),
@@ -76,10 +98,10 @@ public class AppEmploymentSettingDto {
 							y.getWorkTypeList() == null ? null : y.getWorkTypeList().stream().map(a -> new AppEmployWorkTypeDto(domain.getCompanyID(),domain.getEmploymentCode(),
 									y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
 							);
-					
-					item = i;
+					if (i != null) {
+						item = i;
+					}	
 			}
-		
 		return item;
 	}
 	public AppEmploymentSettingDto() {
@@ -96,5 +118,17 @@ public class AppEmploymentSettingDto {
 				appType == 10 ? holidayOrPauseType : null);
 		list.add(workTypeObjAppHoliday);
 		return new AppEmploymentSetting(companyID, employmentCode, list);
+	}
+	public Optional<AppEmploymentSetting> toDomainOptional() {
+		List<WorkTypeObjAppHoliday> list = new ArrayList<>();
+		WorkTypeObjAppHoliday workTypeObjAppHoliday = new WorkTypeObjAppHoliday(
+				CollectionUtil.isEmpty(lstWorkType) ?  null : lstWorkType.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList()),
+				EnumAdaptor.valueOf(appType, ApplicationType.class),
+				displayFlag,
+				appType == 1 ? holidayOrPauseType : null,
+				holidayTypeUseFlg,
+				appType == 10 ? holidayOrPauseType : null);
+		list.add(workTypeObjAppHoliday);
+		return Optional.ofNullable(new AppEmploymentSetting(companyID, employmentCode, list));
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,7 +26,7 @@ public class CopyAppEmploymentSetCommandHandler extends CommandHandler<CopyAppEm
 		CopyAppEmploymentSetCommand command = context.getCommand();
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
-		List<AppEmploymentSetting> sourceData1 = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
+		Optional<AppEmploymentSetting> sourceData1 = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
 		service.copyEmploymentSettingNew(companyId, sourceData1, command.getTargetEmploymentCodes(), command.isOveride());
 	}
 
