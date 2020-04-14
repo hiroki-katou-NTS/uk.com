@@ -44,6 +44,11 @@
 }
 
 .btn-name {
-	font-size: 2rem;
+	font-size: 15px;
+	border-radius: 10px;
+}
+
+.btn-close {
+	font-size: 13px;
 	border-radius: 10px;
 }

@@ -16,7 +16,7 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 630, height: 600 };
+          var dialogSize = { width: 630, height: 670 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="/view/kdp/002/t/main.css" />
@@ -30,7 +30,7 @@
           <div id="label-title">
             <label
               class="basic-label"
-              data-bind="text:$data.dataShare.messageContent , style:{ color :  $data.dataShare.messageColor }"
+              data-bind="text: messageContent , style:{ color : messageColor }"
             ></label>
           </div>
           <com:ko-if bind="dataShare.listRequired.length > 5 ">
@@ -94,7 +94,7 @@
               </tr>
             </table>
             <button
-              class="btn-name btn_8"
+              class="btn-close btn_8"
               data-bind="click: closeDialog"
               id="button8"
             >

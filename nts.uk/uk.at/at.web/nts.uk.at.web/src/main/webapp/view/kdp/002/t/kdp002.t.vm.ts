@@ -6,6 +6,8 @@ module nts.uk.at.view.kdp002.t {
             labelColor: KnockoutObservable<string> = ko.observable('');
             buttonInfo: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
             share: KnockoutObservableArray<any> = ko.observableArray([]);
+            messageContent: KnockoutObservable<string> = ko.observable('');
+            messageColor: KnockoutObservable<string> = ko.observable('');
             constructor() {
             }
             /**
@@ -39,9 +41,9 @@ module nts.uk.at.view.kdp002.t {
                         }]
                     }
                 }else {
+                    self.messageContent(self.share.dailyAttdErrorInfos[0].messageContent);
+                    self.messageColor(self.share.dailyAttdErrorInfos[0].messageColor);
                     self.dataShare = {
-                        messageContent: self.share.dailyAttdErrorInfos.messageContent,
-                        messageColor: self.share.dailyAttdErrorInfos.messageColor,
                         listRequired: [{
                             buttonName: ko.observable(self.share.appDispNames[0].dispName)
                         },{
