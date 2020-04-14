@@ -1020,27 +1020,23 @@ public class HolidayShipmentScreenAFinder {
 			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
 			appEmploymentSetting.setListWTOAH(new ArrayList<>());
 			appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
-			if (empSetOpt.isPresent()) {
-				if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
-					if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
-						List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
-								.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
-										x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+				if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
+							.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
+									x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
+							.collect(Collectors.toList());
+					if(lstEmploymentWorkType !=null) {
+						
+						return wkTypes.stream()
+								.filter(x -> lstEmploymentWorkType.stream()
+										.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+										.isPresent())
 								.collect(Collectors.toList());
-						if(lstEmploymentWorkType !=null) {
-							
-							return wkTypes.stream()
-									.filter(x -> lstEmploymentWorkType.stream()
-											.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
-											.isPresent())
-									.collect(Collectors.toList());
-						}
-					} else {
-						return wkTypes;
 					}
+				} else {
+					return wkTypes;
 				}
-			} else {
-				return wkTypes;
 			}
 		} else {
 			return wkTypes;
