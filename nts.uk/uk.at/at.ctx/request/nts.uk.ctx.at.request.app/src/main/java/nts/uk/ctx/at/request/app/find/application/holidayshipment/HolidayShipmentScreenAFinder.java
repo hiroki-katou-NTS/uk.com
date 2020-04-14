@@ -805,9 +805,10 @@ public class HolidayShipmentScreenAFinder {
 				.map(i -> i)
 				.filter(x -> x.getEmploymentCode().equals(employmentCode))
 				.findFirst();
-		AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
-		List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();
+		
 		if (empSetOpt.isPresent()) {
+			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();
 			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
 			//	if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
 				WorkTypeObjAppHoliday item = workTypeObjAppHolidayList.stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).findFirst().get();
