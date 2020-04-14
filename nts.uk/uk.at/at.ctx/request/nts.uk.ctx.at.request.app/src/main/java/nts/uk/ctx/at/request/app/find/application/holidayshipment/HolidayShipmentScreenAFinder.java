@@ -636,7 +636,7 @@ public class HolidayShipmentScreenAFinder {
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する rec
 			setWkTimeInfoForRecApp(companyID, recWkTimeCD, output);
 
-			// アルゴリズム「選択済の就業時間帯の取得」を実行する abs
+			// アルゴリズム「選択済の就業時間帯の取得」を実行する abs			
 			WorkTypeKAF011 wkTypeAbs = this.getWorkTypeFor(companyID, employmentCD, absWkTimeCD, appCommonSet, BreakOutType.HOLIDAY);
 			output.setMasterUnregAbs(wkTypeAbs.isMasterUnreg());
 			output.setAbsWkTypes(wkTypeAbs.getLstWorkType().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
@@ -800,39 +800,38 @@ public class HolidayShipmentScreenAFinder {
 
 	private List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType,
 			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
-
 		// ドメインモデル「申請別対象勤務種類」を取得する
-				Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
-						.filter(x -> x.getEmploymentCode().equals(employmentCode))
-						.findFirst();
-				AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
-				List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
-				appEmploymentSetting.setListWTOAH(new ArrayList<>());
-				appEmploymentSetting.getListWTOAH().addAll(workTypeObjAppHolidayList);
-				if (empSetOpt.isPresent()) {
-					if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
-						if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
-							List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSetting.getListWTOAH()) ? null : appEmploymentSetting.getListWTOAH()
-									.stream().map(x -> new AppEmployWorkType(companyID, employmentCode, x.getAppType(),
-											x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : x.getAppType().value == 1 ? x.getHolidayAppType().get().value : 9, ""))
-									.collect(Collectors.toList());
-							if(lstEmploymentWorkType !=null) {
-								
-								return wkTypes.stream()
-										.filter(x -> lstEmploymentWorkType.stream()
-												.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
-												.isPresent())
-										.collect(Collectors.toList());
-							}
-						} else {
-							return wkTypes;
-						}
+		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
+				.map(i -> i)
+				.filter(x -> x.getEmploymentCode().equals(employmentCode))
+				.findFirst();
+		AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
+		List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();
+		if (empSetOpt.isPresent()) {
+			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
+			//	if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
+				WorkTypeObjAppHoliday item = workTypeObjAppHolidayList.stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).findFirst().get();
+				List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
+						item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, employmentCode, appEmploymentSetting.getListWTOAH().get(0).getAppType(),
+								appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSetting.getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSetting.getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+						.collect(Collectors.toList());
+					if(lstEmploymentWorkType !=null) {
+						
+						return wkTypes.stream()
+								.filter(x -> lstEmploymentWorkType.stream()
+										.filter(y -> y.getWorkTypeCode().equals(x.getWorkTypeCode().v())).findFirst()
+										.isPresent())
+								.collect(Collectors.toList());
 					}
-					
-				} else {
-					return wkTypes;
-				}
-				return wkTypes;
+			//	} else {
+				//	return wkTypes;
+		//		}
+			}
+			
+		} else {
+			return wkTypes;
+		}
+		return wkTypes;
 
 	}
 
