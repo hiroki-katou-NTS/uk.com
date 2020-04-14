@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +14,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 @NoArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@Data
 public class DisplayInforWhenStarting {
 
 	//振出申請起動時の表示情報
