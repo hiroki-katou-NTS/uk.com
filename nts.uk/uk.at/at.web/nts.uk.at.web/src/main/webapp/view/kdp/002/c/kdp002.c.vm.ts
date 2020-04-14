@@ -77,7 +77,7 @@ module nts.uk.at.view.kdp002.c {
                             if(res.itemValues) {
                                 res.itemValues.forEach(item => {
                                     if(item.valueType == "TIME" && item.value) {
-                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", item.value);
+                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(item.value));
                                     } else if (item.valueType == "AMOUNT") {
                                         item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));;
                                     }
