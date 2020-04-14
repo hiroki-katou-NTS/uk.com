@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -162,7 +161,6 @@ public class OutputScreenListOfStampFinder {
 					 local = localInfo.getPositionInfor().getLatitude() + " " + localInfo.getPositionInfor().getLongitude();
 				 }
 				
-				 
 				// Support Card
 				val optSupportCard = stamp.getRefActualResults().getCardNumberSupport();
 				
@@ -241,7 +239,7 @@ public class OutputScreenListOfStampFinder {
 			Integer overtimeHours = 0;
 			Integer lateNightTime = 0;
 			String workLocationName = "";
-			String workTimeCodes = "";
+
 			if (stampInfoDisp.getStamp().isPresent()) {
 			
 				stampMeans = stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name;
@@ -265,7 +263,6 @@ public class OutputScreenListOfStampFinder {
 				
 				val workTimeCode = refActualResults.getWorkTimeCode();
 				if (workTimeCode.isPresent()) {
-					workTimeCodes = workTimeCode.get().v();
 					val workTimeDisplayNameCheck = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
 														 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst();
 					if(workTimeDisplayNameCheck.isPresent()){
