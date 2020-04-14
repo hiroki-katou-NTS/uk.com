@@ -31,6 +31,8 @@ public class RegisterDailyIDentifyCommandHandler extends CommandHandler<Register
 		SelfConfirmDay selfConfirm = new SelfConfirmDay(GeneralDate.today(), true);
 		List<SelfConfirmDay> selfConfirms = new ArrayList<>(Arrays.asList(selfConfirm));
 		ParamIdentityConfirmDay param = new ParamIdentityConfirmDay(employeId, selfConfirms);
+		@SuppressWarnings("rawtypes")
+		// ParamIdentityConfirmDay update = new ParamIdentityConfirmDay(employeId, GeneralDate.today());
 		boolean register = registerIdentityConfirmDay.registerIdentity(param, null, null);
 	}
 

@@ -2,13 +2,13 @@ package nts.uk.screen.at.app.stamp.personalengraving.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
-import nts.uk.ctx.at.request.app.find.application.common.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -23,18 +23,21 @@ public class StampResultConfirmDto {
 	private List<WorkDto> workTypes = new ArrayList<>();
 	private List<WorkTimeDto> workTimeTypes = new ArrayList<>();
 	private ConfirmResultDto confirmResult;
+	private String workPlaceName;
 
 	public StampResultConfirmDto(List<DisplayScreenStampingResultDto> screenDisplays, List<AttItemName> dailyItems,
 			List<ItemValue> itemValues, List<WorkType> workTypes, List<WorkTimeSetting> workTimes,
 			ConfirmStatusActualResult cfsr) {
 
 		for (DisplayScreenStampingResultDto display : screenDisplays) {
+			this.workPlaceName = display.getWorkPlaceName();
 			this.stampRecords.addAll(display.getStampDataOfEmployeesDto().getStampRecords());
 		}
 
 		this.dailyItems = dailyItems;
 		for (ItemValue item : itemValues) {
-			this.itemValues.add(new ItemValueDto(item.getValue(), item.getValueType().name, item.getItemId()));
+			Optional<AttItemName> name = dailyItems.stream().filter(a -> a.getAttendanceItemId() == item.getItemId()).findFirst(); 
+			this.itemValues.add(new ItemValueDto(item.getValue(), item.getValueType().name, item.getItemId(), name.isPresent() ? name.get().getAttendanceItemName() : ""));
 		}
 
 		for (WorkType item : workTypes) {
@@ -57,6 +60,7 @@ public class StampResultConfirmDto {
 		private String value;
 		private String valueType;
 		private int itemId;
+		private String name;
 	}
 
 	@Data

@@ -1,10 +1,15 @@
 module nts.uk.at.view.kdp002.c.service {
     let paths: any = {
         startScreen: "screen/at/personalengraving/startCScreen",
+        registerDailyIdentify: "screen/at/personalengraving/registerDailyIdentify",
         getStampSetting: "at/record/stamp/management/getStampSetting",
         getStampPage: "at/record/stamp/management/getStampPage",
         deleteStampPage: "at/record/stamp/management/delete",
         getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
+    }
+
+    export function registerDailyIdentify(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.registerDailyIdentify);
     }
 
     export function startScreen(data: any): JQueryPromise<any> {
