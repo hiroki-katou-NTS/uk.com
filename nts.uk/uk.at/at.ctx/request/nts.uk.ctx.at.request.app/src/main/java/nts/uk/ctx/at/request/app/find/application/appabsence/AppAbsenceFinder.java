@@ -481,14 +481,15 @@ public class AppAbsenceFinder {
 //				
 //				).findFirst();
 		AppEmploymentSetting appSetting = appEmploymentSetting;
-		if(!CollectionUtil.isEmpty(appSetting.getListWTOAH())) {
-			if(appSetting.getListWTOAH().get(0).getHolidayAppType().isPresent() ? (appSetting.getListWTOAH().get(0).getHolidayAppType().get().value == hdType): false){
-				//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
-				//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
-				return appSetting.getListWTOAH().get(0).getHolidayTypeUseFlg().get() ? false : true;
+		if(appSetting != null) {
+			if(!CollectionUtil.isEmpty(appSetting.getListWTOAH())) {
+				if(appSetting.getListWTOAH().get(0).getHolidayAppType().isPresent() ? (appSetting.getListWTOAH().get(0).getHolidayAppType().get().value == hdType): false){
+					//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
+					//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
+					return appSetting.getListWTOAH().get(0).getHolidayTypeUseFlg().get() ? false : true;
+				}
 			}
 		}
-		
 		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
 		return true;
 	}

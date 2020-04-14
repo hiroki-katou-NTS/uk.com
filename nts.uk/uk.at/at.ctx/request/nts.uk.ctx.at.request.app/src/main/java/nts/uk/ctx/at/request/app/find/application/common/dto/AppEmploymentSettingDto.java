@@ -68,7 +68,7 @@ public class AppEmploymentSettingDto {
 	public static AppEmploymentSettingDto fromDomain(AppEmploymentSetting domain){
 		AppEmploymentSettingDto item = new AppEmploymentSettingDto();
 		
-			if (!domain.getListWTOAH().isEmpty()) {
+			if (domain != null) {
 				 
 					WorkTypeObjAppHoliday y = domain.getListWTOAH().get(0);
 					AppEmploymentSettingDto i = new AppEmploymentSettingDto(domain.getCompanyID(), domain.getEmploymentCode(),
@@ -76,10 +76,10 @@ public class AppEmploymentSettingDto {
 							y.getWorkTypeList() == null ? null : y.getWorkTypeList().stream().map(a -> new AppEmployWorkTypeDto(domain.getCompanyID(),domain.getEmploymentCode(),
 									y.getAppType().value,y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value : 9, a,"")).collect(Collectors.toList())
 							);
-					
-					item = i;
+					if (i != null) {
+						item = i;
+					}	
 			}
-		
 		return item;
 	}
 	public AppEmploymentSettingDto() {
