@@ -237,9 +237,22 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     WHEN '1' THEN ?Enum_LeaveExpirationStatus_AVAILABLE");
 	     exportSQL.append("     ELSE NULL");
 	     exportSQL.append("    END");
+
+		 // -- 算定区分 CalculationAtr
+		 exportSQL.append("   WHEN 'E00042' THEN");
+		 exportSQL.append("    CASE initsetitem.STRING_VAL");
+		 exportSQL.append("     WHEN '0' THEN ?Enum_CalculationAtr_SCHEDULED");
+		 exportSQL.append("     WHEN '1' THEN ?Enum_CalculationAtr_CHANGE_OVER_TIME");
+		 exportSQL.append("     WHEN '2' THEN ?Enum_CalculationAtr_CHANGE_BEFORE_AND_AFTER_CHILDBIRTH");
+		 exportSQL.append("     WHEN '3' THEN ?Enum_CalculationAtr_CHANGE_AFTER_CHILDCARE_LEAVE");
+		 exportSQL.append("     WHEN '4' THEN ?Enum_CalculationAtr_OBTAINING_QUALIFICATION");
+		 exportSQL.append("     ELSE NULL");
+		 exportSQL.append("    END");
+
 	     exportSQL.append("   ELSE NULL");
 	     exportSQL.append("  END EnumName,");
 	     exportSQL.append("  CASE itemcm.DATA_TYPE");
+
 	     // -- 時間 TIME
 	     exportSQL.append("   WHEN 4 THEN");
 	     exportSQL.append("    CASE ");
@@ -398,6 +411,10 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00017' AND ctg.CATEGORY_CD = 'CS00057' AND dateset18.SPHD_CD = 19");
 	     exportSQL.append("  LEFT JOIN KSHST_GRANT_DATE_TBL dateset19 ON initsetitem.STRING_VAL = dateset19.GD_TBL_CD AND initset.CID= dateset19.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00017' AND ctg.CATEGORY_CD = 'CS00058' AND dateset19.SPHD_CD = 20");
+
+	     exportSQL.append("  LEFT JOIN KSHST_GRANT_DATE_TBL dateset20 ON initsetitem.STRING_VAL = dateset20.GD_TBL_CD AND initset.CID= dateset20.CID ");
+	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00019' AND ctg.CATEGORY_CD = 'CS00075' AND dateset20.SPHD_CD = 21");
+
 	     //  -- CODE_NAME");
 	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
 	     exportSQL.append("  AND itemcm.SELECTION_ITEM_REF_TYPE = 2"); 
@@ -494,6 +511,16 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 						I18NText.getText("Enum_LeaveExpirationStatus_EXPIRED"))
 				.setParameter("Enum_LeaveExpirationStatus_AVAILABLE",
 						I18NText.getText("Enum_LeaveExpirationStatus_AVAILABLE"))
+				.setParameter("Enum_CalculationAtr_SCHEDULED",
+						I18NText.getText("Enum_CalculationAtr_SCHEDULED"))
+				.setParameter("Enum_CalculationAtr_CHANGE_OVER_TIME",
+						I18NText.getText("Enum_CalculationAtr_CHANGE_OVER_TIME"))
+				.setParameter("Enum_CalculationAtr_CHANGE_BEFORE_AND_AFTER_CHILDBIRTH",
+						I18NText.getText("Enum_CalculationAtr_CHANGE_BEFORE_AND_AFTER_CHILDBIRTH"))
+				.setParameter("Enum_CalculationAtr_CHANGE_AFTER_CHILDCARE_LEAVE",
+						I18NText.getText("Enum_CalculationAtr_CHANGE_AFTER_CHILDCARE_LEAVE"))
+				.setParameter("Enum_CalculationAtr_OBTAINING_QUALIFICATION",
+						I18NText.getText("Enum_CalculationAtr_OBTAINING_QUALIFICATION"))
 				.setParameter("payroll", payroll)
 				.setParameter("personnel", personnel)
 				.setParameter("atttendance", atttendance)

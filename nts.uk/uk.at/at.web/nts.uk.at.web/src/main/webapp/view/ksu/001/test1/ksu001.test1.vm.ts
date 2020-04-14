@@ -2,6 +2,7 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
+    import flat = nts.uk.util.flatArray;
 
     export class ScreenModel {
         selectedTab: KnockoutObservable<string> = ko.observable('company');
@@ -337,10 +338,14 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1197' });
                 return;
             }
+            var lwps = $('#tree-grid-screen-e').getDataList();
+            var rstd_1 = $('#tree-grid-screen-e').getRowSelected();
+            var flwps = flat(_.cloneDeep(lwps), "children");
+            var wkp = _.find(flwps, function(wkp) { return wkp.id == _.head(rstd_1).id; });
             setShared('dataForJB', {
                 selectedTab: self.selectedTab(),
-                workplaceCode: _.find(self.workplaceGridList(), function(o) { return o.workplaceId = self.selectedWorkplaceId(); }).code,
-                workplaceName: _.find(self.workplaceGridList(), function(o) { return o.workplaceId = self.selectedWorkplaceId(); }).name,
+                workplaceCode: rstd_1[0].code,
+                workplaceName: wkp ? wkp.name : '',
                 workplaceId: self.selectedTab() === 'company' ? null : self.selectedWorkplaceId(),
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),

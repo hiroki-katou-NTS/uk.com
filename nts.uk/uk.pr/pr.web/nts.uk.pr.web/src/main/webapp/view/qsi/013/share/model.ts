@@ -60,8 +60,8 @@ module nts.uk.pr.view.qsi013.share.model {
 
     export function getSubNameClass(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QSI013_18')),
-            new ItemModel(1, getText('QSI013_19'))
+            new ItemModel(0, getText('QSI013_A222_18')),
+            new ItemModel(1, getText('QSI013_A222_19'))
         ];
     }
 

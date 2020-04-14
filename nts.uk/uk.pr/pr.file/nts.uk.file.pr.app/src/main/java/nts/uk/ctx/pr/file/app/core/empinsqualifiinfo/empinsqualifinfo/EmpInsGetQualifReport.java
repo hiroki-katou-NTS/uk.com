@@ -73,7 +73,7 @@ public class EmpInsGetQualifReport {
     /**
      * 契約期間の定め
      */
-    private String estContractPeriod;
+    private Integer setContractPeriod;
 
     /**
      * 契約開始年月日（和暦）
@@ -108,7 +108,7 @@ public class EmpInsGetQualifReport {
     /**
      * 職種
      */
-    private Integer occupation;
+    private String occupation;
 
     /**
      * 被保険者となったことの原因
@@ -160,13 +160,15 @@ public class EmpInsGetQualifReport {
 
     private String stayPeriod;
 
-    private Integer nonQualifPermission;
+    private Integer unqualifiedActivityPermission;
 
     private Integer contractWorkAtr;
 
     private String officePostalCode;
 
-    private String officeLocation;
+    private String officeLocation_1;
+
+    private String officeLocation_2;
 
     private String businessOwnerName;
 

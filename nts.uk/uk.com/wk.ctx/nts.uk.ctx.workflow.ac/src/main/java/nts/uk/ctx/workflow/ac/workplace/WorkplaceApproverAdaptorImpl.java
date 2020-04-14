@@ -112,7 +112,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 
 	@Override
 	public String getWorkplaceIDByEmpDate(String employeeID, GeneralDate date) {
-		return wkpPub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId();
+		return wkpPub.getAffWkpHistItemByEmpDate(employeeID, date) != null ? wkpPub.getAffWkpHistItemByEmpDate(employeeID, date).getWorkplaceId() : "";
 	}
 
 	@Override

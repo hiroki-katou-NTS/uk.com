@@ -18,8 +18,8 @@ module nts.uk.pr.view.qsi003.share.model {
 
     export function getNotificationTarget(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('QSI003_8')),
-            new ItemModel(1, getText('QSI003_9'))
+            new ItemModel(0, getText('QSI003_A222_10')),
+            new ItemModel(1, getText('QSI003_A222_11'))
         ];
     }
 
@@ -34,8 +34,8 @@ module nts.uk.pr.view.qsi003.share.model {
 
     export function roundingRules(): Array<ItemModel> {
         return [
-            new ItemModel(2, getText('QSI003_18')),
-            new ItemModel(1, getText('QSI003_19'))
+            new ItemModel(2, getText('QSI003_B222_21')),
+            new ItemModel(1, getText('QSI003_B222_22'))
 
         ];
     }

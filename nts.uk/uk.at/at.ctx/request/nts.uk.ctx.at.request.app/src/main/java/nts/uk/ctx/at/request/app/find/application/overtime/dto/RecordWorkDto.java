@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 /**
@@ -29,7 +30,8 @@ public class RecordWorkDto {
 	
 	// appOvertimeReference
 	private AppOvertimeReference appOvertimeReference;
-	
-	
+		
 	private List<DeductionTimeDto> timezones;
+	
+	private ActualStatusCheckResult actualStatusCheckResult;
 }

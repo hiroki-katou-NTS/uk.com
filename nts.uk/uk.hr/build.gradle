@@ -55,7 +55,7 @@ subprojects {
 	
 	jar {
 		// contains source code
-		exclude '**/*.java'
+		exclude !project.hasProperty('sourceMap') || sourceMap == 'false' ? '' : '**/*.java'
 		includeEmptyDirs false
     	from sourceSets.main.allSource
  	}
@@ -345,6 +345,8 @@ project (':hr.screen:nts.uk.screen.hr.ws') {
 
 project (':hr.screen:nts.uk.screen.hr.app') {
 	dependencies {
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.app')
 		compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
 		compile project (':hr.ctx:hr.notice:nts.uk.ctx.hr.notice.app')
@@ -404,6 +406,8 @@ project (':hr.file:nts.uk.file.hr.ws') {
 project (':hr.file:nts.uk.file.hr.app') {
 	dependencies {
 		compile project (':hr.screen:nts.uk.screen.hr.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.app')
+		compile project (':hr.ctx:hr.shared:nts.uk.ctx.hr.shared.dom')
 	 	compile project (':hr.ctx:hr.develop:nts.uk.ctx.hr.develop.dom')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
@@ -477,6 +481,22 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime project (':hr.screen:nts.uk.screen.hr.ws')
 		runtime project (':hr.screen:nts.uk.screen.hr.app')
 		runtime project (':hr.screen:nts.uk.screen.hr.infra')
+		
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
+		
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ws', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
 		
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
@@ -635,7 +655,7 @@ project (':hr.web:nts.uk.hr.web') {
 		target = "ES5"
 		noLib = true
 		watch = false
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
@@ -645,7 +665,7 @@ project (':hr.web:nts.uk.hr.web') {
 		target = "ES5"
 		noLib = true
 		watch = true
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')

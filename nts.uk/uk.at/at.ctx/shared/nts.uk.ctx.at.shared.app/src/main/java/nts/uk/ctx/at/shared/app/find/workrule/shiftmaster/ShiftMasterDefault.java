@@ -65,6 +65,12 @@ public class ShiftMasterDefault {
 			// TODO Auto-generated method stub
 			return false;
 		}
+		
+		@Override
+		public boolean checkExistsByCode(String companyId, String shiftMasterCd) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 
 		@Override
 		public void insert(ShiftMaster shiftMater, String workTypeCd, String workTimeCd) {

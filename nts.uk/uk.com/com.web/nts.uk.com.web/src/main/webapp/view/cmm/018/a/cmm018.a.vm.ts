@@ -1086,7 +1086,7 @@ module nts.uk.com.view.cmm018.a {
                     let appType = null;
                     let employRootAtr = null;
                     let startDate = ''
-                    itemCurrent = self.findHistory(self.currentCode());
+                    itemCurrent = self.findHistory(self.listHistory()[0].id);
                     //TH: tab company
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
                         //Check dang chon item vua moi them
@@ -1204,7 +1204,7 @@ module nts.uk.com.view.cmm018.a {
                             });
                         }else{
                             _.each(self.listHistory(), function(item){
-                                if(item.id != self.currentCode()){
+                                if(item.id != self.listHistory()[0].id){
                                   tmp.push(item);  
                                 }
                             });
@@ -1522,7 +1522,8 @@ module nts.uk.com.view.cmm018.a {
                         dataOld.push(a);
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME);
+                        // bug #109950
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.MATOME).then(__viewContext.viewModel.viewmodelSubA.scrollToIndex(a));
                         vmbase.ProcessHandler.resizeColumn(self.cpA(), tabSel, vmbase.MODE.MATOME);
                     }
                 }); 

@@ -1,5 +1,10 @@
 package nts.uk.ctx.pr.shared.infra.repository.socialinsurance.employeesociainsur.emphealinsurbeneinfo;
 
+import java.sql.PreparedStatement;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -9,11 +14,6 @@ import nts.uk.ctx.pr.shared.dom.socialinsurance.employeesociainsur.emphealinsurb
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtSocIsacquisiInfo;
 import nts.uk.ctx.pr.shared.infra.entity.socialinsurance.employeesociainsur.emphealinsurbeneinfo.QqsmtSocIsacquisiInfoPk;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class JpaSocialInsurAcquisiInforRepository extends JpaRepository implements SocialInsurAcquisiInforRepository {

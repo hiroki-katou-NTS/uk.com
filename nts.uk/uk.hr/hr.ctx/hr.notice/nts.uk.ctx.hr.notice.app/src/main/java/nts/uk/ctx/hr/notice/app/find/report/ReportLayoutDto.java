@@ -39,6 +39,10 @@ public class ReportLayoutDto {
 	
 	private List<ApprovalPhaseStateForAppDto> listApprovalFrame;
 	
+	private boolean release;
+	
+	private boolean approve;
+	
 	public ReportLayoutDto(){
 		
 		this.classificationItems = new ArrayList<>();
@@ -65,7 +69,9 @@ public class ReportLayoutDto {
 			
 			List<DocumentSampleDto> documentSampleDtoLst,
 			
-			List<ApprovalPhaseStateForAppDto> listApprovalFrame) {
+			List<ApprovalPhaseStateForAppDto> listApprovalFrame,
+			
+			boolean release, boolean approve) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
@@ -78,6 +84,10 @@ public class ReportLayoutDto {
 		dto.setDocumentSampleDto(documentSampleDtoLst);
 		
 		dto.setListApprovalFrame(listApprovalFrame);
+		
+		dto.setRelease(release);
+		
+		dto.setApprove(approve);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			

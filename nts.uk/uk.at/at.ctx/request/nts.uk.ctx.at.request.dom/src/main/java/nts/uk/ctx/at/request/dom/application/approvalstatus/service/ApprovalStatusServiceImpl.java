@@ -1195,7 +1195,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private boolean isDisplayPrePostFlg(String companyID) {
 		Optional<RequestSetting> requestSetting = this.requestSetRepo.findByCompany(companyID);
 		if (requestSetting.isPresent()
-				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value == 1)
+				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
 			return true;
 		return false;
 	}

@@ -96,11 +96,7 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }
 
         //fill to A2_???
-        if(socialInsurNotiCreateSet.getOfficeInformation().value == BusinessDivision.OUTPUT_SIC_INSURES.value){
-            listSocialInsuranceOffice = socialInsuranceOfficeRepository.findByCid(cid);
-            //印刷対象社員リストの社員ごとに、以下の処理をループする
-
-        }
+        listSocialInsuranceOffice = socialInsuranceOfficeRepository.findByCid(cid);
         List<EmpWelfarePenInsQualiInfor> empWelfarePenInsQualiInfors = empWelfarePenInsQualiInforRepository.getEmpWelfarePenInsQualiInfor(cid, query.getDate(),query.getListEmpId());
         List<String> emplds = empWelfarePenInsQualiInfors.stream().map(EmpWelfarePenInsQualiInfor::getEmployeeId).collect(Collectors.toList());
         List<EmployeeInfoEx> employeeInfoList = employeeInfoAdapter.findBySIds(emplds);
@@ -119,10 +115,9 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
         }else{
             throw new BusinessException("Msg_37");
         }
-
     }
 
-    public PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
+    private PersonExport getPersonInfor(List<EmployeeInfoEx> employeeInfoList, List<PersonExport> personList, String empId){
         PersonExport person = new PersonExport();
         Optional<EmployeeInfoEx> employeeInfoEx = employeeInfoList.stream().filter(item -> item.getEmployeeId().equals(empId)).findFirst();
         if(employeeInfoEx.isPresent()) {
@@ -233,21 +228,17 @@ public class InsuredNameChangedNotiService extends ExportService<InsuredNameChan
             }
         }
 
-        this.checkPersonNumberClass(cid,listSocialInsuranceOffice,socialInsurNotiCreateSet,empId,date);
+        this.checkPersonNumberClass(cid,listSocialInsuranceOffice,empId,date);
     }
 
     //個人番号区分
     // 1
-    private void checkPersonNumberClass(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, SocialInsurNotiCreateSet socialInsurNotiCreateSet, String empId,GeneralDate date){
-        if(socialInsurNotiCreateSet.getOfficeInformation() == BusinessDivision.OUTPUT_SIC_INSURES){
-
-            Optional<String> socialInsuranceOfficeCd = empCorpHealthOffHisRepository.getSocialInsuranceOfficeCd(cid,empId,date);
-            if(socialInsuranceOfficeCd.isPresent()){
-                Optional<SocialInsuranceOffice>  socialInsuranceOffice = listSocialInsuranceOffice.stream().filter(x -> x.getCode().v().equals(socialInsuranceOfficeCd.get())).findFirst();
-                data.setSocialInsuranceOffice(socialInsuranceOffice.orElse(null));
-            }
+    private void checkPersonNumberClass(String cid, List<SocialInsuranceOffice> listSocialInsuranceOffice, String empId,GeneralDate date){
+        Optional<String> socialInsuranceOfficeCd = empCorpHealthOffHisRepository.getSocialInsuranceOfficeCd(cid,empId,date);
+        if(socialInsuranceOfficeCd.isPresent()){
+            Optional<SocialInsuranceOffice>  socialInsuranceOffice = listSocialInsuranceOffice.stream().filter(x -> x.getCode().v().equals(socialInsuranceOfficeCd.get())).findFirst();
+            data.setSocialInsuranceOffice(socialInsuranceOffice.orElse(null));
         }
-
     }
 
 

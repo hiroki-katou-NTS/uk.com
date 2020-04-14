@@ -20,7 +20,7 @@ public class LaborContractHist {
     /**
      * 期間.契約更新条項の有無
      */
-    private Integer workingSystem;
+    private Integer contractRenewalProvision;
 
     /**
      * 期間.開始日

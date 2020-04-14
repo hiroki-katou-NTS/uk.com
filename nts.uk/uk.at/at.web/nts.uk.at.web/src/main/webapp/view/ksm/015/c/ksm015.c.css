@@ -1,4 +1,6 @@
-
+#ksm015c{
+    width: 900px;
+}
 #tree-grid {
     margin: 30px 30px 0px 20px;
     width: 453px;
@@ -13,4 +15,13 @@
     border-bottom: 1px solid black;
     padding: 0px 0px 10px 0px;
     margin: 0px 0px 14px 0px;
+}
+#register-btn{
+	 margin-left: 45px !important;
+}
+.sidebar-content-header {
+    min-width: 700px;
+}
+.sidebar-content {
+	height: 100%;
 }
