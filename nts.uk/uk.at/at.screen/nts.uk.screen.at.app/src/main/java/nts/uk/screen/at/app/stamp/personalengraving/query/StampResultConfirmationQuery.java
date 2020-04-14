@@ -96,11 +96,13 @@ public class StampResultConfirmationQuery {
 		List<ItemValue> itemValues = dailyResult != null ? dailyResult.getItems() : Collections.emptyList();
 		// 4
 		List<String> itemIds = new ArrayList<>();
-		itemIds.add(!CollectionUtil.isEmpty(itemValues) ? itemValues.stream().filter(i -> i.getItemId() == 28).findFirst().orElse(null).getValue() : "");
+		Optional<ItemValue> itemId = itemValues.stream().filter(i -> i.getItemId() == 28).findFirst();
+		itemIds.add(itemId.isPresent() ? itemId.get().value() : "");
 		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, itemIds);
 		// 5
 		itemIds.clear();
-		itemIds.add(!CollectionUtil.isEmpty(itemValues) ? itemValues.stream().filter(i -> i.getItemId() == 29).findFirst().orElse(null).getValue() : "");
+		Optional<ItemValue> itemId2 = itemValues.stream().filter(i -> i.getItemId() == 29).findFirst();
+		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
 		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
 		

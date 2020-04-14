@@ -9,6 +9,7 @@ module nts.uk.at.view.kdp002.a {
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
+           
             constructor() {
                 let self = this;
             }
@@ -86,7 +87,7 @@ module nts.uk.at.view.kdp002.a {
                 return layout;
             }
         
-            public clickBtn1(vm) {
+            public clickBtn1(vm, layout) {
                 let button = this;
                 let data = {
                     datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
@@ -101,37 +102,48 @@ module nts.uk.at.view.kdp002.a {
                 };
                 service.stampInput(data).done((res) => {
                     if(vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-                        vm.openScreenC();
+                        vm.openScreenC(button, layout);
                     } else {
-                        vm.openScreenB();
+                        vm.openScreenB(button, layout);
                     }
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 });
             }
 
-            public openScreenB() {
+            public openScreenB(button, layout) {
                 let self = this;
                 nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
                     self.getStampData();
+                    self.openKDP002T(button, layout);
                 }); 
             }
 
-            public openScreenC() {
+            public openScreenC(button, layout) {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
                     self.getStampData();
+                    self.openKDP002T(button, layout);
+                });
+            }
+
+            public openKDP002T(button: ButtonSetting, layout) {
+                let data = {
+                    pageNo: layout.pageNo,
+                    buttonDisNo: button.btnPositionNo
+                }
+                service.getError(data).done((res) => {
+                    if(res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+                        nts.uk.ui.windows.setShared('KDP010_2T', res, true);
+                        nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+                            
+                        });
+                    }
                 });
             }
         
-            public clickBtn2() {
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                    console.log("Lam cai gi thi lam di ko thi thoi ko lam nua");
-                }); 
-            }
-
         }
 
     }
