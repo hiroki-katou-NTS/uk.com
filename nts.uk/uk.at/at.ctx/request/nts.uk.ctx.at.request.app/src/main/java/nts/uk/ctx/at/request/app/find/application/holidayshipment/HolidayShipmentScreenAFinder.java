@@ -674,13 +674,9 @@ public class HolidayShipmentScreenAFinder {
 	private void setAppEmploymentSettings(AppCommonSettingOutput appCommonSet, String employmentCD,
 			HolidayShipmentDto output) {
 
-		Optional<AppEmploymentSetting> appSetOpt = appCommonSet.appEmploymentWorkType.stream()
-				.filter(x -> x.getEmploymentCode().equals(employmentCD)).findFirst();
-
+		Optional<AppEmploymentSetting> appSetOpt = appCommonSet.appEmploymentWorkType;
 		if (appSetOpt.isPresent()) {
-
 			addAppSetToList(appSetOpt.get(), output);
-
 		}
 
 	}
@@ -801,16 +797,12 @@ public class HolidayShipmentScreenAFinder {
 	private List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType,
 			List<WorkType> wkTypes, AppCommonSettingOutput appCommonSet) {
 		// ドメインモデル「申請別対象勤務種類」を取得する
-		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType.stream()
-				.map(i -> i)
-				.filter(x -> x.getEmploymentCode().equals(employmentCode))
-				.findFirst();
+		Optional<AppEmploymentSetting> empSetOpt = appCommonSet.appEmploymentWorkType;
 		
 		if (empSetOpt.isPresent()) {
 			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
 			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH();
 			if(!CollectionUtil.isEmpty(empSetOpt.get().getListWTOAH())) {
-			//	if (appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg()) {
 				WorkTypeObjAppHoliday item = workTypeObjAppHolidayList.stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).findFirst().get();
 				List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
 						item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, employmentCode, appEmploymentSetting.getListWTOAH().get(0).getAppType(),
@@ -824,9 +816,6 @@ public class HolidayShipmentScreenAFinder {
 										.isPresent())
 								.collect(Collectors.toList());
 					}
-			//	} else {
-				//	return wkTypes;
-		//		}
 			}
 			
 		} else {
@@ -1013,8 +1002,8 @@ public class HolidayShipmentScreenAFinder {
 	//アルゴリズム「対象勤務種類の抽出」を実行する(Thực hiện thuật toán [trích xuất worktype])
 	public List<WorkType> extractTargetWkTypes(String companyID, String employmentCode, int breakOutType, List<WorkType> wkTypes) {
 		// ドメインモデル「申請別対象勤務種類」を取得する
-		List<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		Optional<AppEmploymentSetting> empSetOpt = lstEmploymentWt.stream().filter(x -> x.getEmploymentCode().equals(employmentCode)).findFirst();
+		// AppEmploymentRepository change return method to Optional<AppEmploymentSetting>
+		Optional<AppEmploymentSetting> empSetOpt = appEmploymentSetting.getEmploymentSetting(companyID, employmentCode, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		if(empSetOpt.isPresent()) {
 			AppEmploymentSetting appEmploymentSetting = empSetOpt.get();
 			List<WorkTypeObjAppHoliday> workTypeObjAppHolidayList = appEmploymentSetting.getListWTOAH().stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).collect(Collectors.toList());
