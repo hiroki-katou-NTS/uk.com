@@ -17,7 +17,7 @@ public enum AuthcMethod {
 	IC_CARD_AUTHC(1, "ICカード認証"),
 
 	// 2:静脈認証
-	VEIN_AUTHC(2, ":静脈認証"),
+	VEIN_AUTHC(2, "静脈認証"),
 
 	// 3:外部認証
 	EXTERNAL_AUTHC(3, "外部認証");

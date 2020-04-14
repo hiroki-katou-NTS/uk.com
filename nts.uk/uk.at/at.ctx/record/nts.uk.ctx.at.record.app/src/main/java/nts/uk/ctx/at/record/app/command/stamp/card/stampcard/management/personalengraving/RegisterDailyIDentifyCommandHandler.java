@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.persona
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -31,7 +32,8 @@ public class RegisterDailyIDentifyCommandHandler extends CommandHandler<Register
 		SelfConfirmDay selfConfirm = new SelfConfirmDay(GeneralDate.today(), true);
 		List<SelfConfirmDay> selfConfirms = new ArrayList<>(Arrays.asList(selfConfirm));
 		ParamIdentityConfirmDay param = new ParamIdentityConfirmDay(employeId, selfConfirms);
-		boolean register = registerIdentityConfirmDay.registerIdentity(param, null, null);
+//		Pair<String, GeneralDate> update = new Pair <String, GeneralDate> ();
+		boolean register = registerIdentityConfirmDay.registerIdentity(param, new ArrayList<>(), new HashSet<>());
 	}
 
 	
