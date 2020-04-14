@@ -59,7 +59,7 @@ subprojects {
 	
 	jar {
 		// contains source code
-		exclude '**/*.java'
+		exclude !project.hasProperty('sourceMap') || sourceMap == 'false' ? '' : '**/*.java'
 		includeEmptyDirs false
     	from sourceSets.main.allSource
  	}
@@ -1206,7 +1206,15 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
-		
+
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ws', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
+
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ws', version: version
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.app', version: version
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.dom', version: version
@@ -1239,7 +1247,7 @@ project (':com.web:nts.uk.com.web') {
 		target = "ES5"
 		noLib = true
 		watch = false
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
@@ -1249,7 +1257,7 @@ project (':com.web:nts.uk.com.web') {
 		target = "ES5"
 		noLib = true
 		watch = true
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
@@ -1375,6 +1383,11 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+
+		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		compile group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		compile group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
 	}
 }
 

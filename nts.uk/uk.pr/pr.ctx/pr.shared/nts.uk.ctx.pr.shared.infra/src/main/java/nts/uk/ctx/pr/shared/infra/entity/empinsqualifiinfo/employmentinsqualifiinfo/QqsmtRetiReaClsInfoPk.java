@@ -24,4 +24,11 @@ public class QqsmtRetiReaClsInfoPk {
     @Column(name = "CID")
     public String cId;
 
+    /**
+     * 退職解雇理由区分コード
+     */
+    @Basic(optional = false)
+    @Column(name = "RETI_RES_CLS_CD")
+    public String retirementReasonClsCode;
+
 }

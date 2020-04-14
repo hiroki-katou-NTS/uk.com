@@ -766,11 +766,12 @@ module nts.uk.com.view.cmm018.shr {
                     }
                 };
                 try {
+                	ProcessHandler.resizeColumnIndex(0, root, tabSelected, mode);
                     ProcessHandler.resizeColumnIndex(1, root, tabSelected, mode);  
                     ProcessHandler.resizeColumnIndex(2, root, tabSelected, mode);  
                     ProcessHandler.resizeColumnIndex(3, root, tabSelected, mode);  
                     ProcessHandler.resizeColumnIndex(4, root, tabSelected, mode);  
-                    ProcessHandler.resizeColumnIndex(5, root, tabSelected, mode);    
+                    ProcessHandler.resizeColumnIndex(5, root, tabSelected, mode); 
                 } catch(error) {
                     
                 }
@@ -785,6 +786,10 @@ module nts.uk.com.view.cmm018.shr {
                     gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeC' : '#grid_matomeD';
                 }else{//PERSON
                     gridName = mode == vmbase.MODE.MATOME ? '#grid_matomeE' : '#grid_matomeF';
+                }
+                if(index == 0) {
+                	$(gridName).igGridResizing("resize", index, 130);
+                	return;
                 }
                 if(_.isEmpty(root)) {
                     $(gridName).igGridResizing("resize", index, widthPhase);   

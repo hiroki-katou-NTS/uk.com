@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 /**
  * 承認枠
@@ -65,5 +67,22 @@ public class ApprovalFrame extends DomainObject {
 		return new  ApprovalFrame (frameOrder,
 				EnumAdaptor.valueOf(confirmAtr, ConfirmPerson.class),
 				 appDate, lstApproverInfo);
+	}
+	
+	public boolean isApproved(ApprovalForm approvalForm) {
+		if(approvalForm == ApprovalForm.SINGLE_APPROVED) {
+			for(ApproverInfor approverInfor : lstApproverInfo) {
+				if(approverInfor.isApproved()) {
+					return true;
+				}
+			}
+			return false;
+		}
+		for(ApproverInfor approverInfor : lstApproverInfo) {
+			if(approverInfor.isNotApproved()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

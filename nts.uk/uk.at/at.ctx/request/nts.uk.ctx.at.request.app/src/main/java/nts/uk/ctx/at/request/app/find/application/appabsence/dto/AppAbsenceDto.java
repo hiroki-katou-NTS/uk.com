@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
@@ -189,7 +190,16 @@ public class AppAbsenceDto {
 	private SettingNo65 setingNo65;
 	//No.376
 	private NumberOfRemainOutput numberRemain;
+	
 	private boolean masterUnreg;
+	
+	private List<ApprovalPhaseStateForAppDto> listApprovalPhaseStateDto;
+	
+	private Integer errorFlag;
+	
+	// 終日・半日選択表示区分
+	private int dayDispSet;
+		
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -231,7 +241,10 @@ public class AppAbsenceDto {
 								false,
 								null,
 								null,
-								false);
+								false,
+								Collections.emptyList(),
+								1,
+								0);
 	}
 }
 

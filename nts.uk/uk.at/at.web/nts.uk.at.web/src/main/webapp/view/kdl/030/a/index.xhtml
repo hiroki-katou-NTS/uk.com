@@ -46,7 +46,7 @@
 							<com:ko bind="$data.listApprovalFrame" tag="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: 'フェーズ'+$parent.phaseOrder" 
+										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: '#{i18n.getText('KDL030_15')}'+$parent.phaseOrder" 
 											class="bg-green phase-app"></td>
 									</com:ko>
 									<!-- 承認者 -->

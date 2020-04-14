@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 @AllArgsConstructor
 public class AchievementDto {
 
-	private GeneralDate date;
+	private String date;
 	
 	private WorkTypeDto workType;
 	
@@ -29,13 +29,24 @@ public class AchievementDto {
 	
 	public static AchievementDto convertFromAchievementOutput(AchievementOutput achievementOutput){
 		return new AchievementDto(
-				achievementOutput.getDate(), 
+				achievementOutput.getDate().toString("yyyy/MM/dd"), 
 				WorkTypeDto.convertFromWorkTypeOutput(achievementOutput.getWorkType()), 
 				WorkTimeDto.convertFromWorkTimeOutput(achievementOutput.getWorkTime()), 
 				achievementOutput.getStartTime1(), 
 				achievementOutput.getEndTime1(), 
 				achievementOutput.getStartTime2(), 
 				achievementOutput.getEndTime2());
+	}
+	
+	public AchievementOutput toDomain() {
+		return new AchievementOutput(
+				GeneralDate.fromString(date, "yyyy/MM/dd"), 
+				workType.toDomain(), 
+				workTime.toDomain(), 
+				startTime1, 
+				endTime1, 
+				startTime2, 
+				endTime2);
 	}
 	
 }

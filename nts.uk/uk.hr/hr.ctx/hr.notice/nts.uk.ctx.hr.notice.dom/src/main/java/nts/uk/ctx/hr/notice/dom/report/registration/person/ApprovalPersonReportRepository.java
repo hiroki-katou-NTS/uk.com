@@ -38,4 +38,6 @@ public interface ApprovalPersonReportRepository {
 	List<ApprovalPersonReport> getByJHN003(String cId, String sId, GeneralDateTime startDate, GeneralDateTime endDate,
 			Integer reportId, Integer approvalStatus, String inputName);
 
+	//社員IDから承認が必要な届出の有無を取得する
+	boolean checkExit(String cid, String aprSid);
 }

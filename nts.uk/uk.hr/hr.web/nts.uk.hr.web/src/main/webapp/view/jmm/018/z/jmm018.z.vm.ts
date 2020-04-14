@@ -15,6 +15,11 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         constructor() {
             let self = this;
             self.menuApprovalSettingInforList = ko.observableArray([]) 
+            $(window).resize(function() {
+                if(window.innerHeight > 400){
+                    $('#fixed-table').height(window.innerHeight - 248);
+                }
+            });
         }
 
         start(): JQueryPromise<any> {
@@ -34,6 +39,9 @@ module nts.uk.com.view.jmm018.z.viewmodel {
                 block.clear();
                 dfd.resolve();
             });
+            if(window.innerHeight > 400){
+                $('#fixed-table').height(window.innerHeight - 248);
+            }
             return dfd.promise();
         }
         
@@ -70,7 +78,7 @@ module nts.uk.com.view.jmm018.z.viewmodel {
         displayName: string;
         screenID: string;
         useApproval: boolean;
-        noRankOrder: boolean;
+        noRankOrder: KnockoutObservable<boolean>;
         name: string;
         approverName1: KnockoutObservable<string>;
         approverName2: KnockoutObservable<string>;
@@ -82,30 +90,39 @@ module nts.uk.com.view.jmm018.z.viewmodel {
             self.displayName = param.displayName;
             self.screenID = param.screenID;
             self.useApproval = param.useApproval;
-            self.noRankOrder = param.noRankOrder;
+            self.noRankOrder = ko.observable(param.noRankOrder);
             self.name = param.menuApprovalSettings.programId+' '+param.displayName + (param.menuApprovalSettings.programId == 'JHN001'? ('('+param.rptLayoutCD+param.rptLayoutName+')'):'');
-             self.approverName1 = ko.observable(param.menuApprovalSettings.apr1BusinessName == null? getText('JMM018_Z422_1_16_1'): param.menuApprovalSettings.apr1BusinessName);
+            self.approverName1 = ko.observable(param.menuApprovalSettings.apr1BusinessName == null? getText('JMM018_Z422_1_16_1'): param.menuApprovalSettings.apr1BusinessName);
             self.approverName2 = ko.observable(param.menuApprovalSettings.apr2BusinessName == null? getText('JMM018_Z422_1_18_1'): param.menuApprovalSettings.apr2BusinessName);
+            self.noRankOrder.subscribe(function(x){
+                self.menuApprovalSettings.useApproval(x);
+            });
         }
         
         selectApprover1(): void {
             let self = this;
             console.log(self);
-            let param = {
-                listInfor: self
-            }
-            setShared('shareToJMM018Y', param);
             modal('/view/jmm/018/y/index.xhtml').onClosed(function(): any {
-                let param = getShared('shareToJMM018B');
+                let param = getShared('shareToJMM018Z');
                 if(param != undefined){
-                    item.setEnableRetirePlanCourse(param, self);
+                    console.log(param);
+                    self.approverName1(param.employeeName);
+                    self.menuApprovalSettings.setApr1(param);
                 }
-            })
+            });
         }
         
         selectApprover2(): void {
             let self = this;
             console.log(self);
+            modal('/view/jmm/018/y/index.xhtml').onClosed(function(): any {
+                let param = getShared('shareToJMM018Z');
+                if(param != undefined){
+                    console.log(param);
+                    self.approverName2(param.employeeName);
+                    self.menuApprovalSettings.setApr2(param);
+                }
+            });
         }
     }
     
@@ -158,6 +175,18 @@ module nts.uk.com.view.jmm018.z.viewmodel {
             self.app2DevName = ko.observable(param.app2DevName);
             self.app2Poscd = ko.observable(param.app2Poscd);
             self.app2PosName = ko.observable(param.app2PosName);
+        }
+        setApr1(param: any): void{
+            let self = this;
+            self.apr1Sid(param.sid);
+            self.apr1Scd(param.employeeCode);
+            self.apr1BusinessName(param.employeeName);
+        }
+        setApr2(param: any): void{
+            let self = this;
+            self.apr2Sid(param.sid);
+            self.apr2Scd(param.employeeCode);
+            self.apr2BusinessName(param.employeeName);
         }
         
     }
