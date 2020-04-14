@@ -670,10 +670,7 @@ module jcm007.a {
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
 
                 } else {
-                    self.enable_tab2(false);
-                    self.visible_tab2(false);
-                    self.enable_btnExportExcel(false);
-                    self.newMode();
+                    self.setDataWhenListDataEmpty();
                 }
                 dfd.resolve();
                 block.clear();
@@ -738,7 +735,6 @@ module jcm007.a {
                     dialog.info({ messageId: "Msg_15" });
                 });
                 block.clear();
-                dialog.info({ messageId: "Msg_15" });
                 dfd.resolve();
             }).fail((mes) => {
                 console.log('UPDATE FAIL!!');
@@ -939,10 +935,7 @@ module jcm007.a {
                         }
                     }
                 } else {
-                    self.enable_tab2(false);
-                    self.visible_tab2(false);
-                    self.enable_btnExportExcel(false);
-                    self.newMode();
+                    self.setDataWhenListDataEmpty();
                 }
                 dfd.resolve();
                 block.clear();
@@ -1001,12 +994,7 @@ module jcm007.a {
                                 dialog.info({ messageId: "Msg_16" });
                             });
                         } else {
-                            self.itemSelectedTab1(null);
-                            self.itemSelectedTab2(null); 
-                            self.enable_tab2(false);
-                            self.visible_tab2(false); 
-                            self.enable_btnExportExcel(false);
-                            self.newMode();  
+                            self.setDataWhenListDataEmpty();  
                             dialog.info({ messageId: "Msg_16" });
                         }
                         
@@ -1034,11 +1022,7 @@ module jcm007.a {
                     $("#gridListEmployeesJcm007").igGrid('option', 'dataSource', self.employeeListTab2);
 
                 } else {
-                    self.itemSelectedTab2(null); 
-                    self.enable_tab2(false);
-                    self.visible_tab2(false);
-                    self.enable_btnExportExcel(false);
-                    self.newMode();
+                    self.setDataWhenListDataEmpty();
                 }
                 dfd.resolve();
                 block.clear();
@@ -1051,6 +1035,19 @@ module jcm007.a {
                 block.clear();
             });
             return dfd.promise();
+        }
+        
+        setDataWhenListDataEmpty() {
+            let self = this;
+            self.selectedTab('tab-1');
+            self.enable_tab1(true);
+            self.visible_tab1(true);
+            self.itemSelectedTab1(null);
+            self.itemSelectedTab2(null);
+            self.enable_tab2(false);
+            self.visible_tab2(false);
+            self.enable_btnExportExcel(false);
+            self.newMode();
         }
 
         setDataHeader(param) {
