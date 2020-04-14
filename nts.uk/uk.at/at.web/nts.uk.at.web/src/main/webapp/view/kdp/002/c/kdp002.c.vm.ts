@@ -31,13 +31,11 @@ module nts.uk.at.view.kdp002.c {
 
             constructor() {
                 let self = this;
-                for (let i = 1; i < 6; i++) {
-                    self.items.push(new model.ItemModels('00' + i, '基本給'));
-                }
-
+   
                 self.columns2 = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'code', width: 200 },
-                    { headerText: nts.uk.resource.getText("KDP002_60"), key: 'name', width: 150 }
+                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'itemId', width: 200, hidden: true },
+                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'name', width: 200 },
+                    { headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 150 }
                 ]);
             }
             /**
@@ -66,7 +64,7 @@ module nts.uk.at.view.kdp002.c {
                             }
                             self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
                             self.numberName();
-                            self.laceName();
+                            self.laceName(res.workPlaceName);
                             self.dayName(dateDisplay);
                             self.timeName(res.stampRecords[0].stampTime);
                             
@@ -74,6 +72,18 @@ module nts.uk.at.view.kdp002.c {
                             self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
                             self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
                             self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');
+                            
+                            if(res.itemValues) {
+                                res.itemValues.forEach(item => {
+                                    if(item.valueType == "TIME" && item.value) {
+                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", item.value);
+                                    } else if (item.valueType == "AMOUNT") {
+                                        item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));;
+                                    }
+                                });
+                            }
+
+                            self.items(res.itemValues);
                         }
                     }
                 });
@@ -98,18 +108,27 @@ module nts.uk.at.view.kdp002.c {
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
+
+            /**
+             * Close dialog
+             */
+            public registerDailyIdentify(): void {
+                service.registerDailyIdentify().done(() =>{
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                });
+            }
         }
     }
     export module model {
 
         export class ItemModels {
-            code: string;
+            itemId: string;
             name: string;
-            description: string;
-            constructor(code: string, name: string, description: string) {
+            value: string;
+            constructor(code: string, name: string, value: string) {
                 this.code = code;
                 this.name = name;
-                this.description = description;
+                this.value = value;
             }
         }
     }

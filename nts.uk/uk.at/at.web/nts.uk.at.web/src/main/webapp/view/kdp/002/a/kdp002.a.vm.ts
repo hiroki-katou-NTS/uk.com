@@ -40,6 +40,12 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public getTimeCardData() {
+                nts.uk.ui.errors.clearAll();
+                $(".nts-input").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+
                 let self = this;
                 nts.uk.ui.block.grayout();
                 let data = {
