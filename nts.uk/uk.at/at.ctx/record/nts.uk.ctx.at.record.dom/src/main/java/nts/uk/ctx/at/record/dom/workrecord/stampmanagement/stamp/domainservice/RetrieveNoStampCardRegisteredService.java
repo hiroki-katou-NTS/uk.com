@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -34,7 +35,11 @@ public class RetrieveNoStampCardRegisteredService {
 		List<StampInfoDisp> datas = new ArrayList<>();
 		for (StampRecord stampRecord : listStampRecord) {
 			for (Stamp stamp : listStamp) {
+				GeneralDate dateRecord = GeneralDate.ymd(stampRecord.getStampDateTime().year(),
+						stampRecord.getStampDateTime().month(), stampRecord.getStampDateTime().day());
+				GeneralDate dateStamp = GeneralDate.ymd(stamp.getStampDateTime().year(),stamp.getStampDateTime().month(), stamp.getStampDateTime().day());
 				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
+						&&  dateRecord.equals(dateStamp)
 						&& stampRecord.getStampDateTime().clockHourMinuteSecond().equals(stamp.getStampDateTime().clockHourMinuteSecond())) {
 					datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
 							stampRecord, Optional.of(stamp)));

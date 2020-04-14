@@ -241,6 +241,7 @@ public class OutputScreenListOfStampFinder {
 			Integer overtimeHours = 0;
 			Integer lateNightTime = 0;
 			String workLocationName = "";
+			String workTimeCodes = "";
 			if (stampInfoDisp.getStamp().isPresent()) {
 			
 				stampMeans = stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name;
@@ -264,7 +265,7 @@ public class OutputScreenListOfStampFinder {
 				
 				val workTimeCode = refActualResults.getWorkTimeCode();
 				if (workTimeCode.isPresent()) {
-
+					workTimeCodes = workTimeCode.get().v();
 					val workTimeDisplayNameCheck = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
 														 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst();
 					if(workTimeDisplayNameCheck.isPresent()){
@@ -288,7 +289,7 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setStampMeans(stampMeans);
 			cardNoStampInfo.setAuthcMethod(authcMethod);
 			cardNoStampInfo.setInstallPlace(workLocationName);
-			cardNoStampInfo.setLocalInfor(localInfor);
+			cardNoStampInfo.setLocalInfor(workTimeCodes);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
 			cardNoStampInfo.setOvertimeHours(getTimeString(overtimeHours));
