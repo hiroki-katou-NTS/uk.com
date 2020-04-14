@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.schedule.app.find.schedule.employeeinfo.rank;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
+import nts.uk.ctx.at.schedule.app.query.RankDto;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-
 
 /**
  * 
@@ -18,20 +18,27 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetRankEmpFinder {
-  
+
 	@Inject
 	private RankRepository rankRepository;
-	
-	//ランクマスタを優先順に並べて取得する   
-	public List<Rank> getRankbyPriorityOrder(){
+
+	@Inject
+	private EmployeeRankRepository employeeRankRepository;
+
+	// ランクマスタを優先順に並べて取得する
+	public RankDivisionDto getRankbyPriorityOrder(List<String> listEmpId) {
+
 		String companyId = AppContexts.user().companyId();
-		List<Rank> listRank = rankRepository.getListRank(companyId);
-		
+		List<RankDto> listRankDto = rankRepository.getListRank(companyId).stream()
+				.map(x -> new RankDto(x.getRankCode().v(), x.getRankSymbol().v())).collect(Collectors.toList());
+
 		// Query ランクマスタを優先順に並べて取得する
 		// 優先順でランクリストを取得する(ログイン会社ID)
-		//List
-		
-		return null;
-		
-	} 
+		List<EmployeeRankDto> listEmpRankDto = employeeRankRepository.getAll(listEmpId).stream()
+				.map(x -> new EmployeeRankDto(x.getSID(), x.getEmplRankCode().v())).collect(Collectors.toList());
+		RankDivisionDto data = new RankDivisionDto(listRankDto, listEmpRankDto);
+
+		return data;
+
+	}
 }
