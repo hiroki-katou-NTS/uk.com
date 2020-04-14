@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +30,10 @@ public class EmploymentListDto {
 	private static EmploymentListDto fromDomain(EmploymentList domain) {
 		return new EmploymentListDto(domain.getCompanyId(), domain.getSpecialHolidayEventNo(),
 				domain.getEmploymentCd().v());
+	}
+	
+	public EmploymentList toDomain() {
+		return new EmploymentList(companyId, specialHolidayEventNo, new EmploymentCode(employmentCd));
 	}
 
 }

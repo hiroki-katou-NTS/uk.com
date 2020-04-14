@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
@@ -56,16 +57,22 @@ public class HolidayWorkWebService extends WebService{
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
+	@Inject
+	private HttpSubSession session;
+	
 	@POST
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
-		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID());
+		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
+		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
+		return appHolidayWorkDto;
 	}
 	@POST
 	@Path("findChangeAppDate")
 	public AppHolidayWorkDto findChangeAppDate(ParamChangeAppDate param) {
+		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
 		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee(),
-				param.getStartTime(), param.getEndTime());
+				param.getStartTime(), param.getEndTime(), appHolidayWorkDto);
 	}
 	@POST
 	@Path("calculationresultConfirm")
@@ -133,7 +140,9 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("findByAppID")
 	public AppHolidayWorkDto findByChangeAppID(String appID) {
-		return this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
+		return appHolidayWorkDto;
 	}
 	@POST
 	@Path("beforeUpdateColorConfirm")
@@ -153,7 +162,8 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
-		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours());
+		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
+		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDto);
 	}
 	
 	@POST

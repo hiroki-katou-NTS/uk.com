@@ -25,7 +25,7 @@ required: true}" />
     </div>
     <!-- B7_3 -->
     <div class="valign-center control-group">
-        <div data-bind="ntsFormLabel: {required: false, enable: true}">
+        <div data-bind="ntsFormLabel: {required: true, enable: true}">
             #{i18n.getText('KSM015_17')}</div>
         <button tabindex="8" class="large" id="worktype-chose" data-bind="click: openDialogKDL003">#{i18n.getText('KSM015_18')}</button>
         <!-- B8_3_1 -->
@@ -57,7 +57,7 @@ required: true}" />
     <!-- B10 -->
     <div class="valign-center control-group">
         <div data-bind="ntsFormLabel: {required: false, enable: true}">
-            #{i18n.getText('KSM015_16')}</div>
+            #{i18n.getText('KSM015_20')}</div>
             <input tabindex="10" data-bind="ntsTextEditor: {	
                 name: '#[KSM015_20]',
                 constraint: 'Remarks',

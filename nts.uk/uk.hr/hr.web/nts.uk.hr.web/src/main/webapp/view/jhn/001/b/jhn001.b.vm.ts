@@ -115,7 +115,7 @@ module jhn001.b.vm {
                 };
 
                 service.removeData(objRemove).done(() => {
-                    info({ messageId: "Msg_40" }).then(function() {
+                    info({ messageId: "MsgJ_40" }).then(function() {
                         self.hasRemove = true;
                         self.start();
                     });

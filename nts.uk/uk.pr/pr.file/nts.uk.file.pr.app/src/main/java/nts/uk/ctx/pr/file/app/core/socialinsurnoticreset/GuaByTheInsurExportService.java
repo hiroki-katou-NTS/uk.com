@@ -363,13 +363,13 @@ public class GuaByTheInsurExportService extends ExportService<GuaByTheInsurExpor
             temp.setPersonalNumber(element[16] != null ? element[16].toString() : "");
 
             //C2_22
-            temp.setDependentNo(element[21] != null ? Integer.valueOf( element[21].toString()) : 0);
             //C2_23
-            temp.setDependentYes(element[21] != null ? Integer.valueOf( element[21].toString()) : 0);
+            temp.setDependentNo(element[21] != null ? Integer.valueOf( element[21].toString()) : null);
+
             //C2_24
-            temp.setMonRemunerationAmountInCurrency(element[22] != null ? Integer.valueOf( element[22].toString()) : 0);
+            temp.setMonRemunerationAmountInCurrency(element[22] != null ? Integer.valueOf( element[22].toString()) : null);
             //C2_25
-            temp.setMonRemunerationAmountOfActualItem(element[23] != null ? Integer.valueOf( element[23].toString()) : 0);
+            temp.setMonRemunerationAmountOfActualItem(element[23] != null ? Integer.valueOf( element[23].toString()) : null);
             //C2_26
             temp.setCompenMonthlyAamountTotal(element[24] != null ? element[24].toString() : "");
 

@@ -5,16 +5,13 @@ import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpIn
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.EmpInsLossInfoRepository;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfo;
 import nts.uk.ctx.pr.shared.dom.empinsqualifiinfo.employmentinsqualifiinfo.RetirementReasonClsInfoRepository;
-import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -29,12 +26,12 @@ public class EmpInsLossInfoFinder {
     public List<RetirementReasonClsInfoDto> getAllRetirementReasonClsInfoById() {
         List<RetirementReasonClsInfoDto> response = new ArrayList<>();
         List<RetirementReasonClsInfo> result = retirementReasonClsInfoRepository.getRetirementReasonClsInfoById(AppContexts.user().companyId());
-         response = result.stream().map(x -> new RetirementReasonClsInfoDto(
+        response = result.stream().map(x -> new RetirementReasonClsInfoDto(
                 x.getCId(),
                 x.getRetirementReasonClsCode().v(),
                 x.getRetirementReasonClsName().v()
         )).collect(Collectors.toList());
-         return response;
+        return response;
     }
 
     public EmpInsLossInfoDto getEmpInsLossInfoById(String sId) {
@@ -44,7 +41,7 @@ public class EmpInsLossInfoFinder {
             return result.map(e -> new EmpInsLossInfoDto(
                     AppContexts.user().companyId(),
                     e.getSId(),
-                    e.getCauseOfLossAtr().isPresent() ? e.getCauseOfLossAtr().get().value : null,
+                    e.getCauseOfLoss().isPresent() ? e.getCauseOfLoss().get().value : null,
                     e.getRequestForIssuance().isPresent() ? e.getRequestForIssuance().get().value : null,
                     e.getScheduleForReplenishment().isPresent() ? e.getScheduleForReplenishment().get().value : null,
                     e.getCauseOfLossEmpInsurance().map(PrimitiveValueBase::toString).orElse(null),

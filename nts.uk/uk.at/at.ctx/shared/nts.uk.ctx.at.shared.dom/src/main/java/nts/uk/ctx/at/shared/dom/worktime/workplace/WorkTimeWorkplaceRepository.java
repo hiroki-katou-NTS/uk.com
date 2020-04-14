@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.workplace;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+
 public interface WorkTimeWorkplaceRepository {
-	List<String> getWorkTimeWorkplaceById(String companyID,String workplaceID);
+	List<WorkTimeSetting> getWorkTimeWorkplaceById(String companyID,String workplaceID);
 }

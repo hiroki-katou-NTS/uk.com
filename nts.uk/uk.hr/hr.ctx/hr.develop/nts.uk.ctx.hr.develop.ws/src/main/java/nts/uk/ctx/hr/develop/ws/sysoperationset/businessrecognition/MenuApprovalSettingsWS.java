@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.develop.ws.sysoperationset.businessrecognition;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -35,7 +34,7 @@ public class MenuApprovalSettingsWS {
 	@POST
 	@Path("/update")
 	public void update(List<MenuApprovalSettingsInforDto> param){
-		command.update(param.stream().map(c->c.getMenuApprovalSettings()).collect(Collectors.toList()));
+		command.update(param);
 	}
 	
 	@POST

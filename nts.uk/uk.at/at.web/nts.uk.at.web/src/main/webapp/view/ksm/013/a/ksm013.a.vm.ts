@@ -76,8 +76,7 @@ module nts.uk.at.view.ksm013.a {
            }
 
             public register() {
-                let self = this,
-                    dfd = $.Deferred();
+                let self = this;
                 self.nurseClModel.nurseClassificationName($.trim(self.nurseClModel.nurseClassificationName()));
                 if (self.validateAll()) {
                     return;
@@ -92,8 +91,7 @@ module nts.uk.at.view.ksm013.a {
                             nts.uk.ui.block.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.isEditting(true);
-                            
-                            dfd.resolve();
+                            $('#nurseClassificationName').focus();
                         })
                     }).fail((res) => {
                        // nts.uk.ui.dialog.alertError(res).then(function() {
@@ -118,47 +116,40 @@ module nts.uk.at.view.ksm013.a {
                         nts.uk.ui.block.clear();
                         $('#nurseClassificationName').focus();
                         self.isEditting(true);
-                        dfd.resolve();
                     });
                 }
-                return dfd.promise();
             }
 
             public remove() {
-                let self = this,
-                    dfd = $.Deferred();
+                let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let param = {
                         nurseClassificationCode: self.nurseClModel.nurseClassificationCode()
                     }
                     nts.uk.ui.block.grayout();
                     service.remove(param).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        if (self.lstNurseCl().length == 1) {
-                            self.lstNurseCl([]);
-                            self.selectedCode("");
-                        } else {
-                            let indexSelected: number;
-                            for (let index: number = 0; index < self.lstNurseCl().length; index++) {
-                                if (self.lstNurseCl()[index].code == self.selectedCode()) {
-                                    indexSelected = (index == self.lstNurseCl().length - 1) ? index - 1 : index;
-                                    self.lstNurseCl().splice(index, 1);
-                                    break;
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
+                            if (self.lstNurseCl().length == 1) {
+                                self.lstNurseCl([]);
+                                self.selectedCode("");
+                            } else {
+                                let indexSelected: number;
+                                for (let index: number = 0; index < self.lstNurseCl().length; index++) {
+                                    if (self.lstNurseCl()[index].code == self.selectedCode()) {
+                                        indexSelected = (index == self.lstNurseCl().length - 1) ? index - 1 : index;
+                                        self.lstNurseCl().splice(index, 1);
+                                        break;
+                                    }
                                 }
+                                self.selectedCode(self.lstNurseCl()[indexSelected].code);
+                               
                             }
-                            self.selectedCode(self.lstNurseCl()[indexSelected].code);
-                           
-                        }
+                        });
+                    }).always(function() {
                         nts.uk.ui.block.clear();
-                            
-                        
-                        dfd.resolve();
                     });
                 }).ifNo(function() {
-                    dfd.resolve();
-                    return;
                 });
-                return dfd.promise()
             }
 
             private validateAll(): boolean {

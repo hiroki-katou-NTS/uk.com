@@ -38,6 +38,7 @@ public class ApplicationCommand_New {
 	private String applicationDate; 
 	
 	// 申請理由
+	private String appReasonID;
 	private String applicationReason;
 	
 	// 申請種類

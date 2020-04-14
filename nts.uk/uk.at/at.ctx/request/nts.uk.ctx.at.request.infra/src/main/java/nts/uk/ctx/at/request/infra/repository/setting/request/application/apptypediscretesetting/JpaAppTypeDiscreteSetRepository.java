@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
@@ -38,7 +39,7 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType, ApplicationType.class),
 				EnumAdaptor.valueOf(entity.prePostInitAtr, InitValueAtr.class),
 				EnumAdaptor.valueOf(entity.prePostCanChangeFlg, AppCanAtr.class),
-				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, AppDisplayAtr.class),
+				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, DisplayAtr.class),
 				EnumAdaptor.valueOf(entity.sendMailWhenApprovalFlg, AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.sendMailWhenRegisterFlg, AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.displayReasonFlg, AppDisplayAtr.class),

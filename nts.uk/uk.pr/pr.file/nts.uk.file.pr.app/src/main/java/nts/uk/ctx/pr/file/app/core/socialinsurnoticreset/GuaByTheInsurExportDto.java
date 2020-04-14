@@ -147,19 +147,19 @@ public class GuaByTheInsurExportDto {
     /**
      * 被扶養者（無）
      */
-    private int dependentNo;
+    private Integer dependentNo;
     /**
      * 被扶養者（有）
      */
-    private int dependentYes;
+    private Integer dependentYes;
     /**
      * 報酬月額（通貨によるものの額）
      */
-    private int monRemunerationAmountInCurrency;
+    private Integer monRemunerationAmountInCurrency;
     /**
      *  報酬月額（現物によるものの額）
      */
-    private int monRemunerationAmountOfActualItem;
+    private Integer monRemunerationAmountOfActualItem;
     /**
      *  報酬月額（合計）
      */

@@ -33,5 +33,9 @@ public class ClassificationListDto {
 		return new ClassificationListDto(domain.getCompanyId(), domain.getSpecialHolidayEventNo(),
 				domain.getClassificationCd());
 	}
+	
+	public ClassificationList toDomain() {
+		return new ClassificationList(companyId, specialHolidayEventNo, classificationCd);
+	}
 
 }

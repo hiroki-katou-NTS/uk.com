@@ -10,13 +10,16 @@ import nts.arc.time.calendar.period.DatePeriod;
  * 社員雇用保険履歴
  */
 public interface EmpInsHistRepository {
-    List<EmpInsHist> getByEmpIdsAndStartDate(List<String> empIds, GeneralDate startDate);
+    List<EmpInsHist> getByEmpIdsAndDate(String cid, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
+
     List<EmpInsHist> getEmpInsHistById(String cid, List<String> sid, GeneralDate baseDate);
+
 	List<EmpInsHist> getAllEmpInsHist();
 
-	Optional<EmpInsHist> getByEmpIdsAndPeriod(String sId, DatePeriod period);
-	
+	Optional<EmpInsHist> getByEmpIdAndEndDate(String sId, GeneralDate startDate, GeneralDate endDate);
+
 	List<EmpInsHist> getByEmpIdsAndStartDateInPeriod(String companyId, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
-	
+
 	List<EmpInsHist> getByEmpIdsAndEndDateInPeriod(String companyId, List<String> empIds, GeneralDate startDate, GeneralDate endDate);
+
 }

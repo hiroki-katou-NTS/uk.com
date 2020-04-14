@@ -1,53 +1,75 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksm015.b.css" />
+        <com:scriptfile path="ksm015.b.model.js" />
+        <com:scriptfile path="ksm015.b.start.js" />
+        <com:scriptfile path="ksm015.b.vm.js" />
+        <com:scriptfile path="ksm015.b.service.js" />
 
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="ksm015.b.css" />
-			<com:scriptfile path="ksm015.b.model.js" />
-			<com:scriptfile path="ksm015.b.start.js" />
-			<com:scriptfile path="ksm015.b.vm.js" />
-			<com:scriptfile path="ksm015.b.service.js" />
-
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode
-				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName
-				nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks
-			</com:ValidatorScript>
-
-		</ui:define>
-		<ui:define name="content">
-			<div id="functions-area">
-				<!-- Go back Style -->
-				<!-- B5 -->
-				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }">#{i18n.getText('KSM015_11')}</a>
-				<!-- B3 -->
-				<button tabindex="1" data-bind="click: createNew">#{i18n.getText('KSM015_7')}</button>
-				<!-- B1 -->
-				<button class="proceed" tabindex="2" data-bind="click: register">#{i18n.getText('KSM015_8')}</button>
-				<!-- B2 -->
-				<button class="danger" tabindex="3" data-bind="click: deleteShiftMaster, disable: registrationForm().newMode()">#{i18n.getText('KSM015_9')}</button>
-			</div>
-			<div id="contents-area">
-				<div id="left-content"
-					data-bind="ntsPanel:{width: '382px', height: '535px', direction: 'right', showIcon: false, visible: true}">
-					<div style="width: 380px" tabindex="5" data-bind="ntsSearchBox: {searchMode: 
+        <com:ValidatorScript>
+          nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode
+          nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName
+          nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks
+        </com:ValidatorScript>
+      </ui:define>
+      <ui:define name="content">
+        <div id="functions-area">
+          <!-- Go back Style -->
+          <!-- B5 -->
+          <a
+            class="goback"
+            data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }"
+            >#{i18n.getText('KSM015_11')}</a
+          >
+          <!-- B3 -->
+          <button tabindex="1" id="create-new" data-bind="click: createNew"
+            >#{i18n.getText('KSM015_7')}</button
+          >
+          <!-- B1 -->
+          <button class="proceed" tabindex="2" data-bind="click: register"
+            >#{i18n.getText('KSM015_8')}</button
+          >
+          <!-- B2 -->
+          <button
+            class="danger"
+            tabindex="3"
+            data-bind="click: deleteShiftMaster, disable: registrationForm().newMode()"
+            >#{i18n.getText('KSM015_9')}</button
+          >
+        </div>
+        <div id="contents-area">
+          <div id="ksm015b" class="cf">
+            <div
+              id="left-content"
+              data-bind="ntsPanel:{width: '382px', height: '535px', direction: 'right', showIcon: false, visible: true}"
+            >
+              <div
+                style="width: 380px"
+                tabindex="5"
+                data-bind="ntsSearchBox: {searchMode: 
 						'filter',targetKey: 'shiftMasterCode', 
 						comId: 'gridlist-tbl', 
 						items: shiftMasters, 
 						selected: selectedShiftMaster, 
 						selectedKey: 'shiftMasterCode', 
 						fields: ['shiftMasterName', 'shiftMasterCode'], 
-						mode: 'igGrid'}"></div>
+						mode: 'igGrid'}"
+              ></div>
 
-					<div id="gridlist-div">
-						<table id="gridlist-tbl" data-bind="ntsGridList: {
+              <div id="gridlist-div">
+                <table
+                  id="gridlist-tbl"
+                  data-bind="ntsGridList: {
 								width: 380,
 								height: 485,
 								options: shiftMasters,
@@ -56,16 +78,17 @@
 								multiple: false,
 								value: selectedShiftMaster,
 								mode: 'filter'
-							}"></table>
-					</div>
-				</div>
-				<!--  registraion form -->
-				<div id="registration-form">
-					<ui:include src="register-form.xhtml" />
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
-
+							}"
+                ></table>
+              </div>
+            </div>
+            <!--  registraion form -->
+            <div id="registration-form">
+              <ui:include src="register-form.xhtml" />
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

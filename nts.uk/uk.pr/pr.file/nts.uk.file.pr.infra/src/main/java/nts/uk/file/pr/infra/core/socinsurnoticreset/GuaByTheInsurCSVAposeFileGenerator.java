@@ -75,7 +75,7 @@ public class GuaByTheInsurCSVAposeFileGenerator extends AsposeCellsReportGenerat
         try {
             TxtSaveOptions opts = new TxtSaveOptions(SaveFormat.CSV);
             opts.setSeparator(',');
-            opts.setEncoding(Encoding.getUTF8());
+            opts.setEncoding(Encoding.getEncoding("Shift_JIS"));
             opts.setQuoteType(TxtValueQuoteType.NEVER);
             workbook.save(outputStream, opts);
         } catch (Exception e) {

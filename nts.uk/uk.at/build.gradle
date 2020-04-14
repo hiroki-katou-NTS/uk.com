@@ -57,7 +57,7 @@ subprojects {
 	
 	jar {
 		// contains source code
-		exclude '**/*.java'
+		exclude !project.hasProperty('sourceMap') || sourceMap == 'false' ? '' : '**/*.java'
 		includeEmptyDirs false
     	from sourceSets.main.allSource
  	}
@@ -826,6 +826,22 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: version)
 		
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
+		
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ws', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
+		
 		// implement eraAdapter
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.app', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.dom', version: version
@@ -842,7 +858,7 @@ project (':at.web:nts.uk.at.web') {
 		target = "ES5"
 		noLib = true
 		watch = false
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')
@@ -852,7 +868,7 @@ project (':at.web:nts.uk.at.web') {
 		target = "ES5"
 		noLib = true
 		watch = true
-		sourcemap = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
 		source = new File('src/main/webapp/view')
 		outputDir = new File('src/main/webapp/view')

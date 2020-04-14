@@ -1,14 +1,20 @@
 package nts.uk.ctx.hr.develop.ac.department;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.department.aff.AffDepartmentPub;
+import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentPub;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfo614Param;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
@@ -32,15 +38,59 @@ public class DepartmentImportImplm implements IDepartmentInforImport {
 	@Override
 	public List<DepartmentInforImport> getAllActiveDepartment(String companyId, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return departmentPub.getAllActiveDepartment(companyId, baseDate).stream().map(c -> new DepartmentInforImport(
-				c.getDepartmentId(), 
-				c.getHierarchyCode(), 
-				c.getDepartmentCode(), 
-				c.getDepartmentName(), 
-				c.getDepartmentDisplayName(), 
-				c.getDepartmentGenericName(), 
-				c.getDepartmentExternalCode())
-				).collect(Collectors.toList());
+		List<DepartmentInforExport> lstHWkpInfo = departmentPub.getAllActiveDepartment(companyId, baseDate);
+		return this.createTree(lstHWkpInfo);
+	}
+	
+	private List<DepartmentInforImport> createTree(List<DepartmentInforExport> lstHWkpInfo) {
+		List<DepartmentInforImport> lstReturn = new ArrayList<>();
+		if (lstHWkpInfo.isEmpty())
+			return lstReturn;
+		// Higher hierarchyCode has shorter length
+		int highestHierarchy = lstHWkpInfo.stream()
+				.min((a, b) -> a.getHierarchyCode().length() - b.getHierarchyCode().length()).get().getHierarchyCode()
+				.length();
+		Iterator<DepartmentInforExport> iteratorWkpHierarchy = lstHWkpInfo.iterator();
+		// while have workplace
+		while (iteratorWkpHierarchy.hasNext()) {
+			// pop 1 item
+			DepartmentInforExport wkpHierarchy = iteratorWkpHierarchy.next();
+			// convert
+			DepartmentInforImport dto = new DepartmentInforImport(wkpHierarchy.getDepartmentId(), wkpHierarchy.getHierarchyCode(), wkpHierarchy.getDepartmentCode(), wkpHierarchy.getDepartmentName(), wkpHierarchy.getDepartmentDisplayName(), wkpHierarchy.getDepartmentGenericName(), wkpHierarchy.getDepartmentExternalCode(), new ArrayList<>());
+			// build List
+			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
+		}
+		return lstReturn;
+	}
+	
+	private static final Integer HIERARCHY_LENGTH = 3;
+	
+	private void pushToList(List<DepartmentInforImport> lstReturn, DepartmentInforImport dto, String hierarchyCode, String preCode,
+			int highestHierarchy) {
+		if (hierarchyCode.length() == highestHierarchy) {
+			// check duplicate code
+			if (lstReturn.isEmpty()) {
+				lstReturn.add(dto);
+				return;
+			}
+			for (DepartmentInforImport item : lstReturn) {
+				if (!item.getDepartmentId().equals(dto.getDepartmentId())) {
+					lstReturn.add(dto);
+					break;
+				}
+			}
+		} else {
+			String searchCode = preCode.isEmpty() ? preCode + hierarchyCode.substring(0, highestHierarchy)
+					: preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
+			Optional<DepartmentInforImport> optWorkplaceFindDto = lstReturn.stream()
+					.filter(item -> item.getHierarchyCode().equals(searchCode)).findFirst();
+			if (!optWorkplaceFindDto.isPresent()) {
+				return;
+			}
+			List<DepartmentInforImport> currentItemChilds = optWorkplaceFindDto.get().getChildren();
+			pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
+					searchCode, highestHierarchy);
+		}
 	}
 
 	@Override
