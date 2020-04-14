@@ -103,7 +103,7 @@ public class DatabeforereflectingFinder {
 	public DataBeforeReflectResultDto startPageZ() {
 		String cID = AppContexts.user().companyId();
 
-		Optional<Boolean> includReflected = Optional.of(true);
+		Optional<Boolean> includReflected = Optional.of(false);
 
 		// アルゴリズム[承認データの取得]を実行する(Thực hiện thuật toán [lấy ApprovalData])
 		List<RetiredEmployeeInfoResult> retirementInfos = convertToDtoZScreen(getApprovalData(cID, AppContexts.user().employeeId(), includReflected),
