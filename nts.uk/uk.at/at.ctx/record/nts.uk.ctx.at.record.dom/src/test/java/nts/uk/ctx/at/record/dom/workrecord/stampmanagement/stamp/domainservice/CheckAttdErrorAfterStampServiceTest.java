@@ -45,7 +45,6 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
-				result = Optional.of(StampSettingPersonHelper.DUMMY);
 			}
 		};
 		
@@ -66,6 +65,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				
@@ -92,6 +92,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				result = Optional.of(DomainServiceHeplper.getStamPromptApplication());
@@ -127,6 +128,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				result = Optional.of(DomainServiceHeplper.getStamPromptApplication());
@@ -166,6 +168,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				result = Optional.of(DomainServiceHeplper.getStamPromptApplication());
@@ -202,6 +205,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				result = Optional.of(DomainServiceHeplper.getStamPromptApplication());
@@ -239,6 +243,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 		new Expectations() {
 			{
 				require.getStampSetPer();
+				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.getStampSet();
 				result = Optional.of(DomainServiceHeplper.getStamPromptApplication());
