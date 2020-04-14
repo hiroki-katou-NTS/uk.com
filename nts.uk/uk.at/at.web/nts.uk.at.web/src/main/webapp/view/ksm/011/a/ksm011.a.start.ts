@@ -12,7 +12,6 @@ module nts.uk.at.view.ksm011.a {
         };
 
             __viewContext.bind(__viewContext.viewModel);
-
         
         // show active tab panel 
         _.delay(() => {

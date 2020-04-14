@@ -28,8 +28,10 @@ public class TimeLeavingWork extends DomainObject{
 	 */
 	private WorkNo workNo;
 	
+	//出勤
 	private Optional<TimeActualStamp> attendanceStamp;
 	
+	//退勤
 	private Optional<TimeActualStamp> leaveStamp;
 	
 	private TimeSpanForCalc timespan;

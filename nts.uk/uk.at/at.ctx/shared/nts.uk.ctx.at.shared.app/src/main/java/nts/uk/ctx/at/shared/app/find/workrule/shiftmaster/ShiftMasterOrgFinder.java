@@ -36,12 +36,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ShiftMasterOrgFinder {
 	
-	@Inject 
-	private GetShiftMasterByWorkplaceService getShiftMasterSv;
-	
-	@Inject 
-	private GetUsableShiftMasterService getUseableShiftMasterSv;
-	
 	@Inject
 	private ShiftMasterOrgRepository shiftMasterOrgRp;
 	
@@ -66,7 +60,7 @@ public class ShiftMasterOrgFinder {
 		if(target == null) {
 			shiftMasters =  require.getAllByCid();
 		} else {
-			shiftMasters = getUseableShiftMasterSv.getUsableShiftMaster(require, target);
+			shiftMasters = GetUsableShiftMasterService.getUsableShiftMaster(require, target);
 		}
 				
 		if(CollectionUtil.isEmpty(shiftMasters)) {
@@ -108,7 +102,7 @@ public class ShiftMasterOrgFinder {
 		}
 		
 		@SuppressWarnings("static-access") 
-		List<ShiftMasterDto> shiftMasters = getShiftMasterSv.getShiftMasterByWorkplaceService(require, target);
+		List<ShiftMasterDto> shiftMasters = GetShiftMasterByWorkplaceService.getShiftMasterByWorkplaceService(require, target);
 
 		
 		if(CollectionUtil.isEmpty(shiftMasters)) {

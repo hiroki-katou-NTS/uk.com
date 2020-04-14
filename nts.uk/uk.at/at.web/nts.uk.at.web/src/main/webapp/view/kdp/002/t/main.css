@@ -1,0 +1,54 @@
+#label-title-2{
+	margin-top: 20px;
+    margin-left: 171px;
+}
+
+.btn_2, .btn_3, .btn_4 {
+	margin-top: 18px;
+	width: 165px;
+	height: 130px;
+	margin-left: 35px;
+}
+
+.btn_6, .btn_7 {
+	width: 165px;
+	height: 130px;
+	margin-top: 20px;
+	margin-left: 35px;
+}
+
+.btn_1 {
+	margin-top: 18px;
+	width: 165px;
+	height: 130px;
+	margin-left: 30px;
+}
+
+.btn_5 {
+	width: 165px;
+	height: 130px;
+	margin-left: 30px;
+	margin-top: 20px;
+}
+
+.btn_8{
+	width: 190px;
+	height: 80px;
+	margin-left: 217px;
+	margin-top: 20px;
+	font-size: 1.5rem;
+}
+
+#label-title{
+    margin-left: 20px;
+}
+
+.btn-name {
+	font-size: 15px;
+	border-radius: 10px;
+}
+
+.btn-close {
+	font-size: 13px;
+	border-radius: 10px;
+}
