@@ -82,8 +82,11 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		List<KrqstAppEmploymentSet> list = this.queryProxy().query(FIND_EMPLOYMENT_BY_COMPANYID, KrqstAppEmploymentSet.class)
 				.setParameter("companyId", companyId)
 				.getList();
-		List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
-		return listReturn;
+		if(!list.isEmpty()) {			
+			List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
+			return listReturn;
+		}
+		return new ArrayList<>();
 				
 	}
 
@@ -96,7 +99,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			List<AppEmploymentSetting> listReturn = toDomain(list, companyId);
 			return listReturn;
 		}
-		 return null;
+		return new ArrayList<>();
 				
 	}
 	/**
