@@ -75,6 +75,11 @@ public class StampResultConfirmationQuery {
 		String cid = AppContexts.user().companyId();
 		String authorityId = AppContexts.user().roles().forAttendance();
 		String sid = AppContexts.user().employeeId();
+		List<Integer> attItemIds = param.getAttendanceItems();
+		attItemIds.add(28);
+		attItemIds.add(29);
+		attItemIds.add(31);
+		attItemIds.add(34);
 		
 		// 1
 		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
@@ -104,7 +109,10 @@ public class StampResultConfirmationQuery {
 		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
 		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
-		
+		itemValues.removeIf(r -> r.getItemId() == 28);
+		itemValues.removeIf(r -> r.getItemId() == 29);
+		itemValues.removeIf(r -> r.getItemId() == 31);
+		itemValues.removeIf(r -> r.getItemId() == 34);
 		return new StampResultConfirmDto(screenDisplays, getDailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults);
 	}
 	

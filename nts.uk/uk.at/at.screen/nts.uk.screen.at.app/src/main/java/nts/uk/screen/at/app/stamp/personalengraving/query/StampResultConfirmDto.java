@@ -35,6 +35,7 @@ public class StampResultConfirmDto {
 		}
 
 		this.dailyItems = dailyItems;
+		
 		for (ItemValue item : itemValues) {
 			Optional<AttItemName> name = dailyItems.stream().filter(a -> a.getAttendanceItemId() == item.getItemId()).findFirst(); 
 			this.itemValues.add(new ItemValueDto(item.getValue(), item.getValueType().name, item.getItemId(), name.isPresent() ? name.get().getAttendanceItemName() : ""));

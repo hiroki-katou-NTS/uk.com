@@ -65,7 +65,7 @@ module nts.uk.at.view.kdp002.c {
                             }
                             self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
                             self.numberName();
-                            self.laceName(res.workPlaceName);
+                            self.laceName(res.stampRecords[0].workLocationCD +" "+res.workPlaceName);
                             self.dayName(dateDisplay);
                             self.timeName(res.stampRecords[0].stampTime);
                             
@@ -124,7 +124,6 @@ module nts.uk.at.view.kdp002.c {
         }
     }
     export module model {
-
         export class ItemModels {
             itemId: string;
             name: string;

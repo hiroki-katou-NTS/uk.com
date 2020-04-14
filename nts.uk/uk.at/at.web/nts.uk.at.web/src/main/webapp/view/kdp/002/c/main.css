@@ -18,8 +18,12 @@
 	margin-left: 25px !important;
 }
 
-.item-screen, #single-list_container {
+#single-list_container {
 	margin-top: 0px !important;
+}
+
+.item-screen {
+	margin-top: 10px;
 }
 
 #fixed-table {

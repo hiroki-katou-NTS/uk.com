@@ -43,7 +43,14 @@ class EmbossGridInfo {
             let idx = 1;
             items.forEach(stampData => {
                 stampData.code = ++idx;
-                stampData.stampDate = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
+                let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
+                if (moment(stampData.stampDate).day() ==6){
+                    formatedStamp = "<span class='color-schedule-saturday' >"+ formatedStamp + "</span>";
+                } else if (moment(stampData.stampDate).day() == 0){
+                    formatedStamp = "<span class='color-schedule-sunday'>"+ formatedStamp + "</span>";
+                }
+                stampData.stampDate = formatedStamp;
+
                 stampData.stampHowAndTime = "<div class='inline-bl'>" + stampData.stampHow + "</div>" + stampData.stampTime;
                 if(stampData.changeClockArt == 0) {
                     stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.timeStampType + '</div>';
@@ -52,6 +59,7 @@ class EmbossGridInfo {
                 } else {
                     stampData.timeStampType = `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>';
                 }
+
             });
 
             self.items(items);
