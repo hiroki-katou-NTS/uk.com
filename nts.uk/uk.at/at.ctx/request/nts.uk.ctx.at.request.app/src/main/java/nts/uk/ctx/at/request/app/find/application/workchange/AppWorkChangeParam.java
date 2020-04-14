@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.workchange;
 
 import java.util.List;
 
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 
 public class AppWorkChangeParam {
 	
@@ -10,6 +10,6 @@ public class AppWorkChangeParam {
 	
 	public List<String> dateLst;
 	
-	public AppWorkChangeDispInfoDto appWorkChangeDispInfoDto;
+	public AppWorkChangeDispInfoCmd appWorkChangeDispInfoCmd;
 	
 }

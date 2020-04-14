@@ -138,12 +138,17 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	public List<WorkType> getWorkTypeLst(AppEmploymentSetting appEmploymentSetting) {
 		String companyID = AppContexts.user().companyId();
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類」を確認する
-		if(appEmploymentSetting == null) {
+		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
+				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findAny();
+		if(!opWorkTypeObjAppHoliday.isPresent()) {
 			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
+		if(CollectionUtil.isEmpty(opWorkTypeObjAppHoliday.get().getWorkTypeList())) {
+			return workTypeRepository.findNotDeprecated(companyID);
+		}
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
-		List<String> workTypeCDLst = appEmploymentSetting.getListWTOAH().get(0).getWorkTypeList();
+		List<String> workTypeCDLst = opWorkTypeObjAppHoliday.get().getWorkTypeList();
 		return workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
 	}
 
@@ -298,7 +303,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			// エラーメッセージ(Msg_579)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_579");
 		}
-		// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
+		/*// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
 		if(appWorkChange.getWorkTimeStart2() > appWorkChange.getWorkTimeEnd2())  {
 			// エラーメッセージ(Msg_580)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_580");
@@ -307,7 +312,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		if(appWorkChange.getWorkTimeEnd1() > appWorkChange.getWorkTimeStart2())  {
 			// エラーメッセージ(Msg_581)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_581");
-		}
+		}*/
 		// INPUT．「勤務変更申請．勤務時間開始1」の入力範囲チェック
 		if(appWorkChange.getWorkTimeStart1() < 5 * 60) {
 			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする

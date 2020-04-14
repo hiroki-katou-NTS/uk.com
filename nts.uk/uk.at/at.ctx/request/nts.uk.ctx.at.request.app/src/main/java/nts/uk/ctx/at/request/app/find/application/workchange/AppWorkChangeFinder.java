@@ -17,6 +17,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCommand;
+import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
@@ -89,20 +90,28 @@ public class AppWorkChangeFinder {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
 		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService
-				.changeAppDate(companyID, dateLst, param.appWorkChangeDispInfoDto.toDomain());
+				.changeAppDate(companyID, dateLst, param.appWorkChangeDispInfoCmd.toDomain());
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 	
 	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
-		AppWorkChangeDispInfoDto result = param.appWorkChangeDispInfoDto;
+		AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
+		AppWorkChangeDispInfoDto result = new AppWorkChangeDispInfoDto(
+				cmd.appDispInfoStartupOutput, 
+				cmd.appWorkChangeSet, 
+				cmd.workTypeLst, 
+				cmd.setupType, 
+				null, 
+				cmd.workTypeCD, 
+				cmd.workTimeCD);
 		String companyID = AppContexts.user().companyId();
 		ChangeWkTypeTimeOutput changeWkTypeTimeOutput = appWorkChangeService.changeWorkTypeWorkTime(
 				companyID, 
-				result.workTypeCD, 
-				Optional.of(result.workTimeCD), 
-				result.appWorkChangeSet.toDomain());
+				cmd.workTypeCD, 
+				Optional.of(cmd.workTimeCD), 
+				cmd.appWorkChangeSet.toDomain());
 		result.setupType = changeWkTypeTimeOutput.getSetupType().value;
-		PredetemineTimeSettingDto predetemineTimeSettingDto = null;
+		PredetemineTimeSettingDto predetemineTimeSettingDto = new PredetemineTimeSettingDto();
 		if(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().isPresent()) {
 			changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get().saveToMemento(predetemineTimeSettingDto);
 		}
@@ -111,7 +120,7 @@ public class AppWorkChangeFinder {
 	}
 	
 	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
-		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoDto().toDomain();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		// Application command
 		CreateApplicationCommand appCommand = command.getApplication();
 		// Work change command
@@ -122,7 +131,7 @@ public class AppWorkChangeFinder {
 		String appID = IdentifierUtil.randomUniqueId();
 		// 入力者 = 申請者
 		// 申請者
-		String applicantSID = appCommand.getApplicantSID() != null ? appCommand.getApplicantSID() : AppContexts.user().employeeId();
+		String applicantSID = Strings.isNotBlank(appCommand.getApplicantSID()) ? appCommand.getApplicantSID() : AppContexts.user().employeeId();
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
@@ -193,7 +202,7 @@ public class AppWorkChangeFinder {
 		// Command data
 		CreateApplicationCommand appCommand = command.getApplication();
 		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
-		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoDto().toDomain();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();

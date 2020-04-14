@@ -41,7 +41,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand command = context.getCommand();
 		
-		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoDto().toDomain();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		// Application command
 		CreateApplicationCommand appCommand = command.getApplication();
 		// Work change command

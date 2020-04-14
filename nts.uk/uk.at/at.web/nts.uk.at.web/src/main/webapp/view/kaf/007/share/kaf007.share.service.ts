@@ -10,6 +10,10 @@ module nts.uk.at.view.kaf007.share {
                 updateWorkChange: "/at/request/application/workchange/updateworkchange",
                 getRecordWorkInfoByDate: "/at/request/application/workchange/getRecordWorkInfoByDate",
                 isTimeRequired: "at/request/application/workchange/isTimeRequired",
+                startNew: "/at/request/application/workchange/startNew",
+                changeAppDate: "/at/request/application/workchange/changeAppDate",
+                changeWorkSelection: "/at/request/application/workchange/changeWorkSelection",
+                checkBeforeRegister: "/at/request/application/workchange/checkBeforeRegister"
         }
         
         /**
@@ -46,6 +50,22 @@ module nts.uk.at.view.kaf007.share {
         
         export function isTimeRequired(workTypeCD: any): JQueryPromise<any> {
             return ajax("at", paths.isTimeRequired, workTypeCD);
+        }
+        
+        export function startNew(param): JQueryPromise<any> {
+            return ajax("at", paths.startNew, param);
+        }
+        
+        export function changeAppDate(param): JQueryPromise<any> {
+            return ajax("at", paths.changeAppDate, param);
+        }
+        
+        export function changeWorkSelection(param): JQueryPromise<any> {
+            return ajax("at", paths.changeWorkSelection, param);
+        }
+        
+        export function checkBeforeRegister(param): JQueryPromise<any> {
+            return ajax("at", paths.checkBeforeRegister, param);
         }
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 
 @Value
 public class AddAppWorkChangeCommand {
@@ -18,7 +17,7 @@ public class AddAppWorkChangeCommand {
 	 */
 	CreateApplicationCommand application;
 	
-	AppWorkChangeDispInfoDto appWorkChangeDispInfoDto;
+	AppWorkChangeDispInfoCmd appWorkChangeDispInfoCmd;
     
     public List<String> holidayDateLst;
 	
