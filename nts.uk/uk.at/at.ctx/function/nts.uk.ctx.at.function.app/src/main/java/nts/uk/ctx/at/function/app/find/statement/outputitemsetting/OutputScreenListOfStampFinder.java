@@ -289,7 +289,7 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setStampMeans(stampMeans);
 			cardNoStampInfo.setAuthcMethod(authcMethod);
 			cardNoStampInfo.setInstallPlace(workLocationName);
-			cardNoStampInfo.setLocalInfor(workTimeCodes);
+			cardNoStampInfo.setLocalInfor(localInfor);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
 			cardNoStampInfo.setOvertimeHours(getTimeString(overtimeHours));
