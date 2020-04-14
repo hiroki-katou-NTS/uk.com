@@ -60,7 +60,7 @@
 									<div id="label-b3-1"
 										data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_53')}</div>
 									<!-- B4_2 -->
-									<span id="text-b4-2" style="color:#0033cc; font-size: 15px;" data-bind="text: checkHandName"></span>
+									<span id="text-b4-2" style="color:#0033cc; font-size: 15px;font-weight: bold;" data-bind="text: checkHandName"></span>
 								</div>
 
 							</td>
@@ -110,8 +110,8 @@
 								value: currentCode
 							}"></table>
 							<div id = "text-b20">
-					<span id="text-b20-1">#{i18n.getText('KDP002_61')}</span> <span
-						id="text-b20-2" style="margin-top: 10px; margin-left: 20px">
+					<span id="text-b20-1" data-bind="visible : permissionCheck()">#{i18n.getText('KDP002_61')}</span> <span
+						id="text-b20-2" data-bind= "visible : !permissionCheck()">
 						#{i18n.getText('KDP002_99')}</span>
 					</div>
 					
@@ -119,7 +119,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed large" tabindex="9" id="close-button"
-					data-bind="click: closeDialog">#{i18n.getText('KDP002_62')}</button>
+					data-bind="click: closeDialog, disable : !permissionCheck()">#{i18n.getText('KDP002_62')}</button>
 				<button tabindex="9" id="close-button"
 					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
 			</div>

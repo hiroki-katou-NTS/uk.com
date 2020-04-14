@@ -28,6 +28,7 @@ module nts.uk.at.view.kdp002.c {
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
+            permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
 
             constructor() {
                 let self = this;
@@ -74,7 +75,11 @@ module nts.uk.at.view.kdp002.c {
                             self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
                             self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
                             self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');
+                        
                         }
+                    }
+                    if(res.confirmResult){
+                        self.permissionCheck(res.confirmResult.permissionCheck == 1?true:false);       
                     }
                 });
 
