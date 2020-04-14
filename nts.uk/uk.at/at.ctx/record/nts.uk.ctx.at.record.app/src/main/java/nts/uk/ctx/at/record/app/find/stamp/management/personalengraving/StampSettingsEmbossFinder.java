@@ -93,8 +93,8 @@ public class StampSettingsEmbossFinder {
 			throw new BusinessException("Msg_1644");
 		}
 		
-		if(CollectionUtil.isEmpty(stampSetting.get().getLstStampPageLayout()) ) {
-			throw new BusinessException( I18NText.getText("Msg_1645", I18NText.getText("KDP002_1")));
+		if(CollectionUtil.isEmpty(stampSetting.get().getLstStampPageLayout()) ) {		
+			throw new BusinessException("Msg_1645","KDP002_1");
 		}
 		
 		List<StampCard> stampCards = stampCardRepo.getListStampCard(employeeId);
