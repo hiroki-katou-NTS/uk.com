@@ -48,7 +48,7 @@ module nts.uk.at.view.kdp002.c {
                     dfd = $.Deferred();
                 let itemIds = nts.uk.ui.windows.getShared("KDP010_2C");
                 let data = {
-                    //stampDate: moment().format("YYYY/MM/DD"),
+                    stampDate: moment().format("YYYY/MM/DD"),
                     attendanceItems: itemIds
                 }
                 self.getEmpInfo();
@@ -56,22 +56,25 @@ module nts.uk.at.view.kdp002.c {
                 service.startScreen(data).done((res) => {
                     console.log(res);
                     if (res) {
-                        let dateDisplay =res.stampRecords[0].stampDate;
-                        let sizeRecord = res.stampRecords.length;
-                        if (moment(res.stampRecords[0].stampDate).day() == 6) {
-                            dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
-                        } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
-                            dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
+                        if(_.size(res.stampRecords) > 0){
+                            let dateDisplay =res.stampRecords[0].stampDate;
+                            let sizeRecord = res.stampRecords.length;
+                            if (moment(res.stampRecords[0].stampDate).day() == 6) {
+                                dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
+                            } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
+                                dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
+                            }
+                            self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
+                            self.numberName();
+                            self.laceName();
+                            self.dayName(dateDisplay);
+                            self.timeName(res.stampRecords[0].stampTime);
+                            
+                            self.timeName1(res.stampRecords.length > 0 ? res.stampRecords[sizeRecord - 1].stampTime : '');
+                            self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
+                            self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
+                            self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');
                         }
-                        self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
-                        self.numberName();
-                        self.laceName();
-                        self.dayName(res.workTypes.length > 0 ? res.workTypes[0].name : '');
-                        self.timeName(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name: '');
-                        self.timeName1(res.stampRecords.length > 0 ? res.stampRecords[sizeRecord - 1].stampTime : '');
-                        self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
-                        self.workName1(res.stampRecords.length > 0 ? res.stampRecords[0].stampArtName : '');
-                        self.workName2(res.stampRecords.length > 0 ? res.stampRecords[0].changeClockArtName : '');
                     }
                 });
 
