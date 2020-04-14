@@ -33,7 +33,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @return
 	 */
 	public static List<DailyAttdErrorInfo> get(Require require, String employeeId, int pageNo, int buttonDisNo) {
-		if(needCheckError(require, pageNo, buttonDisNo)) {
+		if(!needCheckError(require, pageNo, buttonDisNo)) {
 			return Collections.emptyList();
 		}
 		
