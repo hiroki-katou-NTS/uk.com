@@ -34,11 +34,11 @@ public class StampResultConfirmDto {
 			this.stampRecords.addAll(display.getStampDataOfEmployeesDto().getStampRecords());
 		}
 
-		this.dailyItems = dailyItems;
+//		this.dailyItems = dailyItems;
 		
-		for (ItemValue item : itemValues) {
-			Optional<AttItemName> name = dailyItems.stream().filter(a -> a.getAttendanceItemId() == item.getItemId()).findFirst(); 
-			this.itemValues.add(new ItemValueDto(item.getValue(), item.getValueType().name, item.getItemId(), name.isPresent() ? name.get().getAttendanceItemName() : ""));
+		for (AttItemName item : dailyItems) {
+			Optional<ItemValue> oValue = itemValues.stream().filter(a -> a.getItemId() == item.getAttendanceItemId()).findFirst(); 
+			this.itemValues.add(new ItemValueDto(oValue, item));
 		}
 
 		for (WorkType item : workTypes) {
@@ -62,6 +62,15 @@ public class StampResultConfirmDto {
 		private String valueType;
 		private int itemId;
 		private String name;
+		public ItemValueDto(Optional<ItemValue> oValue, AttItemName item) {
+			if(oValue.isPresent()) {
+				ItemValue value = oValue.get();
+				this.value = value.getValue();
+				this.valueType = value.getValueType().name;
+			}
+			this.itemId = item.getAttendanceItemId();
+			this.name = item.getAttendanceItemName();
+		}
 	}
 
 	@Data

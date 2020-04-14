@@ -35,8 +35,8 @@ module nts.uk.at.view.kdp002.c {
    
                 self.columns2 = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KDP002_59"), key: 'itemId', width: 200, hidden: true },
-                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'name', width: 200 },
-                    { headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 150 }
+                    { headerText: nts.uk.resource.getText("KDP002_59"), key: 'name', width: 175 },
+                    { headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 175 }
                 ]);
             }
             /**
@@ -118,7 +118,10 @@ module nts.uk.at.view.kdp002.c {
              */
             public registerDailyIdentify(): void {
                 service.registerDailyIdentify().done(() =>{
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" })
+                    .then(() => {
+                        nts.uk.ui.windows.close();
+                    });
                 });
             }
         }

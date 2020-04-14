@@ -88,7 +88,7 @@ public class StampResultConfirmationQuery {
 		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange, iGetDailyLock);
 		ConfirmStatusActualResult confirmStatusAcResults = ConfirmStatusOfDayService.get(required, cid, sid, GeneralDateTime.now().toDate());
 		
-		List<AttItemName> getDailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
+		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
 		
 		// 3
 		List<String> sids = new ArrayList<>();
@@ -109,11 +109,11 @@ public class StampResultConfirmationQuery {
 		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
 		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
-		itemValues.removeIf(r -> r.getItemId() == 28);
-		itemValues.removeIf(r -> r.getItemId() == 29);
-		itemValues.removeIf(r -> r.getItemId() == 31);
-		itemValues.removeIf(r -> r.getItemId() == 34);
-		return new StampResultConfirmDto(screenDisplays, getDailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults);
+		dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);
+		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
+		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
+		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults);
 	}
 	
 	@AllArgsConstructor

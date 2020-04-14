@@ -36,8 +36,14 @@
 	height: 80px;
 	margin-left: 217px;
 	margin-top: 20px;
+	font-size: 1.5rem;
 }
 
 #label-title{
     margin-left: 20px;
+}
+
+.btn-name {
+	font-size: 2rem;
+	border-radius: 10px;
 }

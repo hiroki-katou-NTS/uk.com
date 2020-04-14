@@ -240,7 +240,7 @@ public class StampRecordDto {
 		case TIME_CLOCK:
 			return I18NText.getText("KDP002_122");
 		case TEXT:
-			return I18NText.getText("KDP002_120");
+			return " ";
 		case RICOH_COPIER:
 			return I18NText.getText("KDP002_120");
 		default:

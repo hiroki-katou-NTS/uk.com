@@ -121,7 +121,12 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-                    self.getStampData();
+                    if(self.stampGrid().displayMethod() === 1) {
+                        self.getStampData();
+                    } else {
+                        self.getTimeCardData();
+                    }
+                    
                     self.openKDP002T(button, layout);
                 }); 
             }
@@ -130,7 +135,11 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                    self.getStampData();
+                    if(self.stampGrid().displayMethod() === 1) {
+                        self.getStampData();
+                    } else {
+                        self.getTimeCardData();
+                    }
                     self.openKDP002T(button, layout);
                 });
             }

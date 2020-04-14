@@ -1,70 +1,108 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<head>
-<link rel="stylesheet"
-	href="path/to/font-awesome/css/font-awesome.min.css" />
-</head>
-<body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 630, height: 520 };</script>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="/view/kdp/002/t/main.css" />
-			<com:scriptfile path="kdp002.t.vm.js" />
-			<com:scriptfile path="kdp002.t.start.js" />
-			<com:scriptfile path="kdp002.t.service.js" />
-		</ui:define>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <head>
+    <link
+      rel="stylesheet"
+      href="path/to/font-awesome/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 630, height: 600 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="/view/kdp/002/t/main.css" />
+        <com:scriptfile path="kdp002.t.vm.js" />
+        <com:scriptfile path="kdp002.t.start.js" />
+        <com:scriptfile path="kdp002.t.service.js" />
+      </ui:define>
 
-		<ui:define name="content">
-			<div>
-			<div id="label-title">
-					<label class="basic-label" data-bind="text:$data.dataShare.messageContent , style:{ color :  $data.dataShare.messageColor }"></label>
-				</div>
-				<com:ko-if bind="dataShare.listRequired.length > 5 ">
-				<div id="label-title-2">
-					<label class="basic-label">#{i18n.getText('KDP002_95')}</label>
-				</div>
-				</com:ko-if>
- 				 <com:ko-if bind="dataShare.listRequired.length < 7 ">
-				<div id="label-title-2">
-					<label class="basic-label"></label>
-				</div>
-				</com:ko-if>
-				<!-- G7 -->
-				<div>
-					<table>
-						<tr>
-							<td>
-
-								<button class="proceed btn-name btn_1" data-bind = "text: dataShare.listRequired[0].buttonName" id="button1"></button>
-							</td>
-							<td>
-								<button class="proceed btn-name btn_2" data-bind = "text: dataShare.listRequired[1].buttonName" id="button2"></button>
-							</td>
-							<td>
-								<button class="proceed btn-name btn_3" data-bind = "text: dataShare.listRequired[2].buttonName" id="button3"></button>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<button class="proceed btn-name btn_5" data-bind = "text: dataShare.listRequired[3].buttonName" id="button5"></button>
-							</td>
-							<td>
-								<button class="proceed btn-name btn_6" data-bind = "text: dataShare.listRequired[4].buttonName" id="button6"></button>
-							</td>
-							<td>
-								<button class="proceed btn-name btn_7" data-bind = "text: dataShare.listRequired[5].buttonName" id="button7"></button>
-							</td>
-						</tr>
-					</table>
-					<button class=" btn-name btn_8" data-bind="click: closeDialog" id="button8">#{i18n.getText('KDP002_96')}</button>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+      <ui:define name="content">
+        <div>
+          <div id="label-title">
+            <label
+              class="basic-label"
+              data-bind="text:$data.dataShare.messageContent , style:{ color :  $data.dataShare.messageColor }"
+            ></label>
+          </div>
+          <com:ko-if bind="dataShare.listRequired.length > 5 ">
+            <div id="label-title-2">
+              <label class="basic-label">#{i18n.getText('KDP002_95')}</label>
+            </div>
+          </com:ko-if>
+          <!-- <com:ko-if bind="dataShare.listRequired.length < 7 ">
+            <div id="label-title-2">
+              <label class="basic-label"></label>
+            </div>
+          </com:ko-if> -->
+          <!-- G7 -->
+          <div>
+            <table>
+              <tr>
+                <td>
+                  <button
+                    class="proceed btn-name btn_1"
+                    data-bind="text: dataShare.listRequired[0].buttonName"
+                    id="button1"
+                  ></button>
+                </td>
+                <td>
+                  <button
+                    class="proceed btn-name btn_2"
+                    data-bind="text: dataShare.listRequired[1].buttonName"
+                    id="button2"
+                  ></button>
+                </td>
+                <td>
+                  <button
+                    class="proceed btn-name btn_3"
+                    data-bind="text: dataShare.listRequired[2].buttonName"
+                    id="button3"
+                  ></button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button
+                    class="proceed btn-name btn_5"
+                    data-bind="text: dataShare.listRequired[3].buttonName"
+                    id="button5"
+                  ></button>
+                </td>
+                <td>
+                  <button
+                    class="proceed btn-name btn_6"
+                    data-bind="text: dataShare.listRequired[4].buttonName"
+                    id="button6"
+                  ></button>
+                </td>
+                <td>
+                  <button
+                    class="proceed btn-name btn_7"
+                    data-bind="text: dataShare.listRequired[5].buttonName"
+                    id="button7"
+                  ></button>
+                </td>
+              </tr>
+            </table>
+            <button
+              class="btn-name btn_8"
+              data-bind="click: closeDialog"
+              id="button8"
+            >
+              #{i18n.getText('KDP002_96')}
+            </button>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
