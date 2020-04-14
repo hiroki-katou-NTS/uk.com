@@ -26,6 +26,8 @@ module jcm007.a {
         employeeListTab2: [];
         enable_tab2: KnockoutObservable<boolean>;
         visible_tab2: KnockoutObservable<boolean>;
+        enable_tab1: KnockoutObservable<boolean>;
+        visible_tab1: KnockoutObservable<boolean>;
 
         itemSelectedTab1: KnockoutObservable<any>;
         itemSelectedTab2: KnockoutObservable<any>;
@@ -46,12 +48,15 @@ module jcm007.a {
 
         constructor() {
             let self = this;
+            
+            self.enable_tab1 = ko.observable(true);
+            self.visible_tab1 = ko.observable(true);
 
             self.enable_tab2 = ko.observable(true);
             self.visible_tab2 = ko.observable(true);
 
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: getText('JCM007_A221_1_1'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-1', title: getText('JCM007_A221_1_1'), content: '.tab-content-1', enable: self.enable_tab1, visible: self.visible_tab1 },
                 { id: 'tab-2', title: getText('JCM007_A221_1_3'), content: '.tab-content-2', enable: self.enable_tab2, visible: self.visible_tab2 }
             ]);
 
@@ -83,6 +88,7 @@ module jcm007.a {
 
             self.selectedTab.subscribe((value) => {
                 if (value == 'tab-2') {
+                    self.enable_tab1(false);
                     self.getListDataOfTab2().done(() => {
                         let itemSelectedTab2 = self.itemSelectedTab2();
                         if (itemSelectedTab2 != null) {
@@ -1105,6 +1111,8 @@ module jcm007.a {
         newMode() {
             let self = this;
             self.isNewMode = true;
+            self.enable_tab1(true);
+            self.visible_tab1(true);
             
             self.itemSelectedTab1(null);
             self.itemSelectedTab2(null);
