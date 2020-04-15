@@ -24,10 +24,12 @@ public class StampResultConfirmDto {
 	private List<WorkTimeDto> workTimeTypes = new ArrayList<>();
 	private ConfirmResultDto confirmResult;
 	private String workPlaceName;
+	private String attendance;
+	private String leave;
 
 	public StampResultConfirmDto(List<DisplayScreenStampingResultDto> screenDisplays, List<AttItemName> dailyItems,
 			List<ItemValue> itemValues, List<WorkType> workTypes, List<WorkTimeSetting> workTimes,
-			ConfirmStatusActualResult cfsr) {
+			ConfirmStatusActualResult cfsr, Optional<ItemValue> attendance, Optional<ItemValue> leave) {
 
 		for (DisplayScreenStampingResultDto display : screenDisplays) {
 			this.workPlaceName = display.getWorkPlaceName();
@@ -49,6 +51,9 @@ public class StampResultConfirmDto {
 			this.workTimeTypes
 					.add(new WorkTimeDto(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()));
 		}
+		
+		this.attendance = attendance.isPresent() ? attendance.get().getValue() : null;
+		this.leave = leave.isPresent() ? leave.get().getValue() : null;
 
 		this.confirmResult = new ConfirmResultDto(cfsr.getEmployeeId(), cfsr.getDate().toString(), cfsr.isStatus(),
 				cfsr.getPermissionCheck().value, cfsr.getPermissionRelease().value);
