@@ -88,6 +88,11 @@ module jcm007.a {
 
             self.selectedTab.subscribe((value) => {
                 if (value == 'tab-2') {
+                    
+                    if (nts.uk.ui.errors.hasError()) {
+                        nts.uk.ui.errors.clearAll();
+                    }
+
                     self.enable_tab1(false);
                     self.getListDataOfTab2().done(() => {
                         let itemSelectedTab2 = self.itemSelectedTab2();
