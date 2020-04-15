@@ -39,8 +39,6 @@ module jcm007.z {
 
             self.bindData();
 
-            self.loadData();
-
             self.selectedEmp.subscribe((value) => {
                 if (value == null) return;
                 if (value.status == self.status_ApprovalPending || value.status == self.status_Unregistered) {
@@ -115,72 +113,16 @@ module jcm007.z {
             if (!self.dataInfo) {
                 return [];
             }
-            return self.viewProcess() ? self.dataInfo.retiredEmployees : _.filter(self.dataInfo.retiredEmployees, ['status', getText('JCM007_B3_2')]);
-        }
 
-
-
-        loadData() {
-            let self = this;
-            self.getListData().done(() => {
-                let selectedEmp = self.selectedEmp();
-                if (selectedEmp != null) {
-                    if (selectedEmp.status == self.status_ApprovalPending || selectedEmp.status == self.status_Unregistered) {
-
-
-                    } else if (selectedEmp.status == self.status_WaitingReflection) {
-
-                    }
-
-                    let objHeader = _.find(self.empInfoHeaderList, function(o) { return o.employeeId == selectedEmp.sid; });
-                    if (objHeader) {
-                        let param = {
-                            employeeId: objHeader.employeeId,
-                            personId: objHeader.personID,
-                            baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                            getDepartment: true,
-                            getPosition: true,
-                            getEmployment: true
-                        };
-
-                        self.setDataHeader(param);
-
-                    }
-
-                    let dataDetail = _.find(self.employees(), function(o) { return o.sid == selectedEmp.sid; });
-                    if (dataDetail) {
-                        self.setDataDetail(dataDetail);
-                    }
-
-                    $('#retirementDateId').focus();
-                } else {
-                    self.initHeaderInfo();
-                    self.initRetirementInfo();
-                }
-
-            });
-
+            return self.viewProcess() ? self.dataInfo.retiredEmployees : _.filter(self.dataInfo.retiredEmployees, function(o) { return o.status == getText('JCM007_B3_2') || status == getText('JCM007_B3_3'); });
         }
 
         /** start page */
         start(historyId: any) {
             let self = this;
             let dfd = $.Deferred<any>();
-            self.getListData(historyId).done(() => {
-                dfd.resolve();
-            }).fail(() => {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        getListData(historyId?: any, isAfterRemove?: boolean) {
-            let self = this;
-            let dfd = $.Deferred<any>();
             block.grayout();
             service.startPage().done((result) => {
-                // goi service アルゴリズム[社員情報リストを取得]を実行する
-                // (Thực hiện thuật toán [Get list thông tin nhân viên]) CCG029
 
                 self.empInfoHeaderList = result.employeeImports;
 
@@ -241,7 +183,7 @@ module jcm007.z {
                 dataSource: self.employees(),
                 dataSourceType: 'json',
                 responseDataKey: 'results',
-                height: '513px',
+                height: '550px',
                 width: '640px',
                 tabIndex: 17,
                 features: [
@@ -352,7 +294,7 @@ module jcm007.z {
             let self = this,
                 status = !!self.selectedEmp() ? self.selectedEmp().status : null;
 
-            return status == getText('JCM007_B3_3') || status == getText('JCM007_A3_3');
+            return status == getText('JCM007_B3_3') || status == getText('JCM007_B3_4');
         }
 
         checkboxAndCommentEnabled() {

@@ -103,7 +103,7 @@ public class DatabeforereflectingFinder {
 	public DataBeforeReflectResultDto startPageZ() {
 		String cID = AppContexts.user().companyId();
 
-		Optional<Boolean> includReflected = Optional.of(true);
+		Optional<Boolean> includReflected = Optional.of(false);
 
 		// アルゴリズム[承認データの取得]を実行する(Thực hiện thuật toán [lấy ApprovalData])
 		List<RetiredEmployeeInfoResult> retirementInfos = convertToDtoZScreen(getApprovalData(cID, AppContexts.user().employeeId(), includReflected),
@@ -181,43 +181,57 @@ public class DatabeforereflectingFinder {
 			} else if (i.notificationCategory == 1) {
 				obj.notificationCategory = TextResource.localize("JCM007_B3_1");
 			}
-			// vì có 1 form thôi mà tận 2 người approvel nên phải code thế này
 
-			if (employeeId.equals(i.approveSid1) || employeeId.equals(i.approveSid2)) {
-				if (employeeId.equals(i.approveSid1)) {
+			
+			if (employeeId.equals(i.approveSid1)) {
 
-					obj.approveSid = i.approveSid1;
-					obj.approveStatus = i.approveStatus1;
-					obj.approveComment = i.approveComment1;
-					obj.approveSendMailFlg = i.approveSendMailFlg1;
-					obj.status = TextResource.localize("JCM007_B3_2");
-				}
-
-				if (employeeId.equals(i.approveSid2)) {
-
-					obj.approveSid = i.approveSid2;
-					obj.approveStatus = i.approveStatus2;
-					obj.approveComment = i.approveComment2;
-					obj.approveSendMailFlg = i.approveSendMailFlg2;
-					obj.status = TextResource.localize("JCM007_B3_3");
-
-				}
-
-			} else {
-				if (i.status == 0) {
-					obj.status = "";
-				} else if (i.status == 1) {
-					obj.status = TextResource.localize("JCM007_A3_2");
-				} else if (i.status == 2) {
-					obj.status = TextResource.localize("JCM007_A3_3");
-				}
+				obj.approveSid = i.approveSid1;
+				obj.approveStatus = i.approveStatus1;
+				obj.approveComment = i.approveComment1;
+				obj.approveSendMailFlg = i.approveSendMailFlg1;
 			}
+
+			if (employeeId.equals(i.approveSid2)) {
+
+				obj.approveSid = i.approveSid2;
+				obj.approveStatus = i.approveStatus2;
+				obj.approveComment = i.approveComment2;
+				obj.approveSendMailFlg = i.approveSendMailFlg2;
+			}
+			
+			setStatusText(i, obj);
 
 			return obj;
 		}).collect(Collectors.toList());
 
 		return result;
 
+	}
+
+	private void setStatusText(RetirementInformation i, RetiredEmployeeInfoResult obj) {
+		if (i.status == 1 && i.approveStatus1 != null && i.approveStatus2 != null) {
+			if (i.approveStatus1 == 0 && i.approveStatus2 == 0) {
+				obj.setStatus(TextResource.localize("JCM007_B3_2"));
+			}
+
+			if (i.approveStatus1 == 1 && i.approveStatus2 == 1) {
+				obj.setStatus(TextResource.localize("JCM007_B3_3"));
+			}
+
+		}
+		if (i.status == 2) {
+			obj.setStatus(TextResource.localize("JCM007_B3_4"));
+
+		}
+		if (i.status == 3) {
+
+			obj.setStatus(TextResource.localize("JCM007_B3_5"));
+
+		}
+		if (i.status == 4) {
+			obj.setStatus(TextResource.localize("JCM007_B1_3"));
+
+		}
 	}
 	private List<RetirementInformation> getApprovalData(String cID, String sid, Optional<Boolean> includReflected) {
 		
@@ -273,8 +287,7 @@ public class DatabeforereflectingFinder {
 		return interviewSummary;
 	}
 
-	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo,
-			String... sID) {
+	private List<RetiredEmployeeInfoResult> convertToDto(List<RetirementInformation> listRetirementInfo) {
 
 		List<RetiredEmployeeInfoResult> result = listRetirementInfo.stream().map(i -> {
 			RetiredEmployeeInfoResult obj = new RetiredEmployeeInfoResult();
