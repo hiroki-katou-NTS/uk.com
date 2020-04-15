@@ -64,7 +64,8 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		if(appEmploymentWorkType != null){
 			
 			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getListWTOAH())) {
-				Optional<WorkTypeObjAppHoliday> itemOptional = appEmploymentWorkType.getListWTOAH().stream().filter(x -> x.getHolidayAppType().get().value == holidayType.value).findFirst();
+				Optional<WorkTypeObjAppHoliday> itemOptional = appEmploymentWorkType.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == holidayType.value : false).findFirst();
+				
 				if(itemOptional.isPresent()) {
 					WorkTypeObjAppHoliday item = itemOptional.get();
 					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
