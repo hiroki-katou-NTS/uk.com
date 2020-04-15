@@ -923,7 +923,7 @@ public class HolidayShipmentScreenAFinder {
 																		companyId,
 																		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 																		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(),
-																		null,
+																		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
 																		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst()
 																		);
 		result.setApplicationForWorkingDay(applicationForWorkingDay);
@@ -997,7 +997,7 @@ public class HolidayShipmentScreenAFinder {
 				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
 
 		disOrderList.addAll(wkTypeCDList);
-		return result;
+		return disOrderList;
 
 	}
 
@@ -1064,7 +1064,7 @@ public class HolidayShipmentScreenAFinder {
 				.sorted(Comparator.comparing(WorkType::getWorkTypeCode)).collect(Collectors.toList());
 
 		disOrderList.addAll(wkTypeCDList);
-		return result;
+		return disOrderList;
 
 	}
 }
