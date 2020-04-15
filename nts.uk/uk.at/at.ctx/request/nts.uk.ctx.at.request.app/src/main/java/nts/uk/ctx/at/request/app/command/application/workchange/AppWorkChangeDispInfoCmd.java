@@ -58,7 +58,7 @@ public class AppWorkChangeDispInfoCmd {
 		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput.toDomain());
 		result.setAppWorkChangeSet(appWorkChangeSet.toDomain());
 		result.setWorkTypeLst(workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
-		result.setSetupType(EnumAdaptor.valueOf(setupType, SetupType.class));
+		result.setSetupType(setupType == null ? null : EnumAdaptor.valueOf(setupType, SetupType.class));
 		if(predetemineTimeSetting!=null) {
 			result.setPredetemineTimeSetting(new PredetemineTimeSetting(predetemineTimeSetting));
 		}

@@ -204,26 +204,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }         
             }    
             self.checkBoxValue(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
-            //申請共通設定
-//            let appCommonSettingDto = settingData.appCommonSettingDto;
-//                    { 
-//                        cid: 
-//                        excludeHoliday:
-//                        workChangeTimeAtr: 
-//                        displayResultAtr: 
-//                        initDisplayWorktime: 
-//                        commentContent1: 
-//                        commentFontWeight1: 
-//                        commentFontColor1: 
-//                        commentContent2: 
-//                        commentFontWeight2: 
-//                        commentFontColor2:
-//                    }
-
-            //勤務変更申請設定
-//            let appWorkChangeCommonSetting = settingData.workChangeSetDto;
-
-            // self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
+            
             //A2_申請者 ID
             self.employeeID = appDispInfoNoDateOutput.employeeInfoLst[0].sid;
             //A2_1 申請者
@@ -317,8 +298,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             service.checkBeforeRegister(workChange).done((data) => {
                 self.processConfirmMsg(workChange, data, 0);
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });    
+                if(nts.uk.util.isNullOrEmpty(res.errors)){
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });       
+                } else {
+                    let errors = res.errors;
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors })    
+                    .then(function() { nts.uk.ui.block.clear(); });      
+                }           
             }); 
 
 //            service.addWorkChange(workChange).done((data) => {

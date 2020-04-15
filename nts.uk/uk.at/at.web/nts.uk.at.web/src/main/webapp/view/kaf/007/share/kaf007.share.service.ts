@@ -13,7 +13,8 @@ module nts.uk.at.view.kaf007.share {
                 startNew: "/at/request/application/workchange/startNew",
                 changeAppDate: "/at/request/application/workchange/changeAppDate",
                 changeWorkSelection: "/at/request/application/workchange/changeWorkSelection",
-                checkBeforeRegister: "/at/request/application/workchange/checkBeforeRegister"
+                checkBeforeRegister: "/at/request/application/workchange/checkBeforeRegister",
+                checkBeforeUpdate: "/at/request/application/workchange/checkBeforeUpdate"
         }
         
         /**
@@ -66,6 +67,10 @@ module nts.uk.at.view.kaf007.share {
         
         export function checkBeforeRegister(param): JQueryPromise<any> {
             return ajax("at", paths.checkBeforeRegister, param);
+        }
+        
+        export function checkBeforeUpdate(param): JQueryPromise<any> {
+            return ajax("at", paths.checkBeforeUpdate, param);
         }
     }
 }

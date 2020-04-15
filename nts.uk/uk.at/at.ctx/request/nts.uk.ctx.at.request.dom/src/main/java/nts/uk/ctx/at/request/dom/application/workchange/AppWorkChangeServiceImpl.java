@@ -137,6 +137,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Override
 	public List<WorkType> getWorkTypeLst(AppEmploymentSetting appEmploymentSetting) {
 		String companyID = AppContexts.user().companyId();
+		if(appEmploymentSetting == null) {
+			return workTypeRepository.findNotDeprecated(companyID);
+		}
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類」を確認する
 		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
 				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findAny();
@@ -144,7 +147,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
-		if(CollectionUtil.isEmpty(opWorkTypeObjAppHoliday.get().getWorkTypeList())) {
+		// 「表示する勤務種類を設定する」と「勤務種類リスト」をチェックする
+		if(!opWorkTypeObjAppHoliday.get().getWorkTypeSetDisplayFlg() || CollectionUtil.isEmpty(opWorkTypeObjAppHoliday.get().getWorkTypeList())) {
+			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す

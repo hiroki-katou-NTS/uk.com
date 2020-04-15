@@ -52,6 +52,7 @@ module nts.uk.at.view.kaf007.b {
             //screen B default hidden
             showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
             appCur: any = null;
+            appWorkChangeDispInfoDto: any = null;
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
@@ -75,107 +76,93 @@ module nts.uk.at.view.kaf007.b {
                 var self = this;
                 let dfd = $.Deferred();
                 //get Common Setting
-                service.getWorkChangeCommonSetting({
-                    sIDs: [],
-                    appDate: self.targetDate    
-                }).done( function( settingData: any ) {
-                    if ( !nts.uk.util.isNullOrEmpty( settingData ) ) {
-                        //申請共通設定
-                        let appCommonSettingDto = settingData.appCommonSettingDto;
-                        //勤務変更申請設定
-                        let appWorkChangeCommonSetting = settingData.workChangeSetDto;
-                        self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
-                        //A2_申請者 ID
-                        self.employeeID = settingData.sid;
-                        //A3 事前事後区分
-                        //事前事後区分 ※A１
-                        self.prePostDisp( appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true : false );
-                        if ( !nts.uk.util.isNullOrEmpty( appCommonSettingDto.appTypeDiscreteSettingDtos ) &&
-                            appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0 ) {
-                            //事前事後区分 Enable ※A２
-                            self.prePostEnable( appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true : false );
-                            //「申請種類別設定．定型理由の表示」 ※A10
-                            self.typicalReasonDisplayFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false );
-                            //「申請種類別設定．申請理由の表示」 ※A11
-                            self.displayAppReasonContentFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false );
-                        }
-                        //A5 勤務を変更する ※A4                    
-                        if(appWorkChangeCommonSetting　!= undefined){ 
-                            //勤務変更申請設定.勤務時間を変更できる　＝　出来る
-                            self.isWorkChange(appWorkChangeCommonSetting.workChangeTimeAtr == 1? true : false);                                     
-                        }
-                        //定型理由
-                        self.setReasonControl( settingData.listReasonDto );
-                        //申請制限設定.申請理由が必須
-                        self.requiredReason( settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false );
-                        //A8 勤務時間２ ※A7
-                        //共通設定.複数回勤務
-                         self.isMultipleTime( settingData.multipleTime );
-                        //勤務変更申請基本データ（更新）
-                        service.getWorkchangeByAppID( self.appID() ).done( function( detailData: any ) {
-                            //workChangeDto
-                            ko.mapping.fromJS( detailData.workChangeDto, {}, self.appWorkChange().workChange );
-                            self.workChangeAtr( self.appWorkChange().workChange().workChangeAtr() == 1 ? true : false );
-                            self.excludeHolidayAtr( self.appWorkChange().workChange().excludeHolidayAtr() == 1 ? true : false );
-                            let goWorkAtr2 = self.appWorkChange().workChange().goWorkAtr2;
-                            let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
-                            goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
-                            backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
-                            //A2_1 申請者
-                            self.employeeName( detailData.employeeName );
-                            //就業時間帯名(A6_4、B6_4)で、「null」の場合は空白にしてください
-                            let typeCd = self.appWorkChange().workChange().workTypeCd;
-                            let typeName = self.appWorkChange().workChange().workTypeName;                
-                            let timeCd = self.appWorkChange().workChange().workTimeCd;
-                            let timeName = self.appWorkChange().workChange().workTimeName;
-                            typeCd(typeCd() === null ? '' : typeCd());
-                            typeName(self.getName(typeCd(), typeName()));
-                            timeCd(timeCd() === null ? '' : timeCd());
-                            timeName(self.getName(timeCd(), timeName()));
-                            //application data
-                            ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
-                            //setting reason content
-                            self.multilContent( self.appWorkChange().application().applicationReason() );
-                            self.workTypeCodes = detailData.dataWorkDto.workTypeCodes;
-                            self.workTimeCodes = detailData.dataWorkDto.workTimeCodes;
-                            self.requiredCheckTime(self.isWorkChange() && detailData.timeRequired);
-                            self.timeRequired(detailData.timeRequired);
-                            //画面モード(表示/編集)
-                            //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
-                            
-                            //実績の内容
-                            service.getRecordWorkInfoByDate({
-                                appDate : moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat),
-                                employeeID : self.appWorkChange().application().applicantSID()
-                            }).done((recordWorkInfo) => {
-                                //Binding data
-                                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
-                                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
-                                ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
-                                 //Focus process
-                                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
-                                //フォーカス制御
-                                self.changeFocus('#inpStartTime1'); 
-                                
-                                dfd.resolve();
-                            }).fail((res) => {
-                                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                                nts.uk.ui.block.clear();
-                                dfd.reject();
-                            });
-                            
-                            dfd.resolve();
-                            nts.uk.ui.block.clear();
-                        } ).fail(( res ) => {
-                            dialog.alertError( { messageId: res.messageId } ).then( function() {
-                                nts.uk.request.jump( "com", "view/ccg/008/a/index.xhtml" );
-                                nts.uk.ui.block.clear();
-                            } );
-                            dfd.reject();
-                        } );
-                        
-                        dfd.resolve();
-                    }
+                service.getWorkchangeByAppID(appID).done( function( settingData: any ) {
+                    let appWorkChangeDispInfo = settingData.appWorkChangeDispInfo,
+                        appDispInfoNoDateOutput = appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                        appDispInfoWithDateOutput = appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+                        appWorkChangeSet = appWorkChangeDispInfo.appWorkChangeSet,
+                        listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
+                        appTypeSet = _.find(listAppTypeSet, o => o.appType == 2),
+                        appWorkChangeDto = settingData.appWorkChange,
+                        applicationDto = appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                    self.appWorkChangeDispInfoDto = appWorkChangeDispInfo;
+                    //A2_申請者 ID
+                    self.employeeID = appDispInfoNoDateOutput.employeeInfoLst[0].sid;
+                    //A3 事前事後区分
+                    //事前事後区分 ※A１
+                    self.prePostDisp(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
+                    //事前事後区分 Enable ※A２
+                    self.prePostEnable(appTypeSet.canClassificationChange);
+                    //「申請種類別設定．定型理由の表示」 ※A10
+                    self.typicalReasonDisplayFlg(appTypeSet.displayFixedReason == 1 ? true : false);
+                    //「申請種類別設定．申請理由の表示」 ※A11
+                    self.displayAppReasonContentFlg(appTypeSet.displayAppReason == 1 ? true : false);
+                    //A5 勤務を変更する ※A4                    
+                    //勤務変更申請設定.勤務時間を変更できる　＝　出来る
+                    self.isWorkChange(appWorkChangeSet.workChangeTimeAtr == 1 ? true : false);     
+                    //定型理由
+                    self.setReasonControl(appDispInfoNoDateOutput.appReasonLst);
+                    //申請制限設定.申請理由が必須
+                    self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
+                    //A8 勤務時間２ ※A7
+                    //共通設定.複数回勤務
+                     self.isMultipleTime(settingData.multipleTime);
+                    //勤務変更申請基本データ（更新）
+                    //workChangeDto
+                    ko.mapping.fromJS(appWorkChangeDto, {}, self.appWorkChange().workChange);
+                    self.workChangeAtr(self.appWorkChange().workChange().workChangeAtr() == 1 ? true : false );
+                    self.excludeHolidayAtr(self.appWorkChange().workChange().excludeHolidayAtr() == 1 ? true : false );
+                    let goWorkAtr2 = self.appWorkChange().workChange().goWorkAtr2;
+                    let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
+                    goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
+                    backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
+                    //A2_1 申請者
+                    self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+                    //就業時間帯名(A6_4、B6_4)で、「null」の場合は空白にしてください
+                    let typeCd = self.appWorkChange().workChange().workTypeCd;
+                    let typeName = self.appWorkChange().workChange().workTypeName;                
+                    let timeCd = self.appWorkChange().workChange().workTimeCd;
+                    let timeName = self.appWorkChange().workChange().workTimeName;
+                    typeCd(typeCd() === null ? '' : typeCd());
+                    typeName(self.getName(typeCd(), typeName()));
+                    timeCd(timeCd() === null ? '' : timeCd());
+                    timeName(self.getName(timeCd(), timeName()));
+                    //application data
+                    ko.mapping.fromJS(applicationDto, {}, self.appWorkChange().application );
+                    //setting reason content
+                    self.multilContent( self.appWorkChange().application().applicationReason());
+                    self.workTypeCodes = _.map(appWorkChangeDispInfo.workTypeLst, o => o.workTypeCode);
+                    self.workTimeCodes = _.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode);
+                    self.requiredCheckTime(appWorkChangeDispInfo.setupType == 0 && appWorkChangeDispInfo.appWorkChangeSet.workChangeTimeAtr == 1);
+                    self.timeRequired(appWorkChangeDispInfo.setupType == 0);
+//                            //画面モード(表示/編集)
+//                            //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
+//                            
+//                            //実績の内容
+//                            service.getRecordWorkInfoByDate({
+//                                appDate : moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat),
+//                                employeeID : self.appWorkChange().application().applicantSID()
+//                            }).done((recordWorkInfo) => {
+//                                //Binding data
+//                                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
+//                                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
+//                                ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
+//                                 //Focus process
+//                                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
+//                                //フォーカス制御
+//                                self.changeFocus('#inpStartTime1'); 
+//                                
+//                                dfd.resolve();
+//                            }).fail((res) => {
+//                                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+//                                nts.uk.ui.block.clear();
+//                                dfd.reject();
+//                            });
+//                            
+//                            dfd.resolve();
+//                            nts.uk.ui.block.clear();
+//                        
+//                        dfd.resolve();
                 }).fail((res) => {
                     if(res.messageId == 'Msg_426'){
                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
@@ -220,10 +207,10 @@ module nts.uk.at.view.kaf007.b {
                 let self =this,
                 appReason: string;    
                 nts.uk.ui.block.invisible();
-                if(!self.validateInputTime()){
-                    nts.uk.ui.block.clear();
-                    return;
-                }  
+//                if(!self.validateInputTime()){
+//                    nts.uk.ui.block.clear();
+//                    return;
+//                }  
                 
                 let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
                 let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
@@ -247,19 +234,21 @@ module nts.uk.at.view.kaf007.b {
                 let workChange = ko.toJS(self.appWorkChange());
                 //application change date format
                 self.changeDateFormat(workChange);
-                workChange.user = self.user;
-                workChange.reflectPerState = self.reflectPerState;
-                service.updateWorkChange(workChange).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        if(data.autoSendMail){
-                            appcommon.CommonProcess.displayMailResult(data);    
-                        } else {
-                            self.reBinding(self.listAppMeta, self.appCur, false);
-                        }
-                    });
-                }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
-                });
+//                workChange.user = self.user;
+//                workChange.reflectPerState = self.reflectPerState;
+                workChange.appWorkChangeDispInfoCmd = self.appWorkChangeDispInfoDto;
+                service.checkBeforeUpdate(workChange).done((data) => {
+                    self.processConfirmMsg(workChange, data, 0);
+                 }).fail((res) =>{
+                    if(nts.uk.util.isNullOrEmpty(res.errors)){
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                        .then(function() { nts.uk.ui.block.clear(); });       
+                    } else {
+                        let errors = res.errors;
+                        nts.uk.ui.dialog.bundledErrors({ errors: errors })    
+                        .then(function() { nts.uk.ui.block.clear(); });      
+                    }  
+                 });
 
             }
             
@@ -428,8 +417,12 @@ module nts.uk.at.view.kaf007.b {
                         workChange.workTypeName(childData.selectedWorkTypeName);
                         workChange.workTimeCd(childData.selectedWorkTimeCode);
                         workChange.workTimeName(childData.selectedWorkTimeName);
-                        service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
-                            self.requiredCheckTime(self.isWorkChange() && rs);
+                        self.appWorkChangeDispInfoDto.workTypeCD = childData.selectedWorkTypeCode;
+                        self.appWorkChangeDispInfoDto.workTimeCD = childData.selectedWorkTimeCode;
+                        service.changeWorkSelection({
+                            appWorkChangeDispInfoCmd: self.appWorkChangeDispInfoDto             
+                        }).done((rs) =>{
+                            self.requiredCheckTime(rs.setupType == 0 && rs.appWorkChangeSet.workChangeTimeAtr == 1);   
                             if(self.requiredCheckTime()){
                                 workChange.workTimeStart1(childData.first.start);
                                 workChange.workTimeEnd1(childData.first.end); 
@@ -439,6 +432,34 @@ module nts.uk.at.view.kaf007.b {
                     //フォーカス制御
                     self.changeFocus('#inpStartTime1'); 
                 })
+            }
+            
+            processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
+                let self = this;
+                let confirmMsgLst = result.confirmMsgLst;
+                let confirmMsg = confirmMsgLst[confirmIndex];
+                if(_.isUndefined(confirmMsg)) {
+                    paramInsert.holidayDateLst = result.holidayDateLst;
+                    service.updateWorkChange(paramInsert).done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(data.autoSendMail){
+                                appcommon.CommonProcess.displayMailResult(data);   
+                            } else {
+                                self.reBinding(self.listAppMeta, self.appCur, false);
+                            }
+                        });
+                    }).fail((res) => {
+                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                            .then(function() { nts.uk.ui.block.clear(); });
+                    });
+                    return;
+                }
+                
+                dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
+                    self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
+                }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
         }
     }

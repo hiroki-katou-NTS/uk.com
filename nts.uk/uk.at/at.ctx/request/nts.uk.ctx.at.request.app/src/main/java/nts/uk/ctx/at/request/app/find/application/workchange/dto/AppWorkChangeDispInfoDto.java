@@ -55,12 +55,12 @@ public class AppWorkChangeDispInfoDto {
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
 		result.appWorkChangeSet = AppWorkChangeSetDto.fromDomain(appWorkChangeDispInfo.getAppWorkChangeSet());
 		result.workTypeLst = appWorkChangeDispInfo.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
-		result.setupType = appWorkChangeDispInfo.getSetupType().value;
-		PredetemineTimeSettingDto predetemineTimeSettingDto = new PredetemineTimeSettingDto();
+		result.setupType = appWorkChangeDispInfo.getSetupType() == null ? null : appWorkChangeDispInfo.getSetupType().value;
 		if(appWorkChangeDispInfo.getPredetemineTimeSetting()!=null) {
+			PredetemineTimeSettingDto predetemineTimeSettingDto = new PredetemineTimeSettingDto();
 			appWorkChangeDispInfo.getPredetemineTimeSetting().saveToMemento(predetemineTimeSettingDto);
+			result.predetemineTimeSetting = predetemineTimeSettingDto;
 		}
-		result.predetemineTimeSetting = predetemineTimeSettingDto;
 		result.workTypeCD = appWorkChangeDispInfo.getWorkTypeCD();
 		result.workTimeCD = appWorkChangeDispInfo.getWorkTimeCD();
 		return result;
