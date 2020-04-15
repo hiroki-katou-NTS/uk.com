@@ -29,7 +29,7 @@ public class UpdateAppEmploymentSetCommandHandler extends CommandHandler<List<Ap
 		List<AppEmploymentSetCommand> listEmployments = context.getCommand();
 		AppEmploymentSetting insertData = new AppEmploymentSetting(companyId, !CollectionUtil.isEmpty(listEmployments) ? listEmployments.get(0).getEmploymentCode(): "", 
 				listEmployments.stream().map(x-> { 
-					return new WorkTypeObjAppHoliday(!CollectionUtil.isEmpty(x.getLstWorkType()) ? (x.getHolidayTypeUseFlg()) ? x.getLstWorkType().stream().map(y -> y.getWorkTypeCode()).collect(Collectors.toList()) : null : null, 
+					return new WorkTypeObjAppHoliday(!CollectionUtil.isEmpty(x.getLstWorkType()) ? (x.getHolidayTypeUseFlg() && !x.isDisplayFlag()) ? null : x.getLstWorkType().stream().map(y -> y.getWorkTypeCode()).collect(Collectors.toList()) : null, 
 							EnumAdaptor.valueOf(x.getAppType(), ApplicationType.class),
 							x.isDisplayFlag(),
 							x.getAppType() == 1 ? x.getHolidayOrPauseType() : null,
