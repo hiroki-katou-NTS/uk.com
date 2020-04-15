@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShi
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.RemainingHolidayInfor;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -40,6 +42,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -47,6 +51,10 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -76,6 +84,12 @@ public class HolidayShipmentScreenBFinder {
 	private RequestSettingRepository reqSetRepo;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private WithDrawalReqSetRepository withDrawRepo;
+	@Inject
+	private WorkTimeSettingRepository wkTimeSetRepo;
+	@Inject
+	private PredetemineTimeSettingRepository preTimeSetRepo;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -312,6 +326,7 @@ public class HolidayShipmentScreenBFinder {
 		
 		//詳細画面起動前申請共通設定を取得する(Lấy setting chung của đơn xin trước khi khởi động màn hình chi tiết)
 		AppDispInfoStartupOutput appDispInfoStartupOutput = detailService.getCommonSetBeforeDetail(companyID, applicationID);
+		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
 
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])
 		Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);
@@ -319,6 +334,8 @@ public class HolidayShipmentScreenBFinder {
 		if (recAppOpt.isPresent()) {
 			ApplicationMetaOutput recAppOutput = detailService.getDetailAppCommonSet(companyID, recAppOpt.get().getAppID());
 			result.setRecApp(RecruitmentAppDto.fromDomain(recAppOpt.get(), recAppOutput.getAppDate()));
+			this.setWkTimeZoneDisplayInfo(companyID, result.recApp.getWorkTimeCD(), result.recApp);
+			
 			Optional<AbsenceLeaveAppDto> absAppRefactor = this.getAbsAppRefactor(applicationID, companyID);
 			if(absAppRefactor.isPresent()) {
 				result.setAbsApp(absAppRefactor.get());
@@ -331,9 +348,11 @@ public class HolidayShipmentScreenBFinder {
 				Optional<RecruitmentAppDto> recAppRefactor = this.getRecAppRefactor(applicationID, companyID);
 				if(recAppRefactor.isPresent()) {
 					result.setRecApp(recAppRefactor.get());
+					this.setWkTimeZoneDisplayInfo(companyID, result.recApp.getWorkTimeCD(), result.recApp);
 				}
 			}
 		}
+		
 		if(result.getAbsApp() != null) {
 			List<WorkType> workTypeForHoliday = aFinder.getWorkTypeForHoliday(companyID, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.getAbsApp().getWorkTypeCD());
 			DisplayInformationApplication applicationForWorkingDay = new DisplayInformationApplication();
@@ -348,11 +367,26 @@ public class HolidayShipmentScreenBFinder {
 		}
 		Optional<Application_New> application = appRepo.findByID(companyID, applicationID);
 		if(application.isPresent()) {
+			result.setApplication(ApplicationDto_New.fromDomain(application.get()));
+		}
+		if(application.isPresent()) {
 			//[No.506]振休残数を取得する(Lấy số ngày nghỉ bù còn lại)
 			AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(application.get().getEmployeeID(), GeneralDate.today());
 			
 			//一番近い期限日を取得する
 			result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain, null));
+			result.setEmployeeName(getEmployeeDisplayTextRefactor(application.get().getEnteredPersonID(), application.get().getEmployeeID()));
+			
+			Optional<AppTypeSetDto> appTypeSetDtoOpt = AppTypeSetDto.convertToDto(appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getRequestSetting()).stream()
+					.filter(x -> x.getAppType().equals(APP_TYPE.value)).findFirst();
+
+			if (appTypeSetDtoOpt.isPresent()) {
+				result.setAppTypeSet(appTypeSetDtoOpt.get());
+			}
+		}
+		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
+		if (withDrawalReqSetOpt.isPresent()) {
+			result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
 		}
 		return result;
 	}
@@ -380,5 +414,33 @@ public class HolidayShipmentScreenBFinder {
 		}
 		return Optional.empty();
 	}
+	
+	private String getEmployeeDisplayTextRefactor(String enterEmployeeID, String targetEmployeeID) {
+		if (targetEmployeeID.equals(enterEmployeeID)) {
+			return empAdaptor.getEmployeeName(enterEmployeeID);
+		} else {
 
+			String targetEmployeeName = empAdaptor.getEmployeeName(targetEmployeeID);
+			String enterEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(enterEmployeeID) + ")";
+			return targetEmployeeName + enterEmployeeName;
+		}
+	}
+	
+	private void setWkTimeZoneDisplayInfo(String companyID, String wkTimeCode, HolidayShipmentAppDto recAppOutPut) {
+		Optional<WorkTimeSetting> wkTimeOpt = wkTimeSetRepo.findByCode(companyID, wkTimeCode);
+
+		if (wkTimeOpt.isPresent()) {
+
+			recAppOutPut.updateFromWkTimeSet(wkTimeOpt.get());
+
+			wkTimeCode = wkTimeOpt.get().getWorktimeCode().v();
+
+			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID,
+					wkTimeCode);
+			if (preTimeSetOpt.isPresent()) {
+				recAppOutPut.updateFromPreTimeSet(preTimeSetOpt.get());
+				recAppOutPut.setWorkTimeName(wkTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v());
+			}
+		}
+	}
 }

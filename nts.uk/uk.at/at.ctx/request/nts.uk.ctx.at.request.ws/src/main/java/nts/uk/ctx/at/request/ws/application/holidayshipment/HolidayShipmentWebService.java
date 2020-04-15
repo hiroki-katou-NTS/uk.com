@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

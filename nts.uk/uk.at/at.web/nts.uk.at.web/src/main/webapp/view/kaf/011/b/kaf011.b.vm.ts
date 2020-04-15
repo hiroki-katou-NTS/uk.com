@@ -242,7 +242,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
             block.invisible();
-            service.findById(appParam).done((data) => {
+//            service.findById(appParam).done((data) => {
+            service.startPageBRefactor(appParam).done((data) => {
                 self.setDataFromStart(data);
                 if (isReload)
                     self.start(data.application.applicationDate, false).done(() => {
@@ -262,14 +263,14 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                self.remainDays(data.absRecMng);
+                self.remainDays(data.remainingHolidayInfor.remainDays);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
-                self.employeeID(data.employeeID || null);
-                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
+                self.employeeID(data.application.employeeID || null);
+                self.displayPrePostFlg(true);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().setWkTypes(data.recWkTypes || []);
-                self.absWk().setWkTypes(data.absWkTypes || []);
+                self.recWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
+                self.absWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
@@ -289,7 +290,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
                 }
                 
-                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
+                self.requiredReason(data.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason == 1 ? true : false);
             }
             self.firstLoad(false);
         }
@@ -297,11 +298,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataCommon(data) {
             let self = this,
                 app = data.application;
-            self.appReasons(data.appReasonComboItems || []);
+            self.appReasons(data.appDispInfoStartup.appDispInfoNoDateOutput.appReasonLst || []);
             self.appReasonSelectedID('');
             self.prePostSelectedCode(app.prePostAtr);
             self.prePostSelectedCode.valueHasMutated();
-            self.showReason(data.applicationSetting.appReasonDispAtr);
+            //self.showReason(data.applicationSetting.appReasonDispAtr);
             self.reason(data.application.applicationReason);
         }
 

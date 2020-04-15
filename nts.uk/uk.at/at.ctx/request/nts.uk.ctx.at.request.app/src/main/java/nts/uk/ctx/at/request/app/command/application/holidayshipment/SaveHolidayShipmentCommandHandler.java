@@ -226,7 +226,7 @@ public class SaveHolidayShipmentCommandHandler
 					false, 
 					commonApp, 
 					null, 
-					command.getDisplayInforWhenStarting().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>());
 			result.addAll(listConfirmMsg);
 		}
@@ -239,7 +239,7 @@ public class SaveHolidayShipmentCommandHandler
 					false, 
 					commonApp, 
 					null, 
-					command.getDisplayInforWhenStarting().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>());
 			result.addAll(listConfirmMsg);
 		}
