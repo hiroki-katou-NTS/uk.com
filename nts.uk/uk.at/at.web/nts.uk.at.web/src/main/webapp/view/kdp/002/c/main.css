@@ -1,3 +1,6 @@
+#contents-area{
+	overflow: hidden !important;
+}
 .item-screen, #single-list_container {
 	margin-top: 10px !important;
 }
