@@ -26,18 +26,18 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- B1_1 -->
-				<a id="goBack" class="goback" href="javascript:history.back()"
+				<a id="goBack" tabindex="1" class="goback" href="javascript:history.back()"
 					data-bind="ntsLinkButton: {} , click: backTopScreenTopReport">#{i18n.getText('JCM007_B221_1_1')}</a>
 				<!-- B1_2 -->
-				<button id="reset" class="proceed group-button-1"
+				<button id="reset" tabindex="2" class="proceed group-button-1"
 					data-bind="click: approved ,enable: approvedEnabled() ">
 					#{i18n.getText('JCM007_B221_1_2')}</button>
 				<!-- B1_3 -->
-				<button id="register" class=" group-button-1"
+				<button id="register" tabindex="3" class=" group-button-1"
 					data-bind="click: release , enable:  releaseEnabled() ">
 					#{i18n.getText('JCM007_B221_1_3')}</button>
 				<!-- B1_4 -->
-				<button id="export" class="group-button-1"
+				<button id="export" tabindex="4" class="group-button-1"
 					data-bind="click: returnEvent , enable:  returnEnabled()">#{i18n.getText('JCM007_B1_4')}</button>
 
 
@@ -54,7 +54,7 @@
 						<div class="div_line">
 							<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('JCM007_B221_1_1')}
 							</div>
-							<div
+							<div tabindex="5"
 								data-bind="ntsCheckBox: { checked: currentEmployee().approveSendMailFlg , enable : checkboxAndCommentEnabled  }">#{i18n.getText('JCM007_B221_1_2')}</div>
 						</div>
 						<div class="div_line flex">
@@ -62,7 +62,7 @@
 							</div>
 
 							<div style="margin-left: 10px">
-								<textarea
+								<textarea tabindex="6"
 									data-bind="ntsMultilineEditor: {
 									value:currentEmployee().approveComment ,
 									name: '#[JCM007_B221_1_4]' ,
@@ -138,7 +138,7 @@
 								</div>
 							</div>
 							<!-- A222_12 -->
-							<div id="retirementDateId" style="margin-left: 56px"
+							<div id="retirementDateId"  style="margin-left: 56px" tabindex="7"
 								data-bind="ntsDatePicker: {value: retirementDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_retirementDate , name: '#[JCM007_A222_12]' }"></div>
 						</div>
 
@@ -150,7 +150,7 @@
 								</div>
 							</div>
 							<!-- A222_14 -->
-							<div id="releaseDateId" style="margin-left: 56px"
+							<div id="releaseDateId"  style="margin-left: 56px"  tabindex="8"
 								data-bind="ntsDatePicker: {value: releaseDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_releaseDate, name: '#[JCM007_A222_14]' }"></div>
 						</div>
 
@@ -162,7 +162,8 @@
 								</div>
 							</div>
 							<!-- A222_16 -->
-							<div style="width: 108px; margin-left: 42px" id="combo-box-rom"
+							<div  style="width: 108px; margin-left: 42px"  tabindex="9"
+								id="combo-box-rom"
 								data-bind="ntsComboBox: {
 												options: listRetirementCtg ,
 												name: '{#JCM007_A222_16}' ,
@@ -184,7 +185,8 @@
 								</div>
 							</div>
 							<!-- A222_20 -->
-							<div id="selectedCode_Reason1Id" style="width: 170px"
+							<div  id="selectedCode_Reason1Id"  tabindex="10"
+								style="width: 170px"
 								data-bind="ntsComboBox: {
 												options: listRetirementReason1 ,
 												name: '{#JCM007_A222_20}' ,
@@ -207,7 +209,8 @@
 								<div data-bind="ntsFormLabel: { required: true, constraint: ''}">#{i18n.getText('JCM007_A222_22')}</div>
 							</div>
 							<!-- A222_23 -->
-							<div id="selectedCode_Reason2Id" style="width: 170px"
+							<div  id="selectedCode_Reason2Id"  tabindex="11"
+								style="width: 170px"
 								data-bind="ntsComboBox: {
 												options: listRetirementReason2 ,
 												name: '{#JCM007_A222_23}' ,
@@ -236,7 +239,7 @@
 							</div>
 							<!-- A222_26 -->
 							<div style="margin-left: 86px">
-								<textarea
+								<textarea tabindex="12"
 									data-bind="ntsMultilineEditor: {
 									value: retirementRemarks ,
 									constraint: 'NoteRetiment',
@@ -276,7 +279,7 @@
 								</div>
 								<!-- A222_31 -->
 								<div style="margin-left: 19px">
-									<textarea id="retirementReasonVal"
+									<textarea id="retirementReasonVal" tabindex="13"
 										data-bind="ntsMultilineEditor: {
 														value: retirementReasonVal ,
 														constraint: 'NoteRetiment',
@@ -323,7 +326,8 @@
 										#{i18n.getText('JCM007_A222_34')}</div>
 								</div>
 								<!-- A222_35 -->
-								<div id="dismissalNoticeDateId" style="margin-left: 27px;"
+								<div  id="dismissalNoticeDateId" tabindex="14"
+									style="margin-left: 27px;"
 									data-bind="ntsDatePicker: {value: dismissalNoticeDate , dateFormat: 'YYYY/MM/DD', required : true , enable : enable_dismissalNoticeDate , name: '#[JCM007_A222_35]'  }"></div>
 							</div>
 
@@ -336,7 +340,7 @@
 										#{i18n.getText('JCM007_A222_36')}</div>
 								</div>
 								<!-- A222_37 -->
-								<div style="margin-left: 27px;"
+								<div  style="margin-left: 27px;" tabindex="15"
 									data-bind="ntsDatePicker: {value: dismissalNoticeDateAllow , dateFormat: 'YYYY/MM/DD', enable : enable_dismissalNoticeDateAllow , name: '#[JCM007_A222_37]' }"></div>
 								<button style="margin-left: 10px"
 									data-bind="ntsHelpButton: {textId: 'JCM007_A222_36_1', textParams:[], position: 'bottom center' }">？</button>
@@ -352,7 +356,7 @@
 								</div>
 								<!-- A222_39 -->
 								<div style="margin-left: 40px;">
-									<textarea id="reaAndProForDis"
+									<textarea id="reaAndProForDis"  tabindex="16"
 										data-bind="ntsMultilineEditor: {
 														value: reaAndProForDis ,
 														constraint: 'NoteRetiment',
@@ -381,12 +385,12 @@
 								<!-- row 19 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div   tabindex="17"
 										data-bind="ntsCheckBox: { checked: naturalUnaReasons_1 , enable : enable_naturalUnaReasons1  }">#{i18n.getText('JCM007_A222_41')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='naturalUnaReasons_1Val'
+									<textarea  id='naturalUnaReasons_1Val'  tabindex="18"
 										data-bind="ntsMultilineEditor: {
 														value: naturalUnaReasons_1Val ,
 														constraint: 'NoteRetiment',
@@ -405,12 +409,12 @@
 								<!-- row 20 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div tabindex="19"
 										data-bind="ntsCheckBox: { checked: businessReduction_2 , enable : enable_businessReduction2  }">#{i18n.getText('JCM007_A222_43')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='businessReduction_2Val'
+									<textarea  id='businessReduction_2Val' tabindex="20"
 										data-bind="ntsMultilineEditor: {
 														value: businessReduction_2Val ,
 														constraint: 'NoteRetiment',
@@ -429,12 +433,12 @@
 								<!-- row 21 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div tabindex="21"
 										data-bind="ntsCheckBox: { checked: seriousViolationsOrder_3 , enable : enable_seriousViolationsOrder3  }">#{i18n.getText('JCM007_A222_45')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='seriousViolationsOrder_3Val'
+									<textarea  id='seriousViolationsOrder_3Val' tabindex="22"
 										data-bind="ntsMultilineEditor: {
 														value: seriousViolationsOrder_3Val ,
 														constraint: 'NoteRetiment',
@@ -453,12 +457,12 @@
 								<!-- row 22 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div  tabindex="23"
 										data-bind="ntsCheckBox: { checked: unauthorizedConduct_4 , enable : enable_unauthorizedConduct4  }">#{i18n.getText('JCM007_A222_47')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='unauthorizedConduct_4Val'
+									<textarea  id='unauthorizedConduct_4Val' tabindex="24"
 										data-bind="ntsMultilineEditor: {
 														value: unauthorizedConduct_4Val ,
 														constraint: 'NoteRetiment',
@@ -477,12 +481,12 @@
 								<!-- row 23 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div tabindex="25"
 										data-bind="ntsCheckBox: { checked: leaveConsiderableTime_5 , enable : enable_leaveConsiderableTime5  }">#{i18n.getText('JCM007_A222_49')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='leaveConsiderableTime_5Val'
+									<textarea  id='leaveConsiderableTime_5Val' tabindex="26"
 										data-bind="ntsMultilineEditor: {
 														value: leaveConsiderableTime_5Val ,
 														constraint: 'NoteRetiment',
@@ -501,12 +505,12 @@
 								<!-- row 24 -->
 								<div class="checkbox">
 									<!-- A222_41 -->
-									<div
+									<div tabindex="27"
 										data-bind="ntsCheckBox: { checked: other_6 , enable : enable_other6  }">#{i18n.getText('JCM007_A222_51')}</div>
 								</div>
 								<!-- A222_42 -->
 								<div>
-									<textarea id='other_6Val'
+									<textarea  id='other_6Val' tabindex="28"
 										data-bind="ntsMultilineEditor: {
 														value: other_6Val ,
 														constraint: 'NoteRetiment',

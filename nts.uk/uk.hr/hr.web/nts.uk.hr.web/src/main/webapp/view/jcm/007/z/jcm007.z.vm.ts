@@ -113,7 +113,8 @@ module jcm007.z {
             if (!self.dataInfo) {
                 return [];
             }
-            return self.viewProcess() ? self.dataInfo.retiredEmployees : _.filter(self.dataInfo.retiredEmployees, ['status', getText('JCM007_B3_2')]);
+
+            return self.viewProcess() ? self.dataInfo.retiredEmployees : _.filter(self.dataInfo.retiredEmployees, function(o) { return o.status == getText('JCM007_B3_2') || status == getText('JCM007_B3_3'); });
         }
 
         /** start page */
@@ -293,7 +294,7 @@ module jcm007.z {
             let self = this,
                 status = !!self.selectedEmp() ? self.selectedEmp().status : null;
 
-            return status == getText('JCM007_B3_3') || status == getText('JCM007_A3_3');
+            return status == getText('JCM007_B3_3') || status == getText('JCM007_B3_4');
         }
 
         checkboxAndCommentEnabled() {
