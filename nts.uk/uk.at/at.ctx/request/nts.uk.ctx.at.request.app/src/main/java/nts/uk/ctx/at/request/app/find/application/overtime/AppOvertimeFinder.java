@@ -252,8 +252,7 @@ public class AppOvertimeFinder {
 				.getApplicationDeadlines().stream().map(item -> ApplicationDeadlineDto.convertToDto(item))
 				.collect(Collectors.toList());
 		List<AppEmploymentSettingDto> appEmploymentSettingDto = AppEmploymentSettingDto.fromDomain(overtimeSettingData.getAppCommonSettingOutput().getAppEmploymentWorkType());
-		AppEmploymentSettingDto.fromDomain( overtimeSettingData.getAppCommonSettingOutput()
-				.getAppEmploymentWorkType().get());
+		
 		AppCommonSettingOutputDto appCommonSettingOutputDto = new AppCommonSettingOutputDto(
 				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate().toString(DATE_FORMAT), applicationSettingDto,
 				approvalFunctionSettingDto, appTypeDiscreteSettingDto, applicationDeadlineDto, appEmploymentSettingDto);

@@ -62,19 +62,25 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		//ドメインモデル「休暇申請対象勤務種類」を取得する
 		List<String> lstWorkTypeCodes = new ArrayList<>();	
 		if(appEmploymentWorkType != null){
+			
 			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getListWTOAH())) {
-				WorkTypeObjAppHoliday item = appEmploymentWorkType.getListWTOAH().get(0);
-				List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
-						item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, appEmploymentWorkType.getEmploymentCode(), appEmploymentWorkType.getListWTOAH().get(0).getAppType(),
-								appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentWorkType.getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentWorkType.getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
-						.collect(Collectors.toList());
-				if(!CollectionUtil.isEmpty(lstEmploymentWorkType)){
-					for(AppEmployWorkType appEmployWorkType : lstEmploymentWorkType){
-						if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
-							lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
+				Optional<WorkTypeObjAppHoliday> itemOptional = appEmploymentWorkType.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == holidayType.value : false).findFirst();
+				
+				if(itemOptional.isPresent()) {
+					WorkTypeObjAppHoliday item = itemOptional.get();
+					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
+							item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, appEmploymentWorkType.getEmploymentCode(), appEmploymentWorkType.getListWTOAH().get(0).getAppType(),
+									appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentWorkType.getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentWorkType.getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+							.collect(Collectors.toList());
+					if(!CollectionUtil.isEmpty(lstEmploymentWorkType)){
+						for(AppEmployWorkType appEmployWorkType : lstEmploymentWorkType){
+							if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
+								lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
+							}
 						}
 					}
 				}
+				
 			}
 			
 		}

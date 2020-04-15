@@ -52,6 +52,10 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode "
 			+ "AND c.krqdtAppEmployWorktypePK.appType =:appType "
 			+ "AND c.krqdtAppEmployWorktypePK.holidayOrPauseType =:holidayOrPauseType ";
+	
+	private static final String DELETE_ALL_WORKTYPE_SET = "DELETE FROM KrqdtAppEmployWorktype c "
+			+ "WHERE c.krqdtAppEmployWorktypePK.cid =:companyId "
+			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode ";
 	private static final String DELETE_WORKTYPE_SET_BY_CODE = "DELETE FROM KrqdtAppEmployWorktype c "
 			+ "WHERE c.krqdtAppEmployWorktypePK.cid =:companyId "
 			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode ";
@@ -168,11 +172,10 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	}
 	public void updateWorkType(AppEmploymentSetting domain) {
 		List<KrqdtAppEmployWorktype> list = new ArrayList<>();
+		deleteAllWorkType(domain.getCompanyID(),domain.getEmploymentCode());
 		if (!CollectionUtil.isEmpty(domain.getListWTOAH())) {
 			domain.getListWTOAH().stream().map(x -> {
-				deleteWorkType(domain.getCompanyID(), domain.getEmploymentCode(), 
-						x.getAppType().value, x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value : x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value : 9);
-				if(!CollectionUtil.isEmpty(x.getWorkTypeList())){	
+			if(!CollectionUtil.isEmpty(x.getWorkTypeList())){	
 					return x.getWorkTypeList().stream().map( y-> new KrqdtAppEmployWorktype(new KrqdtAppEmployWorktypePK(
 							domain.getCompanyID(),
 							domain.getEmploymentCode(),
@@ -197,15 +200,13 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 		.executeUpdate();
 		this.getEntityManager().flush();
 	}
-
-	private void deleteWorkType(String companyId, String employmentCode, int appType, int holidayOrPauseType){
-		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET).setParameter("companyId", companyId)
+	private void deleteAllWorkType(String companyId, String employmentCode){
+		this.getEntityManager().createQuery(DELETE_ALL_WORKTYPE_SET).setParameter("companyId", companyId)
 		.setParameter("employmentCode", employmentCode)
-		.setParameter("appType", appType)
-		.setParameter("holidayOrPauseType", holidayOrPauseType)
 		.executeUpdate();
 		this.getEntityManager().flush();
 	}
+	
 	/**
 	 * Convert employment setting domain to entity object
 	 * @param domain

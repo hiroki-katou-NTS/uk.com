@@ -51,6 +51,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
@@ -157,7 +158,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	
+	@Inject
+	private AppEmploymentSettingRepository appEmploymentSetting;
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
@@ -607,14 +609,16 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
 		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-//			geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getSwingOutAtr().get().value == holidayType.value : geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,holidayType.value).getHolidayAppType().get().value == holidayType.value : false
-//				
-//				).findFirst();
-//		AppEmploymentSetting employmentSet = setting.get();
+
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
+		Optional<AppEmploymentSetting> employmentSetOptional = Optional.ofNullable(null);
+		if(!CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
+			 employmentSetOptional = appEmploymentSetting.getEmploymentSetting(companyID, employmentSet.getEmploymentCode(), employmentSet.getListWTOAH().get(0).getAppType().value);
+		}
+		if(employmentSetOptional.isPresent()) {
+			employmentSet = employmentSetOptional.get();
+		}
 		// 勤務種類を取得する
 		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
 				employmentSet, 

@@ -50,7 +50,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		// Command data
 		CreateApplicationCommand appCommand = command.getApplication();
 		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
-		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoDto().toDomain();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();

@@ -1,4 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
+import java.util.Collections;
+
 /*import nts.arc.layer.app.command.JavaTypeResult;*/
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -130,7 +132,8 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("checkBeforeUpdate")
 	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand command) {
-		return appWorkFinder.checkBeforeRegister(command);
+		appWorkFinder.checkBeforeUpdate(command);
+		return new WorkChangeCheckRegisterDto(Collections.emptyList(), Collections.emptyList());
 	}
 
 }
