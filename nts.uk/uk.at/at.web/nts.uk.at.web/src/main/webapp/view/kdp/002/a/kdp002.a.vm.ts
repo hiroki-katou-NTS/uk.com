@@ -153,7 +153,11 @@ module nts.uk.at.view.kdp002.a {
                     if(res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
                         nts.uk.ui.windows.setShared('KDP010_2T', res, true);
                         nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                            
+                            let returnData =  nts.uk.ui.windows.getShared('KDP010_T');
+                            if(!returnData.isClose && returnData.errorDate) {
+                                console.log(returnData);
+                                nts.uk.request.jump("/view/kaf/005/a/index.xhtml?a=0", {appDate: returnData.errorDate});
+                            }
                         });
                     }
                 });
