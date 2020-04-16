@@ -513,13 +513,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			Optional<Boolean> lowerApprove, String companyID, GeneralDate baseDate) {
 		// 取得フラグ　＝　True(GetFlag = True)
 		boolean result = true;
-		// Input．システム区分をチェック(Check Input. SystemType)
-		if(systemAtr==SystemAtr.HUMAN_RESOURCES) {
-			// Input．下位序列承認無をチェック(Check ''ko approve cấp bậc thấp hơn'')
-			if(!(lowerApprove.isPresent() && lowerApprove.get())) {
-				return result;
-			}
-		}
 		// Optional<申請者の序列の並び順＞をチェック(Check Optional<thứ tự sắp xếp theo cấp bậc của người làm đơn＞)
 		if(!opDispOrder.isPresent()) {
 			return result;
@@ -536,7 +529,19 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			result = true;
 			return result;
 		}
-		if(jobOrder >= opDispOrder.get()) {
+		if(
+			(
+				(
+					systemAtr==SystemAtr.HUMAN_RESOURCES 
+					&& 
+					(!lowerApprove.isPresent() || !lowerApprove.get())
+				) 					
+				|| 	
+				systemAtr==SystemAtr.WORK
+			) 
+			&& 
+			jobOrder <= opDispOrder.get()
+		) {
 			return result;
 		}
 		// 取得フラグ　＝　False(GetFlag = False)

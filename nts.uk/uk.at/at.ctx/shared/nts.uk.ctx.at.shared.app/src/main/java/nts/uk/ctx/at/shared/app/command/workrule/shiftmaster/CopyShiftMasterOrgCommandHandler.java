@@ -27,9 +27,6 @@ public class CopyShiftMasterOrgCommandHandler extends CommandHandlerWithResult<C
 	@Inject
 	private ShiftMasterOrgRepository shiftMasterOrgRepo;
 	
-	@Inject
-	private CopyShiftMasterByOrgService copyShiftMasterByOrgService;
-
 	@SuppressWarnings("static-access")
 	@Override
 	protected List<CopyShiftMasterResultDto> handle(CommandHandlerContext<CopyShiftMasterOrgCommand> context) {
@@ -55,7 +52,7 @@ public class CopyShiftMasterOrgCommandHandler extends CommandHandlerWithResult<C
 			ShiftMasterOrganization fromDomain = copyFrom.get();
 			for(RegisterShiftMasterOrgCommand target : targets) {
 				try {
-					oPersist = copyShiftMasterByOrgService.copyShiftMasterByOrg(required, companyId, fromDomain, target.toTarget(), true);
+					oPersist = CopyShiftMasterByOrgService.copyShiftMasterByOrg(required, companyId, fromDomain, target.toTarget(), true);
 					if (oPersist.isPresent()) {
 						AtomTask persist = oPersist.get();
 						transaction.execute(() -> {

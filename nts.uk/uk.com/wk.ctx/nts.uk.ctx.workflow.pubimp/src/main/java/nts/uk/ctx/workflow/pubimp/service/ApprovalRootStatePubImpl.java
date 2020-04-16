@@ -1096,13 +1096,13 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
 						switch (statusOfRepresenter) {
 						case RETIREMENT:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_49") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_49") + "）");
 							break;
 						case LEAVE_OF_ABSENCE:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_45") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_45") + "）");
 							break;
 						case HOLIDAY:
-							approverStateExport.setRepresenterName(approverStateExport.getApproverName() + "（" + I18NText.getText("CCG001_47") + "）");
+							approverStateExport.setRepresenterName(approverStateExport.getRepresenterName() + "（" + I18NText.getText("CCG001_47") + "）");
 							break;
 						default:
 							break;

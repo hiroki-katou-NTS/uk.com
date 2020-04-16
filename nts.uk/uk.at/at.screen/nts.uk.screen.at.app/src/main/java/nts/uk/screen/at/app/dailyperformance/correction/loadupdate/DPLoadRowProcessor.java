@@ -139,7 +139,8 @@ public class DPLoadRowProcessor {
 			String emp = param.getOnlyLoadMonth() ? param.getLstEmployee().get(0).getId() : listEmployeeId.get(0);
 				result.setMonthResult(dPMonthFlexProcessor
 						.getDPMonthFlex(new DPMonthFlexParam(companyId, emp, param.getDateMonth(),
-								process.getEmploymentCode(companyId, param.getDateMonth(), emp), dailyPerformanceDto, param.getAutBussCode(), param.getDomainMonthOpt())));
+								process.getEmploymentCode(companyId, param.getDateMonth(), emp), dailyPerformanceDto, param.getAutBussCode(), param.getDomainMonthOpt(),
+	                            param.getStateParam().getPeriod())));
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {

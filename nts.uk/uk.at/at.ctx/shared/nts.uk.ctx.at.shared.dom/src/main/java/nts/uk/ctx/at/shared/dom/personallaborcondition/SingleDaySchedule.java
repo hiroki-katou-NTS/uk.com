@@ -52,5 +52,5 @@ public class SingleDaySchedule extends DomainObject{
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setWorkingHours(workingHours);
 	}
-	
+
 }

@@ -1,0 +1,73 @@
+#kdp002a{
+  width: 1080px;
+}
+#genText {
+  margin-left: 20px;
+}
+
+#stamp-input {
+  width: 560px;
+}
+
+#stamp-info {
+  width: 400px;
+}
+#stamp-desc{
+  height: 40px;
+  width: 100%;
+  word-break: break-word;
+}
+
+#stamp-date {
+  text-align: center;
+}
+
+#stamp-time {
+  text-align: center;
+  margin-top: 10px;
+}
+#stamp-header {
+  padding: 10px;
+}
+#stamp-header .panel {
+  padding: 0px;
+}
+#stamp-date-text {
+  font-size: 2rem !important;
+}
+#stamp-time-text {
+  font-size: 5rem !important;
+}
+.full-width{
+  width: 100%;
+}
+
+#stamp-history-tbl #tbl-header, #tbl-header-time {
+  border: 1px solid #CCC;
+  background-color: #CFF1A5;
+  padding: 5px 0 5px 5px;
+  text-align: center;
+}
+
+#tbl-header {
+  font-weight: bold;
+}
+.inline-bl{
+  display: inline-block;
+  width: 30px;
+}
+.ui-widget.ui-tabs > .ui-tabs-nav > li {
+  max-width: 101px;
+}
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+  width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+#stamp-history-tbl th {
+  text-align: center;
+}
+#time-card-list td {
+  text-align: center;
+}

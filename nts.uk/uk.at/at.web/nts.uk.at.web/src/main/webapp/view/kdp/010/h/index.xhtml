@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 430, height: 480 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kdp/010/h/main.css" />
+			<com:scriptfile path="kdp010.h.vm.js" />
+			<com:scriptfile path="kdp010.h.start.js" />
+			<com:scriptfile path="kdp010.h.service.js" />
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason
+				nts.uk.ctx.at.record.dom.stamp.management.AudioType
+				nts.uk.ctx.at.record.dom.stamp.management.ContentsStampType
+				nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt
+				nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt
+			</com:EnumScript>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.stamp.management.ButtonName
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table>
+					<tr>
+						<!-- H1_1 -->
+						<td><div id="highlight-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_107')}</div>
+							<!-- H1_2 -->
+							<div tabindex="1" id="highlight-radio"
+								data-bind="ntsRadioBoxGroup: {
+												name : '#[KDP010_107]',
+												options: optionHighlight,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedHighlight,
+												enable: true },
+												hasFocus: isFocus"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H2_1 -->
+							<div id="correc-label1"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_110')}</div>
+						</td>
+						<td>
+							<!-- H2_2 -->
+							<div tabindex="2" id="combobox1" class="cbx-days"
+								data-bind="ntsComboBox: {
+											naem: '#[KDP010_110]',
+											options: contentsStampType,
+											optionsValue: 'value',
+											value: selectedDay,
+											optionsText: 'name',
+											visibleItemsCount: 5,
+											enable: selectedHighlight() == 1,
+											columns: [
+												{ prop: 'name' },
+											]}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H3_1 -->
+							<div id="stamping-his-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_111')}</div>
+							<!-- H3_2 -->
+							<div tabindex="3" id="stamping-his-radio"
+								data-bind="ntsRadioBoxGroup: {
+												name: '#[KDP010_111]',
+												options: optionStamping,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: selectedStamping,
+												enable: selectedHighlight() == 1 &amp;&amp; selectedDay() == 8}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H4_1 -->
+							<div id="correc-label"
+								data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName'}">#{i18n.getText('KDP010_116')}</div>
+							<!-- H4_2 -->
+							<div tabindex="4" id="correc-text">
+								<input id="correc"
+									data-bind="ntsTextEditor: {name: '#[KDP010_116]',required: true, value: simpleValue, constraint: 'ButtonName', enable: selectedHighlight() == 1}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H5_1 -->
+							<div id="date-time-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_118')}</div>
+							<!-- H5_2 -->
+							<div tabindex="5" id="first-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_118]', enable: selectedHighlight() == 1 }" />
+
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H6_1 -->
+							<div id="date-time-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_119')}</div>
+							<!-- H6_2 -->
+							<div tabindex="6" id="second-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- H7_1 -->
+							<div id="correc-label1"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
+						</td>
+						<!-- H7_2 -->
+						<td>
+							<div tabindex="7" id="combobox1" class="cbx-days"
+								data-bind="ntsComboBox: {
+											options: optionAudio,
+											optionsValue: 'value',
+											value: selectedAudio,
+											optionsText: 'name',
+											visibleItemsCount: 15,
+											enable: true,
+											columns: [
+												{ prop: 'name' },
+											]}"></div>
+						</td>
+
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="8" id="close-button" class="proceed x-large"
+					data-bind="click: passData">#{i18n.getText('KSM011_72')}</button>
+				<button tabindex="9" id="close-button" data-bind="click: closeDialog">#{i18n.getText('KSM011_73')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

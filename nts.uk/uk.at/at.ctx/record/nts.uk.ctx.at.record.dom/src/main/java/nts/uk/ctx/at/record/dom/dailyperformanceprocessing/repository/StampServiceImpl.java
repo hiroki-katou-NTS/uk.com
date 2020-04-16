@@ -12,11 +12,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
-import nts.uk.ctx.at.record.dom.stamp.ReflectedAtr;
-import nts.uk.ctx.at.record.dom.stamp.StampItem;
-import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -31,12 +30,13 @@ public class StampServiceImpl implements StampDomainService {
 	@Inject
 	private ErrMessageInfoRepository errRepo;
 	@Inject
-	private StampRepository stampRepo;
-	@Inject
 	private StampCardtemRepository stampCardRepo;
+	
+	@Inject
+	private StampDakokuRepository stampDakokuRepository;
 
 	//打刻を取得する
-    public List<StampItem> handleData(StampReflectRangeOutput s,
+    public List<Stamp> handleData(StampReflectRangeOutput s,
             String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId,RecreateFlag recreateFlag) {
 		if (s.getLstStampReflectTimezone().isEmpty()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
@@ -70,59 +70,56 @@ public class StampServiceImpl implements StampDomainService {
 		// return null;
 		// }
 
-		List<StampItem> lstStampItemOutput = new ArrayList<StampItem>();
+//		List<StampItem> lstStampItemOutput = new ArrayList<StampItem>();
+		List<Stamp> lstStampOutput = new ArrayList<>();
 
 		if (stampNumber != null && !stampNumber.isEmpty()) {
 
-			List<StampItem> lstStampItem = this.stampRepo.findByListCardNo(stampNumber);
-
+			List<Stamp> listStamp = stampDakokuRepository.getByListCard(stampNumber);
             if (recreateFlag != RecreateFlag.CREATE_DAILY) {
-				for(StampItem x :lstStampItem){
-					int attendanceClock = x.getAttendanceTime().v();
+            	for(Stamp x :listStamp){
+					int attendanceClock = x.getStampDateTime().clockHourMinute().v();
 					TimeZoneOutput stampRange = s.getStampRange();
-					
-					if (x.getDate().year()==date.year()&& x.getDate().month() == date.month() && x.getDate().day() == date.day()
+					if (x.getStampDateTime().year()==date.year()&& x.getStampDateTime().month() == date.month() && x.getStampDateTime().day() == date.day()
 							&& attendanceClock >= stampRange.getStart().v().intValue()
 							&& attendanceClock <= stampRange.getEnd().v().intValue()
-                        	&& x.getReflectedAtr().value == 0) {//打刻．反映済み区分　=　false
-						lstStampItemOutput.add(x);
+							&& x.isReflectedCategory() == false) {//打刻．反映済み区分　=　false
+						lstStampOutput.add(x);
 					}
-					lstStampItemOutput.addAll(findStempItemNext(lstStampItem, date.addDays(1), stampRange, x.getReflectedAtr()));
+					lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
 				}
-				lstStampItemOutput = lstStampItemOutput.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
-				lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
-				lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
+            	listStamp = listStamp.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+            	listStamp.sort(Comparator.comparing(Stamp::getStampDateTime));
 
-				return lstStampItemOutput;
+				return lstStampOutput;
 			}
              
-			for(StampItem x : lstStampItem) {
-				int attendanceClock = x.getAttendanceTime().v().intValue();
+			for(Stamp x : listStamp) {
+				int attendanceClock = x.getStampDateTime().clockHourMinute().v();
 				TimeZoneOutput stampRange = s.getStampRange();
-				if (x.getDate().year()==date.year()&& x.getDate().month() == date.month() && x.getDate().day() == date.day()
+				if (x.getStampDateTime().year()==date.year()&& x.getStampDateTime().month() == date.month() && x.getStampDateTime().day() == date.day()
 						&& attendanceClock >= stampRange.getStart().v().intValue()
 						&& attendanceClock <= stampRange.getEnd().v().intValue()) {
-					lstStampItemOutput.add(x);
+					lstStampOutput.add(x);
 				}
-				lstStampItemOutput.addAll(findStempItemNext(lstStampItem, date.addDays(1), stampRange, x.getReflectedAtr()));
+				lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
 			};
-			lstStampItemOutput = lstStampItemOutput.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
-			lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
-			lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
+			lstStampOutput = lstStampOutput.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+			lstStampOutput.sort(Comparator.comparing(Stamp::getStampDateTime));
 		}
-		return lstStampItemOutput;
+		return lstStampOutput;
 	}
 
-	private List<StampItem> findStempItemNext(List<StampItem> lstStampItem, GeneralDate tomorow, TimeZoneOutput stampRange, ReflectedAtr reflectedAtr){
-		List<StampItem> lstStampItemResult = lstStampItem.stream().filter(x -> x.getDate().year() == tomorow.year()
-				&& x.getDate().month() == tomorow.month() && x.getDate().day() == tomorow.day() 
-				&& x.getAttendanceTime().v() >= 0
-				&& x.getAttendanceTime().v() <= stampRange.getStart().v().intValue()
-				&& (reflectedAtr == ReflectedAtr.NOTREFLECTED ? x.getReflectedAtr().value == 0 : true)).map(x ->{
-					x.setAttendanceTime(new AttendanceTime(x.getAttendanceTime().v() + 1440));
+	private List<Stamp> findStempItemNext(List<Stamp> lstStamp, GeneralDate tomorow, TimeZoneOutput stampRange, boolean reflectedAtr){
+		List<Stamp> lstStampResult = lstStamp.stream().filter(x -> x.getStampDateTime().year() == tomorow.year()
+				&& x.getStampDateTime().month() == tomorow.month() && x.getStampDateTime().day() == tomorow.day() 
+				&& x.getStampDateTime().clockHourMinute().v() >= 0
+				&& x.getStampDateTime().clockHourMinute().v() <= stampRange.getStart().v().intValue()
+				&& (reflectedAtr == true)).map(x ->{
+					x.setAttendanceTime(new AttendanceTime(x.getStampDateTime().clockHourMinute().v() + 1440));
 					return x;
 				}).collect(Collectors.toList());
 		
-		return lstStampItemResult;
+		return lstStampResult;
 	}
 }
