@@ -33,7 +33,6 @@ public class BsympAffWorkPlaceGroup  extends ContractUkJpaEntity{
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return pk;
 	}
 }
