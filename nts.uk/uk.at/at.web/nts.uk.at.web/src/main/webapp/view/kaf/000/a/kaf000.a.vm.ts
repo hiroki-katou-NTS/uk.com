@@ -88,7 +88,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 employeeID: employeeID,
                 overtimeAtrParam: overtimeAtr
             }).done((data)=>{
-                if(appType != 1 && appType != 2) {
+                if(appType != 1 && appType != 2 && appType != 10) {
                     self.initData(data);    
                 }
                 let deadlineMsg = data.outputMessageDeadline;

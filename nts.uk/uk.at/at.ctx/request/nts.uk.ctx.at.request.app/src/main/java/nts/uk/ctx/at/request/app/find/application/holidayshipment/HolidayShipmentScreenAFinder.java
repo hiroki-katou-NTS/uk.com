@@ -128,8 +128,6 @@ public class HolidayShipmentScreenAFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
-	/*@Inject
-	private ApprovalRootAdapter rootAdapter;*/
 	@Inject
 	private RequestOfEachWorkplaceRepository requestWpRepo;
 	@Inject
@@ -293,11 +291,15 @@ public class HolidayShipmentScreenAFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		//基準申請日の決定
-		GeneralDate referenceDate = this.DetRefDate(workingDate, holidayDate);
+		GeneralDate referenceDate = HolidayShipmentScreenAFinder.DetRefDate(workingDate, holidayDate);
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
-		listTagetDate.add(workingDate);
-		listTagetDate.add(holidayDate);
+		if(workingDate != null) {
+			listTagetDate.add(workingDate);
+		}
+		if(holidayDate != null) {
+			listTagetDate.add(holidayDate);
+		}
 		
 		//申請日を変更する(Thay đổi Applicationdate)
 		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
@@ -329,7 +331,7 @@ public class HolidayShipmentScreenAFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		//基準申請日の決定
-		GeneralDate referenceDate = this.DetRefDate(workingDate, holidayDate);
+		GeneralDate referenceDate = HolidayShipmentScreenAFinder.DetRefDate(workingDate, holidayDate);
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
 		listTagetDate.add(workingDate);
@@ -917,6 +919,10 @@ public class HolidayShipmentScreenAFinder {
 		//振休管理チェック (Check quản lý nghỉ bù)
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);
 		
+		// 振休振出申請設定の取得
+		WithDrawalReqSet withDrawalReqSet = this.getWithDrawalReqSet(companyId);
+		result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSet));
+		
 		//1.振出申請（新規）起動処理(申請対象日関係あり)(Xử lý khời động Application làm bù (New )(có liên quan application ngày đối tượng )
 		DisplayInformationApplication applicationForWorkingDay = this.applicationForWorkingDay(
 																		companyId,
@@ -949,27 +955,27 @@ public class HolidayShipmentScreenAFinder {
 		Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
 		
 		if(workingConditionItem.isPresent()) {
-			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode());
+			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
 		}else {
-			result.setSelectionWorkTime(Optional.of(workTimeLst.get(0).getWorktimeCode()));
+			result.setSelectionWorkTime(workTimeLst.get(0).getWorktimeCode().v());
 		}
 		
 		//振出用勤務種類の取得(Lấy worktype của làm bù)
 		List<WorkType> workTypeForWorkingDay = this.getWorkTypeForWorkingDay(companyId, employmentCode, null);
 		
 		result.setWorkTypeList(workTypeForWorkingDay.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
-		result.setSelectionWorkType(Optional.of(workTypeForWorkingDay.get(0).getWorkTypeCode()));
+		result.setSelectionWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
 		
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
-		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType().get().v(), result.getSelectionWorkTime().get().v());
+		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType(), result.getSelectionWorkTime());
 		for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
 			if(time.getWorkNo() == 1) {
-				result.setStartTime(Optional.of(time.getStart()));
-				result.setEndTime(Optional.of(time.getEnd()));
+				result.setStartTime(time.getStart().v());
+				result.setEndTime(time.getEnd().v());
 			}
 			if(time.getWorkNo() == 2) {
-				result.setStartTime2(Optional.of(time.getStart()));
-				result.setEndTime2(Optional.of(time.getEnd()));
+				result.setStartTime2(time.getStart().v());
+				result.setEndTime2(time.getEnd().v());
 			}
 		}
 		return result;
@@ -1065,5 +1071,17 @@ public class HolidayShipmentScreenAFinder {
 		disOrderList.addAll(wkTypeCDList);
 		return disOrderList;
 
+	}
+	
+	/**
+	 * 振休振出申請設定の取得
+	 * @param companyID 会社ID
+	 * @return
+	 */
+	public WithDrawalReqSet getWithDrawalReqSet(String companyID) {
+		// ドメインモデル「振休振出申請設定」を取得する
+		WithDrawalReqSet withDrawalReqSet = withDrawRepo.getWithDrawalReqSet().get();
+		// 取得した情報を返す
+		return withDrawalReqSet;
 	}
 }

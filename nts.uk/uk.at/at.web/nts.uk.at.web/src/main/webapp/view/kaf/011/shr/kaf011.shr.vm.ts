@@ -336,34 +336,6 @@ module nts.uk.at.view.kaf011.shr {
                     }
 
                 });
-
-                self.appDate.subscribe((newDate) => {
-                    let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
-                        absDate = vm.absWk().appDate(),
-                        recDate = vm.recWk().appDate(),
-                        changeDateParam = {
-                            holidayDate: absDate,
-                            takingOutDate: recDate,
-                            comType: vm.appComSelectedCode(),
-                            uiType: 0
-                        }
-
-                    if (!newDate || !vm.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
-                    block.invisible();
-                    service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
-                        vm.recWk().setWkTypes(data.recWkTypes || []);
-                        vm.absWk().setWkTypes(data.absWkTypes || []);
-                        if (vm.displayPrePostFlg() == 0) {
-                            vm.prePostSelectedCode(data.preOrPostType);
-                        }
-                        vm.kaf000_a.start(vm.employeeID(), 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
-                        });
-                    }).fail((error) => {
-                        alError({ messageId: error.messageId, messageParams: error.parameterIds });
-                    }).always(() => {
-                        block.clear();
-                    });;
-                });
             }
             setDataFromWkDto(data) {
                 let self = this,

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
@@ -88,8 +87,6 @@ public class AppDispInfoWithDateDto {
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
-//		appDispInfoWithDateDto.employmentSet = CollectionUtil.isEmpty(appDispInfoWithDateOutput.getEmploymentSet()) ? Collections.emptyList() : 
-//			appDispInfoWithDateOutput.getEmploymentSet().stream().map(x -> AppEmploymentSettingDto.fromDomain(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
 		appDispInfoWithDateDto.workTimeLst = appDispInfoWithDateOutput.getWorkTimeLst().stream()
 				.map(x -> AppDispInfoWithDateDto.fromDomainWorkTime(x)).collect(Collectors.toList());

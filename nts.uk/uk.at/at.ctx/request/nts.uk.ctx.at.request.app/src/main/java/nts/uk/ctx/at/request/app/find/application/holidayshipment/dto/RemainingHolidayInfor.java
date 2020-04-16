@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 
+@NoArgsConstructor
 @Getter
 public class RemainingHolidayInfor {
 
@@ -36,7 +37,7 @@ public class RemainingHolidayInfor {
 	 */
 	private double carryForwardDays;
 	@Setter
-	private GeneralDate closestDueDate;
+	private String closestDueDate;
 
 	public RemainingHolidayInfor(AbsRecRemainMngOfInPeriod domain) {
 		this.lstAbsRecMng = domain.getLstAbsRecMng().stream().map(c->new AbsRecDetailParaDto(c)).collect(Collectors.toList());

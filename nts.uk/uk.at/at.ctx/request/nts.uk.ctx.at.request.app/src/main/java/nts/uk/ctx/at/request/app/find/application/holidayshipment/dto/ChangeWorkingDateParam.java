@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * @author thanhpv
@@ -14,9 +13,9 @@ import nts.arc.time.GeneralDate;
 @Setter
 public class ChangeWorkingDateParam {
 
-	public GeneralDate workingDate;
+	public String workingDate;
 	
-	public GeneralDate holidayDate;
+	public String holidayDate;
 	
 	public DisplayInforWhenStarting displayInforWhenStarting;
 }

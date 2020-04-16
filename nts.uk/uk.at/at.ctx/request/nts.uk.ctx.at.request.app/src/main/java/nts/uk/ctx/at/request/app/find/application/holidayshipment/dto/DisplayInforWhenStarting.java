@@ -27,6 +27,8 @@ public class DisplayInforWhenStarting {
 	public RemainingHolidayInfor remainingHolidayInfor;
 	//申請表示情報
 	public AppDispInfoStartupDto appDispInfoStartup;
+	//振休振出申請設定
+	private WithDrawalReqSetDto drawalReqSet;
 	
 	//Phần này không có trong tài liệu thiết kế
 	
@@ -40,6 +42,5 @@ public class DisplayInforWhenStarting {
 	private String employeeName;
 	//申請種類別設定
 	private AppTypeSetDto appTypeSet;
-	//振休振出申請設定
-	private WithDrawalReqSetDto drawalReqSet;
+	
 }

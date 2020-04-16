@@ -1,15 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,17 +13,17 @@ public class DisplayInformationApplication {
 
 	private List<WorkTypeDto> workTypeList;
 	
-	private Optional<WorkTypeCode> selectionWorkType;
+	private String selectionWorkType;
 	
-	private Optional<WorkTimeCode> selectionWorkTime;
+	private String selectionWorkTime;
 	
-	private Optional<TimeWithDayAttr> startTime;
+	private Integer startTime;
 	
-	private Optional<TimeWithDayAttr> endTime;
+	private Integer endTime;
 	
-	private Optional<TimeWithDayAttr> startTime2;
+	private Integer startTime2;
 	
-	private Optional<TimeWithDayAttr> endTime2;
+	private Integer endTime2;
 }
 
 

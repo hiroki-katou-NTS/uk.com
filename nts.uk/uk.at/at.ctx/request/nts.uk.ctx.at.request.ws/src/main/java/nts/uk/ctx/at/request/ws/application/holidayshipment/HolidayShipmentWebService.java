@@ -104,13 +104,19 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("changeWorkingDateRefactor")
 	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeWorkingDateRefactor(param.workingDate, param.holidayDate, param.displayInforWhenStarting);
+		return this.screenAFinder.changeWorkingDateRefactor(
+				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+				param.displayInforWhenStarting);
 	}
 	
 	@POST
 	@Path("changeHolidayDateRefactor")
 	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeHolidayDateRefactor(param.workingDate, param.holidayDate, param.displayInforWhenStarting);
+		return this.screenAFinder.changeHolidayDateRefactor(
+				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+				param.displayInforWhenStarting);
 	}
 
 	@POST
