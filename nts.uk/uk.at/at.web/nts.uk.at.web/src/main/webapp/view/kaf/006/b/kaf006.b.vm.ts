@@ -254,9 +254,10 @@ module nts.uk.at.view.kaf006.b{
             })
             .fail(function(res) {
                 if (res.messageId == 'Msg_426') {
-                    dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.ui.block.clear();
-                    });
+                    //fix #110139 JP
+//                    dialog.alertError({ messageId: res.messageId }).then(function() {
+//                        nts.uk.ui.block.clear();
+//                    });
                 } else if (res.messageId == 'Msg_473') {
                     dialog.alertError({ messageId: res.messageId }).then(function() {
                         nts.uk.ui.block.clear();
