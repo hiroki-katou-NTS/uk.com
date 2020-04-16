@@ -81,8 +81,15 @@ __viewContext.ready(function() {
             _.forEach(listValue, (value) => {
                 listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
             });
-            currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
-            initScreen(screenModel, listAppMeta, currentApp);
+            // do not find app so listAppMeta === undefined bug #110138
+            if (listAppMeta[0] === undefined) {
+                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_128' }).then(function() {
+                        model.CommonProcess.callCMM045();
+                    });   
+            }else{
+                currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
+                initScreen(screenModel, listAppMeta, currentApp);  
+            }
         }).fail((res) => {
             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                 model.CommonProcess.callCMM045();
