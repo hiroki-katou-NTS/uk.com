@@ -936,7 +936,7 @@ public class HolidayShipmentScreenAFinder {
 		AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(lstEmployee.get(0), GeneralDate.today());
 		
 		//一番近い期限日を取得する
-		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain, null));
+		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));
 		
 		return result;
 	}

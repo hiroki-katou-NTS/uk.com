@@ -374,7 +374,7 @@ public class HolidayShipmentScreenBFinder {
 			AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(application.get().getEmployeeID(), GeneralDate.today());
 			
 			//一番近い期限日を取得する
-			result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain, null));
+			result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));
 			result.setEmployeeName(getEmployeeDisplayTextRefactor(application.get().getEnteredPersonID(), application.get().getEmployeeID()));
 			
 			Optional<AppTypeSetDto> appTypeSetDtoOpt = AppTypeSetDto.convertToDto(appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getRequestSetting()).stream()
