@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
  * @author phongtq
  *
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
