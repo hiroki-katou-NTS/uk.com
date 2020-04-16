@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.stamp.management.CorrectionInterval
+				nts.uk.ctx.at.record.dom.stamp.management.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.stamp.application.MessageContent
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kdp/010/main.css" of="/nts.uk.at.web" />
+			<com:scriptfile path="kdp010.b.vm.js" />
+			<com:scriptfile path="kdp010.b.service.js" />
+			<com:scriptfile path="kdp010.b.start.js" />
+			<com:scriptfile path="/view/kdp/010/e/kdp010.e.vm.js" />
+			<com:scriptfile path="/view/kdp/010/e/kdp010.e.service.js" />
+			<com:stylefile path="/view/kdp/010/e/main.css" />
+		</ui:define>
+
+		<!-- Side Bar -->
+		<ui:define name="sidebar">
+			<div data-bind="with: tabView">
+				<ul class="navigator"
+					data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
+					<li><a
+						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
+				</ul>
+			</div>
+		</ui:define>
+
+		<!-- Side Bar Content -->
+		<ui:define name="sidebar-content">
+			<div class="sidebar-content-header" data-bind="with: tabView">
+				<span class="title" data-bind="text: title"></span>
+				<com:ko-if bind="currentTab()=='B'">
+					<!-- B1_7 -->
+					<button tabindex="1" class="proceed"
+						data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KDP010_10')}</button>
+				</com:ko-if>
+				<com:ko-if bind="currentTab()=='E'">
+					<!-- E1_7 -->
+					<button class="proceed" tabindex="1"
+						data-bind="click: $parent.viewmodelE.registration.bind($parent.viewmodelE)">#{i18n.getText('KDP010_10')}</button>
+				</com:ko-if>
+				<!-- Export excel -->
+				<!-- <button id="A_BTN_001" tabindex="3" data-bind="click: exportExcel">#{i18n.getText('KSM011_136')}</button> -->
+			</div>
+
+			<!-- Screen B -->
+			<div id="tabpanel-b" role="tabpanel" class="screen-b"
+				data-bind="with: viewmodelB">
+				<!-- B2_1 -->
+				<div id="label-title">
+					<label class="basic-label">#{i18n.getText('KDP010_12')}</label>
+				</div>
+				<!-- Item on Screen -->
+				<table class="basic-items">
+					<tr>
+						<td>
+							<!-- B4_1 -->
+							<div id="correc-label"
+								data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_15')}
+							</div>
+							<div id="correc-text-b">
+								<!-- B4_2 -->
+								<input id = "correc-input" tabindex="3" class="nts-input"
+									data-bind="ntsNumberEditor: {name: '#[KDP010_16]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B5_1 -->
+							<div id="stamping-his-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_18')}
+							</div> <!-- B5_2 -->
+							<div id="stamping-his-radio" tabindex="4"
+								data-bind="ntsRadioBoxGroup: {
+													options: optionStamping,
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: selectedStamping,
+													enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B6_1 -->
+							<div id="date-time-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_22')}
+							</div> <!-- B6_2 --> <label id="letter-color">#{i18n.getText('KDP010_23')}</label>
+							<!-- B6_3 -->
+							<div id="first-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_24]' }">
+							</div> <!-- B6_4 --> <label id="background-color">#{i18n.getText('KDP010_25')}</label>
+							<!-- B6_5 -->
+							<div id="second-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_26]' }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B7_1 -->
+							<div id="stamp-result-label"
+								data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}
+							</div> 
+							<div id = "stamp-texts-note" tabindex="5">
+							<!-- B7_2 --> <input class="nts-input" id="stamp-texts" 
+							data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							<!-- B7_3 -->
+							<label id="text-note">#{i18n.getText('KDP010_30')}</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B10_1 -->
+							<div id="highlight-label"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_38')}
+							</div> <!-- B10_2 -->
+							<div id="highlight-radio" tabindex="6"
+								data-bind="ntsRadioBoxGroup: {
+													options: optionHighlight,
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: selectedHighlight,
+													enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B20_1 -->
+							<button id="stamp-button" data-bind="click: openGDialog"
+								class="stamp-btn">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
+							<!-- B20_2 -->	
+							<com:ko-if bind = "checkInUp() == true">
+							<label id="background-color" tabindex="7" style="color: blue;">#{i18n.getText('KDP010_52')}</label>
+							</com:ko-if>
+							<com:ko-if bind = "checkInUp() == false">
+							<label id="background-color" tabindex="7" style="color: red;">#{i18n.getText('KDP010_53')}</label>
+							</com:ko-if>
+							
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="tabpanel-e" role="tabpanel" class="screen-e"
+				data-bind="with: viewmodelE">
+				<ui:include src="../e/index.xhtml" />
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

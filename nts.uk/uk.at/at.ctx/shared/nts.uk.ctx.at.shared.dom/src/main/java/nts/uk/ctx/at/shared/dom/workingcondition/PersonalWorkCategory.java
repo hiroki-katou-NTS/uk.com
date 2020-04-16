@@ -90,4 +90,10 @@ public class PersonalWorkCategory extends DomainObject {
 		this.publicHolidayWork = publicHolidayWork;
 	}
 
+	public PersonalWorkCategory(SingleDaySchedule weekdayTime) {
+		this.weekdayTime = weekdayTime;
+	}
+	
+	
+
 }

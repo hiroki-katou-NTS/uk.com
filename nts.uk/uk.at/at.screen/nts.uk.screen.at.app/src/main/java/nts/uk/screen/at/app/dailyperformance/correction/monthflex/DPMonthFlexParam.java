@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 
@@ -24,5 +25,9 @@ public class DPMonthFlexParam {
 	private Set<String> formatCode;
 	
 	private Optional<MonthlyRecordWorkDto> monthOpt = Optional.empty();
+	
+    //日別実績の修正の状態．対象期間
+    private DatePeriod datePeriod;
+
 	
 }

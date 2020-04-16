@@ -3,8 +3,6 @@ package nts.uk.ctx.at.shared.dom.workrule.shiftmaster;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 
@@ -14,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
  * @author tutk
  *
  */
-@Stateless
 public class GetUsableShiftMasterService {
 
 	public static List<ShiftMasterDto> getUsableShiftMaster(Require require,
