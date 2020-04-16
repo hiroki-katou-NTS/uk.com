@@ -233,6 +233,7 @@ public class AppOvertimeFinder {
 			result.setEmployeeID(employeeID);
 		}
 		result.setEmployeeName(employeeName);
+		if(url != null)
 		result.setOvertimeAtr(Integer.parseInt(url));
 		return result;
 	}
@@ -251,7 +252,7 @@ public class AppOvertimeFinder {
 		List<ApplicationDeadlineDto> applicationDeadlineDto = overtimeSettingData.getAppCommonSettingOutput()
 				.getApplicationDeadlines().stream().map(item -> ApplicationDeadlineDto.convertToDto(item))
 				.collect(Collectors.toList());
-		List<AppEmploymentSettingDto> appEmploymentSettingDto = AppEmploymentSettingDto.fromDomain(overtimeSettingData.getAppCommonSettingOutput().getAppEmploymentWorkType());
+		AppEmploymentSettingDto appEmploymentSettingDto = AppEmploymentSettingDto.fromDomain(overtimeSettingData.getAppCommonSettingOutput().getAppEmploymentWorkType());
 		
 		AppCommonSettingOutputDto appCommonSettingOutputDto = new AppCommonSettingOutputDto(
 				overtimeSettingData.getAppCommonSettingOutput().getGeneralDate().toString(DATE_FORMAT), applicationSettingDto,

@@ -51,7 +51,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
@@ -158,8 +157,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
@@ -251,7 +248,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
 		boolean subVacaTypeUseFlg = false;
 		boolean subHdTypeUseFlg = false;
-		if(CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
+		if(!CollectionUtil.isEmpty(employmentSet.getListWTOAH()) && employmentSet != null) {
 			WorkTypeObjAppHoliday item = employmentSet.getListWTOAH().get(0);
 			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.RESTTIME.value) {
 				subVacaTypeUseFlg = item.getHolidayTypeUseFlg().get();
@@ -612,13 +609,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
-		Optional<AppEmploymentSetting> employmentSetOptional = Optional.ofNullable(null);
-		if(!CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
-			 employmentSetOptional = appEmploymentSetting.getEmploymentSetting(companyID, employmentSet.getEmploymentCode(), employmentSet.getListWTOAH().get(0).getAppType().value);
-		}
-		if(employmentSetOptional.isPresent()) {
-			employmentSet = employmentSetOptional.get();
-		}
 		// 勤務種類を取得する
 		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
 				employmentSet, 

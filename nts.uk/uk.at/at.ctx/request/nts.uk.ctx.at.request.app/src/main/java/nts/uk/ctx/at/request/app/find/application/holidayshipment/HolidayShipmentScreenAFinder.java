@@ -808,7 +808,8 @@ public class HolidayShipmentScreenAFinder {
 				WorkTypeObjAppHoliday item = workTypeObjAppHolidayList.stream().filter(x -> x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value == breakOutType : false).findFirst().get();
 				List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
 						item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, employmentCode, appEmploymentSetting.getListWTOAH().get(0).getAppType(),
-								appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSetting.getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSetting.getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+								appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSetting.getListWTOAH().get(0).getSwingOutAtr().get().value 
+										: (appEmploymentSetting.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSetting.getListWTOAH().get(0).getHolidayAppType().get().value : 9), x))
 						.collect(Collectors.toList());
 					if(lstEmploymentWorkType !=null) {
 						
@@ -820,9 +821,7 @@ public class HolidayShipmentScreenAFinder {
 					}
 			}
 			
-		} else {
-			return wkTypes;
-		}
+		} 
 		return wkTypes;
 
 	}

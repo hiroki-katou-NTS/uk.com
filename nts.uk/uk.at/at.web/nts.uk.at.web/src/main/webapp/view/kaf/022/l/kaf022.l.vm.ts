@@ -91,21 +91,62 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             var dfd = $.Deferred();
             service.findEmploymentSetByCid().done(data => {
                 clear();
+                //refkaf022 hoangnd
+                if(data == null) return;
+                
+                let lstEmp = [];
+                for (let i = 0; i< data.length; i++){
+                    let dataI = data[i];
+                    let listWTOAH = dataI.listWTOAH;
+                    if(listWTOAH !=null && listWTOAH.length >= 1){
+                        for (let j=0; j< listWTOAH.length; j++){
+                            let lstWork = [];
+                            let workTypeListArr = listWTOAH[j];
+                            if(workTypeListArr.workTypeList != null && workTypeListArr.workTypeList.length>=1){
+                                for (let k = 0; k < workTypeListArr.workTypeList.length; k++){
+                                   let workTypeCode = workTypeListArr.workTypeList[k];
+                                    lstWork.push({
+                                        companyID: dataI.companyID,
+                                        employmentCode: dataI.employmentCode,
+                                        appType: workTypeListArr.appType,
+                                        holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.swingOutAtr : (workTypeListArr.appType == 1 ? workTypeListArr.holidayAppType : 9),
+                                        workTypeCode: workTypeCode
+                                    })
+                                }
+                            }
+                            lstEmp.push({
+                                companyID:dataI.companyID,
+                                employmentCode:dataI.employmentCode,
+                                appType:workTypeListArr.appType,
+                                holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.swingOutAtr : (workTypeListArr.appType == 1 ? workTypeListArr.holidayAppType : 9),
+                                holidayTypeUseFlg:workTypeListArr.holidayTypeUseFlg,
+                                displayFlag:workTypeListArr.workTypeSetDisplayFlg,
+                                lstWorkType: lstWork
+                            })    
+                        }
+                    }
+                    
+                    
+                }
+               
+                
+                
+                
                 //Find already setting list
-                if(_.size(data)){
+                if(_.size(lstEmp)){
                     //Get Employment List.
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
                     self.codeStart = employmentList[0].code;
                         let alreadyLst: Array<UnitModel> = _.filter(employmentList, 
                                             function(emp) {
-                                                let foundEmployment = _.find(data, function(item:any) { return item.employmentCode === emp.code; });
+                                                let foundEmployment = _.find(lstEmp, function(item:any) { return item.employmentCode === emp.code; });
                                                  return !nts.uk.util.isNullOrUndefined(foundEmployment); 
                                             });
                         self.alreadySettingList(_.map(alreadyLst, item => {
                                                     let alreadyList: UnitAlreadySettingModel = {code: item.code, isAlreadySetting: true};
                                                     return alreadyList;}));
                     //Store for preview process
-                    self.alreadySettingData = data;
+                    self.alreadySettingData = lstEmp;
                     self.updateWorkTypeName();
                     dfd.resolve();
                 }
@@ -387,8 +428,34 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
             if (nts.uk.ui.errors.hasError() === false) {
+                //parse to old object
+                let list = [];
+                    let employmentCode1;
+                    for (let i = 0; i < commands.length; i++) {
+                        employmentCode1 = commands[i].employmentCode;
+                        let listWorkType = [];
+                        let commandI = commands[i];
+                        if (commandI.lstWorkType != null && commandI.lstWorkType.length >=1) {
+                            for (let j = 0; j < commandI.lstWorkType.length; j++) {
+                                listWorkType.push(commandI.lstWorkType[j].workTypeCode);
+                            }
+                        }
+                        list.push({
+                            workTypeList: listWorkType,
+                            appType: commandI.appType,
+                            workTypeSetDisplayFlg: commandI.displayFlag,
+                            holidayAppType: commandI.appType == 1 ? commandI.holidayOrPauseType : null,
+                            holidayTypeUseFlg: commandI.holidayTypeUseFlg == null ? false : commandI.holidayTypeUseFlg,
+                            swingOutAtr: commandI.appType == 10 ? commandI.holidayOrPauseType : null
+                        });
+                    }
+                    
                 if (self.screenMode() === ScreenMode.INSERT) {
-                    service.addEmploymentSet(commands).done(() => {
+                    service.addEmploymentSet({
+                        companyID:'',
+                        employmentCode:employmentCode1,
+                        listWTOAH: list
+                    }).done(() => {
                         //マスタリストを更新。マスタ設定済みとする 
                         //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
                         //self.alreadySettingList.push(alreadyList);
@@ -409,7 +476,15 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         });
                     });
                 } else {
-                    service.updateEmploymentSet(commands).done(() => {
+                    
+                    
+                    
+                    //Array To AppEmploymentSetComman
+                    service.updateEmploymentSet({
+                        companyID:'',
+                        employmentCode:employmentCode1,
+                        listWTOAH: list
+                    }).done(() => {
                         //情報メッセージ（Msg_15）を表示する
                         clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -771,6 +846,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             }
             
             if(itemSet.appType == 10){
+                //fix bug #110122 #110123
                 if(itemSet.optionName() === "【振出】"){
                     let hdShip = {
                         oneDayAtr: 7, 
