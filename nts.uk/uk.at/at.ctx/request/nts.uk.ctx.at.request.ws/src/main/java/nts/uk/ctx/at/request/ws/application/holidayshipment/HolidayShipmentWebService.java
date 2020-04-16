@@ -14,6 +14,7 @@ import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateToHolidayCommandHandler;
@@ -74,8 +75,11 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("startPageARefactor")
-	public DisplayInforWhenStarting startPageARefactor(startPageARefactorParam param) {
-		return this.screenAFinder.startPageARefactor(AppContexts.user().companyId(), Arrays.asList(AppContexts.user().employeeId()), param.getAppDate());
+	public DisplayInforWhenStarting startPageARefactor(StartPageARefactorParam param) {
+		return this.screenAFinder.startPageARefactor(
+				AppContexts.user().companyId(), 
+				CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
+				param.getAppDate());
 	}
 
 	@POST
@@ -198,7 +202,7 @@ class StartScreenAParam {
 }
 
 @Value
-class startPageARefactorParam {
+class StartPageARefactorParam {
 	private List<String> sIDs;
 	private List<GeneralDate> appDate;
 }
