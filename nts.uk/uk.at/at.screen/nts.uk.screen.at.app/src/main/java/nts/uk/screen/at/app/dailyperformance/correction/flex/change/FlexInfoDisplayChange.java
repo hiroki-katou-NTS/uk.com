@@ -31,7 +31,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
- * 
+ *  
+ *  * フレックス情報を取得する
  * <<Public>> フレックス情報を表示する
  */
 @Stateless

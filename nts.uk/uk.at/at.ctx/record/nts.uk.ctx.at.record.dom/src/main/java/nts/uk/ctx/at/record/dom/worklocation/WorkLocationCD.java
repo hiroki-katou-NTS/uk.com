@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringMaxLength(4)
 /**
- * 
+ * 勤務場所コード
  * @author hieult
  *
  */

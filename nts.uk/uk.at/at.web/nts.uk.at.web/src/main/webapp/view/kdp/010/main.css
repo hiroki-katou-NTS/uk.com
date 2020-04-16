@@ -1,0 +1,54 @@
+#label-title, #stamping-his-label, #date-time-label, #stamp-result-label,
+	#highlight-label, #stamp-button {
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+#correc-label {
+	margin-left: 30px;
+	margin-top: 30px;
+}
+
+#correc-text, #first-color-picker, #second-color-picker,
+	#background-color {
+	margin-left: 10px;
+}
+
+
+#stamping-his-radio {
+	margin-left: 75px;
+}
+
+#letter-color {
+	margin-left: 84px;
+}
+
+#stamp-texts, #text-note {
+	margin-left: 32px;
+}
+
+#highlight-radio {
+	margin-left: 54px;
+}
+
+#correc-text-b {
+	margin-top: -34px;
+	margin-left: 243px;
+}
+
+#stamp-texts-note {
+	margin-top: -34px;
+	margin-left: 212px;
+}
+
+#correc-text-b {
+	width: 50px;
+}
+
+.nts-input{
+	width: 24px;
+}
+
+.ntsRadioBox {
+	margin-left: 15px;
+}
