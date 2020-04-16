@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
