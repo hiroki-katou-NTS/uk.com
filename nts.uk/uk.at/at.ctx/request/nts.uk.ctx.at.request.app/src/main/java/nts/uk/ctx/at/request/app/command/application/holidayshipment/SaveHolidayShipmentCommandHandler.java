@@ -22,6 +22,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
@@ -32,14 +33,12 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -93,7 +92,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SaveHolidayShipmentCommandHandler
@@ -197,7 +195,7 @@ public class SaveHolidayShipmentCommandHandler
 		return null;
 	}
 	
-	public List<ConfirmMsgOutput> processBeforeRegister_New(SaveHolidayShipmentCommand command){
+	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command){
 		
 		String companyID = AppContexts.user().companyId();
 
@@ -206,7 +204,7 @@ public class SaveHolidayShipmentCommandHandler
 		GeneralDate absDate = command.getAbsCmd().getAppDate();
 		GeneralDate recDate = command.getRecCmd().getAppDate();
 		int comType = command.getComType();
-		List<ConfirmMsgOutput> result = new ArrayList<>();
+		List<ConfirmMsgDto> result = new ArrayList<>();
 		
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
@@ -220,27 +218,27 @@ public class SaveHolidayShipmentCommandHandler
 		if (isSaveRec(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
-			List<ConfirmMsgOutput> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
 					commonApp, 
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
-					new ArrayList<>());
+					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
 			result.addAll(listConfirmMsg);
 		}
 		if (isSaveAbs(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
-			List<ConfirmMsgOutput> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
 					commonApp, 
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
-					new ArrayList<>());
+					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
 			result.addAll(listConfirmMsg);
 		}
 		

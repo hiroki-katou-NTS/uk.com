@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateToHolidayCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ConfirmMsgDto;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
@@ -32,7 +33,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWork
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -117,7 +117,7 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("processBeforeRegister_New")
-	public List<ConfirmMsgOutput> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
+	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
 		return saveHandler.processBeforeRegister_New(command);
 	}
 	
