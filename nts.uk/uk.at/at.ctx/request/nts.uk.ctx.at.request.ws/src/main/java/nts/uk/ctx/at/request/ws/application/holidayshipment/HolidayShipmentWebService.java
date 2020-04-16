@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolid
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkingDateParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
@@ -94,6 +95,18 @@ public class HolidayShipmentWebService extends WebService {
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
 		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
+	}
+	
+	@POST
+	@Path("changeWorkingDateRefactor")
+	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
+		return this.screenAFinder.changeWorkingDateRefactor(param.workingDate, param.holidayDate, param.displayInforWhenStarting);
+	}
+	
+	@POST
+	@Path("changeHolidayDateRefactor")
+	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
+		return this.screenAFinder.changeHolidayDateRefactor(param.workingDate, param.holidayDate, param.displayInforWhenStarting);
 	}
 
 	@POST
