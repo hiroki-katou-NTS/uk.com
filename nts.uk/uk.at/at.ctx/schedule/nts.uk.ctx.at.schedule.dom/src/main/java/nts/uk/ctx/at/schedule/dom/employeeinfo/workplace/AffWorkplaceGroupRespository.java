@@ -112,7 +112,7 @@ public interface AffWorkplaceGroupRespository {
 	 * @param CID
 	 * @return
 	 */
-	public Optional<AffWorkplaceGroup> getAll(String CID);
+	public List<AffWorkplaceGroup> getAll(String CID);
 	
 	/**
 	 * 職場グループに所属する職場を取得する

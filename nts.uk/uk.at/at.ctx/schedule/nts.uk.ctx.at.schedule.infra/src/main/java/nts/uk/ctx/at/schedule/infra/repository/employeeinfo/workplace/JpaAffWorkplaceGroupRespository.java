@@ -202,9 +202,9 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 * @return
 	 */
 	@Override
-	public Optional<AffWorkplaceGroup> getAll(String CID) {
+	public List<AffWorkplaceGroup> getAll(String CID) {
 		return this.queryProxy().query(SELECT_BY_CID, BsympAffWorkPlaceGroup.class).setParameter("companyId", CID)
-				.getSingle(c -> c.toDomain());
+				.getList(c -> c.toDomain());
 	}
 
 	/**

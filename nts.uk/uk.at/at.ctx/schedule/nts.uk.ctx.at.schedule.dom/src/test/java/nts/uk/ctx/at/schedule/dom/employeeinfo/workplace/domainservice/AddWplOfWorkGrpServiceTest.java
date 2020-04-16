@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.domainservice;
 
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import static org.assertj.core.api.Assertions.assertThat;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.AffWorkplaceGroup;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.WorkplaceReplaceResult;
@@ -32,7 +31,7 @@ public class AddWplOfWorkGrpServiceTest {
 			}
 		};
 		
-		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DeleteHelper.Helper.DUMMY,wKPID);
+		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
 		
 		assertThat(workplaceReplaceResult.getPersistenceProcess().isPresent()).isFalse();
 	}
@@ -50,7 +49,7 @@ public class AddWplOfWorkGrpServiceTest {
 			}
 		};
 		
-		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DeleteHelper.Helper.DUMMY,wKPID);
+		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
 		assertThat(workplaceReplaceResult.getPersistenceProcess().isPresent()).isFalse();
 	}
 	
@@ -64,7 +63,7 @@ public class AddWplOfWorkGrpServiceTest {
 			}
 		};
 		
-		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DeleteHelper.Helper.DUMMY,wKPID);
+		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
 		
 		NtsAssert.atomTask(
 				() -> workplaceReplaceResult.getPersistenceProcess().get(),

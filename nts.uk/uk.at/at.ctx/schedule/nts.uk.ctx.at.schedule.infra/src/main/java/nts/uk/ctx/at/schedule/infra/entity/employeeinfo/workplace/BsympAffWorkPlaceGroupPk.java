@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
  * @author phongtq
  *
  */
-@Embeddable
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
 @EqualsAndHashCode
 public class BsympAffWorkPlaceGroupPk implements Serializable {
 

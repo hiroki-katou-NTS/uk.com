@@ -29,7 +29,7 @@ public class ReplaceWorkplacesService {
 		
 		// filter not 職場IDリスト.contains( $.職場ID )
 		List<AffWorkplaceGroup> lstDel = lstFormerAffInfo.stream()
-				.filter(x-> !lstWorkplaceId.contains(x)).collect(Collectors.toList());
+				.filter(x-> !lstWorkplaceId.contains(x.getWKPID())).collect(Collectors.toList());
 		
 		List<WorkplaceReplaceResult> replaceResults = new ArrayList<>();
 		
