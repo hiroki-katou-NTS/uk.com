@@ -23,7 +23,7 @@ public class GetWorkplaceNotWorkgroupService {
 		if(lstInfoImports.isEmpty())
 			return Collections.emptyList();
 		
-		// Đợi QA http://192.168.50.4:3000/issues/110130
+		// QA http://192.168.50.4:3000/issues/110130 fixed
 		List<AffWorkplaceGroup> workplaceGroup = require.getAll();
 		// require.職場グループ所属情報をすべて取得する(): map $.職場ID																
 		List<String> lstWpid = workplaceGroup.stream().map(mapper->mapper.getWKPID()).collect(Collectors.toList());
