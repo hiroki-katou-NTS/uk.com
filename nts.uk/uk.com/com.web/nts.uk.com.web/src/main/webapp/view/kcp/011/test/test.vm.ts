@@ -22,7 +22,7 @@ module test.viewmodel {
                 // show o tim kiem
                 showSearch: true,
                 // show empty item
-                showEmptyItem: true,
+                showEmptyItem: false,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
                 height: 400,

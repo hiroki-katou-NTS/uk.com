@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.schedule.app.find.employeeinfo.workplacegroup;
+package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.WorkplaceGroup;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.WorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

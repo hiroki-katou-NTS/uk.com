@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.ws.employeeinfo.workplacegroup;
+package nts.uk.ctx.bs.employee.ws.workplacegroup;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -7,8 +7,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.workplacegroup.WorkplaceGroupDto;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.workplacegroup.WorkplaceGroupFinder;
+import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupDto;
+import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupFinder;
 
 /**
  * @author anhdt
@@ -33,3 +33,4 @@ public class WorkplaceGroupWs extends WebService {
 	}
 
 }
+

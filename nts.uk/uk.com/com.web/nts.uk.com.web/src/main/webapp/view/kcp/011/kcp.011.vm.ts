@@ -1,4 +1,4 @@
-module nts.uk.at.view.kcp011.share {
+module nts.uk.com.view.kcp011.share {
     const GET_WORKPLACE_URL = "at/schedule/employeeinfo/workplacegroup/getAll";
     const SELECTED_MODE = {
         NONE:0,
@@ -78,7 +78,7 @@ module nts.uk.at.view.kcp011.share {
             let dfd = $.Deferred();
         
             nts.uk.ui.block.grayout();
-            nts.uk.request.ajax( "at", GET_WORKPLACE_URL).done((res) => {
+            nts.uk.request.ajax( "com", GET_WORKPLACE_URL).done((res) => {
                 console.log(res);
                 let workplaces = _.orderBy(res.workplaces, ['code'], ['asc']);
                 if(self.setting().showEmptyItem) {
@@ -107,6 +107,16 @@ module nts.uk.at.view.kcp011.share {
             let alreadySettingWidth = setting.isAlreadySetting ? 70 : 10;
             return {codeWidth: codeWidth, nameWidth: nameWidth, alreadySettingWidth: alreadySettingWidth};
         }
+
+        calculatePanelHeight() {
+            let self = this;
+            let height = self.setting().height ? (self.setting().height + 50) : 470;
+            if(!self.setting().showSearch) {
+                height = height - 50;
+            }
+            return height + 'px';
+        }
+
     }
 
     export interface WorkplaceGroup {
@@ -135,8 +145,8 @@ module nts.uk.at.view.kcp011.share {
 
 
 ko.components.register('workplace-group', {
-    viewModel: nts.uk.at.view.kcp011.share.WorkplaceGroupComponent, template: `
-    <div id="workplace-group-pannel" data-bind="ntsPanel:{width: '380px', height: setting().height ? (setting().height + 50) + 'px': '470px', direction: '', showIcon: true, visible: true}">
+    viewModel: nts.uk.com.view.kcp011.share.WorkplaceGroupComponent, template: `
+    <div id="workplace-group-pannel" data-bind="ntsPanel:{width: '380px', height: calculatePanelHeight(), direction: '', showIcon: true, visible: true}">
         <div class="caret-right caret-background">
         <div data-bind="visible: setting().showSearch ,attr: {tabindex: setting().tabindex - 1},ntsSearchBox: {searchMode: 'filter',targetKey: 'id',comId: 'multi-list', 
                   items: workplaceGroups, selectedKey: 'id', 

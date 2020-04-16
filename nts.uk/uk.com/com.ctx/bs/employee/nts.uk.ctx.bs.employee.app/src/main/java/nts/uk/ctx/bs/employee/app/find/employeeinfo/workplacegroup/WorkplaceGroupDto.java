@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.schedule.app.find.employeeinfo.workplacegroup;
+package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.workplace.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 
 /**
  * @author anhdt
