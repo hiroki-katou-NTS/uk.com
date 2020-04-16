@@ -398,6 +398,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		List<WorkTypeInfor> lstSort = new ArrayList<>();
 		lstSort.addAll(lstOrder);
 		lstSort.addAll(lstNotOrder);
+		Collections.sort(lstSort, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
 		return lstSort;
 	}
 	

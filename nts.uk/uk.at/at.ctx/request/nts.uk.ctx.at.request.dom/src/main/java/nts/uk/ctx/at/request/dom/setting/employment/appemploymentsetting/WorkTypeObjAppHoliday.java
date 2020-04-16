@@ -37,14 +37,14 @@ public class WorkTypeObjAppHoliday {
 		this.workTypeList = lstWorkType;
 		this.appType = appType;
 		this.workTypeSetDisplayFlg = workTypeSetDisplayFlg;
-		if(holidayOrPauseType == null) {
+		if(holidayOrPauseType == null || holidayOrPauseType == 9) {
 			this.holidayAppType = Optional.ofNullable(null);
 		}else {
 			
 			this.holidayAppType = Optional.of(EnumAdaptor.valueOf(holidayOrPauseType, HolidayType.class));
 		}
 		this.holidayTypeUseFlg = Optional.of(holidayTypeUseFlg);
-		if(swingout == null ) {
+		if(swingout == null || swingout == 9 ) {
 			this.swingOutAtr = Optional.ofNullable(null);
 		}else {
 			this.swingOutAtr = Optional.of(EnumAdaptor.valueOf(swingout, BreakOrRestTime.class));

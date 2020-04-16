@@ -119,6 +119,7 @@ public class AppAbsenceFinder {
 	@Inject
 	private IFactoryApplication iFactoryApplication;
 	
+
 	/**
 	 * 1.休暇申請（新規）起動前処理
 	 * @param appDate
@@ -475,21 +476,19 @@ public class AppAbsenceFinder {
 	}
 	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
 		
-//		Optional<AppEmploymentSetting> setting = appEmploymentSetting.stream().filter(x -> 
-//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-//			geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getSwingOutAtr().get().value == hdType : geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,hdType).getHolidayAppType().get().value == hdType : false
-//				
-//				).findFirst();
 		AppEmploymentSetting appSetting = appEmploymentSetting;
-		if(appSetting != null) {
-			if(!CollectionUtil.isEmpty(appSetting.getListWTOAH())) {
-				if(appSetting.getListWTOAH().get(0).getHolidayAppType().isPresent() ? (appSetting.getListWTOAH().get(0).getHolidayAppType().get().value == hdType): false){
-					//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
-					//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
-					return appSetting.getListWTOAH().get(0).getHolidayTypeUseFlg().get() ? false : true;
-				}
-			}
-		}
+		if (appSetting == null || CollectionUtil.isEmpty(appSetting.getListWTOAH())) return true;
+		
+		Optional<WorkTypeObjAppHoliday> optionalWorkTypeObjAppHoliday =appSetting.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == hdType : false).findFirst();
+		if(!optionalWorkTypeObjAppHoliday.isPresent()) return true;
+		
+		WorkTypeObjAppHoliday workTypeObjAppHoliday = optionalWorkTypeObjAppHoliday.get();
+		if(!workTypeObjAppHoliday.getHolidayAppType().isPresent()) return false;
+		if(workTypeObjAppHoliday.getHolidayAppType().get().value == hdType ){
+			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
+			return (workTypeObjAppHoliday.getHolidayTypeUseFlg().isPresent()) ? !workTypeObjAppHoliday.getHolidayTypeUseFlg().get() : true;
+		}		
+		//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
 		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
 		return true;
 	}

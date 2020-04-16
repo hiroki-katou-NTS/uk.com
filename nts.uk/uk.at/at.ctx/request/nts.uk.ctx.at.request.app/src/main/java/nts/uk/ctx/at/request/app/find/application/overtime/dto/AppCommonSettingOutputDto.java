@@ -31,7 +31,7 @@ public class AppCommonSettingOutputDto {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	public List<AppEmploymentSettingDto> appEmploymentWorkType;
+	public AppEmploymentSettingDto appEmploymentWorkType;
 	
 	public AppCommonSettingOutput toDomain() {
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
@@ -41,11 +41,7 @@ public class AppCommonSettingOutputDto {
 		appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
 				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
-		if(!CollectionUtil.isEmpty(appEmploymentWorkType)) {
-			appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType.get(0).toDomainOptional();
-		}else{
-			appCommonSettingOutput.appEmploymentWorkType = Optional.ofNullable(null);
-		}
+		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType.toDomainOptional();
 		return appCommonSettingOutput;
 	}
 

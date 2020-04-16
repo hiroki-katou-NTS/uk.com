@@ -51,10 +51,10 @@ module nts.uk.at.view.kmf022.l.service{
     export function findEmploymentSetByEmpCode(empCode: string): JQueryPromise<any> {
         return ajax("at", paths.findEmploymentSetByEmpCode, empCode); 
     }
-    export function addEmploymentSet(command: Array<any>): JQueryPromise<any> {
+    export function addEmploymentSet(command: any): JQueryPromise<any> {
         return ajax("at", paths.addEmploymentSet, command); 
     }
-    export function updateEmploymentSet(command: Array<any>): JQueryPromise<any> {
+    export function updateEmploymentSet(command:any): JQueryPromise<any> {
         return ajax("at", paths.updateEmploymentSet, command); 
     }
     export function deleteEmploymentSet(command: any): JQueryPromise<any> {
