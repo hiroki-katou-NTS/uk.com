@@ -29,7 +29,7 @@ public class EmpInsLossInfo extends AggregateRoot {
     /**
      * 喪失原因
      */
-    private Optional<CauseOfLossAtr> causeOfLossAtr;
+    private Optional<CauseOfLoss> causeOfLoss;
 
     /**
      * 離職票交付希望区分
@@ -42,9 +42,9 @@ public class EmpInsLossInfo extends AggregateRoot {
     private Optional<ScheduleForReplenishment> scheduleForReplenishment;
 
     /**
-     * 喪失原因
+     * 被保険者でなくなったことの原因
      */
-    private Optional<CauseOfLossEmpInsurance> causeOfLossEmpInsurance;
+    private Optional<RetirementReasonClsCode> causeOfLossEmpInsurance;
 
     /**
      * 週間の所定労働時間
@@ -53,15 +53,15 @@ public class EmpInsLossInfo extends AggregateRoot {
 
     public EmpInsLossInfo(String cId,
                           String sId,
-                          Integer causeOfLossAtr,
+                          Integer causeOfLoss,
                           Integer requestForIssuance,
                           Integer scheduleForReplenishment,
                           String causeOfLossEmpInsurance,
                           Integer scheduleWorkingHourPerWeek) {
         this.cId = cId;
         this.sId = sId;
-        this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new CauseOfLossEmpInsurance(causeOfLossEmpInsurance));
-        this.causeOfLossAtr = causeOfLossAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLossAtr, CauseOfLossAtr.class));
+        this.causeOfLossEmpInsurance = causeOfLossEmpInsurance == null ? Optional.empty() : Optional.of(new RetirementReasonClsCode(causeOfLossEmpInsurance));
+        this.causeOfLoss = causeOfLoss == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(causeOfLoss, CauseOfLoss.class));
         this.requestForIssuance = requestForIssuance == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(requestForIssuance, RequestForInsurance.class));
         this.scheduleForReplenishment = scheduleForReplenishment == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(scheduleForReplenishment, ScheduleForReplenishment.class));
         this.scheduleWorkingHourPerWeek = scheduleWorkingHourPerWeek == null ? Optional.empty() : Optional.of(new WorkingTime(scheduleWorkingHourPerWeek));

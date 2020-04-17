@@ -2,8 +2,6 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 //import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -72,8 +69,6 @@ public class HolidayServiceImpl implements HolidayService {
 	private ApplicationRepository_New applicationRepository;
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	@Inject
-	private OvertimeService overtimeService;
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
 			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate) {
@@ -138,7 +133,7 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		String wkTypeCD = workTypes.getWorkTypeCode();
 		//12.マスタ勤務種類、就業時間帯データをチェック
-		CheckWorkingInfoResult checkResult = overtimeService.checkWorkingInfo(companyID, wkTypeCD, null);
+		CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, wkTypeCD, null);
 		if (checkResult.isWkTypeError() && !CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())) {
 			wkTypeCD = workTypes.getWorkTypeCodes().get(0);
             workTypes.setWorkTypeCode(wkTypeCD);
@@ -171,7 +166,8 @@ public class HolidayServiceImpl implements HolidayService {
 			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate) {
 		WorkTimeHolidayWork workTimeHolidayWork = new WorkTimeHolidayWork();
 		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
+		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
+				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		List<String> workTimes = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 			listWorkTimeCodes.forEach(x -> workTimes.add(x));
@@ -251,7 +247,7 @@ public class HolidayServiceImpl implements HolidayService {
 
 			String wkTimeCode = workTimeHolidayWork.getWorkTimeCode();
 			// 12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkResult = overtimeService.checkWorkingInfo(companyID, wkTimeCode, null);
+			CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, wkTimeCode, null);
 			if (checkResult.isWkTimeError()) {
 				workTimeHolidayWork.setWorkTimeCode(workTimeHolidayWork.getWorkTimeCodes().get(0));
 			}
@@ -300,7 +296,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 		List<String> workTypeCodes = new ArrayList<>();
-		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
+		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings) && appEmploymentSettings.get(0) != null){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			AppEmploymentSetting appSet =  appEmploymentSettings.get(0);
 			List<AppEmployWorkType> lstEmploymentWorkType = appSet.getLstWorkType();

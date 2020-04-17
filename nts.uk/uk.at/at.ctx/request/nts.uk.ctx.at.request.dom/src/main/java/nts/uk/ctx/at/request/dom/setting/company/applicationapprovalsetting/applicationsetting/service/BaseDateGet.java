@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service;
 
+import java.util.Optional;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 
-/**
- * 基準日として扱う日の取得
- *
- */
 public interface BaseDateGet {
-	public GeneralDate getBaseDate(ApplicationSetting applicationSetting, GeneralDate appDate);
+	
+	/**
+	 * 基準日として扱う日の取得
+	 * @param date 申請対象日(ApplicationDate)<Optional>
+	 * @return
+	 */
+	public GeneralDate getBaseDate(Optional<GeneralDate> date, RecordDate recordDate);
 }

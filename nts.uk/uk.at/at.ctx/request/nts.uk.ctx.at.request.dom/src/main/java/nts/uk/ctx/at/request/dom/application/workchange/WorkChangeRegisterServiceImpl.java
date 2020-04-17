@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -51,7 +52,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
     public ProcessResult registerData(AppWorkChange workChange, Application_New app, boolean checkOver1Year, List<GeneralDate> lstDateHd) {
 
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        newBeforeRegister.processBeforeRegister(app, 0, checkOver1Year, lstDateHd);
+        newBeforeRegister.processBeforeRegister(app, OverTimeAtr.ALL, checkOver1Year, lstDateHd);
 		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
 		appRepository.insert(app);

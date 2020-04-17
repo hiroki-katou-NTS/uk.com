@@ -90,9 +90,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
-            { code: 2, name: '時刻' },
-            //{ code: 3, name: '記号' } de bat man Ja
-             { code: 3, name: '記号' }
+            { code: 2, name: '時刻' }
+            //{ code: 3, name: '記号' } de bat man Ja    
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -104,8 +103,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         lengthListSid: any;
-        workplaceId: any = null;
-        workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
+        affiliationId: any = null;
+        affiliationName: KnockoutObservable<string> = ko.observableArray('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
         listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -123,8 +122,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // 表示形式 ＝ 日付別(固定) = 0
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         hasEmployee: KnockoutObservable<boolean> = ko.observable(false);
-        //Workplace Code 
-        workplaceCode: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -340,12 +337,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     empId: item.employeeId,
                     empCd: item.employeeCode,
                     empName: item.employeeName,
-                    workplaceId: item.workplaceId,
-                    wokplaceCd: item.workplaceCode,
-                    workplaceName: item.workplaceName,
+                    affiliationId: item.affiliationId,
+                    affiliationCode: item.affiliationCode,
+                    affiliationName: item.affiliationName,
                 }));
             });
-            self.workplaceId = self.empItems()[0].workplaceId;
+            self.affiliationId = self.empItems()[0].affiliationId;
+            self.affiliationName(self.empItems()[0].affiliationName);
             // get data for listSid
             self.listSid([]);
             let arrSid: string[] = [];
@@ -355,7 +353,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listSid(arrSid);
             //getDataOfWorkPlace(): get workPlaceName to display A3-1
             //getDataWkpPattern() : get data WorkPattern for screen Q
-            $.when(self.getDataWkpPattern(), self.getDataOfWorkPlace()).done(() => {
+            $.when(self.getDataWkpPattern()).done(() => {
                 if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
                     __viewContext.viewModel.viewQ.initScreenQ();
                 }
@@ -1354,7 +1352,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 obj = {
-                    workplaceId: self.empItems()[0] ? self.empItems()[0].workplaceId : null,
+                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
@@ -1935,29 +1933,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         getDataWkpPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let obj: string = self.empItems()[0] ? self.empItems()[0].workplaceId : '';
+            let obj: string = self.empItems()[0] ? self.empItems()[0].affiliationId : '';
             service.getDataWkpPattern(obj).done((data) => {
                 __viewContext.viewModel.viewQ.listWkpPattern(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-
-            return dfd.promise();
-        }
-
-        /**
-         * get data of workplace by pk
-         */
-        getDataOfWorkPlace(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            let data = {
-                workplaceId: self.workplaceId,
-                baseDate: moment().toISOString()
-            }
-            service.getWorkPlaceById(data).done((wkp) => {
-                self.workPlaceNameDisplay(_.isNil(wkp) ? null : wkp.wkpDisplayName);
-                self.workplaceCode(_.isNil(wkp) ? null : wkp.workplaceCode);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -2013,7 +1991,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#popup-area5').ntsPopup('hide');
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("dataForScreenL", {
-                workplaceId: self.empItems()[0] ? self.empItems()[0].workplaceId : null,
+                workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
                 empItems: self.empItems()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
@@ -2130,18 +2108,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         empId: string;
         empCd: string;
         empName: string;
-        workplaceId: string;
-        wokplaceCd: string;
-        workplaceName: string;
+    	affiliationCode: string;
+    	affiliationId: string;
+    	affiliationName: string;
         baseDate: number;
 
         constructor(param: IPersonModel) {
             this.empId = param.empId;
             this.empCd = param.empCd;
             this.empName = param.empName;
-            this.workplaceId = param.workplaceId;
-            this.wokplaceCd = param.wokplaceCd;
-            this.workplaceName = param.workplaceName;
+            this.affiliationCode = param.affiliationCode;
+            this.affiliationId = param.affiliationId;
+            this.affiliationName = param.affiliationName;
             this.baseDate = param.baseDate;
         }
     }

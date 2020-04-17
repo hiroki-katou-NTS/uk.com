@@ -13,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputConditionOfEmbossingDto;
 import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputConditionOfEmbossingFinder;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampDto;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputScreenListOfStampFinder;
 
 /**
  * The Class OutputConditionOfEmbossingWS.
@@ -25,6 +27,9 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@Inject
 	private OutputConditionOfEmbossingFinder outputConditionOfEmbossingFinder;
 	
+	@Inject
+	private OutputScreenListOfStampFinder finder;
+	
 	/**
 	 * Start page.
 	 *
@@ -34,5 +39,11 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@POST
 	public OutputConditionOfEmbossingDto startPage(){
 		return this.outputConditionOfEmbossingFinder.initDisplayProcessing();
+	}
+	
+	@Path("initScreen")
+	@POST
+	public OutputScreenListOfStampDto initScreen(){
+		return finder.initScreen();
 	}
 }

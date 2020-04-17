@@ -92,7 +92,8 @@
 						CDL008 dialog</button>
 						<br />
 						<div style="font-weight: bold">Returned Data:</div>
-						<div>Selected Work place id:</div>
+						<div data-bind="if: selectedStartMode() == 0">Selected Workplace id:</div>
+						<div data-bind="if: selectedStartMode() == 1">Selected Department id:</div>
 						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
 						<div>Selected Base date:</div>
 						<div style="word-break: break-all;" data-bind="text: selectedBaseDate"></div>

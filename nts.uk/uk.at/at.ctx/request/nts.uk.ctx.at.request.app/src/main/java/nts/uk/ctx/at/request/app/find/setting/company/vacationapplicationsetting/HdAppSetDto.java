@@ -3,7 +3,14 @@ package nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsettin
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.ObstacleName;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.WorkUse;
 
 @AllArgsConstructor
 @Data
@@ -84,8 +91,13 @@ public class HdAppSetDto {
 	/** 積立年休残数不足登録できる */
 	public int regisShortReser;
 	
+	public int hdType;
+	
 	// 未選択を表示する
 	public int displayUnselect;
+	
+	// 終日・半日選択表示区分
+	public int dayDispSet;
 	
 	public static HdAppSetDto convertToDto(HdAppSet domain){
 		return new HdAppSetDto(domain.getCompanyId(), 
@@ -105,6 +117,40 @@ public class HdAppSetDto {
 				domain.getConcheckDateRelease().value, domain.getAppDateContra().value, 
 				domain.getYearResig() == null ? null : domain.getYearResig().v(),
 				domain.getRegisShortReser().value,
-				domain.getDisplayUnselect().value);
+				domain.getHdType().value,
+				domain.getDisplayUnselect().value,
+				domain.getDayDispSet().value);
+	}
+	
+	public HdAppSet toDomain() {
+		return new HdAppSet(
+				companyId, 
+				EnumAdaptor.valueOf(use60h, UseAtr.class), 
+				new ObstacleName(obstacleName), 
+				EnumAdaptor.valueOf(regisShortLostHd, UseAtr.class), 
+				new ObstacleName(hdName), 
+				EnumAdaptor.valueOf(regisLackPubHd, UseAtr.class), 
+				EnumAdaptor.valueOf(changeWrkHour, UseAtr.class), 
+				EnumAdaptor.valueOf(ckuperLimit, AppliedDate.class), 
+				EnumAdaptor.valueOf(actualDisp, UseAtr.class), 
+				EnumAdaptor.valueOf(wrkHours, WorkUse.class), 
+				EnumAdaptor.valueOf(pridigCheck, AppliedDate.class), 
+				new ObstacleName(yearHdName), 
+				EnumAdaptor.valueOf(regisNumYear, UseAtr.class), 
+				new ObstacleName(furikyuName), 
+				EnumAdaptor.valueOf(regisInsuff, UseAtr.class), 
+				EnumAdaptor.valueOf(useGener, UseAtr.class), 
+				EnumAdaptor.valueOf(useYear, UseAtr.class), 
+				new ObstacleName(timeDigest), 
+				new ObstacleName(absenteeism), 
+				EnumAdaptor.valueOf(concheckOutLegal, CheckUper.class), 
+				new ObstacleName(specialVaca), 
+				EnumAdaptor.valueOf(concheckDateRelease, AppliedDate.class), 
+				EnumAdaptor.valueOf(appDateContra, AppliedDate.class), 
+				new ObstacleName(yearResig), 
+				EnumAdaptor.valueOf(regisShortReser, UseAtr.class), 
+				EnumAdaptor.valueOf(hdType, HolidayAppType.class), 
+				EnumAdaptor.valueOf(displayUnselect, UseAtr.class),
+				EnumAdaptor.valueOf(dayDispSet, UseAtr.class));
 	}
 }

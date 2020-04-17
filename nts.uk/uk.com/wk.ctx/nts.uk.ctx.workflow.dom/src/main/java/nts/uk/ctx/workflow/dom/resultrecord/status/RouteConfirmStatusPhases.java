@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.resultrecord.status;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -145,6 +146,10 @@ public class RouteConfirmStatusPhases {
 	public RouteConfirmStatusPhase finalPhase() {
 		return phases.get(phases.size() - 1);
 	}
+	
+	public Optional<RouteConfirmStatusPhase> firstPhaseUnapproved() {
+		return phases.stream().filter(x -> !x.hasApproved()).findFirst();
+	} 
 	
 	/**
 	 * 承認中フェーズのコレクション

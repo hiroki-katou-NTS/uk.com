@@ -1,11 +1,20 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
+import nts.uk.shr.com.primitive.Memo;
 
 @Data
 @AllArgsConstructor
@@ -71,6 +80,27 @@ public class SpecialHolidayEventDto {
 				domain.getAgeStandardBaseDate(), domain.getMemo().v(),
 				ClassificationListDto.fromClsList(domain.getClsList()),
 				EmploymentListDto.fromEmpList(domain.getEmpList()));
+	}
+	
+	public SpecialHolidayEvent toDomain() {
+		return new SpecialHolidayEvent(
+				companyId, 
+				specialHolidayEventNo, 
+				EnumAdaptor.valueOf(maxNumberDay, MaxNumberDayType.class), 
+				new FixedDayGrant(fixedDayGrant), 
+				EnumAdaptor.valueOf(makeInvitation, UseAtr.class), 
+				EnumAdaptor.valueOf(includeHolidays, UseAtr.class), 
+				EnumAdaptor.valueOf(ageLimit, UseAtr.class), 
+				EnumAdaptor.valueOf(genderRestrict, UseAtr.class), 
+				EnumAdaptor.valueOf(restrictEmployment, UseAtr.class), 
+				EnumAdaptor.valueOf(restrictClassification, UseAtr.class), 
+				EnumAdaptor.valueOf(gender, GenderCls.class), 
+				ageRange == null ? null : AgeRange.createFromJavaType(ageRange.getAgeLowerLimit(), ageRange.getAgeHigherLimit()), 
+				EnumAdaptor.valueOf(ageStandard, AgeStandardType.class), 
+				ageStandardBaseDate, 
+				new Memo(memo), 
+				clsList.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				empList.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 
 }

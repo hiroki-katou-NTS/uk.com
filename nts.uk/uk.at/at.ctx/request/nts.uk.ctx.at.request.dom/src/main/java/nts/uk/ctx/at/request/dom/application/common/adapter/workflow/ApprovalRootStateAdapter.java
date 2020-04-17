@@ -9,13 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ApprovalRootStateAdapter {
 	/**
@@ -68,6 +68,8 @@ public interface ApprovalRootStateAdapter {
 			MailDestinationCache mailDestinationCache);
 	
 	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, GeneralDate baseDate);
+	
+	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
 	
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);

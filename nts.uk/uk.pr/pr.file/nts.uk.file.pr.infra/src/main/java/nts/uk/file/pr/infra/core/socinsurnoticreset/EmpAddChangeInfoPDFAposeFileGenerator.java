@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.error.BusinessException;
@@ -17,7 +18,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -136,18 +136,48 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
         return add.toString();
     }
 
-    private static String cutSpace(String name, int ps) {
-        if (name == null || name.length() == 0) return "";
-        String[] listF = name.split("　", 2);
-        if(listF.length == 1) {
-            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
-            if(ps==2) return "";
+    public static String cutSpace(String name, int ps, int count) throws UnsupportedEncodingException {
+
+        if (name == null || name.length() == 0)
+            return "";
+        String[] list = null;
+        if (name.matches("(.*)　(.*)")) {
+            list = name.split("　", 2);
+        } else if (name.matches("(.*) (.*)")) {
+            list = name.split(" ", 2);
+        } else {
+            if (ps == 1) return cutByte(name, count );
+            if (ps == 2) return "";
         }
-        if(listF.length > 1) {
-            if(ps==1) return listF[0].length() > 4 ? listF[0].substring(0,4) : listF[0];
-            if(ps==2) return listF[1].length() > 4 ? listF[1].substring(0,4) : listF[1];
+
+        if (list != null && list.length == 1) {
+            if (ps == 1)
+                return cutByte(list[0], count);
+            if (ps == 2)
+                return "";
+        }
+
+        if (list != null && list.length > 1) {
+            if (ps == 1)
+                return cutByte(list[0], count);
+            if (ps == 2)
+                return cutByte(list[1], count);
         }
         return "";
+    }
+
+    private static String cutByte(String name, int count) throws UnsupportedEncodingException {
+        if (name == null || name.length() == 0)
+            return "";
+        for (int i = 4; i < name.length(); i++) {
+            if (name.substring(0, i).getBytes("Shift_JIS").length >= count) {
+                if (name.substring(0, i).getBytes("Shift_JIS").length == count)
+                    return name.substring(0, i);
+                if (name.substring(0, i).getBytes("Shift_JIS").length != count)
+                    return name.substring(0, i - 1);
+            }
+        }
+        return name;
     }
 
     private JapaneseDate toJapaneseDate (GeneralDate date) {
@@ -180,15 +210,26 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
        }
     }
 
-    private static String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
-        if (text.getBytes("Shift_JIS").length < maxByteAllowed) return text;
-        int textLength = text.length();
-        int subLength = 0;
-        for (int i = 0; i < textLength; i++) {
-            subLength++;
-            if (text.substring(0, subLength).getBytes("Shift_JIS").length > maxByteAllowed) break;
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null || text.isEmpty()) {
+            return "";
         }
-        return text.substring(0, subLength);
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
     }
 
     private void pushBusCode(WorksheetCollection worksheet,
@@ -202,8 +243,12 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"B2_2_3", empAddChangeInfoExport.getBusinessEstCode2(),2 );
             this.fillByCell(worksheet , i,"B2_2_4", empAddChangeInfoExport.getBusinessEstCode2(),3 );
 
-            this.fillByCell(worksheet , i,"B2_1_1", empAddChangeInfoExport.getBusinessEstCode1(),0 );
-            this.fillByCell(worksheet , i,"B2_1_2", empAddChangeInfoExport.getBusinessEstCode1(),1 );
+            /*this.fillByCell(worksheet , i,"B2_1_1", empAddChangeInfoExport.getBusinessEstCode1(),0 );
+            this.fillByCell(worksheet , i,"B2_1_2", empAddChangeInfoExport.getBusinessEstCode1(),1 );*/
+
+            // A2_1 Template1
+            String data = empAddChangeInfoExport.getBusinessEstCode1();
+            worksheet.getRangeByName(i + "!A2_1").setValue(data != null ? (data.length() > 2 ? data.substring(0, 3) : data) : "");
 
             if(empAddChangeInfoExport.isHealthInsurance() && !empAddChangeInfoExport.isEmpPenInsurance()) {
                 //worksheet.getRangeByName(i + "!B1_1").setValue("健康保険");
@@ -255,15 +300,15 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
             this.fillByCell(worksheet , i,"A2_2_11", empAddChangeInfoExport.getFmBsPenNum(),10 );
             this.fillByCell(worksheet , i,"A2_2_12", empAddChangeInfoExport.getFmBsPenNum(),11 );
 
-            worksheet.getRangeByName(i + "!A1_2").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 1): ""));
-            worksheet.getRangeByName(i + "!A1_3").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 2): ""));
-            worksheet.getRangeByName(i + "!A1_4").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 1): ""));
-            worksheet.getRangeByName(i + "!A1_5").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 2): ""));
+            worksheet.getRangeByName(i + "!A1_2").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 1, 10): ""));
+            worksheet.getRangeByName(i + "!A1_3").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaPs() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaPs(), 2, 14): ""));
+            worksheet.getRangeByName(i + "!A1_4").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 1, 8): ""));
+            worksheet.getRangeByName(i + "!A1_5").setValue(Objects.toString(empAddChangeInfoExport.getFullNamePs() != null ?  cutSpace(empAddChangeInfoExport.getFullNamePs(), 2, 8): ""));
 
-            worksheet.getRangeByName(i + "!A2_6").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 1): ""));
-            worksheet.getRangeByName(i + "!A2_7").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 2): ""));
-            worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 1): ""));
-            worksheet.getRangeByName(i + "!A2_9").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 2): ""));
+            worksheet.getRangeByName(i + "!A2_6").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 1, 10): ""));
+            worksheet.getRangeByName(i + "!A2_7").setValue(Objects.toString(empAddChangeInfoExport.getNameKanaF() != null ?  cutSpace(empAddChangeInfoExport.getNameKanaF(), 2, 14): ""));
+            worksheet.getRangeByName(i + "!A2_8").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 1, 8): ""));
+            worksheet.getRangeByName(i + "!A2_9").setValue(Objects.toString(empAddChangeInfoExport.getFullNameF() != null ?  cutSpace(empAddChangeInfoExport.getFullNameF(), 2, 8): ""));
 
             this.fillByCell(worksheet , i,"A1_6_1", empAddChangeInfoExport.getPostCodePs(),0 );
             this.fillByCell(worksheet , i,"A1_6_2", empAddChangeInfoExport.getPostCodePs(),1 );
@@ -352,7 +397,10 @@ public class EmpAddChangeInfoPDFAposeFileGenerator extends AsposeCellsReportGene
                 int d = japaneseDate.day();
                 worksheet.getRangeByName(i + "!A3_1" ).setValue(japaneseDate.era() + String.valueOf(y) + "年" + String.valueOf(m) + "月" + String.valueOf(d) + "日提出");
             }
-            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(this.fillAddress(empAddChangeInfoExport.getAddress1(), empAddChangeInfoExport.getAddress2()), 27));
+            Style style = worksheet.getRangeByName(i + "!A3_2").get(0,0).getStyle();
+            style.setTextWrapped(true);
+            worksheet.getRangeByName(i + "!A3_2").setStyle(style);
+            worksheet.getRangeByName(i + "!A3_2").setValue(this.formatTooLongText(empAddChangeInfoExport.getAddress1(), 60) + "\n" + (empAddChangeInfoExport.getAddress2() != null ? empAddChangeInfoExport.getAddress2() : ""));
             worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(empAddChangeInfoExport.getBussinessName(), ""));
             worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(empAddChangeInfoExport.getReferenceName(), ""));
             worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(empAddChangeInfoExport.getPhoneNumber()!= null && empAddChangeInfoExport.getPhoneNumber().length() > 0?  RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 1) + "(" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 2) +")" + RomajiNameNotiCreSetPDFAposeFileGenerator.formatPhone( empAddChangeInfoExport.getPhoneNumber(), 3): "", ""));

@@ -390,27 +390,27 @@ module nts.uk.at.view.kal001.a.model {
             id: string;
             code: string;
             name?: string;
-            workplaceCode?: string;
-            workplaceId?: string;
-            workplaceName?: string;            
+            affiliationCode?: string;
+            affiliationId?: string;
+            affiliationName?: string;            
             isAlreadySetting?: boolean;
         }
         export class UnitModelDto implements UnitModel{
             id: string;
             code: string;
             name: string;
-            workplaceCode: string;
-            workplaceId: string;
-            workplaceName: string;
+        	affiliationCode: string;
+        	affiliationId: string;
+        	affiliationName: string;
             isAlreadySetting: boolean;
             
             constructor(employee : EmployeeSearchDto){
                 this.id = employee.employeeId;
                 this.code = employee.employeeCode;
                 this.name = employee.employeeName;
-                this.workplaceId = employee.workplaceId;
-                this.workplaceCode = employee.workplaceCode;
-                this.workplaceName = employee.workplaceName;    
+                this.affiliationId = employee.affiliationId;
+                this.affiliationCode = employee.affiliationCode;
+                this.affiliationName = employee.affiliationName;    
             }            
         }    
         export class SelectType {

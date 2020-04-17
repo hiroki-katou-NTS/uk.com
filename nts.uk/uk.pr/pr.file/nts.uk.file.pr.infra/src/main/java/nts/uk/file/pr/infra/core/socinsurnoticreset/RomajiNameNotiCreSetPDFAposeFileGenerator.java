@@ -1,20 +1,25 @@
 package nts.uk.file.pr.infra.core.socinsurnoticreset;
 
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorksheetCollection;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.company.CompanyInfor;
-import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.*;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotiCreSetExport;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotiCreSetFileGenerator;
+import nts.uk.ctx.pr.file.app.core.socialinsurnoticreset.RomajiNameNotification;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.BusinessDivision;
 import nts.uk.ctx.pr.report.dom.printconfig.socinsurnoticreset.RomajiNameNotiCreSetting;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import nts.uk.shr.com.time.japanese.JapaneseDate;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -69,7 +74,7 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                           RomajiNameNotiCreSetExport romajiNameNotiCreSetExport,
                           String i){
         try {
-            this.selectShapesRadio(worksheet, findTypeGender(romajiNameNotiCreSetExport.getPerson().getGender(), PERSON) , i, "A1_3","A1_4");
+            this.selectShapesRadio(worksheet, findTypeGender(romajiNameNotiCreSetExport.getPerson().getGender(), Integer.parseInt(personTarget)) , i, "A1_3","A1_4");
             if ( personTarget.equals("0")) {
                 this.pushName(romajiNameNotiCreSetExport.getBasicPenNumber(), worksheet, i, 11, 1);
 
@@ -77,11 +82,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                     this.pushBirthDay(romajiNameNotiCreSetExport.getPerson().getBirthDate().toString("yyyy-MM-dd"), worksheet, i);
                 }
 
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName(), worksheet, i, 14, 4);
-                this.pushName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana(), worksheet, i, 13, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullName()), worksheet, i, 14, 4);
+                this.pushName(this.cutName(romajiNameNotiCreSetExport.getPerson().getPersonNameGroup().getPersonRomanji().getFullNameKana()), worksheet, i, 13, 4);
 
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? romajiNameNotiCreSetExport.getPersonalOtherReason() : ""));
+                        romajiNameNotiCreSetExport.getPersonalSetOther() == 1 && romajiNameNotiCreSetExport.getPersonalOtherReason() != null ? "（ " + romajiNameNotiCreSetExport.getPersonalOtherReason() + " ）" : "（           ）"));
 
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getPersonalResidentCard() , i, "A1_5","A1_6" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getPersonalShortResident() , i, "A4_1" );
@@ -94,13 +99,11 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 this.pushName(romajiNameNotiCreSetExport.getFmBsPenNum(), worksheet, i, 11, 1);
                 if ( romajiNameNotiCreSetExport.getFamilyMember() != null ) {
                     this.pushBirthDay(romajiNameNotiCreSetExport.getFamilyMember().getBirthday(), worksheet, i);
+                    this.pushName(this.cutName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse("")), worksheet, i, 14, 4);
+                    this.pushName(this.cutName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse("")), worksheet, i, 13, 4);
                 }
-
-                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiName().orElse(""), worksheet, i, 14, 4);
-                this.pushName(romajiNameNotiCreSetExport.getFamilyMember().getRomajiNameKana().orElse(""), worksheet, i, 13, 4);
-
                 worksheet.get(i).getTextBoxes().get("A4_5").setText(Objects.toString(
-                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? romajiNameNotiCreSetExport.getSpouseOtherReason().toString(): ""));
+                        romajiNameNotiCreSetExport.getSpouseSetOther() == 1 && romajiNameNotiCreSetExport.getSpouseOtherReason() != null ? "（ "  + romajiNameNotiCreSetExport.getSpouseOtherReason().toString() + " ）": "（           ）"));
                 this.selectShapesRadio(worksheet, romajiNameNotiCreSetExport.getSpouseResidentCard() , i, "A1_5","A1_6" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseShortResident(), i, "A4_1" );
                 selectShapes(worksheet, romajiNameNotiCreSetExport.getSpouseAddressOverseas() , i, "A4_2" );
@@ -108,11 +111,16 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 selectShapes(worksheet,romajiNameNotiCreSetExport.getSpouseSetOther() , i, "A4_4" );
             }
 
+            //Set style for item A3_3
+            Style style = worksheet.getRangeByName(i + "!A3_3").get(0,0).getStyle();
+            style.setTextWrapped(true);
+            worksheet.getRangeByName(i + "!A3_3").setStyle(style);
+
             if( romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_COMPANY_NAME)){
                 worksheet.getRangeByName(i + "!A3_1").setValue(Objects.toString(companyInfor != null ? formatPostCode(companyInfor.getPostCd()) : " 〒　　　　　－"));
-                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor != null ? companyInfor.getAdd_1()+companyInfor.getAdd_2(): ""));
-                worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ?  companyInfor.getCompanyName(): ""));
-                worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ?  companyInfor.getRepname(): ""));
+                worksheet.getRangeByName(i + "!A3_3").setValue(Objects.toString(companyInfor == null ? "" : formatTooLongText(companyInfor.getAdd_1(), 60) + "\n" + (companyInfor.getAdd_2() != null ? companyInfor.getAdd_2() : "")));
+                worksheet.getRangeByName(i + "!A3_4").setValue(Objects.toString(companyInfor != null ? companyInfor.getCompanyName(): ""));
+                worksheet.getRangeByName(i + "!A3_5").setValue(Objects.toString(companyInfor != null ? companyInfor.getRepname(): ""));
                 worksheet.getRangeByName(i + "!A3_6").setValue(Objects.toString(companyInfor != null ? formatPhone( companyInfor.getPhoneNum(), 1) + "(" + formatPhone( companyInfor.getPhoneNum(), 2) +")" + formatPhone( companyInfor.getPhoneNum(), 3): "（　　　　　　　　　）　　　　　　　　　－"));
 
             } else if (romajiNameNotiCreSetting.getAddressOutputClass().equals(BusinessDivision.OUTPUT_SIC_INSURES)) {
@@ -121,9 +129,10 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
                 String add2 = romajiNameNotiCreSetExport.getAddress2();
                 StringBuffer add = new StringBuffer("");
                 if(add1 != null ){
-                    add.append(add1);
+                    add.append(formatTooLongText(add1, 60));
                 }
                 if(add2 != null ){
+                    add.append("\n");
                     add.append(add2);
                 }
 
@@ -144,6 +153,14 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         }
     }
 
+    private String cutName(String name) {
+        if(name == null || name.length() == 0) return "";
+        if (name != null && name.length() > 32) {
+            return name.substring(0, 32);
+        }
+        return name;
+    }
+
     private JapaneseDate toJapaneseDate (GeneralDate date) {
         Optional<JapaneseEraName> era = this.adapter.getAllEras().eraOf(date);
         return new JapaneseDate(date, era.get());
@@ -160,22 +177,22 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         worksheets.get(sheetName).getShapes().remove(worksheets.get(sheetName).getShapes().get(value != 1 ? option1 : option2));
     }
 
-    private static String formatPostCode(String pc) {
-        if (pc != null) {
-            String[] list = pc.split("");
+    private static String formatPostCode(String ps) {
+        if (ps != null && ps.length() > 0) {
+            String[] list = ps.split("-");
             StringBuffer st = new StringBuffer("");
             for (int i = 0; i < list.length; i++) {
-                if("-".equals(list[i])){
-                    return pc;
-                }
                 st.append(list[i]);
-                if((i+1)%3==0 && list.length > st.length()) {
-                    st.append("-");
-                }
             }
-            return "〒 " +st.toString();
+
+            if(st.length() > 3) {
+                return "〒 " + st.toString().substring(0, 3) + "-" + st.toString().substring(3);
+            } else {
+                return "〒 " + st.toString();
+            }
+
         } else {
-            return  " 〒　　　　　－";
+            return " 〒　　　　　－";
         }
     }
 
@@ -243,5 +260,27 @@ public class RomajiNameNotiCreSetPDFAposeFileGenerator extends AsposeCellsReport
         for (int k = 0; k < name.length(); k++) {
             worksheet.get(i).getCells().get(row, column + k).setValue(name.charAt(k));
         }
+    }
+
+    private String formatTooLongText(String text, int maxByteAllowed) throws UnsupportedEncodingException {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        int textLength = text.length();
+        int byteCount = 0;
+        int index = 0;
+        while (index < textLength - 1) {
+            byteCount += String.valueOf(text.charAt(index)).getBytes("Shift_JIS").length;
+            // String.getBytes("Shift_JIS") return wrong value with full size dash
+            if (text.charAt(index) == '－') {
+                byteCount++;
+            }
+            if (byteCount > maxByteAllowed) {
+                index--;
+                break;
+            }
+            index++;
+        }
+        return text.substring(0, index + 1);
     }
 }

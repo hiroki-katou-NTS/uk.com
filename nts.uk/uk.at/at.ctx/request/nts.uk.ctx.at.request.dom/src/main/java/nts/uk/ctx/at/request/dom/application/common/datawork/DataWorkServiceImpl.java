@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -49,8 +48,6 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-	@Inject
-	private OvertimeService overtimeService;
 
 	@Override
 	public DataWork getDataWork(String companyId, String sId, GeneralDate appDate,
@@ -137,7 +134,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		}
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-				GeneralDate.today());
+				GeneralDate.today()).stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(listWorkTimeCodes)) {
 			List<WorkTimeSetting> workTimes = workTimeSettingRepository.findByCodes(companyID, listWorkTimeCodes);
@@ -206,7 +203,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			
 			selectedData.setSelectedWorkTimeCd(wkTimeCd);
 			//12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkResult = this.overtimeService.checkWorkingInfo(companyId, null, wkTimeCd);
+			CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, wkTimeCd);
 			if (checkResult.isWkTimeError()) {
 				selectedData.setSelectedWorkTimeCd(workTimeTypes.get(0));
 			}
