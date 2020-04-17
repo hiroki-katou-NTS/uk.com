@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 
 /**
  * 職場グループに所属していない職場を取得する
@@ -15,9 +16,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
  */
 public class GetWorkplaceNotWorkgroupService {
 
-	public static List<WorkplaceInfoImport> getWorkplace(Require require, GeneralDate baseDate){
+	public static List<WorkplaceInformation> getWorkplace(Require require, GeneralDate baseDate){
 		// require.運用している職場の情報をすべて取得する( 基準日 )																		
-		List<WorkplaceInfoImport> lstInfoImports = require.getAllActiveWorkplace(baseDate);
+		List<WorkplaceInformation> lstInfoImports = require.getAllActiveWorkplace(baseDate);
 		
 		// 職場情報リスト.isEmpty
 		if(lstInfoImports.isEmpty())
@@ -34,11 +35,11 @@ public class GetWorkplaceNotWorkgroupService {
 	}
 	
 	public static interface Require {
-		// [R-1] 運用している職場の情報をすべて取得する																				
+		// [R-1] 運用している職場の情報をすべて取得する    WorkplaceExportService																				
 		// アルゴリズム.運用している職場の情報をすべて取得する( 会社ID, 職場ID )		
-		List<WorkplaceInfoImport> getAllActiveWorkplace(GeneralDate baseDate);
+		List<WorkplaceInformation> getAllActiveWorkplace(GeneralDate baseDate);
 		
-		// [R-2] 職場グループ所属情報をすべて取得する																					
+		// [R-2] 職場グループ所属情報をすべて取得する    AffWorkplaceGroupRespository																					
 		// 職場グループ所属情報Repository.getAll( 会社ID ) :: JpaAffWorkplaceGroupRespository
 		List<AffWorkplaceGroup> getAll();
 	}
