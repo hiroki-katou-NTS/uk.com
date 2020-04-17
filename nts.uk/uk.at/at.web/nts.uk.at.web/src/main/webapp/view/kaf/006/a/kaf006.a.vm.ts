@@ -413,7 +413,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             }).fail((res) => {
                 if (res.messageId == 'Msg_426') {
                     dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.ui.block.clear();
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        nts.uk.ui.block.clear();                        
                     });
                 } else if (res.messageId == 'Msg_473') {
                     dialog.alertError({ messageId: res.messageId }).then(function() {
