@@ -1,21 +1,23 @@
 #kdp002a{
-  width: 1080px;
+  width: 1200px;
+  min-width: 150vmin;
 }
 #genText {
   margin-left: 20px;
 }
 
 #stamp-input {
-  width: 560px;
+  min-width: 63vmin;
 }
 
 #stamp-info {
-  width: 400px;
+  min-width: 37vmin;
 }
 #stamp-desc{
   height: 40px;
   width: 100%;
   word-break: break-word;
+  font-size: 2vmin;
 }
 
 #stamp-date {
@@ -33,10 +35,10 @@
   padding: 0px;
 }
 #stamp-date-text {
-  font-size: 2rem !important;
+  font-size: 5vmin !important;
 }
 #stamp-time-text {
-  font-size: 5rem !important;
+  font-size: 10vmin !important;
 }
 .full-width{
   width: 100%;
@@ -57,17 +59,23 @@
   width: 30px;
 }
 .ui-widget.ui-tabs > .ui-tabs-nav > li {
-  max-width: 101px;
+  max-width: 22vmin;
 }
+
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-  width: 80px;
+  width: 14vmin;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+  font-size: 1.7vmin;
 }
 #stamp-history-tbl th {
   text-align: center;
 }
 #time-card-list td {
   text-align: center;
+}
+
+#tab-1, #tab-2, #tab-3, #tab-4, #tab-5{
+  min-width: 63vmin;
 }
