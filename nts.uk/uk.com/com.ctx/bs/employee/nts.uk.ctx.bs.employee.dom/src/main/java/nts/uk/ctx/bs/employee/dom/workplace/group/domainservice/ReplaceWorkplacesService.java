@@ -54,6 +54,7 @@ public class ReplaceWorkplacesService {
                 .collect(Collectors.toList());
 		// Chờ QA http://192.168.50.4:3000/issues/110132
 		Map<String, WorkplaceReplaceResult> dateHistLst = new HashMap<>();
+		
 		return dateHistLst;
 	}
 	

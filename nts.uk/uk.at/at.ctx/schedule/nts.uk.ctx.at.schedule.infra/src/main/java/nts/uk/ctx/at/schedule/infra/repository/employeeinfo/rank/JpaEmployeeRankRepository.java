@@ -44,7 +44,7 @@ public class JpaEmployeeRankRepository extends JpaRepository implements Employee
 	 */
 	@Override
 	public void update(EmployeeRank employeeRank) {
-		String sqlQuery = "UPDATE KSCMT_SYA_RANK SET RANK_CD = ? AND SID = ?";
+		String sqlQuery = "UPDATE KSCMT_SYA_RANK SET RANK_CD = ? WHERE SID = ?";
 
 		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
 			ps.setString(1, employeeRank.getEmplRankCode().v());

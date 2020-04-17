@@ -11,6 +11,7 @@ import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
+import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService.Require;
 
 public class AddWplOfWorkGrpServiceTest {
