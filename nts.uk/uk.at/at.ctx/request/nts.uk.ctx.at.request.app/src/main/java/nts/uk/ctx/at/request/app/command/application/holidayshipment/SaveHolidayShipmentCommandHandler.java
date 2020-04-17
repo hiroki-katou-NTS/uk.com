@@ -64,6 +64,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
@@ -96,10 +97,6 @@ public class SaveHolidayShipmentCommandHandler
 	
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-//	@Inject
-//	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-//	@Inject
-//	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private ApplicationRepository_New appRepo;
 	@Inject
@@ -146,6 +143,8 @@ public class SaveHolidayShipmentCommandHandler
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -1016,7 +1015,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command, String companyID,
 			ApplicationType appType) {
-		RequestSetting requestSetting = command.getDisplayInforWhenStarting().getAppDispInfoStartup().appDispInfoNoDateOutput.requestSetting.toDomain();
+		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
 		
 		AppTypeSetting appTypeSetting = requestSetting.getApplicationSetting().getListAppTypeSetting()
 				.stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION)
