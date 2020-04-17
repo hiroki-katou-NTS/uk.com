@@ -14,6 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.rank.KscmtSyaRank;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**
@@ -44,11 +45,13 @@ public class JpaEmployeeRankRepository extends JpaRepository implements Employee
 	 */
 	@Override
 	public void update(EmployeeRank employeeRank) {
+		String CID = AppContexts.user().companyId();
 		String sqlQuery = "UPDATE KSCMT_SYA_RANK SET RANK_CD = ? WHERE CID = ? AND SID = ?";
 
 		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
 			ps.setString(1, employeeRank.getEmplRankCode().v());
-			ps.setString(2, employeeRank.getSID());
+			ps.setString(2, CID);
+			ps.setString(3, employeeRank.getSID());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
