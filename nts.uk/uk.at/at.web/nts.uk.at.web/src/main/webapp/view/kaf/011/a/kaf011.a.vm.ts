@@ -171,7 +171,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.setDataFromStart(data);
                 $("#fixed-table").ntsFixedTable({ width: 100 });
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() =>{
+                      if(res.messageId == 'Msg_426'){
+                         nts.uk.uidialog.alertError({messageId : res.messageId}).then(function(){
+                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                                nts.uk.ui.block.clear();
+                        });
+                     }else{
+                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                                nts.uk.ui.block.clear();
+                        });
+                     }
+  
+                });
             }).always(() => {
                 block.clear();
                 dfd.resolve();
