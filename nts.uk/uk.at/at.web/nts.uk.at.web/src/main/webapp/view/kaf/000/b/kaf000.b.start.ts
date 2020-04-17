@@ -83,7 +83,7 @@ __viewContext.ready(function() {
             });
             // do not find app so listAppMeta === undefined bug #110138
             if (listAppMeta[0] === undefined) {
-                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_128' }).then(function() {
+                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
                         model.CommonProcess.callCMM045();
                     });   
             }else{
