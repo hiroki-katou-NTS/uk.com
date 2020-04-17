@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="/view/kcp/011/main.css" of="/nts.uk.com.web" />
+        <com:scriptfile
+          path="/view/kcp/011/kcp.011.vm.js"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile path="ksm007.a.service.js" />
+        <com:scriptfile path="ksm007.a.start.js" />
+        <com:scriptfile path="ksm007.a.vm.js" />
+        <com:scriptfile path="ksm007.a.model.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            tabindex="1"
+            class=""
+            id="register-btn"
+            data-bind=""
+          >
+            #{i18n.getText('KSM007_002')}
+          </button>
+          <button
+            tabindex="2"
+            class="proceed"
+            id="register-btn"
+            data-bind=""
+          >
+            #{i18n.getText('KSM007_003')}
+          </button>
+          <button class="danger" tabindex="3" data-bind="">
+            #{i18n.getText('KSM007_004')}
+          </button>
+          <button tabindex="4" data-bind="click: exportExcel">
+            #{i18n.getText('KSM007_005')}
+          </button>
+        </div>
+        <div id="contents-area">
+          <div class="pull-left" style="width: 500px;">
+            <workplace-group params="options: options"> </workplace-group>
+          </div>
+          <div class="pull-left" style="width: 700px;">
+            <p data-bind="text: currentIds"></p>
+            <p data-bind="text: currentCodes"></p>
+            <p data-bind="text: currentNames"></p>
+            <button data-bind="click: testAlreadySetting">
+              Test reload data
+            </button>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
