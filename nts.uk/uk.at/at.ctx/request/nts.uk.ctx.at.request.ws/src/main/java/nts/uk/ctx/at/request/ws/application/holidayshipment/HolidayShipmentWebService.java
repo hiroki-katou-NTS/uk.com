@@ -209,7 +209,9 @@ class StartScreenAParam {
 
 @Value
 class StartPageARefactorParam {
+	//申請者リスト<Optional>
 	private List<String> sIDs;
+	//申請対象日リスト<Optional>
 	private List<GeneralDate> appDate;
 }
 

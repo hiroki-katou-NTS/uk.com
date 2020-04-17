@@ -319,7 +319,7 @@ public class HolidayShipmentScreenBFinder {
 
 	}
 	
-	// Refactor Code KAF011
+	// 1.振休振出申請（詳細）起動処理
 	public DisplayInforWhenStarting startPageBRefactor(String applicationID) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		String companyID = AppContexts.user().companyId();
@@ -353,28 +353,32 @@ public class HolidayShipmentScreenBFinder {
 			}
 		}
 		
+		//振休振出申請設定の取得
+		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
+		if (withDrawalReqSetOpt.isPresent()) {
+			result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
+		}
+		
 		if(result.getAbsApp() != null) {
+			//振出用勤務種類の取得(Lấy worktype làm bù)
 			List<WorkType> workTypeForHoliday = aFinder.getWorkTypeForHoliday(companyID, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.getAbsApp().getWorkTypeCD());
 			DisplayInformationApplication applicationForWorkingDay = new DisplayInformationApplication();
 			applicationForWorkingDay.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
+			//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)/ (DisplayInfo khi khởi động đơn xin làm bù. WorktypeList = worktype làm bù(list đã lấy))
 			result.setApplicationForWorkingDay(applicationForWorkingDay);
 		}
 		if(result.getRecApp() != null) {
+			//振休用勤務種類の取得(Lấy worktype nghỉ bù)
 			List<WorkType> workTypeForHoliday = aFinder.getWorkTypeForWorkingDay(companyID, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.getRecApp().getWorkTypeCD());
 			DisplayInformationApplication applicationForHoliday = new DisplayInformationApplication();
 			applicationForHoliday.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
+			//振休申請起動時の表示情報．勤務種類リスト=取得した振休用勤務種類(List) /(DisplayInfo khi khởi động đơn xin nghỉ bù. WorktypeList= worktype nghỉ bù(List) đã lấy)
 			result.setApplicationForHoliday(applicationForHoliday);
 		}
 		
 		Optional<Application_New> application = appRepo.findByID(companyID, applicationID);
 		if(application.isPresent()) {
 			result.setApplication(ApplicationDto_New.fromDomain(application.get()));
-		}
-		
-		//振休振出申請設定の取得
-		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
-		if (withDrawalReqSetOpt.isPresent()) {
-			result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
 		}
 		
 		if(application.isPresent()) {

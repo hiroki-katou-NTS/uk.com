@@ -913,7 +913,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 	
-	// Refactor Code KAF011
+	// 1.振休振出申請（新規）起動処理
 	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
@@ -967,18 +967,25 @@ public class HolidayShipmentScreenAFinder {
 		//振出用勤務種類の取得(Lấy worktype của làm bù)
 		List<WorkType> workTypeForWorkingDay = this.getWorkTypeForWorkingDay(companyId, employmentCode, null);
 		
+		//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)//(DisplayInfo khi khởi động đơn xin làm bu. WorktypeList= worktype của làm bù đã lấy(List))
 		result.setWorkTypeList(workTypeForWorkingDay.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
+		
+		//振出申請起動時の表示情報．初期選択勤務種類=取得した振出用勤務種類(List)の先頭の勤務種類 /(DisplayInfo khi khởi động đơn xin làm bù. InitialSelectionWorkType= worktype đầu tiên của worktype làm bù(list) đã lấy)
 		result.setSelectionWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
 		
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType(), result.getSelectionWorkTime());
 		for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
 			if(time.getWorkNo() == 1) {
+				//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 				result.setStartTime(time.getStart().v());
+				//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
 				result.setEndTime(time.getEnd().v());
 			}
 			if(time.getWorkNo() == 2) {
+				//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 				result.setStartTime2(time.getStart().v());
+				//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
 				result.setEndTime2(time.getEnd().v());
 			}
 		}
