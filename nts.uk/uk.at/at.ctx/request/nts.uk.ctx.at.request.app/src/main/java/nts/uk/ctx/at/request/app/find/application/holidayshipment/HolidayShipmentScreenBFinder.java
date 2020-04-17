@@ -330,7 +330,7 @@ public class HolidayShipmentScreenBFinder {
 
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])
 		Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);
-		// check tông tại đơn xin làm bù
+		// check tôn tại đơn xin làm bù
 		if (recAppOpt.isPresent()) {
 			ApplicationMetaOutput recAppOutput = detailService.getDetailAppCommonSet(companyID, recAppOpt.get().getAppID());
 			result.setRecApp(RecruitmentAppDto.fromDomain(recAppOpt.get(), recAppOutput.getAppDate()));
@@ -365,10 +365,18 @@ public class HolidayShipmentScreenBFinder {
 			applicationForHoliday.setWorkTypeList(workTypeForHoliday.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 			result.setApplicationForHoliday(applicationForHoliday);
 		}
+		
 		Optional<Application_New> application = appRepo.findByID(companyID, applicationID);
 		if(application.isPresent()) {
 			result.setApplication(ApplicationDto_New.fromDomain(application.get()));
 		}
+		
+		//振休振出申請設定の取得
+		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
+		if (withDrawalReqSetOpt.isPresent()) {
+			result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
+		}
+		
 		if(application.isPresent()) {
 			//[No.506]振休残数を取得する(Lấy số ngày nghỉ bù còn lại)
 			AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(application.get().getEmployeeID(), GeneralDate.today());
@@ -383,10 +391,6 @@ public class HolidayShipmentScreenBFinder {
 			if (appTypeSetDtoOpt.isPresent()) {
 				result.setAppTypeSet(appTypeSetDtoOpt.get());
 			}
-		}
-		Optional<WithDrawalReqSet> withDrawalReqSetOpt = withDrawRepo.getWithDrawalReqSet();
-		if (withDrawalReqSetOpt.isPresent()) {
-			result.setDrawalReqSet(WithDrawalReqSetDto.fromDomain(withDrawalReqSetOpt.get()));
 		}
 		return result;
 	}
