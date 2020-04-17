@@ -99,8 +99,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
                     changeDateParam = {
-                        workingDate: absDate,
-                        holidayDate: recDate,
+                        workingDate: recDate,
+                        holidayDate: absDate,
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
@@ -127,8 +127,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
                     changeDateParam = {
-                        workingDate: absDate,
-                        holidayDate: recDate,
+                        workingDate: recDate,
+                        holidayDate: absDate,
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 

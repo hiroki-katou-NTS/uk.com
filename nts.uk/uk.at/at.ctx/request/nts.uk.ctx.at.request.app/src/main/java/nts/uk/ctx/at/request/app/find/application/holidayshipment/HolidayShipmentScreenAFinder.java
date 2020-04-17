@@ -334,8 +334,12 @@ public class HolidayShipmentScreenAFinder {
 		GeneralDate referenceDate = HolidayShipmentScreenAFinder.DetRefDate(workingDate, holidayDate);
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
-		listTagetDate.add(workingDate);
-		listTagetDate.add(holidayDate);
+		if(workingDate != null) {
+			listTagetDate.add(workingDate);
+		}
+		if(holidayDate != null) {
+			listTagetDate.add(holidayDate);
+		}
 		
 		//申請日を変更する(Thay đổi Applicationdate)
 		AppDispInfoWithDateOutput AppDateProcess = commonAlgorithm.changeAppDateProcess(
