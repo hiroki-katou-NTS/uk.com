@@ -269,8 +269,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.employeeID(data.application.employeeID || null);
                 self.displayPrePostFlg(true);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
-                self.absWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
+                self.recWk().setWkTypes(data.applicationForHoliday?data.applicationForHoliday.workTypeList : []);
+                self.absWk().setWkTypes(data.applicationForWorkingDay?data.applicationForWorkingDay.workTypeList : []);
                 if (data.application) {
                     self.setDataCommon(data);
                 }
