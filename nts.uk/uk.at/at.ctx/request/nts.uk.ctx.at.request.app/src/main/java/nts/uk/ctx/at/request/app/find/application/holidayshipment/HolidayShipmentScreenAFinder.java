@@ -342,7 +342,7 @@ public class HolidayShipmentScreenAFinder {
 		}
 		
 		//申請日を変更する(Thay đổi Applicationdate)
-		AppDispInfoWithDateOutput AppDateProcess = commonAlgorithm.changeAppDateProcess(
+		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
 				companyId, 
 				listTagetDate, 
 				referenceDate, 
@@ -350,7 +350,7 @@ public class HolidayShipmentScreenAFinder {
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoNoDateOutput(), 
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput());
 		//「振休振出申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」 
-		displayInforWhenStarting.getAppDispInfoStartup().toDomain().setAppDispInfoWithDateOutput(AppDateProcess);
+		displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDateProcess);
 		//INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする 
 		if(displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoNoDateOutput().getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.APP_DATE) {
 			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
