@@ -124,9 +124,9 @@ module nts.uk.at.view.kaf007.b {
                     let timeCd = self.appWorkChange().workChange().workTimeCd;
                     let timeName = self.appWorkChange().workChange().workTimeName;
                     typeCd(typeCd() === null ? '' : typeCd());
-                    typeName(self.getName(typeCd(), typeName()));
+                    typeName(self.getWorkTypeName(typeCd(), appWorkChangeDispInfo.workTypeLst));
                     timeCd(timeCd() === null ? '' : timeCd());
-                    timeName(self.getName(timeCd(), timeName()));
+                    timeName(self.getWorkTimeName(timeCd(), appDispInfoWithDateOutput.workTimeLst));
                     //application data
                     ko.mapping.fromJS(applicationDto, {}, self.appWorkChange().application );
                     //setting reason content
@@ -177,6 +177,24 @@ module nts.uk.at.view.kaf007.b {
                      dfd.reject();
                 });
                 return dfd.promise();
+            }
+            
+            getWorkTypeName(code, workTypeLst) {
+                let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
+                if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
+                    return text("KAF007_79");
+                } else {
+                    return currentWorkType.name;     
+                }      
+            }
+            
+            getWorkTimeName(code, workTimeLst) {
+                let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
+                if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
+                    return text("KAF007_79");
+                } else {
+                    return currentWorkTime.workTimeDisplayName.workTimeName;     
+                }      
             }
             
             enableTime() {

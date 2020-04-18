@@ -191,6 +191,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         setData(settingData) {
             let self = this,
                 appDispInfoNoDateOutput = settingData.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                appDispInfoWithDateOutput = settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput,
                 appWorkChangeSet = settingData.appWorkChangeSet,
                 listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
                 appTypeSet = _.find(listAppTypeSet, o => o.appType == 2);
@@ -203,6 +204,23 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));                        
                 }         
             }    
+            // A3_1
+            self.appWorkChange().application().prePostAtr(appDispInfoWithDateOutput.prePostAtr);
+            // A6_2
+            self.appWorkChange().workChange().workTypeCd(settingData.workTypeCD);
+            self.appWorkChange().workChange().workTypeName(self.getWorkTypeName(settingData.workTypeCD, settingData.workTypeLst));
+            // A6_4
+            self.appWorkChange().workChange().workTimeCd(settingData.workTimeCD);
+            self.appWorkChange().workChange().workTimeName(self.getWorkTimeName(settingData.workTimeCD, appDispInfoWithDateOutput.workTimeLst));
+            
+            if(!nts.uk.util.isNullOrUndefined(settingData.predetemineTimeSetting)){
+                let timeZone = settingData.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
+                // A7_1
+                self.appWorkChange().workChange().workTimeStart1(timeZone[0].start);    
+                // A7_3
+                self.appWorkChange().workChange().workTimeEnd1(timeZone[0].end); 
+            }
+            
             self.checkBoxValue(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
             
             //A2_申請者 ID
@@ -216,15 +234,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.showExcludeHoliday(appWorkChangeSet.excludeHoliday);
             //事前事後区分 Enable ※A２
             self.prePostEnable(appTypeSet.canClassificationChange);
-            self.appWorkChange().application().prePostAtr(appTypeSet.displayInitialSegment);
+            
             //「申請種類別設定．定型理由の表示」  ※A10
             self.typicalReasonDisplayFlg(appTypeSet.displayFixedReason == 1 ? true : false);
             //「申請種類別設定．申請理由の表示」  ※A11
             self.displayAppReasonContentFlg(appTypeSet.displayAppReason == 1 ? true : false);
             //登録時にメールを送信する Visible
             self.enableSendMail(appTypeSet.sendMailWhenRegister);
-            //self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true);
-            // self.manualSendMailAtr(appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true: false);
             //A5 勤務を変更する ※A4                    
             //勤務変更申請設定.勤務時間を変更できる　＝　出来る
             self.isWorkChange(appWorkChangeSet.workChangeTimeAtr == 1 ? true : false);
@@ -234,21 +250,31 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
             //A8 勤務時間２ ※A7
             //共通設定.複数回勤務
-             self.isMultipleTime(settingData.isMultipleTime);
+            self.isMultipleTime(settingData.isMultipleTime);
             
-            //Setting default value data work:
-            // self.appWorkChange().dataWork(settingData.dataWorkDto);
-            self.appWorkChange().workChange().workTypeCd(settingData.workTypeCD);
-            self.appWorkChange().workChange().workTypeName("");
-            self.appWorkChange().workChange().workTimeCd(settingData.workTimeCD);
-            self.appWorkChange().workChange().workTimeName("");
-            if(!nts.uk.util.isNullOrUndefined(settingData.predetemineTimeSetting)){
-                let timeZone = settingData.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
-                self.appWorkChange().workChange().workTimeStart1(timeZone[0].start);    
-                self.appWorkChange().workChange().workTimeEnd1(timeZone[0].end); 
-            }
             self.requiredCheckTime(settingData.setupType == 0 && settingData.appWorkChangeSet.workChangeTimeAtr == 1);
             self.timeRequired(settingData.setupType == 0);
+            
+            self.appWorkChange().dataWork().workTypeCodes = _.map(settingData.workTypeLst, o => o.workTypeCode);
+            self.appWorkChange().dataWork().workTimeCodes = _.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode);
+        }
+        
+        getWorkTypeName(code, workTypeLst) {
+            let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
+                return text("KAF007_79");
+            } else {
+                return currentWorkType.name;     
+            }      
+        }
+        
+        getWorkTimeName(code, workTimeLst) {
+            let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
+                return text("KAF007_79");
+            } else {
+                return currentWorkTime.workTimeDisplayName.workTimeName;     
+            }      
         }
         
         getName(code, name) {
