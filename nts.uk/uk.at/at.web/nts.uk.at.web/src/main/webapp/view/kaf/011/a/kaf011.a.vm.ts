@@ -108,7 +108,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 block.invisible();
                 service.changeWorkingDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
-                    self.recWk().setWkTypes(self.displayInforWhenStarting.applicationForWorkingDay.workTypeList || []);
+                    self.recWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
+                    self.absWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
                     if (self.displayPrePostFlg() == 0) {
                         self.prePostSelectedCode(self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr);
                     }
@@ -136,7 +137,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 block.invisible();
                 service.changeHolidayDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
-                    self.absWk().setWkTypes(self.displayInforWhenStarting.applicationForHoliday.workTypeList || []);
+                    self.recWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
+                    self.absWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
                     if (self.displayPrePostFlg() == 0) {
                         self.prePostSelectedCode(self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr);
                     }
