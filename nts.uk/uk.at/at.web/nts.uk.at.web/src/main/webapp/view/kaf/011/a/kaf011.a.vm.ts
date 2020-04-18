@@ -230,7 +230,14 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 $("#fixed-table").ntsFixedTable({ width: 100 });
                 dfd.resolve(data);
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                if(error.messageId == 'Msg_323' || error.messageId == 'Msg_426'){
+                    alError({messageId : error.messageId}).then(function(){
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    alError({ messageId: error.messageId, messageParams: error.parameterIds });    
+                }
             }).always(() => {
                 block.clear();
             });
