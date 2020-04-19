@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.ws.workplacegroup;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,6 +32,18 @@ public class WorkplaceGroupWs extends WebService {
 	@Path("getAll")
 	public WorkplaceGroupDto getListRank() {
 		return wkpGroupFinder.getWorkplaceGroup();
+	}
+	
+	@POST
+	@Path("getListWorkplaceId")
+	public List<String> getListWplId(String WKPGRPID) {
+		return wkpGroupFinder.getLstWorkplaceId(WKPGRPID);
+	}
+	
+	@POST
+	@Path("getWorkplaceGroup")
+	public WorkplaceGroupDto getWorkplace(String WKPGRPID) {
+		return wkpGroupFinder.getWkplaceGroup(WKPGRPID);
 	}
 
 }

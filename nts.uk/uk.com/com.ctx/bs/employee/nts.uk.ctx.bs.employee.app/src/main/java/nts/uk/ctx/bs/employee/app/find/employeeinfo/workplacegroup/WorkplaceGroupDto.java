@@ -21,6 +21,10 @@ public class WorkplaceGroupDto {
 		}
 	}
 	
+	public WorkplaceGroupDto(WorkplaceGroup dom) {
+			this.workplaces.add(new IWorkplace(dom));
+	}
+	
 	@Data
 	class IWorkplace {
 		private String id;

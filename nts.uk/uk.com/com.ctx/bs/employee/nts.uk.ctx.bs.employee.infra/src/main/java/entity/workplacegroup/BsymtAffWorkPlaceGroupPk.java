@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class BsympAffWorkPlaceGroupPk implements Serializable {
+public class BsymtAffWorkPlaceGroupPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

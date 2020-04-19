@@ -14,12 +14,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@Table(name="BSYMP_AFF_WORKPLACE_GROUP")
-public class BsympAffWorkPlaceGroup  extends ContractUkJpaEntity{
+@Table(name="BSYMT_AFF_WORKPLACE_GROUP")
+public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity{
 	@EmbeddedId
-    public BsympAffWorkPlaceGroupPk pk;
+    public BsymtAffWorkPlaceGroupPk pk;
 
-	public BsympAffWorkPlaceGroup(BsympAffWorkPlaceGroupPk pk) {
+	public BsymtAffWorkPlaceGroup(BsymtAffWorkPlaceGroupPk pk) {
 		super();
 		this.pk = pk;
 	}
