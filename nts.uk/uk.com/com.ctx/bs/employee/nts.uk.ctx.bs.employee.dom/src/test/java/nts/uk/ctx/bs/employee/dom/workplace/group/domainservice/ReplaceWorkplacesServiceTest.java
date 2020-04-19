@@ -29,7 +29,5 @@ public class ReplaceWorkplacesServiceTest {
 			}
 		};
 		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.getWorkplace(require, group, lstWorkplaceId);
-		AtomTask persist = workplacesService.get(group.getWKPGRPID()).getPersistenceProcess().get();
-		persist.run();
 	} 
 }
