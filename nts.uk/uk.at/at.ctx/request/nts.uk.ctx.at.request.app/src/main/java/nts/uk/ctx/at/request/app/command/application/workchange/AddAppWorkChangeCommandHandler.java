@@ -52,7 +52,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		String appID = IdentifierUtil.randomUniqueId();
 		// 入力者 = 申請者
 		// 申請者
-		String applicantSID = appCommand.getApplicantSID() != null ? appCommand.getApplicantSID() : AppContexts.user().employeeId();
+		String applicantSID = Strings.isNotBlank(appCommand.getApplicantSID()) ? appCommand.getApplicantSID() : AppContexts.user().employeeId();
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
