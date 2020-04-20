@@ -48,7 +48,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public void update(WorkplaceGroup group) {
 		Optional<BsymtWorkplaceGroup> workPlaceGroup = this.queryProxy().query(SELECT_BY_CID_CODE_WID, BsymtWorkplaceGroup.class)
-				.setParameter("companyId", group.getCID())
+				.setParameter("CID", group.getCID())
 				.setParameter("WKPGRPID", group.getWKPGRPID())
 				.getSingle();
 		if(workPlaceGroup.isPresent()){
@@ -82,7 +82,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public Optional<WorkplaceGroup> getById(String CID, String WKPGRPID) {
 		return this.queryProxy().query(SELECT_BY_CID_CODE_WID, BsymtWorkplaceGroup.class)
-				.setParameter("companyId", CID)
+				.setParameter("CID", CID)
 				.setParameter("WKPGRPID", WKPGRPID)
 				.getSingle(c->c.toDomain());
 	}
@@ -96,13 +96,6 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public List<WorkplaceGroup> getAllById(String CID, List<String> lstWKPGRPID) {
 		Set<String> lstWKPGRP = lstWKPGRPID.stream().map(x -> x).collect(Collectors.toSet());
-//		List<WorkplaceGroup> list = new ArrayList<>();
-//		CollectionUtil.split(lstWKPGRPID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			list.addAll(this.queryProxy().query(SELECT_BY_LIST_ID, BsymtWorkplaceGroup.class)
-//				.setParameter("CID", CID)
-//				.setParameter("lstWKPGRPID", subList)
-//				.getList(c -> toDomain(c)));
-//		});
 		return this.queryProxy().query(SELECT_BY_LIST_ID, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
 				.setParameter("lstWKPGRPID", lstWKPGRP)
@@ -129,7 +122,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public Optional<WorkplaceGroup> getByCode(String CID, String WKPGRPCode) {
 		return this.queryProxy().query(SELECT_BY_CID_CODE_WCD, BsymtWorkplaceGroup.class)
-				.setParameter("companyId", CID)
+				.setParameter("CID", CID)
 				.setParameter("WKPGRPID", WKPGRPCode)
 				.getSingle(c->c.toDomain());
 	}
@@ -143,13 +136,6 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public List<WorkplaceGroup> getListByCode(String CID, List<String> WKPGRPCode) {
 		Set<String> lstWKPGRP = WKPGRPCode.stream().map(x -> x).collect(Collectors.toSet());
-//		List<WorkplaceGroup> list = new ArrayList<>();
-//		CollectionUtil.split(lstWKPGRPID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			list.addAll(this.queryProxy().query(SELECT_BY_LIST_ID, BsymtWorkplaceGroup.class)
-//				.setParameter("CID", CID)
-//				.setParameter("lstWKPGRPID", subList)
-//				.getList(c -> toDomain(c)));
-//		});
 		return this.queryProxy().query(SELECT_BY_LIST_CD, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
 				.setParameter("lstWKPGRPCode", lstWKPGRP)
@@ -165,7 +151,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	@Override
 	public boolean checkExistsByCode(String CID, String WKPGRPCode) {
 		return this.queryProxy().query(SELECT_BY_CID_CODE_WID, BsymtWorkplaceGroup.class)
-				.setParameter("companyId", CID)
+				.setParameter("CID", CID)
 				.setParameter("WKPGRPID", WKPGRPCode)
 				.getSingle(c->c.toDomain()).isPresent();
 	}

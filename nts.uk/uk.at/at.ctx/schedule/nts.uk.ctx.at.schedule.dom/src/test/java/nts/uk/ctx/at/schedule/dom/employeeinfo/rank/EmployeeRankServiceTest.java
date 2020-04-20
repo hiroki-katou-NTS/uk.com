@@ -6,7 +6,11 @@ import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankService.Require;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public class EmployeeRankServiceTest {
 	@Injectable
 	private Require require;
