@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -17,6 +18,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 
 public class Stamp implements DomainAggregate {
+	
+	
+	/**
+	 * 契約コード
+	 */
+	@Getter
+	private ContractCode contractCode;
 	
 	/**
 	 * 打刻カード番号
@@ -72,6 +80,20 @@ public class Stamp implements DomainAggregate {
 			RefectActualResult refActualResults, boolean reflectedCategory,
 			StampLocationInfor locationInfor) {
 		super();
+		this.cardNumber = cardNumber;
+		this.stampDateTime = stampDateTime;
+		this.relieve = relieve;
+		this.type = type;
+		this.refActualResults = refActualResults;
+		this.reflectedCategory = reflectedCategory;
+		this.locationInfor = Optional.ofNullable(locationInfor);
+	}
+	
+	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
+			StampType type, RefectActualResult refActualResults, boolean reflectedCategory,
+			StampLocationInfor locationInfor) {
+		super();
+		this.contractCode = contractCode;
 		this.cardNumber = cardNumber;
 		this.stampDateTime = stampDateTime;
 		this.relieve = relieve;
