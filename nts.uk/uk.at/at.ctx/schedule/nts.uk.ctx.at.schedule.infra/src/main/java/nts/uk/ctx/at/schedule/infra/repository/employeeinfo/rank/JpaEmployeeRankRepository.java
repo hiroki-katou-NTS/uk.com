@@ -36,7 +36,7 @@ public class JpaEmployeeRankRepository extends JpaRepository implements Employee
 	 */
 	@Override
 	public void insert(EmployeeRank employeeRank) {
-		this.commandProxy().insert(employeeRank);
+		this.commandProxy().insert(KscmtSyaRank.toEntity(employeeRank));
 	}
 
 	/**
