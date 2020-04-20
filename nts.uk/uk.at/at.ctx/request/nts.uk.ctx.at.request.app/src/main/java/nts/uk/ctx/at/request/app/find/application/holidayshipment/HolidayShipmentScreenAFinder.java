@@ -287,6 +287,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 	
+	//振出日を変更する
 	public DisplayInforWhenStarting changeWorkingDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -327,6 +328,7 @@ public class HolidayShipmentScreenAFinder {
 		return displayInforWhenStarting;
 	}
 	
+	//振休日を変更する
 	public DisplayInforWhenStarting changeHolidayDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -944,7 +946,6 @@ public class HolidayShipmentScreenAFinder {
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
 		AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(lstEmployee.get(0), GeneralDate.today());
 		
-		//一番近い期限日を取得する
 		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));
 		
 		return result;
