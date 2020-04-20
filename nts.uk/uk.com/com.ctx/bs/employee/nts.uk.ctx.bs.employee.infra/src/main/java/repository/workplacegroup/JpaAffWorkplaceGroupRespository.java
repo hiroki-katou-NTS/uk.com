@@ -95,7 +95,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	@Override
 	public void deleteByWKPGRPID(String CID, String WKPGRPID) {
 		Optional<AffWorkplaceGroup> entity = this.queryProxy()
-				.query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("companyId", CID)
+				.query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
 				.setParameter("WKPGRPID", WKPGRPID).getSingle(c -> c.toDomain());
 		if (entity.isPresent())
 			this.commandProxy().remove(entity);
@@ -125,7 +125,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	@Override
 	public Optional<AffWorkplaceGroup> getByID(String CID, String WKPGRPID, String WKPID) {
 		return this.queryProxy().query(SELECT_BY_CID_CODE_WPID, BsymtAffWorkPlaceGroup.class)
-				.setParameter("companyId", CID).setParameter("WKPGRPID", WKPGRPID).setParameter("WKPID", WKPID)
+				.setParameter("CID", CID).setParameter("WKPGRPID", WKPGRPID).setParameter("WKPID", WKPID)
 				.getSingle(c -> c.toDomain());
 	}
 
@@ -167,7 +167,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public Optional<AffWorkplaceGroup> getByWKPID(String CID, String WKPID) {
-		return this.queryProxy().query(SELECT_BY_CID_WPID, BsymtAffWorkPlaceGroup.class).setParameter("companyId", CID)
+		return this.queryProxy().query(SELECT_BY_CID_WPID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
 				.setParameter("WKPID", WKPID).getSingle(c -> c.toDomain());
 	}
 
@@ -206,7 +206,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public List<AffWorkplaceGroup> getAll(String CID) {
-		return this.queryProxy().query(SELECT_BY_CID, BsymtAffWorkPlaceGroup.class).setParameter("companyId", CID)
+		return this.queryProxy().query(SELECT_BY_CID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
 				.getList(c -> c.toDomain());
 	}
 
