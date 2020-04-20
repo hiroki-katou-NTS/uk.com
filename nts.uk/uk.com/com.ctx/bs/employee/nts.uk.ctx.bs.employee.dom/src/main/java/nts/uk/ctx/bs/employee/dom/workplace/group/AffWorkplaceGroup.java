@@ -28,4 +28,5 @@ public class AffWorkplaceGroup implements DomainAggregate {
 		WKPGRPID = wKPGRPID;
 		WKPID = wKPID;
 	}
+	
 }

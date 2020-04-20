@@ -49,11 +49,11 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		
 		// 1: get(会社ID, 職場グループコード)
 		// return Optional<職場グループ>
-		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWKPGRPCode());
+		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWkpGrCD());
 		
 		// 2: set(職場グループ名称, 職場グループ種別)
-		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWKPGRPName()));
-		wpgrp.get().setWKPGRPType(EnumAdaptor.valueOf(cmd.getWKPGRPType(), WorkplaceGroupType.class));
+		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWkpGrCD()));
+		wpgrp.get().setWKPGRPType(EnumAdaptor.valueOf(cmd.getWkpGrType(), WorkplaceGroupType.class));
 		
 		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
 		

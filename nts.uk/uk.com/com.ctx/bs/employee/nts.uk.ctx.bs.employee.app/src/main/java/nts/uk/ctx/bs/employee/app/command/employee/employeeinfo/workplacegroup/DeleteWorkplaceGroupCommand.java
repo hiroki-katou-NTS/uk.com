@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.employeeinfo.workplacegroup;
 
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * 
@@ -8,6 +9,7 @@ import lombok.Data;
  *
  */
 @Data
+@Getter
 public class DeleteWorkplaceGroupCommand {
-	private String wKPGRPID;
+	private String wkpGrID;
 }

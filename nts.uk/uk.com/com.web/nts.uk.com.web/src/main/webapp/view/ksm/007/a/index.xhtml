@@ -11,14 +11,23 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="/view/kcp/011/main.css" of="/nts.uk.com.web" />
+        
         <com:scriptfile
           path="/view/kcp/011/kcp.011.vm.js"
           of="/nts.uk.com.web"
         />
+        <com:stylefile path="ksm007.main.css" />
         <com:scriptfile path="ksm007.a.service.js" />
         <com:scriptfile path="ksm007.a.start.js" />
         <com:scriptfile path="ksm007.a.vm.js" />
         <com:scriptfile path="ksm007.a.model.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode
+          nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName
+        </com:ValidatorScript>
+        <com:EnumScript>
+        	nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType
+        </com:EnumScript>
       </ui:define>
 
       <ui:define name="content">
@@ -26,24 +35,24 @@
           <button
             tabindex="1"
             class=""
-            id="register-btn"
-            data-bind=""
+            id="new-mode-btn"
+            data-bind="click: createNew"
           >
-            #{i18n.getText('KSM007_002')}
+            #{i18n.getText('KSM007_2')}
           </button>
           <button
             tabindex="2"
             class="proceed"
             id="register-btn"
-            data-bind=""
+            data-bind="click: register"
           >
-            #{i18n.getText('KSM007_003')}
+            #{i18n.getText('KSM007_3')}
           </button>
-          <button class="danger" tabindex="3" data-bind="">
-            #{i18n.getText('KSM007_004')}
+          <button class="danger" tabindex="3" data-bind="click: deleteWkpGroup, disable: registerForm().newMode">
+            #{i18n.getText('KSM007_4')}
           </button>
           <button tabindex="4" data-bind="click: exportExcel">
-            #{i18n.getText('KSM007_005')}
+            #{i18n.getText('KSM007_5')}
           </button>
         </div>
         <div id="contents-area">
@@ -51,12 +60,7 @@
             <workplace-group params="options: options"> </workplace-group>
           </div>
           <div class="pull-left" style="width: 700px;">
-            <p data-bind="text: currentIds"></p>
-            <p data-bind="text: currentCodes"></p>
-            <p data-bind="text: currentNames"></p>
-            <button data-bind="click: testAlreadySetting">
-              Test reload data
-            </button>
+            <ui:include src="register-form.xhtml"></ui:include>
           </div>
         </div>
       </ui:define>

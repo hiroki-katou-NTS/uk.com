@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.app.command.employee.employeeinfo.workplacegroup;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode;
@@ -15,14 +16,18 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
  */
 @Data
 public class RegisterWorkplaceGroupCommand {
+	
+	@Getter
+	private String wkpGrID;
+	
 	/** 職場グループコード */
-	private String WKPGRPCode;
+	private String wkpGrCD;
 	
 	/** 職場グループ名称 */
-	private String WKPGRPName;
+	private String wkpGrName;
 	
 	/** 職場グループ種別 */
-	private int WKPGRPType;
+	private int wkpGrType;
 	
 	/** 職場IDリスト */
 	private List<String> lstWKPID;
@@ -31,8 +36,8 @@ public class RegisterWorkplaceGroupCommand {
 		return new WorkplaceGroup(
 				CID, 
 				WKPGRPID, 
-				new WorkplaceGroupCode(WKPGRPCode), 
-				new WorkplaceGroupName(WKPGRPName), 
-				EnumAdaptor.valueOf(WKPGRPType, WorkplaceGroupType.class));
+				new WorkplaceGroupCode(wkpGrCD), 
+				new WorkplaceGroupName(wkpGrName), 
+				EnumAdaptor.valueOf(wkpGrType, WorkplaceGroupType.class));
 	}
 }

@@ -6,6 +6,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 職場グループ所属情報
@@ -29,6 +30,11 @@ public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity{
 				pk.CID,
 				pk.WKPGRPID,
 				pk.WKPID);
+	}
+	
+	public static BsymtAffWorkPlaceGroup toEntity(AffWorkplaceGroup dom) {
+		BsymtAffWorkPlaceGroupPk pk = new BsymtAffWorkPlaceGroupPk(AppContexts.user().companyId(), dom.getWKPGRPID(), dom.getWKPID());
+		return new BsymtAffWorkPlaceGroup(pk);
 	}
 
 	@Override

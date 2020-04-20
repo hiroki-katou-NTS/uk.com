@@ -32,7 +32,7 @@ public class DeleteWorkplaceGroupCommandHandler extends CommandHandler<DeleteWor
 		
 		// 1: 削除する(Require, 職場グループID): AtomTask
 		// 職場グループを削除する
-		AtomTask atomTask = DeleteWorkplaceGroupService.delete(delRequire, context.getCommand().getWKPGRPID());
+		AtomTask atomTask = DeleteWorkplaceGroupService.delete(delRequire, context.getCommand().getWkpGrID());
 		
 		// 職場グループの削除処理
 		transaction.execute(() -> {

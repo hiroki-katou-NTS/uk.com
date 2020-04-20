@@ -49,7 +49,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		
 		// 1: get(会社ID, 職場グループコード)
 		// return Optional<職場グループ>
-		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWKPGRPCode());
+		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWkpGrCD());
 		
 		// 2: 職場グループ.isPresent()
 		if (wpgrp.isPresent())

@@ -123,7 +123,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	public Optional<WorkplaceGroup> getByCode(String CID, String WKPGRPCode) {
 		return this.queryProxy().query(SELECT_BY_CID_CODE_WCD, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
-				.setParameter("WKPGRPID", WKPGRPCode)
+				.setParameter("WKPGRPCode", WKPGRPCode)
 				.getSingle(c->c.toDomain());
 	}
 

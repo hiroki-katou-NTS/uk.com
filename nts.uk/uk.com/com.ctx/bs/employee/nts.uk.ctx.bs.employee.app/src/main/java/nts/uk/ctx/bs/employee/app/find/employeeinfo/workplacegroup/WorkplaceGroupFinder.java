@@ -6,9 +6,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,6 +26,9 @@ public class WorkplaceGroupFinder {
 	
 	@Inject
 	private AffWorkplaceGroupRespository affWpGroupRepo;
+	
+	@Inject
+	private WorkplaceExportService wkpExportService;
 	
 	/**
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.App
@@ -60,5 +66,9 @@ public class WorkplaceGroupFinder {
 		if(!optional.isPresent())
 			return null;
 		return new WorkplaceGroupDto(optional.get());
+	}
+	
+	public List<WorkplaceInforParam> getWorkplaceInfo(List<String> workplaceIds, GeneralDate baseDate) {
+		return wkpExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), workplaceIds, baseDate);
 	}
 }

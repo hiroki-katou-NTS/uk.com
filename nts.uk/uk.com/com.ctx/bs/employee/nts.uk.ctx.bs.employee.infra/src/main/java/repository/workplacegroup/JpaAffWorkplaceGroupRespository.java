@@ -29,29 +29,29 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 
 	private static final String SELECT_BY_CID_CODE_WID = SELECT_BY_CID + " AND c.pk.WKPGRPID = :WKPGRPID";
 
-	private static final String SELECT_BY_CID_CODE_WPID = SELECT_BY_CID_CODE_WID + " AND c.pk.WPID = :WPID";
+	private static final String SELECT_BY_CID_CODE_WPID = SELECT_BY_CID_CODE_WID + " AND c.pk.WKPID = :WKPID";
 
-	private static final String SELECT_BY_CID_WPID = SELECT_BY_CID + " AND c.pk.WPID = :WPID";
+	private static final String SELECT_BY_CID_WPID = SELECT_BY_CID + " AND c.pk.WKPID = :WKPID";
 
-	private static final String SELECT_BY_CID_LIST_WPID = SELECT_BY_CID + " AND c.pk.WPID IN :lstWPID";
+	private static final String SELECT_BY_CID_LIST_WPID = SELECT_BY_CID + " AND c.pk.WKPID IN :lstWPID";
 
-	private static final String SELECT_BY_LIST_ID = SELECT_BY_CID_CODE_WID + " AND c.pk.WPID IN :lstWPID";
+	private static final String SELECT_BY_LIST_ID = SELECT_BY_CID_CODE_WID + " AND c.pk.WKPID IN :lstWPID";
 
-	private static final String SELECT_BY_DATE_COMPANY = "SELECT c.WPID FROM BsymtAffWorkPlaceGroup c "
+	private static final String SELECT_BY_DATE_COMPANY = "SELECT c.pk.WKPID FROM BsymtAffWorkPlaceGroup c "
 			+ " LEFT JOIN BsymtWorkplaceGroup wpg ON c.pk.WKPGRPID = wpg.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
-			+ " AND wpg.pk.WKPGRPID = :WKPGRPID" + " ORDER BY wpg.pk.WKPGRPCode ASC, c.pk.WPID ASC";
+			+ " AND wpg.pk.WKPGRPID = :WKPGRPID" + " ORDER BY wpg.WKPGRPCode ASC, c.pk.WKPID ASC";
 
-	private static final String SELECT_WPID_BY_CODE = "SELECT c.WPID FROM BsymtAffWorkPlaceGroup c "
+	private static final String SELECT_WPID_BY_CODE = "SELECT c.pk.WKPID FROM BsymtAffWorkPlaceGroup c "
 			+ " LEFT JOIN BsymtWorkplaceGroup wpg ON c.pk.WKPGRPID = wpg.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
-			+ " AND wpg.pk.WKPGRPCode = :WKPGRPCode" + " ORDER BY wpg.pk.WKPGRPCode ASC, c.pk.WPID ASC";
+			+ " AND wpg.WKPGRPCode = :WKPGRPCode" + " ORDER BY wpg.WKPGRPCode ASC, c.pk.WKPID ASC";
 
 	private static final String SELECT_WORKPLACE_GROUP = "SELECT wpg FROM BsymtWorkplaceGroup c "
 			+ " LEFT JOIN BsymtAffWorkPlaceGroup atc ON wpg.pk.WKPGRPID = atc.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
-			+ " AND atc.pk.WPID = :WPID";
+			+ " AND atc.pk.WKPID = :WPID";
 
-	private static final String CHECK_WORKPLACE_GROUP = "SELECT c.WPID FROM BsymtAffWorkPlaceGroup c "
+	private static final String CHECK_WORKPLACE_GROUP = "SELECT c.pk.WKPID FROM BsymtAffWorkPlaceGroup c "
 			+ " LEFT JOIN BsymtWorkplaceGroup wpg ON c.pk.WKPGRPID = wpg.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
-			+ " AND c.pk.WPID = :WPID";
+			+ " AND c.pk.WKPID = :WKPID";
 
 	/**
 	 * insert ( 職場グループ所属情報 )
@@ -60,7 +60,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void insert(AffWorkplaceGroup affWorkplaceGroup) {
-		this.commandProxy().insert(affWorkplaceGroup);
+		this.commandProxy().insert(BsymtAffWorkPlaceGroup.toEntity(affWorkplaceGroup));
 	}
 
 	/**
@@ -70,6 +70,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void update(AffWorkplaceGroup affWorkplaceGroup) {
+		this.commandProxy().update(BsymtAffWorkPlaceGroup.toEntity(affWorkplaceGroup));
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	public void deleteAll(String CID, String WKPGRPID, String WKPID) {
 		Optional<AffWorkplaceGroup> entity = this.getByID(CID, WKPGRPID, WKPID);
 		if (entity.isPresent())
-			this.commandProxy().remove(entity);
+			this.commandProxy().remove(BsymtAffWorkPlaceGroup.toEntity(entity.get()));
 	}
 
 	/**
@@ -94,11 +95,11 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void deleteByWKPGRPID(String CID, String WKPGRPID) {
-		Optional<AffWorkplaceGroup> entity = this.queryProxy()
+		Optional<BsymtAffWorkPlaceGroup> entity = this.queryProxy()
 				.query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
-				.setParameter("WKPGRPID", WKPGRPID).getSingle(c -> c.toDomain());
+				.setParameter("WKPGRPID", WKPGRPID).getSingle();
 		if (entity.isPresent())
-			this.commandProxy().remove(entity);
+			this.commandProxy().remove(entity.get());
 	}
 
 	/**
@@ -109,9 +110,9 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void deleteByWKPID(String CID, String WKPID) {
-		Optional<AffWorkplaceGroup> entity = this.getByWKPID(CID, WKPID);
-		if (entity.isPresent())
-			this.commandProxy().remove(entity);
+		Optional<AffWorkplaceGroup> dom = this.getByWKPID(CID, WKPID);
+		if (dom.isPresent())
+			this.commandProxy().remove(BsymtAffWorkPlaceGroup.toEntity(dom.get()));
 	}
 
 	/**
