@@ -13,7 +13,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplacesService.Require;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public class ReplaceWorkplacesServiceTest {
 	@Injectable
 	private Require require;

@@ -13,7 +13,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetWorkplaceNotWorkgroupService.Require;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 public class GetWorkplaceNotWorkgroupServiceTest {
 	@Injectable
@@ -33,7 +37,6 @@ public class GetWorkplaceNotWorkgroupServiceTest {
 		};
 		
 		List<WorkplaceInformation> imports = GetWorkplaceNotWorkgroupService.getWorkplace(require, baseDate);
-		
 		assertThat(imports.isEmpty()).isTrue();
 	}
 	

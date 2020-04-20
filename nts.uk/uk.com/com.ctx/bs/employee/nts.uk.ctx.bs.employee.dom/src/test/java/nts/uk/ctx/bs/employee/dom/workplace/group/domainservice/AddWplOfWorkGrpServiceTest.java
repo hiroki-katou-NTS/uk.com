@@ -11,16 +11,19 @@ import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
-import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService.Require;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public class AddWplOfWorkGrpServiceTest {
 	
 	@Injectable
 	private Require require;
 	
 	@Test
-	public void insert_false() {
+	public void insert_return_alreadybelong() {
 		String wKPID = "000000000000000000000000000000000011";
 		String wKPGRPID = "00000000000001";
 		new Expectations() {
@@ -32,12 +35,11 @@ public class AddWplOfWorkGrpServiceTest {
 		};
 		
 		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
-		
 		assertThat(workplaceReplaceResult.getPersistenceProcess().isPresent()).isFalse();
 	}
 	
 	@Test
-	public void insert_false1() {
+	public void insert_return_belonganother() {
 		String wKPID = "000000000000000000000000000000000011";
 		String wKPGRPID = "000000000000000000000000000000000011";
 		new Expectations() {

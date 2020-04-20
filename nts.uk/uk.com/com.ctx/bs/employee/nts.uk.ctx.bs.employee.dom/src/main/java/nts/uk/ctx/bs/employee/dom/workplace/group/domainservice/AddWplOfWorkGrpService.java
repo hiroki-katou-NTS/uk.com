@@ -34,7 +34,7 @@ public class AddWplOfWorkGrpService {
 			// require.職場グループに職場を追加する( $職場グループ所属情報 )																	
 			require.insert(affWorkplaceGroup);
 		}));
-		// 	retrun 職場グループの職場入替処理結果#追加する( $AtomTask )																													
+		// 	return 職場グループの職場入替処理結果#追加する( $AtomTask )																													
 		return WorkplaceReplaceResult.add(atomTaks);
 	}
 

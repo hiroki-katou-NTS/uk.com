@@ -28,36 +28,30 @@ public class WorkplaceReplaceResultTest {
 		NtsAssert.invokeGetters(workplaceReplaceResult);
 	}
 	
+	
 	@Test
-	public void testStampDataReflectResult () {
+	public void testAdd() {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(0);
 		WorkplaceReplaceResult.add(Optional.of(atomTask));
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
 	
 	@Test
-	public void testStampDataReflectResult5 () {
-		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(0);
-		WorkplaceReplaceResult.add(Optional.of(atomTask));
-		assertThat(workplaceReplaceResult).isNotNull();
-	}
-	
-	@Test
-	public void testStampDataReflectResult1 () {
+	public void testDelete () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(1);
 		WorkplaceReplaceResult.delete(Optional.of(atomTask));
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
 	
 	@Test
-	public void testStampDataReflectResult2 () {
+	public void testAlreadyBelong () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(2);
 		WorkplaceReplaceResult.alreadyBelong();
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
 	
 	@Test
-	public void testStampDataReflectResult3 () {
+	public void testBelongAnother () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(3);
 		WorkplaceReplaceResult.belongAnother();
 		assertThat(workplaceReplaceResult).isNotNull();
