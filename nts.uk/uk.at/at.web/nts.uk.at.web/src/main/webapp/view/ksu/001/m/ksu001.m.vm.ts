@@ -1,19 +1,86 @@
 module nts.uk.at.view.ksu001.m.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import windows = nts.uk.ui.windows;
+    import errors = nts.uk.ui.errors;
+    import resource = nts.uk.resource;
+    import util = nts.uk.util;
+    import text = nts.uk.text;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
-        listRank: KnockoutObservableArray<ItemModel>;
-        selectedRank: KnockoutObservable<string>;
+        listRankDto: KnockoutObservableArray<RankDto> = ko.observableArray([]);
+        selectedRankCode: KnockoutObservable<string> = ko.observable(['1']);
+        listEmpRankDto: KnockoutObservableArray<EmployeeRankDto> = ko.observableArray([]);
+        listEmpData: KnockoutObservableArray<EmployeeData> = ko.observableArray([]);
+
+        listSelectedEmpRank: KnockoutObservable<string> = ko.observable(['']);
+        listDataEmp: KnockoutObservable<string> = ko.observable(['']);
+        //Grird list
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+        //KCP005
+        istComponentOption: any;
+        selectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean> = ko.observable(false);
+        isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable(false);
+        isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
+        isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
+        isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable(false);
+        disableSelection: KnockoutObservable<boolean> = ko.observable(false);
+        employeeList: KnockoutObservableArray<UnitModel>;
+        showOptionalColumn: KnockoutObservable<boolean> = ko.observable(true);
+        optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
+        arrSid: any;
+
+
+
         constructor() {
             let self = this;
-            self.listRank = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
-            self.selectedRank = ko.observable('1');
 
+
+            self.selectedRankCode = ko.observable(['1']);
+            //Grid list
+            this.columns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("EMPID"), prop: 'employeeID', width: 60 },
+                { headerText: nts.uk.resource.getText("RANKCD"), prop: 'emplRankCode', width: 290 },
+                { headerText: nts.uk.resource.getText("RANKNAME"), prop: 'rankName', width: 290 }
+            ]);
+            ///KCP005
+
+            self.baseDate = ko.observable(new Date());
+            self.selectedCode = ko.observable('1');
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([
+                { code: '1', isAlreadySetting: true },
+                { code: '2', isAlreadySetting: true }
+            ]);
+            self.disableSelection = ko.observable(false);
+            self.showOptionalColumn = ko.observable(true);
+
+            this.employeeList = ko.observableArray<UnitModel>([
+
+            ]);
+            self.listComponentOption = {
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                disableSelection: self.disableSelection(),
+                showOptionalColumn: self.showOptionalColumn(),
+                optionalColumnName: nts.uk.resource.getText('KSU001_3307'),
+                optionalColumnDatasource: self.optionalColumnDatasource,
+            };
 
 
         }
@@ -21,26 +88,176 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            //dfd.resolve(); -- đéo có thì nó disable luôn vcc
-            dfd.resolve();
+            self.selectedCode(_.map(nts.uk.ui.windows.getShared('KSU001M'), "id"));
+            self.listEmpData(nts.uk.ui.windows.getShared('KSU001M'));
+            var arrSid: any = [];
+            var dataEmp = [];
+            var dataSource: any = [];
+            _.each(nts.uk.ui.windows.getShared('KSU001M'), (x) => {
+                arrSid.push({ code: x.code, name: x.name, id: x.id });
+            });
+            self.employeeList(arrSid);
+
+
+            service.startPage(self.selectedCode()).done(function(data) {
+                console.log(data);
+                _.forEach(data.listEmpRankDto, function(item) {
+                    let matchRank = _.find(data.listRankDto, ['rankCd', item.emplRankCode]);
+                    item.rankName = (matchRank != null) ? matchRank.rankSymbol : "";
+                });
+
+                _.forEach(self.listEmpData(), function(item) {
+                    let matchRank = _.find(data.listEmpRankDto, ['employeeID', item.id]);
+                    item.rankName = (matchRank != null) ? matchRank.rankName : "";
+                });
+                self.optionalColumnDatasource(_.map(self.listEmpData(), "rankName"));
+                self.listRankDto(data.listRankDto);
+                self.listEmpRankDto(data.listEmpRankDto);
+                self.employeeList(self.listEmpData());
+                if (self.listEmpData() != null) {
+                    self.listEmpData().forEach(function(item) {
+                        dataSource.push({ code: item.code, content: item.rankName });
+                    });
+                }
+                self.optionalColumnDatasource(self.listRankDto());
+
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.fail();
+                alert(error.message);
+            });
+            // dfd.resolve(); -- đéo có thì nó disable luôn vcc
             return dfd.promise();
         }
 
+
+        registryButtonClick() {
+            var self = this;
+            $(".nts-input").trigger("validate");
+            if (!$(".nts-input").ntsError("hasError")) {
+                var arrEmpSelect: any = [];
+              arrEmpSelect =  _.filter(self.employeeList(), (o) => {
+                    return self.selectedCode().indexOf(o.code) !== -1;
+                });
+                self.selectedCode(_.map(arrEmpSelect, "id"));
+                let param = {
+                    listEmpId: self.selectedCode(),
+                    rankCd: self.selectedRankCode()
+                };
+                block.invisible();
+
+                service.regis(param).done((data) => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    block.clear();
+
+                }).fail((res: any) => {
+                    nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                    block.clear();
+                }).always(() => {
+                    block.clear();
+                });
+            }
+        }
+
+        initComponnentKCP005() {
+            //KCP005
+            var self = this;
+            self.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_ALL,
+                selectedCode: self.selectedEmployeeCode,
+                isDialog: true,
+                isShowNoSelectRow: false,
+                alreadySettingList: self.alreadySettingPersonal,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                maxWidth: 550,
+                maxRows: 15,
+                isSelectAllAfterReload: true,
+                showOptionalColumn: true
+            };
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
+        }
+
         cancel_Dialog(): any {
-            let self = this;  
+            let self = this;
             nts.uk.ui.windows.close();
         }
 
 
     }
-    class ItemModel {
-        code: string;
-        name: string;
+    class RankDto {
+        rankCd: string;
+        rankSymbol: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        constructor(rankCd: string, rankSymbol: string) {
+            this.rankCd = rankCd;
+            this.rankSymbol = rankSymbol;
         }
+    }
+
+    class EmployeeRankDto {
+        employeeID: string;
+        emplRankCode: string;
+        rankName: string;
+
+        constructor(employeeID: string, rankSymbol: string, rankName: string) {
+            this.employeeID = employeeID;
+            this.emplRankCode = emplRankCode;
+            this.rankName = rankName;
+        }
+    }
+
+    class EmployeeData {
+        employeeID: string;
+        employeeName: string;
+        emplRankCode: string;
+        rankName: string;
+        employeeName
+
+        constructor(employeeID: string, employeeName: string, rankSymbol: string, rankName: string) {
+            this.employeeID = employeeID;
+            this.employeeName = employeeName;
+            this.emplRankCode = emplRankCode;
+            this.rankName = rankName;
+        }
+    }
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export interface UnitModel {
+        id?: string;
+        code: string;
+
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+        optionalColumn?: any;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
+    export interface OptionalColumnDataSource {
+        code: string;
+        content: any;
     }
 
 }

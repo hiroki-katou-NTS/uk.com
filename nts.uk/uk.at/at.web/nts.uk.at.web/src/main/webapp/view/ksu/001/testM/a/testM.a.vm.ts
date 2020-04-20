@@ -18,6 +18,7 @@ module nts.uk.at.view.testM.a {
             
             // KCP005 start
             listComponentOption: any;
+            selectedIdEmployee: KnockoutObservableArray<string>;
             selectedCodeEmployee: KnockoutObservableArray<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -36,7 +37,7 @@ module nts.uk.at.view.testM.a {
             
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
             enableCardNOUnregisteStamp: KnockoutObservable<boolean>;
-            
+            listEmpSetShare: any =ko.observableArray([]);
             constructor() {
                 let self = this;
                 self.declareCCG001();
@@ -45,6 +46,7 @@ module nts.uk.at.view.testM.a {
                 self.endDateString = ko.observable("");
                 self.datepickerValue = ko.observable({});
                 
+                self.selectedIdEmployee = ko.observableArray([]);
                 self.selectedCodeEmployee = ko.observableArray([]);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([]);
@@ -78,6 +80,12 @@ module nts.uk.at.view.testM.a {
                 self.enableCardNOUnregisteStamp = ko.observable(true);
                 
                 self.conditionBinding();
+                self.selectedCodeEmployee.subscribe(function(value) {
+                    let emps = _.filter(self.employeeList(), function(emp) {
+                        return _.indexOf(self.selectedCodeEmployee(), emp.code) != -1;
+                    });
+                    self.listEmpSetShare(emps);
+                })
             }
             
             /**
@@ -191,7 +199,7 @@ module nts.uk.at.view.testM.a {
                 
              var self = this;
             
-            nts.uk.ui.windows.setShared('KSU001M', self.selectedCodeEmployee());
+            nts.uk.ui.windows.setShared('KSU001M', self.listEmpSetShare());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                // var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
           //     if (returnWorkLocationCD !== undefined) {
