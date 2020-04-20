@@ -34,7 +34,6 @@ public class GetWorkplaceNotWorkgroupServiceTest {
 		
 		List<WorkplaceInformation> imports = GetWorkplaceNotWorkgroupService.getWorkplace(require, baseDate);
 		
-		assertThat(lstInfoImports.isEmpty()).isTrue();
 		assertThat(imports.isEmpty()).isTrue();
 	}
 	
