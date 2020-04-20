@@ -293,7 +293,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             let appReason: string;
-            // if (!self.validateInputTime()) { return; }
+            if (!self.validateInputTime()) { return; }
             
             let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
             let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
@@ -419,47 +419,47 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 nts.uk.ui.block.clear();
                 return false;
             }
-            //申請日付（開始日：終了日）大小チェック
-            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
-                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
-                $('#inpStartTime1').focus();
-                return false;
-            }
-
-            //１．就業時間１（開始時刻：終了時刻） 大小チェック
-            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
-                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
-                $('#inpStartTime1').focus();
-                return false;
-            }
-            //２．就業時間２（開始時刻：終了時刻）
-            //共通設定.複数回勤務　＝　利用する
-            if (self.isMultipleTime()) {
-                //has input time 2
-                if (!nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
-                    //開始時刻　＞　終了時刻
-                    if (workchange.workTimeStart2() > workchange.workTimeEnd2()) {
-                        dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
-                        $('#inpStartTime2').focus();
-                        return false;
-                    }
-                    //就業時間（終了時刻）　>　就業時刻２（開始時刻）
-                    if (workchange.workTimeEnd1() > workchange.workTimeStart2()) {
-                        dialog.alertError({ messageId: "Msg_581" }).then(function() { nts.uk.ui.block.clear(); });
-                        $('#workTimeEnd1').focus();
-                        return false;
-                    }
-                }
-            }
-            //３．休憩時間１（開始時刻：終了時刻）大小チェック
-            if (!nts.uk.util.isNullOrEmpty(workchange.breakTimeStart1())) {
-                //開始時刻　＞　終了時刻
-                if (workchange.breakTimeStart1() > workchange.breakTimeEnd1()) {
-                    dialog.alertError({ messageId: "Msg_582" }).then(function() { nts.uk.ui.block.clear(); });
-                    $('#breakTimeStart1').focus();
-                    return false;
-                }
-            }
+//            //申請日付（開始日：終了日）大小チェック
+//            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
+//                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+//                $('#inpStartTime1').focus();
+//                return false;
+//            }
+//
+//            //１．就業時間１（開始時刻：終了時刻） 大小チェック
+//            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
+//                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+//                $('#inpStartTime1').focus();
+//                return false;
+//            }
+//            //２．就業時間２（開始時刻：終了時刻）
+//            //共通設定.複数回勤務　＝　利用する
+//            if (self.isMultipleTime()) {
+//                //has input time 2
+//                if (!nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
+//                    //開始時刻　＞　終了時刻
+//                    if (workchange.workTimeStart2() > workchange.workTimeEnd2()) {
+//                        dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
+//                        $('#inpStartTime2').focus();
+//                        return false;
+//                    }
+//                    //就業時間（終了時刻）　>　就業時刻２（開始時刻）
+//                    if (workchange.workTimeEnd1() > workchange.workTimeStart2()) {
+//                        dialog.alertError({ messageId: "Msg_581" }).then(function() { nts.uk.ui.block.clear(); });
+//                        $('#workTimeEnd1').focus();
+//                        return false;
+//                    }
+//                }
+//            }
+//            //３．休憩時間１（開始時刻：終了時刻）大小チェック
+//            if (!nts.uk.util.isNullOrEmpty(workchange.breakTimeStart1())) {
+//                //開始時刻　＞　終了時刻
+//                if (workchange.breakTimeStart1() > workchange.breakTimeEnd1()) {
+//                    dialog.alertError({ messageId: "Msg_582" }).then(function() { nts.uk.ui.block.clear(); });
+//                    $('#breakTimeStart1').focus();
+//                    return false;
+//                }
+//            }
             return true;
         }
         /**
