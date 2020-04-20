@@ -69,8 +69,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
                 dfd.resolve(data); 
             }).fail((res)=>{
+                if(appType == 1 || appType == 2 || appType == 10) {
+                    return;   
+                }
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
                     nts.uk.ui.block.clear();
                 });  
             });
@@ -88,7 +90,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 employeeID: employeeID,
                 overtimeAtrParam: overtimeAtr
             }).done((data)=>{
-                if(appType != 1) {
+                if(appType != 1 && appType != 2 && appType != 10) {
                     self.initData(data);    
                 }
                 let deadlineMsg = data.outputMessageDeadline;
