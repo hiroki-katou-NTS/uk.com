@@ -7,20 +7,22 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 600 };</script>
+			<script>var dialogSize = { width: 1600, height: 1000 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.m.main.css" />
 			<com:scriptfile path="ksu001.m.start.js" />
-			<com:scriptfile path="ksu001.m.vm.js" />
 			<com:scriptfile path="ksu001.m.service.js" />
+			<com:scriptfile path="ksu001.m.vm.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- M1_1 -->
-				<button class="proceed">#{i18n.getText('KSU001_3302')}</button>
+				<button class="proceed" data-bind = "click : registryButtonClick">#{i18n.getText('KSU001_3302')}</button>
 				<!-- M1_2 cancel_Dialog -->
-				<button data-bind = "click : cancel_Dialog">#{i18n.getText('KSU001_3303')}</button>
+				<button data-bind="click : cancel_Dialog">#{i18n.getText('KSU001_3303')}</button>
 
 			</div>
 
@@ -32,15 +34,28 @@
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_3305')}</div>
 					<div id="combo-box"
 						data-bind="ntsComboBox: {
-						options: listRank,		
-						optionsValue: 'code',
-						value: selectedRank,
+						options: listRankDto,		
+						optionsValue: 'rankCd',
+						value: selectedRankCode,
 						columns: [
-							{ prop: 'code', length: 4 },
-							{ prop: 'name', length: 10 },
+							{ prop: 'rankSymbol', length: 10 },
 						]}"></div>
 				</div>
+				<div>
+					<!--MULTI SELECTION EXAMPLE-->
 
+					<table id="multi-list"
+						data-bind="ntsGridList: {
+						height: 450,
+						options: listEmpRankDto,
+						optionsValue: 'employeeID',
+						columns: columns,
+						multiple: true,
+						value: listSelectedEmpRank
+					}"></table>
+					
+					<div id="component-items-list"></div>
+				</div>
 			</div>
 
 		</ui:define>
