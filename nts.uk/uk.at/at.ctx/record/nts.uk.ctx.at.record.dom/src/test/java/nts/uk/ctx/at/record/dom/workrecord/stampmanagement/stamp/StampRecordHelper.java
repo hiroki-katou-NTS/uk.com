@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 public class StampRecordHelper {
 
 	public static StampRecord getStampRecord() {
-		return new StampRecord(
+		return new StampRecord(new ContractCode(AppContexts.user().contractCode()),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
 				false, 
@@ -27,13 +29,13 @@ public class StampRecordHelper {
 	public static List<StampRecord> getListStampRecord() {
 		List<StampRecord> data = new ArrayList<>();
 		data.add(getStampRecord());
-		data.add(new StampRecord(
+		data.add(new StampRecord(new ContractCode(AppContexts.user().contractCode()),
 				new StampNumber("stampNumber1"), 
 				GeneralDateTime.now(), 
 				false, 
 				ReservationArt.valueOf(2), 
 				Optional.of(new EmpInfoTerminalCode(1000))));
-		data.add(new StampRecord(
+		data.add(new StampRecord(new ContractCode(""),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now().addDays(1), 
 				false, 
@@ -42,7 +44,7 @@ public class StampRecordHelper {
 		return data;
 	}
 	public static StampRecord getStampSetStampArtAndRevervationAtr(boolean stampArt,ReservationArt revervationAtr) {
-		return new StampRecord(
+		return new StampRecord(new ContractCode(AppContexts.user().contractCode()),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
 				stampArt, 

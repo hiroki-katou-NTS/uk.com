@@ -9,8 +9,10 @@ import org.junit.Test;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -31,7 +33,9 @@ public class StampRecordTest {
 		boolean stampArt = false;
 		ReservationArt revervationAtr = ReservationArt.valueOf(0);
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1000)); 
-		StampRecord stampRecord  = new StampRecord(stampNumber, stampDateTime, stampArt, revervationAtr, empInfoTerCode);
+		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		StampRecord stampRecord = new StampRecord(contractCode, stampNumber, stampDateTime, stampArt, revervationAtr,
+				empInfoTerCode);
 		assertThat(stampRecord.getStampNumber()).isEqualTo(stampNumber);
 		assertThat(stampRecord.getStampDateTime()).isEqualTo(stampDateTime);
 		assertThat(stampRecord.isStampArt()).isEqualTo(stampArt);
