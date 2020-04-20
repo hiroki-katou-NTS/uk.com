@@ -286,13 +286,32 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 // self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
-                self.recWk().wkTimeName(applicationForWorkingDay.wkTimeName || null);
                 self.recWk().wkTimeCD(applicationForWorkingDay.selectionWorkTime || null);
+                self.recWk().wkTimeName(self.getWorkTimeName(self.recWk().wkTimeCD(), appDispInfoWithDateOutput.workTimeLst));
                 self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
                 self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => return {
                     workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName })  || null);
             }
         }
+        
+        getWorkTypeName(code, workTypeLst) {
+            let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
+                return text("マスタ未登録");
+            } else {
+                return currentWorkType.name;     
+            }      
+        }
+        
+        getWorkTimeName(code, workTimeLst) {
+            let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
+                return text("マスタ未登録");
+            } else {
+                return currentWorkTime.workTimeDisplayName.workTimeName;     
+            }      
+        }
+        
         validateControl() {
             let self = this,
                 isRecError = self.checkRecTime(),

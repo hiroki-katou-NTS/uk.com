@@ -304,27 +304,27 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			errorLst.add("Msg_150");
 		}
 		// INPUT．「勤務変更申請．勤務時間開始1」と「INPUT．「勤務変更申請．勤務時間終了1」の大小チェック
-		if(appWorkChange.getWorkTimeStart1() > appWorkChange.getWorkTimeEnd1())  {
+		if(appWorkChange.getWorkTimeStart1() != null && appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeStart1() > appWorkChange.getWorkTimeEnd1())  {
 			// エラーメッセージ(Msg_579)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_579");
 		}
-		/*// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
-		if(appWorkChange.getWorkTimeStart2() > appWorkChange.getWorkTimeEnd2())  {
+		// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
+		if(appWorkChange.getWorkTimeStart2() != null && appWorkChange.getWorkTimeEnd2() != null && appWorkChange.getWorkTimeStart2() > appWorkChange.getWorkTimeEnd2())  {
 			// エラーメッセージ(Msg_580)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_580");
 		}
 		// INPUT．「勤務変更申請．勤務時間終了1」と「INPUT．「勤務変更申請．勤務時間開始2」の大小チェック
-		if(appWorkChange.getWorkTimeEnd1() > appWorkChange.getWorkTimeStart2())  {
+		if(appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeStart2() != null && appWorkChange.getWorkTimeEnd1() > appWorkChange.getWorkTimeStart2())  {
 			// エラーメッセージ(Msg_581)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_581");
-		}*/
+		}
 		// INPUT．「勤務変更申請．勤務時間開始1」の入力範囲チェック
-		if(appWorkChange.getWorkTimeStart1() < 5 * 60) {
+		if(appWorkChange.getWorkTimeStart1() != null && appWorkChange.getWorkTimeStart1() < 5 * 60) {
 			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_307");
 		}
 		// INPUT．「勤務変更申請．勤務時間終了1」の入力範囲チェック
-		if(appWorkChange.getWorkTimeEnd1() > 29 * 60) {
+		if(appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeEnd1() > 29 * 60) {
 			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_307");
 		}

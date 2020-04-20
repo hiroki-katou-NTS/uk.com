@@ -75,7 +75,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             // 申請日を変更する          
             //Start Date
             self.datePeriod.subscribe(value => {
-                if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
+//                if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
+//                    return;
+//                }
+                $('#daterangepicker').find(".nts-input").trigger('validate');
+                if (nts.uk.ui.errors.hasError() || !value) {
                     return;
                 }
                 let startDate, endDate;
