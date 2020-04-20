@@ -60,7 +60,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	 * @return
 	 */
 	public List<String> getAffWorkplace(Require require){
-		return require.getWKPID(this.CID, this.WKPGRPID);
+		return require.getWKPID(this.WKPGRPID);
 	}
 	
 	/**
@@ -70,6 +70,6 @@ public class WorkplaceGroup implements DomainAggregate {
 	public static interface Require {
 		// 職場グループに属する職場を取得する																					
 		// 職場グループ所属情報Repository.職場グループに所属する職場を取得する(会社ID, 職場グループID)
-		List<String> getWKPID(String CID, String WKPGRPID);
+		List<String> getWKPID(String WKPGRPID);
 	}
 }
