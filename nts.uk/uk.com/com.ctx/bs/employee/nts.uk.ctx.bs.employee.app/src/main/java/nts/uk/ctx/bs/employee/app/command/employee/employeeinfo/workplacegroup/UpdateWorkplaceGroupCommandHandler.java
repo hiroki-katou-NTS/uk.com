@@ -1,7 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.employeeinfo.workplacegroup;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,28 +9,29 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.error.BusinessException;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
-import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService;
+import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplacesService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 職場グループを登録する
+ * 職場グループを更新する
  * @author phongtq
  *
  */
 @Stateless
-public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResult<RegisterWorkplaceGroupCommand, RegisterWorkplaceGroupResult>{
+public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult<RegisterWorkplaceGroupCommand, RegisterWorkplaceGroupResult>{
 
 	@Inject
 	private WorkplaceGroupRespository repo;
@@ -44,41 +45,34 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected RegisterWorkplaceGroupResult handle(CommandHandlerContext<RegisterWorkplaceGroupCommand> context) {
 		String CID = AppContexts.user().companyId();
-		String WKPGRPID = IdentifierUtil.randomUniqueId();
 		RegisterWorkplaceGroupCommand cmd = context.getCommand();
 		
 		// 1: get(会社ID, 職場グループコード)
 		// return Optional<職場グループ>
 		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWKPGRPCode());
 		
-		// 2: 職場グループ.isPresent()
-		if (wpgrp.isPresent())
-			throw new BusinessException("Msg_3");
+		// 2: set(職場グループ名称, 職場グループ種別)
+		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWKPGRPName()));
+		wpgrp.get().setWKPGRPType(EnumAdaptor.valueOf(cmd.getWKPGRPType(), WorkplaceGroupType.class));
 		
-		// 3: 職場グループを作成する([mapping]): 職場グループ
-		WorkplaceGroup group = cmd.toDomain(CID, WKPGRPID);
+		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
 		
-		AddWplOfWorkGrpService.Require addRequire = new AddWplOfWorkGrpRequireImpl(affRepo);
-		List<WorkplaceReplaceResult> wplResult = new ArrayList<>();
+		// 3: 入れ替える(Require, 職場グループ, List<職場ID>): List<職場グループの職場入替処理結果>
+		Map<String, WorkplaceReplaceResult> wplResult = ReplaceWorkplacesService.getWorkplace(updateRequire, wpgrp.get(), cmd.getLstWKPID());
 		
-		// 4: 追加する(Require, 職場グループ, 職場ID):職場グループの職場入替処理結果
-		// loop： 職場ID in 職場IDリスト
-		cmd.getLstWKPID().forEach(x->{
-			wplResult.add(AddWplOfWorkGrpService.addWorkplace(addRequire, group, x));
-		});
-		
-		// 5: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
+		// 4: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
 		// map $.永続化処理
-		List<WorkplaceReplaceResult> resultProcess = wplResult.stream().filter(x->x.getPersistenceProcess().isPresent()).collect(Collectors.toList());
+		List<WorkplaceReplaceResult> resultProcess = wplResult.entrySet().stream()
+				.filter(x->x.getValue().getPersistenceProcess().isPresent())
+				.map(x -> (WorkplaceReplaceResult)x.getValue()).collect(Collectors.toList());
 		
 		GeneralDate baseDate = GeneralDate.today();
-		// 6: [No.560]職場IDから職場の情報をすべて取得する
+		// 5: [No.560]職場IDから職場の情報をすべて取得する
 		List<WorkplaceInforParam> listWorkplaceInfo = service.getWorkplaceInforFromWkpIds(CID, cmd.getLstWKPID(), baseDate);
 		
-		// persits
-		repo.insert(group);
+		this.repo.insert(wpgrp.get());
 		
-		// 7: 職場グループ所属情報の永続化処理
+		// 6: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x->{
 			AtomTask atomTask = x.getPersistenceProcess().get();
 			transaction.execute(() -> {
@@ -92,23 +86,32 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 	}
 	
 	@AllArgsConstructor
-	private static class AddWplOfWorkGrpRequireImpl implements AddWplOfWorkGrpService.Require {
+	private static class UpdateWplOfWorkGrpRequireImpl implements ReplaceWorkplacesService.Require {
 		
 		@Inject
 		private AffWorkplaceGroupRespository affRepo;
 		
-		// get ( 会社ID, 職場ID )
 		@Override
 		public Optional<AffWorkplaceGroup> getByWKPID(String WKPID) {
 			String CID = AppContexts.user().companyId();
 			return affRepo.getByWKPID(CID, WKPID);
 		}
 
-		// insert ( 職場グループ所属情報 )
 		@Override
 		public void insert(AffWorkplaceGroup affWorkplaceGroup) {
 			affRepo.insert(affWorkplaceGroup);
 		}
-		
+
+		@Override
+		public List<AffWorkplaceGroup> getByListWKPID(List<String> WKPID) {
+			String CID = AppContexts.user().companyId();
+			return affRepo.getByListWKPID(CID, WKPID);
+		}
+
+		@Override
+		public void deleteByWKPID(String WKPID) {
+			String CID = AppContexts.user().companyId();
+			affRepo.deleteByWKPID(CID, WKPID);
+		}
 	}
 }

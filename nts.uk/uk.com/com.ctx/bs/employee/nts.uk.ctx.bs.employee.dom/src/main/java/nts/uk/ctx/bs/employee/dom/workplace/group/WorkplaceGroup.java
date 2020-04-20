@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.group;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 
 @Getter
+@Setter
 public class WorkplaceGroup implements DomainAggregate {
 										
 	/** 会社ID */
