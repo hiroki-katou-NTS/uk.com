@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
 
 /**
  * AR: スマホ打刻の打刻設定
@@ -47,7 +45,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	
 	
 	// [1] ボタン詳細設定を取得する																							
-	public Optional<ButtonSettings> getDetailButtonSettings(StamButton stamButton) {
+	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
 		
 		// $打刻ページレイアウト = @ページレイアウト設定 :	filter $.ページNO = 打刻ボタン.ページNO
 		Optional<StampPageLayout> stampPageLayout = this.pageLayoutSettings.stream().filter(it -> it.getPageNo().equals(stamButton.getPageNo())).findFirst();
@@ -68,7 +66,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	}
 	
 	// [3] ページを更新する
-	public void refreshPage(StampPageLayout pageLayoutSetting) {
+	public void updatePage(StampPageLayout pageLayoutSetting) {
 		
 		// $打刻ページリスト = @ページレイアウト設定 :filter not $.ページNO == ページNO							
 		List<StampPageLayout> pageList = this.pageLayoutSettings.stream().filter(it -> !it.getPageNo().equals(pageLayoutSetting.getPageNo())).collect(Collectors.toList());

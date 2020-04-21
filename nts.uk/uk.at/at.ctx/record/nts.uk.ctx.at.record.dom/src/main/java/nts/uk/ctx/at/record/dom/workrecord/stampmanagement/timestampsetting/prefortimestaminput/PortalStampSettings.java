@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
 
 /**
  * AR: ポータルの打刻設定
@@ -32,7 +31,7 @@ public class PortalStampSettings  implements DomainAggregate{
 	
 	// 打刻ボタンを抑制する
 	@Getter
-	private Boolean suppressStampBtn; 
+	private Boolean suppressStampBtn;
 	
 	// トップメニューリンク利用する
 	@Getter

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.stamp.management;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;

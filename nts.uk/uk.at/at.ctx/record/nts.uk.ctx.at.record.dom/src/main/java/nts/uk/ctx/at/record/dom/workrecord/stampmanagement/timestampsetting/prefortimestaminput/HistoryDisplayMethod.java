@@ -1,26 +1,27 @@
-package nts.uk.ctx.at.record.dom.stamp.management;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
 /**
- * 所定時刻セット区分
+ * 履歴表示方法
  * @author phongtq
  *
  */
-public enum SetPreClockArt {
+
+public enum HistoryDisplayMethod {
 	
-	/** なし */
-	NONE(0),
+	/** 表示しない */
+	HIDE(0),
 
-	/** 直行 */
-	DIRECT(1),
+	/** 打刻一覧を表示 */
+	DISPLAY(1),
 
-	/** 直帰 */
-	BOUNCE(2);
+	/** タイムカードを表示 */
+	SHOW_TIME_CARD(2);
 
 	/** The value. */
 	public int value;
 
 	/** The Constant values. */
-	private final static SetPreClockArt[] values = SetPreClockArt.values();
+	private final static HistoryDisplayMethod[] values = HistoryDisplayMethod.values();
 
 	/**
 	 * Instantiates a new closure id.
@@ -30,7 +31,7 @@ public enum SetPreClockArt {
 	 * @param description
 	 *            the description
 	 */
-	private SetPreClockArt(int value) {
+	private HistoryDisplayMethod(int value) {
 		this.value = value;
 	}
 
@@ -41,14 +42,14 @@ public enum SetPreClockArt {
 	 *            the value
 	 * @return the use division
 	 */
-	public static SetPreClockArt valueOf(Integer value) {
+	public static HistoryDisplayMethod valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (SetPreClockArt val : SetPreClockArt.values) {
+		for (HistoryDisplayMethod val : HistoryDisplayMethod.values) {
 			if (val.value == value) {
 				return val;
 			}
