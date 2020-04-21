@@ -19,6 +19,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
@@ -48,11 +49,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampDakokuRepository extends JpaRepository implements StampDakokuRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStamp s "
-			+ " where s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where s.pk.contractCode = :contractCode" + " and s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
-			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where k.cardNo is NULL " +" and s.pk.contractCode = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_STAMP_BY_LIST_CARD = "select s from KrcdtStamp s "
@@ -102,27 +103,29 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	// [4] 取得する
 	@Override
-	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
+	public List<Stamp> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
 
 		GeneralDateTime end = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				23, 59, 59);
-		return this.queryProxy().query(GET_STAMP_RECORD, KrcdtStamp.class).setParameter("cardNumbers", lstCard)
-				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
+		return this.queryProxy().query(GET_STAMP_RECORD, KrcdtStamp.class).setParameter("contractCode", contractCode)
+				.setParameter("cardNumbers", lstCard).setParameter("startStampDate", start)
+				.setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
 
 	// [5] 打刻カード未登録の打刻データを取得する
 	@Override
-	public List<Stamp> getStempRcNotResgistNumber(DatePeriod period) {
+	public List<Stamp> getStempRcNotResgistNumber(String contractCode, DatePeriod period) {
 		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
 				period.start().day(), 0, 0, 0);
 
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 
-		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class).setParameter("startStampDate", start)
+		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class)
+				.setParameter("contractCode", contractCode).setParameter("startStampDate", start)
 				.setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
 
@@ -172,7 +175,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 								new AttendanceTime(entity.lateNightOverTime)));
 		val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
-		return new Stamp(stampNumber, entity.pk.stampDateTime,
+		return new Stamp(new ContractCode(""),stampNumber, entity.pk.stampDateTime,
 				relieve, stampType, refectActualResult,
 				entity.reflectedAtr, locationInfor
 		);
@@ -181,7 +184,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 private Stamp toDomainVer2(Object[] object) {
 	String workLocationName = (String) object[0];
 	KrcdtStamp entity = (KrcdtStamp) object[1];
-	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+	Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
@@ -204,7 +207,7 @@ private Stamp toDomainVer3(Object[] object) {
 	String personId = (String) object[0];
 	String workLocationName = (String) object[1];
 	KrcdtStamp entity = (KrcdtStamp) object[2];
-	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+	Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),

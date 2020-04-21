@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 
 /**
  * 
@@ -64,7 +65,7 @@ public class EnterStampFromPortalService {
 
 		// [R-1] ポータルの打刻設定を取得する
 		// gọi đến aggr của anh lai chưa viêt
-		Optional<StampCard> getByCardNoAndContractCode(String cardNo, String contractCd);
+		Optional<PortalStampSettings> getByCardNoAndContractCode(String cardNo, String contractCd);
 	}
 
 }

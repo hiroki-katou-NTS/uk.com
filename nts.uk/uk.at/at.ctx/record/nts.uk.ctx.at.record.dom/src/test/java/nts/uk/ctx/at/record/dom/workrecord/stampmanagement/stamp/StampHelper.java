@@ -138,7 +138,7 @@ public class StampHelper {
 	}
 
 	public static StampCard getStampCardByInput(String stampCardId, String stampNumber, GeneralDate registerDate) {
-		return new StampCard(stampCardId, "employeeId",new StampNumber(stampNumber), registerDate, new ContractCode("contractCd"));
+		return new StampCard(stampCardId, new ContractCode("contractCd"),new StampNumber(stampNumber), "employeeId", registerDate);
 		
 	}
 	

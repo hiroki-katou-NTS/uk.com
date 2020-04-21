@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 
+ * 打刻カードRepository
+ */
 public interface StampCardRepository {
 
 
@@ -25,6 +29,13 @@ public interface StampCardRepository {
 	
 	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length);
 
+	/**
+	 * 追加する(打刻カード)
+	 * 
+	 * [1] insert(打刻カード)
+	 * 
+	 * @param domain
+	 */
 	void add(StampCard domain);
 	/**
 	 * @author lanlt
