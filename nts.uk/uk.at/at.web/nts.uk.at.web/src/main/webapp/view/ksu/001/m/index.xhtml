@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1600, height: 1000 };</script>
+			<script>var dialogSize = { width: 560, height: 710 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.m.main.css" />
 			<com:scriptfile path="ksu001.m.start.js" />
@@ -42,18 +42,7 @@
 						]}"></div>
 				</div>
 				<div>
-					<!--MULTI SELECTION EXAMPLE-->
-
-					<table id="multi-list"
-						data-bind="ntsGridList: {
-						height: 450,
-						options: listEmpRankDto,
-						optionsValue: 'employeeID',
-						columns: columns,
-						multiple: true,
-						value: listSelectedEmpRank
-					}"></table>
-					
+					<!--MULTI SELECTION EXAMPLE-->					
 					<div id="component-items-list"></div>
 				</div>
 			</div>

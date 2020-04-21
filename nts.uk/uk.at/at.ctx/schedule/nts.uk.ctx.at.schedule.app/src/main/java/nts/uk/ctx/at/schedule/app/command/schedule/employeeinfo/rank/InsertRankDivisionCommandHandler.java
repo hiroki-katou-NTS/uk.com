@@ -21,11 +21,9 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
  */
 @Stateless
 public class InsertRankDivisionCommandHandler extends CommandHandler<RankDivisionCommand> {
-	
+
 	@Inject
 	private EmployeeRankRepository rankRepository;
-	
-	
 
 	@Override
 	protected void handle(CommandHandlerContext<RankDivisionCommand> context) {
@@ -35,18 +33,18 @@ public class InsertRankDivisionCommandHandler extends CommandHandler<RankDivisio
 		RequireImpl require = new RequireImpl(rankRepository);
 		// 1 登録する(社員ID, ランクコード) AtomTask
 		// 社員ランクを登録する
-		for(String empId : listEmpId){
-		 AtomTask persist  = EmployeeRankService.insert(require, empId, new RankCode(empRankCd) );
-		 transaction.execute(() -> {
+		for (String empId : listEmpId) {
+			AtomTask persist = EmployeeRankService.insert(require, empId, new RankCode(empRankCd));
+			transaction.execute(() -> {
 				persist.run();
 			});
 		}
-		
+
 	}
 
 	@AllArgsConstructor
 
-	private  class RequireImpl implements EmployeeRankService.Require {
+	private class RequireImpl implements EmployeeRankService.Require {
 
 		private final EmployeeRankRepository empRankRepository;
 

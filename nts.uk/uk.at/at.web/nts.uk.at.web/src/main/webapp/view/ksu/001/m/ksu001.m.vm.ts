@@ -21,10 +21,9 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         //KCP005
         istComponentOption: any;
         selectedCode: KnockoutObservable<string>;
-        multiSelectedCode: KnockoutObservableArray<string>;
+
         isShowAlreadySet: KnockoutObservable<boolean>;
-        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        isDialog: KnockoutObservable<boolean> = ko.observable(false);
+        isDialog: KnockoutObservable<boolean> = ko.observable(true);
         isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable(false);
         isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
         isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,30 +39,20 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         constructor() {
             let self = this;
 
-
             self.selectedRankCode = ko.observable(['1']);
-            //Grid list
-            this.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("EMPID"), prop: 'employeeID', width: 60 },
-                { headerText: nts.uk.resource.getText("RANKCD"), prop: 'emplRankCode', width: 290 },
-                { headerText: nts.uk.resource.getText("RANKNAME"), prop: 'rankName', width: 290 }
-            ]);
+            
             ///KCP005
-
             self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
-            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+
             self.isShowAlreadySet = ko.observable(false);
-            self.alreadySettingList = ko.observableArray([
-                { code: '1', isAlreadySetting: true },
-                { code: '2', isAlreadySetting: true }
-            ]);
             self.disableSelection = ko.observable(false);
             self.showOptionalColumn = ko.observable(true);
 
             this.employeeList = ko.observableArray<UnitModel>([
 
             ]);
+            
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultiSelect(),
@@ -73,26 +62,27 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
-                alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
                 disableSelection: self.disableSelection(),
                 showOptionalColumn: self.showOptionalColumn(),
                 optionalColumnName: nts.uk.resource.getText('KSU001_3307'),
                 optionalColumnDatasource: self.optionalColumnDatasource,
+                maxRows: 15
             };
-
-
         }
 
+        
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             self.selectedCode(_.map(nts.uk.ui.windows.getShared('KSU001M'), "id"));
             self.listEmpData(nts.uk.ui.windows.getShared('KSU001M'));
+            if (nts.uk.util.isNullOrEmpty(self.listEmpData())) {
+                $("#component-items-list").hide();
+            }
             var arrSid: any = [];
             var dataEmp = [];
-            var dataSource: any = [];
             _.each(nts.uk.ui.windows.getShared('KSU001M'), (x) => {
                 arrSid.push({ code: x.code, name: x.name, id: x.id });
             });
@@ -101,6 +91,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
             service.startPage(self.selectedCode()).done(function(data) {
                 console.log(data);
+
                 _.forEach(data.listEmpRankDto, function(item) {
                     let matchRank = _.find(data.listRankDto, ['rankCd', item.emplRankCode]);
                     item.rankName = (matchRank != null) ? matchRank.rankSymbol : "";
@@ -110,18 +101,24 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                     let matchRank = _.find(data.listEmpRankDto, ['employeeID', item.id]);
                     item.rankName = (matchRank != null) ? matchRank.rankName : "";
                 });
-                self.optionalColumnDatasource(_.map(self.listEmpData(), "rankName"));
                 self.listRankDto(data.listRankDto);
                 self.listEmpRankDto(data.listEmpRankDto);
                 self.employeeList(self.listEmpData());
+                
+                var tempOptionalDataSource: any = [];
                 if (self.listEmpData() != null) {
                     self.listEmpData().forEach(function(item) {
-                        dataSource.push({ code: item.code, content: item.rankName });
+                        tempOptionalDataSource.push({ empId: item.code, content: item.rankName });
                     });
                 }
-                self.optionalColumnDatasource(self.listRankDto());
-
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                self.optionalColumnDatasource(tempOptionalDataSource);
+                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function(){
+                    _.defer(function() {
+                        let componentGridId = "#" + $("#component-items-list").find("[id$='tooltips_ruler']").attr('id').split("_")[0];
+                        $(componentGridId).igGrid("option", "width", 500);
+                        $("#component-items-list .bg-green").width(500);
+                    });
+                });
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -137,7 +134,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var arrEmpSelect: any = [];
-              arrEmpSelect =  _.filter(self.employeeList(), (o) => {
+                arrEmpSelect = _.filter(self.employeeList(), (o) => {
                     return self.selectedCode().indexOf(o.code) !== -1;
                 });
                 self.selectedCode(_.map(arrEmpSelect, "id"));
@@ -150,6 +147,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 service.regis(param).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     block.clear();
+                    self.startPage().done(() => {});
 
                 }).fail((res: any) => {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId });
@@ -158,29 +156,6 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                     block.clear();
                 });
             }
-        }
-
-        initComponnentKCP005() {
-            //KCP005
-            var self = this;
-            self.listComponentOption = {
-                isShowAlreadySet: false,
-                isMultiSelect: true,
-                listType: ListType.EMPLOYEE,
-                employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_ALL,
-                selectedCode: self.selectedEmployeeCode,
-                isDialog: true,
-                isShowNoSelectRow: false,
-                alreadySettingList: self.alreadySettingPersonal,
-                isShowWorkPlaceName: false,
-                isShowSelectAllButton: false,
-                maxWidth: 550,
-                maxRows: 15,
-                isSelectAllAfterReload: true,
-                showOptionalColumn: true
-            };
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
         cancel_Dialog(): any {
@@ -256,7 +231,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         isAlreadySetting: boolean;
     }
     export interface OptionalColumnDataSource {
-        code: string;
+        id: string;
         content: any;
     }
 

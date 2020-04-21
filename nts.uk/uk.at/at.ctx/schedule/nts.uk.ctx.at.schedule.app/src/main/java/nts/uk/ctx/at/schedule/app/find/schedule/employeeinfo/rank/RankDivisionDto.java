@@ -11,8 +11,10 @@ import nts.uk.ctx.at.schedule.app.query.RankDto;
 @AllArgsConstructor
 @Data
 public class RankDivisionDto {
+	/** List<ランク> **/ 
 	public List<RankDto> listRankDto;
 	
+	/** List<社員ランク> **/
 	public List<EmployeeRankDto> listEmpRankDto;
 
 }
