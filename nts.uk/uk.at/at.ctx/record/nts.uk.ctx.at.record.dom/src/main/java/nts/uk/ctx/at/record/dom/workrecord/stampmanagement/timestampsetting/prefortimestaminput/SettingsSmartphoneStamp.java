@@ -66,7 +66,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	}
 	
 	// [3] ページを更新する
-	public void refreshPage(StampPageLayout pageLayoutSetting) {
+	public void updatePage(StampPageLayout pageLayoutSetting) {
 		
 		// $打刻ページリスト = @ページレイアウト設定 :filter not $.ページNO == ページNO							
 		List<StampPageLayout> pageList = this.pageLayoutSettings.stream().filter(it -> !it.getPageNo().equals(pageLayoutSetting.getPageNo())).collect(Collectors.toList());

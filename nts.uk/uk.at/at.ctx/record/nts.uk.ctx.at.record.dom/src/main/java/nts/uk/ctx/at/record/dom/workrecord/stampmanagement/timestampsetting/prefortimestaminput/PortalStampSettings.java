@@ -31,7 +31,7 @@ public class PortalStampSettings  implements DomainAggregate{
 	
 	// 打刻ボタンを抑制する
 	@Getter
-	private Boolean suppressStampBtn; 
+	private Boolean suppressStampBtn;
 	
 	// トップメニューリンク利用する
 	@Getter
