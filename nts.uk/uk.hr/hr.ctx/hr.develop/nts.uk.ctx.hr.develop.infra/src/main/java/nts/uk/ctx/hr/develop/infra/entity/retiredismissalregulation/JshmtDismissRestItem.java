@@ -3,7 +3,6 @@ package nts.uk.ctx.hr.develop.infra.entity.retiredismissalregulation;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

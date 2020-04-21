@@ -8,6 +8,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -55,11 +56,11 @@ public class JshmtRetireDismissReg extends UkJpaEntity implements Serializable {
 	public Integer restAlermFlg;
     
 	@JoinTable(name = "JSHMT_DISMISS_REST_TERM")
-	@OneToMany(mappedBy = "retireDismissReg", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "retireDismissReg", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public List<JshmtDismissRestTerm> listDismissRestTerm;
 	
 	@JoinTable(name = "JSHMT_DISMISS_NOTICE_TERM")
-	@OneToMany(mappedBy = "retireDismissReg", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "retireDismissReg", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public List<JshmtDismissNoticeTerm> listDismissNoticeTerm;
 	
 	@Override
@@ -78,7 +79,8 @@ public class JshmtRetireDismissReg extends UkJpaEntity implements Serializable {
 				this.noticeAlermFlg == 0 || this.noticeAlermFlg == null ? false : true, 
 				this.restAlermFlg   == 0 || this.restAlermFlg   == null ? false : true, 
 				this.listDismissNoticeTerm.stream().map(c -> c.toDomain()).collect(Collectors.toList()), 
-				this.listDismissRestTerm.stream().map(c -> c.toDomain()).collect(Collectors.toList()));}
+				this.listDismissRestTerm.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+		}
 	
 	
 	public JshmtRetireDismissReg(RetireDismissalRegulation domain) {

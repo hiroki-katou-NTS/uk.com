@@ -107,7 +107,7 @@ module nts.uk.at.view.kdp002.a {
                     changeCalArt: button.changeCalArt
                 };
                 service.stampInput(data).done((res) => {
-                    if(vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+                    if(vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9 ) ) {
                         vm.openScreenC(button, layout);
                     } else {
                         vm.openScreenB(button, layout);

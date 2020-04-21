@@ -394,14 +394,13 @@ module jhn001.a.viewmodel {
 
             self.layout().listItemCls.removeAll();
             $('.layout-control .drag-panel').attr(`style`, `height: 0 !important;` + `padding: 0 !important;`);
-            self.layout().sendBackComment(text('JHN001_A222_2_1')  + ' : ' );
-            self.layout().message(text('JHN001_A222_1_1')  + ' : ' );
+            self.layout().sendBackComment(text('JHN001_A222_2_1') + ' : ');
+            self.layout().message(text('JHN001_A222_1_1') + ' : ');
             self.layout().reportNameLabel('');
-            self.layout().listDocument([]);
-            self.layout().approvalRootState([]);
             self.showBtnBack(false);
             self.showBtnRemove(false);
-
+            self.layout().listDocument([]);
+            self.layout().approvalRootState([]);
         }
         
         setHightContent() {
@@ -572,7 +571,10 @@ module jhn001.a.viewmodel {
             let param = {
                 reportId: number = objReport.reportId,
                 layoutReportId: number = reportLayoutId,
-                command: command
+                fromJhn002 : boolean = false,
+                command: command,
+                agentName : '', 
+                agentSid  : '',
             };
 
             setShared("JHN001F_PARAMS", param);

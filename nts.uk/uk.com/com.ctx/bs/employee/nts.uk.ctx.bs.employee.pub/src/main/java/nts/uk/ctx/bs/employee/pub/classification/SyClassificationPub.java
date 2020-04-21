@@ -48,4 +48,13 @@ public interface SyClassificationPub {
 
 	// for salary qmm016, 017
 	List<ClassificationExport> getClassificationByCompanyId(String companyId);
+	
+	/**
+	 * Get data cho ben HR
+	 * @param baseDate
+	 * @param listempID
+	 * @return
+	 */
+	List<AffCompanyHistItemExport> getByIDAndBasedate(GeneralDate baseDate , List<String> listempID);
+	
 }
