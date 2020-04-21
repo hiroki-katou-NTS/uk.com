@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.management;
+package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
 
@@ -37,12 +37,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name="KRCCT_STAMP_LAYOUT_DETAIL")
-public class KrcctStampLayoutDetail extends ContractUkJpaEntity implements Serializable{
+@Table(name="KRCMT_STAMP_LAYOUT_DETAIL")
+public class KrcmtStampLayoutDetail extends ContractUkJpaEntity implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public KrcctStampLayoutDetailPk pk;
+    public KrcmtStampLayoutDetailPk pk;
 	
 	/**
 	 * 使用区分 0:使用しない 1:使用する
@@ -110,7 +110,7 @@ private static final long serialVersionUID = 1L;
 		return this.pk;
 	}
 	
-	public KrcctStampLayoutDetail(KrcctStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
+	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
 			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
@@ -134,7 +134,7 @@ private static final long serialVersionUID = 1L;
     	@PrimaryKeyJoinColumn(name = "OPERATION_METHOD", referencedColumnName = "OPERATION_METHOD"),
     	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
     })
-	public KrcctStampPageLayout krcctStampPageLayout;
+	public KrcmtStampPageLayout krcctStampPageLayout;
 	
 	public ButtonSettings toDomain(){
 		return new ButtonSettings(
@@ -156,9 +156,9 @@ private static final long serialVersionUID = 1L;
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
 	}
 	
-	public static KrcctStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
-		return new KrcctStampLayoutDetail(
-				new KrcctStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
+	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
+		return new KrcmtStampLayoutDetail(
+				new KrcmtStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
 				settings.getUsrArt().value,
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,

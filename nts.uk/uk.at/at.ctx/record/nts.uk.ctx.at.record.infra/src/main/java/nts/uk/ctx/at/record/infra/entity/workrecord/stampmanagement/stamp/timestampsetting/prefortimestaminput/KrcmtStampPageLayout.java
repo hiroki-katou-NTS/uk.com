@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.management;
+package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,11 +31,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name="KRCCT_STAMP_PAGE_LAYOUT")
-public class KrcctStampPageLayout extends ContractUkJpaEntity{
+@Table(name="KRCMT_STAMP_PAGE_LAYOUT")
+public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	
 	@EmbeddedId
-    public KrcctStampPageLayoutPk pk;
+    public KrcmtStampPageLayoutPk pk;
 	
 	/** ページ名 */
 	@Column(name ="PAGE_NAME")
@@ -58,8 +58,8 @@ public class KrcctStampPageLayout extends ContractUkJpaEntity{
 		return this.pk;
 	}
 	
-	public KrcctStampPageLayout(KrcctStampPageLayoutPk pk, String pageName, int buttonLayoutType, String pageComment,
-			String commentColor, List<KrcctStampLayoutDetail> lstButtonSet) {
+	public KrcmtStampPageLayout(KrcmtStampPageLayoutPk pk, String pageName, int buttonLayoutType, String pageComment,
+			String commentColor, List<KrcmtStampLayoutDetail> lstButtonSet) {
 		super();
 		this.pk = pk;
 		this.pageName = pageName;
@@ -69,9 +69,9 @@ public class KrcctStampPageLayout extends ContractUkJpaEntity{
 		this.lstButtonSet = lstButtonSet;
 	}
 	
-	@OneToMany(targetEntity = KrcctStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JoinTable(name = "KRCCT_STAMP_LAYOUT_DETAIL")
-	public List<KrcctStampLayoutDetail> lstButtonSet;
+	public List<KrcmtStampLayoutDetail> lstButtonSet;
 	
 	public StampPageLayout toDomain(){
 		return new StampPageLayout(
@@ -82,14 +82,14 @@ public class KrcctStampPageLayout extends ContractUkJpaEntity{
 				lstButtonSet.stream().map(mapper->mapper.toDomain()).collect(Collectors.toList()));
 	}
 	
-	public static KrcctStampPageLayout toEntity(StampPageLayout pageLayout, String companyId){
-		return new KrcctStampPageLayout(
-				new KrcctStampPageLayoutPk(companyId, 1, pageLayout.getPageNo().v()), 
+	public static KrcmtStampPageLayout toEntity(StampPageLayout pageLayout, String companyId){
+		return new KrcmtStampPageLayout(
+				new KrcmtStampPageLayoutPk(companyId, 1, pageLayout.getPageNo().v()), 
 				pageLayout.getStampPageName().v(), 
 				pageLayout.getButtonLayoutType().value, 
 				pageLayout.getStampPageComment().getPageComment().v(), 
 				pageLayout.getStampPageComment().getCommentColor().v(), 
-				pageLayout.getLstButtonSet().stream().map(mapper->KrcctStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v())).collect(Collectors.toList()));
+				pageLayout.getLstButtonSet().stream().map(mapper->KrcmtStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v())).collect(Collectors.toList()));
 	}
 
 }
