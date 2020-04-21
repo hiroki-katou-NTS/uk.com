@@ -675,7 +675,12 @@ module nts.uk.at.view.kaf006.b{
                 self.processConfirmMsg(paramInsert, data, 0);
              }).fail((res) =>{
                  dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });
+                .then(function() { 
+                    nts.uk.ui.block.clear(); 
+                    if (res.messageId === "Msg_197") {
+                        location.reload();
+                    }
+                });
              });
          }
             
