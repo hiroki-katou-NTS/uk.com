@@ -399,10 +399,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             service.checkBeforeRegister(saveCmd).done((data) => {
                 self.processConfirmMsg(saveCmd, data, 0);
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-            }).always(() => {
-                block.clear();
-                $("#recDatePicker").focus();
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });
             });
         }
         saveDone(data, checkBoxValue) {
@@ -491,8 +489,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 service.save(paramInsert).done((data) => {
                     self.saveDone(data, self.checkBoxValue());
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }).always(() => {
+                    block.clear();
+                    $("#recDatePicker").focus();
                 });
                 return;
             }
