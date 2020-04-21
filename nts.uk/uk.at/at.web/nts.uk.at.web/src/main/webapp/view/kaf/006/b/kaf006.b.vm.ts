@@ -274,7 +274,13 @@ module nts.uk.at.view.kaf006.b{
         }
         changeForSpecHd(data: any){
             let self = this;
-            let specAbsenceDispInfo = data.appAbsenceStartInfoDto.specAbsenceDispInfo;
+            let specAbsenceDispInfo = null;
+            if (data.appAbsenceStartInfoDto === undefined){
+               specAbsenceDispInfo  = data.specAbsenceDispInfo;
+            }else {
+                specAbsenceDispInfo = data.appAbsenceStartInfoDto.specAbsenceDispInfo
+            }
+             
             if(nts.uk.util.isNullOrUndefined(specAbsenceDispInfo)) {
                 self.fix(false);
                 self.maxDayDis(false);
@@ -312,29 +318,40 @@ module nts.uk.at.view.kaf006.b{
             }
             nts.uk.ui.errors.clearAll();
             if(self.holidayTypeCode() == 3){
-                if(data.appAbsenceDto.appForSpecLeave != null){
-                    self.relaReason(data.appAbsenceDto.appForSpecLeave.relationshipReason);
-                    self.isCheck(data.appAbsenceDto.appForSpecLeave.mournerFlag);
-                    self.selectedRelation(data.appAbsenceDto.appForSpecLeave.relationshipCD);
-                    if(!fix && self.relaReason() != ''){
+                if (data.appAbsenceDto !== undefined) {                    
+                    if(data.appAbsenceDto.appForSpecLeave != null){
+                        self.relaReason(data.appAbsenceDto.appForSpecLeave.relationshipReason);
+                        self.isCheck(data.appAbsenceDto.appForSpecLeave.mournerFlag);
+                        self.selectedRelation(data.appAbsenceDto.appForSpecLeave.relationshipCD);
+                        if(!fix && self.relaReason() != ''){
+                            $("#relaReason").ntsError('clear');
+                        }
+                    }else{//data db k co
+                        if(!fix){//th an clear rela reason
+                            self.relaReason('');
+                        }
                         $("#relaReason").ntsError('clear');
-                    }
-                }else{//data db k co
-                    if(!fix){//th an clear rela reason
-                        self.relaReason('');
-                    }
-                    $("#relaReason").ntsError('clear');
-                    if(self.relaReason() != ''){
-                        $("#relaReason").trigger("validate");
+                        if(self.relaReason() != ''){
+                            $("#relaReason").trigger("validate");
+                        }
                     }
                 }
                 //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                 let line1 = getText('KAF006_44');
                 let maxDay = 0;
                 if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                    maxDay = specAbsenceDispInfo.maxDayObj.maxDay + specAbsenceDispInfo.maxDayObj.dayOfRela;
+                    if(specAbsenceDispInfo.maxDayObj !== undefined){
+                        maxDay = specAbsenceDispInfo.maxDayObj.maxDay + specAbsenceDispInfo.maxDayObj.dayOfRela;
+                    }else{
+                        maxDay = specAbsenceDispInfo.maxDay + specAbsenceDispInfo.dayOfRela;
+                    }
+                    
                 }else{//・その以外 ⇒ 上限日数
-                    maxDay = specAbsenceDispInfo.maxDayObj.maxDay;
+                    if(specAbsenceDispInfo.maxDayObj !== undefined){
+                        maxDay = specAbsenceDispInfo.maxDayObj.maxDay;
+                    }else{
+                        maxDay = specAbsenceDispInfo.maxDay;
+                    }
                 }
                 if(maxDay != null){
                     self.maxDay(specAbsenceDispInfo.maxDay);
