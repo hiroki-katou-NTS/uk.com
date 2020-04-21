@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Getter
-public class StamButton implements DomainValue{
+public class StampButton implements DomainValue{
 	
 	/** ページNO */
 	private  PageNo pageNo;
@@ -18,7 +18,7 @@ public class StamButton implements DomainValue{
 	private  ButtonPositionNo buttonPositionNo;
 	
 	// [C-0] 打刻ボタン(ページNO, ボタン位置NO)																							
-	public StamButton(PageNo pageNo, ButtonPositionNo buttonPositionNo) {
+	public StampButton(PageNo pageNo, ButtonPositionNo buttonPositionNo) {
 		this.pageNo = pageNo;
 		this.buttonPositionNo = buttonPositionNo;
 	}
