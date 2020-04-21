@@ -738,8 +738,21 @@ module nts.uk.at.view.kaf006.b{
                                 appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
                             }
                         ).done(data => {
-                            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
-                            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                            if(nts.uk.util.isNullOrEmpty(data)){
+                                self.timeStart1(childData.first.start);    
+                                self.timeEnd1(childData.first.end);
+                            } else {
+                                if(nts.uk.util.isNullOrUndefined(data[0])){
+                                    self.timeStart1(childData.first.start);    
+                                    self.timeEnd1(childData.first.end);    
+                                } else {
+                                    self.timeStart1(data[0].startTime == null ? childData.first.start : data[0].startTime);
+                                    self.timeEnd1(data[0].endTime == null ? childData.first.end : data[0].endTime);        
+                                }
+                            }
+                        }).fail(() => {
+                            self.timeStart1(childData.first.start);    
+                            self.timeEnd1(childData.first.end);
                         });
                     }
                 });
