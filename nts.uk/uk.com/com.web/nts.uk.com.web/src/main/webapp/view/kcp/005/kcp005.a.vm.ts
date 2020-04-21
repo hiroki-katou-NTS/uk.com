@@ -298,7 +298,7 @@ module kcp005.a.viewmodel {
             self.listComponentOption.isShowSelectAllButton = self.isShowSelectAllButton();
             self.listComponentOption.showOptionalColumn = self.showOptionalColumn();
             self.listComponentOption.optionalColumnName = nts.uk.resource.getText('KSM005_18');
-            self.listComponentOption.optionalColumnDatasource = ko.observableArray([]);
+            self.listComponentOption.optionalColumnDatasource = ko.observableArray([{empId: '1', content: 'abc'}, {empId: '2', content: 'xyz'}]);
             self.listComponentOption.disableSelection = self.disableSelection();
 
             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
