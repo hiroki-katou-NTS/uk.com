@@ -104,7 +104,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
-                if (!newDate || !self.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
+                if (!newDate || !self.screenModeNew()) { return; }
                 block.invisible();
                 service.changeWorkingDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
-                if (!newDate || !self.screenModeNew() || nts.uk.ui.errors.hasError()) { return; }
+                if (!newDate || !self.screenModeNew()) { return; }
                 block.invisible();
                 service.changeHolidayDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
@@ -497,7 +497,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 return;
             }
             
-            dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
+            nts.uk.ui.dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
                 self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
             }).ifNo(() => {
                 nts.uk.ui.block.clear();

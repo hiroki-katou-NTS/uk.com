@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
@@ -90,6 +91,9 @@ public class HolidayShipmentScreenBFinder {
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	@Inject
 	private PredetemineTimeSettingRepository preTimeSetRepo;
+	
+	@Inject
+	private HolidayShipmentService holidayShipmentService;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -169,7 +173,7 @@ public class HolidayShipmentScreenBFinder {
 				String absWorkTypeCD = absApp != null ? absApp.getWorkTypeCD() : null;
 				String recWorkTimeCD = recApp != null ? recApp.getWorkTimeCD() : null;
 				String absWorkTimeCD = absApp != null ? absApp.getWorkTimeCD() : null;
-				GeneralDate refDate = HolidayShipmentScreenAFinder.DetRefDate(recAppDate, absAppDate);
+				GeneralDate refDate = holidayShipmentService.detRefDate(recAppDate, absAppDate);
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);

@@ -57,6 +57,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
@@ -160,6 +161,9 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject 
 	private AppEmploymentSettingRepository appEmploymentSetting;
+	
+	@Inject
+	private HolidayShipmentService holidayShipmentService;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -291,22 +295,15 @@ public class HolidayShipmentScreenAFinder {
 	public DisplayInforWhenStarting changeWorkingDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
 		
 		String companyId = AppContexts.user().companyId();
-		//基準申請日の決定
-		GeneralDate referenceDate = HolidayShipmentScreenAFinder.DetRefDate(workingDate, holidayDate);
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
-		if(workingDate != null) {
-			listTagetDate.add(workingDate);
-		}
-		if(holidayDate != null) {
-			listTagetDate.add(holidayDate);
-		}
+		listTagetDate.add(workingDate == null ? null : workingDate);
+		listTagetDate.add(holidayDate == null ? null : holidayDate);
 		
 		//申請日を変更する(Thay đổi Applicationdate)
 		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
 				companyId, 
-				listTagetDate, 
-				referenceDate, 
+				listTagetDate,
 				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, 
 				displayInforWhenStarting.getAppDispInfoStartup().appDispInfoNoDateOutput.toDomain(), 
 				displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput.toDomain());
@@ -332,22 +329,15 @@ public class HolidayShipmentScreenAFinder {
 	public DisplayInforWhenStarting changeHolidayDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
 		
 		String companyId = AppContexts.user().companyId();
-		//基準申請日の決定
-		GeneralDate referenceDate = HolidayShipmentScreenAFinder.DetRefDate(workingDate, holidayDate);
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
-		if(workingDate != null) {
-			listTagetDate.add(workingDate);
-		}
-		if(holidayDate != null) {
-			listTagetDate.add(holidayDate);
-		}
+		listTagetDate.add(workingDate == null ? null : workingDate);
+		listTagetDate.add(holidayDate == null ? null : holidayDate);
 		
 		//申請日を変更する(Thay đổi Applicationdate)
 		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
 				companyId, 
 				listTagetDate, 
-				referenceDate, 
 				ApplicationType.COMPLEMENT_LEAVE_APPLICATION, 
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoNoDateOutput(), 
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput());
@@ -422,7 +412,7 @@ public class HolidayShipmentScreenAFinder {
 	private void setChangeAppDateData(GeneralDate recDate, GeneralDate absDate, String companyID, String employeeID,
 			int uiType, HolidayShipmentDto output, AppCommonSettingOutput appCommonSettingOutput, GeneralDate appDate) {
 		// アルゴリズム「基準申請日の決定」を実行する
-		GeneralDate referenceDate = DetRefDate(recDate, absDate);
+		GeneralDate referenceDate = holidayShipmentService.detRefDate(recDate, absDate);
 		int rootAtr = EmploymentRootAtr.APPLICATION.value;
 		AppCommonSettingOutput appCommonSet = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID, rootAtr, APP_TYPE, referenceDate);
@@ -457,35 +447,6 @@ public class HolidayShipmentScreenAFinder {
 		}
 
 		output.setRefDate(inputDate);
-
-	}
-
-	public static GeneralDate DetRefDate(GeneralDate recDate, GeneralDate absDate) {
-		boolean isBothDateNotNull = absDate != null && recDate != null;
-		//// INPUT.振出日＝設定なし かつ INPUT.振休日＝設定なし
-		GeneralDate resultDate = null;
-		// 日付の組み合わせをチェックする
-
-		if (isBothDateNotNull) {
-			// INPUT.振出日＝設定あり または INPUT.振休日＝設定あり
-			boolean isRecDateAfterAbsDate = recDate.after(absDate);
-			if (isRecDateAfterAbsDate) {
-				resultDate = absDate;
-			} else {
-				resultDate = recDate;
-			}
-		} else {
-
-			if (recDate != null) {
-				// INPUT.振出日＝設定なし
-				resultDate = recDate;
-			}
-			if (absDate != null) {
-				// INPUT.振休日＝設定なし
-				resultDate = absDate;
-			}
-		}
-		return resultDate;
 
 	}
 

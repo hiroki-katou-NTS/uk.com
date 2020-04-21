@@ -264,7 +264,6 @@ public class AppAbsenceFinder {
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
-				targetDate,
 				ApplicationType.ABSENCE_APPLICATION, 
 				appDispInfoNoDateOutput,
 				appDispInfoWithDateOutput);

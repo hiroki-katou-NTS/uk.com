@@ -245,8 +245,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 共通インタラクション「申請日を変更する」を実行する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
-				dateLst, 
-				dateLst.stream().findFirst().get(),
+				dateLst,
 				ApplicationType.WORK_CHANGE_APPLICATION, 
 				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
 				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
