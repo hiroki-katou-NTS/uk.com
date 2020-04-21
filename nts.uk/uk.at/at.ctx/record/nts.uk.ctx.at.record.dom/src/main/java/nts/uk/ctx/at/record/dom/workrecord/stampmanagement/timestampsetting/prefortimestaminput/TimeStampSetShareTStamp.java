@@ -59,7 +59,7 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 	}
 	
 	// [1] ボタン詳細設定を取得する
-	public Optional<ButtonSettings> getDetailButtonSettings(StamButton stamButton) {
+	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
 
 		// $打刻ページレイアウト = @ページレイアウト設定 : filter $.ページNO = 打刻ボタン.ページNO 
 		Optional<StampPageLayout> stampPageLayout = this.lstStampPageLayout.stream()
