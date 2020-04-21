@@ -199,6 +199,36 @@ module nts.uk.at.view.kaf006.b{
             let self = this;
             let dfd = $.Deferred();
             service.findByAppID(appID).done((data) => {
+                let appDetailScreenInfo = data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo;
+                let applicationDto = appDetailScreenInfo.application;
+                let appType = applicationDto.applicationType
+                if (appType != 0) {
+                    let paramLog = {
+                        programId: 'KAF000',
+                        screenId: 'B',
+                        queryString: 'apptype=' + appType
+                    };
+                    nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
+                }
+                self.inputCommandEvent().version = applicationDto.version;
+                self.version = applicationDto.version;
+                self.dataApplication(applicationDto);
+                self.appType(applicationDto.applicationType);
+                self.approvalRootState(ko.mapping.fromJS(data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo.approvalLst)());
+                self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
+                if (self.displayReturnReasonPanel()) {
+                    let returnReason = applicationDto.reversionReason;
+                    $("#returnReason").html(returnReason.replace(/\n/g, "\<br/>"));
+                }
+                self.reasonToApprover(appDetailScreenInfo.authorComment);
+                self.setControlButton(
+                    appDetailScreenInfo.user,
+                    appDetailScreenInfo.approvalATR,
+                    appDetailScreenInfo.reflectPlanState,
+                    appDetailScreenInfo.authorizableFlags,
+                    appDetailScreenInfo.alternateExpiration,
+                    data.loginInputOrApproval);
+                self.editable(appDetailScreenInfo.outputMode == 0 ? false : true);
                 self.appAbsenceStartInfoDto = data.appAbsenceStartInfoDto;
                 let numberRemain = data.appAbsenceStartInfoDto.remainVacationInfo;
                 //No.376
@@ -250,14 +280,15 @@ module nts.uk.at.view.kaf006.b{
                 });
                 //hoatt 2018.08.09
                 self.changeForSpecHd(data);
+                nts.uk.ui.block.clear();
                 dfd.resolve(); 
             })
             .fail(function(res) {
                 if (res.messageId == 'Msg_426') {
-                    //fix #110139 JP
-//                    dialog.alertError({ messageId: res.messageId }).then(function() {
-//                        nts.uk.ui.block.clear();
-//                    });
+                    nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                        nts.uk.ui.block.clear();
+                        appcommon.CommonProcess.callCMM045();
+                    });
                 } else if (res.messageId == 'Msg_473') {
                     dialog.alertError({ messageId: res.messageId }).then(function() {
                         nts.uk.ui.block.clear();

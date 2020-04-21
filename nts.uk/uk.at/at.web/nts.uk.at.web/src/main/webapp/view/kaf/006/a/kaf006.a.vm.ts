@@ -151,12 +151,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 006a AFTER start 000_A
-            self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 1, self.targetDate).done(function() {
-                    // self.approvalSource = self.kaf000_a.approvalList;
-
-                })
-            })
+            self.startPage();
             self.selectedRelation.subscribe(function(codeChange){
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
@@ -533,9 +528,6 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 // self.prePostSelected(result.application.prePostAtr);
                 // self.displayPrePostFlg(result.prePostFlg);
-                if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
-                    self.kaf000_a.getAppDataDate(1, moment(self.startAppDate()).format(self.DATE_FORMAT), false,nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID());
-                }
                 //ver13 hoatt - 2018.07.31
                 // self.convertListHolidayType(result.holidayAppTypeName, result.checkDis);
                 self.convertListHolidayType(result.holidayAppTypeName, result.remainVacationInfo);

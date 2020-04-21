@@ -64,18 +64,18 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.appType(appType);
             
             let dfd = $.Deferred();
-            
-            //Call approval list
-            self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
-                dfd.resolve(data); 
-            }).fail((res)=>{
-                if(appType == 1 || appType == 2 || appType == 10) {
-                    return;   
-                }
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                    nts.uk.ui.block.clear();
-                });  
-            });
+            if(appType == 1 || appType == 2 || appType == 10) {
+                dfd.resolve();  
+            } else {
+                //Call approval list
+                self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
+                    dfd.resolve(data); 
+                }).fail((res)=>{
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                        nts.uk.ui.block.clear();
+                    });  
+                });
+            }
             return dfd.promise();
         }
         
@@ -203,22 +203,16 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 }
                 switch(data.errorFlag){
                     case 1:
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_324"});
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
                             nts.uk.ui.block.clear();
                         });
                         break;
                     case 2: 
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_238"});
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
                             nts.uk.ui.block.clear();
                         });
                         break;
                     case 3:
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_237"});
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
                             nts.uk.ui.block.clear();
                         });
