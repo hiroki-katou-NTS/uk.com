@@ -13,6 +13,16 @@ module test.viewmodel {
         isAlreadySetting: KnockoutObservable<any> = ko.observable(true);
         showEmptyItem: KnockoutObservable<any> = ko.observable(true);
         selectedMode: KnockoutObservable<any> = ko.observable(1);
+
+        //selectType 
+        listSelectionType: KnockoutObservableArray<any>;
+        enable: KnockoutObservable<boolean> = ko.observable(true);
+        selectedSelectionType: KnockoutObservable<number> = ko.observable(true);
+        //TreeType
+        selectedTreeType: KnockoutObservable<number> = ko.observable(1);
+        selectedOther: KnockoutObservable<number> = ko.observable(1);
+        selectedSetting: KnockoutObservable<number> = ko.observable(1);
+        listSetting: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
             self.options = {
@@ -23,7 +33,7 @@ module test.viewmodel {
                 currentIds: self.currentIds,
                 //
                 multiple: self.multiple(),
-                tabindex:2,
+                tabindex: 2,
                 isAlreadySetting: self.isAlreadySetting(),
                 alreadySettingList: self.alreadySettingList,
                 // show o tim kiem
@@ -37,6 +47,24 @@ module test.viewmodel {
                 // NONE = 0, FIRST = 1, ALL = 2
                 selectedMode: self.selectedMode()
             };
+            self.listSelectionType = ko.observableArray([
+                { code: 1, name: 'Select by selected code', enable: self.enable },
+                { code: 2, name: 'Select all', enable: self.isMultipleTreeGrid },
+                { code: 3, name: 'Select first item', enable: self.enable },
+                { code: 4, name: 'No select', enable: self.enable }
+            ]);
+            self.listTreeType = ko.observableArray([
+                { code: 0, name: 'Single tree select grid' },
+                { code: 1, name: 'Multiple tree select grid' }
+            ]);
+            self.listOther = ko.observableArray([
+                { code: 0, name: 'Single select' },
+                { code: 1, name: 'Multiple select' }
+            ]);
+            self.listSetting = ko.observableArray([
+                { code: 0, name: 'Yes' },
+                { code: 1, name: 'No' }
+            ]);
         }
 
         startPage(): JQueryPromise<any> {
