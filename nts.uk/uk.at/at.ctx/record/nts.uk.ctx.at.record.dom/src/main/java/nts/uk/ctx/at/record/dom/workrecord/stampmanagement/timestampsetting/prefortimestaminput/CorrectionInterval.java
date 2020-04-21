@@ -7,8 +7,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * 打刻時刻補正時間
- * path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻設定.打刻入力の前準備.打刻時刻補正時間
- * @author laitv
+ * @author phongtq
  *
  */
 

@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
 
 /**
  * AR: スマホ打刻の打刻設定
