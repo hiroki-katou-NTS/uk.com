@@ -2,10 +2,13 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.s
 
 import java.util.Optional;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampSettingFunctionRepository;
+import javax.ejb.Stateless;
 
-public class JpaStampSettingFunctionRepository extends JpaRepository implements StampSettingFunctionRepository {
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+
+@Stateless
+public class JpaStampUsageRepository extends JpaRepository implements StampUsageRepository {
 
 	@Override
 	public void insert(Object domain) {

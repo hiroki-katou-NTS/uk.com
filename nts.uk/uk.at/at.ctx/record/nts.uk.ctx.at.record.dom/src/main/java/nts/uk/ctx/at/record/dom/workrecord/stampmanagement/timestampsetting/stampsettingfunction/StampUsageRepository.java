@@ -9,7 +9,7 @@ import java.util.Optional;
  *         打刻機能の利用設定Repository
  *
  */
-public interface StampSettingFunctionRepository {
+public interface StampUsageRepository {
 	/**
 	 * [1] insert(打刻機能の利用設定)
 	 * 
