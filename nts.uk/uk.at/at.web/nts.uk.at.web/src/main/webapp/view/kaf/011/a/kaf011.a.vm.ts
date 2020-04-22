@@ -273,7 +273,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             self.displayInforWhenStarting = data;
             if (data) {
                 self.remainDays(data.remainingHolidayInfor.remainDays);
-                self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
+                self.employeeList(_.map(data.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
                 self.prePostSelectedCode(appDispInfoWithDateOutput.prePostAtr);
                 self.appTypeSet(new common.AppTypeSet(appTypeSet || null));
