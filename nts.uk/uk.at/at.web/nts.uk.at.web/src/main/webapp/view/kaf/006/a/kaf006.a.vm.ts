@@ -178,7 +178,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.dataMax(false);    
                     }
                     let line2 = getText('KAF006_46',[maxDay]);
-                    
+                    //bug #110129
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.maxDay = self.maxDay();
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.dayOfRela = self.dayOfRela();
+                        
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
                     //ver21
