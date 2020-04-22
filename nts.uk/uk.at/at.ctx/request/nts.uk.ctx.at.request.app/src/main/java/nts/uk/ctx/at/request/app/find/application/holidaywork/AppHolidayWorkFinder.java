@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -674,7 +676,10 @@ public class AppHolidayWorkFinder {
 		//01-12_申請日付取得
 		applicationDto.setApplicationDate(appDate);
 		// 01-01_休出通知情報を取得
-		HolidayWorkInstruction holidayWorkInstruction = holidayPreProcess.getHolidayInstructionInformation(appCommonSettingOutput, appDate, employeeID);
+		HolidayWorkInstruction holidayWorkInstruction = holidayPreProcess.getHolidayInstructionInformation(
+				appCommonSettingOutput.getApprovalFunctionSetting().getInstructionUseSetting().getInstructionUseDivision(), 
+				Strings.isNotBlank(appDate) ? GeneralDate.fromString(appDate, "yyyy/MM/dd") : null, 
+				employeeID);
 		result.setDisplayHolidayInstructInforFlg(holidayWorkInstruction.isDisplayHolidayWorkInstructInforFlg());
 		result.setHolidayInstructInformation(holidayWorkInstruction.getHolidayWorkInstructInfomation());
 		// 1-2.起動時勤務種類リストを取得する
