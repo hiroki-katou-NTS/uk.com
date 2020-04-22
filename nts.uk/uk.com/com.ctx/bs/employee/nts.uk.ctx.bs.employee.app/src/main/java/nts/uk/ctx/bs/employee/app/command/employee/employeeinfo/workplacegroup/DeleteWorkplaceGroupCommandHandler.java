@@ -12,7 +12,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.DeleteWorkplaceGroupService;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.社員情報.ランク.App
+ * <<Command>> 職場グループを削除する
  * @author phongtq
  *
  */

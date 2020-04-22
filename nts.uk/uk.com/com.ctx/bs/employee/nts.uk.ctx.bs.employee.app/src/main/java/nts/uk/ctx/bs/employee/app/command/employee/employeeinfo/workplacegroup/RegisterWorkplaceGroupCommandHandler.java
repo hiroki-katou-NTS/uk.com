@@ -27,7 +27,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportServic
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 職場グループを登録する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.社員情報.ランク.App
+ * <<Command>> 職場グループを登録する
  * @author phongtq
  *
  */
@@ -81,10 +82,10 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		// 6: [No.560]職場IDから職場の情報をすべて取得する
 		List<WorkplaceInforParam> listWorkplaceInfo = service.getWorkplaceInforFromWkpIds(CID, cmd.getLstWKPID(), baseDate);
 		
-		// persits
+		// 7.1: persits
 		repo.insert(group);
 		
-		// 7: 職場グループ所属情報の永続化処理
+		// 7.2: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x->{
 			AtomTask atomTask = x.getPersistenceProcess().get();
 			transaction.execute(() -> {
@@ -92,7 +93,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			});
 		});
 		
-		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess, WKPGRPID);
+		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, wplResult, WKPGRPID);
 		
 		return groupResult;
 	}

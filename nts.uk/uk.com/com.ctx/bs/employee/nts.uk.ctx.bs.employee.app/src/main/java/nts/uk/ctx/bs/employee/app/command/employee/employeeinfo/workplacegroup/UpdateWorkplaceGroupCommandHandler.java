@@ -29,7 +29,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportServic
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.shr.com.context.AppContexts;
 /**
- * 職場グループを更新する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.社員情報.ランク.App
+ * <<Command>> 職場グループを更新する
  * @author phongtq
  *
  */
@@ -65,6 +66,8 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		
 		// 3: 入れ替える(Require, 職場グループ, List<職場ID>): List<職場グループの職場入替処理結果>
 		Map<String, WorkplaceReplaceResult> wplResult = ReplaceWorkplacesService.getWorkplace(updateRequire, wpgrp.get(), cmd.getLstWKPID());
+		List<WorkplaceReplaceResult> resultProcessData = wplResult.entrySet().stream()
+				.map(x -> (WorkplaceReplaceResult)x.getValue()).collect(Collectors.toList());
 		
 		// 4: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
 		// map $.永続化処理
@@ -76,9 +79,10 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		// 5: [No.560]職場IDから職場の情報をすべて取得する
 		List<WorkplaceInforParam> listWorkplaceInfo = service.getWorkplaceInforFromWkpIds(CID, cmd.getLstWKPID(), baseDate);
 		
+		// 6.1: persist
 		this.repo.update(wpgrp.get());
 		
-		// 6: 職場グループ所属情報の永続化処理
+		// 6.2: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x->{
 			AtomTask atomTask = x.getPersistenceProcess().get();
 			transaction.execute(() -> {
@@ -86,7 +90,7 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 			});
 		});
 		
-		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess, wpgrp.get().getWKPGRPID());
+		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcessData, wpgrp.get().getWKPGRPID());
 		
 		return groupResult;
 	}
