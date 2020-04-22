@@ -10,10 +10,13 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
@@ -47,12 +50,15 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		String CID = AppContexts.user().companyId();
 		RegisterWorkplaceGroupCommand cmd = context.getCommand();
 		
+		if (CollectionUtil.isEmpty(cmd.getLstWKPID())) {
+			throw new BusinessException("MsgB_2", I18NText.getText("Com_Workplace"));
+		}
 		// 1: get(会社ID, 職場グループコード)
 		// return Optional<職場グループ>
 		Optional<WorkplaceGroup> wpgrp = repo.getByCode(CID, cmd.getWkpGrCD());
 		
 		// 2: set(職場グループ名称, 職場グループ種別)
-		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWkpGrCD()));
+		wpgrp.get().setWKPGRPName(new WorkplaceGroupName(cmd.getWkpGrName()));
 		wpgrp.get().setWKPGRPType(EnumAdaptor.valueOf(cmd.getWkpGrType(), WorkplaceGroupType.class));
 		
 		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
@@ -70,7 +76,7 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		// 5: [No.560]職場IDから職場の情報をすべて取得する
 		List<WorkplaceInforParam> listWorkplaceInfo = service.getWorkplaceInforFromWkpIds(CID, cmd.getLstWKPID(), baseDate);
 		
-		this.repo.insert(wpgrp.get());
+		this.repo.update(wpgrp.get());
 		
 		// 6: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x->{
@@ -80,7 +86,7 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 			});
 		});
 		
-		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess);
+		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess, wpgrp.get().getWKPGRPID());
 		
 		return groupResult;
 	}

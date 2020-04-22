@@ -17,7 +17,6 @@ class RegisterForm {
     selectedWorkplaces: KnockoutObservableArray<any> = ko.observableArray([]);
     constructor() {
         let self = this;
-        
     }
 
     public clearData() {
@@ -41,6 +40,18 @@ class RegisterForm {
     public bindWorkplace(workplaces) {
         this.workplaces(workplaces);
     }
+
+    public removeWorkplace() {
+        let self = this;
+        let filtered = _.filter(self.workplaces(), (val) => { return self.selectedWorkplaces().indexOf(val.workplaceId) === -1; });
+        self.workplaces(filtered);
+    }
+
+    public trimData() {
+        let self = this;
+        self.workplaceGroupCd(self.workplaceGroupCd().trim());
+        self.workplaceGroupName(self.workplaceGroupName().trim());
+ }
     
     public convertToCommand() {
         let self = this;

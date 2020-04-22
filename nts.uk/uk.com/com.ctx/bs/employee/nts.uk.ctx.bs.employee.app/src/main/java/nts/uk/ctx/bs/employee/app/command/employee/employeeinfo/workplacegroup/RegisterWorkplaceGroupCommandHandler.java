@@ -10,10 +10,12 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
@@ -55,6 +57,10 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		if (wpgrp.isPresent())
 			throw new BusinessException("Msg_3");
 		
+		if (CollectionUtil.isEmpty(cmd.getLstWKPID())) {
+			throw new BusinessException("MsgB_2", I18NText.getText("Com_Workplace"));
+		}
+		
 		// 3: 職場グループを作成する([mapping]): 職場グループ
 		WorkplaceGroup group = cmd.toDomain(CID, WKPGRPID);
 		
@@ -86,7 +92,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			});
 		});
 		
-		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess);
+		RegisterWorkplaceGroupResult groupResult = new RegisterWorkplaceGroupResult(cmd.getLstWKPID(), listWorkplaceInfo, resultProcess, WKPGRPID);
 		
 		return groupResult;
 	}

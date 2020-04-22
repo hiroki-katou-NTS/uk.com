@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="BSYMT_AFF_WORKPLACE_GROUP")
-public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity{
+public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity {
 	@EmbeddedId
     public BsymtAffWorkPlaceGroupPk pk;
 

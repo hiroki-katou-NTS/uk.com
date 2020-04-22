@@ -69,6 +69,14 @@ public class BsymtWorkplaceGroup extends ContractUkJpaEntity {
 				group.getWKPGRPType().value);
 	}
 	
+	public void fromEntity(WorkplaceGroup group) {
+		BsymtWorkplaceGroupPk pk = new BsymtWorkplaceGroupPk(group.getCID(), group.getWKPGRPID());
+		this.pk = pk;
+		this.WKPGRPCode = group.getWKPGRPCode().v();
+		this.WKPGRPName = group.getWKPGRPName().v();
+		this.WKPGRPType = group.getWKPGRPType().value;
+	}
+	
 	public WorkplaceGroup toDomain(){
 		return new WorkplaceGroup(
 				pk.CID,

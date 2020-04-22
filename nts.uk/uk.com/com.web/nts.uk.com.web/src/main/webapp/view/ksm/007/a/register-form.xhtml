@@ -39,7 +39,7 @@ required: true}" />
     <!-- A7 -->
     <div class="valign-center control-group">
         <button data-bind="click: openDialogCDL008">#{i18n.getText('KSM007_11')}</button>
-        <button>#{i18n.getText('KSM007_12')}</button>
+        <button data-bind="click: removeWorkplace">#{i18n.getText('KSM007_12')}</button>
     </div>
     <!-- A8 -->
     <table
@@ -50,7 +50,7 @@ required: true}" />
                 dataSource: registerForm().workplaces,
                 optionsValue: 'workplaceId',
                 columns: registerForm().gridColumns,
-                multiple: false,
+                multiple: true,
                 value: registerForm().selectedWorkplaces
             }"
     ></table>

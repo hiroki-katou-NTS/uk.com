@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import entity.workplacegroup.BsymtAffWorkPlaceGroup;
 import entity.workplacegroup.BsymtWorkplaceGroup;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
@@ -95,11 +96,15 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void deleteByWKPGRPID(String CID, String WKPGRPID) {
-		Optional<BsymtAffWorkPlaceGroup> entity = this.queryProxy()
+		List<BsymtAffWorkPlaceGroup> entities = this.queryProxy()
 				.query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
-				.setParameter("WKPGRPID", WKPGRPID).getSingle();
-		if (entity.isPresent())
-			this.commandProxy().remove(entity.get());
+				.setParameter("WKPGRPID", WKPGRPID)
+				.getList();
+		if (CollectionUtil.isEmpty(entities)) {
+			for(BsymtAffWorkPlaceGroup entity : entities) {
+				this.commandProxy().remove(entity);				
+			}
+		}
 	}
 
 	/**

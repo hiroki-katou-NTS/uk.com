@@ -52,12 +52,10 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 				.setParameter("WKPGRPID", group.getWKPGRPID())
 				.getSingle();
 		if(workPlaceGroup.isPresent()){
-			BsymtWorkplaceGroup newData = BsymtWorkplaceGroup.toEntity(group);
-			workPlaceGroup.get().WKPGRPCode = newData.WKPGRPCode;
-			workPlaceGroup.get().WKPGRPName = newData.WKPGRPName;
-			workPlaceGroup.get().WKPGRPType = newData.WKPGRPType;
+			BsymtWorkplaceGroup newData = workPlaceGroup.get();
+			newData.fromEntity(group);
+			this.commandProxy().update(newData);
 		}
-		this.commandProxy().update(workPlaceGroup);
 	}
 	
 	/**

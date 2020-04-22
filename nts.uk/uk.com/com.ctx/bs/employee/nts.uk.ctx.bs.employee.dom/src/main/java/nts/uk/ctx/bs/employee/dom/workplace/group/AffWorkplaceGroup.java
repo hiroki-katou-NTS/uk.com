@@ -23,7 +23,7 @@ public class AffWorkplaceGroup implements DomainAggregate {
 		WKPID = wKPID;
 	}
 	
-	public AffWorkplaceGroup(String wKPGRPID, String wKPID, String CID) {
+	public AffWorkplaceGroup(String CID, String wKPGRPID, String wKPID) {
 		super();
 		WKPGRPID = wKPGRPID;
 		WKPID = wKPID;
