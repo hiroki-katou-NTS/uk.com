@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -110,7 +112,7 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
 	public int getPredetermineWorkTime() {
 		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
-
+	
 	@Override
 	public BreakDownTimeDay clone() {
 		BreakDownTimeDay cloned = new BreakDownTimeDay();
@@ -124,5 +126,23 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("BreakDownTimeDay clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * マイナスの場合0にする
+	 */
+	public void changeNegativeToZero() {
+		this.oneDay = this.oneDay.isNegative() ? AttendanceTime.ZERO : this.oneDay;
+		this.morning = this.morning.isNegative() ? AttendanceTime.ZERO : this.morning;
+		this.afternoon = this.afternoon.isNegative() ? AttendanceTime.ZERO : this.afternoon;
+	}
+	
+	/**
+	 * 時間を変更する
+	 */
+	public void changeTime(Optional<AttendanceTime> newOneDay, Optional<AttendanceTime> newMorning, Optional<AttendanceTime> newAfternoon) {
+		this.oneDay = newOneDay.orElse(this.getOneDay());
+		this.morning = newMorning.orElse(this.getMorning());
+		this.afternoon = newAfternoon.orElse(this.getAfternoon());
 	}
 }

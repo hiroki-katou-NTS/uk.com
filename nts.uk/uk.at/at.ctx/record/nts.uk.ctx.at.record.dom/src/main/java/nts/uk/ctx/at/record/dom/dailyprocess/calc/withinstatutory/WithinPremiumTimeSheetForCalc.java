@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkingTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 
 /**
  * 計算用所定内割増時間帯
@@ -9,16 +13,16 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  *
  */
 @Getter
-public class WithinPremiumTimeSheetForCalc {
+public class WithinPremiumTimeSheetForCalc extends ActualWorkingTimeSheet{
 	//時間帯
-	private TimeSpanForCalc timeSheet;
+	private TimeSpanForDailyCalc withinPremiumtimeSheet;
 	
 	/**
 	 * Constructor
-	 * @param timeSheet
+	 * @param withinPremiumtimeSheet
 	 */
-	public WithinPremiumTimeSheetForCalc(TimeSpanForCalc timeSheet) {
-		super();
-		this.timeSheet = timeSheet;
+	public WithinPremiumTimeSheetForCalc(TimeSpanForDailyCalc timeSheet) {
+		super(timeSheet, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+		this.withinPremiumtimeSheet = timeSheet;
 	}
 }

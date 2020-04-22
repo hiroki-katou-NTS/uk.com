@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -22,7 +22,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class PredetermineTimeSetForCalc {
+public class PredetermineTimeSetForCalc implements Cloneable{
 	
 	//時間帯(使用区分付き)
 	private final List<TimezoneUse> timeSheets;
@@ -118,11 +118,11 @@ public class PredetermineTimeSetForCalc {
 
 	
 	private List<TimezoneUse> extractBetween(TimeWithDayAttr start, TimeWithDayAttr end) {
-		val targetSpan = new TimeSpanForCalc(start, end);
+		val targetSpan = new TimeSpanForDailyCalc(start, end);
 		List<TimezoneUse> result = new ArrayList<>();
 		
 		this.timeSheets.stream().forEach(source -> {
-			source.timeSpan().getDuplicatedWith(targetSpan).ifPresent(duplicated -> {
+			source.timeSpan().getDuplicatedWith(targetSpan.getTimeSpan()).ifPresent(duplicated -> {
 				source.updateStartTime(duplicated.getStart());
 				source.updateEndTime(duplicated.getEnd());
 				result.add(source);
@@ -136,15 +136,15 @@ public class PredetermineTimeSetForCalc {
 	 * @param attr
 	 * @return
 	 */
-	private TimeSpanForCalc getHalfDayWorkingTimeSheetOf(AttendanceHolidayAttr attr,int workNo) {
+	private TimeSpanForDailyCalc getHalfDayWorkingTimeSheetOf(AttendanceHolidayAttr attr,int workNo) {
 		switch (attr) {
 		case MORNING:
-			return new TimeSpanForCalc(this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getStart()).collect(Collectors.toList()).get(0), this.AMEndTime);
+			return new TimeSpanForDailyCalc(this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getStart()).collect(Collectors.toList()).get(0), this.AMEndTime);
 		case AFTERNOON:
-			return new TimeSpanForCalc(this.PMStartTime, this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getEnd()).collect(Collectors.toList()).get(0));
+			return new TimeSpanForDailyCalc(this.PMStartTime, this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getEnd()).collect(Collectors.toList()).get(0));
 		case FULL_TIME:
 		case HOLIDAY:
-			return new TimeSpanForCalc(this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getStart()).collect(Collectors.toList()).get(0),
+			return new TimeSpanForDailyCalc(this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getStart()).collect(Collectors.toList()).get(0),
 										this.timeSheets.stream().filter(tc -> tc.getWorkNo() == workNo).map(tc -> tc.getEnd()).collect(Collectors.toList()).get(0));
 		default:
 			throw new RuntimeException("unknown attr:" + attr);
@@ -216,9 +216,44 @@ public class PredetermineTimeSetForCalc {
 	 * 1日の範囲時間帯を作成する
 	 * @return　1日の範囲時間帯
 	 */
-	public TimeSpanForCalc getOneDayTimeSpan() {
-		return new TimeSpanForCalc(this.getStartOneDayTime(), this.getStartOneDayTime().forwardByMinutes(this.getOneDayRange().valueAsMinutes()));
+	public TimeSpanForDailyCalc getOneDayTimeSpan() {
+		return new TimeSpanForDailyCalc(this.getStartOneDayTime(), this.getStartOneDayTime().forwardByMinutes(this.getOneDayRange().valueAsMinutes()));
 	}
 	
+	/**
+	 * create this Instance
+	 * @return new Instance
+	 */
+	@Override
+	public PredetermineTimeSetForCalc clone() {	
+		PredetermineTimeSetForCalc cloned;
+		try {
+			cloned = new PredetermineTimeSetForCalc(
+				this.timeSheets,
+				this.AMEndTime,
+				this.PMStartTime,
+				this.additionSet,
+				this.oneDayRange,
+				this.startOneDayTime);
+		}	
+		catch (Exception e){
+			throw new RuntimeException("PredetermineTimeSetForCalc clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	* 所定時間帯を変動させる
+	* @param calculationRangeOfOneDay 1日の計算範囲
+	*/
+	public void changePredeterminedTimeSheetToSchedule(CalculationRangeOfOneDay calculationRangeOfOneDay) {
+		
+		//開始
+		this.timeSheets.forEach(
+				t -> t.updateStart(calculationRangeOfOneDay.getAttendanceLeavingWork().getAttendanceLeavingWork(t.getWorkNo()).get().getTimespan().getStart()));
+		//終了
+		this.timeSheets.forEach(
+				t -> t.updateEnd(calculationRangeOfOneDay.getAttendanceLeavingWork().getAttendanceLeavingWork(t.getWorkNo()).get().getTimespan().getEnd()));
+	}
 	
 }

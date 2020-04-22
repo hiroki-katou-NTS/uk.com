@@ -13,10 +13,14 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
@@ -71,8 +75,8 @@ public class OutingTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay(), null),
-																			  new TimeSpanForCalc(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay()),
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay()),
+																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),

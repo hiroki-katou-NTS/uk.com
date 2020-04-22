@@ -4,8 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -88,6 +92,24 @@ public class PredetermineTime extends WorkTimeDomainObject implements Cloneable{
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 		} 		
+	}
+	
+	/**
+	 * 所定時間を変動させる（流動勤務）
+	 * @param changeTime 変動させる時間
+	 */
+	public void changePredeterminedTimeForFlow(AttendanceTimeOfExistMinus changeTime) {
+		this.predTime.changeTime(
+				Optional.of(this.predTime.getOneDay().addMinutes(changeTime.v())),
+				Optional.of(this.predTime.getMorning().addMinutes(changeTime.v())),
+				Optional.of(this.predTime.getAfternoon().addMinutes(changeTime.v())));
+		this.addTime.changeTime(
+				Optional.of(this.addTime.getOneDay().addMinutes(changeTime.v())),
+				Optional.empty(),
+				Optional.empty());
+		
+		this.predTime.changeNegativeToZero();
+		this.addTime.changeNegativeToZero();
 	}
 	
 	@Override

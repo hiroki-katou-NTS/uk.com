@@ -12,6 +12,8 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -93,7 +95,27 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 		}
 		return false;	
 	}
-	
+
+	/**
+	 * 就業時間内時間帯から控除するか判断
+	 * @param deductTime
+	 * @param graceTimeSetting
+	 * @return
+	 */
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, Optional<WorkTimezoneCommonSet> commonSetting, WorkType workType) {
+
+		//出勤系ではない場合
+		if(workType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY) || workType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY_WORK)) {
+			return false;
+		}
+		if(isDeductLateLeaveEarly(commonSetting)) {//遅刻早退をマイナスする場合に処理に入る
+			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
+				return true;
+			}
+		}
+		return false;	
+	}
+
 	/**
 	 * 遅刻・早退を控除するか判断する
 	 * 2018/05/09　高須

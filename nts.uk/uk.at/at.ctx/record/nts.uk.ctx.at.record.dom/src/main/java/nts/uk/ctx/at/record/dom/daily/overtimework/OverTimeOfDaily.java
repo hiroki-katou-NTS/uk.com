@@ -247,7 +247,7 @@ public class OverTimeOfDaily {
 																	   new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
 					recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					vacationClass,
-					recordReGet.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+					recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 					statutoryDivision,siftCode,
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退

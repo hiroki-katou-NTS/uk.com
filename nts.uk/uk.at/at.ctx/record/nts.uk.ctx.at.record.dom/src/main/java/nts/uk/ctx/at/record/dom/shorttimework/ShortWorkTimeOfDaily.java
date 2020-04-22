@@ -99,7 +99,7 @@ public class ShortWorkTimeOfDaily {
 		//就業時間内時間帯
 		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 		//就業時間帯育児時間帯
-		list.addAll(withinWorkTimeSheet.getShortTimeSheet().stream().filter(tc -> tc.calcTotalTime(dedAtr).greaterThan(0)).collect(Collectors.toList()));
+		list.addAll(withinWorkTimeSheet.getShortTimeSheet().stream().filter(tc -> tc.calcTotalTime().greaterThan(0)).collect(Collectors.toList()));
 		
 		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
 			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(dedAtr, condition));
@@ -134,7 +134,7 @@ public class ShortWorkTimeOfDaily {
 		
 		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list){
-			if(timeSheetOfDeductionItem.calcTotalTime(dedAtr).greaterThan(0)) {
+			if(timeSheetOfDeductionItem.calcTotalTime().greaterThan(0)) {
 				result.add(timeSheetOfDeductionItem);
 			}
 		}

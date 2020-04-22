@@ -10,4 +10,5 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 public interface AddSetting {
 	NotUseAtr getNotUseAtr(StatutoryDivision statutoryDivision);
 	CalculationByActualTimeAtr getCalculationByActualTimeAtr(StatutoryDivision statutoryDivision);
+	HolidayCalcMethodSet getHolidayCalcMethodSet();
 }

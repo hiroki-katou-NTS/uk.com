@@ -19,25 +19,29 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 出退勤
  *
  */
-@Getter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	/*
 	 * 勤務NO
 	 */
+	@Getter
 	private WorkNo workNo;
 	
 	//出勤
+	@Getter
 	private Optional<TimeActualStamp> attendanceStamp;
 	
 	//退勤
+	@Getter
 	private Optional<TimeActualStamp> leaveStamp;
 	
 	private TimeSpanForCalc timespan;
 	
-
-
+	
+	public TimeSpanForCalc getTimespan() {
+		return this.craeteTimeSpan();
+	}
 	
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();

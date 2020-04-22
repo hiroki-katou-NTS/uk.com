@@ -29,11 +29,11 @@ public class AddSettingOfIrregularWork extends AggregateRoot implements AddSetti
 	public NotUseAtr getNotUseAtr(StatutoryDivision statutoryDivision) {
 		NotUseAtr notUseAtr;
 		if(statutoryDivision.isNomal()) {
-			notUseAtr = this.holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getIncludeHolidaysWorkCalcDetailSet().getToAdd();
+			notUseAtr = this.holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().get().getIncludeHolidaysWorkCalcDetailSet().getToAdd();
 		}else {
-			notUseAtr = this.holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().getIncludeHolidaysSet().getToAdd();
+			notUseAtr = this.holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().get().getIncludeHolidaysSet().getToAdd();
 		}
-		return notUseAtr;	
+		return notUseAtr;
 	}
 	
 	/**
@@ -51,7 +51,4 @@ public class AddSettingOfIrregularWork extends AggregateRoot implements AddSetti
 		}
 		return calculationByActualTimeAtr;	
 	}
-
-
-	
 }

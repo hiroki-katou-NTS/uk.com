@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -76,12 +75,12 @@ public class OverDayEnd {
 	public static OverDayEnd perTimeSheetForOverTime(OverTimeFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType, WorkType toDayWorkType, WorkType afterWorkType, 
 													 Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime){
 		//前日分割
-		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
 			//前日の0時跨ぎ処理
 			return splitFromOverWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true,zeroTime);
 		}
 		//翌日分割
-		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
 			//翌日の0時跨ぎ処理
 			return splitFromOverWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false,zeroTime);
 		}
@@ -109,12 +108,12 @@ public class OverDayEnd {
 															WorkType afterWorkType,
 															Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime){
 		//前日分割
-		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
 			//前日の0時跨ぎ処理
 			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true,zeroTime);
 		}
 		//翌日分割
-		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
 			//翌日の0時跨ぎ処理
 			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false,zeroTime);
 		}
@@ -127,7 +126,7 @@ public class OverDayEnd {
 	 * @param zeroTime 
 	 * @return
 	 */
-	public static boolean decisionStraddleForBeforeDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> beforeInfo, ZeroTime zeroTime,
+	public static boolean decisionStraddleForBeforeDay(TimeSpanForDailyCalc timeSpan,Optional<WorkInformation> beforeInfo, ZeroTime zeroTime,
 													   WorkType beforeWorkType, WorkType nowWorkType) {
 		//当日0:00よりも過去かどうか
 		if(overBaseOclock(timeSpan,0)) return false;
@@ -143,7 +142,7 @@ public class OverDayEnd {
 	 * @param timeSpan
 	 * @return　当日の0時を跨いでいる
 	 */
-	public static boolean overBaseOclock(TimeSpanForCalc timeSpan,int baseTime) {
+	public static boolean overBaseOclock(TimeSpanForDailyCalc timeSpan,int baseTime) {
 		return timeSpan.getStart().greaterThan(baseTime) && timeSpan.getEnd().greaterThan(baseTime); 
 	}
 	/*-----------------------------------前日系-------------------------------------*/
@@ -154,7 +153,7 @@ public class OverDayEnd {
 	 * @param zeroTime 
 	 * @return 
 	 */
-	public static boolean decisionStraddleForNextDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> afterInfo, ZeroTime zeroTime,
+	public static boolean decisionStraddleForNextDay(TimeSpanForDailyCalc timeSpan,Optional<WorkInformation> afterInfo, ZeroTime zeroTime,
 													 WorkType nowWorkType, WorkType afterWorkType) {
 		//翌日0:00より手前に存在するか
 		if(lessBaseOclock(timeSpan,1440)) return false;
@@ -169,7 +168,7 @@ public class OverDayEnd {
 	 * @param timeSpan
 	 * @return　当日の0時を跨いでいる
 	 */
-	public static boolean lessBaseOclock(TimeSpanForCalc timeSpan,int baseTime) {
+	public static boolean lessBaseOclock(TimeSpanForDailyCalc timeSpan,int baseTime) {
 		return timeSpan.getStart().lessThan(baseTime) && timeSpan.getEnd().lessThan(baseTime); 
 	}
 	/*-----------------------------------翌日系-------------------------------------*/
@@ -209,8 +208,8 @@ public class OverDayEnd {
 					//手前が休出時間帯、後ろが残業時間帯になるパティーン(前日～当日の跨ぎ)
 					if(isBefore) {
 						OverTimeFrameTimeSheetForCalc beforeitem = new OverTimeFrameTimeSheetForCalc(
-																	new TimeZoneRounding(overTimeSheet.getTimeSheet().getStart(), baseTime, overTimeSheet.getTimeSheet().getRounding()),
-																	new TimeSpanForCalc(overTimeSheet.getTimeSheet().getStart(),baseTime),
+																	new TimeSpanForDailyCalc(overTimeSheet.getTimeSheet().getStart(), baseTime),
+																	overTimeSheet.rounding,
 																	overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
 																	overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
 																	overTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
@@ -232,7 +231,7 @@ public class OverDayEnd {
 						/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
 						holidayTimeFrames.add(new HolidayWorkFrameTimeSheetForCalc(
 											  beforeitem.getTimeSheet(),
-											  beforeitem.getTimeSheet().getTimeSpan(),
+											  beforeitem.getRounding(),
 											  beforeitem.getDeductionTimeSheet(),
 											  beforeitem.getRecordedTimeSheet(),
 										      beforeitem.getBonusPayTimeSheet(),
@@ -244,8 +243,8 @@ public class OverDayEnd {
 											  Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(atr.get()))));
 					
 					
-						overTimeFrames.add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime, overTimeSheet.getTimeSheet().getEnd(), overTimeSheet.getTimeSheet().getRounding()),
-																		new TimeSpanForCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
+						overTimeFrames.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime, overTimeSheet.getTimeSheet().getEnd()),
+																		overTimeSheet.rounding,
 																		overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
 																		overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
 																		overTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
@@ -262,8 +261,8 @@ public class OverDayEnd {
 				//手前が残業時間帯、後ろが休出時間帯になるパティーン(当日～翌日の跨ぎ)
 				else {
 					//手前(残業)はそのまま残業リストへ
-					overTimeFrames.add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(overTimeSheet.getTimeSheet().getStart(),baseTime, overTimeSheet.getTimeSheet().getRounding()),
-																		 new TimeSpanForCalc(overTimeSheet.getTimeSheet().getStart(),baseTime),
+					overTimeFrames.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(overTimeSheet.getTimeSheet().getStart(),baseTime),
+																		 overTimeSheet.rounding,
 																		 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
 																		 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
 																		 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
@@ -278,8 +277,8 @@ public class OverDayEnd {
 																		 overTimeSheet.getAdjustTime()));
 					
 						//翌日０時以降の残業時間帯を一度作成
-						OverTimeFrameTimeSheetForCalc afteritem = new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime,overTimeSheet.getTimeSheet().getEnd(),overTimeSheet.getTimeSheet().getRounding()),
-																								 new TimeSpanForCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
+						OverTimeFrameTimeSheetForCalc afteritem = new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
+																								 overTimeSheet.rounding,
 																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
 																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
 																								 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
@@ -299,7 +298,7 @@ public class OverDayEnd {
 																  Finally.of(new AttendanceTime(0)));
 						/*0時～の残業時間帯を休日出勤時間帯へ変更*/
 						holidayTimeFrames.add(new HolidayWorkFrameTimeSheetForCalc(afteritem.getTimeSheet(),
-								  											   afteritem.getTimeSheet().getTimeSpan(),
+								  											   afteritem.getRounding(),
 								  											   afteritem.getDeductionTimeSheet(),
 								  											   afteritem.getRecordedTimeSheet(),
 								  											   afteritem.getBonusPayTimeSheet(),
@@ -332,7 +331,7 @@ public class OverDayEnd {
 					  												  Finally.of(new AttendanceTime(0)));
 			
 			return new HolidayWorkFrameTimeSheetForCalc(overTimeSheet.getTimeSheet(),
-														overTimeSheet.getCalcrange(),
+														overTimeSheet.getRounding(),
 														overTimeSheet.getDeductionTimeSheet(),
 														overTimeSheet.getRecordedTimeSheet(),
 														overTimeSheet.getBonusPayTimeSheet(),
@@ -388,8 +387,8 @@ public class OverDayEnd {
 				if(isBefore) {
 					//前日分の休出時間帯作成
 					
-					HolidayWorkFrameTimeSheetForCalc beforeitem = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(holidayWorkTimeSheet.getTimeSheet().getStart(), baseTime, holidayWorkTimeSheet.getTimeSheet().getRounding()),
-																									   new TimeSpanForCalc(holidayWorkTimeSheet.getCalcrange().getStart(),baseTime),
+					HolidayWorkFrameTimeSheetForCalc beforeitem = new HolidayWorkFrameTimeSheetForCalc(new TimeSpanForDailyCalc(holidayWorkTimeSheet.getTimeSheet().getStart(), baseTime),
+																									   holidayWorkTimeSheet.rounding,
 																									   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Appropriate),
 																									   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Deduction),
 																									   holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
@@ -425,8 +424,8 @@ public class OverDayEnd {
 					}
 					
 					//当日分の休出時間帯作成
-					HolidayWorkFrameTimeSheetForCalc afterList = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(baseTime, holidayWorkTimeSheet.getTimeSheet().getEnd(), holidayWorkTimeSheet.getTimeSheet().getRounding()),
-							   																		  new TimeSpanForCalc(baseTime,holidayWorkTimeSheet.getCalcrange().getEnd()),
+					HolidayWorkFrameTimeSheetForCalc afterList = new HolidayWorkFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime, holidayWorkTimeSheet.getTimeSheet().getEnd()),
+							   																		  holidayWorkTimeSheet.rounding,
 							   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Appropriate),
 							   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Deduction),
 							   																		  holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
@@ -442,8 +441,8 @@ public class OverDayEnd {
 				//当日～翌日跨ぎ
 				else {
 					//当日分の休出時間帯作成
-					HolidayWorkFrameTimeSheetForCalc targetItem = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding( holidayWorkTimeSheet.getTimeSheet().getStart(),baseTime, holidayWorkTimeSheet.getTimeSheet().getRounding()),
-							   																		  new TimeSpanForCalc(holidayWorkTimeSheet.getCalcrange().getStart(),baseTime),
+					HolidayWorkFrameTimeSheetForCalc targetItem = new HolidayWorkFrameTimeSheetForCalc(new TimeSpanForDailyCalc( holidayWorkTimeSheet.getTimeSheet().getStart(),baseTime),
+							   																		  holidayWorkTimeSheet.rounding,
 							   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Appropriate),
 							   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Deduction),
 							   																		  holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
@@ -457,8 +456,8 @@ public class OverDayEnd {
 					/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
 					holidayTimeFrames.add(targetItem);
 					//翌日分の休出時間帯作成
-					HolidayWorkFrameTimeSheetForCalc noTargetitem = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(baseTime,holidayWorkTimeSheet.getTimeSheet().getEnd(),  holidayWorkTimeSheet.getTimeSheet().getRounding()),
-																									   new TimeSpanForCalc(baseTime,holidayWorkTimeSheet.getCalcrange().getEnd()),
+					HolidayWorkFrameTimeSheetForCalc noTargetitem = new HolidayWorkFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime,holidayWorkTimeSheet.getTimeSheet().getEnd()),
+																									   holidayWorkTimeSheet.rounding,
 																									   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Appropriate),
 																									   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Deduction),
 																									   holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
@@ -514,7 +513,7 @@ public class OverDayEnd {
 																new AttendanceTime(0));
 			
 			return new OverTimeFrameTimeSheetForCalc(holidayWorkTimeSheet.getTimeSheet()
-													,holidayWorkTimeSheet.getCalcrange()
+													,holidayWorkTimeSheet.getRounding()
 												 	,holidayWorkTimeSheet.getDeductionTimeSheet()
 												 	,holidayWorkTimeSheet.getRecordedTimeSheet()
 												 	,holidayWorkTimeSheet.getBonusPayTimeSheet()
@@ -545,7 +544,7 @@ public class OverDayEnd {
 					  												  Finally.of(new AttendanceTime(0)));
 			
 			return new HolidayWorkFrameTimeSheetForCalc(holidayWorkTimeSheet.getTimeSheet(),
-													    holidayWorkTimeSheet.getCalcrange(),
+													    holidayWorkTimeSheet.getRounding(),
 													    holidayWorkTimeSheet.getDeductionTimeSheet(),
 													    holidayWorkTimeSheet.getRecordedTimeSheet(),
 													    holidayWorkTimeSheet.getBonusPayTimeSheet(),

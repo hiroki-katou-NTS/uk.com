@@ -79,9 +79,23 @@ public class HolidayCalcMethodSet extends DomainObject{
 	}
 	
 	
-	public HolidayCalcMethodSet changeDeduction() {
-		return new HolidayCalcMethodSet(this.premiumCalcMethodOfHoliday,this.workTimeCalcMethodOfHoliday.changeDeduct());
+	/**
+	 * 別packageの休暇の計算方法の設定を変換する。リファクタリング時に削除予定。
+	 * @param other nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet
+	 * @return 休暇の計算方法の設定
+	 */
+	public static HolidayCalcMethodSet convertHolidayCalcMethodSet(
+			nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet other) {
+		return new HolidayCalcMethodSet(
+				new PremiumHolidayCalcMethod(
+						other.getPremiumCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()?
+								CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME:CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
+						Optional.empty()),
+				new WorkTimeHolidayCalcMethod(
+						other.getWorkTimeCalcMethodOfHoliday().getCalculationByActualTime().isCalclationByActualTime()?
+								CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME:CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
+						Optional.empty())
+				);
 	}
-	
 }
 

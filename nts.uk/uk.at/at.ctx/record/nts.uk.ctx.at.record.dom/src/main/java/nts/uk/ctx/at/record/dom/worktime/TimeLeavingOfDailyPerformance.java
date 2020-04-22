@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.Setter;
 //import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
@@ -149,6 +151,17 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * @param timeSpan　範囲時間
+	 * @return 重複していない時間
+	 */
+	public List<TimeSpanForDailyCalc> getNotDuplicateSpan(TimeSpanForDailyCalc timeSpan) {
+		return this.getNotDuplicateSpan(timeSpan.getTimeSpan()).stream()
+				.map(forCalc -> new TimeSpanForDailyCalc(forCalc))
+				.collect(Collectors.toList());
 	}
 	
 	/**

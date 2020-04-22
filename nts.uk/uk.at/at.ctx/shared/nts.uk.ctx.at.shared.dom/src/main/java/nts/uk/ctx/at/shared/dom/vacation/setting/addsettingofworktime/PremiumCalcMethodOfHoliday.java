@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
+import java.util.Optional;
+
 import lombok.Value;
 
 /**
@@ -9,6 +11,12 @@ import lombok.Value;
  */
 @Value
 public class PremiumCalcMethodOfHoliday {
-	private PremiumCalcMethodDetailOfHoliday detailSet;//詳細設定
+	private Optional<PremiumCalcMethodDetailOfHoliday> detailSet;//詳細設定
 	private CalculationByActualTimeAtr calculationByActualTime;//実働時間のみで計算する
+	
+
+	public PremiumCalcMethodOfHoliday(Optional<PremiumCalcMethodDetailOfHoliday> pre, CalculationByActualTimeAtr calcAtr) {
+		this.detailSet = pre;
+		this.calculationByActualTime = calcAtr;
+	}
 }

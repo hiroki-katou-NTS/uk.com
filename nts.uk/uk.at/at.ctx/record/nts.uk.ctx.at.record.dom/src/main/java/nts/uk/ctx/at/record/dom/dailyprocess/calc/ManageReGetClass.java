@@ -8,7 +8,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
@@ -17,15 +16,16 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -165,8 +165,8 @@ public class ManageReGetClass {
 	 */
 	public static ManageReGetClass cantCalc(Optional<WorkType> workType,IntegrationOfDaily integration, DailyCalculationPersonalInformation personalInfo) {
 		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
-																																			  new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
-																																			  new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																																			  new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+																																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																																			  Collections.emptyList(), 
 																																			  Collections.emptyList(), 
 																																			  Collections.emptyList(), 
@@ -180,7 +180,6 @@ public class ManageReGetClass {
 																 null, 
 																 integration.getAttendanceLeave().orElse(null), 
 																 null, 
-																 Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))), 
 																 integration.getWorkInformation(),
 																 Optional.empty()), 
 									integration,
@@ -225,8 +224,8 @@ public class ManageReGetClass {
 											 Optional<PredetermineTimeSetForCalc> predSetForOotsuka
 			) {
 		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
-																																			  new TimeZoneRounding(new TimeWithDayAttr(0), new TimeWithDayAttr(0), null), 
-																																			  new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																																			  new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+																																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																																			  Collections.emptyList(), 
 																																			  Collections.emptyList(), 
 																																			  Collections.emptyList(), 
@@ -240,7 +239,6 @@ public class ManageReGetClass {
 																 null, 
 																 integration.getAttendanceLeave().orElse(null), 
 																 null, 
-																 Finally.of(new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))), 
 																 integration.getWorkInformation(),
 																 Optional.empty()), 
 									integration,

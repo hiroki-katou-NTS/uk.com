@@ -116,7 +116,7 @@ public class WithinStatutoryTimeOfDaily {
 			withinpremiumTime = predTime.greaterThan(recordReget.getDailyUnit().getDailyTime().valueAsMinutes())
 										?new AttendanceTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
 																										  .filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
-																										  .map(tc -> tc.getPremiumTimeSheetInPredetermined().get().getTimeSheet().lengthAsMinutes())
+																										  .map(tc -> tc.getPremiumTimeSheetInPredetermined().get().getWithinPremiumtimeSheet().lengthAsMinutes())
 																										  .collect(Collectors.summingInt(tc -> tc)))
 																										  
 										:new AttendanceTime(0);
@@ -137,7 +137,7 @@ public class WithinStatutoryTimeOfDaily {
 														  workTimeCode,preFlexTime,
 														  recordReget.getCoreTimeSetting(),
 														  recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-														  recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
+														  recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime(),
 														  recordReget.getDailyUnit(),
 														  recordReget.getWorkTimezoneCommonSet(),
 														  conditionItem,
@@ -172,7 +172,7 @@ public class WithinStatutoryTimeOfDaily {
 					  workTimeCode,preFlexTime,
 					  recordReget.getCoreTimeSetting(),
 					recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-					recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
+					recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime(),
 					recordReget.getDailyUnit(),
 					recordReget.getWorkTimezoneCommonSet(),
 					conditionItem,
@@ -213,7 +213,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   												   PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
+			   												   Finally<AttendanceTime> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
 			   												   Optional<WorkTimezoneCommonSet> commonSetting,
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -396,7 +396,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<WorkTimeCode> workTimeCode,
 			   												   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
 			   												   PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			   												   Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
+			   												   Finally<AttendanceTime> timeVacationAdditionRemainingTime, DailyUnit dailyUnit,
 			   												   Optional<WorkTimezoneCommonSet> commonSetting,
 			   												   WorkingConditionItem conditionItem,
 			   												Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,

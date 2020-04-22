@@ -12,12 +12,12 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -28,15 +28,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 
-	public MidNightTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
+	public MidNightTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding, List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
-		super(timeSheet, calculationTimeSheet,recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}
 	
 	
 	public MidNightTimeSheetForCalc replaceTime(TimeSpanForCalc timeSpan) {
-		return new MidNightTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
-											timeSpan,
+		return new MidNightTimeSheetForCalc(new TimeSpanForDailyCalc(timeSpan.getStart(), timeSpan.getEnd()),
+											this.rounding,
 											this.recordedTimeSheet,
 											this.deductionTimeSheet,
 											this.bonusPayTimeSheet,
@@ -46,21 +46,21 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	
 	
 	public boolean contains(TimeWithDayAttr baseTime) {
-		return ((CalculationTimeSheet)this).getCalcrange().contains(baseTime);
+		return ((CalculationTimeSheet)this).getTimeSheet().contains(baseTime);
 	}
 	/**
 	 * 終了時間と基準時間の早い方の時間を取得する
 	 * @param basePoint　基準時間
 	 * @return 時刻が早い方
 	 */
-	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
+	public TimeSpanForDailyCalc decisionNewSpan(TimeSpanForDailyCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
 		if(isDateBefore) {
 			val endOclock = timeSpan.getEnd().lessThan(baseTime) ? timeSpan.getEnd() : baseTime; 
-			return new TimeSpanForCalc(timeSpan.getStart(),endOclock);
+			return new TimeSpanForDailyCalc(timeSpan.getStart(),endOclock);
 		}
 		else {
 			val startOclock = baseTime.lessThan(timeSpan.getStart()) ? timeSpan.getStart() : baseTime ;
-			return new TimeSpanForCalc(startOclock,timeSpan.getEnd());
+			return new TimeSpanForDailyCalc(startOclock,timeSpan.getEnd());
 		}
 		
 	}
@@ -75,9 +75,8 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		List<BonusPayTimeSheetForCalc>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
 		Optional<MidNightTimeSheetForCalc>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
-		TimeSpanForCalc renewSpan = decisionNewSpan(this.getCalcrange(),baseTime,isDateBefore);
-		TimeZoneRounding roundingset = new TimeZoneRounding(renewSpan.getStart(), renewSpan.getEnd(), this.timeSheet.getRounding());
-		return Optional.of(new MidNightTimeSheetForCalc(roundingset,renewSpan,deductionTimeSheets,recordTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
+		TimeSpanForDailyCalc renewSpan = decisionNewSpan(this.timeSheet,baseTime,isDateBefore);
+		return Optional.of(new MidNightTimeSheetForCalc(renewSpan,this.rounding,deductionTimeSheets,recordTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
 	}
 	
 	
@@ -89,8 +88,8 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		TimeRoundingSetting timeRoundingSetting = commonSetting.isPresent()?commonSetting.get().getLateNightTimeSet().getRoundingSetting():new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN);
-		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), timeRoundingSetting),
-											new TimeSpanForCalc(midNightTimeSheet.getStart(),midNightTimeSheet.getEnd()), 
+		return new MidNightTimeSheetForCalc(new TimeSpanForDailyCalc(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd()),
+											timeRoundingSetting, 
 											Collections.emptyList(), 
 											Collections.emptyList(), 
 											Collections.emptyList(), 
@@ -103,12 +102,12 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param timeSpan　重複を調べたい時間帯
 	 * @return　重複範囲の時間帯深夜時間帯
 	 */
-	public Optional<MidNightTimeSheetForCalc> getDuplicateRangeTimeSheet(TimeSpanForCalc timeSpan) {
+	public Optional<MidNightTimeSheetForCalc> getDuplicateRangeTimeSheet(TimeSpanForDailyCalc timeSpan) {
 		
-		val dupTimeSpan = timeSpan.getDuplicatedWith(this.calcrange);
+		val dupTimeSpan = timeSpan.getDuplicatedWith(this.timeSheet);
 		if(dupTimeSpan.isPresent()) {
-			return Optional.of(new MidNightTimeSheetForCalc(new TimeZoneRounding(dupTimeSpan.get().getStart(), dupTimeSpan.get().getEnd(), this.timeSheet.getRounding()), 
-											dupTimeSpan.get(), 
+			return Optional.of(new MidNightTimeSheetForCalc(dupTimeSpan.get(), 
+											this.rounding, 
 											this.recordedTimeSheet, 
 											this.deductionTimeSheet, 
 											this.bonusPayTimeSheet, 

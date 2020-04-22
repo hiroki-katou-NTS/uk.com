@@ -54,6 +54,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.CalcFlexTime;
@@ -84,7 +85,6 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLea
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 //import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -398,7 +398,7 @@ public class TotalWorkingTime {
 																							 PremiumAtr.RegularWork,
 																							 recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																							 vacationClass,
-																							 recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+																							 recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 																							 StatutoryDivision.Nomal,workType,
 																							 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 																							 recordWorkTimeCode,
@@ -426,7 +426,7 @@ public class TotalWorkingTime {
 					 																				  PremiumAtr.RegularWork,
 					 																				  recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 					 																				  vacationClass,
-					 																				  recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+					 																				  recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 					 																				  StatutoryDivision.Nomal,workType,
 					 																				  recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					 																				  recordWorkTimeCode,
@@ -1055,7 +1055,7 @@ public class TotalWorkingTime {
 																			   				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
 																	  recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 																	  vacationClass,
-																	  recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+																	  recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 																	  StatutoryDivision.Nomal,
 																	  workTimeCode,
 																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
@@ -1079,7 +1079,7 @@ public class TotalWorkingTime {
 			WorkHour workHour = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
 																														 recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																														 vacationClass,
-																														 recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+																														 recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 																														 StatutoryDivision.Nomal,
 																														 workType,
 																														 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
@@ -1216,9 +1216,9 @@ public class TotalWorkingTime {
 							else {
 								end = start;
 							}
-							copyItem.replaceTimeSheet(new TimeSpanForCalc(start, end));
+							copyItem.replaceTimeSheet(new TimeSpanForDailyCalc(start, end));
 							copyItem.replaceOwnDedTimeSheet();
-							actualWorkTime = new AttendanceTime(actualWorkTime.v() + copyItem.calcTotalTime(DeductionAtr.Appropriate).valueAsMinutes());
+							actualWorkTime = new AttendanceTime(actualWorkTime.v() + copyItem.calcTotalTime().valueAsMinutes());
 						}
 					}
 					

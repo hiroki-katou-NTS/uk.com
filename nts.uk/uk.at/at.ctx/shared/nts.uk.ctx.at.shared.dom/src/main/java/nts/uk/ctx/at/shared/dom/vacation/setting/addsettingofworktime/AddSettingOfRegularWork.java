@@ -24,16 +24,19 @@ public class AddSettingOfRegularWork extends AggregateRoot implements AddSetting
 		this.holidayCalcMethodSet = holidayCalcMethodSet;
 	}
 	
-	
-	//「休暇分を含める割増計算詳細設定」or「休暇分を含める就業計算詳細設定」の属性「加算する」を取得する
+	/**
+	 * 「休暇分を含める割増計算詳細設定」or「休暇分を含める就業計算詳細設定」の属性「加算する」を取得する
+	 * @param statutoryDivision
+	 * @return
+	 */
 	public NotUseAtr getNotUseAtr(StatutoryDivision statutoryDivision) {
 		NotUseAtr notUseAtr;
 		if(statutoryDivision.isNomal()) {
-			notUseAtr = this.holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().getIncludeHolidaysWorkCalcDetailSet().getToAdd();
+			notUseAtr = this.holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getDetailSet().get().getIncludeHolidaysWorkCalcDetailSet().getToAdd();
 		}else {
-			notUseAtr = this.holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().getIncludeHolidaysSet().getToAdd();
+			notUseAtr = this.holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getDetailSet().get().getIncludeHolidaysSet().getToAdd();
 		}
-		return notUseAtr;	
+		return notUseAtr;
 	}
 	
 	/**

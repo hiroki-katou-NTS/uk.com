@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeH
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
@@ -53,9 +53,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	/*コアタイム*/
-	private Optional<TimeSpanForCalc> coreTimeSheet;
+	private Optional<TimeSpanForDailyCalc> coreTimeSheet;
 
-	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,List<TimeSheetOfDeductionItem> shortTimeSheets,Optional<TimeSpanForCalc> coreTimeSheet) {
+	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame,List<TimeSheetOfDeductionItem> shortTimeSheets,Optional<TimeSpanForDailyCalc> coreTimeSheet) {
 		super(withinWorkTimeFrame,shortTimeSheets,Optional.of(new LateDecisionClock(new TimeWithDayAttr(0), 1)),Optional.of(new LeaveEarlyDecisionClock(new TimeWithDayAttr(0), 1)));
 		this.coreTimeSheet = coreTimeSheet;
 	}	
@@ -93,7 +93,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @return
 	 */
 	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-			   										VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+			   										VacationClass vacationClass,AttendanceTime timevacationUseTimeOfDaily,
 			   										StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 			   										boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   										boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -161,7 +161,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * フレックス時間の計算
 	 */
 	public CalcFlexTime calcFlexTime(HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
-												   VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+												   VacationClass vacationClass,AttendanceTime timevacationUseTimeOfDaily,
 												   StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 												   boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 												   boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
@@ -330,7 +330,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, 
 									   CalcurationByActualTimeAtr calcActualTime,
 									   VacationClass vacationClass,
-									   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+									   AttendanceTime timevacationUseTimeOfDaily,
 									   StatutoryDivision statutoryDivision,
 									   WorkType workType,
 									   PredetermineTimeSetForCalc predetermineTimeSet,
@@ -443,27 +443,27 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if(a.isPresent()) {
 			for(WithinWorkTimeFrame b : this.getWithinWorkTimeFrame()) {
 				if(isWithin) {
-					val dupRange = a.get().getDuplicatedWith(b.timeSheet.getTimeSpan());
+					val dupRange = a.get().getDuplicatedWith(b.timeSheet);
 					if(dupRange.isPresent()) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
 												 .map(tc -> tc.replaceTimeSpan(dupRange))
 												 .filter(tc -> tc.getGoOutReason().isPresent())
 												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
 														 || tc.getGoOutReason().get().isCompensation())
-												 .map(tc -> tc.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
+												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
 												 .collect(Collectors.summingInt(tc -> tc)));
 												 
 					}
 				}
 				else {
-					val dupRangeList = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
-					for(TimeSpanForCalc newSpan : dupRangeList) {
+					val dupRangeList = a.get().getNotDuplicationWith(b.timeSheet);
+					for(TimeSpanForDailyCalc newSpan : dupRangeList) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
 																			  .map(tc -> tc.replaceTimeSpan(Optional.of(newSpan)))
 																			  .filter(tc -> tc.getGoOutReason().isPresent())
 																			  .filter(tc -> tc.getGoOutReason().get().isPrivate()
 																					  || tc.getGoOutReason().get().isCompensation())
-																			  .map(tc -> tc.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
+																			  .map(tc -> tc.calcTotalTime().valueAsMinutes())
 																			  .collect(Collectors.summingInt(tc -> tc)));
 					}
 				}
@@ -477,7 +477,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	public AttendanceTime calcActualWorkTime(PremiumAtr premiumAtr, 
 									   CalcurationByActualTimeAtr calcActualTime,
 									   VacationClass vacationClass,
-									   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+									   AttendanceTime timevacationUseTimeOfDaily,
 									   StatutoryDivision statutoryDivision,
 									   WorkType workType,
 									   PredetermineTimeSetForCalc predetermineTimeSet,
