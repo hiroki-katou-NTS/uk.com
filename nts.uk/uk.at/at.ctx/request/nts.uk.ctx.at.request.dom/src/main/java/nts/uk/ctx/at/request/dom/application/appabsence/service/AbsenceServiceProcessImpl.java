@@ -81,8 +81,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Annu
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -155,7 +160,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+
+	@Inject
+	private WorkTimeSettingRepository wkTimeRepo;
 	
+	@Inject
+	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
@@ -526,10 +536,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// pending / chưa đối ứng
 		}
 		// 勤務時間初期値の取得
-		PrescribedTimezoneSetting prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
+		List<TimezoneUse> timezoneList = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
 		// 返ってきた「時間帯(使用区分付き)」を「休暇申請起動時の表示情報」にセットする
-		if(prescribedTimezoneSet != null) {
-			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getLstTimezone());
+		if(timezoneList != null) {
+			appAbsenceStartInfoOutput.setWorkTimeLst(timezoneList);
 		}
 		// 「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
@@ -543,7 +553,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workTimeCode
 	 * @return
 	 */
-	public PrescribedTimezoneSetting initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
+	public List<TimezoneUse> initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
@@ -554,17 +564,51 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if (workTimeCode != null && !workTimeCode.equals("")) {
-					if (predTimeRepository.findByWorkTimeCode(companyID, workTimeCode).isPresent()) {
-						PrescribedTimezoneSetting prescribedTzs = predTimeRepository
-								.findByWorkTimeCode(companyID, workTimeCode).get().getPrescribedTimezoneSetting();
-						return prescribedTzs;
-					}
-				}
+				return this.getTimeZones(companyID, workTimeCode, EnumAdaptor.valueOf(workStyle.value, WorkStyle.class));
 			}
 		}
 		return null;
 	}
+	
+	public List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode, WorkStyle wkTypeAttendance) {
+
+		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();
+
+		// ○就業時間帯を取得
+		Optional<WorkTimeSetting> workTimeOpt = wkTimeRepo.findByCode(companyID, wkTimeCode);
+
+		if (workTimeOpt.isPresent()) {
+
+			wkTimeCode = workTimeOpt.get().getWorktimeCode().v();
+			// ○所定時間帯を取得
+			Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID, wkTimeCode);
+
+			if (preTimeSetOpt.isPresent()) {
+
+				PredetemineTimeSetting preTimeSet = preTimeSetOpt.get();
+
+				List<TimezoneUse> timeZonesInPreTimeSet = preTimeSet.getPrescribedTimezoneSetting().getLstTimezone();
+
+				switch (wkTypeAttendance) {
+				case MORNING_WORK:
+					timeZonesInPreTimeSet.stream().forEach(
+							x -> x.updateEndTime(preTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()));
+					break;
+				case AFTERNOON_WORK:
+					timeZonesInPreTimeSet.stream().forEach(
+							x -> x.updateStartTime(preTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()));
+					break;
+				default:
+					break;
+				}
+
+				timeZones = timeZonesInPreTimeSet;
+			}
+
+		}
+		return timeZones;
+	}
+
 
 	@Override
 	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID,
