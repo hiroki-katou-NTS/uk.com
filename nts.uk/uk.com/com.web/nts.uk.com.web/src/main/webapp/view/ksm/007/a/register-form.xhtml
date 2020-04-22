@@ -1,52 +1,75 @@
 <div id="register-form">
-    <!-- A4 -->
-    <div class="valign-center control-group">
-        <div data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupCode', required: true, enable: true}">
-            #{i18n.getText('KSM007_6')}</div>
+  <!-- A4 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupCode', required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_6')}
+    </div>
 
-        <input  tabindex="5" class="inputRequired" id="requiredCode" data-bind="ntsTextEditor: {	
+    <input
+      tabindex="5"
+      class="inputRequired"
+      id="requiredCode"
+      data-bind="ntsTextEditor: {	
 name: '#[KSM007_6]',
 constraint: 'WorkplaceGroupCode',
 value: registerForm().workplaceGroupCd,
 option: { width: '120px', textalign: 'left' },
 enable: registerForm().newMode,
-required: true}" />
+required: true}"
+    />
+  </div>
+  <!-- A5 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_7')}
     </div>
-    <!-- A5 -->
-    <div class="valign-center control-group">
-        <div data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}">
-            #{i18n.getText('KSM007_7')}</div>
-        <input tabindex="6" data-bind="ntsTextEditor: {	
+    <input
+      tabindex="6"
+      data-bind="ntsTextEditor: {	
 name: '#[KSM007_7]',
 value: registerForm().workplaceGroupName,
 constraint: 'WorkplaceGroupName',
-option: { width: '120px', textalign: 'left' },
-required: true}" />
-    </div>  
-    <!-- A6 -->
-    <div class="valign-center control-group">
-        <div data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}">
-            #{i18n.getText('KSM007_10')}</div>
-            <div data-bind="ntsRadioBoxGroup: {
+option: { width: '222px', textalign: 'left' },
+required: true}"
+    />
+  </div>
+  <!-- A6 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_10')}
+    </div>
+    <div
+      data-bind="ntsRadioBoxGroup: {
                 options: registerForm().workplaceGroupTypes,
                 optionsValue: 'value',
                 optionsText: 'name',
                 value: registerForm().selectedWkpType,
-                enable: registerForm().newMode }"></div>
-    </div>  
+                enable: registerForm().newMode }"
+    ></div>
+  </div>
 
-    
-    <!-- A7 -->
-    <div class="valign-center control-group">
-        <button data-bind="click: openDialogCDL008">#{i18n.getText('KSM007_11')}</button>
-        <button data-bind="click: removeWorkplace">#{i18n.getText('KSM007_12')}</button>
-    </div>
-    <!-- A8 -->
+  <!-- A7 -->
+  <div class="valign-center control-group">
+    <button data-bind="click: openDialogCDL008">
+      #{i18n.getText('KSM007_11')}
+    </button>
+    <button data-bind="click: removeWorkplace">
+      #{i18n.getText('KSM007_12')}
+    </button>
+  </div>
+  <!-- A8 -->
+  <div>
     <table
-          id="workplace-list"
-          data-bind="ntsGridList: {
-                height: 350,
-                width: 500,
+      id="workplace-list"
+      data-bind="ntsGridList: {
+                height: 270,
+                width: 550,
                 dataSource: registerForm().workplaces,
                 optionsValue: 'workplaceId',
                 columns: registerForm().gridColumns,
@@ -54,5 +77,5 @@ required: true}" />
                 value: registerForm().selectedWorkplaces
             }"
     ></table>
-    
+  </div>
 </div>
