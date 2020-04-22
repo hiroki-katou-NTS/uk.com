@@ -83,8 +83,12 @@ module nts.uk.com.view.kcp011.share {
                     setting.currentIds([]);
                 } else if (selectedMode == SELECTED_MODE.FIRST) {
                     // show empty item will not select the empty one
-                    let idx = setting.showEmptyItem ? 1 : 0
-                    setting.currentIds(self.workplaceGroups()[idx] ? [self.workplaceGroups()[idx].id] : []);
+                    let idx = setting.showEmptyItem ? 1 : 0;
+                    if(setting.multiple) {
+                        setting.currentIds(self.workplaceGroups()[idx] ? [self.workplaceGroups()[idx].id] : []);
+                    } else {
+                        setting.currentIds(self.workplaceGroups()[idx] ? self.workplaceGroups()[idx].id : null);
+                    }
                 } else if (selectedMode == SELECTED_MODE.ALL) {
                     setting.currentIds(_.map(self.workplaceGroups(), (wkp) => { return wkp.id }));
                 }

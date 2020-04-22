@@ -45,7 +45,7 @@ module nts.uk.at.view.ksm007.a {
             });
 
             if(self.workplaceGroupList().length === 0) {
-                self.registerForm().clearData();
+                self.createNew();
             }
 
         }
@@ -120,7 +120,11 @@ module nts.uk.at.view.ksm007.a {
 					}
 					service.deleteWorkplaceGroup(param).done(() => {
                         self.options.reloadData.valueHasMutated();
-                        self.currentIds(nextSelectedCode);
+                        if(self.workplaceGroupList().length == 1) {
+                            self.createNew();
+                        } else {
+                            self.currentIds(nextSelectedCode);
+                        }
 							
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId });
