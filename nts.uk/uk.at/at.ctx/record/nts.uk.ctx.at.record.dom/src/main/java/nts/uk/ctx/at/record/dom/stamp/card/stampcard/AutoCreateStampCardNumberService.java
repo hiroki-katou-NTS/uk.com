@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
@@ -58,21 +59,75 @@ public class AutoCreateStampCardNumberService {
 	 */
 	private Optional<StampCard> createStampCard(Require require, String employeeID) {
 		//	$社員データ管理情報 = require.社員情報を取得する(社員ID)	
-		//EmployeeDataMngInfoImport empInfo =  
+		List<EmployeeDataMngInfoImport> empInfos =  require.findBySidNotDel(Arrays.asList(employeeID));
 		
-		return null;
+		//if $社員データ管理情報.isEmpty
+		if (empInfos.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		EmployeeDataMngInfoImport  empInfo = empInfos.get(0);
+		
+		//	$会社情報 = require.会社情報を取得する($社員データ管理情報.会社ID)
+		
+		Optional<CompanyImport622> companyInfoOpt = require.getCompanyNotAbolitionByCid(empInfo.getCompanyId());
+		
+		
+		//	if $会社情報.isEmpty
+		
+		if(!companyInfoOpt.isPresent()){
+			return Optional.empty();
+		}
+		CompanyImport622 companyInfo = companyInfoOpt.get();
+		
+		// $打刻カード番号 = [prv-2] 打刻カード番号を作成する(require, $会社情報.契約コード, $会社情報.会社ID,
+		// $会社情報.会社コード, $社員データ管理情報.社員コード)	
+		Optional<String> stampCardNumberOpt = createStampCardNumber(require, companyInfo.getContractCd(), companyInfo.getCompanyId(),
+				companyInfo.getCompanyCode(), empInfo.getEmployeeCode());
+		
+		//	if $打刻カード番号.isEmpty
+		if(!stampCardNumberOpt.isPresent()){
+			return Optional.empty();
+		}
+		
+		return Optional.of(new StampCard(companyInfo.getContractCd(), stampCardNumberOpt.get(), employeeID));
 	}
 
 	/**
 	 * [prv-2] 打刻カード番号を作成する
 	 */
-	private void createStampCardNumber() {
+	private Optional<String> createStampCardNumber(Require require, String contractCode, String companyId,
+			String companyCode, String employeeCode) {
+		// $打刻カード編集 = require.打刻カード編集を取得する(会社ID)
+		Optional<StampCardEditing> stampCardEditingOpt = require.get(companyId);
 
+		// if $打刻カード編集.isEmpty
+		if (!stampCardEditingOpt.isPresent()) {
+			return Optional.empty();
+		}
+
+		// $打刻カード番号 = $打刻カード編集.打刻カードを作成する(会社コード, 社員コード)
+		Optional<String> stampCardNumberOpt = stampCardEditingOpt.get().createStampCard(companyCode, employeeCode);
+
+		// if $打刻カード番号.isEmpty
+
+		if (!stampCardNumberOpt.isPresent()) {
+			return Optional.empty();
+		}
+		// $登録済カード = require.打刻カードを取得する(契約コード, $打刻カード番号)
+
+		Optional<Stamp> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
+
+		// if not $登録済カード.isEmpty
+		if (stampOpt.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(stampCardNumberOpt.get());
 	}
 	
 	public static interface Require {
 		// [R-1] 社員情報を取得する
-		//List<EmployeeDataMngInfo> findBySidNotDel(List<String> sid);
+		List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid);
 		// [R-2] 会社情報を取得する
 		Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
 		// [R-3] 打刻カード編集を取得する

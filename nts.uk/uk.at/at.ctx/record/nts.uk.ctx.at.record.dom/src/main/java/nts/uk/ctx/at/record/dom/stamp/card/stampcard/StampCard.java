@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 
 /**
  * 打刻カード
@@ -46,6 +47,18 @@ public class StampCard extends AggregateRoot {
 				registerDate);
 	}
 
+	
+	public StampCard(String stampCardId, ContractCode contractCd, StampNumber stampNumber, String employeeId,
+			GeneralDate registerDate) {
+		super();
+		this.stampCardId = stampCardId;
+		this.contractCd = contractCd;
+		this.stampNumber = stampNumber;
+		this.employeeId = employeeId;
+		this.registerDate = registerDate;
+
+	}
+	
 	/**
 	 * [C-1] 作成する
 	 * 
@@ -55,16 +68,13 @@ public class StampCard extends AggregateRoot {
 	 *            stampNumber
 	 * @param 社員ID
 	 *            employeeId
-	 * @param 登録日付
-	 *            registerDate
 	 */
-	public StampCard(String stampCardId,ContractCode contractCd, StampNumber stampNumber, String employeeId, GeneralDate registerDate) {
+	public StampCard(String contractCd, String stampNumber, String employeeId) {
 		super();
-		this.stampCardId = stampCardId;
-		this.contractCd = contractCd;
-		this.stampNumber = stampNumber;
+		this.stampCardId = IdentifierUtil.randomUniqueId();
+		this.contractCd = new ContractCode(contractCd);
+		this.stampNumber = new StampNumber(stampNumber);
 		this.employeeId = employeeId;
-		this.registerDate = registerDate;
-
+		this.registerDate = GeneralDate.today();
 	}
 }
