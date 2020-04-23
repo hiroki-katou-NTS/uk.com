@@ -8,16 +8,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * DS : 社員の打刻データを作成する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.社員の打刻データを作成する
@@ -61,6 +63,7 @@ public class CreateStampDataForEmployeesService {
 //		
 //		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.of(stamp));
 		return null;
+
 	}
 
 	/**
@@ -100,6 +103,7 @@ public class CreateStampDataForEmployeesService {
 	 * @param positionInfo 打刻位置情報	
 	 * @return 	打刻
 	 */
+
 	// private static Stamp createStampDataInfo(StampNumber stampNumber, GeneralDateTime datetime,
 	// 		boolean stampAtr,Relieve relieve, StampType type, RefectActualResult refActualResults,
 	// 		Optional<GeoCoordinate> positionInfo) {

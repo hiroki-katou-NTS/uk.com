@@ -35,12 +35,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDesti
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.goout.OutingManagement;
 import nts.uk.ctx.at.record.dom.goout.repository.OutingManagementRepository;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -661,7 +661,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -884,7 +884,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			break;
 		}
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -1218,7 +1218,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -1300,7 +1300,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -1521,7 +1521,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -1598,7 +1598,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							? timeLeavingWork.getLeaveStamp().get() : null);
 		}
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -2119,7 +2119,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		}
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
@@ -2219,7 +2219,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2318,7 +2318,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2399,7 +2399,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
@@ -2612,7 +2612,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					// 5*
 					// gan 反映済み区分 = true, trường này chưa có trong StampItem
-					Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+					Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
 							x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
 					stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 				}

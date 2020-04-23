@@ -6,8 +6,9 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 
 /**
  * @author ThanhNX
@@ -15,7 +16,11 @@ import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
  *         打刻記録
  */
 public class StampRecord implements DomainAggregate {
-
+	/**
+	 * 	契約コード
+	 */
+	@Getter
+	private final ContractCode contractCode;
 	/**
 	 * 打刻カード番号
 	 */
@@ -46,9 +51,18 @@ public class StampRecord implements DomainAggregate {
 	@Getter
 	private final Optional<EmpInfoTerminalCode> empInfoTerCode;
 
-	public StampRecord(StampNumber stampNumber, GeneralDateTime stampDateTime, boolean stampArt,
-			ReservationArt revervationAtr, Optional<EmpInfoTerminalCode> empInfoTerCode) {
+	/**
+	 * [C-0] 打刻記録(契約コード, 打刻カード番号, 打刻日時, 打刻区分, 予約区分, 就業情報端末コード)
+	 * @param stampNumber
+	 * @param stampDateTime
+	 * @param stampArt
+	 * @param revervationAtr
+	 * @param empInfoTerCode
+	 */
+	public StampRecord(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime stampDateTime,
+			boolean stampArt, ReservationArt revervationAtr, Optional<EmpInfoTerminalCode> empInfoTerCode) {
 		super();
+		this.contractCode = contractCode;
 		this.stampNumber = stampNumber;
 		this.stampDateTime = stampDateTime;
 		this.stampArt = stampArt;

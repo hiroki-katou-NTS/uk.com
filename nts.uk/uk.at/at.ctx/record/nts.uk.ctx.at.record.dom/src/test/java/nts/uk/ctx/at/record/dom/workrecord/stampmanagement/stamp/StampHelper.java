@@ -10,14 +10,15 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 public class StampHelper {
 
 	public static Stamp getStampDefault() {
-		return new Stamp(
+		return new Stamp(new ContractCode(AppContexts.user().contractCode()),
 				new StampNumber("stampNumber"),
 				GeneralDateTime.now(), 
 				new Relieve(
@@ -51,7 +52,7 @@ public class StampHelper {
 						getGeoCoordinateDefault()));
 	}
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
-		return new Stamp(
+		return new Stamp(new ContractCode(AppContexts.user().contractCode()),
 				new StampNumber(stampNumber),
 				GeneralDateTime.now(), 
 				new Relieve(
@@ -78,7 +79,7 @@ public class StampHelper {
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
 		data.add(getStampDefault());
-		data.add(new Stamp(new StampNumber("stampNumber1"), GeneralDateTime.now(),
+		data.add(new Stamp(new ContractCode(AppContexts.user().contractCode()),new StampNumber("stampNumber1"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
@@ -86,7 +87,7 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(2))),
 				false, new StampLocationInfor(false, getGeoCoordinateDefault())));
-		data.add(new Stamp(new StampNumber("stampNumber"), GeneralDateTime.now().addDays(1),
+		data.add(new Stamp(new ContractCode(AppContexts.user().contractCode()),new StampNumber("stampNumber"), GeneralDateTime.now().addDays(1),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
@@ -137,7 +138,7 @@ public class StampHelper {
 	}
 
 	public static StampCard getStampCardByInput(String stampCardId, String stampNumber, GeneralDate registerDate) {
-		return new StampCard(stampCardId, "employeeId",new StampNumber(stampNumber), registerDate, new ContractCode("contractCd"));
+		return new StampCard(stampCardId, new ContractCode("contractCd"),new StampNumber(stampNumber), "employeeId", registerDate);
 		
 	}
 	
