@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualRes
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 /**
  * DS : 社員の打刻データを作成する
@@ -28,6 +29,8 @@ public class CreateStampDataForEmployeesService {
 	 * [1] 作成する
 	 * 
 	 * @param require
+	 * @param contractCode
+	 * 				契約コード
 	 * @param employeeId
 	 *            	社員ID
 	 * @param datetime
@@ -47,16 +50,17 @@ public class CreateStampDataForEmployeesService {
 	public static StampDataReflectResult create(Require require, String employeeId, GeneralDateTime datetime,
 			Relieve relieve, ButtonType buttonType, Optional<RefectActualResult> refActualResults,
 			Optional<GeoCoordinate> positionInfo, Optional<EmpInfoTerminalCode> empInfoTerCode) {
-		StampNumber stampNumber = getCardNumber(require, employeeId);
-		boolean stampAtr = buttonType.checkStampType();
-		
-		StampRecord stampRecord = new StampRecord(stampNumber, datetime, stampAtr, buttonType.getReservationArt(), empInfoTerCode); 
-		if(!stampAtr) {
-			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.empty());
-		}
-		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType().get(), refActualResults.get(), positionInfo);
-		
-		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.of(stamp));
+//		StampNumber stampNumber = getCardNumber(require, employeeId);
+//		boolean stampAtr = buttonType.checkStampType();
+//		
+//		StampRecord stampRecord = new StampRecord(stampNumber, datetime, stampAtr, buttonType.getReservationArt(), empInfoTerCode); 
+//		if(!stampAtr) {
+//			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.empty());
+//		}
+//		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType().get(), refActualResults.get(), positionInfo);
+//		
+//		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.of(stamp));
+		return null;
 	}
 
 	/**
@@ -65,9 +69,17 @@ public class CreateStampDataForEmployeesService {
 	 * @param require
 	 * @param employeeId
 	 *            社員ID
+	 * @param stampNumber
+	 * 			 打刻カード番号
+	 * @param stampMethod
+	 * 				打刻手段		
 	 * @return 打刻カード番号
 	 */
-	private static StampNumber getCardNumber(Require require, String employeeId) {
+	private static StampNumber getCardNumber(Require require, String employeeId,Optional<StampNumber> stampNumber, StampMeans stampMeans ) {
+		//	if 打刻する方法.打刻手段 == ICカード																	
+		// return 打刻カード作成結果#打刻カード作成結果($打刻カード, empty)	
+
+		
 		List<StampCard> listStampCard = require.getListStampCard(employeeId);
 		if (listStampCard.isEmpty()) {
 			throw new BusinessException("Msg_433");
@@ -78,7 +90,7 @@ public class CreateStampDataForEmployeesService {
 	}
 
 	/**
-	 * [prv-2] 打刻データ情報を作成する
+	* [prv-2] 打刻データ情報を作成する
 	 * @param stampNumber 打刻カード番号
 	 * @param datetime 打刻日時
 	 * @param stampAtr 打刻区分
@@ -88,19 +100,19 @@ public class CreateStampDataForEmployeesService {
 	 * @param positionInfo 打刻位置情報	
 	 * @return 	打刻
 	 */
-	private static Stamp createStampDataInfo(StampNumber stampNumber, GeneralDateTime datetime,
-			boolean stampAtr,Relieve relieve, StampType type, RefectActualResult refActualResults,
-			Optional<GeoCoordinate> positionInfo) {
-		StampLocationInfor stampLocationInfor = null;
-		if(positionInfo.isPresent()) {
-			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
-		}
-		return new Stamp(
-				stampNumber, 
-				datetime, 
-				relieve, 
-				type, refActualResults, stampLocationInfor);
-	}
+	// private static Stamp createStampDataInfo(StampNumber stampNumber, GeneralDateTime datetime,
+	// 		boolean stampAtr,Relieve relieve, StampType type, RefectActualResult refActualResults,
+	// 		Optional<GeoCoordinate> positionInfo) {
+	// 	StampLocationInfor stampLocationInfor = null;
+	// 	if(positionInfo.isPresent()) {
+	// 		stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
+	// 	}
+	// 	return new Stamp(
+	// 			stampNumber, 
+	// 			datetime, 
+	// 			relieve, 
+	// 			type, refActualResults, stampLocationInfor);
+	// }
 
 	public static interface Require extends StampDataReflectProcessService.Require {
 		/**
