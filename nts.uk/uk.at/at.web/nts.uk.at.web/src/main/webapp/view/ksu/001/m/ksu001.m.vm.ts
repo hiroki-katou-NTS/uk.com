@@ -34,13 +34,14 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
         arrSid: any;
 
+        enableSave: KnockoutObservable<boolean> = ko.observable(true);
 
 
         constructor() {
             let self = this;
 
             self.selectedRankCode = ko.observable(['1']);
-            
+
             ///KCP005
             self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
@@ -52,7 +53,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             this.employeeList = ko.observableArray<UnitModel>([
 
             ]);
-            
+
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultiSelect(),
@@ -72,14 +73,14 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             };
         }
 
-        
+
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             self.selectedCode(_.map(nts.uk.ui.windows.getShared('KSU001M'), "id"));
             self.listEmpData(nts.uk.ui.windows.getShared('KSU001M'));
             if (nts.uk.util.isNullOrEmpty(self.listEmpData())) {
-                $("#component-items-list").hide();
+                self.enableSave(false);
             }
             var arrSid: any = [];
             var dataEmp = [];
@@ -104,7 +105,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 self.listRankDto(data.listRankDto);
                 self.listEmpRankDto(data.listEmpRankDto);
                 self.employeeList(self.listEmpData());
-                
+
                 var tempOptionalDataSource: any = [];
                 if (self.listEmpData() != null) {
                     self.listEmpData().forEach(function(item) {
@@ -112,7 +113,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                     });
                 }
                 self.optionalColumnDatasource(tempOptionalDataSource);
-                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function(){
+                $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
                     _.defer(function() {
                         let componentGridId = "#" + $("#component-items-list").find("[id$='tooltips_ruler']").attr('id').split("_")[0];
                         $(componentGridId).igGrid("option", "width", 500);
@@ -147,13 +148,14 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 service.regis(param).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     block.clear();
-                    self.startPage().done(() => {});
-
+                    self.startPage().done(() => { });
                 }).fail((res: any) => {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId });
                     block.clear();
                 }).always(() => {
                     block.clear();
+                    $("#combo-box").focus();
+
                 });
             }
         }

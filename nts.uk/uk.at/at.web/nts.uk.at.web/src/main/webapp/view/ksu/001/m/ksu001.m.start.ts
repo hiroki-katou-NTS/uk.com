@@ -3,6 +3,7 @@ module nts.uk.at.view.ksu001.m {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $( "#combo-box" ).focus();
         });
     });
 }
