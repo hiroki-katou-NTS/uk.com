@@ -93,7 +93,7 @@ module nts.uk.com.view.kcp011.share {
                     setting.currentIds(_.map(notNashi, (wkp) => { return wkp.id }));
                 }
             });
-
+            
         }
 
         loadData() {
@@ -176,10 +176,10 @@ module nts.uk.com.view.kcp011.share {
 ko.components.register('workplace-group', {
     viewModel: nts.uk.com.view.kcp011.share.WorkplaceGroupComponent, template: `
     <div data-bind="if:setting().showPanel ">
-        <div id="workplace-group-pannel" data-bind="ntsPanel: {width: '380px', height: calculatePanelHeight(), direction: '', showIcon: true, visible: setting().showPanel}">
-            <div data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list', 
+        <div id="workplace-group-pannel" class="caret-right caret-background" data-bind="ntsPanel: {width: '380px', height: calculatePanelHeight(), direction: '', showIcon: true, visible: setting().showPanel}">
+            <div  data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list', 
                     items: workplaceGroups, selectedKey: 'id', 
-                    fields: ['id', 'code', 'name'], 
+                    fields: ['code', 'name'], 
                     selected: setting().currentIds,
                     mode: 'igGrid'}" />
                 <table id="multi-list"
@@ -197,25 +197,26 @@ ko.components.register('workplace-group', {
                 </table>
         </div>
     </div>
-
-    <div id="workplace-group-pannel" style="width: 380px" data-bind="if: !setting().showPanel">
-        <div data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list-nopanel', 
-                  items: workplaceGroups, selectedKey: 'id', 
-                  fields: ['id', 'code', 'name'], 
-                  selected: setting().currentIds,
-                  mode: 'igGrid'}" />
-            <table id="multi-list-nopanel"
-                data-bind="ntsGridList: {
-                        height: setting().height ? setting().height: 420,
-                        dataSource: workplaceGroups,
-                        primaryKey: 'id',
-                        columns: columns,
-                        multiple: setting().multiple,
-                        value: setting().currentIds,
-                        rows: setting().rows,
-                        columnResize: setting().isResize
-                    }">
-            </table>
+    <div data-bind="if:!setting().showPanel ">
+        <div id="workplace-group-pannel" class="caret-right caret-background" style="width: 380px" data-bind="if: !setting().showPanel">
+            <div  data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list-nopanel', 
+                    items: workplaceGroups, selectedKey: 'id', 
+                    fields: ['code', 'name'], 
+                    selected: setting().currentIds,
+                    mode: 'igGrid'}" />
+                <table id="multi-list-nopanel"
+                    data-bind="ntsGridList: {
+                            height: setting().height ? setting().height: 420,
+                            dataSource: workplaceGroups,
+                            primaryKey: 'id',
+                            columns: columns,
+                            multiple: setting().multiple,
+                            value: setting().currentIds,
+                            rows: setting().rows,
+                            columnResize: setting().isResize
+                        }">
+                </table>
+        </div>
     </div>
 `});
 

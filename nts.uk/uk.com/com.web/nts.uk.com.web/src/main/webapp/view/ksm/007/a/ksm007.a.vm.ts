@@ -25,12 +25,12 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 400,
+                height: 370,
                 selectedMode: 1
             };
 
             self.currentIds.subscribe((val) => {
-                nts.uk.ui.errors.clearAll();
+                // nts.uk.ui.errors.clearAll();
                 if(val && val.length > 0) {
                     service.getWorkplaceGroupInfo(val).done((res) => {
                         // data server return list format
@@ -40,7 +40,9 @@ module nts.uk.at.view.ksm007.a {
                         service.getWorkplaceByGroup(val).done((wkps) => {
                             self.getAndBindWorkplaceInfo(wkps, new Date());
                         });
-                    })
+                    });
+                    $('#requiredName').focus();
+                    nts.uk.ui.errors.clearAll();
                 }
             });
 
@@ -114,7 +116,7 @@ module nts.uk.at.view.ksm007.a {
                     let info = _.find(listWorkplaceInfo, (wkp) => {return wkp.workplaceId == lstWKPID[idx]; });
                     if (info) {
                         bundledErrors.push({
-                            message: info.workplaceCode + ' ' + info.workplaceName + ' ' + info.genericName,
+                            message: resource.getMessage('Msg_1630', [info.workplaceCode, info.workplaceName, info.genericName]),
                             messageId: "Msg_1630",
                             supplements: {}
                         });
