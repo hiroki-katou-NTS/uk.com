@@ -938,9 +938,10 @@ public class HolidayShipmentScreenAFinder {
 		//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)//(DisplayInfo khi khởi động đơn xin làm bu. WorktypeList= worktype của làm bù đã lấy(List))
 		result.setWorkTypeList(workTypeForWorkingDay.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 		
-		//振出申請起動時の表示情報．初期選択勤務種類=取得した振出用勤務種類(List)の先頭の勤務種類 /(DisplayInfo khi khởi động đơn xin làm bù. InitialSelectionWorkType= worktype đầu tiên của worktype làm bù(list) đã lấy)
-		result.setSelectionWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
-		
+		if(!workTypeForWorkingDay.isEmpty()) {
+			//振出申請起動時の表示情報．初期選択勤務種類=取得した振出用勤務種類(List)の先頭の勤務種類 /(DisplayInfo khi khởi động đơn xin làm bù. InitialSelectionWorkType= worktype đầu tiên của worktype làm bù(list) đã lấy)
+			result.setSelectionWorkType(workTypeForWorkingDay.get(0).getWorkTypeCode().v());
+		}
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType(), result.getSelectionWorkTime());
 		if(prescribedTimezoneSetting != null) {
