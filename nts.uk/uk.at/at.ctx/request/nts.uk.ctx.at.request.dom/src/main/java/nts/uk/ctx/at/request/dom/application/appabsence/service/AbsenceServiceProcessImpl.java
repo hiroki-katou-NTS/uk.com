@@ -83,6 +83,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Subs
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -155,6 +158,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject 
+	private WorkTimeSettingService weorkTimeSettingService;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -526,10 +532,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// pending / chưa đối ứng
 		}
 		// 勤務時間初期値の取得
-		PrescribedTimezoneSetting prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
+		PredetermineTimeSetForCalc prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
 		// 返ってきた「時間帯(使用区分付き)」を「休暇申請起動時の表示情報」にセットする
 		if(prescribedTimezoneSet != null) {
-			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getLstTimezone());
+			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getTimezones());
 		}
 		// 「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
@@ -543,7 +549,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workTimeCode
 	 * @return
 	 */
-	public PrescribedTimezoneSetting initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
+	public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
@@ -554,13 +560,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if (workTimeCode != null && !workTimeCode.equals("")) {
-					if (predTimeRepository.findByWorkTimeCode(companyID, workTimeCode).isPresent()) {
-						PrescribedTimezoneSetting prescribedTzs = predTimeRepository
-								.findByWorkTimeCode(companyID, workTimeCode).get().getPrescribedTimezoneSetting();
-						return prescribedTzs;
-					}
-				}
+				return weorkTimeSettingService.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
+				
 			}
 		}
 		return null;
