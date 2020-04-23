@@ -100,7 +100,7 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 				.query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
 				.setParameter("WKPGRPID", WKPGRPID)
 				.getList();
-		if (CollectionUtil.isEmpty(entities)) {
+		if (!CollectionUtil.isEmpty(entities)) {
 			for(BsymtAffWorkPlaceGroup entity : entities) {
 				this.commandProxy().remove(entity);				
 			}

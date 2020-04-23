@@ -90,7 +90,8 @@ module nts.uk.com.view.kcp011.share {
                         setting.currentIds(self.workplaceGroups()[idx] ? self.workplaceGroups()[idx].id : null);
                     }
                 } else if (selectedMode == SELECTED_MODE.ALL) {
-                    setting.currentIds(_.map(self.workplaceGroups(), (wkp) => { return wkp.id }));
+                    let notNashi = _.filter(self.workplaceGroups(), (val) => { return val.code != ''; });
+                    setting.currentIds(_.map(notNashi, (wkp) => { return wkp.id }));
                 }
             });
 
