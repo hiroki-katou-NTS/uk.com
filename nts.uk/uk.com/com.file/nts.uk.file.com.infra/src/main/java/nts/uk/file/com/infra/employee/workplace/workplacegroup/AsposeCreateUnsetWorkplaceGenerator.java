@@ -8,15 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.aspose.cells.Worksheet;
-
 import approve.employee.workplace.workplacegroup.CreateUnsetWorkplaceGenerator;
 import approve.employee.workplace.workplacegroup.CreateUnsetWorkplaceGeneratorExportDto;
 import approve.employee.workplace.workplacegroup.OutputExportKSM007;
 import approve.employee.workplace.workplacegroup.WorkplaceInforDto;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.export.WorkingFile;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,8 +47,8 @@ public class AsposeCreateUnsetWorkplaceGenerator extends AsposeCellsReportGenera
 					.stream().sorted((x,y)->x.getWorkplaceCode().compareTo(y.getWorkplaceCode()))
 					.collect(Collectors.toList());
 			String titleName = query.getHeader().getTitle();
-			GeneralDateTime dateNow = GeneralDateTime.now();
-			String dateTime ="【対象期間】  "+ dateNow.toString("yyyy/MM/dd HH:mm");
+//			GeneralDateTime dateNow = GeneralDateTime.now();
+//			String dateTime ="【対象期間】  "+ dateNow.toString("yyyy/MM/dd HH:mm");
 			
 			reportContext.setDataSource("item",listWorkplaceInfor );
 			reportContext.setDataSource("titleName", titleName);
@@ -59,10 +56,10 @@ public class AsposeCreateUnsetWorkplaceGenerator extends AsposeCellsReportGenera
 			reportContext.setDataSource("headerA", headerA);
 			reportContext.setDataSource("headerB", headerB);
 			reportContext.setDataSource("headerC", headerC);
-			reportContext.setDataSource("dateTime", dateTime);
-			reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0,"&\"ＭＳ ゴシック\"&9" + companyName);
-			reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&\"ＭＳ ゴシック\"&16"+titleName);
-			String fileName = "未設定職場リスト.xlsx";
+//			reportContext.setDataSource("dateTime", dateTime);
+			reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(0,"&\"ＭＳ ゴシック\"&8" + companyName);
+			reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(1, "&\"ＭＳ ゴシック\"&14"+titleName);
+			String fileName =TextResource.localize("KSM007_16") + ".xlsx";
 			OutputStream outputStream = this.createNewFile(fileGeneratorContext, fileName);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(outputStream);
