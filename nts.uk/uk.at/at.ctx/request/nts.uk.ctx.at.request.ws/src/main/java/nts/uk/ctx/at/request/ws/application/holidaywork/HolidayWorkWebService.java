@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWo
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
@@ -62,10 +63,11 @@ public class HolidayWorkWebService extends WebService{
 	
 	@POST
 	@Path("getHolidayWorkByUI")
-	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
-		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
+	public AppHdWorkDispInfoDto getOvertimeByUIType(ParamGetHolidayWork param) {
+		/*AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
 		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
-		return appHolidayWorkDto;
+		return appHolidayWorkDto;*/
+		return appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
 	}
 	@POST
 	@Path("findChangeAppDate")

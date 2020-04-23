@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
 
 /**
- * 
+ * 申請用時間外労働時間パラメータ
  * @author Doan Duy Hung
  *
  */
@@ -15,11 +15,23 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 @Getter
 public class AgreeOverTimeOutput {
 	
+	/**
+	 * 当月の時間外時間
+	 */
 	private AgreementTimeImport detailCurrentMonth;
 	
+	/**
+	 * 翌月の時間外時間
+	 */
 	private AgreementTimeImport detailNextMonth;
 	
+	/**
+	 * 当月の年月
+	 */
 	private YearMonth currentMonth;
 	
+	/**
+	 * 翌月の年月
+	 */
 	private YearMonth nextMonth;
 }
