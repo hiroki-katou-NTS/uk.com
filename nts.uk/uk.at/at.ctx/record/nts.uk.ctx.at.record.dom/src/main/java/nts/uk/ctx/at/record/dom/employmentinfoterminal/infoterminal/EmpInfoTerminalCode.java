@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.employmentinfoterminal;
+package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

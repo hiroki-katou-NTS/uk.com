@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;

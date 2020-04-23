@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;

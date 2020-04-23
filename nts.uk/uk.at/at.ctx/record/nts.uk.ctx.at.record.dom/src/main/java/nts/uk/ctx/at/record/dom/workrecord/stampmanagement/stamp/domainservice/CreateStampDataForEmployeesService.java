@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
