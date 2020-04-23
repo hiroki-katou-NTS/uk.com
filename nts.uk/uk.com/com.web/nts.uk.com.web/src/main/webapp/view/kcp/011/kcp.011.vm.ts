@@ -4,7 +4,8 @@ module nts.uk.com.view.kcp011.share {
         NONE: 0,
         FIRST: 1,
         ALL: 2
-    }
+    };
+    const NASHI_CODE = '     ';
     export class WorkplaceGroupComponent {
 
         workplaceGroups: KnockoutObservableArray<WorkplaceGroup> = ko.observableArray([]);
@@ -13,6 +14,10 @@ module nts.uk.com.view.kcp011.share {
         constructor(params: Option) {
             let self = this;
             self.setting(params.options);
+            
+            if(self.setting().showPanel === undefined) {
+                self.setting().showPanel = true;
+            }
 
             let widthCal = self.calculateWidth();
             self.columns([
@@ -60,12 +65,6 @@ module nts.uk.com.view.kcp011.share {
                 });
             }
 
-            if (setting.reloadComponent) {
-                setting.reloadComponent.subscribe(() => {
-                    self.reloadComponent(setting.reloadComponent());
-                });
-            }
-
             if (setting.isAlreadySetting && setting.alreadySettingList) {
                 setting.alreadySettingList.subscribe((values) => {
                     let workplaceGs = self.workplaceGroups();
@@ -90,7 +89,7 @@ module nts.uk.com.view.kcp011.share {
                         setting.currentIds(self.workplaceGroups()[idx] ? self.workplaceGroups()[idx].id : null);
                     }
                 } else if (selectedMode == SELECTED_MODE.ALL) {
-                    let notNashi = _.filter(self.workplaceGroups(), (val) => { return val.code != ''; });
+                    let notNashi = _.filter(self.workplaceGroups(), (val) => { return val.code != NASHI_CODE; });
                     setting.currentIds(_.map(notNashi, (wkp) => { return wkp.id }));
                 }
             });
@@ -106,7 +105,7 @@ module nts.uk.com.view.kcp011.share {
                 console.log(res);
                 let workplaces = _.orderBy(res.workplaces, ['code'], ['asc']);
                 if (self.setting().showEmptyItem) {
-                    workplaces.unshift({ id: Math.random(), code: '', name: nts.uk.resource.getText("KCP011_5"), configured: null });
+                    workplaces.unshift({ id: Math.random(), code: NASHI_CODE, name: nts.uk.resource.getText("KCP011_5"), configured: null });
                 }
                 if (self.setting().isAlreadySetting && self.setting().alreadySettingList) {
                     workplaces.forEach((workplace) => {
@@ -129,8 +128,8 @@ module nts.uk.com.view.kcp011.share {
         calculateWidth() {
             let self = this;
             let setting = self.setting();
-            let codeWidth = setting.multiple ? 110 : 130;
-            let nameWidth = setting.isAlreadySetting ? 150 : 230;
+            let codeWidth = setting.multiple ? 95 : 115;
+            let nameWidth = setting.isAlreadySetting ? 165 : 245; 
             let alreadySettingWidth = setting.isAlreadySetting ? 70 : 10;
             return { codeWidth: codeWidth, nameWidth: nameWidth, alreadySettingWidth: alreadySettingWidth };
         }
@@ -139,10 +138,6 @@ module nts.uk.com.view.kcp011.share {
             let self = this;
             let height = self.setting().height ? (self.setting().height + 50) : 470;
             return height + 'px';
-        }
-
-        reloadComponent(config: Option) {
-            $('#multi-list').ntsGridList(config);
         }
 
     }
@@ -180,16 +175,37 @@ module nts.uk.com.view.kcp011.share {
 
 ko.components.register('workplace-group', {
     viewModel: nts.uk.com.view.kcp011.share.WorkplaceGroupComponent, template: `
-    <div id="workplace-group-pannel" data-bind="ntsPanel:{width: '380px', height: calculatePanelHeight(), direction: '', showIcon: true, visible: true}">
-        <div class="" data-bind="css:{ 'caret-right caret-background': setting().showPanel }">
-        <div data-bind="attr: {tabindex: setting().tabindex - 1},ntsSearchBox: {searchMode: 'filter',targetKey: 'id',comId: 'multi-list', 
+    <div data-bind="if:setting().showPanel ">
+        <div id="workplace-group-pannel" data-bind="ntsPanel: {width: '380px', height: calculatePanelHeight(), direction: '', showIcon: true, visible: setting().showPanel}">
+            <div data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list', 
+                    items: workplaceGroups, selectedKey: 'id', 
+                    fields: ['id', 'code', 'name'], 
+                    selected: setting().currentIds,
+                    mode: 'igGrid'}" />
+                <table id="multi-list"
+                    data-bind=" 
+                    ntsGridList: {
+                            height: setting().height ? setting().height: 420,
+                            dataSource: workplaceGroups,
+                            primaryKey: 'id',
+                            columns: columns,
+                            multiple: setting().multiple,
+                            value: setting().currentIds,
+                            rows: setting().rows,
+                            columnResize: setting().isResize
+                        }">
+                </table>
+        </div>
+    </div>
+
+    <div id="workplace-group-pannel" style="width: 380px" data-bind="if: !setting().showPanel">
+        <div data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list-nopanel', 
                   items: workplaceGroups, selectedKey: 'id', 
                   fields: ['id', 'code', 'name'], 
                   selected: setting().currentIds,
                   mode: 'igGrid'}" />
-            <table id="multi-list"
-                data-bind="attr: {tabindex: setting().tabindex}, 
-                ntsGridList: {
+            <table id="multi-list-nopanel"
+                data-bind="ntsGridList: {
                         height: setting().height ? setting().height: 420,
                         dataSource: workplaceGroups,
                         primaryKey: 'id',
@@ -200,8 +216,7 @@ ko.components.register('workplace-group', {
                         columnResize: setting().isResize
                     }">
             </table>
-        </div>
-    </div
+    </div>
 `});
 
 

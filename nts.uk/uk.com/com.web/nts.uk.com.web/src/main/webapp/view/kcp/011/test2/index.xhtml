@@ -5,30 +5,26 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
 					width : 620,
-					height : 660
+					height : 680
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kcp/011/test2/main.css" />
 			<com:stylefile path="/view/kcp/011/main.css" />
 			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="test.service.js" />
 			<com:scriptfile path="test.start.js" />
 			<com:scriptfile path="test.vm.js" />
 		</ui:define>
-
+	
 		<ui:define name="content">
-			<div id="functions-area">
-				
-			</div>
 			<div id="contents-area">
-				<div class="pull-left" style="width: 500px">
-					<workplace-group params="options: options"> </workplace-group>
-				</div>
+			 	<workplace-group params="options: options"> </workplace-group>
 			</div>
 			<div id="functions-area-bottom" class="btn-click">
 				<button tabindex="5" data-bind="click: cancel" id="A10_2">#{i18n.getText('CDL028_7')}</button>

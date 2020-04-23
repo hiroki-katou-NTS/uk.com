@@ -23,15 +23,16 @@ module test2.viewmodel {
                 multiple: dataShare.multiple,
                 tabindex:2,
                 isAlreadySetting: dataShare.isAlreadySetting,
-                alreadySettingList: dataShare.multiple ?  ko.observableArray([self.currentIds[0]]) : ko.observableArray([self.currentIds]) ,
+                alreadySettingList: ko.observableArray(dataShare.alreadySettingList),
                 // show o tim kiem
                 showSearch: true,
+                showPanel: dataShare.panelSetting,
                 // show empty item
                 showEmptyItem: dataShare.showEmptyItem,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
                 reloadComponent: ko.observable({}),
-                height: 400,
+                height: 365,
                 // NONE = 0, FIRST = 1, ALL = 2
                 selectedMode: dataShare.selectedMode
             };
@@ -65,7 +66,7 @@ module test2.viewmodel {
                 showEmptyItem: false,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
-                height: 400,
+                height: 395,
                 // NONE = 0, FIRST = 1, ALL = 2
                 selectedMode: 1
             });

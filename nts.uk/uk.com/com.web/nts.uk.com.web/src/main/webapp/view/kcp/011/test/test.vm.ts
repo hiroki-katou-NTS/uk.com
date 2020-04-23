@@ -23,6 +23,9 @@ module test.viewmodel {
         selectedOther: KnockoutObservable<number> = ko.observable(0);
         selectedSetting: KnockoutObservable<number> = ko.observable(0);
         listSetting: KnockoutObservableArray<any>;
+        // panel
+        listPanelSetting: KnockoutObservableArray<any>;
+        selectedPanel: KnockoutObservable<number> = ko.observable(1);
         constructor() {
             let self = this;
             self.options = {
@@ -32,20 +35,19 @@ module test.viewmodel {
                 // tuong tu voi id
                 currentIds: self.currentIds,
                 //
-                multiple: self.selectedTreeType() == 1 ? true : false,
+                multiple: true,
                 tabindex: 2,
-                isAlreadySetting: self.selectedSetting() == 1 ? true : false ,
+                isAlreadySetting: true ,
                 alreadySettingList: self.alreadySettingList,
                 // show o tim kiem
-                showSearch: true,
+                showPanel: true,
                 // show empty item
-                showEmptyItem: self.selectedOther() == 1 ? true : false,
+                showEmptyItem: false,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
-                reloadComponent: ko.observable({}),
                 height: 400,
                 // NONE = 0, FIRST = 1, ALL = 2
-                selectedMode: self.selectedSelectionType()
+                selectedMode: 1
             };
             self.listSelectionType = ko.observableArray([
                 { code: 2, name: 'Select all', enable: self.isMultipleTreeGrid },
@@ -64,6 +66,11 @@ module test.viewmodel {
                 { code: 1, name: 'Yes' },
                 { code: 0, name: 'No' }
             ]);
+
+            self.listPanelSetting = ko.observableArray([
+                { code: 1, name: 'Yes' },
+                { code: 0, name: 'No' }
+            ]);
         }
 
         startPage(): JQueryPromise<any> {
@@ -79,11 +86,13 @@ module test.viewmodel {
                 multiple: self.selectedTreeType() == 1 ? true : false,
                 isAlreadySetting: self.selectedSetting() == 1 ? true : false,
                 showEmptyItem: self.selectedOther() == 1 ? true : false,
-                selectedMode: self.selectedSelectionType()
+                selectedMode: self.selectedSelectionType(),
+                alreadySettingList: self.currentIds(),
+                panelSetting: self.selectedPanel() == 1 ? true : false
             }
             setShared('KCP011_TEST', data);
             modal("/view/kcp/011/test2/index.xhtml").onClosed(() => {
-
+                
             });
         }
 
