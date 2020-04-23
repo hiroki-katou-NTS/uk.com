@@ -26,7 +26,7 @@ public class EmployeeRankServiceTest {
 			}
 		};
 	
-		NtsAssert.businessException("System Er",
+		NtsAssert.atomTask(
 				() -> EmployeeRankService.insert(
 						require, // dummy
 						"000000000000000000000000000000000011", // dummy
@@ -44,7 +44,7 @@ public class EmployeeRankServiceTest {
 			}
 		};
 
-		NtsAssert.businessException("System Er",
+		NtsAssert.atomTask(
 				() -> EmployeeRankService.insert(
 						require, // dummy
 						"000000000000000000000000000000000011", // dummy
