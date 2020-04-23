@@ -923,7 +923,13 @@ public class HolidayShipmentScreenAFinder {
 		if(workingConditionItem.isPresent()) {
 			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
 		}else {
-			result.setSelectionWorkTime(workTimeLst.get(0).getWorktimeCode().v());
+			result.setSelectionWorkTime("");
+			//12.マスタ勤務種類、就業時間帯データをチェック
+	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getSelectionWorkTime());
+	        //「職場別就業時間帯」を取得した先頭値を表示
+	        if(checkResult.isWkTimeError() && !workTimeLst.isEmpty()){
+	        	result.setSelectionWorkTime(workTimeLst.get(0).getWorktimeCode().v());
+	        }
 		}
 		
 		//振出用勤務種類の取得(Lấy worktype của làm bù)
@@ -937,18 +943,20 @@ public class HolidayShipmentScreenAFinder {
 		
 		//勤務時間初期値の取得(lấy giá trị khởi tạo worktime)
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getSelectionWorkType(), result.getSelectionWorkTime());
-		for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
-			if(time.getWorkNo() == 1) {
-				//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
-				result.setStartTime(time.getStart().v());
-				//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
-				result.setEndTime(time.getEnd().v());
-			}
-			if(time.getWorkNo() == 2) {
-				//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
-				result.setStartTime2(time.getStart().v());
-				//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
-				result.setEndTime2(time.getEnd().v());
+		if(prescribedTimezoneSetting != null) {
+			for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
+				if(time.getWorkNo() == 1) {
+					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
+					result.setStartTime(time.getStart().v());
+					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
+					result.setEndTime(time.getEnd().v());
+				}
+				if(time.getWorkNo() == 2) {
+					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
+					result.setStartTime2(time.getStart().v());
+					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
+					result.setEndTime2(time.getEnd().v());
+				}
 			}
 		}
 		return result;
