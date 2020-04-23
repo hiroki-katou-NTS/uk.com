@@ -19,8 +19,6 @@ public class AppHdWorkDispInfoDto {
 	 */
 	public AppDispInfoStartupDto appDispInfoStartupOutput;
 	
-	public boolean extratimeDisplayFlag; 
-	
 	/**
 	 * 申請用時間外労働時間
 	 */
@@ -66,7 +64,9 @@ public class AppHdWorkDispInfoDto {
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
 		AppHdWorkDispInfoDto result = new AppHdWorkDispInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
-		result.agreeOverTimeOutput = AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
+		if(appHdWorkDispInfoOutput.getAgreeOverTimeOutput() != null) {
+			AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
+		}
 		result.breaktimeFrames = appHdWorkDispInfoOutput.getBreaktimeFrames().stream().map(x -> {
 			WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();
 			x.saveToMemento(dto);

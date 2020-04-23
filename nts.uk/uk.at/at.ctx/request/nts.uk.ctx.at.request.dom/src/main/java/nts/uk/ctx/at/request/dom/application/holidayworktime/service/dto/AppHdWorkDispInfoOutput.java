@@ -13,6 +13,11 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
+/**
+ * 休日出勤申請起動時の表示情報
+ * @author Doan Duy Hung
+ *
+ */
 @NoArgsConstructor
 @Getter
 @Setter

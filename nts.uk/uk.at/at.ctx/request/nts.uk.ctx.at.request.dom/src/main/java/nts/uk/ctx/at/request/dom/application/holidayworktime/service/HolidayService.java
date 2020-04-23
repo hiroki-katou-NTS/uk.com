@@ -19,7 +19,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -88,8 +87,29 @@ public interface HolidayService {
 	 */
 	public void delHdWorkByAbsLeaveChange(String appID);
 	
+	/**
+	 * 1.休出申請（新規）起動処理
+	 * @param companyID 会社ID
+	 * @param employeeIDLst 申請者リスト<Optional>
+	 * @param dateLst 申請対象日リスト<Optional>
+	 * @return
+	 */
 	public AppHdWorkDispInfoOutput getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst);
 	
+	/**
+	 * 1-1.休日出勤申請（新規）起動時初期データを取得する
+	 * @param companyID 会社ID
+	 * @param employeeID 申請者
+	 * @param appDate 申請対象日<Optional>
+	 * @param baseDate 基準日
+	 * @param prePostAtr 事前事後区分
+	 * @param appEmploymentSetting 雇用別申請承認設定
+	 * @param workTimeLst 就業時間帯の設定
+	 * @param approvalFunctionSet 申請承認機能設定
+	 * @param requestSetting 申請承認設定
+	 * @param achievementOutputLst 表示する実績内容
+	 * @return
+	 */
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate, 
 			PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
 			ApprovalFunctionSetting approvalFunctionSet, RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst);

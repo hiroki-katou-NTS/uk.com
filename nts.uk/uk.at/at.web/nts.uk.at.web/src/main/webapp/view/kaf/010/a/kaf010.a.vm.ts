@@ -154,6 +154,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
         performanceExcessAtr: KnockoutObservable<number> = ko.observable(0);
         preExcessDisplaySetting: KnockoutObservable<number> = ko.observable(0);
+        appHdWorkDispInfoDto: any = null;
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -172,14 +173,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
                 // self.kaf000_a.start(self.employeeID(), 1, 6, self.targetDate).done(function() {                    
-                    $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
-                    $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
-                    $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
-                    $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
-                    $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
-                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
-                    $("#inputdate").focus();
+                $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+                $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
+                $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 119 });
+                $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
+                $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
+                $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
+                $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
+                $("#inputdate").focus();
                 // })
             });
 
@@ -217,11 +218,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             prePostAtr: self.prePostSelected(),
                             siftCD: self.siftCD(),
                             overtimeHours: ko.toJS(self.overtimeHours),
-                            changeEmployee: nts.uk.util.isNullOrEmpty(self.employeeList()) ? null : self.employeeList()[0].id
+                            changeEmployee: nts.uk.util.isNullOrEmpty(self.employeeList()) ? null : self.employeeList()[0].id,
+                            appHdWorkDispInfoCmd: self.appHdWorkDispInfoDto
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
-                            self.kaf000_a.getAppDataDate(6, moment(value).format(self.DATE_FORMAT), false,self.employeeID());
-                            //self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
@@ -303,6 +303,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 appTypeSet = _.find(listAppTypeSet, o => o.appType == 6),
                 hdWorkDispInfoWithDateOutput = data.hdWorkDispInfoWithDateOutput,
                 overtimeRestAppCommonSettingDto = data.overtimeRestAppCommonSettingDto;
+            self.appHdWorkDispInfoDto = data;
             self.kaf000_a.initData({
                 errorFlag: appDispInfoWithDateOutput.errorFlag,
                 listApprovalPhaseStateDto: appDispInfoWithDateOutput.listApprovalPhaseState        
@@ -868,35 +869,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         }
         
         findBychangeAppDateData(data: any) {
-            var self = this;
-            let overtimeDto = data;
-            if(overtimeDto.displayPrePostFlg==0){
-                self.prePostSelected(overtimeDto.appDispInfoStartupDto.appDispInfoWithDateOutput.prePostAtr);        
-            }
-            
-            self.displayCaculationTime(overtimeDto.displayCaculationTime);
-            self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
-            self.restTimeDisFlg(self.restTimeDisFlg());
-            if (overtimeDto.workTime != null) {
-                self.siftCD(overtimeDto.workTime.siftCode);
-                self.siftName(overtimeDto.workTime.siftName);
-            }
-            if (overtimeDto.workType != null) {
-                self.workTypeCd(overtimeDto.workType.workTypeCode);
-                self.workTypeName(overtimeDto.workType.workTypeName);
-            }
-            self.timeStart1(data.workClockStart1);
-            self.timeEnd1(data.workClockEnd1);
-            self.timeStart2(data.workClockStart2);
-            self.timeEnd2(data.workClockEnd2);
-           
-            
-            self.instructInforFlag(data.displayHolidayInstructInforFlg);
-            self.instructInfor(data.holidayInstructInformation);
-            self.referencePanelFlg(data.referencePanelFlg);
-            self.preAppPanelFlg(data.preAppPanelFlg);
-            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+            var self = this,
+                appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                appDispInfoWithDateOutput = data.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+                approvalFunctionSet = appDispInfoWithDateOutput.approvalFunctionSet,
+                listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
+                appTypeSet = _.find(listAppTypeSet, o => o.appType == 6),
+                hdWorkDispInfoWithDateOutput = data.hdWorkDispInfoWithDateOutput,
+                overtimeRestAppCommonSettingDto = data.overtimeRestAppCommonSettingDto;
+            self.appHdWorkDispInfoDto = data;
+            self.kaf000_a.initData({
+                errorFlag: appDispInfoWithDateOutput.errorFlag,
+                listApprovalPhaseStateDto: appDispInfoWithDateOutput.listApprovalPhaseState        
+            });
+            self.siftCD(hdWorkDispInfoWithDateOutput.workTimeCD);
+            self.siftName(hdWorkDispInfoWithDateOutput.workTimeName);
+            self.workTypeCd(hdWorkDispInfoWithDateOutput.workTypeCD);
+            self.workTypeName(hdWorkDispInfoWithDateOutput.workTypeName);
+            self.timeStart1(hdWorkDispInfoWithDateOutput.startTime);
+            self.timeEnd1(hdWorkDispInfoWithDateOutput.endTime);
         }
         
         convertActualList(data :any){

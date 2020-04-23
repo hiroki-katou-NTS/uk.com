@@ -12,6 +12,11 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
+/**
+ * 休日出勤申請起動時の表示情報(申請対象日関係あり)
+ * @author Doan Duy Hung
+ *
+ */
 @NoArgsConstructor
 @Getter
 @Setter

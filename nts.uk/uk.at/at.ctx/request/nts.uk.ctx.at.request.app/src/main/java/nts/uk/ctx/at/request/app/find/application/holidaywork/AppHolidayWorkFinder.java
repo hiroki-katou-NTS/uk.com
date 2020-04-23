@@ -20,9 +20,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoNoDateDto;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
@@ -34,7 +33,6 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -55,6 +53,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -65,6 +64,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayServ
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
@@ -87,7 +87,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
@@ -153,9 +152,6 @@ public class AppHolidayWorkFinder {
 	
 	@Inject
 	private OvertimeService overtimeService;
-	
-	@Inject
-	private AtEmployeeAdapter atEmployeeAdapter;
 
 	/**
 	 * 1.休出申請（新規）起動処理
@@ -225,9 +221,9 @@ public class AppHolidayWorkFinder {
 	 * @param breakTime
 	 * @return
 	 */
-	public AppHolidayWorkDto findChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> breakTime, String changeEmployee, Integer startTime, Integer endTime, 
-			AppHolidayWorkDto appHolidayWorkDto){
-		String companyID = AppContexts.user().companyId();
+	public AppHdWorkDispInfoDto findChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> breakTime, String changeEmployee, 
+			Integer startTime, Integer endTime, AppHdWorkDispInfoCmd appHdWorkDispInfoCmd){
+		/*String companyID = AppContexts.user().companyId();
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
 		List<GeneralDate> dateLst = new ArrayList<>();
 		AppDispInfoStartupDto appDispInfoStartupDto = new AppDispInfoStartupDto();
@@ -251,7 +247,40 @@ public class AppHolidayWorkFinder {
 		this.getData(companyID, appDispInfoNoDateDto.employeeInfoLst.get(0).getSid(), appDate, result, 0, null, null, null,
 				overtimeRestAppCommonSet);
 
-		return result;
+		return result;*/
+		
+		String companyID = AppContexts.user().companyId();
+		GeneralDate targetDate = GeneralDate.fromString(appDate, "yyyy/MM/dd");
+		List<GeneralDate> dateLst = Arrays.asList(targetDate);
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = appHdWorkDispInfoCmd.toDomain();
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput();
+		// 共通インタラクション「申請日を変更する」を実行する
+		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+				companyID, 
+				dateLst, 
+				targetDate,
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				appDispInfoNoDateOutput,
+				appDispInfoWithDateOutput);
+		// 「休日出勤申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」
+		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		// 1-1.休日出勤申請（新規）起動時初期データを取得する
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = holidayService.initDataNew(
+				companyID, 
+				appDispInfoNoDateOutput.getEmployeeInfoLst().get(0).getSid(), 
+				dateLst.stream().findFirst(), 
+				targetDate, 
+				appDispInfoWithDateOutput.getPrePostAtr(), 
+				appDispInfoWithDateOutput.getEmploymentSet().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny().orElse(null), 
+				appDispInfoWithDateOutput.getWorkTimeLst(), 
+				appDispInfoWithDateOutput.getApprovalFunctionSet(), 
+				appDispInfoNoDateOutput.getRequestSetting(), 
+				appDispInfoWithDateOutput.getAchievementOutputLst());
+		// 「休日出勤申請起動時の表示情報」．休日出勤申請起動時の表示情報(申請対象日関係あり)=上記取得した「休日出勤申請起動時の表示情報(申請対象日関係あり)」
+		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
 	}
 	/**
 	 * getCaculationValue
