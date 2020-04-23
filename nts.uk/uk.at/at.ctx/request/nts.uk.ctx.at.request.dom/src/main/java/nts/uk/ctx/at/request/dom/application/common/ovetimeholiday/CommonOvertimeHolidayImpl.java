@@ -36,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -158,9 +157,6 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Inject
 	private WorkdayoffFrameRepository breaktimeFrameRep;
-
-	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 
 	@Inject
 	private Time36UpperLimitCheck time36UpperLimitCheck;
@@ -707,24 +703,15 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 * 03-06_計算ボタンチェック
 	 */
 	@Override
-	public void calculateButtonCheck(int CalculateFlg, String companyID, String employeeID, int rootAtr,
-			ApplicationType targetApp, GeneralDate appDate) {
-		// Get setting info
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, targetApp, appDate);
-		// 時刻計算利用する場合にチェックしたい
-		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
-		if (null == requestSetting) {
-			// 終了
+	public void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse) {
+		// 申請詳細設定.時刻計算利用区分=利用する
+		if (timeCalUse != UseAtr.USE) {
 			return;
 		}
-		// 申請詳細設定.時刻計算利用区分=利用する
-		if (requestSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-			// 計算フラグのチェック
-			if (CalculateFlg == 1) {
-				// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
-				throw new BusinessException("Msg_750");
-			}
+		// 計算フラグのチェック
+		if (calculateFlg == 1) {
+			// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
+			throw new BusinessException("Msg_750");
 		}
 	}
 

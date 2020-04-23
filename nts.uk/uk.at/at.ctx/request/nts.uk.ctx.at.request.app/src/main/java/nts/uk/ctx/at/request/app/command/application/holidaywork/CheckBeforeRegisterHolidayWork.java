@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
@@ -58,6 +57,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -196,9 +196,14 @@ public class CheckBeforeRegisterHolidayWork {
 		newBeforeRegister.processBeforeRegister(app, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		//03-06_計算ボタンチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
-				ApplicationType.BREAK_TIME_APPLICATION, app.getAppDate());
+		// Get setting info
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+				.prelaunchAppCommonSetService(app.getCompanyID(), employeeId, 1, ApplicationType.BREAK_TIME_APPLICATION, app.getAppDate());
+		// 時刻計算利用する場合にチェックしたい
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if (null != requestSetting) {
+			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+		}
 		// 03-01_事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
@@ -208,8 +213,6 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>(); 
 		holidayWorkInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BREAKTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BREAKTIME));
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, app.getEmployeeID(), 1, 
-				EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), app.getAppDate());
 		List<OvertimeColorCheck> holidayTimeLst = new ArrayList<>();
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
@@ -323,8 +326,14 @@ public class CheckBeforeRegisterHolidayWork {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		otherCommonAlgorithm.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
 		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
-				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+		// Get setting info
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+		// 時刻計算利用する場合にチェックしたい
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if (null != requestSetting) {
+			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+		}
 		// 事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));

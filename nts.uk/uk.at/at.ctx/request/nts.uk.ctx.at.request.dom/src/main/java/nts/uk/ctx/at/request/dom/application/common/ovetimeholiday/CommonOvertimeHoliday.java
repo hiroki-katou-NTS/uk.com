@@ -159,7 +159,7 @@ public interface CommonOvertimeHoliday {
 			int attendanceId, List<HolidayWorkInput> overtimeInputs, String employeeID) ;
 	
 	/**
-	 * 03-06_計算ボタンチェック
+	 * 
 	 * @param 計算フラグ:CalculateFlg(0,1)
 	 * @param companyID
 	 * @param employeeID
@@ -167,7 +167,12 @@ public interface CommonOvertimeHoliday {
 	 * @param targetApp
 	 * @param appDate
 	 */
-	void calculateButtonCheck(int CalculateFlg, String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate);
+	/**
+	 * 03-06_計算ボタンチェック
+	 * @param calculateFlg
+	 * @param timeCalUse 時刻計算利用区分
+	 */
+	void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse);
 	
 	/**
 	 * 03-03_３６上限チェック（月間） KAF005
