@@ -201,7 +201,7 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
 		// アルゴリズム「登録前エラーチェック（新規）」を実行する
-		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
+		result.addAll(errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason));
 		//振休残数不足チェック
 		checkForlackOfRest(companyID, sID, command);
 		
@@ -620,9 +620,10 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String sID,
+	private List<ConfirmMsgDto> errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, GeneralDate absDate, int comType, String appReason) {
 
+		List<ConfirmMsgDto> result = new ArrayList<>();
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「申請前勤務種類の取得」を実行する takingout
@@ -636,11 +637,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「申請日関連チェック」を実行する
 		ApplicationDateRelatedCheck(command, withDrawReqSet.get(), sID, recDate, absDate, comType);
 		// アルゴリズム「勤務種類矛盾チェック」を実行する
-		checkWorkTypeConflict(sID,companyID,command, withDrawReqSet.get());
+		result.addAll(checkWorkTypeConflict(sID,companyID,command, withDrawReqSet.get()));
 		// アルゴリズム「終日半日矛盾チェック」を実行する
 		checkDayConflict(command, comType);
 		// アルゴリズム「法内法外矛盾チェック」を実行する
 		checkSetting(companyID, withDrawReqSet.get(), command, sID);
+		return result;
 	}
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
@@ -701,22 +703,25 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private void checkWorkTypeConflict(String Sid, String companyID, SaveHolidayShipmentCommand command,
+	private List<ConfirmMsgDto> checkWorkTypeConflict(String Sid, String companyID, SaveHolidayShipmentCommand command,
 			WithDrawalReqSet withDrawalReqSet) {
 
+		List<ConfirmMsgDto> result = new ArrayList<>();
+		
 		ContractCheck checkMode = withDrawalReqSet.getAppliDateContrac();
 		boolean isCheck = !checkMode.equals(ContractCheck.DONT_CHECK);
 		if (isCheck) {
 			boolean isNotSelectYes = command.getIsNotSelectYes() == null ? true : command.getIsNotSelectYes();
 			// アルゴリズム「振出勤務種類矛盾チェック」を実行する
 			if (isSaveRec(command.getComType())) {
-				workTypeContradictionCheck(companyID, Sid, command.getRecCmd().getAppDate(), checkMode, isNotSelectYes,true);
+				result.addAll(workTypeContradictionCheck(companyID, Sid, command.getRecCmd().getAppDate(), checkMode, isNotSelectYes,true));
 			}
 			// アルゴリズム「振休勤務種類矛盾チェック」を実行する
 			if (isSaveAbs(command.getComType())) {
-				workTypeContradictionCheck(companyID, Sid, command.getAbsCmd().getAppDate(), checkMode, isNotSelectYes,false);
+				result.addAll(workTypeContradictionCheck(companyID, Sid, command.getAbsCmd().getAppDate(), checkMode, isNotSelectYes,false));
 			}
 		}
+		return result;
 	}
 
 	/**
@@ -729,8 +734,9 @@ public class SaveHolidayShipmentCommandHandler
 	 * @param isNotSelectYes
 	 * @param ischeckRec
 	 */
-	private void workTypeContradictionCheck(String companyID, String sid, GeneralDate appDate, ContractCheck checkMode,
+	private List<ConfirmMsgDto> workTypeContradictionCheck(String companyID, String sid, GeneralDate appDate, ContractCheck checkMode,
 			boolean isNotSelectYes, boolean ischeckRec) {
+		List<ConfirmMsgDto> result = new ArrayList<>();
 		// アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
 		WorkType workType = this.otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, sid, appDate);
 		String appDateText = appDate.toString("yyyy/MM/dd");
@@ -739,7 +745,8 @@ public class SaveHolidayShipmentCommandHandler
 				throw new BusinessException("Msg_1519", appDateText);
 			}
 			if (checkMode.equals(ContractCheck.CHECK_AVAILABE) && isNotSelectYes) {
-				throw new BusinessException("Msg_1520", appDateText);
+				result.add(new ConfirmMsgDto("Msg_1520", Arrays.asList(appDateText)));
+				//throw new BusinessException("Msg_1520", appDateText);
 			}
 
 		} else {
@@ -761,13 +768,15 @@ public class SaveHolidayShipmentCommandHandler
 						throw new BusinessException("Msg_1521", appDateText, wkTypeName);
 					}
 					if (checkMode.equals(ContractCheck.CHECK_AVAILABE) && isNotSelectYes) {
-						throw new BusinessException("Msg_1522", appDateText, wkTypeName);
+						result.add(new ConfirmMsgDto("Msg_1522", Arrays.asList(appDateText, wkTypeName)));
+						//throw new BusinessException("Msg_1522", appDateText, wkTypeName);
 					}
 
 				}
 
 			
 		}
+		return result;
 	}
 
 	public boolean isSaveRec(int comType) {
