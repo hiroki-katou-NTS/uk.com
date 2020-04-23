@@ -94,6 +94,7 @@ public class ScheduleCreatorExecutionTransaction {
 			CalculationCache.initialize();
 		}
 		try {
+			//TODO
 			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content);
 		} finally {
@@ -125,7 +126,7 @@ public class ScheduleCreatorExecutionTransaction {
 		
 		// 実施区分を判断, 処理実行区分を判断
 		// EA No2115
-		if (content.getImplementAtr() == ImplementAtr.RECREATE
+		if (content.getImplementAtr() == ImplementAtr.CREATE_WORK_SCHEDULE
 				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(
 					command, companySetting, scheduleCreator, content);
@@ -394,7 +395,7 @@ public class ScheduleCreatorExecutionTransaction {
 //			command.setIsDeleteBeforInsert(true); // FIX BUG #87113
 			// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
-			if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
+			if (command.getContent().getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value) {
 				this.createWorkScheduleByRecreate(command, dateInPeriod, basicSchedule, workingConditionItem,
 						employmentInfo, masterCache, listBasicSchedule, dateRegistedEmpSche);
 			}
@@ -402,7 +403,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// EA No1841
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
 					&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
 							basicSche, employmentInfo, workingConditionItem, masterCache)) {
 				return;

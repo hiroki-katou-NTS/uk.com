@@ -1260,7 +1260,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		ReCreateContent reCreateContent = new ReCreateContent();
 		if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
 			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
 			// 8-処理実行区分 → もう一度作り直す とする
@@ -1268,7 +1268,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} else {
 			// #107055
 			// ・実施区分 → 通常作成
-			s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+			s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 			// ・再作成区分 → 全件 とする
 			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
@@ -1391,7 +1391,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		ReCreateContent reCreateContent = new ReCreateContent();
 		if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
 
 			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
@@ -1399,7 +1399,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
 		} else {
 			// ・実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// ・再作成区分 → 全件 とする
 			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする

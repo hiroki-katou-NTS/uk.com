@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -287,6 +288,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// パラメータ実施区分を判定
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+			//アルゴリズム「実行ログ作成処理」を実行する
 			createExcutionLog(command, scheduleExecutionLog);
 		}
 
@@ -442,10 +444,17 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private CreateScheduleMasterCache acquireData(String companyId, List<String> employeeIds, DatePeriod period) {
 		
-		// EA No1675
+		// 所属情報を取得する
 		// Imported(就業)「社員の履歴情報」を取得する
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds, period);
+		// 勤務種別情報を取得する
+		// ドメインモデル「社員の勤務種別の履歴」を取得する
+		// ドメインモデル「社員の勤務種別」を取得する
+		// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
+		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
+				.findByCidSidBaseDate(companyId, employeeIds, period);
 
+		// EA No1675
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter
 				.findListOfEmployee(employeeIds, period).stream().collect(Collectors
@@ -453,17 +462,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// 労働条件情報を取得する
 		// EA No1828
+		//社員ID(List)から労働条件を取得する
 		List<WorkCondItemDto> listWorkingConItem = this.acquireWorkingConditionInformation(employeeIds, period);
 
 		// 社員の短時間勤務履歴を取得する
+		// 社員の短時間勤務履歴を期間で取得する
 		// EA No2134
 		List<ShortWorkTimeDto> listShortWorkTimeDto = this.scShortWorkTimeAdapter.findShortWorkTimes(employeeIds, period);
 
-		// 勤務種別情報を取得する
-		// ドメインモデル「社員の勤務種別の履歴」を取得する
-		// ドメインモデル「社員の勤務種別」を取得する
-		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, employeeIds, period);
 		
 		CreateScheduleMasterCache cache = new CreateScheduleMasterCache(
 				empGeneralInfo,
@@ -473,7 +479,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				listBusTypeOfEmpHis);
 		
 		
-		// ドメインモデル「勤務種類」を取得する
+		// ドメインモデル「勤務種類」を取得する  - 廃止区分　＝　廃止しない
 		cache.getListWorkType().addAll(this.workTypeRepository.findNotDeprecateByCompanyId(companyId));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		cache.getListWorkTimeSetting().addAll(this.workTimeSettingRepository.findActiveItems(companyId));
@@ -531,11 +537,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
+		//ドメインモデル「労働条件」を取得する
 		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
 				datePeriod);
 
+		//ドメインモデル「労働条件項目」を取得する
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidsAndDatePeriodNew(sIds, datePeriod);
+		//取得した労働条件と労働条件項目を返す
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
 		List<WorkCondItemDto> listWorkCondItemDto = new ArrayList<>();
