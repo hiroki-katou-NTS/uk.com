@@ -45,7 +45,7 @@ module nts.uk.at.view.ksm007.a {
             });
 
             if(self.workplaceGroupList().length === 0) {
-                self.registerForm().clearData();
+                self.createNew();
             }
 
         }
@@ -70,11 +70,11 @@ module nts.uk.at.view.ksm007.a {
 				return;
             }
             
-            if(self.registerForm().newMode())
+            if(self.registerForm().newMode()) {
                 service.registerWorkplaceGroup(self.registerForm().convertToCommand())
                 .done((res)=> {
-                    console.log(res);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.checkWorkplaceGroupRegisterResult(res)
+                    .done(() => {
                         self.options.reloadData.valueHasMutated();
                         self.options.currentIds(res.wkpGrId);
                     });
@@ -83,21 +83,55 @@ module nts.uk.at.view.ksm007.a {
                 }).always(function () {
                     nts.uk.ui.block.clear();
                 });
-            else {
+            } else {
                 service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds[0]))
                 .done((res)=> {
-                    console.log(res);
-                    self.options.reloadData.valueHasMutated();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.checkWorkplaceGroupRegisterResult(res)
+                    .done(() => {
+                        self.options.reloadData.valueHasMutated();
                         self.options.currentIds(res.wkpGrId);
+                        self.options.currentIds.valueHasMutated();
                     });
-                   
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(function () {
                     nts.uk.ui.block.clear();
                 });
             }
+        }
+
+        checkWorkplaceGroupRegisterResult(res) {
+            let dfd = $.Deferred();
+            dfd.resolve();
+            
+            let lstWKPID = res.lstWKPID;
+            let resultProcess = res.resultProcess;
+            let listWorkplaceInfo = res.listWorkplaceInfo;
+            let bundledErrors = [];
+            for (let idx in lstWKPID) {
+                console.log(lstWKPID[idx]);
+                if(resultProcess[idx].workplaceReplacement == "BELONGED_ANOTHER") {
+                    let info = _.find(listWorkplaceInfo, (wkp) => {return wkp.workplaceId == lstWKPID[idx]; });
+                    if (info) {
+                        bundledErrors.push({
+                            message: info.workplaceCode + ' ' + info.workplaceName + ' ' + info.genericName,
+                            messageId: "Msg_1630",
+                            supplements: {}
+                        });
+                    }
+                }
+            }
+            if( bundledErrors.length > 0) {
+               nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors }).then(() => {
+                   dfd.resolve();
+               });
+            } else {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    dfd.resolve();
+                });
+            }
+            
+            return dfd.promise();
         }
 
         deleteWkpGroup() {
@@ -119,8 +153,15 @@ module nts.uk.at.view.ksm007.a {
 						nextSelectedCode = self.workplaceGroupList()[i + 1].id;
 					}
 					service.deleteWorkplaceGroup(param).done(() => {
-                        self.options.reloadData.valueHasMutated();
-                        self.currentIds(nextSelectedCode);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" })
+                        .then(() => {
+                            self.options.reloadData.valueHasMutated();
+                            if(self.workplaceGroupList().length == 1) {
+                                self.createNew();
+                            } else {
+                                self.currentIds(nextSelectedCode);
+                            }
+                        });
 							
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId });

@@ -17,11 +17,11 @@ module test.viewmodel {
         //selectType 
         listSelectionType: KnockoutObservableArray<any>;
         enable: KnockoutObservable<boolean> = ko.observable(true);
-        selectedSelectionType: KnockoutObservable<number> = ko.observable(true);
+        selectedSelectionType: KnockoutObservable<number> = ko.observable(0);
         //TreeType
-        selectedTreeType: KnockoutObservable<number> = ko.observable(1);
-        selectedOther: KnockoutObservable<number> = ko.observable(1);
-        selectedSetting: KnockoutObservable<number> = ko.observable(1);
+        selectedTreeType: KnockoutObservable<number> = ko.observable(0);
+        selectedOther: KnockoutObservable<number> = ko.observable(0);
+        selectedSetting: KnockoutObservable<number> = ko.observable(0);
         listSetting: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
@@ -32,38 +32,37 @@ module test.viewmodel {
                 // tuong tu voi id
                 currentIds: self.currentIds,
                 //
-                multiple: self.multiple(),
+                multiple: self.selectedTreeType() == 1 ? true : false,
                 tabindex: 2,
-                isAlreadySetting: self.isAlreadySetting(),
+                isAlreadySetting: self.selectedSetting() == 1 ? true : false ,
                 alreadySettingList: self.alreadySettingList,
                 // show o tim kiem
                 showSearch: true,
                 // show empty item
-                showEmptyItem: self.showEmptyItem(),
+                showEmptyItem: self.selectedOther() == 1 ? true : false,
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
                 reloadComponent: ko.observable({}),
                 height: 400,
                 // NONE = 0, FIRST = 1, ALL = 2
-                selectedMode: self.selectedMode()
+                selectedMode: self.selectedSelectionType()
             };
             self.listSelectionType = ko.observableArray([
-                { code: 1, name: 'Select by selected code', enable: self.enable },
                 { code: 2, name: 'Select all', enable: self.isMultipleTreeGrid },
-                { code: 3, name: 'Select first item', enable: self.enable },
-                { code: 4, name: 'No select', enable: self.enable }
+                { code: 1, name: 'Select first item', enable: self.enable },
+                { code: 0, name: 'No select', enable: self.enable }
             ]);
             self.listTreeType = ko.observableArray([
                 { code: 0, name: 'Single tree select grid' },
                 { code: 1, name: 'Multiple tree select grid' }
             ]);
             self.listOther = ko.observableArray([
-                { code: 0, name: 'Single select' },
-                { code: 1, name: 'Multiple select' }
+                { code: 1, name: 'Show empty iteam' },
+                { code: 0, name: 'Not show' }
             ]);
             self.listSetting = ko.observableArray([
-                { code: 0, name: 'Yes' },
-                { code: 1, name: 'No' }
+                { code: 1, name: 'Yes' },
+                { code: 0, name: 'No' }
             ]);
         }
 
@@ -77,10 +76,10 @@ module test.viewmodel {
         testAlreadySetting() {
             let self = this;
             let data = {
-                multiple: self.multiple(),
-                isAlreadySetting: self.isAlreadySetting(),
-                showEmptyItem: self.showEmptyItem(),
-                selectedMode: self.selectedMode()
+                multiple: self.selectedTreeType() == 1 ? true : false,
+                isAlreadySetting: self.selectedSetting() == 1 ? true : false,
+                showEmptyItem: self.selectedOther() == 1 ? true : false,
+                selectedMode: self.selectedSelectionType()
             }
             setShared('KCP011_TEST', data);
             modal("/view/kcp/011/test2/index.xhtml").onClosed(() => {

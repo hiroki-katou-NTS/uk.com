@@ -23,7 +23,7 @@ module test2.viewmodel {
                 multiple: dataShare.multiple,
                 tabindex:2,
                 isAlreadySetting: dataShare.isAlreadySetting,
-                alreadySettingList: self.alreadySettingList,
+                alreadySettingList: dataShare.multiple ?  ko.observableArray([self.currentIds[0]]) : ko.observableArray([self.currentIds]) ,
                 // show o tim kiem
                 showSearch: true,
                 // show empty item
@@ -71,6 +71,13 @@ module test2.viewmodel {
             });
             self.options.reloadComponent.valueHasMutated();
         }
+
+        /**
+         * cancel
+         */
+        cancel(){
+            nts.uk.ui.windows.close();
+        };
 
     }
 }
