@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -117,12 +118,19 @@ public interface CommonOvertimeHoliday {
 	
 	/**
 	 * 01-14_勤務時間取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param appDate
-	 * @param requestAppDetailSetting
+	 * @param companyID 会社ID
+	 * @param employeeID 申請者ID
+	 * @param appDate 申請日付
+	 * @param timeCalUse 時刻計算利用区分
+	 * @param atworkTimeBeginDisp 出退勤時刻初期表示区分
+	 * @param appType 申請種類
+	 * @param workTimeCD 就業時間帯コード
+	 * @param startTime Opitonal＜開始時刻＞
+	 * @param endTime Opitonal＜終了時刻＞
+	 * @return
 	 */
-	public RecordWorkOutput getWorkingHours(String companyID,String employeeID, String changeEmployee, String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD, boolean isOverTime);
+	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
+			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 03-01_事前申請超過チェック

@@ -439,15 +439,14 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, String changeEmployee, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, boolean isOverTime) {
+	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
+			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting) {
 		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
 		Integer startTime1 = null;
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
-		if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.NOTUSE)
-				&& isOverTime) {
+		if (timeCalUse == UseAtr.NOTUSE && appType == ApplicationType.OVER_TIME_APPLICATION) {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 		recordWorkDisplay = UseAtr.USE;
@@ -455,21 +454,13 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 
-		AtWorkAtr atWorkAtr = approvalFunctionSetting.getApplicationDetailSetting().get().getAtworkTimeBeginDisp();
-		switch (atWorkAtr) {
+		switch (atworkTimeBeginDisp) {
 		case NOTDISPLAY: {
 			break;
 		}
 		case DISPLAY: {
 			// 01-14-2_実績から出退勤を初期表示
-			RecordWorkInfoImport recordWorkInfoImport = null;
-			if (changeEmployee == null) {
-				recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,
-						GeneralDate.fromString(appDate, DATE_FORMAT));
-			} else {
-				recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(changeEmployee,
-						GeneralDate.fromString(appDate, DATE_FORMAT));
-			}
+			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 			startTime1 = recordWorkInfoImport.getAttendanceStampTimeFirst();
 			endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
 			startTime2 = recordWorkInfoImport.getAttendanceStampTimeSecond();
@@ -478,8 +469,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		case AT_START_WORK_OFF_PERFORMANCE: {
 			// 01-14-3_始業時刻、退勤時刻を初期表示
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,
-					GeneralDate.fromString(appDate, DATE_FORMAT));
+			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID,
 					recordWorkInfoImport.getWorkTimeCode());
 			if (workTimeSet.isPresent()) {
@@ -512,7 +502,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		case AT_START_WORK_OFF_ENDWORK: {
 			// 01-14-4_始業時刻、終業時刻を初期表示
-			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, workTimeCD);
 			if (workTimeSet.isPresent()) {
 				List<TimezoneUse> lstTimezone = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone()
 						.stream().sorted(Comparator.comparing(TimezoneUse::getWorkNo)).collect(Collectors.toList());

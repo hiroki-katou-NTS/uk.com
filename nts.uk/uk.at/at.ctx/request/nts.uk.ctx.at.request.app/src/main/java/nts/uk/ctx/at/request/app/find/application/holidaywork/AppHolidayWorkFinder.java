@@ -618,8 +618,17 @@ public class AppHolidayWorkFinder {
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
-		RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(companyID, employeeID, null,
-				appDate,approvalFunctionSetting,siftCD, false);
+		RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(
+				companyID, 
+				employeeID, 
+				appDate == null ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+				approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse(),
+				approvalFunctionSetting.getApplicationDetailSetting().get().getAtworkTimeBeginDisp(),
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				siftCD, 
+				Optional.empty(),
+				Optional.empty(), 
+				approvalFunctionSetting);
 		startTime1 = recordWorkOutput.getStartTime1();
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
@@ -926,9 +935,17 @@ public class AppHolidayWorkFinder {
 //			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 //				result.setDisplayCaculationTime(true);
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(companyID, 
-						employeeID, changeEmployee, appDate,approvalFunctionSetting,result.getWorkTime() == null ? 
-								workTimeCode : result.getWorkTime().getSiftCode(), false);
+				RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(
+						companyID, 
+						employeeID, 
+						appDate == null ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+						approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse(),
+						approvalFunctionSetting.getApplicationDetailSetting().get().getAtworkTimeBeginDisp(),
+						ApplicationType.BREAK_TIME_APPLICATION, 
+						result.getWorkTime() == null ? workTimeCode : result.getWorkTime().getSiftCode(), 
+						Optional.empty(),
+						Optional.empty(), 
+						approvalFunctionSetting);
 				result.setWorkClockStart1(recordWorkOutput.getStartTime1());
 				result.setWorkClockStart2(recordWorkOutput.getStartTime2());
 				result.setWorkClockEnd1(recordWorkOutput.getEndTime1());
