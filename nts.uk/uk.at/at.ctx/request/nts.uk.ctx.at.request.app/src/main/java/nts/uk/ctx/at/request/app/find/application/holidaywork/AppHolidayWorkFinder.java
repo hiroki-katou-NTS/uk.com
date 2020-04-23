@@ -24,12 +24,11 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoNoDateDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.AppTypeSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -37,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
@@ -49,15 +47,13 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColo
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-//import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -67,6 +63,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayPreProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
@@ -167,8 +164,8 @@ public class AppHolidayWorkFinder {
 	 * @param uiType
 	 * @return
 	 */
-	public AppHolidayWorkDto getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
-		String companyID = AppContexts.user().companyId();
+	public AppHdWorkDispInfoDto getAppHolidayWork(String appDate,int uiType,List<String> lstEmployee,Integer payoutType,String employeeID, AppHolidayWorkDto result){
+		/*String companyID = AppContexts.user().companyId();
 		if(CollectionUtil.isEmpty(lstEmployee) && employeeID == null){
 			 employeeID = AppContexts.user().employeeId();
 		}else if(!CollectionUtil.isEmpty(lstEmployee)){
@@ -213,7 +210,12 @@ public class AppHolidayWorkFinder {
 		// 01-08_乖離定型理由を取得, 01-07_乖離理由を取得
 		getDivigenceReason(overtimeRestAppCommonSet, result, companyID);
 		
-		return result;
+		return result;*/
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = Strings.isNotBlank(appDate) ? Arrays.asList(GeneralDate.fromString(appDate, "yyyy/MM/dd")) : Collections.emptyList();
+		AppHdWorkDispInfoOutput output = holidayService.getStartNew(companyID, lstEmployee, dateLst);
+		return AppHdWorkDispInfoDto.fromDomain(output);
+		
 	}
 	/**
 	 * findChangeAppDate
