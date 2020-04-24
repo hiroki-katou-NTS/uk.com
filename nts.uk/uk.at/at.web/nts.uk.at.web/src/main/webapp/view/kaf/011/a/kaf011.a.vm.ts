@@ -104,7 +104,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
-                if (!newDate || !self.screenModeNew() || $("#recDatePicker").ntsError("hasError")) { return; }
+                if (!newDate || !self.screenModeNew() || $("#recDatePicker").ntsError("hasError") || $("#absDatePicker").ntsError("hasError")) { return; }
                 block.invisible();
                 service.changeWorkingDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
-                if (!newDate || !self.screenModeNew() || $("#absDatePicker").ntsError("hasError")) { return; }
+                if (!newDate || !self.screenModeNew() || $("#recDatePicker").ntsError("hasError") || $("#absDatePicker").ntsError("hasError")) { return; }
                 block.invisible();
                 service.changeHolidayDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
                     self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
