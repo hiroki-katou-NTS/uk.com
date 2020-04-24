@@ -511,7 +511,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 alldayHalfDay: self.selectedAllDayHalfDayValue(),
                 appAbsenceStartInfoDto:  self.appAbsenceStartInfoDto
             }).done((result) => {
+                //fix bug  when changing typeDate 110129
+                let specTemp = self.appAbsenceStartInfoDto.specAbsenceDispInfo;
                 self.appAbsenceStartInfoDto = result;
+                if (specTemp != null){
+                    result.specAbsenceDispInfo = specTemp;   
+                }
                 self.kaf000_a.initData({
                     errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
                     listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
