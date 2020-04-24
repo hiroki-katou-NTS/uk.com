@@ -139,9 +139,10 @@ module nts.uk.at.view.kaf006.b{
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
-                service.changeRelaCD({
-                        frameNo: self.appAbsenceStartInfoDto.specAbsenceDispInfo.frameNo,
-                        specHdEvent: self.appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent,
+                if(self.appAbsenceStartInfoDto.specAbsenceDispInfo != null){
+                    service.changeRelaCD({
+                        frameNo: self.appAbsenceStartInfoDto.specAbsenceDispInfo == null ? '' : self.appAbsenceStartInfoDto.specAbsenceDispInfo.frameNo,
+                        specHdEvent: self.appAbsenceStartInfoDto.specAbsenceDispInfo == null ? '' : self.appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent,
                         relationCD: codeChange
                     }).done(function(data){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
@@ -163,10 +164,16 @@ module nts.uk.at.view.kaf006.b{
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //bug #110129
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.maxDay = self.maxDay();
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.dayOfRela = self.dayOfRela();
+                    
                     //ver21
                     let relaS = self.findRelaSelected(codeChange);
                     self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
+                }
+                
             self.isCheck.subscribe(function(checkChange){
                 if(self.mournerDis()){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
