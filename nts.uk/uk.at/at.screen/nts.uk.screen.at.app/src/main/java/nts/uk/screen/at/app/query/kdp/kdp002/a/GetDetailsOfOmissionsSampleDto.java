@@ -1,4 +1,4 @@
-package query.kdp.kdp002.a;
+package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.List;
