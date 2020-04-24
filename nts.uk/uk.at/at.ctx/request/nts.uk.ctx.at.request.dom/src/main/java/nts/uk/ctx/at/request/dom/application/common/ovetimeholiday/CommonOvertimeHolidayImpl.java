@@ -343,7 +343,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate,
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate,
 			ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr) {
 		// Input．申請日矛盾区分をチェックする
 		if (appDateContradictionAtr == AppDateContradictionAtr.NOTCHECK) {
@@ -355,7 +355,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			if (appDateContradictionAtr == AppDateContradictionAtr.CHECKNOTREGISTER) {
 				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
 			}
-			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd"));
+			return Arrays.asList(new ConfirmMsgOutput("Msg_1520", Arrays.asList(appDate.toString("yyyy/MM/dd"))));
 		}
 		boolean checked = false;
 		// Input．申請種類をチェック
@@ -375,7 +375,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"),
 					Strings.isNotBlank(name) ? name : "未登録のマスタ");
 		}
-		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
+		return Arrays.asList(new ConfirmMsgOutput("Msg_1522", Arrays.asList(appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ") ));
 
 	}
 

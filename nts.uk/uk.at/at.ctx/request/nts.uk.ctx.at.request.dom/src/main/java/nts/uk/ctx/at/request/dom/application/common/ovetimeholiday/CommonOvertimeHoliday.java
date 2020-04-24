@@ -116,7 +116,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appDateContradictionAtr 申請日矛盾区分
 	 * @return
 	 */
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
 	
 	/**
 	 * 01-14_勤務時間取得
