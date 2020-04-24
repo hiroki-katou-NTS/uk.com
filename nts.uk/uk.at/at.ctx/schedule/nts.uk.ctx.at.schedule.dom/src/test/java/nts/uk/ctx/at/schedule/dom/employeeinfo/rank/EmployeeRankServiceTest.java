@@ -30,7 +30,8 @@ public class EmployeeRankServiceTest {
 				() -> EmployeeRankService.insert(
 						require, // dummy
 						"000000000000000000000000000000000011", // dummy
-						new RankCode("01")));// dummy
+						new RankCode("01")),// dummy
+				any -> require.insert(any.get()));
 	}
 	
 	@Test
@@ -48,6 +49,7 @@ public class EmployeeRankServiceTest {
 				() -> EmployeeRankService.insert(
 						require, // dummy
 						"000000000000000000000000000000000011", // dummy
-						new RankCode("01")));// dummy
+						new RankCode("01")),// dummy
+				any -> require.update(any.get()));
 	}
 }
