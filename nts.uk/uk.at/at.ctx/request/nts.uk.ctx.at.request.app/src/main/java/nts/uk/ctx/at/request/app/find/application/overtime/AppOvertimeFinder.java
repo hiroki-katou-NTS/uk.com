@@ -658,7 +658,7 @@ public class AppOvertimeFinder {
 				if(!appOvertimeDetail.isPresent()){
 					overTimeDto.setAppOvertimeDetailStatus(null);
 				} else {
-					overTimeDto.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()));
+					overTimeDto.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()).value);
 				}
 			}
 		}

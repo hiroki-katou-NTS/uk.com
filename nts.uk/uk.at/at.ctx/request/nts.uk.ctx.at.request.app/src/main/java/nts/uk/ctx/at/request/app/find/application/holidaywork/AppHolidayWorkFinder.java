@@ -803,7 +803,7 @@ public class AppHolidayWorkFinder {
 					if(!appOvertimeDetail.isPresent()){
 						result.setAppOvertimeDetailStatus(null);
 					} else {
-						result.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()));
+						result.setAppOvertimeDetailStatus(overtimeService.getTime36Detail(appOvertimeDetail.get()).value);
 					}
 				}
 			}
