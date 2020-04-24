@@ -1210,7 +1210,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public List<ConfirmMsgOutput> preAppExcessCheckKAF010(String employeeName, GeneralDate appDate,
+	public List<ConfirmMsgOutput> preAppExcessCheckHdApp(String employeeName, GeneralDate appDate,
 			PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames) {
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 計算結果の事前申請状態をチェック
@@ -1222,7 +1222,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// 計算結果の事前申請超過があるかないかをチェック
 		List<Integer> frameError = new ArrayList<>();
 		for(OvertimeColorCheck overtimeColorCheck : preActualColorResult.resultLst) {
-			if(overtimeColorCheck.actualError != 0) {
+			if(overtimeColorCheck.preAppError != 0) {
 				frameError.add(overtimeColorCheck.frameNo);
 			}
 		}
