@@ -50,23 +50,23 @@ public class WorkScheduleTimeOfDaily {
 	
 	/**
 	* 時刻から所定時間を計算する
-	* @param manageReGetClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
+	* @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
 	* @param workType 勤務種類
 	* @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス（予定）
 	* @param FlowOTSet 流動残業設定
 	* @return
 	*/
 	public static AttendanceTime calcPredeterminedFromTime(
-			ManageReGetClass manageReGetClass,
+			ManageReGetClass manageReGetClassOfSchedule,
 			WorkType workType,
 			ManagePerPersonDailySet personCommonSetting,
 			FlowOTSet flowOTSet) {
 		
 		//設定を退避する
-		WorkTimezoneShortTimeWorkSet cloneWorkTimezoneShortTimeWorkSet = manageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().clone();
+		WorkTimezoneShortTimeWorkSet cloneWorkTimezoneShortTimeWorkSet = manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().clone();
 		
 		//短時間勤務を勤務として扱う
-		manageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().correctDataForFixedChange(flowOTSet.getFixedChangeAtr());
+		manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().correctDataForFixedChange(flowOTSet.getFixedChangeAtr());
 		
 		//総労働時間計算用にクラスを作成
 		//加給時間計算設定
@@ -81,20 +81,20 @@ public class WorkScheduleTimeOfDaily {
 		
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
-				manageReGetClass,
+				manageReGetClassOfSchedule,
 				vacation,
-				manageReGetClass.getWorkType().get(),
+				manageReGetClassOfSchedule.getWorkType().get(),
 				Optional.of(WorkTimeDailyAtr.REGULAR_WORK),
 				Optional.empty(),
 				bonusPayAutoCalcSet,
 				Collections.emptyList(),
 				personCommonSetting.getPersonInfo().get(),
-				Optional.of(manageReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
-				manageReGetClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
-				Optional.of(manageReGetClass.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode()));
+				Optional.of(manageReGetClassOfSchedule.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
+				manageReGetClassOfSchedule.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
+				Optional.of(manageReGetClassOfSchedule.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode()));
 		
 		//設定を元に戻す
-		manageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().restoreWorkTimezoneShortTimeWorkSet(cloneWorkTimezoneShortTimeWorkSet);
+		manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().restoreWorkTimezoneShortTimeWorkSet(cloneWorkTimezoneShortTimeWorkSet);
 
 		return totalWorkingTime.getTotalTime();
 	}

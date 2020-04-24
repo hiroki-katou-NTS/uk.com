@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

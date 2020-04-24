@@ -131,7 +131,7 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
 	/**
 	 * マイナスの場合0にする
 	 */
-	public void changeNegativeToZero() {
+	public void negativeToZero() {
 		this.oneDay = this.oneDay.isNegative() ? AttendanceTime.ZERO : this.oneDay;
 		this.morning = this.morning.isNegative() ? AttendanceTime.ZERO : this.morning;
 		this.afternoon = this.afternoon.isNegative() ? AttendanceTime.ZERO : this.afternoon;
@@ -140,7 +140,7 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
 	/**
 	 * 時間を変更する
 	 */
-	public void changeTime(Optional<AttendanceTime> newOneDay, Optional<AttendanceTime> newMorning, Optional<AttendanceTime> newAfternoon) {
+	public void setAllTime(Optional<AttendanceTime> newOneDay, Optional<AttendanceTime> newMorning, Optional<AttendanceTime> newAfternoon) {
 		this.oneDay = newOneDay.orElse(this.getOneDay());
 		this.morning = newMorning.orElse(this.getMorning());
 		this.afternoon = newAfternoon.orElse(this.getAfternoon());

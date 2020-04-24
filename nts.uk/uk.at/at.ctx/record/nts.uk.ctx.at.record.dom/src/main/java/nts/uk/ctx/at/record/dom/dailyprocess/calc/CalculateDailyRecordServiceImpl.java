@@ -82,22 +82,19 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -414,12 +411,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 *            翌日の勤務情報
 	 * @param yesterDayInfo
 	 *            前日の勤務情報
-	 * @param manageReGetClass
+	 * @param manageReGetClassOfSchedule
 	 *            予定の時間帯（実績を計算する場合にのみ渡す）
 	 */
 	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily, TimeSheetAtr timeSheetAtr,
 			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
-			Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo, Optional<ManageReGetClass> manageReGetClass) {
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo, Optional<ManageReGetClass> manageReGetClassOfSchedule) {
 
 		// 大塚モード
 		Boolean OOtsukaMode = true;
@@ -528,6 +525,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			holidayCalcMethodSet = regularAddSetting != null ? regularAddSetting.getVacationCalcMethodSet()
 					: holidayCalcMethodSet;
 		}
+		
+		AddSetting addSetting = this.getAddSetting(companyId, map, personalInfo.getWorkingSystem());
 
 		Optional<WorkTimeCode> workTimeCode = decisionWorkTimeCode(workInfo, personCommonSetting, workType);
 
@@ -1068,11 +1067,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						holidayCalcMethodSet,
 						integrationOfDaily,
 						personCommonSetting,
-						manageReGetClass,
+						manageReGetClassOfSchedule,
 						new CompanyHolidayPriorityOrder(companyId),
 						companyCommonSetting,
 						midNightTimeSheet,
-						this.getAddSetting(companyId, map, personalInfo.getWorkingSystem()).get(),
+						addSetting,
 						overDayEndCalcSet.get(),
 						bonuspaySetting,
 						vacation,
@@ -1798,56 +1797,34 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		return Optional.empty();
 	}
 	
-	
 	/**
 	 * @param map 各加算設定
 	 * @param workingSystem 労働制
 	 * @return 加算設定
 	 */
-	private Optional<AddSetting> getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingSystem workingSystem) {
+	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingSystem workingSystem) {
 		
 		switch(workingSystem) {
 		case REGULAR_WORK:
 			AggregateRoot workRegularAdditionSet = map.get("regularWork");
-			WorkRegularAdditionSet regularAddSetting = workRegularAdditionSet != null
-					? (WorkRegularAdditionSet) workRegularAdditionSet
-					: null;
-			
-			AddSettingOfRegularWork	addSettingOfRegularWork = new AddSettingOfRegularWork(
-					new CompanyId(companyID),
-					nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet.convertHolidayCalcMethodSet(
-							regularAddSetting.getVacationCalcMethodSet()));
-			
-			return Optional.of(addSettingOfRegularWork);
+			return workRegularAdditionSet != null
+					?(WorkRegularAdditionSet) workRegularAdditionSet
+					: new WorkRegularAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		
 		case FLEX_TIME_WORK:
 			AggregateRoot workFlexAdditionSet = map.get("flexWork");
-			WorkFlexAdditionSet flexAddSetting = workFlexAdditionSet != null
-					? (WorkFlexAdditionSet) workFlexAdditionSet
-					: null;
-			
-			AddSettingOfFlexWork addSettingOfFlexWork = new AddSettingOfFlexWork(
-					new CompanyId(companyID),
-					nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet.convertHolidayCalcMethodSet(
-							flexAddSetting.getVacationCalcMethodSet()));
-			
-			return Optional.of(addSettingOfFlexWork);
+			return workFlexAdditionSet != null
+					?(WorkFlexAdditionSet) workFlexAdditionSet
+					: new WorkFlexAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 			
 		case VARIABLE_WORKING_TIME_WORK:
 			AggregateRoot workDeformedLaborAdditionSet = map.get("irregularWork");
-			WorkDeformedLaborAdditionSet illegularAddSetting = workDeformedLaborAdditionSet != null
+			return workDeformedLaborAdditionSet != null
 					? (WorkDeformedLaborAdditionSet) workDeformedLaborAdditionSet
-					: null;
-			
-			AddSettingOfIrregularWork addSettingOfIrregularWork = new AddSettingOfIrregularWork(
-					new CompanyId(companyID),
-					nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet.convertHolidayCalcMethodSet(
-							illegularAddSetting.getVacationCalcMethodSet()));
-
-			return Optional.of(addSettingOfIrregularWork);
+					: new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		
 		default:
-			return Optional.empty();
+			return new WorkRegularAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		}
 	}
 }

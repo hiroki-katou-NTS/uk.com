@@ -534,7 +534,7 @@ public class HolidayWorkTimeSheet{
 	 * @param oneDayOfRange 1日の計算範囲
 	 * @return 休日出勤時間帯
 	 */
-	public static Optional<HolidayWorkTimeSheet> createAsFlow(
+	public static HolidayWorkTimeSheet createAsFlow(
 			WorkType todayWorkType,
 			FlowWorkSetting flowWorkSetting,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
@@ -549,14 +549,13 @@ public class HolidayWorkTimeSheet{
 			Optional<WorkInformation> tommorowInfo,
 			TimeSpanForDailyCalc oneDayOfRange) {
 		
-		Optional<TimeSpanForDailyCalc> calcRange = holidayStartEnd.getDuplicatedWith(oneDayOfRange);
-		if(!calcRange.isPresent()) return Optional.empty();
+		TimeSpanForDailyCalc calcRange = holidayStartEnd.getDuplicatedWith(oneDayOfRange).orElse(holidayStartEnd);
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheets = new ArrayList<>();
 		
 		for(FlowWorkHolidayTimeZone processingTimezone : flowWorkSetting.getOffdayWorkTimezoneLstWorkTimezone()) {
 			//休出時間帯の開始時刻を計算
-			TimeWithDayAttr holidayStart = calcRange.get().getStart();
+			TimeWithDayAttr holidayStart = calcRange.getStart();
 			if(holidayWorkFrameTimeSheets.size() != 0) {
 				//枠Noの降順の1件目（前回作成した枠を取得する為）
 				holidayStart = holidayWorkFrameTimeSheets.stream()
@@ -569,12 +568,12 @@ public class HolidayWorkTimeSheet{
 					todayWorkType,
 					flowWorkSetting,
 					timeSheetOfDeductionItems,
-					new TimeSpanForDailyCalc(holidayStart, calcRange.get().getEnd()),
+					new TimeSpanForDailyCalc(holidayStart, calcRange.getEnd()),
 					bonuspaySetting,
 					integrationOfDaily.getSpecDateAttr(),
 					midNightTimeSheet,
 					processingTimezone));
 		}
-		return Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo()));
+		return new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo());
 	}
 }

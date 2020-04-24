@@ -164,4 +164,23 @@ public class TimeLeavingWork extends DomainObject{
 		return false;
 	}
 	
+	/**
+	 * 出勤時刻（丸め無し）を取得する
+	 * @return 出勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getAttendanceStampTimeWithDay() {
+		if(!this.attendanceStamp.isPresent()) return Optional.empty();
+		if(!this.attendanceStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.attendanceStamp.get().getStamp().get().getTimeWithDay());
+	}
+	
+	/**
+	 * 退勤時刻（丸め無し）を取得する
+	 * @return 退勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getleaveStampTimeWithDay() {
+		if(!this.leaveStamp.isPresent()) return Optional.empty();
+		if(!this.leaveStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.leaveStamp.get().getStamp().get().getTimeWithDay());
+	}
 }

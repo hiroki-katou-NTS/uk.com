@@ -63,8 +63,8 @@ public class FlowTimeSetting extends WorkTimeDomainObject implements Cloneable{
 	/**
 	 * 経過時間を変動させる（マイナスの場合、0にする）
 	 */
-	public void changeElapsedTimeNegativeToZero(AttendanceTimeOfExistMinus changeTime) {
-		this.elapsedTime = this.elapsedTime.addMinutes(changeTime.valueAsMinutes());
+	public void fluctuationElapsedTimeNegativeToZero(AttendanceTimeOfExistMinus fluctuationTime) {
+		this.elapsedTime = this.elapsedTime.addMinutes(fluctuationTime.valueAsMinutes());
 		this.elapsedTime = this.elapsedTime.isNegative() ? AttendanceTime.ZERO : this.elapsedTime;
 	}
 }

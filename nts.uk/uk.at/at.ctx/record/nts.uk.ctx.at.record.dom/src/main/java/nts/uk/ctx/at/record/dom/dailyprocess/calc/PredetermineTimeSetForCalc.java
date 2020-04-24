@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -246,14 +248,14 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	* 所定時間帯を変動させる
 	* @param calculationRangeOfOneDay 1日の計算範囲
 	*/
-	public void changePredeterminedTimeSheetToSchedule(CalculationRangeOfOneDay calculationRangeOfOneDay) {
-		
-		//開始
-		this.timeSheets.forEach(
-				t -> t.updateStart(calculationRangeOfOneDay.getAttendanceLeavingWork().getAttendanceLeavingWork(t.getWorkNo()).get().getTimespan().getStart()));
-		//終了
-		this.timeSheets.forEach(
-				t -> t.updateEnd(calculationRangeOfOneDay.getAttendanceLeavingWork().getAttendanceLeavingWork(t.getWorkNo()).get().getTimespan().getEnd()));
+	public void fluctuationPredeterminedTimeSheetToSchedule(List<TimeLeavingWork> timeLeavingWorks) {
+		for(int i=0; i<timeLeavingWorks.size(); i++) {
+			if(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().get());
+			}
+			if(timeLeavingWorks.get(i).getleaveStampTimeWithDay().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getleaveStampTimeWithDay().get());
+			}
+		}
 	}
-	
 }

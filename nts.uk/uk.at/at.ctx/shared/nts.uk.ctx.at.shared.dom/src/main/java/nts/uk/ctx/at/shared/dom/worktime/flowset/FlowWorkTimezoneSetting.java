@@ -113,11 +113,11 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject implements Clo
 	
 	/**
 	 * 残業時間帯を変動させる
-	 * @param changeTime 変動させる時間
+	 * @param fluctuationTime 変動させる時間
 	 */
-	public void changeElapsedTimeInLstOTTimezone(AttendanceTimeOfExistMinus changeTime) {
+	public void fluctuationElapsedTimeInLstOTTimezone(AttendanceTimeOfExistMinus fluctuationTime) {
 		for(int i=0; i<this.lstOTTimezone.size(); i++) {
-			this.lstOTTimezone.get(i).getFlowTimeSetting().changeElapsedTimeNegativeToZero(changeTime);
+			this.lstOTTimezone.get(i).getFlowTimeSetting().fluctuationElapsedTimeNegativeToZero(fluctuationTime);
 		}
 	}
 }

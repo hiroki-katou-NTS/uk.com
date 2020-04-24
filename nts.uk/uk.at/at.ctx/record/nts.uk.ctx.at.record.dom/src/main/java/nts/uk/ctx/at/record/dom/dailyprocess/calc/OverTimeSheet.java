@@ -20,10 +20,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
@@ -31,8 +27,12 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -671,7 +671,7 @@ public class OverTimeSheet {
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @return 残業時間帯
 	 */
-	public static Optional<OverTimeSheet> createAsFlow(
+	public static OverTimeSheet createAsFlow(
 			DailyCalculationPersonalInformation personalInfo,
 			FlowWorkSetting flowWorkSetting,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
@@ -752,7 +752,7 @@ public class OverTimeSheet {
 				true,
 				overTimeHourSetList,//固定勤務の「残業時間の時間帯設定」、流動の「流動残業時間帯」から変換した。
 				personCommonSetting.getDailyUnit(),
-				nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet.convertHolidayCalcMethodSet(addSetting.getHolidayCalcMethodSet()));
+				addSetting.getVacationCalcMethodSet());
 		
 		//法定内残業分割処理
 		OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
@@ -763,7 +763,7 @@ public class OverTimeSheet {
 				predetermineTimeSetForCalc.getAdditionSet().getPredTime(),
 				overTimeHourSetList,//固定勤務の「残業時間の時間帯設定」、流動の「流動残業時間帯」から変換した。
 				personCommonSetting.getDailyUnit(),//何を渡せばいいのか不明
-				nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet.convertHolidayCalcMethodSet(addSetting.getHolidayCalcMethodSet()),
+				addSetting.getVacationCalcMethodSet(),
 				withinWorkTimeSheet,
 				vacation,
 				timeVacationAdditionRemainingTime, //timevacationUseTimeOfDaily？
@@ -783,7 +783,7 @@ public class OverTimeSheet {
 				Optional.empty(), //coreTimeSetting,
 				WorkTimeDailyAtr.REGULAR_WORK);
 		
-		return Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overTimeframeTimeSheets, new SubHolOccurrenceInfo()));
+		return new OverTimeSheet(new RaisingSalaryTime(), overTimeframeTimeSheets, new SubHolOccurrenceInfo());
 	}
 	
 	/**
@@ -806,7 +806,7 @@ public class OverTimeSheet {
 		//input.休暇使用合計残時間未割当のチェック
 		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) return;
 		//割増計算方法をチェック
-		if(addSetting.getCalculationByActualTimeAtr(StatutoryDivision.Premium).isCalclationByActualTime()) return;
+		if(addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium).isCalclationByActualTime()) return;
 		
 		if(!overTimeframeTimeSheets.isEmpty()){
 			overTimeframeTimeSheets.sort((f,s) -> s.getOverTimeWorkSheetNo().compareTo(f.getOverTimeWorkSheetNo()));

@@ -42,12 +42,6 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -57,8 +51,14 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -965,7 +965,7 @@ public class CalculationRangeOfOneDay {
 	 * @param holidayCalcMethodSet 休暇の計算方法の設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
-	 * @param manageReGetClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
+	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
 	 * @param holidayPriorityOrder 時間休暇相殺優先順位
 	 * @param companyCommonSetting
 	 * @param midNightTimeSheet 深夜時間帯
@@ -991,7 +991,7 @@ public class CalculationRangeOfOneDay {
 			HolidayCalcMethodSet holidayCalcMethodSet,
 			IntegrationOfDaily integrationOfDaily,
 			ManagePerPersonDailySet personCommonSetting,
-			Optional<ManageReGetClass> manageReGetClass,
+			Optional<ManageReGetClass> manageReGetClassOfSchedule,
 			CompanyHolidayPriorityOrder holidayPriorityOrder,
 			ManagePerCompanySet companyCommonSetting,
 			MidNightTimeSheet midNightTimeSheet,
@@ -1027,8 +1027,8 @@ public class CalculationRangeOfOneDay {
 			//所定時間設定をコピーして計算用の所定時間設定を作成する → 既に持っている
 			
 			//所定時間帯、残業開始を補正する
-			this.changePredeterminedForFlow(
-					manageReGetClass,
+			this.fluctuationPredeterminedForFlow(
+					manageReGetClassOfSchedule,
 					integrationOfDaily,
 					todayWorkType,
 					personCommonSetting,
@@ -1345,31 +1345,28 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			FlowWorkSetting flowWorkSetting) {
 		
-		List<TimezoneUse> timezone = new ArrayList<TimezoneUse>();
-		timezone.add(new TimezoneUse(timeLeavingWork.getTimeZone().getStart(), timeLeavingWork.getTimeZone().getEnd(),UseSetting.USE,timeLeavingWork.getWorkNo().v()));
-		//時間帯を区切る為に所定時間を作成
-		PredetermineTimeSetForCalc calcRenge = new PredetermineTimeSetForCalc(
-				timezone,
-				predetermineTimeSet.getAMEndTime(),
-				predetermineTimeSet.getPMStartTime(),
-				predetermineTimeSet.getAdditionSet(),
-				predetermineTimeSet.getOneDayRange(),
-				predetermineTimeSet.getStartOneDayTime());
+		//出退勤の計算範囲を計算用クラスとして作成
+		TimeSpanForDailyCalc calcRange = new TimeSpanForDailyCalc(timeLeavingWork.getTimeZone().getStart(), timeLeavingWork.getTimeZone().getEnd());
 		
-		//午前勤務、午後勤務を見て時間帯を区切る
-		Optional<TimezoneUse> correctTime = calcRenge.getTimeSheets(workType.getAttendanceHolidayAttr(),timeLeavingWork.getWorkNo().v());
-
-		//予定開始時刻から計算する場合
-		if(checkCalculateFromScheduleStartTime(correctTime.get().getStart(), integrationOfDaily, flowWorkSetting)) {
-			correctTime.get().setStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
+		if(workType.getAttendanceHolidayAttr().isMorning()) {
+			//午前終了の時刻までの時間帯に補正する
+			calcRange.shiftOnlyEnd(predetermineTimeSet.getAMEndTime());
+		}
+		
+		if(workType.getAttendanceHolidayAttr().isAfternoon()) {
+			//午後開始の時刻からの時間帯に補正する
+			calcRange.shiftOnlyStart(predetermineTimeSet.getPMStartTime());
+		}
+		
+		if(isCalculateFromScheduleStartTime(calcRange.getStart(), integrationOfDaily, flowWorkSetting)) {
+			//予定勤務時間帯．出勤時刻までの時間帯に補正する
+			calcRange.shiftOnlyStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
 		}
 		
 		//就業時間内時間枠作成
-		WithinWorkTimeFrame frame = new WithinWorkTimeFrame(
-				new EmTimeFrameNo(correctTime.get().getWorkNo()), 
-				new TimeSpanForDailyCalc(
-						correctTime.get().getStart(),
-						correctTime.get().getEnd()), 
+		return new WithinWorkTimeFrame(
+				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()), 
+				calcRange, 
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				Collections.emptyList(),
 				Collections.emptyList(),
@@ -1378,8 +1375,6 @@ public class CalculationRangeOfOneDay {
 				Collections.emptyList(),
 				Optional.empty(),
 				Optional.empty());
-
-		return frame;
 	}
 	
 	/**
@@ -1389,7 +1384,7 @@ public class CalculationRangeOfOneDay {
 	 * @param flowWorkSetting 流動勤務設定
 	 * @return true：計算する　false：計算しない
 	 */
-	private boolean checkCalculateFromScheduleStartTime(
+	private boolean isCalculateFromScheduleStartTime(
 			TimeWithDayAttr startTime,
 			IntegrationOfDaily integrationOfDaily,
 			FlowWorkSetting flowWorkSetting) {
@@ -1401,6 +1396,7 @@ public class CalculationRangeOfOneDay {
 		if(!integrationOfDaily.getWorkInformation().isMatchWorkInfomation()) return false;
 		
 		//計算開始時刻>=予定勤務時間帯．出勤時刻
+		if(!integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).isPresent()) return false;
 		if(startTime.greaterThanOrEqualTo(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance())) return false;
 		
 		//計算する
@@ -1419,13 +1415,8 @@ public class CalculationRangeOfOneDay {
 			List<TimeLeavingWork> timeLeavingWorks,
 			FlowWorkSetting flowWorkSetting) {
 		
-		//1回目の退勤と2回目の出勤がない場合
-		if(timeLeavingWorks.size() < 2) return Optional.empty();
-		
-		if(timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(1))).findFirst().get().getLeaveStamp().isPresent()
-				&& timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(2))).findFirst().get().getAttendanceStamp().isPresent()) {
-			return Optional.empty();
-		}
+		//1回目の退勤と2回目の出勤がない
+		if(!existsFirstEndAndSecondStart(timeLeavingWorks)) return Optional.empty();
 		
 		//時間帯を作成
 		TimeSpanForDailyCalc betweenWorkTimeSheet = createBetweenWorkTimeSheet(timeLeavingWorks, flowWorkSetting);
@@ -1448,6 +1439,25 @@ public class CalculationRangeOfOneDay {
 				Optional.empty()));
 		
 		return deductionTimeBetweenWork;
+	}
+	
+	/**
+	 * 出退勤に時刻が埋まっているかどうかを確認する(1回目の退勤と2回目の出勤が埋まっているか)
+	 * @param timeLeavingWorks 出退勤（List)
+	 * @return true：埋まっている false：埋まっていない
+	 */
+	private boolean existsFirstEndAndSecondStart(List<TimeLeavingWork> timeLeavingWorks) {
+		if(timeLeavingWorks.size() < 2) return false;
+		
+		//1回目の退勤
+		if(!timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(1))).findFirst().isPresent()) return false;
+		if(!timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(1))).findFirst().get().getLeaveStamp().isPresent()) return false;
+		
+		//2回目の出勤
+		if(!timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(2))).findFirst().isPresent())
+		if(!timeLeavingWorks.stream().filter(a -> a.getWorkNo().equals(new WorkNo(2))).findFirst().get().getAttendanceStamp().isPresent()) return false;
+		
+		return true;
 	}
 	
 	/**
@@ -1489,73 +1499,74 @@ public class CalculationRangeOfOneDay {
 
 	/**
 	 * 流動勤務所定変動
-	 * @param manageReGetClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
+	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
 	 * @param integrationOfDaily 日別実績(Work)（実績）
 	 * @param workType 勤務種類
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス（予定）
 	 * @param flowWorkSetting 流動勤務設定
 	 */
-	private void changePredeterminedForFlow(
-			Optional<ManageReGetClass> manageReGetClass,
+	private void fluctuationPredeterminedForFlow(
+			Optional<ManageReGetClass> manageReGetClassOfSchedule,
 			IntegrationOfDaily integrationOfDaily,
 			WorkType workType,
 			ManagePerPersonDailySet personCommonSetting,
 			FlowWorkSetting flowWorkSetting) {
 		
-		if(!checkChangePredeterminedForFlow(manageReGetClass, integrationOfDaily, workType, flowWorkSetting.getFlowSetting().getOvertimeSetting())) {
+		if(!isFluctuationPredeterminedForFlow(manageReGetClassOfSchedule, integrationOfDaily, workType, flowWorkSetting.getFlowSetting().getOvertimeSetting())) {
 			return;
 		}
 		
 		//変動させる時間を求める
-		AttendanceTimeOfExistMinus changeTime = getChangePredeterminedForFlow(
-				manageReGetClass.get(),
+		AttendanceTimeOfExistMinus fluctuationTime = getFluctuationPredeterminedForFlow(
+				manageReGetClassOfSchedule.get(),
 				integrationOfDaily,
 				workType,
 				personCommonSetting,
 				flowWorkSetting.getFlowSetting().getOvertimeSetting());
 		
-		if(!changeTime.equals(AttendanceTimeOfExistMinus.ZERO)) {
-			//所定時間を変動させる
-			this.predetermineTimeSetForCalc.changePredeterminedTimeSheetToSchedule(manageReGetClass.get().getCalculationRangeOfOneDay());
+		if(!fluctuationTime.equals(AttendanceTimeOfExistMinus.ZERO)) {
+			//所定時間帯を変動させる
+			this.predetermineTimeSetForCalc.fluctuationPredeterminedTimeSheetToSchedule(
+					manageReGetClassOfSchedule.get().getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks());
 			
 			//所定時間を変動させる
-			this.predetermineTimeSetForCalc.getAdditionSet().changePredeterminedTimeForFlow(changeTime);
+			this.predetermineTimeSetForCalc.getAdditionSet().fluctuationPredeterminedTimeForFlow(fluctuationTime);
 			
 			//残業時間帯を変動させる
-			flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().changeElapsedTimeInLstOTTimezone(changeTime);
+			flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().fluctuationElapsedTimeInLstOTTimezone(fluctuationTime);
 		}
 	}
 	
 	/**
 	* 変動させる時間を求める
-	 * @param manageReGetClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
+	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
 	 * @param integrationOfDaily 日別実績(Work)（実績）
 	 * @param workType 勤務種類
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス（予定）
 	 * @param FlowOTSet 流動残業設定
 	 * @return changeTime 変動させる時間
 	 */
-	private AttendanceTimeOfExistMinus getChangePredeterminedForFlow(
-			ManageReGetClass manageReGetClass,
+	private AttendanceTimeOfExistMinus getFluctuationPredeterminedForFlow(
+			ManageReGetClass manageReGetClassOfSchedule,
 			IntegrationOfDaily integrationOfDaily,
 			WorkType workType,
 			ManagePerPersonDailySet personCommonSetting,
 			FlowOTSet flowOTSet) {
 				
 		//予定の所定時間を計算する
-		AttendanceTime schedulePredetermineTime = WorkScheduleTimeOfDaily.calcPredeterminedFromTime(manageReGetClass, workType, personCommonSetting, flowOTSet);
+		AttendanceTime schedulePredetermineTime = WorkScheduleTimeOfDaily.calcPredeterminedFromTime(manageReGetClassOfSchedule, workType, personCommonSetting, flowOTSet);
 		
 		//実績の所定時間を計算する
 		AttendanceTime recordPredetermineTime = this.predetermineTimeSetForCalc.getpredetermineTime(workType.getDailyWork());
 		
 		//予定の所定時間 - 実績の所定時間
-		AttendanceTimeOfExistMinus changeTime = new AttendanceTimeOfExistMinus(schedulePredetermineTime.v()).minusMinutes(recordPredetermineTime.v());
+		AttendanceTimeOfExistMinus fluctuationTime = new AttendanceTimeOfExistMinus(schedulePredetermineTime.v()).minusMinutes(recordPredetermineTime.v());
 		
 		//所定変動区分が「後にズラす」
-		if(flowOTSet.getFixedChangeAtr() == FixedChangeAtr.AFTER_SHIFT && changeTime.isNegative()) {
-			changeTime = AttendanceTimeOfExistMinus.ZERO;
+		if(flowOTSet.getFixedChangeAtr() == FixedChangeAtr.AFTER_SHIFT && fluctuationTime.isNegative()) {
+			fluctuationTime = AttendanceTimeOfExistMinus.ZERO;
 		}
-		return changeTime;
+		return fluctuationTime;
 	}
 	
 	/**
@@ -1565,13 +1576,13 @@ public class CalculationRangeOfOneDay {
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス（予定）
 	 * @return true:変動させる false:変動させない
 	 */
-	private boolean checkChangePredeterminedForFlow(
-			Optional<ManageReGetClass> manageReGetClass,
+	private boolean isFluctuationPredeterminedForFlow(
+			Optional<ManageReGetClass> manageReGetClassOfSchedule,
 			IntegrationOfDaily integrationOfDaily,
 			WorkType workType,
 			FlowOTSet flowOTSet) {
 		
-		if(!manageReGetClass.isPresent() //予定を渡している場合（予定の計算時には変動させない為）
+		if(!manageReGetClassOfSchedule.isPresent() //予定を渡している場合（予定の計算時には変動させない為）
 			|| !integrationOfDaily.getWorkInformation().isMatchWorkInfomation() //勤務実績と勤務予定の勤務情報が一致しない
 			|| workType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY_WORK) //勤務実績の勤務種類が休出
 			|| flowOTSet.getFixedChangeAtr().equals(FixedChangeAtr.NOT_CHANGE)) { //所定変動区分が「変動しない」

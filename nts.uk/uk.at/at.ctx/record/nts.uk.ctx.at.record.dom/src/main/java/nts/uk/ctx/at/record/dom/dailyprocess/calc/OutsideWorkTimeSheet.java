@@ -14,18 +14,18 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
@@ -228,7 +228,7 @@ public class OutsideWorkTimeSheet {
 			WorkRegularAdditionSet regularAddSetting,
 			HolidayAddtionSet holidayAddtionSet) {
 		
-		Optional<OverTimeSheet> overTimeSheet = OverTimeSheet.createAsFlow(
+		OverTimeSheet overTimeSheet = OverTimeSheet.createAsFlow(
 				personalInfo,
 				flowWorkSetting,
 				predetermineTimeSetForCalc,
@@ -257,7 +257,7 @@ public class OutsideWorkTimeSheet {
 		//0時跨ぎの時間帯分割
 		OverDayEnd overDayEnd = OverDayEnd.forOverTime(
 				flowWorkSetting.getCommonSetting().isZeroHStraddCalculateSet(),
-				overTimeSheet.get().getFrameTimeSheets(),
+				overTimeSheet.getFrameTimeSheets(),
 				yesterdayWorkType,
 				todayWorkType,
 				tommorowWorkType,
@@ -302,7 +302,7 @@ public class OutsideWorkTimeSheet {
 			Optional<WorkInformation> tommorowInfo,
 			TimeSpanForDailyCalc oneDayOfRange) {
 		
-		Optional<HolidayWorkTimeSheet> hollidayWorkTImeSheet = HolidayWorkTimeSheet.createAsFlow(
+		HolidayWorkTimeSheet hollidayWorkTImeSheet = HolidayWorkTimeSheet.createAsFlow(
 				todayWorkType,
 				flowWorkSetting,
 				timeSheetOfDeductionItems,
@@ -320,7 +320,7 @@ public class OutsideWorkTimeSheet {
 		//0時跨ぎ処理
 		OverDayEnd overDayEnd = OverDayEnd.forHolidayWorkTime(
 				flowWorkSetting.getCommonSetting().isZeroHStraddCalculateSet(),
-				hollidayWorkTImeSheet.get().getWorkHolidayTime(),
+				hollidayWorkTImeSheet.getWorkHolidayTime(),
 				yesterdayWorkType,
 				todayWorkType,
 				tommorowWorkType,

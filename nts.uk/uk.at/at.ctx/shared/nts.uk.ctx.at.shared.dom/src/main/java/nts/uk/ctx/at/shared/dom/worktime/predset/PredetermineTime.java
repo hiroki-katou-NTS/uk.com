@@ -96,20 +96,20 @@ public class PredetermineTime extends WorkTimeDomainObject implements Cloneable{
 	
 	/**
 	 * 所定時間を変動させる（流動勤務）
-	 * @param changeTime 変動させる時間
+	 * @param fluctuationTime 変動させる時間
 	 */
-	public void changePredeterminedTimeForFlow(AttendanceTimeOfExistMinus changeTime) {
-		this.predTime.changeTime(
-				Optional.of(this.predTime.getOneDay().addMinutes(changeTime.v())),
-				Optional.of(this.predTime.getMorning().addMinutes(changeTime.v())),
-				Optional.of(this.predTime.getAfternoon().addMinutes(changeTime.v())));
-		this.addTime.changeTime(
-				Optional.of(this.addTime.getOneDay().addMinutes(changeTime.v())),
+	public void fluctuationPredeterminedTimeForFlow(AttendanceTimeOfExistMinus fluctuationTime) {
+		this.predTime.setAllTime(
+				Optional.of(this.predTime.getOneDay().addMinutes(fluctuationTime.v())),
+				Optional.of(this.predTime.getMorning().addMinutes(fluctuationTime.v())),
+				Optional.of(this.predTime.getAfternoon().addMinutes(fluctuationTime.v())));
+		this.addTime.setAllTime(
+				Optional.of(this.addTime.getOneDay().addMinutes(fluctuationTime.v())),
 				Optional.empty(),
 				Optional.empty());
 		
-		this.predTime.changeNegativeToZero();
-		this.addTime.changeNegativeToZero();
+		this.predTime.negativeToZero();
+		this.addTime.negativeToZero();
 	}
 	
 	@Override
