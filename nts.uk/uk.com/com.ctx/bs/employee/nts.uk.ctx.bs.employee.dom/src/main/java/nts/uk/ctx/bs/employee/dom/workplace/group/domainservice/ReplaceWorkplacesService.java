@@ -25,7 +25,8 @@ public class ReplaceWorkplacesService {
 		
 		// filter not 職場IDリスト.contains( $.職場ID )
 		List<AffWorkplaceGroup> lstDel = lstFormerAffInfo.stream()
-				.filter(x-> !lstWorkplaceId.contains(x.getWKPID())).collect(Collectors.toList());
+				.filter(x-> !lstWorkplaceId.contains(x.getWKPID()))
+				.collect(Collectors.toList());
 		
 		Map<String, WorkplaceReplaceResult> dateHistLst = new HashMap<>();
 		// $削除結果リスト = $削除対象リスト:					

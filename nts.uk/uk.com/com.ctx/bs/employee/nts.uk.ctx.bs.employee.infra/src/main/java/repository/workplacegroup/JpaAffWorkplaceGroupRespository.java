@@ -83,9 +83,11 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void deleteAll(String CID, String WKPGRPID, String WKPID) {
-		Optional<AffWorkplaceGroup> entity = this.getByID(CID, WKPGRPID, WKPID);
+		Optional<BsymtAffWorkPlaceGroup> entity = this.queryProxy().query(SELECT_BY_CID_CODE_WPID, BsymtAffWorkPlaceGroup.class)
+				.setParameter("CID", CID).setParameter("WKPGRPID", WKPGRPID).setParameter("WKPID", WKPID)
+				.getSingle();
 		if (entity.isPresent())
-			this.commandProxy().remove(BsymtAffWorkPlaceGroup.toEntity(entity.get()));
+			this.commandProxy().remove(entity.get());
 	}
 
 	/**
@@ -115,9 +117,10 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 	 */
 	@Override
 	public void deleteByWKPID(String CID, String WKPID) {
-		Optional<AffWorkplaceGroup> dom = this.getByWKPID(CID, WKPID);
-		if (dom.isPresent())
-			this.commandProxy().remove(BsymtAffWorkPlaceGroup.toEntity(dom.get()));
+		Optional<BsymtAffWorkPlaceGroup> entity = this.queryProxy().query(SELECT_BY_CID_WPID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
+				.setParameter("WKPID", WKPID).getSingle();
+		if (entity.isPresent())
+			this.commandProxy().remove(entity.get());
 	}
 
 	/**
