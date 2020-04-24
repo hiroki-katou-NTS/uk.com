@@ -322,7 +322,7 @@ public class OutputScreenListOfStampFinder {
 		}
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
-			return stampDakokuRepository.get(stampNumbers, stampDateTime);
+			return stampDakokuRepository.get(AppContexts.user().companyCode(), stampNumbers, stampDateTime);
 		}
 		
 		
@@ -343,7 +343,7 @@ public class OutputScreenListOfStampFinder {
 
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period) {	
-			return stampDakokuRepo.getStempRcNotResgistNumber(period);
+			return stampDakokuRepo.getStempRcNotResgistNumber(AppContexts.user().companyCode(), period);
 		}	
 	}
 	

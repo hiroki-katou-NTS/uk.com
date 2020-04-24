@@ -22,6 +22,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KRCMT_STAMP_USAGE")
 public class KrcmtStampUsage extends ContractUkJpaEntity implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	public KrcmtStampUsagePk pk;
 
