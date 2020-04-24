@@ -201,15 +201,7 @@ module nts.uk.at.view.testM.a {
             
             nts.uk.ui.windows.setShared('KSU001M', self.listEmpSetShare());
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-               // var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-          //     if (returnWorkLocationCD !== undefined) {
-           //        self.workLocationCD(returnWorkLocationCD);
-          //         nts.uk.ui.block.clear();
-           //    }
-           //    else{
-                
-            //       nts.uk.ui.block.clear();
-               // }
+       
             });
             }
             

@@ -8,9 +8,10 @@ module nts.uk.at.view.ksm007.a {
         $(window).resize(function () {
 			screenModel.reCalGridWidth();
         });
-        
+
         if(screenModel.registerForm().newMode()) {
             $('#requiredCode').focus();
         }
+        
     });
 }

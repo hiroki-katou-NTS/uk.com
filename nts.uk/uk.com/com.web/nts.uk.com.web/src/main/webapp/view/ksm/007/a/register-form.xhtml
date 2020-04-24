@@ -29,6 +29,7 @@ required: true}"
     </div>
     <input
       tabindex="6"
+      id="requiredName"
       data-bind="ntsTextEditor: {	
 name: '#[KSM007_7]',
 value: registerForm().workplaceGroupName,
@@ -56,10 +57,10 @@ required: true}"
 
   <!-- A7 -->
   <div class="valign-center control-group">
-    <button data-bind="click: openDialogCDL008">
+    <button tabindex="8" data-bind="click: openDialogCDL008">
       #{i18n.getText('KSM007_11')}
     </button>
-    <button data-bind="click: removeWorkplace">
+    <button tabindex="9" data-bind="click: removeWorkplace">
       #{i18n.getText('KSM007_12')}
     </button>
   </div>

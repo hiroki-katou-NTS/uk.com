@@ -34,9 +34,7 @@ public class GetRankEmpFinder {
 		
 		List<RankDto> listRankDto = rankRepository.getListRank(companyId).stream()
 				.map(x -> new RankDto(x.getRankCode().v(), x.getRankSymbol().v())).collect(Collectors.toList());
-		if(listRankDto.isEmpty()){
-			throw new BusinessException("Msg_1643");
-		}
+		
 		// Query ランクマスタを優先順に並べて取得する
 		// 優先順でランクリストを取得する(ログイン会社ID)
 		List<EmployeeRankDto> listEmpRankDto = employeeRankRepository.getAll(listEmpId).stream()
