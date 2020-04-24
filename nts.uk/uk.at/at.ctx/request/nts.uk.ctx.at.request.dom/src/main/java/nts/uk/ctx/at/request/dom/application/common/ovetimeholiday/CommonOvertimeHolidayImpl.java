@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
@@ -1206,5 +1207,38 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		// Input．実績超過区分チェック
 		return performanceExcessAtr;
+	}
+
+	@Override
+	public List<ConfirmMsgOutput> preAppExcessCheckKAF010(String employeeName, GeneralDate appDate,
+			PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames) {
+		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
+		// 計算結果の事前申請状態をチェック
+		if(preActualColorResult.beforeAppStatus) {
+			// Output．エラー情報　＝　確認メッセージ（Msg_1508）
+			outputLst.add(new ConfirmMsgOutput("Msg_1508", Arrays.asList(employeeName)));
+			return outputLst;
+		}
+		// 計算結果の事前申請超過があるかないかをチェック
+		List<Integer> frameError = new ArrayList<>();
+		for(OvertimeColorCheck overtimeColorCheck : preActualColorResult.resultLst) {
+			if(overtimeColorCheck.actualError != 0) {
+				frameError.add(overtimeColorCheck.frameNo);
+			}
+		}
+		if(CollectionUtil.isEmpty(frameError)) {
+			return Collections.emptyList();
+		}
+		// Output．エラー情報　＝　確認メッセージ（Msg_424）
+		String paramMsg = "";
+		for(Integer frame : frameError) {
+			String name = breaktimeFrames.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == frame).findAny().get().getWorkdayoffFrName().v();
+			paramMsg = paramMsg + name;
+			if(frameError.indexOf(frame) < frameError.size() - 1) {
+				paramMsg = paramMsg + ",";
+			}
+		}
+		outputLst.add(new ConfirmMsgOutput("Msg_424", Arrays.asList(employeeName, paramMsg)));
+		return outputLst;
 	}
 }
