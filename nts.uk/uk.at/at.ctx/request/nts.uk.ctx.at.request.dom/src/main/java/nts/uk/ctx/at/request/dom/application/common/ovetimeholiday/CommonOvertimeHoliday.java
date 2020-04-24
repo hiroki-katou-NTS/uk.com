@@ -311,5 +311,16 @@ public interface CommonOvertimeHoliday {
 	 * @param preActualColorResult 計算結果
 	 * @return
 	 */
-	List<ConfirmMsgOutput> preAppExcessCheckKAF010(String employeeName, GeneralDate appDate, PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames);
+	List<ConfirmMsgOutput> preAppExcessCheckHdApp(String employeeName, GeneralDate appDate, PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames);
+	
+	/**
+	 * 03-02_実績超過チェック（＃108410）
+	 * @param employeeName 申請者名
+	 * @param appDate 申請日
+	 * @param performanceExcessAtr 実績超過区分
+	 * @param preActualColorResult 計算結果
+	 * @return
+	 */
+	List<ConfirmMsgOutput> achievementCheckHdApp(String employeeName, GeneralDate appDate, AppDateContradictionAtr performanceExcessAtr, 
+			PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames);
 }

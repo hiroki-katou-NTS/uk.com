@@ -1241,4 +1241,51 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		outputLst.add(new ConfirmMsgOutput("Msg_424", Arrays.asList(employeeName, paramMsg)));
 		return outputLst;
 	}
+
+	@Override
+	public List<ConfirmMsgOutput> achievementCheckHdApp(String employeeName, GeneralDate appDate,
+			AppDateContradictionAtr performanceExcessAtr, PreActualColorResult preActualColorResult,
+			List<WorkdayoffFrame> breaktimeFrames) {
+		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
+		// 計算結果の実績状態をチェック
+		if(preActualColorResult.actualStatus == ActualStatus.NO_ACTUAL.value) {
+			// Input．実績超過区分をチェック
+			if(performanceExcessAtr == AppDateContradictionAtr.CHECKNOTREGISTER) {
+				// エラーメッセージ（Msg_1565）を表示する
+				throw new BusinessException("Msg_1565", employeeName, appDate.toString(), "登録できません。");
+			} 
+			if(performanceExcessAtr == AppDateContradictionAtr.CHECKREGISTER) {
+				// Output．エラー情報　＝　確認メッセージ（Msg_1565）
+				outputLst.add(new ConfirmMsgOutput("Msg_1565", Arrays.asList(employeeName, appDate.toString(), "登録してもよろしいですか？")));
+				return outputLst;
+			}
+		}
+		// 計算結果の実績超過があるかないかをチェック
+		List<Integer> frameError = new ArrayList<>();
+		for(OvertimeColorCheck overtimeColorCheck : preActualColorResult.resultLst) {
+			if(overtimeColorCheck.actualError != 0) {
+				frameError.add(overtimeColorCheck.frameNo);
+			}
+		}
+		if(CollectionUtil.isEmpty(frameError)) {
+			return Collections.emptyList();
+		}
+		String paramMsg = "";
+		for(Integer frame : frameError) {
+			// String name = breaktimeFrames.stream().filter(x -> x.getWorkdayoffFrNo().v().intValue() == frame).findAny().get().getWorkdayoffFrName().v();
+			// paramMsg = paramMsg + name;
+			paramMsg = paramMsg + frame;
+			if(frameError.indexOf(frame) < frameError.size() - 1) {
+				paramMsg = paramMsg + ",";
+			}
+		}
+		// Input．実績超過区分をチェック
+		if(performanceExcessAtr == AppDateContradictionAtr.CHECKREGISTER) {
+			// Output．エラー情報　＝　確認メッセージ（Msg_423）
+			outputLst.add(new ConfirmMsgOutput("Msg_423", Arrays.asList(ApplicationType.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録してもよろしいですか？")));
+			return outputLst;
+		}
+		// エラーメッセージ（Msg_1565）を表示する
+		throw new BusinessException("Msg_423", ApplicationType.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録できません。");
+	}
 }
