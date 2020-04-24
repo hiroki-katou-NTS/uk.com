@@ -22,6 +22,7 @@ public class Stamp implements DomainAggregate {
 
 	/**
 	 * 契約コード
+	 * ver2　属性追加
 	 */
 	@Getter
 	private final ContractCode contractCode;
@@ -77,7 +78,9 @@ public class Stamp implements DomainAggregate {
 			StampType type, RefectActualResult refActualResults, boolean reflectedCategory,
 			StampLocationInfor locationInfor) {
 		super();
-		this.contractCode = contractCode;
+		//ver2　属性追加 Cái constructor này là class trước ver2 đã có mà cái này là sai thiết kế bây giờ
+		this.contractCode = contractCode; 
+		
 		this.cardNumber = cardNumber;
 		this.stampDateTime = stampDateTime;
 		this.relieve = relieve;
@@ -87,10 +90,20 @@ public class Stamp implements DomainAggregate {
 		this.locationInfor = Optional.ofNullable(locationInfor);
 	}
 
+	/**
+	 * [C-1] 初回打刻データを作成する
+	 * @param contractCode
+	 * @param cardNumber
+	 * @param stampDateTime
+	 * @param relieve
+	 * @param type
+	 * @param refActualResults
+	 * @param locationInfor
+	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
 			StampType type, RefectActualResult refActualResults, StampLocationInfor locationInfor) {
 		super();
-		this.contractCode = contractCode;
+		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
 		this.stampDateTime = stampDateTime;
 		this.relieve = relieve;
