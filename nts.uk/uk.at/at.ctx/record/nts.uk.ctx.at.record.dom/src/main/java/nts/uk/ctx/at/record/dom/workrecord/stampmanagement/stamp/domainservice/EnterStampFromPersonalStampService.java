@@ -35,7 +35,7 @@ public class EnterStampFromPersonalStampService {
 	 * @param positionInfo 打刻位置情報	
 	 * @param empInfoTerCode 就業情報端末コード
 	 */
-	public static StampDataReflectResult create(Require require, ContractCode contractCode , String employeeId, GeneralDateTime stmapDateTime, int pageNo, int buttonPosNo,
+	public static TimeStampInputResult create(Require require, ContractCode contractCode , String employeeId, GeneralDateTime stmapDateTime, int pageNo, int buttonPosNo,
 			RefectActualResult refActualResults, Optional<GeoCoordinate> positionInfo,
 			Optional<EmpInfoTerminalCode> empInfoTerCode) {
 
