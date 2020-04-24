@@ -18,13 +18,13 @@ public enum CardCategory {
 
 	public final String value;
 
-	public final String name;
+	public final String nameType;
 
-	private final static CardCategory[] values = CardCategory.values();
+	private static final CardCategory[] values = CardCategory.values();
 
-	private CardCategory(String value, String name) {
+	private CardCategory(String value, String nameType) {
 		this.value = value;
-		this.name = name;
+		this.nameType = nameType;
 	}
 
 	public static CardCategory valueStringOf(String value) {

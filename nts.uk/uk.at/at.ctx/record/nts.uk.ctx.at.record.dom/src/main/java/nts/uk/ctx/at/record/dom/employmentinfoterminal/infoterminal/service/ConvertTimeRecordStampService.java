@@ -26,6 +26,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
  */
 public class ConvertTimeRecordStampService {
 
+	private ConvertTimeRecordStampService() {};
+	
 	// 変換する
 	public static Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData(Require require,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData) {
@@ -34,14 +36,12 @@ public class ConvertTimeRecordStampService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
 
-		// $就業情報端末 = Optional.empty() || $タイムレコードのﾘｸｴｽﾄ設定 = Optional.empty()
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
 			return Pair.of(Optional.empty(), Optional.empty());
 
 		// $就業情報端末.打刻(打刻受信データ)
 		Pair<Stamp, StampRecord> stamp = empInfoTerOpt.get().createStamp(stampReceptData);
 
-		// [pvt-1] 新しいを作成することがでる(require, 契約コード, @打刻受信データ);
 		if (!canCreateNewData(require, contractCode, stampReceptData))
 			return Pair.of(Optional.empty(), Optional.empty());
 
@@ -83,7 +83,7 @@ public class ConvertTimeRecordStampService {
 		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
 		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
 
-		// [R-5] エラーNR-通信を取得する
+		// [R-5] エラーNR-通信を作る
 		public void insert(ErrorNRCom errorNR);
 	}
 }

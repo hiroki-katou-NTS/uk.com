@@ -15,7 +15,7 @@ public enum ModelEmpInfoTer {
 
 	public final int value;
 
-	private final static ModelEmpInfoTer[] values = ModelEmpInfoTer.values();
+	private static final ModelEmpInfoTer[] values = ModelEmpInfoTer.values();
 
 	private ModelEmpInfoTer(int value) {
 		this.value = value;

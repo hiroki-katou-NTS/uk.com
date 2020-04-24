@@ -51,13 +51,13 @@ public enum LeaveCategory {
 
 	public final String value;
 
-	public final String name;
+	public final String nameType;
 
-	private final static LeaveCategory[] values = LeaveCategory.values();
+	private static final LeaveCategory[] values = LeaveCategory.values();
 
-	private LeaveCategory(String value, String name) {
+	private LeaveCategory(String value, String nameType) {
 		this.value = value;
-		this.name = name;
+		this.nameType = nameType;
 	}
 
 	public static LeaveCategory valueStringOf(String value) {

@@ -29,13 +29,13 @@ public enum NRErrorType {
 
 	public final int value;
 
-	public final String name;
+	public final String nameType;
 
-	private final static NRErrorType[] values = NRErrorType.values();
+	private static final NRErrorType[] values = NRErrorType.values();
 
-	private NRErrorType(int value, String name) {
+	private NRErrorType(int value, String nameType) {
 		this.value = value;
-		this.name = name;
+		this.nameType = nameType;
 	}
 
 	public static NRErrorType valueOf(Integer value) {

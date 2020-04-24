@@ -28,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  *         データタイムレコードを予約に変換する
  */
 public class ConvertTimeRecordReservationService {
+	
+	private ConvertTimeRecordReservationService() {};
 
 	// 変換する
 	public static Optional<AtomTask> convertData(Require require, EmpInfoTerminalCode empInfoTerCode,
@@ -37,11 +39,9 @@ public class ConvertTimeRecordReservationService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
 
-		// $就業情報端末 = Optional.empty() || $タイムレコードのﾘｸｴｽﾄ設定 = Optional.empty()
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
 			return Optional.empty();
 
-		// $データタイムレコードの予約 = $就業情報端末.予約(require, @予約受信データ)
 		try {
 
 			// $就業情報端末.予約(require, @予約受信データ)
@@ -94,7 +94,7 @@ public class ConvertTimeRecordReservationService {
 		// [R-3]タイムレコードのﾘｸｴｽﾄ設定を取得する
 		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
 
-		// [R-4] エラーNR-通信を取得する
+		// [R-4] エラーNR-通信を作る
 		public void insert(ErrorNRCom errorNR);
 
 		// [R-5] insert(打刻記録)

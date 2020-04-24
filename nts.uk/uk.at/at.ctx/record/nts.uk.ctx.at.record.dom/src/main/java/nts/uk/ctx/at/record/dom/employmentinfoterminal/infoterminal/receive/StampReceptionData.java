@@ -83,9 +83,8 @@ public class StampReceptionData implements ReceptionData {
 	public GeneralDateTime getDateTime() {
 		int yy = GeneralDate.today().year() / 100;
 		int ymdTemp = Integer.parseInt(String.valueOf(yy) + ymd);
-		GeneralDateTime result = GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100,
+		return GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100,
 				ymdTemp % 100, Integer.parseInt(time) / 100, Integer.parseInt(time) % 100, 0);
-		return result;
 	}
 
 	public String getOverTimeHours() {
