@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWo
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
@@ -138,8 +139,8 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("checkBeforeRegister")
-	public OvertimeCheckResultDto checkBeforeRegister(CreateHolidayWorkCommand command){
-		return checkBeforeRegisterHolidayWork.CheckBeforeRegister(command);
+	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command){
+		return checkBeforeRegisterHolidayWork.checkBeforeRegister(command);
 	}
 	@POST
 	@Path("findByAppID")

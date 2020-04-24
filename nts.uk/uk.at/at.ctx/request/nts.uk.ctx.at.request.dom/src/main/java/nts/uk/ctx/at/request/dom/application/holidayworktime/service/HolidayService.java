@@ -8,14 +8,18 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -151,6 +155,40 @@ public interface HolidayService {
 	 */
 	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType appType, String workTypeCD, String workTimeCD, 
 			Optional<TimeWithDayAttr> startTime, Optional<TimeWithDayAttr> endTime, UseAtr timeCalUse, Boolean breakTimeDisp);
+	
+	/**
+	 * 2.登録前のエラーチェック処理
+	 * @param companyID 会社ID
+	 * @param appHdWorkDispInfoOutput 休日出勤申請起動時の表示情報
+	 * @param application 申請
+	 * @param agentAtr 代行申請区分
+	 * @return
+	 */
+	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, Application_New application, 
+			boolean agentAtr, AppHolidayWork holidayWorkDomain, int calculateFlg);
+	
+	/**
+	 * 3.個別エラーチェック
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param appDate 申請日
+	 * @param baseDate 基準日
+	 * @param appType 申請種類
+	 * @param application 申請
+	 * @param timeCalUse 時刻計算利用区分
+	 * @param timeInputUse 時間入力利用区分
+	 * @param appDateContradictionAtr 申請日矛盾区分
+	 * @param agentAtr 代行申請区分
+	 * @param mode 入力モード
+	 * @param achievementOutputLst 実績内容
+	 * @param appDetailContentLst 事前申請
+	 * @param appHdWorkInstruction 休出指示
+	 * @return
+	 */
+	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate, GeneralDate baseDate, ApplicationType appType, 
+			Application_New application, UseAtr timeCalUse, UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, 
+			boolean mode, List<AchievementOutput> achievementOutputLst, List<AppDetailContent> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
+			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput);
 	
 }
 	

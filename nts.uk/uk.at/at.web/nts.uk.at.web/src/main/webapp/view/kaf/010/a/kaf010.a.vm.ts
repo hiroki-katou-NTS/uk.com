@@ -521,10 +521,42 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 calculateFlag: self.calculateFlag(),
                 appReasonID: comboBoxReason,
                 checkOver1Year: true,
-                actualExceedConfirm: false
+                actualExceedConfirm: false,
+                appHdWorkDispInfoCmd: self.appHdWorkDispInfoDto
             };
+            service.checkBeforeRegister(overtime).done((data) => {
+                self.processConfirmMsg(overtime, data, 0);
+            }).fail((res) => {
+                if (nts.uk.util.isNullOrEmpty(res.errors)) {
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                    .then(function() { nts.uk.ui.block.clear(); });     
+                } else {
+                    let errors = res.errors;
+                    for (let i = 0; i < errors.length; i++) {
+                        let error = errors[i];
+                        if (error.messageId == "Msg_1538") {
+                            error.parameterIds = [
+                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
+                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+                            ];
+                        } else {
+                            error.parameterIds = [
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
+                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+                            ];
+                        }
+                        error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+                    }
+                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
+                        .then(function() { nts.uk.ui.block.clear(); });
+                } 
+            });
+            
+            
             //登録前エラーチェック
-            self.beforeRegisterColorConfirm(overtime);
+            // self.beforeRegisterColorConfirm(overtime);
         }
         //登録処理を実行
         registerData(overtime) {
@@ -1031,207 +1063,224 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }
         }
         
-        beforeRegisterColorConfirm(overtime: any){
-            let self = this;
-            service.beforeRegisterColorConfirm(overtime).done((data2) => {
-                overtime.checkOver1Year = false;
-                self.contentBefRegColorConfirmDone(overtime, data2);
-            }).fail((res) => {
-                if (res.messageId == "Msg_1518") {//confirm
-                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                        overtime.checkOver1Year = false;
-                        service.beforeRegisterColorConfirm(overtime).done((data3) => {
-                            self.contentBefRegColorConfirmDone(overtime, data3);
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                .then(function() { nts.uk.ui.block.clear(); });
-                        });
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    });
+//        beforeRegisterColorConfirm(overtime: any){
+//            let self = this;
+//            service.beforeRegisterColorConfirm(overtime).done((data2) => {
+//                overtime.checkOver1Year = false;
+//                self.contentBefRegColorConfirmDone(overtime, data2);
+//            }).fail((res) => {
+//                if (res.messageId == "Msg_1518") {//confirm
+//                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+//                        overtime.checkOver1Year = false;
+//                        service.beforeRegisterColorConfirm(overtime).done((data3) => {
+//                            self.contentBefRegColorConfirmDone(overtime, data3);
+//                        }).fail((res) => {
+//                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+//                                .then(function() { nts.uk.ui.block.clear(); });
+//                        });
+//                    }).ifNo(() => {
+//                        nts.uk.ui.block.clear();
+//                    });
+//
+//                } else {
+//                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+//                        .then(function() { nts.uk.ui.block.clear(); });
+//                }
+//            });
+//        }
+//
+//        contentBefRegColorConfirmDone(overtime, data2) {
+//            let self = this;
+//            if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
+//                self.beforeRegisterProcess(overtime);    
+//            } else {
+//                self.breakTimesOld = ko.toJS(self.breakTimes());
+//                self.fillColor(data2.preActualColorResult);
+//                self.checkPreApp(overtime, data2);        
+//            }
+//        }
+//        
+//        checkPreApp(overtime, data) {
+//            let self = this;
+//            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
+//            let actualStatus = data.preActualColorResult.actualStatus;
+//            let resultLst = data.preActualColorResult.resultLst;
+//            if(self.preExcessDisplaySetting()==0){
+//                self.checkActual(overtime, data);
+//                return;    
+//            }
+//            if(beforeAppStatus){
+//                dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
+//                    self.checkActual(overtime, data);   
+//                }).ifNo(() => {
+//                    nts.uk.ui.block.clear();
+//                });       
+//                return; 
+//            }
+//            let preAppErrorFrames = resultLst.filter(f => 
+//                f.attendanceID == 2 && 
+//                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 2);
+//            if(nts.uk.util.isNullOrEmpty(preAppErrorFrames)){
+//                self.checkActual(overtime, data);         
+//            } else {
+//                let framesError = '';
+//                preAppErrorFrames.forEach((v, k)=>{
+//                    let currentFrame = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID && ot.frameNo()==v.frameNo);
+//                    if(!nts.uk.util.isNullOrUndefined(currentFrame)){
+//                        framesError+=currentFrame.frameName();
+//                        if(k<(preAppErrorFrames.length-1)){
+//                            framesError+=",";    
+//                        }    
+//                    }    
+//                }); 
+//                dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
+//                    self.checkActual(overtime, data);
+//                }).ifNo(() => {
+//                    nts.uk.ui.block.clear();
+//                }); 
+//            }
+//        }
+//        
+//        checkActual(overtime, data) {
+//            let self = this;
+//            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
+//            let actualStatus = data.preActualColorResult.actualStatus;
+//            let resultLst = data.preActualColorResult.resultLst;
+//            if(self.performanceExcessAtr()==0){
+//                self.beforeRegisterProcess(overtime);
+//                return;        
+//            } 
+//            if(actualStatus==3){
+//                if(self.performanceExcessAtr() == 2){
+//                    dialog.alertError({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録できません。" ] })
+//                    .then(function() { 
+//                        nts.uk.ui.block.clear();
+//                    });    
+//                    return;
+//                } else {
+//                    dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
+//                        self.beforeRegisterProcess(overtime);  
+//                    }).ifNo(() => {
+//                        nts.uk.ui.block.clear();
+//                    }); 
+//                    return;        
+//                }   
+//            }
+//            let actualErrorFrames = resultLst.filter(f => 
+//                f.attendanceID == 2 && 
+//                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 4);
+//            let actualAlarmFrames = resultLst.filter(f => 
+//                f.attendanceID == 2 && 
+//                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 3);
+//            if(!nts.uk.util.isNullOrEmpty(actualErrorFrames)){
+//                let framesError = '';
+//                actualErrorFrames.forEach((v, k)=>{
+//                    let currentError = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
+//                    if(!nts.uk.util.isNullOrUndefined(currentError)){
+//                        framesError+=currentError.frameName();
+//                        if(k<(actualErrorFrames.length-1)){
+//                            framesError+=",";    
+//                        }    
+//                    }    
+//                });  
+//                dialog.alertError({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesError, "登録できません。" ] })
+//                .then(function() { 
+//                    nts.uk.ui.block.clear();
+//                }); 
+//                return;
+//            } else if(!nts.uk.util.isNullOrEmpty(actualAlarmFrames)){
+//                let framesAlarm = '';
+//                actualAlarmFrames.forEach((v, k)=>{
+//                    let currentAlarm = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
+//                    if(!nts.uk.util.isNullOrUndefined(currentAlarm)){
+//                        framesAlarm+=currentAlarm.frameName();
+//                        if(k<(actualAlarmFrames.length-1)){
+//                            framesAlarm+=",";    
+//                        }    
+//                    }    
+//                }); 
+//                dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
+//                    self.beforeRegisterProcess(overtime);
+//                }).ifNo(() => {
+//                    nts.uk.ui.block.clear();
+//                }); 
+//                return;
+//            } else {
+//                self.beforeRegisterProcess(overtime);    
+//            }
+//        } 
 
-                } else {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
-            });
-        }
-
-        contentBefRegColorConfirmDone(overtime, data2) {
-            let self = this;
-            if(nts.uk.util.isNullOrUndefined(data2.preActualColorResult)){
-                self.beforeRegisterProcess(overtime);    
-            } else {
-                self.breakTimesOld = ko.toJS(self.breakTimes());
-                self.fillColor(data2.preActualColorResult);
-                self.checkPreApp(overtime, data2);        
-            }
-        }
+//        beforeRegisterProcess(overtime: any) {
+//            let self = this;
+//            service.checkBeforeRegister(overtime).done((data) => {
+//                overtime.appOvertimeDetail = data.appOvertimeDetail;
+//                self.confirmInconsistency(data, overtime);
+//            }).fail((res) => {
+//                if (nts.uk.util.isNullOrEmpty(res.errors)) {
+//                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+//                    .then(function() { nts.uk.ui.block.clear(); });     
+//                } else {
+//                    let errors = res.errors;
+//                    for (let i = 0; i < errors.length; i++) {
+//                        let error = errors[i];
+//                        if (error.messageId == "Msg_1538") {
+//                            error.parameterIds = [
+//                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
+//                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
+//                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
+//                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
+//                            ];
+//                        } else {
+//                            error.parameterIds = [
+//                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
+//                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
+//                            ];
+//                        }
+//                        error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
+//                    }
+//                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
+//                        .then(function() { nts.uk.ui.block.clear(); });
+//                }
+//            });
+//        }
         
-        checkPreApp(overtime, data) {
-            let self = this;
-            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
-            let actualStatus = data.preActualColorResult.actualStatus;
-            let resultLst = data.preActualColorResult.resultLst;
-            if(self.preExcessDisplaySetting()==0){
-                self.checkActual(overtime, data);
-                return;    
-            }
-            if(beforeAppStatus){
-                dialog.confirm({ messageId: "Msg_1508" }).ifYes(() => {
-                    self.checkActual(overtime, data);   
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                });       
-                return; 
-            }
-            let preAppErrorFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 2);
-            if(nts.uk.util.isNullOrEmpty(preAppErrorFrames)){
-                self.checkActual(overtime, data);         
-            } else {
-                let framesError = '';
-                preAppErrorFrames.forEach((v, k)=>{
-                    let currentFrame = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID && ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentFrame)){
-                        framesError+=currentFrame.frameName();
-                        if(k<(preAppErrorFrames.length-1)){
-                            framesError+=",";    
-                        }    
-                    }    
-                }); 
-                dialog.confirm({ messageId: "Msg_424", messageParams: [ self.employeeName(), framesError ] }).ifYes(() => {
-                    self.checkActual(overtime, data);
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                }); 
-            }
-        }
+//        confirmInconsistency(data: any, overtime: any){
+//            let self = this;
+//            service.confirmInconsistency(overtime).done((data1) => { 
+//                if (!nts.uk.util.isNullOrEmpty(data1)) {
+//                    dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {
+//                        //登録処理を実行
+//                        self.registerData(overtime);
+//                    }).ifNo(() => {
+//                        //終了状態：処理をキャンセル
+//                        nts.uk.ui.block.clear();
+//                        return;
+//                    });
+//                } else {
+//                    //登録処理を実行
+//                    self.registerData(overtime);
+//                }   
+//            }).fail((res) => {
+//                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+//                .then(function() { nts.uk.ui.block.clear(); });           
+//            });    
+//        }
         
-        checkActual(overtime, data) {
+        processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
             let self = this;
-            let beforeAppStatus = data.preActualColorResult.beforeAppStatus;
-            let actualStatus = data.preActualColorResult.actualStatus;
-            let resultLst = data.preActualColorResult.resultLst;
-            if(self.performanceExcessAtr()==0){
-                self.beforeRegisterProcess(overtime);
-                return;        
-            } 
-            if(actualStatus==3){
-                if(self.performanceExcessAtr() == 2){
-                    dialog.alertError({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録できません。" ] })
-                    .then(function() { 
-                        nts.uk.ui.block.clear();
-                    });    
-                    return;
-                } else {
-                    dialog.confirm({ messageId: "Msg_1565", messageParams: [ self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), "登録してもよろしいですか？" ] }).ifYes(() => {
-                        self.beforeRegisterProcess(overtime);  
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    }); 
-                    return;        
-                }   
-            }
-            let actualErrorFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 4);
-            let actualAlarmFrames = resultLst.filter(f => 
-                f.attendanceID == 2 && 
-                self.getErrorCode(f.calcError, f.preAppError, f.actualError, beforeAppStatus, actualStatus) == 3);
-            if(!nts.uk.util.isNullOrEmpty(actualErrorFrames)){
-                let framesError = '';
-                actualErrorFrames.forEach((v, k)=>{
-                    let currentError = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentError)){
-                        framesError+=currentError.frameName();
-                        if(k<(actualErrorFrames.length-1)){
-                            framesError+=",";    
-                        }    
-                    }    
-                });  
-                dialog.alertError({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesError, "登録できません。" ] })
-                .then(function() { 
-                    nts.uk.ui.block.clear();
-                }); 
+            let confirmMsgLst = result.confirmMsgLst;
+            let confirmMsg = confirmMsgLst[confirmIndex];
+            if(_.isUndefined(confirmMsg)) {
+                paramInsert.appOvertimeDetail = result.appOvertimeDetail;
+                self.registerData(paramInsert);
                 return;
-            } else if(!nts.uk.util.isNullOrEmpty(actualAlarmFrames)){
-                let framesAlarm = '';
-                actualAlarmFrames.forEach((v, k)=>{
-                    let currentAlarm = _.find(self.breakTimes(), ot => ot.attendanceID()==v.attendanceID&&ot.frameNo()==v.frameNo);
-                    if(!nts.uk.util.isNullOrUndefined(currentAlarm)){
-                        framesAlarm+=currentAlarm.frameName();
-                        if(k<(actualAlarmFrames.length-1)){
-                            framesAlarm+=",";    
-                        }    
-                    }    
-                }); 
-                dialog.confirm({ messageId: "Msg_423", messageParams: [ self.employeeName(), framesAlarm, "登録してもよろしいですか？" ] }).ifYes(() => {
-                    self.beforeRegisterProcess(overtime);
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                }); 
-                return;
-            } else {
-                self.beforeRegisterProcess(overtime);    
             }
-        } 
-
-        beforeRegisterProcess(overtime: any) {
-            let self = this;
-            service.checkBeforeRegister(overtime).done((data) => {
-                overtime.appOvertimeDetail = data.appOvertimeDetail;
-                self.confirmInconsistency(data, overtime);
-            }).fail((res) => {
-                if (nts.uk.util.isNullOrEmpty(res.errors)) {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });     
-                } else {
-                    let errors = res.errors;
-                    for (let i = 0; i < errors.length; i++) {
-                        let error = errors[i];
-                        if (error.messageId == "Msg_1538") {
-                            error.parameterIds = [
-                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[4])),
-                                nts.uk.time.formatYearMonth(parseInt(error.parameterIds[5])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[6])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[7]))
-                            ];
-                        } else {
-                            error.parameterIds = [
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[4])),
-                                nts.uk.time.format.byId("Clock_Short_HM", parseInt(error.parameterIds[5]))
-                            ];
-                        }
-                        error.message = nts.uk.resource.getMessage(error.messageId, error.parameterIds);
-                    }
-                    nts.uk.ui.dialog.bundledErrors({ errors: errors })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
+            
+            dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
+                self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
             });
-        }
-        
-        confirmInconsistency(data: any, overtime: any){
-            let self = this;
-            service.confirmInconsistency(overtime).done((data1) => { 
-                if (!nts.uk.util.isNullOrEmpty(data1)) {
-                    dialog.confirm({ messageId: data1[0], messageParams: [data1[1],data1[2]] }).ifYes(() => {
-                        //登録処理を実行
-                        self.registerData(overtime);
-                    }).ifNo(() => {
-                        //終了状態：処理をキャンセル
-                        nts.uk.ui.block.clear();
-                        return;
-                    });
-                } else {
-                    //登録処理を実行
-                    self.registerData(overtime);
-                }   
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                .then(function() { nts.uk.ui.block.clear(); });           
-            });    
         }
     }
 

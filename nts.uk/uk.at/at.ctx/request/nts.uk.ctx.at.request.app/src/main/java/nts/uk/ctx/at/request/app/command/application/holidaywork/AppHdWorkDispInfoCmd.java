@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.shared.app.command.workdayoff.frame.WorkdayoffFrameCommandDto;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
@@ -22,6 +23,11 @@ public class AppHdWorkDispInfoCmd {
 	 * 申請表示情報
 	 */
 	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	
+	/**
+	 * 休出申請指示
+	 */
+	public WithdrawalAppSetDto withdrawalAppSet;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -68,6 +74,7 @@ public class AppHdWorkDispInfoCmd {
 	public AppHdWorkDispInfoOutput toDomain() {
 		AppHdWorkDispInfoOutput result = new AppHdWorkDispInfoOutput();
 		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput.toDomain());
+		result.setWithdrawalAppSet(withdrawalAppSet.toDomain());
 		result.setAgreeOverTimeOutput(null);
 		result.setBreaktimeFrames(breaktimeFrames.stream().map(x -> new WorkdayoffFrame(x)).collect(Collectors.toList()));
 		result.setUseInputDivergenceReason(useInputDivergenceReason);

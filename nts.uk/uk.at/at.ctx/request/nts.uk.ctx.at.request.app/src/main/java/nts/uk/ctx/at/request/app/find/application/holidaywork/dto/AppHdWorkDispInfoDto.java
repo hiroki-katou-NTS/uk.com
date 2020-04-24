@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 
@@ -18,6 +19,11 @@ public class AppHdWorkDispInfoDto {
 	 * 申請表示情報
 	 */
 	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	
+	/**
+	 * 休出申請指示
+	 */
+	public WithdrawalAppSetDto withdrawalAppSet;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -64,8 +70,9 @@ public class AppHdWorkDispInfoDto {
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
 		AppHdWorkDispInfoDto result = new AppHdWorkDispInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		result.withdrawalAppSet = WithdrawalAppSetDto.convertToDto(appHdWorkDispInfoOutput.getWithdrawalAppSet());
 		if(appHdWorkDispInfoOutput.getAgreeOverTimeOutput() != null) {
-			AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
+			result.agreeOverTimeOutput = AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
 		}
 		result.breaktimeFrames = appHdWorkDispInfoOutput.getBreaktimeFrames().stream().map(x -> {
 			WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();

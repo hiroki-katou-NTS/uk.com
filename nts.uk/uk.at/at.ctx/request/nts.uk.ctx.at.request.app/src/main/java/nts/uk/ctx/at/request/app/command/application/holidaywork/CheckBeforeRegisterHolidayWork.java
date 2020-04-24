@@ -18,6 +18,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -37,8 +38,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
@@ -50,13 +54,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -101,10 +102,10 @@ public class CheckBeforeRegisterHolidayWork {
 	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
+	private HolidayService holidayService;
 	
 	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -113,7 +114,7 @@ public class CheckBeforeRegisterHolidayWork {
 		String appID = IdentifierUtil.randomUniqueId();
 		
 		// check input 申請理由
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+		/*AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				companyId, 
 				ApplicationType.BREAK_TIME_APPLICATION.value).get();
 		String typicalReason = Strings.EMPTY;
@@ -136,7 +137,7 @@ public class CheckBeforeRegisterHolidayWork {
 					&& Strings.isBlank(typicalReason+displayReason)) {
 				throw new BusinessException("Msg_115");
 			}
-		}
+		}*/
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
@@ -160,12 +161,39 @@ public class CheckBeforeRegisterHolidayWork {
 		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isCheckOver1Year());
 	}
 
-	public OvertimeCheckResultDto CheckBeforeRegister(CreateHolidayWorkCommand command) {
+	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-
+		
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
+		
+		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
+		
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
+			typicalReason += command.getAppReasonID();
+		}
+		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.getApplicationReason();
+		}
+		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting();
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
+					&& Strings.isBlank(typicalReason+displayReason)) {
+				throw new BusinessException("Msg_115");
+			}
+		}
+		
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
@@ -184,8 +212,22 @@ public class CheckBeforeRegisterHolidayWork {
 				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				 command.getOverTimeShiftNight(),
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
-
-		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isActualExceedConfirm());
+		
+		HdWorkCheckRegisterOutput output = holidayService.checkBeforeRegister(
+				companyId, 
+				appHdWorkDispInfoOutput, 
+				appRoot, 
+				false, 
+				holidayWorkDomain, 
+				command.getCalculateFlag());
+		
+		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
+		
+		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
+		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
+		return hdWorkCheckRegisterDto;
+		
+		// return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isActualExceedConfirm());
 	}
 	
 	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
