@@ -128,6 +128,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred<any>();
+            if(self.appType() == 1 || self.appType() == 6) { 
+                if (self.appType() != 0 && isWriteLog) {
+                    let paramLog = {
+                        programId: 'KAF000',
+                        screenId: 'B',
+                        queryString: 'apptype=' + appType
+                    };
+                    service.writeLog(paramLog);
+                }    
+                dfd.resolve();
+                return dfd.promise();
+            }
             nts.uk.at.view.kaf000.b.service.getAppDataDate({
                 appTypeValue: self.appType(),
                 appDate: baseDate,
