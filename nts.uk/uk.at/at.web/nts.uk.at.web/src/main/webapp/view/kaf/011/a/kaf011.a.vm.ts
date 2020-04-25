@@ -99,8 +99,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
                     changeDateParam = {
-                        workingDate: recDate,
-                        holidayDate: absDate,
+                        workingDate: self.appComSelectedCode() != 2 ? recDate : null,
+                        holidayDate: self.appComSelectedCode() != 1 ? absDate : null,
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
@@ -128,8 +128,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
                     changeDateParam = {
-                        workingDate: recDate,
-                        holidayDate: absDate,
+                        workingDate: self.appComSelectedCode() != 2 ? recDate : null,
+                        holidayDate: self.appComSelectedCode() != 1 ? absDate : null,
                         displayInforWhenStarting: self.displayInforWhenStarting
                     }
 
@@ -154,7 +154,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
 
             self.appComSelectedCode.subscribe((newCode) => {
-                
+                self.absWk().appDate(null);
+                self.recWk().appDate(null);
                 setTimeout(()=>self.clearTextboxError(), 100);
                 
             });
