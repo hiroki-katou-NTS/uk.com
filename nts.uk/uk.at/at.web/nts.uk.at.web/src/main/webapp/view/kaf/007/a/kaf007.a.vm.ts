@@ -120,9 +120,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             
-            self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 2, self.targetDate);
-            })
+            self.startPage();
         }
         
         showReasonText(){
