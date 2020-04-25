@@ -1,11 +1,9 @@
-import kaf002 = nts.uk.at.view.kaf002;
-//import kaf009 = nts.uk.at.view.kaf009;
 import model = nts.uk.at.view.kaf000.shr.model;
 
 function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata): void {
     if (currentApp.appType == 7) {
         getProgramName("KAF002", "C");
-        screenModel = new kaf002.c.viewmodel.ScreenModel(listAppMeta, currentApp);
+        screenModel = new nts.uk.at.view.kaf002.c.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 9) {
         getProgramName("KAF004", "E");
         screenModel = new nts.uk.at.view.kaf004.e.viewmodel.ScreenModel(listAppMeta, currentApp);
@@ -62,10 +60,19 @@ __viewContext.ready(function() {
                 __viewContext.transferred.value = {'listAppMeta': listValue, 'currentApp': currentValue};
                 nts.uk.at.view.kaf000.b.service.getAppByListID(listValue).done((data) => {
                     _.forEach(listValue, (value) => {
-                        listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
+                        let appMeta = _.find(data, (o) => { return o.appID == value; });
+                        if(!_.isUndefined(appMeta)) {
+                            listAppMeta.push(appMeta);       
+                        }
                     });
                     currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
-                    initScreen(screenModel, listAppMeta, currentApp);
+                    if(_.isUndefined(currentApp)) {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
+                            model.CommonProcess.callCMM045();
+                        });        
+                    } else {
+                        initScreen(screenModel, listAppMeta, currentApp);    
+                    }
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                         model.CommonProcess.callCMM045();
@@ -79,10 +86,19 @@ __viewContext.ready(function() {
         nts.uk.characteristics.save('paramInitKAF000', { 'listAppMeta': listValue, 'currentApp': currentValue });
         nts.uk.at.view.kaf000.b.service.getAppByListID(listValue).done((data) => {
             _.forEach(listValue, (value) => {
-                listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
+                let appMeta = _.find(data, (o) => { return o.appID == value; });
+                if(!_.isUndefined(appMeta)) {
+                    listAppMeta.push(appMeta);       
+                }
             });
             currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
-            initScreen(screenModel, listAppMeta, currentApp);
+            if(_.isUndefined(currentApp)) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
+                    model.CommonProcess.callCMM045();
+                });        
+            } else {
+                initScreen(screenModel, listAppMeta, currentApp);    
+            }
         }).fail((res) => {
             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                 model.CommonProcess.callCMM045();
