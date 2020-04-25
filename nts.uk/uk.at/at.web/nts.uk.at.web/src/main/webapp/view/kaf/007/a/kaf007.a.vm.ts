@@ -201,11 +201,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 errorFlag: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
                 listApprovalPhaseStateDto: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
             });
-            if(_.size(appDispInfoNoDateOutput.employeeInfoLst) == 1) {
-                if(appDispInfoNoDateOutput.employeeInfoLst[0].sid != __viewContext.user.employeeId) {
-                    self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));                        
-                }         
-            }    
+            if(!_.isEmpty(self.employeeIDLst)) {
+                self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));             
+            } 
             // A3_1
             self.appWorkChange().application().prePostAtr(appDispInfoWithDateOutput.prePostAtr);
             // A6_2
