@@ -84,9 +84,11 @@ public class AppHdWorkDispInfoDto {
 		result.hdWorkDispInfoWithDateOutput = HdWorkDispInfoWithDateDto.fromDomain(appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput());
 		result.overtimeFrame = appHdWorkDispInfoOutput.getOvertimeFrame();
 		result.dispFlexTime = appHdWorkDispInfoOutput.isDispFlexTime();
-		result.comboDivergenceReason = appHdWorkDispInfoOutput.getComboDivergenceReason().map(item -> 
-											item.stream().map(x -> DivergenceReasonDto.fromDomain(x)).collect(Collectors.toList())
-										).orElse(Collections.emptyList());
+		if(appHdWorkDispInfoOutput.getComboDivergenceReason() != null) {
+			result.comboDivergenceReason = appHdWorkDispInfoOutput.getComboDivergenceReason().map(item -> 
+				item.stream().map(x -> DivergenceReasonDto.fromDomain(x)).collect(Collectors.toList())
+			).orElse(Collections.emptyList());
+		}
 		result.overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto.convertToDto(appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting());
 		return result;
 	}

@@ -144,10 +144,11 @@ public class HolidayWorkWebService extends WebService{
 	}
 	@POST
 	@Path("findByAppID")
-	public AppHolidayWorkDto findByChangeAppID(String appID) {
-		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+	public HolidayWorkDetailDto findByChangeAppID(String appID) {
+		/*AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
 		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
-		return appHolidayWorkDto;
+		return appHolidayWorkDto;*/
+		return appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
 	}
 	@POST
 	@Path("beforeUpdateColorConfirm")

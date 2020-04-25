@@ -191,6 +191,11 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
 				this.getHolidayShiftNight());
 		appHolidayWork.setHolidayWorkInputs(this.holidayWorkInputs.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		appHolidayWork.setVersion(this.version);
+		if(this.appOvertimeDetail == null) {
+			appHolidayWork.setAppOvertimeDetail(Optional.empty());
+		} else {
+			appHolidayWork.setAppOvertimeDetail(Optional.of(this.appOvertimeDetail.toDomain()));
+		}
 		return appHolidayWork;
 	}
     

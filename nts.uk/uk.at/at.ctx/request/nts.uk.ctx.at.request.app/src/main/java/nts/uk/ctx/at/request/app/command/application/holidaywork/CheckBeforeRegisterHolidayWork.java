@@ -107,14 +107,14 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private HolidayService holidayService;
 	
-	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
+	/*public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
 		
 		// check input 申請理由
-		/*AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				companyId, 
 				ApplicationType.BREAK_TIME_APPLICATION.value).get();
 		String typicalReason = Strings.EMPTY;
@@ -137,7 +137,7 @@ public class CheckBeforeRegisterHolidayWork {
 					&& Strings.isBlank(typicalReason+displayReason)) {
 				throw new BusinessException("Msg_115");
 			}
-		}*/
+		}
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
@@ -159,7 +159,7 @@ public class CheckBeforeRegisterHolidayWork {
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
 
 		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isCheckOver1Year());
-	}
+	}*/
 
 	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command) {
 		// 会社ID

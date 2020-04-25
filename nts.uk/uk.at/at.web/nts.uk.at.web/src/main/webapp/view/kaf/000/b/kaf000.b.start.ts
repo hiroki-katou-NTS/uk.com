@@ -29,7 +29,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         screenModel = new nts.uk.at.view.kaf011.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     }
     __viewContext['viewModel'] = screenModel;
-    if(currentApp.appType == 1) {
+    if(currentApp.appType == 1 || currentApp.appType == 6) { 
         __viewContext.bind(screenModel);
         if (currentApp.appType == 10) {
             $("#fixed-table").ntsFixedTable({ width: 100 });

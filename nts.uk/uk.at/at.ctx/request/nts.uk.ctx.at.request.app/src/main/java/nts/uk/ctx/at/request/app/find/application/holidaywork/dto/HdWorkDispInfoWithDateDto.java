@@ -100,14 +100,16 @@ public class HdWorkDispInfoWithDateDto {
 		result.workTimeName = hdWorkDispInfoWithDateOutput.getWorkTimeName();
 		result.workTypeLst = hdWorkDispInfoWithDateOutput.getWorkTypeLst().map(item -> item.stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()))
 				.orElse(Collections.emptyList());
-		result.deductionTimeLst = hdWorkDispInfoWithDateOutput.getDeductionTimeLst()
-				.map(item -> 
-					item.stream().map(domain -> {
-						DeductionTimeDto dto = new DeductionTimeDto();
-						domain.saveToMemento(dto);
-						return dto;
-					}).collect(Collectors.toList()))
-				.orElse(Collections.emptyList());
+		if(hdWorkDispInfoWithDateOutput.getDeductionTimeLst() != null) {
+			result.deductionTimeLst = hdWorkDispInfoWithDateOutput.getDeductionTimeLst()
+					.map(item -> 
+						item.stream().map(domain -> {
+							DeductionTimeDto dto = new DeductionTimeDto();
+							domain.saveToMemento(dto);
+							return dto;
+						}).collect(Collectors.toList()))
+					.orElse(Collections.emptyList());
+		}
 		return result;
 	}
 	

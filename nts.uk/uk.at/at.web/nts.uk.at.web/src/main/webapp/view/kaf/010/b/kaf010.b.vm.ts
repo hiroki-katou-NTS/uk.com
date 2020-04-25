@@ -215,121 +215,98 @@ module nts.uk.at.view.kaf010.b {
             }
             
             initData(data: any) {
-                var self = this;
+                var self = this,
+                    appDispInfoNoDateOutput = data.appHdWorkDispInfoOutput.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                    appDispInfoWithDateOutput = data.appHdWorkDispInfoOutput.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+                    approvalFunctionSet = appDispInfoWithDateOutput.approvalFunctionSet,
+                    listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
+                    appTypeSet = _.find(listAppTypeSet, o => o.appType == 6),
+                    hdWorkDispInfoWithDateOutput = data.appHdWorkDispInfoOutput.hdWorkDispInfoWithDateOutput,
+                    overtimeRestAppCommonSettingDto = data.appHdWorkDispInfoOutput.overtimeRestAppCommonSettingDto,
+                    appHolidayWork = data.appHolidayWork,
+                    appDetailScreenInfo = data.appHdWorkDispInfoOutput.appDispInfoStartupOutput.appDetailScreenInfo,
+                    applicationDto = appDetailScreenInfo.application;
+                self.inputCommandEvent().version = applicationDto.version;
+                self.version = applicationDto.version;
+                self.dataApplication(applicationDto);
+                self.appType(applicationDto.applicationType);
+                self.approvalRootState(ko.mapping.fromJS(appDetailScreenInfo.approvalLst)());
+                self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
+                if (self.displayReturnReasonPanel()) {
+                    let returnReason = applicationDto.reversionReason;
+                    $("#returnReason").html(returnReason.replace(/\n/g, "\<br/>"));
+                }
+                self.reasonToApprover(appDetailScreenInfo.authorComment);
+                self.setControlButton(
+                    appDetailScreenInfo.user,
+                    appDetailScreenInfo.approvalATR,
+                    appDetailScreenInfo.reflectPlanState,
+                    appDetailScreenInfo.authorizableFlags,
+                    appDetailScreenInfo.alternateExpiration,
+                    data.loginInputOrApproval);
+                self.editable(appDetailScreenInfo.outputMode == 0 ? false : true);
                 self.preExcessDisplaySetting(data.preExcessDisplaySetting);
                 self.performanceExcessAtr(data.performanceExcessAtr);
-                self.requiredReason(data.requireAppReasonFlg);
-                self.version = data.application.version;
-                self.enableOvertimeInput(data.enableOvertimeInput);
+                self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
+                self.version = applicationDto.version;
+                self.enableOvertimeInput(approvalFunctionSet.timeInputUseAtr == 1 ? true : false);
                 self.manualSendMailAtr(data.manualSendMailAtr);
-                self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
-                self.prePostSelected(data.application.prePostAtr);
-                self.displayCaculationTime(data.displayCaculationTime);
-                self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
-                self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
-                self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-                self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-                self.displayBonusTime(data.displayBonusTime);
-                self.restTimeDisFlg(data.displayRestTime);
-                self.appDate(data.application.applicationDate);
-                self.employeeName(data.employeeName);
-                self.employeeID(data.application.applicantSID);
-                self.inputDate(data.application.inputDate);
-                if (data.workTime != null) {
-                    self.siftCD(data.workTime.siftCode);
-                    if (data.workTime.siftCode) {
-                        self.siftName(self.getName(data.workTime.siftCode, data.workTime.siftName));
-                    }
-                }
-                if (data.workType != null) {
-                    self.workTypeCd(data.workType.workTypeCode);
-                    if (data.workType.workTypeCode) {
-                        self.workTypeName(self.getName(data.workType.workTypeCode, data.workType.workTypeName));
-                    }
-                }
+                self.displayPrePostFlg(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp);
+                self.prePostSelected(applicationDto.prePostAtr);
+                self.displayCaculationTime(approvalFunctionSet.timeCalUseAtr == 1 ? true : false);
+                self.typicalReasonDisplayFlg(appTypeSet.displayFixedReason == 1 ? true : false);
+                self.displayAppReasonContentFlg(appTypeSet.displayAppReason);
+                self.displayDivergenceReasonForm(data.useInputDivergenceReason);
+                self.displayDivergenceReasonInput(data.useComboDivergenceReason);
+                self.displayBonusTime(false);
+                self.restTimeDisFlg(approvalFunctionSet.timeCalUseAtr == 1 && approvalFunctionSet.breakInputFieldDisFlg == 1);
+                self.appDate(applicationDto.applicationDate);
+                self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+                self.employeeID(appDispInfoNoDateOutput.employeeInfoLst[0].sid);
+                self.inputDate(applicationDto.inputDate);
+                self.siftCD(appHolidayWork.workTime.siftCode);
+                self.siftName(appHolidayWork.workTime.siftName);
+                self.workTypeCd(appHolidayWork.workType.workTypeCode);
+                self.workTypeName(appHolidayWork.workType.workTypeName);
+                self.workTypecodes(_.map(hdWorkDispInfoWithDateOutput.workTypeLst, o => o.workTypeCode));
+                self.workTimecodes(_.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));
                 
-                self.workTypecodes(data.workTypes);
-                self.workTimecodes(_.map(data.appDispInfoStartupDto.appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));
-                
-                self.timeStart1(data.workClockStart1);
-                self.timeEnd1(data.workClockEnd1);
-                self.timeStart2(data.workClockStart2);
-                self.timeEnd2(data.workClockEnd2);
-                self.goSelected1(data.goAtr1);
-                self.goSelected2(data.goAtr2);
-                self.backSelected1(data.backAtr1);
-                self.backSelected2(data.backAtr2);
-                self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
-                self.backSelected1Value(data.backAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
-                if(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst != null && data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst.length > 0){
-                    let reasonID = data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst[0].reasonID;
+                self.timeStart1(appHolidayWork.workClockStart1);
+                self.timeEnd1(appHolidayWork.workClockEnd1);
+//                self.timeStart2(data.workClockStart2);
+//                self.timeEnd2(data.workClockEnd2);
+//                self.goSelected1(data.goAtr1);
+//                self.goSelected2(data.goAtr2);
+//                self.backSelected1(data.backAtr1);
+//                self.backSelected2(data.backAtr2);
+//                self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
+//                self.backSelected1Value(data.backAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
+                if(appDispInfoNoDateOutput.appReasonLst != null && appDispInfoNoDateOutput.appReasonLst.length > 0){
+                    let reasonID = appDispInfoNoDateOutput.appReasonLst[0].reasonID;
                     self.selectedReason(reasonID);
-                    let lstReasonCombo = _.map(data.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
+                    let lstReasonCombo = _.map(appDispInfoNoDateOutput.appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                     self.reasonCombo(lstReasonCombo);
                 }
-                self.multilContent(data.application.applicationReason);
-                if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
-                    self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                    let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
+                self.multilContent(applicationDto.applicationReason);
+                if(data.appHdWorkDispInfoOutput.divergenceReasonDtos != null && data.appHdWorkDispInfoOutput.divergenceReasonDtos.length > 0){
+                    self.reasonCombo2(_.map(data.appHdWorkDispInfoOutput.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
+                    let reasonID = data.appHdWorkDispInfoOutput.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
                 }
-                self.multilContent2(data.divergenceReasonContent);
-                self.instructInforFlag(data.displayHolidayInstructInforFlg);
-                self.instructInfor(data.holidayInstructInformation);
-                self.referencePanelFlg(data.referencePanelFlg);
-                self.preAppPanelFlg(data.preAppPanelFlg);
-                self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                self.indicationOvertimeFlg(data.extratimeDisplayFlag);
-                if(nts.uk.util.isNullOrUndefined(data.appOvertimeDetailDto)){
+                self.multilContent2(appHolidayWork.divergenceReasonContent);
+                self.indicationOvertimeFlg(overtimeRestAppCommonSettingDto.extratimeDisplayAtr == 1 ? true : false);
+                self.instructInforFlag(hdWorkDispInfoWithDateOutput.appHdWorkInstruction.displayHolidayWorkInstructInforFlg);
+                self.instructInfor(hdWorkDispInfoWithDateOutput.appHdWorkInstruction.holidayWorkInstructInfomation);
+                if(nts.uk.util.isNullOrUndefined(appHolidayWork.appOvertimeDetailDto)){
                     self.indicationOvertimeFlg(false);    
                 } else {
-                    common.Process.setOvertimeWorkDetail(data.appOvertimeDetailDto, self, data.appOvertimeDetailStatus);    
+                    common.Process.setOvertimeWorkDetail(appHolidayWork.appOvertimeDetailDto, self, hdWorkDispInfoWithDateOutput.agreementTimeStatusOfMonthly);    
                 }
-                self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-//                // preAppOvertime
-                if (data.preAppHolidayWorkDto != null) {
-                self.appDatePre(data.preAppHolidayWorkDto.appDate);
-                if (data.preAppHolidayWorkDto.workType != null) {
-                    self.workTypeCodePre(data.preAppHolidayWorkDto.workType.workTypeCode);
-                    self.workTypeNamePre(data.preAppHolidayWorkDto.workType.workTypeName);
-                }
-                if (data.preAppHolidayWorkDto.siftTypePre != null) {
-                    self.siftCodePre(data.preAppHolidayWorkDto.workTime.siftCode);
-                    self.siftNamePre(data.preAppHolidayWorkDto.workTime.siftName);
-                }
-                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart1) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd1)) {
-                    self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart1) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd1));
-                }
-                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart2) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd2)) {
-                    self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart2) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd2));
-                }
-                if (self.workClockFrom2To2Pre() == null) {
-                    self.displayWorkClockFrom2To2Pre(false);
-                }
-                self.overtimeHoursPre.removeAll();
-                if (data.preAppHolidayWorkDto.holidayWorkInputs != null) {
-                    for (let i = 0; i < data.preAppHolidayWorkDto.holidayWorkInputs.length; i++) {
-                        if (data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime != null) {
-                            self.overtimeHoursPre.push(new common.AppOvertimePre("", "",
-                                data.preAppHolidayWorkDto.holidayWorkInputs[i].attendanceID,
-                                "", data.preAppHolidayWorkDto.holidayWorkInputs[i].frameNo,
-                                0, data.preAppHolidayWorkDto.holidayWorkInputs[i].frameName + " : ",
-                                data.preAppHolidayWorkDto.holidayWorkInputs[i].startTime,
-                                data.preAppHolidayWorkDto.holidayWorkInputs[i].endTime,
-                                self.convertIntToTime(data.preAppHolidayWorkDto.holidayWorkInputs[i].applicationTime), null));
-
-                        } else {
-                            continue;
-                        }
-
-                    }
-                }
-            }
                 
-                let dataRestTime = _.filter(data.holidayWorkInputDtos, {'attendanceType': 0});
-                let dataOverTime = _.filter(data.holidayWorkInputDtos, {'attendanceType': 1});
-                let dataBreakTime = _.filter(data.holidayWorkInputDtos, {'attendanceType': 2});
-                let dataBonusTime = _.filter(data.holidayWorkInputDtos, {'attendanceType': 3});
+                let dataRestTime = _.filter(appHolidayWork.holidayWorkInputDtos, {'attendanceType': 0});
+                let dataOverTime = _.filter(appHolidayWork.holidayWorkInputDtos, {'attendanceType': 1});
+                let dataBreakTime = _.filter(appHolidayWork.holidayWorkInputDtos, {'attendanceType': 2});
+                let dataBonusTime = _.filter(appHolidayWork.holidayWorkInputDtos, {'attendanceType': 3});
                 self.datatest = dataOverTime;
                 self.restTime.removeAll();
                 self.overtimeHours.removeAll();
@@ -341,7 +318,6 @@ module nts.uk.at.view.kaf010.b {
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
-                        
                             self.restTime.push(new common.OverTimeInput(
                                 item.companyID, 
                                 item.appID, 
@@ -355,94 +331,28 @@ module nts.uk.at.view.kaf010.b {
                                 item.applicationTime, ""));
                     });
                 };
-                _.forEach(dataOverTime, (item : any) => { 
-                    let color: string = "";
-                    if (item.errorCode == 1) {
-                        color = '#FD4D4D';
-                    }
-                    if (item.errorCode == 2) {
-                        color = '#F6F636';
-                    }
-                    if (item.errorCode == 3) {
-                        color = '#F69164';
-                    }
-                    if(item.frameNo == 11){
-                            if (data.appOvertimeNightFlg == 1) {
-                                if(item.errorCode)
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceType, 
-                                    "", 
-                                    item.frameNo, 
-                                    "", 
-                                    nts.uk.resource.getText("KAF005_63"), 
-                                    item.applicationTime, 
-                                    null, 
-                                    null,"#[KAF005_64]","",color));
-                             }
-                    }else if(item.frameNo == 12){
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceType, 
-                                    "", 
-                                    item.frameNo, 
-                                    "", 
-                                    nts.uk.resource.getText("KAF005_65"), 
-                                    item.applicationTime, 
-                                    null, 
-                                    null,"#[KAF005_66]","",color));
-                     }else{
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID, 
-                                    item.appID, 
-                                    item.attendanceType, 
-                                    "", 
-                                    item.frameNo, 
-                                    "", 
-                                    item.frameName, 
-                                    item.applicationTime, 
-                                    null, 
-                                    null, "#[KAF005_55]","",color));
-                    }
-                   
-                }); 
                 _.forEach(dataBreakTime, (item :any) => {
                     if(item.frameNo == 11){
                         if (data.appOvertimeNightFlg == 1) {
-                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
+                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item, data.appHdWorkDispInfoOutput));
                         }
                     } else if (item.frameNo == 12) {
                         if (data.flexFLag) {
-                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
+                            self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item, data.appHdWorkDispInfoOutput));
                         }
                     } else {
-                        self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item));
+                        self.breakTimes.push(self.createOvertimeInputInit(data.caculationTimes, item, data.appHdWorkDispInfoOutput));
                     }
                 }); 
-                _.forEach(dataBonusTime, (item) => { 
-                    self.bonusTimes.push(new common.OvertimeCaculation(
-                        item.companyID, 
-                        item.appID, 
-                        item.attendanceType, 
-                        "", 
-                        item.frameNo, 
-                        "", 
-                        item.frameName, 
-                        item.applicationTime, 
-                        null, 
-                        null, "","",""));
-                });
                 self.fillColor(data.preActualColorResult);
             }
             
-            createOvertimeInputInit(calcLstInit, item){
+            createOvertimeInputInit(calcLstInit, item, appHdWorkDispInfoOutput){
                 let self = this;
                 let calcValue = _.filter(calcLstInit, value => {
                     return item.attendanceType == value.attendanceID && item.frameNo == value.frameNo;     
                 })[0];
-                let frameName = item.frameName;
+                let frameName = _.find(appHdWorkDispInfoOutput.breaktimeFrames, o => o.workdayoffFrNo == item.frameNo).workdayoffFrName;
                 if(item.frameNo==11){
                     frameName = nts.uk.resource.getText("KAF005_63");    
                 }
@@ -450,6 +360,27 @@ module nts.uk.at.view.kaf010.b {
                     frameName = nts.uk.resource.getText("KAF005_65");     
                 }
                 let color = '';
+                if(nts.uk.util.isNullOrUndefined(calcValue)) {
+                    if(self.editable()&& self.enableOvertimeInput()){
+                        color = 'none';
+                    } else {
+                        color = '#ebebe4';
+                    }    
+                    return new common.OvertimeCaculation(
+                        item.companyID, 
+                        item.appID, 
+                        item.attendanceType, 
+                        "", 
+                        item.frameNo, 
+                        item.timeItemTypeAtr, 
+                        frameName, 
+                        item.applicationTime, 
+                        self.convertIntToTime(0), 
+                        self.convertIntToTime(0),
+                        "",
+                        "", 
+                        color);
+                }
                 if(nts.uk.util.isNullOrUndefined(calcValue.applicationTime)){
                     if(self.editable()&& self.enableOvertimeInput()){
                         color = 'none';
@@ -756,6 +687,10 @@ module nts.uk.at.view.kaf010.b {
                     };
                 }
                 //休憩時間
+                if(!nts.uk.util.isNullOrEmpty(self.restTime())) {
+                    return true;    
+                }
+                
                 for (let i = 0; i < self.restTime().length; i++) {
                     let startTime = self.restTime()[i].startTime();
                     let endTime = self.restTime()[i].endTime();
@@ -865,9 +800,9 @@ module nts.uk.at.view.kaf010.b {
             
             fillColor(calcData){
                 let self = this;
-                let beforeAppStatus = calcData.beforeAppStatus;
-                let actualStatus = calcData.actualStatus;
-                let resultLst = calcData.resultLst;
+                let beforeAppStatus = nts.uk.util.isNullOrUndefined(calcData) ? null : calcData.beforeAppStatus;
+                let actualStatus = nts.uk.util.isNullOrUndefined(calcData) ? null : calcData.actualStatus;
+                let resultLst = nts.uk.util.isNullOrUndefined(calcData) ? [] : calcData.resultLst;
                 _.forEach(self.breakTimes(), breakTime => {
                     let calcOT = _.find(resultLst, item => {
                         return item.attendanceID == 2 &&
@@ -926,46 +861,6 @@ module nts.uk.at.view.kaf010.b {
                 });   
             }
             
-            convertAppOvertimeReferDto(data :any){
-                let self = this;
-                if(data.appOvertimeReference != null){
-                self.appDateReference(data.appOvertimeReference.appDateRefer);
-                if(data.appOvertimeReference.workTypePre != null){
-                    self.workTypeCodeReference(data.appOvertimeReference.workTypeRefer.workTypeCode);
-                    self.workTypeNameReference(self.getName(data.appOvertimeReference.workTypeRefer.workTypeCode, data.appOvertimeReference.workTypeRefer.workTypeName));
-                }
-                if(data.appOvertimeReference.siftTypePre != null){
-                    self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
-                    self.siftNameReference(self.getName(data.appOvertimeReference.siftTypeRefer.siftCode, data.appOvertimeReference.siftTypeRefer.siftName));
-                }
-                if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
-                     self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
-                }
-                if(data.appOvertimeReference.workClockFrom2Refer != null || data.appOvertimeReference.workClockTo2Refer != null){
-                    self.workClockFrom2To2Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom2Refer) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.appOvertimeReference.workClockTo2Refer));
-                }
-                if(self.workClockFrom2To2Reference () == null){
-                    self.displayWorkClockFrom2To2Reference(false);
-                }
-                self.overtimeHoursPre.removeAll();
-                if(data.appOvertimeReference.overTimeInputsRefer != null){
-                    for (let i = 0; i < data.appOvertimeReference.overTimeInputsRefer.length; i++) {
-                        self.changeColor( 1 , data.appOvertimeReference.overTimeInputsRefer[i].frameNo,data.appOvertimeReference.overTimeInputsRefer[i].errorCode);
-                            if(data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 11 && data.appOvertimeReference.overTimeInputsRefer[i].frameNo != 12){
-                                self.overtimeHoursReference.push(new common.AppOvertimePre("", "", 
-                            data.appOvertimeReference.overTimeInputsRefer[i].attendanceID,
-                            "", data.appOvertimeReference.overTimeInputsRefer[i].frameNo,
-                            0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
-                            data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
-                            data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                            self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
-                            }
-                    }
-                }
-                 self.overTimeShiftNightRefer(self.convertIntToTime(data.appOvertimeReference.overTimeShiftNightRefer));
-                 self.flexExessTimeRefer(self.convertIntToTime(data.appOvertimeReference.flexExessTimeRefer));
-                }
-            }
             convertIntToTime(data : number) : string{
                 let hourMinute : string = "";
                 if(nts.uk.util.isNullOrEmpty(data)){

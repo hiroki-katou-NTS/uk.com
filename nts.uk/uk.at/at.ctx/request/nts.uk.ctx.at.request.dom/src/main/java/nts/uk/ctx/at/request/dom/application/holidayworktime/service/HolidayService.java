@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWo
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
@@ -190,5 +191,12 @@ public interface HolidayService {
 			boolean mode, List<AchievementOutput> achievementOutputLst, List<AppDetailContent> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
 			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput);
 	
+	/**
+	 * 7.休出申請（詳細）起動処理
+	 * @param companyID 会社ID
+	 * @param appID 申請ID
+	 * @return
+	 */
+	public HolidayWorkDetailOutput findDetailByID(String companyID, String appID);
 }
 	
