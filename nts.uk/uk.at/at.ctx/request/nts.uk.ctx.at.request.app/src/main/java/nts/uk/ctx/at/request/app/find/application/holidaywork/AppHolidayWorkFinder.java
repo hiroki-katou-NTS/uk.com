@@ -18,8 +18,6 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
@@ -49,9 +47,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
@@ -91,8 +87,8 @@ public class AppHolidayWorkFinder {
 	private EmployeeRequestAdapter employeeAdapter;*/
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
-	@Inject
-	private HolidaySixProcess holidaySixProcess; 
+	/*@Inject
+	private HolidaySixProcess holidaySixProcess; */
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	/*@Inject
@@ -260,7 +256,7 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public ColorConfirmResult calculationresultConfirm(List<CaculationTime> breakTime ,
+	/*public ColorConfirmResult calculationresultConfirm(List<CaculationTime> breakTime ,
 			int prePostAtr,
 			String appDate,
 			String siftCD,
@@ -325,7 +321,7 @@ public class AppHolidayWorkFinder {
 		}
 		result.setDailyAttendanceTimeCaculationImport(dailyAttendanceTimeCaculationImport);
 		return result;
-	}
+	}*/
 	
 	/**
 	 * getCaculationValue
@@ -336,7 +332,7 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,
+	/*public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,
 			int prePostAtr,
 			String appDate,
 			String siftCD,
@@ -399,7 +395,7 @@ public class AppHolidayWorkFinder {
 				result,
 				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
-	}
+	}*/
 	
 	public PreActualColorResult getCalculateValue(String employeeID, String appDate, Integer prePostAtr, String workTypeCD, String workTimeCD,
 			List<CaculationTime> overtimeInputLst, Integer startTime, Integer endTime, List<Integer> startTimeRests, List<Integer> endTimeRests){
@@ -590,13 +586,13 @@ public class AppHolidayWorkFinder {
         }
     }*/
 	
-	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
+	/*private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
 		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
 				.getBreakInputFieldDisp().equals(true)
 				&& appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get()
 						.getTimeCalUse().equals(UseAtr.USE);
 
-	}
+	}*/
 	
 	/**
 	 * 01-14_勤務時間取得

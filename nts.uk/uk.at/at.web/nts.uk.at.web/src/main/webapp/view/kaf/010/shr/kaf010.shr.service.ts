@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf010.shr.service {
     var paths: any = {
         getHolidayWorkByUI: "at/request/application/holidaywork/getHolidayWorkByUI",
         findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
-        checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
+//        checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         createOvertime: "at/request/application/holidaywork/create",
         updateOvertime: "at/request/application/holidaywork/update",
         checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
@@ -10,8 +10,8 @@ module nts.uk.at.view.kaf010.shr.service {
         findByAppID: "at/request/application/holidaywork/findByAppID",
         getRecordWork: "at/request/application/holidaywork/getRecordWork",
         getBreakTimes: "at/request/application/holidaywork/getBreakTimes",
-        confirmInconsistency: "at/request/application/holidaywork/confirmInconsistency",
-        confirmPrerepudiation: "at/request/application/holidaywork/confirmPrerepudiation",
+//        confirmInconsistency: "at/request/application/holidaywork/confirmInconsistency",
+//        confirmPrerepudiation: "at/request/application/holidaywork/confirmPrerepudiation",
 //        beforeRegisterColorConfirm: "at/request/application/holidaywork/beforeRegisterColorConfirm",
         getCalculateValue: "at/request/application/holidaywork/getCalculateValue",
     }
@@ -24,9 +24,9 @@ module nts.uk.at.view.kaf010.shr.service {
         return nts.uk.request.ajax("at", paths.findByChangeAppDate, param);
     }
     
-    export function checkConvertPrePost(prePostAtr: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
-    }
+//    export function checkConvertPrePost(prePostAtr: string): JQueryPromise<any> {
+//        return nts.uk.request.ajax("at", paths.checkConvertPrePost, prePostAtr);
+//    }
     
     export function createOvertime(overtime: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.createOvertime,overtime);
@@ -56,13 +56,13 @@ module nts.uk.at.view.kaf010.shr.service {
         return nts.uk.request.ajax("at", paths.getBreakTimes, param);
     }
     
-    export function confirmInconsistency(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.confirmInconsistency, param);
-    }
+//    export function confirmInconsistency(param: any): JQueryPromise<any> {
+//        return nts.uk.request.ajax("at", paths.confirmInconsistency, param);
+//    }
     
-    export function confirmPrerepudiation(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.confirmPrerepudiation, param);
-    }
+//    export function confirmPrerepudiation(param: any): JQueryPromise<any> {
+//        return nts.uk.request.ajax("at", paths.confirmPrerepudiation, param);
+//    }
     
 //    export function beforeRegisterColorConfirm(overtime:any): JQueryPromise<any> {
 //        return nts.uk.request.ajax("at", paths.beforeRegisterColorConfirm ,overtime);

@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
@@ -22,10 +21,9 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFind
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
@@ -34,8 +32,6 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertim
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
@@ -79,7 +75,7 @@ public class HolidayWorkWebService extends WebService{
 		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee(),
 				param.getStartTime(), param.getEndTime(), param.getAppHdWorkDispInfoCmd());
 	}
-	@POST
+	/*@POST
 	@Path("calculationresultConfirm")
 	public ColorConfirmResult calculationresultConfirm(ParamCalculationHolidayWork param){
 		return this.appHolidayWorkFinder.calculationresultConfirm(param.getBreakTimes(),
@@ -109,7 +105,7 @@ public class HolidayWorkWebService extends WebService{
 															param.getStartTimeRests(),
 															param.getEndTimeRests(),
 															param.getDailyAttendanceTimeCaculationImport());
-	}
+	}*/
 	
 	@POST
 	@Path("getCalculateValue")
@@ -132,11 +128,11 @@ public class HolidayWorkWebService extends WebService{
 	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){
 		return createHolidayWorkCommandHandler.handle(command);
 	}
-	@POST
+	/*@POST
 	@Path("beforeRegisterColorConfirm")
 	public ColorConfirmResult beforeRegisterColorConfirm(CreateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeRregisterColor(command);
-	}
+	}*/
 	@POST
 	@Path("checkBeforeRegister")
 	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command){
@@ -150,14 +146,14 @@ public class HolidayWorkWebService extends WebService{
 		return appHolidayWorkDto;*/
 		return appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
 	}
-	@POST
+	/*@POST
 	@Path("beforeUpdateColorConfirm")
 	public ColorConfirmResult beforeUpdateColorConfirm(CreateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeUpdateColor(command);
-	}
+	}*/
 	@POST
 	@Path("checkBeforeUpdate")
-	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command){
+	public HdWorkCheckRegisterDto checkBeforeUpdate(UpdateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeUpdate(command);
 	}
 	@POST

@@ -163,6 +163,7 @@ public interface HolidayService {
 	 * @param appHdWorkDispInfoOutput 休日出勤申請起動時の表示情報
 	 * @param application 申請
 	 * @param agentAtr 代行申請区分
+	 * @param calculateFlg 計算フラグ
 	 * @return
 	 */
 	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, Application_New application, 
@@ -198,5 +199,16 @@ public interface HolidayService {
 	 * @return
 	 */
 	public HolidayWorkDetailOutput findDetailByID(String companyID, String appID);
+	
+	/**
+	 * 8.休出申請（詳細）登録前のチェック
+	 * @param companyID 会社ID
+	 * @param application 申請
+	 * @param appHdWorkDispInfoOutput 休日出勤申請起動時の表示情報
+	 * @param calculateFlg 計算フラグ
+	 * @return
+	 */
+	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application_New application, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			int calculateFlg, AppHolidayWork holidayWorkDomain);
 }
 	

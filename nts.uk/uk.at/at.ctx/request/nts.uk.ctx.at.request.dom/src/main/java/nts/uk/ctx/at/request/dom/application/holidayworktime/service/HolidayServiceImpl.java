@@ -38,6 +38,7 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColor
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -157,6 +158,9 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private OvertimeService overtimeService;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
@@ -1018,4 +1022,44 @@ public class HolidayServiceImpl implements HolidayService {
             }
         }
     }
+	@Override
+	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application_New application, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			int calculateFlg, AppHolidayWork holidayWorkDomain) {
+		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
+		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
+		// 4-1.詳細画面登録前の処理
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyID, 
+				application.getEmployeeID(), 
+				application.getAppDate(), 
+				1, 
+				application.getAppID(), 
+				application.getPrePostAtr(), 
+				application.getVersion(),
+				holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(),
+				holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v());
+		// 3.個別エラーチェック
+		HdWorkCheckRegisterOutput output = this.individualErrorCheck(
+				companyID, 
+				application.getEmployeeID(), 
+				application.getAppDate(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(), 
+			 	ApplicationType.BREAK_TIME_APPLICATION, 
+				application, 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeCalUse(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeInputUse(), 
+				appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getAppDateContradictionAtr(), 
+				false, 
+				false, 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAchievementOutputLst(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAppDetailContentLst(), 
+				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getAppHdWorkInstruction(), 
+				holidayWorkDomain, 
+				calculateFlg, 
+				appHdWorkDispInfoOutput);
+		outputLst.addAll(output.getConfirmMsgLst());
+		result.setConfirmMsgLst(outputLst);
+		result.setAppOvertimeDetailOtp(output.getAppOvertimeDetailOtp());
+		return result;
+	}
 }
