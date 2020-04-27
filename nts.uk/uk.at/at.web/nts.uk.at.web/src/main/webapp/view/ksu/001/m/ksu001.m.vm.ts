@@ -33,6 +33,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         showOptionalColumn: KnockoutObservable<boolean> = ko.observable(true);
         optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
         arrSid: any;
+        selectIds: KnockoutObservable<string> = ko.observable(['']);
 
         enableSave: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -95,17 +96,28 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
                 _.forEach(data.listEmpRankDto, function(item) {
                     let matchRank = _.find(data.listRankDto, ['rankCd', item.emplRankCode]);
-                    item.rankName = (matchRank != null) ? matchRank.rankSymbol : "";
+                    if (matchRank != undefined) {
+                        item.rankName = matchRank.rankSymbol;
+
+                    }
+                    else {
+                        item.rankName = item.emplRankCode + " " +  "マスタ未登録";
+                    }
+                    //item.rankName = (matchRank != null) ? matchRank.rankSymbol : "";
                 });
 
                 _.forEach(self.listEmpData(), function(item) {
                     let matchRank = _.find(data.listEmpRankDto, ['employeeID', item.id]);
-                    item.rankName = (matchRank != null) ? matchRank.rankName : "";
+                    item.emplRankCode = matchRank != null ? matchRank.emplRankCode : "";
+                    item.rankName = matchRank != null ? matchRank.rankName : "";
+
                 });
+                //Sort theo emplRankCode và employeeCode 
                 self.listRankDto(data.listRankDto);
                 self.listEmpRankDto(data.listEmpRankDto);
-                self.employeeList(self.listEmpData());
-
+                self.employeeList(_.sortBy(self.listEmpData(), [(item) => { 
+                    return item.emplRankCode == "" ? "z" : item.emplRankCode; 
+               }, 'code']));
                 var tempOptionalDataSource: any = [];
                 if (self.listEmpData() != null) {
                     self.listEmpData().forEach(function(item) {
@@ -120,7 +132,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                         $("#component-items-list .bg-green").width(500);
                     });
                 });
-               
+
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -136,22 +148,25 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var arrEmpSelect: any = [];
+                var select: any = []; 
                 arrEmpSelect = _.filter(self.employeeList(), (o) => {
                     return self.selectedCode().indexOf(o.code) !== -1;
                 });
-                self.selectedCode(_.map(arrEmpSelect, "id"));
+              self.selectIds(_.map(arrEmpSelect, "code"));
                 let param = {
-                    listEmpId: self.selectedCode(),
+                    listEmpId:_.map(arrEmpSelect, "id"),
                     rankCd: self.selectedRankCode()
                 };
                 block.invisible();
 
                 service.regis(param).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                         $("#combo-box").focus();
+                        $("#combo-box").focus();
                     });
                     block.clear();
-                    self.startPage().done(() => { });
+                    self.startPage().done(() => {
+                        self.selectedCode(self.selectIds());
+                         });
                 }).fail((res: any) => {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId });
                     block.clear();

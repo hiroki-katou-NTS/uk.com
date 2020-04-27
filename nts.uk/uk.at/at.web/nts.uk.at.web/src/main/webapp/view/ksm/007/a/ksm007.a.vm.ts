@@ -71,7 +71,7 @@ module nts.uk.at.view.ksm007.a {
             if (nts.uk.ui.errors.hasError()) {
 				return;
             }
-            
+            nts.uk.ui.block.grayout();
             if(self.registerForm().newMode()) {
                 service.registerWorkplaceGroup(self.registerForm().convertToCommand())
                 .done((res)=> {

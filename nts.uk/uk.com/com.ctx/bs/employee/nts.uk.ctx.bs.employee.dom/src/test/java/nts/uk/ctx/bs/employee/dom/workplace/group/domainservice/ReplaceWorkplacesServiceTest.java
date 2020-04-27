@@ -29,7 +29,7 @@ public class ReplaceWorkplacesServiceTest {
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper();
 		new Expectations() {
 			{
-				require.getByListWKPID(lstWorkplaceId);// dummy
+				require.getByWKPGRPID("00000000000001");// dummy
 				result = lstFormerAffInfo;
 				
 			}

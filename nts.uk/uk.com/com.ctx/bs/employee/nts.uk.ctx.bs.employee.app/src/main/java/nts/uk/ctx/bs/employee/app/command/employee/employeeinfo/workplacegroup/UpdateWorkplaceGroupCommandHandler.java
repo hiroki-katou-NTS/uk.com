@@ -114,9 +114,9 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		}
 
 		@Override
-		public List<AffWorkplaceGroup> getByListWKPID(List<String> WKPID) {
+		public List<AffWorkplaceGroup> getByWKPGRPID(String WKPGRPID) {
 			String CID = AppContexts.user().companyId();
-			return affRepo.getByListWKPID(CID, WKPID);
+			return affRepo.getByWKPGRPID(CID, WKPGRPID);
 		}
 
 		@Override

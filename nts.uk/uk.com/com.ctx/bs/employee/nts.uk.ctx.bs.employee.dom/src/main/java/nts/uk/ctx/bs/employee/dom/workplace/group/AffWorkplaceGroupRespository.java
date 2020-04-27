@@ -107,6 +107,15 @@ public interface AffWorkplaceGroupRespository {
 	public boolean checkExistsWKPID(String CID, String WKPID);
 	
 	/**
+	 * get ( 会社ID, 職場グループID )
+	 * 
+	 * @param CID
+	 * @param WKPGRPID
+	 * @return List<職場ID>
+	 */
+	public List<AffWorkplaceGroup> getByWKPGRPID(String CID, String WKPGRPID);
+	
+	/**
 	 * getAll ( 会社ID )
 	 * 
 	 * @param CID
