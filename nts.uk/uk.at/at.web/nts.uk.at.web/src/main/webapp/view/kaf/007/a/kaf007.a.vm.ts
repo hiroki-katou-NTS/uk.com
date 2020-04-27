@@ -236,7 +236,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //「申請種類別設定．申請理由の表示」  ※A11
             self.displayAppReasonContentFlg(appTypeSet.displayAppReason == 1 ? true : false);
             //登録時にメールを送信する Visible
-            self.enableSendMail(appTypeSet.sendMailWhenRegister);
+            self.enableSendMail(!appTypeSet.sendMailWhenRegister);
             //A5 勤務を変更する ※A4                    
             //勤務変更申請設定.勤務時間を変更できる　＝　出来る
             self.isWorkChange(appWorkChangeSet.workChangeTimeAtr == 1 ? true : false);
