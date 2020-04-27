@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     import jump = nts.uk.request.jump;
     import confirm = nts.uk.ui.dialog.confirm;
     import alError = nts.uk.ui.dialog.alertError;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
 
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
 
@@ -245,16 +246,24 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 //            service.findById(appParam).done((data) => {
             service.startPageBRefactor(appParam).done((data) => {
                 self.setDataFromStart(data);
-                if (isReload)
+                if (isReload) {
                     self.start(data.application.applicationDate, false).done(() => {
                         nts.uk.ui.block.clear();
                     });
+                }
+                dfd.resolve();
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() {
+                    nts.uk.ui.block.clear();
+                    if (error.messageId === "Msg_198" || error.messageId == 'Msg_426') {
+                        appcommon.CommonProcess.callCMM045();
+                    } else {
+                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");        
+                    }
+                });
+                dfd.reject();
             }).always(() => {
                 block.clear();
-                dfd.resolve();
-
             });
 
             return dfd.promise();
@@ -263,6 +272,44 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
+                let appDispInfoStartupOutput = data.appDispInfoStartup,
+                    appDispInfoNoDateOutput = appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                    appDispInfoWithDateOutput = appDispInfoStartupOutput.appDispInfoWithDateOutput,
+                    listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
+                    appTypeSet = _.find(listAppTypeSet, o => o.appType == 2),
+                    appWorkChangeDto = data.appWorkChange,
+                    appDetailScreenInfo = appDispInfoStartupOutput.appDetailScreenInfo,
+                    applicationDto = appDetailScreenInfo.application;
+                let appType = applicationDto.applicationType
+                if (appType != 0) {
+                    let paramLog = {
+                        programId: 'KAF000',
+                        screenId: 'B',
+                        queryString: 'apptype=' + appType
+                    };
+                    nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
+                }
+                self.inputCommandEvent().version = applicationDto.version;
+                self.version = applicationDto.version;
+                self.dataApplication(applicationDto);
+                self.appType(applicationDto.applicationType);
+                self.approvalRootState(ko.mapping.fromJS(appDetailScreenInfo.approvalLst)());
+                self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
+                if (self.displayReturnReasonPanel()) {
+                    let returnReason = applicationDto.reversionReason;
+                    $("#returnReason").html(returnReason.replace(/\n/g, "\<br/>"));
+                }
+                self.reasonToApprover(appDetailScreenInfo.authorComment);
+                self.setControlButton(
+                    appDetailScreenInfo.user,
+                    appDetailScreenInfo.approvalATR,
+                    appDetailScreenInfo.reflectPlanState,
+                    appDetailScreenInfo.authorizableFlags,
+                    appDetailScreenInfo.alternateExpiration,
+                    data.loginInputOrApproval);
+                self.editable(appDetailScreenInfo.outputMode == 0 ? false : true);
+                
+                
                 self.remainDays(data.remainingHolidayInfor.remainDays);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);

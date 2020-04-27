@@ -9,7 +9,8 @@ module nts.uk.at.view.kaf011.a.start {
             });
             vm.kaf000_a.initData({
                 errorFlag: data.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
-                listApprovalPhaseStateDto: data.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState        
+                listApprovalPhaseStateDto: data.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
+                isNew: true        
             });
             let transDate = vm.transferDate();
             if (transDate) {

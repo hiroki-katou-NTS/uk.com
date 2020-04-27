@@ -115,7 +115,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     }
                     self.kaf000_a.initData({
                         errorFlag: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
-                        listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState        
+                        listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState
                     });
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });

@@ -43,7 +43,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
 //        });     
     } else {
         screenModel.start(moment.utc().format("YYYY/MM/DD"), true).done(function() {
-            bindScreen(screenModel, appType)
+            bindScreen(screenModel, currentApp.appType)
 //            __viewContext.bind(screenModel);
 //            if (currentApp.appType == 10) {
 //                $("#fixed-table").ntsFixedTable({ width: 100 });
