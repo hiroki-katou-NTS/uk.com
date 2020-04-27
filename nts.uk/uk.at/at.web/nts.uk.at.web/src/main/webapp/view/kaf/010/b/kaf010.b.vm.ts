@@ -132,7 +132,7 @@ module nts.uk.at.view.kaf010.b {
             overTimeShiftNightRefer: KnockoutObservable<string> = ko.observable(null);
             flexExessTimeRefer: KnockoutObservable<string> = ko.observable(null);
             //　初期起動時、計算フラグ=1とする。
-            calculateFlag: KnockoutObservable<number> = ko.observable(1);
+            calculateFlag: KnockoutObservable<number> = ko.observable(0);
             version: number = 0;
             preWorkContent: common.WorkContent;
             inputDate: KnockoutObservable<string> = ko.observable('');
