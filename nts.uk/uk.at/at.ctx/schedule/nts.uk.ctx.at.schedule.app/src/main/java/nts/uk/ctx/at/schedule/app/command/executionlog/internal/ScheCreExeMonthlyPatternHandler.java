@@ -92,7 +92,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (basicScheOpt.isPresent()) {
 			BasicSchedule basicSche = basicScheOpt.get();
 			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
-			if (ImplementAtr.GENERALLY_CREATED == command.getContent().getImplementAtr()) {
+			if (ImplementAtr.CREATE_NEW_ONLY == command.getContent().getImplementAtr()) {
 				// 通常作成
 				return;
 			}
@@ -121,7 +121,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 入力パラメータ「実施区分」を判断
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
 					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
 							workingConditionItem, masterCache)) {
 				return;
