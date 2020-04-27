@@ -32,5 +32,4 @@ public class CommonSettingsStampInput {
 	 */
 	@Getter
 	private boolean googlemap;
-	
 }

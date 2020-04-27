@@ -13,11 +13,13 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPersonalStampService.Require;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -47,14 +49,15 @@ public class EnterStampFromPersonalStampServiceTest {
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
 		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
-
+		String contractCode = AppContexts.user().contractCode();
 		new Expectations() {
 			{
 				require.getStampSet();
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632",
+				() -> EnterStampFromPersonalStampService.create(require, new ContractCode(contractCode), employeeId,
+						stmapDateTime, pageNo, buttonPosNo, refActualResults, positionInfo, empInfoTerCode));
 
 	}
 
@@ -73,15 +76,17 @@ public class EnterStampFromPersonalStampServiceTest {
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
 		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
-
+		String contractCode = AppContexts.user().contractCode();
+		
 		new Expectations() {
 			{
 				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632",
+				() -> EnterStampFromPersonalStampService.create(require, new ContractCode(contractCode), employeeId,
+						stmapDateTime, pageNo, buttonPosNo, refActualResults, positionInfo, empInfoTerCode));
 
 	}
 
@@ -101,6 +106,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
 		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+		String contractCode = AppContexts.user().contractCode();
 
 		new Expectations() {
 			{
@@ -108,8 +114,10 @@ public class EnterStampFromPersonalStampServiceTest {
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632",
+				() -> EnterStampFromPersonalStampService.create(require, new ContractCode(contractCode), employeeId,
+						stmapDateTime, pageNo, buttonPosNo, refActualResults, positionInfo, empInfoTerCode));
+
 
 	}
 
@@ -130,6 +138,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
 		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+		String contractCode = AppContexts.user().contractCode();
 
 		new Expectations() {
 			{
@@ -140,8 +149,10 @@ public class EnterStampFromPersonalStampServiceTest {
 				result = new ArrayList<>();
 			}
 		};
-		NtsAssert.businessException("Msg_433", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632",
+				() -> EnterStampFromPersonalStampService.create(require, new ContractCode(contractCode), employeeId,
+						stmapDateTime, pageNo, buttonPosNo, refActualResults, positionInfo, empInfoTerCode));
+
 
 	}
 

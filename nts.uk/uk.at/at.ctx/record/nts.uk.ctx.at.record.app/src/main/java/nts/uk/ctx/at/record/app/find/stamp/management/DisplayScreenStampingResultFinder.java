@@ -106,7 +106,7 @@ public class DisplayScreenStampingResultFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepository.get(stampNumbers, date);
+			return stampRecordRepository.get(AppContexts.user().contractCode(),stampNumbers, date);
 		}
 
 		@Override

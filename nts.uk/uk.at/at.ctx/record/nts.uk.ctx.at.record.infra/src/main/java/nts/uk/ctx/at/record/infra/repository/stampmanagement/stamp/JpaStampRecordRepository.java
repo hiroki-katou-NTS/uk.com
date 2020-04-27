@@ -67,7 +67,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 
 	// [4] 取得する
 	@Override
-	public List<StampRecord> get(ContractCode contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
+	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
