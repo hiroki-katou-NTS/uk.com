@@ -202,7 +202,7 @@ module nts.uk.at.view.ksm007.a {
         openDialogCDL008() {
             let self = this;
             block.grayout();
-            setShared('inputCDL008', { selectedCodes: self.registerForm().selectedWorkplaces(), 
+            setShared('inputCDL008', { selectedCodes: _.map(self.registerForm().workplaces(), 'workplaceId') , 
                                        baseDate: moment(new Date()).toDate(), 
                                        isMultiple: true, 
                                        selectedSystemType: 0, 
