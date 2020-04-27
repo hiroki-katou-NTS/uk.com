@@ -21,7 +21,7 @@ public class ReplaceWorkplacesService {
 		
 		// require.職場グループを指定して職場グループ所属情報を取得する( 職場グループ.職場グループID )
 		// 旧所属情報リスト=get*(ログイン会社ID, 職場グループ.職場グループID):List<職場グループ所属情報>
-		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByListWKPID(lstWorkplaceId);
+		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByWKPGRPID(group.getWKPGRPID());
 		
 		// filter not 職場IDリスト.contains( $.職場ID )
 		List<AffWorkplaceGroup> lstDel = lstFormerAffInfo.stream()
@@ -54,7 +54,7 @@ public class ReplaceWorkplacesService {
 		
 		// [R-1] 職場グループを指定して職場グループ所属情報を取得する																
 		// 職場グループ所属情報Repository.*get( 会社ID, 職場ID )	
-		List<AffWorkplaceGroup> getByListWKPID(List<String> WKPID);
+		List<AffWorkplaceGroup> getByWKPGRPID(String WKPGRPID);
 		
 		// 職場を指定して職場グループ所属情報を削除する																		
 		// 職場グループ所属情報Repository.delete( 会社ID, 職場ID )	

@@ -203,6 +203,19 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 		Optional<AffWorkplaceGroup> optional = this.getByWKPID(CID, WKPID);
 		return optional.isPresent();
 	}
+	
+	/**
+	 * get ( 会社ID, 職場グループID )
+	 * 
+	 * @param CID
+	 * @param WKPGRPID
+	 * @return List<職場グループ所属情報>
+	 */
+	@Override
+	public List<AffWorkplaceGroup> getByWKPGRPID(String CID, String WKPGRPID) {
+		return this.queryProxy().query(SELECT_BY_CID_CODE_WID, BsymtAffWorkPlaceGroup.class).setParameter("CID", CID)
+				.setParameter("WKPGRPID", WKPGRPID).getList(c->c.toDomain());
+	}
 
 	/**
 	 * getAll ( 会社ID )

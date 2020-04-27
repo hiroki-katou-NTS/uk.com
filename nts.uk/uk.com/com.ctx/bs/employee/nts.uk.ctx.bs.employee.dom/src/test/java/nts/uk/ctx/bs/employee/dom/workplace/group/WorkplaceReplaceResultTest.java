@@ -33,13 +33,16 @@ public class WorkplaceReplaceResultTest {
 	public void testAdd() {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(0);
 		WorkplaceReplaceResult.add(Optional.of(atomTask));
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement() == WorkplaceReplacement.ADD).isTrue();
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
+	
 	
 	@Test
 	public void testDelete () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(1);
 		WorkplaceReplaceResult.delete(Optional.of(atomTask));
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement() == WorkplaceReplacement.DELETE).isTrue();
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
 	
@@ -47,6 +50,7 @@ public class WorkplaceReplaceResultTest {
 	public void testAlreadyBelong () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(2);
 		WorkplaceReplaceResult.alreadyBelong();
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement() == WorkplaceReplacement.ALREADY_BELONGED).isTrue();
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
 	
@@ -54,7 +58,7 @@ public class WorkplaceReplaceResultTest {
 	public void testBelongAnother () {
 		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(3);
 		WorkplaceReplaceResult.belongAnother();
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement() == WorkplaceReplacement.BELONGED_ANOTHER).isTrue();
 		assertThat(workplaceReplaceResult).isNotNull();
 	}
-	
 }
