@@ -44,7 +44,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	 * 弁当メニュー枠番
 	 */
 	@Getter
-	private final List<String> bentoMenuFrameNumbers;
+	private final List<Integer> bentoMenuFrameNumbers;
 
 	/**
 	 * 勤務種類コード
@@ -94,24 +94,137 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	@Getter
 	private final boolean timeSetting;
 
-	public TimeRecordReqSetting(EmpInfoTerminalCode terminalCode, CompanyId companyId, String companyCode,
-			List<EmployeeId> employeeIds, List<String> bentoMenuFrameNumbers, List<WorkTypeCode> workTypeCodes,
-			List<WorkTimeCode> workTimeCodes, boolean overTimeHoliday, boolean applicationReason, boolean stampReceive,
-			boolean reservationReceive, boolean applicationReceive, boolean timeSetting) {
+	public TimeRecordReqSetting(ReqSettingBuilder builder) {
 		super();
-		this.terminalCode = terminalCode;
-		this.companyId = companyId;
-		this.companyCode = companyCode;
-		this.employeeIds = employeeIds;
-		this.bentoMenuFrameNumbers = bentoMenuFrameNumbers;
-		this.workTypeCodes = workTypeCodes;
-		this.workTimeCodes = workTimeCodes;
-		this.overTimeHoliday = overTimeHoliday;
-		this.applicationReason = applicationReason;
-		this.stampReceive = stampReceive;
-		this.reservationReceive = reservationReceive;
-		this.applicationReceive = applicationReceive;
-		this.timeSetting = timeSetting;
+		this.terminalCode = builder.terminalCode;
+		this.companyId = builder.companyId;
+		this.companyCode = builder.companyCode;
+		this.employeeIds = builder.employeeIds;
+		this.bentoMenuFrameNumbers = builder.bentoMenuFrameNumbers;
+		this.workTypeCodes = builder.workTypeCodes;
+		this.workTimeCodes = builder.workTimeCodes;
+		this.overTimeHoliday = builder.overTimeHoliday;
+		this.applicationReason = builder.applicationReason;
+		this.stampReceive = builder.stampReceive;
+		this.reservationReceive = builder.reservationReceive;
+		this.applicationReceive = builder.applicationReceive;
+		this.timeSetting = builder.timeSetting;
+	}
+
+	public static class ReqSettingBuilder {
+		/**
+		 * コード
+		 */
+		private EmpInfoTerminalCode terminalCode;
+
+		/**
+		 * 会社ID
+		 */
+		private CompanyId companyId;
+
+		/**
+		 * 会社コード
+		 */
+		private String companyCode;
+
+		/**
+		 * 社員ID
+		 */
+		private List<EmployeeId> employeeIds;
+
+		/**
+		 * 弁当メニュー枠番
+		 */
+		private List<Integer> bentoMenuFrameNumbers;
+
+		/**
+		 * 勤務種類コード
+		 */
+		private List<WorkTypeCode> workTypeCodes;
+
+		/**
+		 * 就業時間帯コード
+		 */
+		private List<WorkTimeCode> workTimeCodes;
+
+		/**
+		 * 残業・休日出勤送信
+		 */
+		private boolean overTimeHoliday;
+
+		/**
+		 * 申請理由送信
+		 */
+		private boolean applicationReason;
+
+		/**
+		 * 全ての打刻データ
+		 */
+		private boolean stampReceive;
+
+		/**
+		 * 全ての予約データ
+		 */
+		private boolean reservationReceive;
+
+		/**
+		 * 全ての申請データ
+		 */
+		private boolean applicationReceive;
+
+		/**
+		 * 時刻セット
+		 */
+		private boolean timeSetting;
+
+		public ReqSettingBuilder(EmpInfoTerminalCode terminalCode, CompanyId companyId, String companyCode,
+				List<EmployeeId> employeeIds, List<Integer> bentoMenuFrameNumbers, List<WorkTypeCode> workTypeCodes) {
+			this.terminalCode = terminalCode;
+			this.companyId = companyId;
+			this.companyCode = companyCode;
+			this.employeeIds = employeeIds;
+			this.bentoMenuFrameNumbers = bentoMenuFrameNumbers;
+			this.workTypeCodes = workTypeCodes;
+		}
+
+		public ReqSettingBuilder workTime(List<WorkTimeCode> workTimeCodes) {
+			this.workTimeCodes = workTimeCodes;
+			return this;
+		}
+
+		public ReqSettingBuilder overTimeHoliday(boolean overTimeHoliday) {
+			this.overTimeHoliday = overTimeHoliday;
+			return this;
+		}
+
+		public ReqSettingBuilder applicationReason(boolean applicationReason) {
+			this.applicationReason = applicationReason;
+			return this;
+		}
+
+		public ReqSettingBuilder stampReceive(boolean stampReceive) {
+			this.stampReceive = stampReceive;
+			return this;
+		}
+
+		public ReqSettingBuilder reservationReceive(boolean reservationReceive) {
+			this.reservationReceive = reservationReceive;
+			return this;
+		}
+
+		public ReqSettingBuilder applicationReceive(boolean applicationReceive) {
+			this.applicationReceive = applicationReceive;
+			return this;
+		}
+
+		public ReqSettingBuilder timeSetting(boolean timeSetting) {
+			this.timeSetting = timeSetting;
+			return this;
+		}
+
+		public TimeRecordReqSetting build() {
+			return new TimeRecordReqSetting(this);
+		}
 	}
 
 }

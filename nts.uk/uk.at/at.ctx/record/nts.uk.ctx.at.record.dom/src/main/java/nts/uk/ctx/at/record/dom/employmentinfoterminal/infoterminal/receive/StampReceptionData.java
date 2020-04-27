@@ -65,26 +65,25 @@ public class StampReceptionData implements ReceptionData {
 	 */
 	private final String midnightTime;
 
-	public StampReceptionData(String idNumber, String cardCategory, String shift, String leavingCategory, String ymd,
-			String supportCode, String time, String overTimeHours, String midnightTime) {
+	public StampReceptionData(StampDataBuilder builder) {
 		super();
-		this.idNumber = idNumber;
-		this.cardCategory = cardCategory;
-		this.shift = shift;
-		this.leavingCategory = leavingCategory;
-		this.ymd = ymd;
-		this.supportCode = supportCode;
-		this.time = time;
-		this.overTimeHours = overTimeHours;
-		this.midnightTime = midnightTime;
+		this.idNumber = builder.idNumber;
+		this.cardCategory = builder.cardCategory;
+		this.shift = builder.shift;
+		this.leavingCategory = builder.leavingCategory;
+		this.ymd = builder.ymd;
+		this.supportCode = builder.supportCode;
+		this.time = builder.time;
+		this.overTimeHours = builder.overTimeHours;
+		this.midnightTime = builder.midnightTime;
 	}
 
 	@Override
 	public GeneralDateTime getDateTime() {
 		int yy = GeneralDate.today().year() / 100;
 		int ymdTemp = Integer.parseInt(String.valueOf(yy) + ymd);
-		return GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100,
-				ymdTemp % 100, Integer.parseInt(time) / 100, Integer.parseInt(time) % 100, 0);
+		return GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100, ymdTemp % 100,
+				Integer.parseInt(time) / 100, Integer.parseInt(time) % 100, 0);
 	}
 
 	public String getOverTimeHours() {
@@ -237,6 +236,83 @@ public class StampReceptionData implements ReceptionData {
 
 		return new StampType(changeHalfDay, goOutArt, SetPreClockArt.NONE, convertChangeClockArt(empInfo),
 				convertChangeCalArt());
+	}
+
+	public static class StampDataBuilder {
+
+		/**
+		 * ID番号
+		 */
+		private String idNumber;
+
+		/**
+		 * カード区分
+		 */
+		private String cardCategory;
+
+		/**
+		 * シフト
+		 */
+		private String shift;
+
+		/**
+		 * 出退区分
+		 */
+		private String leavingCategory;
+
+		/**
+		 * 年月日
+		 */
+		private String ymd;
+
+		/**
+		 * 応援コード
+		 */
+		private String supportCode;
+
+		/**
+		 * 時分
+		 */
+		private String time;
+
+		/**
+		 * 残業時間
+		 */
+		private String overTimeHours;
+
+		/**
+		 * 深夜時間
+		 */
+		private String midnightTime;
+
+		public StampDataBuilder(String idNumber, String cardCategory, String shift, String leavingCategory, String ymd,
+				String supportCode) {
+			this.idNumber = idNumber;
+			this.cardCategory = cardCategory;
+			this.shift = shift;
+			this.leavingCategory = leavingCategory;
+			this.ymd = ymd;
+			this.supportCode = supportCode;
+		}
+
+		public StampDataBuilder time(String time) {
+			this.time = time;
+			return this;
+		}
+
+		public StampDataBuilder overTimeHours(String overTimeHours) {
+			this.overTimeHours = overTimeHours;
+			return this;
+		}
+
+		public StampDataBuilder midnightTime(String midnightTime) {
+			this.midnightTime = midnightTime;
+			return this;
+		}
+
+		public StampReceptionData build() {
+			return new StampReceptionData(this);
+		}
 	}
 
 }

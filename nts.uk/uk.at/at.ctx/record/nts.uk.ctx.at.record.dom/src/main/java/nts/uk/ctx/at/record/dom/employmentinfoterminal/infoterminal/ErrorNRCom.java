@@ -64,18 +64,82 @@ public class ErrorNRCom implements DomainAggregate {
 	@Getter
 	private final MessageDisplay messageDisplay;
 
-	public ErrorNRCom(String id, EmpInfoTerminalCode empInfoTerCode, CompanyId companyId, EmployeeId employeeId,
-			GeneralDateTime dateCreateError, Optional<GeneralDateTime> dateErrorTranfer, NRErrorType typeError,
-			MessageDisplay messageDisplay) {
+	public ErrorNRCom(ErrorNRComBuilder builder) {
 		super();
-		this.id = id;
-		this.empInfoTerCode = empInfoTerCode;
-		this.companyId = companyId;
-		this.employeeId = employeeId;
-		this.dateCreateError = dateCreateError;
-		this.dateErrorTranfer = dateErrorTranfer;
-		this.typeError = typeError;
-		this.messageDisplay = messageDisplay;
+		this.id = builder.id;
+		this.empInfoTerCode = builder.empInfoTerCode;
+		this.companyId = builder.companyId;
+		this.employeeId = builder.employeeId;
+		this.dateCreateError = builder.dateCreateError;
+		this.dateErrorTranfer = builder.dateErrorTranfer;
+		this.typeError = builder.typeError;
+		this.messageDisplay = builder.messageDisplay;
+	}
+
+	public static class ErrorNRComBuilder {
+		/**
+		 * GUID
+		 */
+		private String id;
+
+		/**
+		 * コード
+		 */
+		private EmpInfoTerminalCode empInfoTerCode;
+
+		/**
+		 * 会社ID
+		 */
+		private CompanyId companyId;
+
+		/**
+		 * 社員ID
+		 */
+		private EmployeeId employeeId;
+
+		/**
+		 * エラーが発生した日
+		 */
+		private GeneralDateTime dateCreateError;
+
+		/**
+		 * エラー転送の日付
+		 */
+		private Optional<GeneralDateTime> dateErrorTranfer;
+
+		/**
+		 * 種類
+		 */
+		private NRErrorType typeError;
+
+		/**
+		 * メッセージ
+		 */
+		private MessageDisplay messageDisplay;
+
+		public ErrorNRComBuilder(String id, EmpInfoTerminalCode empInfoTerCode, CompanyId companyId,
+				EmployeeId employeeId, GeneralDateTime dateCreateError, Optional<GeneralDateTime> dateErrorTranfer) {
+			this.id = id;
+			this.empInfoTerCode = empInfoTerCode;
+			this.companyId = companyId;
+			this.employeeId = employeeId;
+			this.dateCreateError = dateCreateError;
+			this.dateErrorTranfer = dateErrorTranfer;
+		}
+
+		public ErrorNRComBuilder typeError(NRErrorType typeError) {
+			this.typeError = typeError;
+			return this;
+		}
+
+		public ErrorNRComBuilder createMessage(MessageDisplay messageDisplay) {
+			this.messageDisplay = messageDisplay;
+			return this;
+		}
+
+		public ErrorNRCom build() {
+			return new ErrorNRCom(this);
+		}
 	}
 
 }

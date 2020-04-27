@@ -28,8 +28,9 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  *         データタイムレコードを予約に変換する
  */
 public class ConvertTimeRecordReservationService {
-	
-	private ConvertTimeRecordReservationService() {};
+
+	private ConvertTimeRecordReservationService() {
+	};
 
 	// 変換する
 	public static Optional<AtomTask> convertData(Require require, EmpInfoTerminalCode empInfoTerCode,
@@ -56,17 +57,19 @@ public class ConvertTimeRecordReservationService {
 			});
 
 			return Optional.of(atomTask);
-		} catch (BusinessException bEx) {
+		} catch (RuntimeException ex) {
+			BusinessException bEx = (BusinessException) ex;
 			// 処理にエラーがある場合、別の申請受信データの処理を続行
 			Optional<StampCard> stampCardOpt = require.getByCardNoAndContractCode(contractCode,
 					new StampNumber(reservReceptData.getIdNumber()));
 			if (!stampCardOpt.isPresent())
 				return Optional.empty();
 			AtomTask atomTaskEx = AtomTask.of(() -> {
-				require.insert(new ErrorNRCom(IdentifierUtil.randomUniqueId(), empInfoTerCode,
+				require.insert(new ErrorNRCom.ErrorNRComBuilder(IdentifierUtil.randomUniqueId(), empInfoTerCode,
 						requestSetting.get().getCompanyId(), new EmployeeId(stampCardOpt.get().getEmployeeId()),
-						GeneralDateTime.now(), Optional.of(reservReceptData.getDateTime()), NRErrorType.RESERVATION,
-						new MessageDisplay(bEx.getMessage())));
+						GeneralDateTime.now(), Optional.of(reservReceptData.getDateTime()))
+								.typeError(NRErrorType.RESERVATION).createMessage(new MessageDisplay(bEx.getMessage()))
+								.build());
 			});
 			return Optional.of(atomTaskEx);
 		}
