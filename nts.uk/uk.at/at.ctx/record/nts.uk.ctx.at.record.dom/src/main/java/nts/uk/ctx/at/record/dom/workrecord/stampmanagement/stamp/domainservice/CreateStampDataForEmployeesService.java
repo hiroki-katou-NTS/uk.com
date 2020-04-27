@@ -8,7 +8,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationIn
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * DS : 社員の打刻データを作成する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.社員の打刻データを作成する
@@ -51,18 +49,14 @@ public class CreateStampDataForEmployeesService {
 			Optional<GeoCoordinate> positionInfo, Optional<EmpInfoTerminalCode> empInfoTerCode) {
 		StampNumber stampNumber = getCardNumber(require, employeeId);
 		boolean stampAtr = buttonType.checkStampType();
-		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
-		StampRecord stampRecord = new StampRecord(contractCode, stampNumber, datetime, stampAtr,
-				buttonType.getReservationArt(), empInfoTerCode);
-		if (!stampAtr) {
-			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord,
-					Optional.empty());
+		
+		StampRecord stampRecord = new StampRecord(stampNumber, datetime, stampAtr, buttonType.getReservationArt(), empInfoTerCode); 
+		if(!stampAtr) {
+			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.empty());
 		}
-		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType().get(),
-				refActualResults.get(), positionInfo);
-
-		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord,
-				Optional.of(stamp));
+		Stamp stamp = createStampDataInfo(stampNumber, datetime, stampAtr, relieve, buttonType.getStampType().get(), refActualResults.get(), positionInfo);
+		
+		return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.of(stamp));
 	}
 
 	/**
@@ -98,12 +92,10 @@ public class CreateStampDataForEmployeesService {
 			boolean stampAtr,Relieve relieve, StampType type, RefectActualResult refActualResults,
 			Optional<GeoCoordinate> positionInfo) {
 		StampLocationInfor stampLocationInfor = null;
-		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		if(positionInfo.isPresent()) {
 			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
 		}
 		return new Stamp(
-				contractCode,
 				stampNumber, 
 				datetime, 
 				relieve, 

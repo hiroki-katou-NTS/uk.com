@@ -5,7 +5,6 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
 public interface StampRecordRepository {
@@ -31,19 +30,17 @@ public interface StampRecordRepository {
 
 	/**
 	 * [4] 取得する
-	 * @param contractCode
 	 * @param stampNumbers
 	 * @param stampDateTime
 	 * @return
 	 */
-	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDate);
+	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 *  [5] 打刻カード未登録の打刻記録データを取得する
 	 * @param period
-	 * @param contractCode
 	 * @return
 	 */
-	public List<StampRecord> getStempRcNotResgistNumber(ContractCode contractCode, DatePeriod period);
+	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period);
 
 }

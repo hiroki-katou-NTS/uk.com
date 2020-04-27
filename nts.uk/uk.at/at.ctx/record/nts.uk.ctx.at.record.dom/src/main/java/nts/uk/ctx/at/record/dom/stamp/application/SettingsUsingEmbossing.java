@@ -50,6 +50,7 @@ public class SettingsUsingEmbossing implements DomainAggregate {
 	private boolean smart_phone;
 	
 	public boolean canUsedStamping (StampMeans stampMeans) {
+		
 		if (stampMeans.NAME_SELECTION != null) {
 			return this.name_selection;
 		}
