@@ -90,7 +90,7 @@ public class AutoCreateStampCardNumberService {
 			return Optional.empty();
 		}
 		
-		return Optional.of(new StampCard(companyInfo.getContractCd(), stampCardNumberOpt.get(), employeeID));
+		return Optional.empty();//of(new StampCard(companyInfo.getContractCd(), stampCardNumberOpt.get(), employeeID));
 	}
 
 	/**
