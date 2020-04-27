@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -94,9 +95,15 @@ public class ScheduleCreatorExecutionTransaction {
 			CalculationCache.initialize();
 		}
 		try {
-			//TODO
-			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+			//実行区分をチェックする
+			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
+				//勤務予定削除する
+				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
+			}else {
+				//勤務予定作成する
+				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content);
+			}
 		} finally {
 			CalculationCache.clear();
 		}
@@ -104,11 +111,11 @@ public class ScheduleCreatorExecutionTransaction {
 		scheduleCreator.updateToCreated();
 		this.scheduleCreatorRepository.update(scheduleCreator);
 
-		// 暫定データを作成する (Tạo data tạm)
-		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
-			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-		});
+//		// 暫定データを作成する (Tạo data tạm)
+//		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+//			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+//			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+//		});
 		
 	}
 
@@ -155,6 +162,15 @@ public class ScheduleCreatorExecutionTransaction {
 						registrationListDateSchedule);
 			}
 		}
+	}
+	//勤務予定削除
+	private void deleteSchedule(String employeeId,DatePeriod period) {
+		String companyId = AppContexts.user().companyId();
+		//勤務予定ドメインを削除する
+		//TODO: cho tin doi ung response -> tao domain moi -> xoa domain
+		//暫定データの登録
+		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
+		
 	}
 
 	

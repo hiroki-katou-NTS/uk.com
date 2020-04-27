@@ -346,7 +346,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
 							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
-					
+					//勤務予定作成する
 					this.transaction.execute(
 							command,
 							scheduleExecutionLog,
