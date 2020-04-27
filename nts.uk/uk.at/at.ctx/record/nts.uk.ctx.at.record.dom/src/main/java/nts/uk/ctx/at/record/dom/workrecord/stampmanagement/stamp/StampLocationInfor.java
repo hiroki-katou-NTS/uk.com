@@ -30,5 +30,4 @@ public class StampLocationInfor implements DomainValue {
 	}
 
 	
-	
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.kdp.kdp002.a;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lamvt
  *
  */
+@Stateless
 public class RegisterStampIndividualSampleCommandHandler extends CommandHandlerWithResult<RegisterStampIndividualSampleCommand, RegisterStampIndividualSampleResult> {
 
 	@Inject
