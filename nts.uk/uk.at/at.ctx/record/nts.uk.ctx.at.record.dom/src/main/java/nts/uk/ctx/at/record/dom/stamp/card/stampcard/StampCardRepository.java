@@ -4,9 +4,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 
+ * 打刻カードRepository
+ */
 public interface StampCardRepository {
 
 
+	/**
+	 * 追加する(打刻カード)
+	 * 
+	 * [1] insert(打刻カード)
+	 * 
+	 * @param domain
+	 */
+	void add(StampCard domain);
+	
+	/**
+	 * [2] update(打刻カード)
+
+	 * @param domain
+	 */
+	void update(StampCard domain);
+	
+	/**
+	 * 	[3] delete(打刻カード)
+	 * @param domain
+	 */
+	void delete(StampCard domain);
+	
+	/**
+	 * 	[4] 取得する
+     * 	打刻カード番号から打刻カード情報を取得する
+	 * @param contractCd
+	 * @return
+	 */
+	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
+	
+	/**
+	 * 
+	 * @param contractCd
+	 * @param sid
+	 * @return
+	 */
+	List<StampCard> getLstStampCardBySidAndContractCd(String contractCd, String sid);
+	
+	
 	List<StampCard> getListStampCard(String sid);
 	
 	List<String> getListStampCardByContractCode(String contractCode);
@@ -19,20 +62,16 @@ public interface StampCardRepository {
 	
 	Map<String, List<StampCard>> getByStampCardId(String contractCd, List<String> stampCardId);
 	
-	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
-	
 	Map<String, StampCard> getByCardNoAndContractCode(Map<String, String> cardNos , String contractCd);
 	
 	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length);
 
-	void add(StampCard domain);
 	/**
 	 * @author lanlt
 	 * @param domains
 	 */
 	void addAll(List<StampCard> domains);
-
-	void update(StampCard domain);
+	
 	
 	/**
 	 * @author lanlt

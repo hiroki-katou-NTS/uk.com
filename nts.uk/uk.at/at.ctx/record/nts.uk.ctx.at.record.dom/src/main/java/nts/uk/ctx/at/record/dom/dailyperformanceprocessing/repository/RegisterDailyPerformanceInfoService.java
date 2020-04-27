@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.InsertWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -91,6 +92,8 @@ public class RegisterDailyPerformanceInfoService {
 	@Inject
 	private DailyRecordAdUpService dailyRecordAdUpService;
 
+	@Inject
+	private StampDakokuRepository stampDakokuRepository;
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
 			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
@@ -227,10 +230,12 @@ public class RegisterDailyPerformanceInfoService {
 			// ドメインモデル「打刻」を更新する (Update 「打刻」) - JDBC
 			if (stampOutput.getLstStamp() != null && !stampOutput.getLstStamp().isEmpty()) {
 				stampOutput.getLstStamp().forEach(stampItem -> {
-					if(stampItem.getAttendanceTime().v() >= 1440) {
-						stampItem.setAttendanceTime(new AttendanceTime(stampItem.getAttendanceTime().v() - 1440));
-					}
-					this.stampRepository.updateStampItem(stampItem);
+//					if(stampItem.getAttendanceTime().v() >= 1440) {
+//						stampItem.setAttendanceTime(new AttendanceTime(stampItem.getAttendanceTime().v() - 1440));
+//					}
+//					this.stampRepository.updateStampItem(stampItem);
+					this.stampDakokuRepository.update(stampItem);
+					
 				});
 			}
 

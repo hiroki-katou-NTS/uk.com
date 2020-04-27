@@ -6,7 +6,12 @@ package nts.uk.ctx.at.record.dom.stamp;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 
 
 
@@ -18,10 +23,12 @@ public interface StampRepository {
 	 */
 	List<StampItem> findByListCardNo(List<String> lstCardNumber);
 	
+	//not use
 	// get List Stamp by Card Number and Day of Work
 	//List<StampItem> findByEmployeeCode(String companyId, String cardNumber, String startDate, String endDate);
 	List<StampItem> findByEmployeeID(String companyId, List<String> stampCard,String startDate, String endDate);
 	
+	//not use
 	// get List Stamp by Date
 	List<StampItem> findByDate(String cardNumber, GeneralDateTime startDate, GeneralDateTime endDate);
 	
@@ -33,6 +40,7 @@ public interface StampRepository {
 	 * @param endDate
 	 * @return
 	 */
+	//da sua thanh k su dung
 	List<StampItem> findByDateCompany(String companyId,GeneralDateTime startDate ,GeneralDateTime endDate);
 	
 	/**
@@ -44,6 +52,8 @@ public interface StampRepository {
 	 * @param endDate the end date
 	 * @return the list
 	 */
+	
+	//not use
 	List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate ,GeneralDateTime endDate);
 	
 	/**
@@ -55,5 +65,7 @@ public interface StampRepository {
 	 * @param endDate the end date
 	 * @return the list
 	 */
-	List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate, GeneralDateTime endDate);
+	//da sua thanh k su dung
+	List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate,
+			GeneralDateTime endDate);
 }

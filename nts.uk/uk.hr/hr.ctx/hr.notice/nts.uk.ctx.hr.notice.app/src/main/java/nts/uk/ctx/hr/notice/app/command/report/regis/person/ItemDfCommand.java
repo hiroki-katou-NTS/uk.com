@@ -13,14 +13,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDfCommand {
-	String categoryId;
-	String categoryCode;
-	String categoryName;
-	int ctgType;
-	String layoutItemType;
-	int layoutDisOrder;
-	int dispOrder;
-	String itemDefId;
-	String itemCode;
-	String itemName;
+	public String categoryId;
+	public String categoryCode;
+	public String categoryName;
+	public int ctgType;
+	public String layoutItemType;
+	public int layoutDisOrder;
+	public int dispOrder;
+	public String itemDefId;
+	public String itemCode;
+	public String itemName;
 }

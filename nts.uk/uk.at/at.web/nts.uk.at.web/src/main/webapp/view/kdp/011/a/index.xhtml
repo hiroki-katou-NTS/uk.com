@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />			
+			<com:stylefile path="kdp011.a.main.css" />
+			<com:scriptfile path="kdp011.a.service.js" />
+			<com:scriptfile path="kdp011.a.vm.js" />
+			<com:scriptfile path="kdp011.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+		
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="btnExportExcel" class="proceed"  data-bind="click: exportExcel, enable: $root.errors.isEmpty">#{i18n.getText('KDP011_11')}</button>
+				
+			</div>
+			
+			<div id="content-area">
+				<!-- A2_1 -->
+				<div id="com-ccg001"></div>
+				<div class="main-content flex-layout">
+					<div class="">
+						<!-- A3_1 -->
+						<div class="rangeDate">
+							<!-- A3_2 -->
+							<div data-bind="ntsFormLabel: { inline: true, required: true}">#{i18n.getText('KDP011_12')}</div>
+							<!-- A3_3 -->
+							<!-- A3_4 -->
+							<!-- A3_5 -->
+							<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: true, 
+																									enable: true, 
+																									showNextPrevious: true, 
+																									value: datepickerValue, 
+																									maxRange: 'oneMonth',
+																									name: '#[KDP011_12]'}"/>
+						</div>
+						<div class = "proseccselect" data-bind="ntsRadioBoxGroup: {
+									options: listProcessSelect,
+									optionsValue: 'idProcessSelect',
+									optionsText: 'nameProcessSelect',
+									value: selectedIdProcessSelect,
+									enable: enableProcessSelect
+									}"></div>
+						<!-- A4_1 -->
+						<div class="data">
+							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}" ></div>
+							<!-- A4_2 -->
+							<div class ="employee-list-container" data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
+								<div id="employee-list"></div>
+								<div class="mark-overlay"></div>
+								<div class="mark-overlay-employee"></div>
+							</div>
+							
+						</div>
+					</div>
+	
+				</div>
+
+			</div>
+			
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

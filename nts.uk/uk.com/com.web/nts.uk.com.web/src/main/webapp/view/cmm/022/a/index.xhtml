@@ -21,19 +21,19 @@
 			<div id="functions-area">
 				<!-- A1_1 -->
 				<button tabindex="1"
-					data-bind="click: newItem,enable:commonMasters().length">#{i18n.getText('CMM022_A1_1')}</button>
+					data-bind="click: newItem,enable:masterLength()">#{i18n.getText('CMM022_A1_1')}</button>
 				<!-- A1_2 -->
 				<button tabindex="1" class="proceed"
-					data-bind="click: saveData,enable:commonMasters().length">#{i18n.getText('CMM022_A1_2')}</button>
+					data-bind="click: saveData,enable:masterLength()">#{i18n.getText('CMM022_A1_2')}</button>
 				<!-- A1_3 -->
 				<button tabindex="1"
-					data-bind="click: openDialogB,enable:commonMasters().length">#{i18n.getText('CMM022_A1_3')}</button>
+					data-bind="click: openDialogB,enable:masterLength()">#{i18n.getText('CMM022_A1_3')}</button>
 				<!-- A1_4 -->
 				<button tabindex="1"
-					data-bind="click: openDialogC,enable:commonMasters().length">#{i18n.getText('CMM022_A1_4')}</button>
+					data-bind="click: openDialogC,enable:masterLength()">#{i18n.getText('CMM022_A1_4')}</button>
 				<!-- A1_5 -->
 				<button tabindex="1"
-					data-bind="click: exportExcel,enable:commonMasters().length">#{i18n.getText('CMM022_A1_5')}</button>
+					data-bind="click: exportExcel,enable:masterLength()">#{i18n.getText('CMM022_A1_5')}</button>
 
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -115,7 +115,7 @@
 											name:'#[CMM022_A223_2]',
 											constraint:'CommonMasterCode',
 											option:{ width:'20px'},
-											enable:commonMasters().length
+											enable:masterLength()
 											}" />
 						<!-- A223_3 -->
 						<input
@@ -126,7 +126,7 @@
 											required: true,
 											constraint:'CommonMasterName',
 											option:{ width: '150px' },
-											enable:commonMasters().length
+											enable:masterLength()
 											}" />
 					</div>
 					<div class="div_line">
@@ -136,12 +136,12 @@
 					<div class="div_line pl-15">
 					<!-- A223_5 -->
 						<div
-							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:'#[CMM022_A223_5]' , enable:commonMasters().length }"></div>
+							data-bind="ntsDatePicker: { required: true , value: selectedCommonMasterItem().usageStartDate , name:'#[CMM022_A223_5]' ,enable:masterLength() }"></div>
 						<!-- A223_6 -->
 						#{i18n.getText('CMM022_A223_6')}
 						<!-- A223_7 -->
 						<div
-							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:'#[CMM022_A223_7]', enable:commonMasters().length }"></div>
+							data-bind="ntsDatePicker: { required: true, value: selectedCommonMasterItem().usageEndDate ,name:'#[CMM022_A223_7]',enable:masterLength() }"></div>
 					</div>
 				</div>
 			</div>

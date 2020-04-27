@@ -47,6 +47,14 @@ public class PersonalReportSaveWebService {
 	}
 	
 	@POST
+	@Path("getAll-Jhn002")
+	public List<PersonalReportDto> findAllJhn002() {
+		String cid = AppContexts.user().companyId();
+		List<PersonalReportDto> listReport = this.finder.getListReportJhn002(cid);
+		return listReport;
+	}
+	
+	@POST
 	@Path("getAll-SaveDraft")
 	public List<RegistrationPersonReportSaveDraftDto> getListReportSaveDraft() {
 		String cid =  AppContexts.user().companyId();

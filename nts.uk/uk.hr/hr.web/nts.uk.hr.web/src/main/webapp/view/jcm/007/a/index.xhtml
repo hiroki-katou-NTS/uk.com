@@ -30,7 +30,7 @@
 					data-bind="click: register , enable:  enable_btnRegister"> #{i18n.getText('JCM007_A1_2')}  </button>
 				<!-- A1_4 -->
 				<button id="export" tabindex="32" class="group-button-1"
-					data-bind="click:exportExcel">#{i18n.getText('JCM007_A1_4')}</button>
+					data-bind="click: exportExcel  , enable:  enable_btnExportExcel">#{i18n.getText('JCM007_A1_4')}</button>
 
 				<!-- A1_3 -->
 				<button id="setting" tabindex="33" class="danger group-button-1" 
@@ -185,9 +185,9 @@
 							<div>
 								<!-- A222_25 -->
 								<div data-bind="ntsFormLabel: { required: false , constraint: ''}"> #{i18n.getText('JCM007_A222_25')}  </div>
-								<!--<div class = "subText"> #{i18n.getText('JCM007_A222_27')} </div>-->
+								<div class = "subText" data-bind="visible: shouldInterviewRecord"> #{i18n.getText('JCM007_A222_27')} </div>
 							</div>
-							<!-- A222_26 -->					
+							<!-- A222_26  -->					
 							<div style="margin-left: 86px">
 								<textarea tabindex="13" data-bind="ntsMultilineEditor: {
 									value: retirementRemarks ,

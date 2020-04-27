@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+<link rel="stylesheet"
+	href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 450, height: 630 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kdp/002/c/main.css" />
+			<com:scriptfile path="kdp002.c.vm.js" />
+			<com:scriptfile path="kdp002.c.start.js" />
+			<com:scriptfile path="kdp002.c.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="right-area">
+					<table class="basic-items">
+						<tr>
+							<td><span id="label-b1-1">#{i18n.getText('KDP002_50')}</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="item-screen">
+									<!-- C2_1 -->
+									<div id="label-b2-2"
+										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_51')}</div>
+									<!-- C2_2 -->
+									<span id="text-b2-2" data-bind="text: employeeCodeName"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="item-screen">
+									<!-- B3_1 -->
+									<div id="correc-label1"
+										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_52')}
+									</div>
+									<!-- B3_2 -->
+									<span id="label-b3-2" data-bind="html: dayName"></span>
+									<!-- B3_3 -->
+									<span id="text-b3-3" style="font-size: 15px;font-weight: bold;" data-bind="text: timeName"></span>
+								</div>
+							</td>
+
+						</tr>
+						<tr>
+							<!-- B4_1 -->
+							<td>
+								<div class="item-screen">
+									<div id="label-b3-1"
+										data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_53')}</div>
+									<!-- B4_2 -->
+									<span id="text-b4-2" style="color:#0033cc; font-size: 15px;font-weight: bold;" data-bind="text: checkHandName"></span>
+								</div>
+
+							</td>
+						</tr>
+						<tr>
+							<!-- B6_1 -->
+							<td>
+								<div class="item-screen">
+									<div id="color" data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_54')}</div>
+									<!-- B6_2 -->
+									<span id="text-b6-2" data-bind="text: laceName"></span>
+								</div>
+							</td>
+						</tr>
+
+					</table>
+
+				</div>
+				<!-- G7 -->
+				<div>
+					<table id="fixed-table">
+						<thead>
+							<tr>
+								<th id="item-table" class="ui-widget-header" colspan="2">#{i18n.getText('KDP002_56')}</th>
+							</tr>
+							<tr>
+								<th id="item-table-2" class="ui-widget-header">
+									<div id="text-adt" class="pull-left" style="width: 175px" data-bind="text: workName1"></div> 
+									<div id="text-adt" class="pull-left" data-bind="text: workName2"></div>
+								</th>
+							</tr>
+							<tr>
+								<th id="item-table-2" class="ui-widget-header">#{i18n.getText('KDP002_57')}
+									
+									<span id="text-adt-1" data-bind="text: timeName1"></span><span
+									id="text-adt" data-bind="text: timeName2"></span>
+								</th>
+								
+							</tr>
+							
+						</thead>
+					</table>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+								height: 150,
+								dataSource: items,
+								primaryKey: 'itemId',
+								columns: columns2,
+								multiple: false,
+								value: currentCode
+							}"></table>
+							<div id = "text-b20">
+					<span id="text-b20-1" data-bind="visible : permissionCheck()">#{i18n.getText('KDP002_61')}</span> <span
+						id="text-b20-2" data-bind= "visible : !permissionCheck()">
+						#{i18n.getText('KDP002_99')}</span>
+					</div>
+					
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" tabindex="9" id="close-button"
+					data-bind="click: registerDailyIdentify, disable : !permissionCheck()">#{i18n.getText('KDP002_62')}</button>
+
+				<button tabindex="9" id="close-button"
+					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

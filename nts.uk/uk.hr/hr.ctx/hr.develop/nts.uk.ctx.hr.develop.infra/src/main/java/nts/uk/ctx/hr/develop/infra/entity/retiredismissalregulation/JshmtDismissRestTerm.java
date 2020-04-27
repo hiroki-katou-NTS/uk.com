@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -40,12 +41,12 @@ public class JshmtDismissRestTerm extends UkJpaEntity implements Serializable {
 	public Integer restFlg;
 	
 	@ManyToOne
-	@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false)
+	@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false )
 	public JshmtRetireDismissReg retireDismissReg;
 	
 	
 	@JoinTable(name = "JSHMT_DISMISS_REST_ITEM")
-	@OneToMany(mappedBy = "dismissRestTerm", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "dismissRestTerm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	public List<JshmtDismissRestItem> listDismissRestItem;
 
 	

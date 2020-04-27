@@ -12,12 +12,10 @@
 	width: 470px;
     float: right;
 }
-
-.master-item{
-	margin-top: 10px;
+#tree-up-down{
 	display: inline-block;
 }
 
-.up-and-down{
-	margin-left: 10px;
+#listItem{
+	display: inline-block;
 }

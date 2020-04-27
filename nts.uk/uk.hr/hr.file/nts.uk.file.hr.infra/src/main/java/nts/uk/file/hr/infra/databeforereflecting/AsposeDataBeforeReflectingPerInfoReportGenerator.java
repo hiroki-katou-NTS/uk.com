@@ -28,6 +28,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementReasonCategory1;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementReasonCategory2;
 import nts.uk.file.hr.app.databeforereflecting.DataBeforeReflectingPerInfoGenerator;
 import nts.uk.screen.hr.app.databeforereflecting.find.DataBeforeReflectResultDto;
 import nts.uk.screen.hr.app.databeforereflecting.find.RetiredEmployeeInfoResult;
@@ -114,7 +116,7 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 
 			List<RetiredEmployeeInfoResult> retiredEmployees = data.getRetiredEmployees();
 			List<EmployeeInformationImport> employeeImports = data.getEmployeeImports();
-			
+
 			int rowIndex = FIRST_ROW_FILL;
 			Worksheet ws = wsc.get(0);
 			this.settingTableHeader(ws);
@@ -124,9 +126,9 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 				RetiredEmployeeInfoResult entity = retiredEmployees.get(i);
 				Optional<EmployeeInformationImport> employeeImportOpt = employeeImports.stream()
 						.filter(x -> x.getEmployeeId().equals(entity.getSId())).findFirst();
-				
-				fillDataToCell(ws,rowIndex, entity, employeeImportOpt);
-				
+
+				fillDataToCell(ws, rowIndex, entity, employeeImportOpt);
+
 				setBorder(wsc.get(0), rowIndex);
 				// line break
 				if (page == 1) {
@@ -152,7 +154,7 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private void setBorder(Worksheet worksheet, int rowIndex) {
 		int totalColumn = 36;
 		int columnStart = 0;
@@ -167,16 +169,16 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 			cell.setStyle(style);
 		}
 	}
-	
+
 	private void fillDataToCell(Worksheet ws, int rowIndex, RetiredEmployeeInfoResult entity,
 			Optional<EmployeeInformationImport> employeeImportOpt) {
 		EmployeeInformationImport empInfo = EmployeeInformationImport.builder().build();
-		
-		if(employeeImportOpt.isPresent()){
+
+		if (employeeImportOpt.isPresent()) {
 			empInfo = employeeImportOpt.get();
 		}
 		// content
-		
+
 		String status = "";
 		switch (entity.getStatus()) {
 		case "1":
@@ -186,36 +188,39 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 			status = TextResource.localize("JCM007_A3_3");
 			break;
 		}
-		
+
 		ws.getCells().get(rowIndex, REG_STATUS).putValue(status);
-		
-		ws.getCells().get(rowIndex, SCD)
-				.putValue(entity.getScd());
-		ws.getCells().get(rowIndex, SNAME)
-				.putValue(empInfo.getEmployeeName());
+
+		ws.getCells().get(rowIndex, SCD).putValue(entity.getScd());
+		ws.getCells().get(rowIndex, SNAME).putValue(empInfo.getEmployeeName());
 		ws.getCells().get(rowIndex, SNAMEKANA).putValue(empInfo.getBusinessNameKana());
-		
+
 		if (empInfo.getDepartment() != null) {
 			ws.getCells().get(rowIndex, DEPCD).putValue(empInfo.getDepartment().getDepartmentCode());
 			ws.getCells().get(rowIndex, DEPNAME).putValue(empInfo.getDepartment().getDepartmentName());
 		}
-		
+
 		if (empInfo.getEmployment() != null) {
 			ws.getCells().get(rowIndex, EMPCD).putValue(empInfo.getEmployment().getEmploymentCode());
 			ws.getCells().get(rowIndex, EMPNAME).putValue(empInfo.getEmployment().getEmploymentName());
 		}
-		
+
 		ws.getCells().get(rowIndex, RETIDATE).putValue(convertDate(entity.getRetirementDate()));
-		
+
 		ws.getCells().get(rowIndex, RELDATE).putValue(convertDate(entity.getReleaseDate()));
 		ws.getCells().get(rowIndex, INPUTDATE).putValue(convertDate(entity.getInputDate()));
-		
+
 		ws.getCells().get(rowIndex, RETICTG)
 				.putValue(EnumAdaptor.valueOf(entity.getRetirementCategory(), RetirementCategory.class).name);
-		
-		ws.getCells().get(rowIndex, RETIRES_CTG_CD_1).putValue(entity.getRetirementReasonCtg1());
+
+		ws.getCells().get(rowIndex, RETIRES_CTG_CD_1)
+				.putValue(EnumAdaptor.valueOf(entity.getRetirementReasonCtg1(), RetirementReasonCategory1.class).name);
+
 		ws.getCells().get(rowIndex, RETIRES_CTG_NAME_1).putValue(entity.getRetirementReasonCtgName1());
-		ws.getCells().get(rowIndex, RETIRES_CTG_CD_2).putValue(entity.getRetirementReasonCtg2());
+
+		ws.getCells().get(rowIndex, RETIRES_CTG_CD_2)
+				.putValue(EnumAdaptor.valueOf(entity.getRetirementReasonCtg2(), RetirementReasonCategory2.class).name);
+
 		ws.getCells().get(rowIndex, RETIRES_CTG_NAME_2).putValue(entity.getRetirementReasonCtgName2());
 		ws.getCells().get(rowIndex, RETE_NOTE).putValue(entity.getRetirementRemarks());
 		ws.getCells().get(rowIndex, PRO_FOR_RETI).putValue(entity.getRetirementReasonVal());
@@ -248,7 +253,7 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 		}
 		return date.toString(FORMAT_DATE);
 	}
-	
+
 	private String convertDate(GeneralDate date) {
 		if (date == null) {
 			return null;
@@ -258,7 +263,7 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 
 	private void settingTableHeader(Worksheet ws) {
 		int rowIndex = FIRST_ROW_FILL - 1;
-		
+
 		ws.getCells().get(rowIndex, REG_STATUS).putValue(TextResource.localize("JCM007_P3_1"));
 		ws.getCells().get(rowIndex, SCD).putValue(TextResource.localize("JCM007_P3_2"));
 		ws.getCells().get(rowIndex, SNAME).putValue(TextResource.localize("JCM007_P3_3"));
@@ -297,7 +302,7 @@ public class AsposeDataBeforeReflectingPerInfoReportGenerator extends AsposeCell
 		ws.getCells().get(rowIndex, INTERVIEWER).putValue(TextResource.localize("JCM007_P3_36"));
 
 	}
-	
+
 	private void settingHeader(Worksheet ws, String companyName) {
 
 		// Set print page

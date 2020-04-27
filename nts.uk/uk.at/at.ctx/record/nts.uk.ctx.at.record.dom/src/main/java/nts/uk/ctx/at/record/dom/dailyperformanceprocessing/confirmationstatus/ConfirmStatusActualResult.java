@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-
+/**
+ * 日の実績の確認状況
+ * @author tutk
+ *
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

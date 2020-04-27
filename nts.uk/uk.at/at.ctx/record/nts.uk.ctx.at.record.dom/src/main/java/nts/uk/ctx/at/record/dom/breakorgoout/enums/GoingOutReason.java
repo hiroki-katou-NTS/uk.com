@@ -15,15 +15,21 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 public enum GoingOutReason {
 	
 	/* 私用 */
-	PRIVATE(0),
+	PRIVATE(0, "私用", "Enum_Private"),
 	/* 公用 */
-	PUBLIC(1),
+	PUBLIC(1, "公用","Enum_Public"),
 	/* 有償 */
-	COMPENSATION(2),
+	COMPENSATION(2, "有償", "Enum_Compensation"),
 	/* 組合 */
-	UNION(3);
+	UNION(3, "組合", "Enum_Union");
 	
 	public final int value;
+	
+	/** The name id. */
+	public final String nameId;
+	
+	/** The description. */
+	public  String description;
 
 	/**
 	 * 私用か組合であるか判定する
@@ -99,5 +105,24 @@ public enum GoingOutReason {
 			if(reason.value == value) return Optional.of(reason);
 		}
 		return Optional.empty();
+	}
+	
+	private final static GoingOutReason[] values = GoingOutReason.values();
+	
+	public static GoingOutReason valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (GoingOutReason val : GoingOutReason.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }
