@@ -84,7 +84,36 @@ module nts.uk.at.view.kaf007.b {
                         listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
                         appTypeSet = _.find(listAppTypeSet, o => o.appType == 2),
                         appWorkChangeDto = settingData.appWorkChange,
-                        applicationDto = appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                        appDetailScreenInfo = appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo,
+                        applicationDto = appDetailScreenInfo.application;
+                    let appType = applicationDto.applicationType
+                    if (appType != 0) {
+                        let paramLog = {
+                            programId: 'KAF000',
+                            screenId: 'B',
+                            queryString: 'apptype=' + appType
+                        };
+                        nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
+                    }
+                    self.inputCommandEvent().version = applicationDto.version;
+                    self.version = applicationDto.version;
+                    self.dataApplication(applicationDto);
+                    self.appType(applicationDto.applicationType);
+                    self.approvalRootState(ko.mapping.fromJS(appDetailScreenInfo.approvalLst)());
+                    self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
+                    if (self.displayReturnReasonPanel()) {
+                        let returnReason = applicationDto.reversionReason;
+                        $("#returnReason").html(returnReason.replace(/\n/g, "\<br/>"));
+                    }
+                    self.reasonToApprover(appDetailScreenInfo.authorComment);
+                    self.setControlButton(
+                        appDetailScreenInfo.user,
+                        appDetailScreenInfo.approvalATR,
+                        appDetailScreenInfo.reflectPlanState,
+                        appDetailScreenInfo.authorizableFlags,
+                        appDetailScreenInfo.alternateExpiration,
+                        settingData.loginInputOrApproval);
+                    self.editable(appDetailScreenInfo.outputMode == 0 ? false : true);
                     self.appWorkChangeDispInfoDto = appWorkChangeDispInfo;
                     //A2_申請者 ID
                     self.employeeID = appDispInfoNoDateOutput.employeeInfoLst[0].sid;
@@ -164,6 +193,8 @@ module nts.uk.at.view.kaf007.b {
 //                        
 //                        dfd.resolve();
                     self.changeFocus('#inpStartTime1'); 
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                         nts.uk.ui.block.clear();

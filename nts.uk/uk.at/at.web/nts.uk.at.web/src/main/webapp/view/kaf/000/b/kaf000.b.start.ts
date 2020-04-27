@@ -27,35 +27,52 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         screenModel = new nts.uk.at.view.kaf011.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     }
     __viewContext['viewModel'] = screenModel;
-    if(currentApp.appType == 1) {
-        __viewContext.bind(screenModel);
-        if (currentApp.appType == 10) {
-            $("#fixed-table").ntsFixedTable({ width: 100 });
-        }
-        nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
-            screenModel.errorEmpty(values);
-        });
-        $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
-            let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
-            let htmlF = htmlN.replace("<!DOCTYPE html>", "");
-            __viewContext.html = htmlF;
-        });     
+    if(currentApp.appType == 1 || currentApp.appType == 2 || currentApp.appType == 6 || currentApp.appType == 10) {
+        bindScreen(screenModel, currentApp.appType)
+//        __viewContext.bind(screenModel);
+//        if (currentApp.appType == 10) {
+//            $("#fixed-table").ntsFixedTable({ width: 100 });
+//        }
+//        nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+//            screenModel.errorEmpty(values);
+//        });
+//        $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+//            let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+//            let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+//            __viewContext.html = htmlF;
+//        });     
     } else {
         screenModel.start(moment.utc().format("YYYY/MM/DD"), true).done(function() {
-            __viewContext.bind(screenModel);
-            if (currentApp.appType == 10) {
-                $("#fixed-table").ntsFixedTable({ width: 100 });
-            }
-            nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
-                screenModel.errorEmpty(values);
-            });
-            $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
-                let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
-                let htmlF = htmlN.replace("<!DOCTYPE html>", "");
-                __viewContext.html = htmlF;
-            });
+            bindScreen(screenModel, appType)
+//            __viewContext.bind(screenModel);
+//            if (currentApp.appType == 10) {
+//                $("#fixed-table").ntsFixedTable({ width: 100 });
+//            }
+//            nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+//                screenModel.errorEmpty(values);
+//            });
+//            $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+//                let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+//                let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+//                __viewContext.html = htmlF;
+//            });
         });
     }
+}
+
+function bindScreen(screenModel, appType) {
+    __viewContext.bind(screenModel);
+    if (appType == 10) {
+        $("#fixed-table").ntsFixedTable({ width: 100 });
+    }
+    nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+        screenModel.errorEmpty(values);
+    });
+    $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+        let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+        let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+        __viewContext.html = htmlF;
+    });      
 }
     
 __viewContext.initScreen = initScreen;
