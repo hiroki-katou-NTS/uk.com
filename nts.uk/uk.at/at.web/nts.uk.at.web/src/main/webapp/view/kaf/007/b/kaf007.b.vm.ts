@@ -163,6 +163,7 @@ module nts.uk.at.view.kaf007.b {
 //                            nts.uk.ui.block.clear();
 //                        
 //                        dfd.resolve();
+                    self.changeFocus('#inpStartTime1'); 
                 }).fail((res) => {
                     if(res.messageId == 'Msg_426'){
                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
