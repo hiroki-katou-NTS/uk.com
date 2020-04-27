@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
-@AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_ERROR_NAME)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

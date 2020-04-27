@@ -72,9 +72,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private RsvLeaRemNumEachMonthDto rsvLeave;
 
 	/** 特別休暇月別残数データ: 特別休暇残数月別データ */
-	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE, 
-			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<SpecialHolidayRemainDataDto> specialHoliday = new ArrayList<>();
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE)
+	private SpecialHolidayRemainDataDto specialHoliday;
 
 	/** 代休月別残数データ: 代休月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_OFF_REMAIN_NAME, layout = MONTHLY_OFF_REMAIN_CODE)
@@ -85,9 +84,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	private AbsenceLeaveRemainDataDto absenceLeave;
 	
 	/** 月別実績の備考: 月別実績の備考 */
-	@AttendanceItemLayout(jpPropertyName = MONTHLY_REMARKS_NAME, layout = MONTHLY_REMARKS_CODE, 
-			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<MonthlyRemarksDto> remarks = new ArrayList<>();
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_REMARKS_NAME, layout = MONTHLY_REMARKS_CODE)
+	private MonthlyRemarksDto remarks;
 	
 	/** 介護休暇月別残数データ: 介護休暇月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_CARE_HD_REMAIN_NAME, layout = MONTHLY_CARE_HD_REMAIN_CODE)
@@ -160,8 +158,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withSpecialHoliday(List<SpecialHolidayRemainDataDto> specialHoliday){
-		this.specialHoliday = new ArrayList<>(specialHoliday);
+	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDto specialHoliday){
+		this.specialHoliday = specialHoliday;
 		return this;
 	}
 	
@@ -175,7 +173,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withRemarks(List<MonthlyRemarksDto> remarks){
+	public MonthlyRecordWorkDto withRemarks(MonthlyRemarksDto remarks){
 		this.remarks = remarks;
 		return this;
 	}
@@ -220,7 +218,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<SpecialHolidayRemainData> toSpecialHoliday(){
-		return this.specialHoliday.stream().map(s -> s.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
+		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public MonthlyDayoffRemainData toDayOff(){
@@ -232,7 +230,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<RemarksMonthlyRecord> toRemarks(){
-		return this.remarks == null ? null :  this.remarks.stream().map(r -> r.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
+		return this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public MonCareHdRemain toMonCare(){
@@ -255,8 +253,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				ConvertHelper.mapTo(this.specialHoliday, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
-				ConvertHelper.mapTo(this.remarks, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
+				this.specialHoliday == null ? new ArrayList<>() : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
+				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
@@ -278,9 +276,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
 			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
+			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
+			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
 			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
 			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
 			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
@@ -307,9 +305,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
 			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
+			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
+			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
 			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
 			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
 			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));

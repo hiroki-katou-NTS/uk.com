@@ -19,6 +19,7 @@ public interface ItemConst extends Cloneable {
 	public final String DEFAULT_NUMBER_REGEX = "[0-9]+$";
 	public final String DEFAULT_GET_TYPE = "getValueType";
 	public final String DEFAULT_SET_VALUE = "value";
+	public final String FAKED = "FAKED";
 	
 	public final String E_WORK_REF = "就業時間帯から参照";
 	public final String E_SCHEDULE_REF = "スケジュールから参照";
@@ -125,6 +126,8 @@ public interface ItemConst extends Cloneable {
 
 	public final String DAILY_REMARKS_CODE = LAYOUT_Q;
 	public final String DAILY_REMARKS_NAME = "日別実績の備考";
+	
+	public final String DAILY_ERROR_NAME = "社員の日別実績エラー一覧";
 
 	public final String MONTHLY_AFFILIATION_INFO_CODE = LAYOUT_A;
 	public final String MONTHLY_AFFILIATION_INFO_NAME = "月別実績の所属情報";

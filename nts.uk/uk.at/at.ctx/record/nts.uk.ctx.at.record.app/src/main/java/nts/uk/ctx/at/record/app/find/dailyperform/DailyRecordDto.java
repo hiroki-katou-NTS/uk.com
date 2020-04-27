@@ -81,9 +81,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<OutingTimeOfDailyPerformanceDto> outingTime = Optional.empty();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
-	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, jpPropertyName = DAILY_BREAK_TIME_NAME, 
-			listMaxLength = 2, enumField = DEFAULT_ENUM_FIELD_NAME, listNoIndex = true)
-	private List<BreakTimeDailyDto> breakTime = new ArrayList<>();
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, jpPropertyName = DAILY_BREAK_TIME_NAME)
+	private BreakTimeDailyDto breakTime;
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, isOptional = true)
@@ -144,9 +143,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
 	
 	/** 備考: 日別実績の備考 */
-	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME,
-			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME)
+	private RemarksOfDailyDto remarks;
 
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
@@ -256,21 +254,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
-	public DailyRecordDto addBreakTime(BreakTimeDailyDto breakTime) {
-		this.breakTime.add(breakTime);
-		return this;
-	}
-
-	public DailyRecordDto addBreakTime(List<BreakTimeDailyDto> breakTime) {
-		if (breakTime == null) {
-			return this;
-		}
-		this.breakTime.addAll(breakTime);
-		return this;
-	}
-
-	public DailyRecordDto breakTime(List<BreakTimeDailyDto> breakTime) {
-		this.breakTime = breakTime == null ? new ArrayList<>() : breakTime;
+	public DailyRecordDto breakTime(BreakTimeDailyDto breakTime) {
+		this.breakTime = breakTime;
 		return this;
 	}
 
@@ -385,22 +370,9 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.pcLogInfo = pcLogInfo;
 		return this;
 	}
-	
-	public DailyRecordDto addRemarks(RemarksOfDailyDto remarks) {
-		this.remarks.add(remarks);
-		return this;
-	}
 
-	public DailyRecordDto addRemarks(List<RemarksOfDailyDto> remarks) {
-		if (breakTime == null) {
-			return this;
-		}
-		this.remarks.addAll(remarks);
-		return this;
-	}
-
-	public DailyRecordDto remarks(List<RemarksOfDailyDto> remarks) {
-		this.remarks = remarks == null ? new ArrayList<>() : remarks;
+	public DailyRecordDto remarks(RemarksOfDailyDto remarks) {
+		this.remarks = remarks;
 		return this;
 	}
 
@@ -439,7 +411,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
-				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.breakTime == null ? new ArrayList<>() : this.breakTime.toDomain(employeeId, date),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
 //				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
 				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)), 
@@ -449,7 +421,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
-				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
+				this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(employeeId, date) 
 				);
 	}
 
@@ -470,7 +442,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setBusinessType(businessType.map(b -> b.clone()));
 		dto.setErrors(errors == null ? null : errors.stream().map(x -> x.clone()).collect(Collectors.toList()));
 		dto.setOutingTime(outingTime.map(o -> o.clone()));
-		dto.setBreakTime(breakTime.stream().map(b -> b.clone()).collect(Collectors.toList()));
+		dto.setBreakTime(breakTime == null ? null : breakTime.clone());
 		dto.setAttendanceTime(attendanceTime.map(a -> a.clone()));
 		dto.setAttendanceTimeByWork(attendanceTimeByWork.map(a -> a.clone()));
 		dto.setTimeLeaving(timeLeaving.map(a -> a.clone()));
@@ -481,7 +453,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setEditStates(editStates.stream().map(c -> c.clone()).collect(Collectors.toList()));
 		dto.setTemporaryTime(temporaryTime.map(t -> t.clone()));
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
-		dto.setRemarks(remarks.stream().map(r -> r.clone()).collect(Collectors.toList()));
+		dto.setRemarks(remarks == null ? null : remarks.clone());
 		if(isHaveData()){
 			dto.exsistData();
 		}

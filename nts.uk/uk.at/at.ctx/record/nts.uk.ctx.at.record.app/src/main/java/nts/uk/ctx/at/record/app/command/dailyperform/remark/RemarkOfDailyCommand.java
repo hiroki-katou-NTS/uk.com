@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.app.command.dailyperform.remark;
 
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
@@ -19,7 +17,7 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			updateData(((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			updateDatas(((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		}
 	}
 	
@@ -38,7 +36,7 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 	}
 
 	@Override
-	public List<RemarksOfDailyDto> toDto() {
-		return getData().stream().map(b -> RemarksOfDailyDto.getDto(b)).collect(Collectors.toList());
+	public RemarksOfDailyDto toDto() {
+		return RemarksOfDailyDto.getDto(getData());
 	}
 }

@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.remark.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -29,11 +33,8 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
-	@AttendanceItemValue(type = ValueType.TEXT)
-	@AttendanceItemLayout(jpPropertyName = REMARK, layout = LAYOUT_A)
-	private String remark;
-	
-	private int no;
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FAKED, listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<DailyRemarkDto> remarks = new ArrayList<>();
 	
 	@Override
 	public String employeeId() {
@@ -46,29 +47,21 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public RemarksOfDailyAttd toDomain(String employeeId, GeneralDate date) {
-		RemarksOfDailyPerform domain = new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
-		return domain.getRemarks();
+	public List<RemarksOfDailyPerform> toDomain(String employeeId, GeneralDate date) {
+		if (this.isHaveData()) {
+			return remarks.stream().map(c -> new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(c.getRemark()), c.getNo()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
-	public static RemarksOfDailyDto getDto(RemarksOfDailyPerform x) {
+	public static RemarksOfDailyDto getDto(List<RemarksOfDailyPerform> domain) {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
-		if(x != null){
-			dto.setEmployeeId(x.getEmployeeId());
-			dto.setYmd(x.getYmd());
-			dto.setRemark(x.getRemarks().getRemarks().v());
-			dto.setNo(x.getRemarks().getRemarkNo());
-			dto.exsistData();
-		}
-		return dto;
-	}
-	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
-		RemarksOfDailyDto dto = new RemarksOfDailyDto();
-		if(x != null){
-			dto.setEmployeeId(employeeID);
-			dto.setYmd(ymd);
-			dto.setRemark(x.getRemarks().v());
-			dto.setNo(x.getRemarkNo());
+		if(domain != null && !domain.isEmpty()){
+			dto.setEmployeeId(domain.get(0).getEmployeeId());
+			dto.setYmd(domain.get(0).getYmd());
+			dto.setRemarks(domain.stream().map(c -> new DailyRemarkDto(c.getRemarks().v(), c.getRemarkNo()))
+											.collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -79,8 +72,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
 		dto.setEmployeeId(employeeId());
 		dto.setYmd(workingDate());
-		dto.setRemark(remark);
-		dto.setNo(no);
+		dto.setRemarks(remarks.stream().map(c -> new DailyRemarkDto(c.getRemark(), c.getNo())).collect(Collectors.toList()));
 		if(isHaveData()){
 			dto.exsistData();
 		}

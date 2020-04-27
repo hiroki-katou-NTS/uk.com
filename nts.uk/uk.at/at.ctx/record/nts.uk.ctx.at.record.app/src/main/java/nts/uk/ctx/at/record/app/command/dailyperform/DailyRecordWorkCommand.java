@@ -187,7 +187,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
 		fullDto.getErrors().stream().forEach(c -> this.errors.setRecords(c));
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
-		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
+		this.breakTime.setRecords(fullDto.getBreakTime());
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.attendanceTimeByWork.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));
 		this.timeLeaving.setRecords(fullDto.getTimeLeaving().orElse(null));
@@ -198,7 +198,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		fullDto.getEditStates().stream().forEach(c -> this.editState.setRecords(c));
 		this.temporaryTime.setRecords(fullDto.getTemporaryTime().orElse(null));
 		this.pcLogInfo.setRecords(fullDto.getPcLogInfo().orElse(null));
-		fullDto.getRemarks().stream().forEach(c -> this.remarks.setRecords(c));
+		this.remarks.setRecords(fullDto.getRemarks());
 	}
 
 	@Override

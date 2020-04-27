@@ -16,11 +16,10 @@ public class MonthlyRemarksCommandHandler extends CommandFacade<MonthlyRemarksCo
 
 	@Override
 	protected void handle(CommandHandlerContext<MonthlyRemarksCommand> context) {
-		if(!context.getCommand().getData().isEmpty()) {
-			context.getCommand().toDomain().stream().forEach(d -> {
-				repo.persistAndUpdate(d);
-			});
-		}
+		
+		context.getCommand().toDomain().stream().forEach(d -> {
+			repo.persistAndUpdate(d);
+		});
 		
 	}
 }

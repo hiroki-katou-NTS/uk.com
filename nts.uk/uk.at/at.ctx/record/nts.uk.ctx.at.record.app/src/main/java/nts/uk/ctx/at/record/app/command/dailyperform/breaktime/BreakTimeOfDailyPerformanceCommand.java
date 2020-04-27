@@ -19,7 +19,7 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			updateData(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			updateDatas(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	}
 
 	@Override
-	public List<BreakTimeDailyDto> toDto() {
-		return getData().stream().map(b -> BreakTimeDailyDto.getDto(b)).collect(Collectors.toList());
+	public BreakTimeDailyDto toDto() {
+		return BreakTimeDailyDto.getDto(getData());
 	}
 }

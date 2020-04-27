@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -45,41 +46,34 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
 	private ClosureDateDto closureDate;
 
-	/** 締め期間: 期間 */
-	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
-	private DatePeriodDto datePeriod;
-	
-	/**	備考 */
-	@AttendanceItemLayout(jpPropertyName = REMARK, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.TEXT)
-	private String remarks;	
-	
-	private int no;
+	@AttendanceItemLayout(jpPropertyName = FAKED, layout = LAYOUT_A, 
+			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<MonthlyRemarkDto> remarks;
 	
 	@Override
 	public String employeeId() {
 		return employeeId;
 	}
 	@Override
-	public RemarksMonthlyRecord toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return new RemarksMonthlyRecord(employeeId, ConvertHelper.getEnum(closureID, ClosureId.class), no, ym, 
-										closureDate == null ? null : closureDate.toDomain(),
-										remarks == null ? null : new RecordRemarks(remarks));
+	public List<RemarksMonthlyRecord> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		return ConvertHelper.mapTo(remarks, c -> new RemarksMonthlyRecord(employeeId, ConvertHelper.getEnum(closureID, ClosureId.class), 
+										c.getNo(), ym, closureDate == null ? null : closureDate.toDomain(),
+										c.getRemarks() == null ? null : new RecordRemarks(c.getRemarks())));
 	}
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
 	}
 	
-	public static MonthlyRemarksDto from(RemarksMonthlyRecord domain){
+	public static MonthlyRemarksDto from(List<RemarksMonthlyRecord> domain){
 		MonthlyRemarksDto dto = new MonthlyRemarksDto();
-		if (domain != null) {
-			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setYm(domain.getRemarksYM());
-			dto.setClosureID(domain.getClosureId().value);
-			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
-			dto.setRemarks(domain.getRecordRemarks() == null ? null : domain.getRecordRemarks().v());
-			dto.setNo(domain.getRemarksNo());
+		if (domain != null && !domain.isEmpty()) {
+			dto.setEmployeeId(domain.get(0).getEmployeeId());
+			dto.setYm(domain.get(0).getRemarksYM());
+			dto.setClosureID(domain.get(0).getClosureId().value);
+			dto.setClosureDate(ClosureDateDto.from(domain.get(0).getClosureDate()));
+			dto.setRemarks(ConvertHelper.mapTo(domain, c -> MonthlyRemarkDto.from(c)));
+			
 			dto.exsistData();
 		}
 		return dto;

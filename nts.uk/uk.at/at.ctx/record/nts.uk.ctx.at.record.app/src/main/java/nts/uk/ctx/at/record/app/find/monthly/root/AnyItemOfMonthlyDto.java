@@ -79,6 +79,15 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	public YearMonth yearMonth() {
 		return yearMonth;
 	}
+	
+	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
+		values.stream().filter(item -> item != null).forEach(item -> {
+//			if(item.isNeedCorrect()) {
+				item.correctItem(getAttrFromMaster(optionalMaster, item.getNo()));
+//			}
+		});
+		values.removeIf(item -> item == null || !item.isHaveData());
+	}
 
 	public static AnyItemOfMonthlyDto from(AnyItemOfMonthly domain) {
 		return from(domain, null);
@@ -100,7 +109,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
-				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMaster(master, d)));
+				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMaster(master, d.getAnyItemId())));
 			});
 			dto.exsistData();
 		}
@@ -122,8 +131,8 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		return dto;
 	}
 
-	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemOfMonthly c) {
-		OptionalItem optItem = master == null ? null : master.get(c.getAnyItemId());
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, int itemNo) {
+		OptionalItem optItem = master == null ? null : master.get(itemNo);
 		OptionalItemAtr attr = null;
 		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();

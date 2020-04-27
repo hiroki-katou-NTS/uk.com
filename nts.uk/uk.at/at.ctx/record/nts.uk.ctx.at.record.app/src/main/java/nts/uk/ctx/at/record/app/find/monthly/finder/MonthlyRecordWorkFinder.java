@@ -106,13 +106,13 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(ConvertHelper.mapTo(r.getSpecialHolidayRemainData(), s -> SpecialHolidayRemainDataDto.from(s)));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainList()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});
 
 			dto.setAgreementTime(agreementFinder.find(employeeId, yearMonth, closureId, closureDate));
-			dto.setRemarks(remarksFinder.finds(employeeId, yearMonth, closureId, closureDate));
+			dto.setRemarks(remarksFinder.find(employeeId, yearMonth, closureId, closureDate));
 			dto.setAnyItem(anyItemFinder.find(employeeId, yearMonth, closureId, closureDate));
 			
 			dto.exsistData();
@@ -170,12 +170,12 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(ConvertHelper.mapTo(r.getSpecialHolidayRemainData(), s -> SpecialHolidayRemainDataDto.from(s)));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainList()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});
 			dto.setAnyItem(filterItem(any, aff));
-			dto.setRemarks(filterItems(remarks, aff));
+			dto.setRemarks(filterItem(remarks, aff));
 			dto.setAgreementTime(filterItemX(agreement, aff));
 			dto.exsistData();
 			return dto;
