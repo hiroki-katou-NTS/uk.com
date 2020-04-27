@@ -183,7 +183,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	/** The Constant BEFORE_JOINING. */
 	// 入社前
 	public static final int BEFORE_JOINING = 4;
-
+	
+	/** The Constant ON_LOAN. */
+	// 出向中
+	public static final int ON_LOAN = 5;
+	
 	/** The Constant RETIREMENT. */
 	// 退職
 	public static final int RETIREMENT = 6;
@@ -335,6 +339,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
 					masterCache.getEmpGeneralInfo());
 
+			// 対象期間あり　の場合
 			if (stateAndValueDatePeriod.state) {
 				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 			
@@ -344,7 +349,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
 							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
-					
+					// 勤務予定作成する
 					this.transaction.execute(
 							command,
 							scheduleExecutionLog,
