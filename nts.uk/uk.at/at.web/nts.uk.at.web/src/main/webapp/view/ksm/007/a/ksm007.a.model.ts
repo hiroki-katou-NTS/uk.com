@@ -38,7 +38,7 @@ class RegisterForm {
     }
 
     public bindWorkplace(workplaces) {
-        let sorted = _.orderBy(workplaces, (val) =>  { return parseInt(val.hierarchyCode, 10); });
+        let sorted = _.orderBy(workplaces, (val) =>  'hierarchyCode');
         this.workplaces(sorted);
     }
 
