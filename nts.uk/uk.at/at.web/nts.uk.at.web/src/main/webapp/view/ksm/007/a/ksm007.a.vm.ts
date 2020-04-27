@@ -105,7 +105,7 @@ module nts.uk.at.view.ksm007.a {
         checkWorkplaceGroupRegisterResult(res) {
             let dfd = $.Deferred();
             dfd.resolve();
-            
+            let self = this;
             let lstWKPID = res.lstWKPID;
             let resultProcess = res.resultProcess;
             let listWorkplaceInfo = res.listWorkplaceInfo;
@@ -116,7 +116,7 @@ module nts.uk.at.view.ksm007.a {
                     let info = _.find(listWorkplaceInfo, (wkp) => {return wkp.workplaceId == lstWKPID[idx]; });
                     if (info) {
                         bundledErrors.push({
-                            message: resource.getMessage('Msg_1630', [info.workplaceCode, info.workplaceName, info.genericName]),
+                            message: resource.getMessage('Msg_1630', [info.workplaceCode, info.workplaceName, self.registerForm().workplaceGroupName()]),
                             messageId: "Msg_1630",
                             supplements: {}
                         });
@@ -153,7 +153,8 @@ module nts.uk.at.view.ksm007.a {
 						nextSelectedCode = self.workplaceGroupList()[self.workplaceGroupList().length - 2].id;
 					} else {
 						nextSelectedCode = self.workplaceGroupList()[i + 1].id;
-					}
+                    }
+                    
 					service.deleteWorkplaceGroup(param).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" })
                         .then(() => {
@@ -164,7 +165,6 @@ module nts.uk.at.view.ksm007.a {
                                 self.currentIds(nextSelectedCode);
                             }
                         });
-							
 					}).fail((res) => {
 						nts.uk.ui.dialog.alertError({ messageId: res.messageId });
 					}).always(function () {
@@ -178,10 +178,11 @@ module nts.uk.at.view.ksm007.a {
 
         removeWorkplace() {
             let self = this;
-            if(self.registerForm().workplaces().length === 0) {
+            if(self.registerForm().workplaces().length === 0 || self.registerForm().selectedWorkplaces().length === 0) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1628" });
                 return;
             }
+
             self.registerForm().removeWorkplace();
         }
 
@@ -208,7 +209,7 @@ module nts.uk.at.view.ksm007.a {
                                        isrestrictionOfReferenceRange: false, 
                                        showNoSelection:false, 
                                        isShowBaseDate:false });
-            modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
+            modal('com', "/view/cdl/008/a/index.xhtml").onClosed(() => {
                 block.clear();
                 let data = getShared('outputCDL008');
                 let baseDate = getShared('baseDateCDL008'); 
@@ -220,7 +221,6 @@ module nts.uk.at.view.ksm007.a {
 
         public getAndBindWorkplaceInfo(workplaceIds, date) {
             let self = this;
-        
             let data = {
                 workplaceIds: workplaceIds,
                 baseDate: moment(date).format('YYYY/MM/DD')
@@ -229,7 +229,6 @@ module nts.uk.at.view.ksm007.a {
                 self.registerForm().bindWorkplace(res);
                 $('#workplace-list').ntsError('clear');
             });
-
         }
 
         /**
@@ -252,12 +251,10 @@ module nts.uk.at.view.ksm007.a {
             panelWidthResize = panelWidthResize > totalColWidth ? totalColWidth : panelWidthResize;
             console.log(panelWidthResize);
             $('#workplace-list').igGrid("option", "width", panelWidthResize);
-            
             if(panelWidthResize == 550) {
                 $('#workplace-list_displayContainer').css("width", panelWidthResize);
                 $('#workplace-list_headers_v').css("width", panelWidthResize);
             }
 		}
-
     }
 }

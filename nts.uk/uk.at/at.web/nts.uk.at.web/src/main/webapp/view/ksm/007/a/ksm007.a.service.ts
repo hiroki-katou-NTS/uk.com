@@ -12,31 +12,31 @@ module nts.uk.at.view.ksm007.a {
         }
         
         export function exportExcel(): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportExcel);
+            return nts.uk.request.exportFile("com", paths.exportExcel);
         }
 
         export function getWorkplaceInfo(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getWorkplaceInfo, data);
+            return nts.uk.request.ajax("com", paths.getWorkplaceInfo, data);
         }
 
         export function getWorkplaceGroupInfo(wkpId): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getWorkplaceGroup + "/" + wkpId);
+            return nts.uk.request.ajax("com", paths.getWorkplaceGroup + "/" + wkpId);
         }
         
         export function getWorkplaceByGroup(wkpId): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getListWorkplaceId + "/" + wkpId);
+            return nts.uk.request.ajax("com", paths.getListWorkplaceId + "/" + wkpId);
         }
 
         export function registerWorkplaceGroup(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.registerWorkplaceGroup, data);
+            return nts.uk.request.ajax("com", paths.registerWorkplaceGroup, data);
         }
 
         export function updateWorkplaceGroup(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateWorkplaceGroup, data);
+            return nts.uk.request.ajax("com",paths.updateWorkplaceGroup, data);
         }
 
         export function deleteWorkplaceGroup(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.deleteWorkplaceGroup, data);
+            return nts.uk.request.ajax("com", paths.deleteWorkplaceGroup, data);
         }
         
     }

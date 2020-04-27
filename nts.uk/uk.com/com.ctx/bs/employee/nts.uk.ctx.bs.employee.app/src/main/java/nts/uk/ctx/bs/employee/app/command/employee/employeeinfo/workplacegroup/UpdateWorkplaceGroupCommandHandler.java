@@ -72,8 +72,9 @@ public class UpdateWorkplaceGroupCommandHandler extends CommandHandlerWithResult
 		// 4: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
 		// map $.永続化処理
 		List<WorkplaceReplaceResult> resultProcess = wplResult.entrySet().stream()
-				.filter(x->x.getValue().getPersistenceProcess().isPresent())
-				.map(x -> (WorkplaceReplaceResult)x.getValue()).collect(Collectors.toList());
+				.filter(x-> x.getValue().getPersistenceProcess().isPresent())
+				.map(x -> (WorkplaceReplaceResult)x.getValue())
+				.collect(Collectors.toList());
 		
 		GeneralDate baseDate = GeneralDate.today();
 		// 5: [No.560]職場IDから職場の情報をすべて取得する

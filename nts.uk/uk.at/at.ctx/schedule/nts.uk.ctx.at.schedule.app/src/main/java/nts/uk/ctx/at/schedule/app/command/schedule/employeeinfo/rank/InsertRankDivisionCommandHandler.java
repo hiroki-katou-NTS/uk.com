@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
@@ -29,6 +30,9 @@ public class InsertRankDivisionCommandHandler extends CommandHandler<RankDivisio
 	protected void handle(CommandHandlerContext<RankDivisionCommand> context) {
 		RankDivisionCommand command = context.getCommand();
 		List<String> listEmpId = command.getListEmpId();
+		if(listEmpId.isEmpty()){
+			throw new BusinessException("Msg_1643");
+		}
 		String empRankCd = command.getRankCd();
 		RequireImpl require = new RequireImpl(rankRepository);
 		// 1 登録する(社員ID, ランクコード) AtomTask
