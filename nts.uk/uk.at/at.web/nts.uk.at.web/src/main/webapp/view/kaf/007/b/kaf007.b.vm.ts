@@ -165,17 +165,15 @@ module nts.uk.at.view.kaf007.b {
 //                        dfd.resolve();
                     self.changeFocus('#inpStartTime1'); 
                 }).fail((res) => {
-                    if(res.messageId == 'Msg_426'){
-                       nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
-                            
-                        });
-                    }else{ 
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
-                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
-                        });
-                    }
-                    nts.uk.ui.block.clear();
-                     dfd.reject();
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.ui.block.clear();
+                        if (res.messageId === "Msg_198" || res.messageId == 'Msg_426') {
+                            appcommon.CommonProcess.callCMM045();
+                        } else {
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");        
+                        }
+                    });
+                    dfd.reject();
                 });
                 return dfd.promise();
             }
@@ -259,14 +257,24 @@ module nts.uk.at.view.kaf007.b {
                 service.checkBeforeUpdate(workChange).done((data) => {
                     self.processConfirmMsg(workChange, data, 0);
                  }).fail((res) =>{
-                    if(nts.uk.util.isNullOrEmpty(res.errors)){
-                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });       
+                    if (res.optimisticLock == true) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function() {
+                            location.reload();
+                        });
                     } else {
-                        let errors = res.errors;
-                        nts.uk.ui.dialog.bundledErrors({ errors: errors })    
-                        .then(function() { nts.uk.ui.block.clear(); });      
-                    }  
+                        if(nts.uk.util.isNullOrEmpty(res.errors)){
+                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { 
+                                nts.uk.ui.block.clear(); 
+                                if (res.messageId === "Msg_197") {
+                                    location.reload();
+                                }
+                            });       
+                        } else {
+                            let errors = res.errors;
+                            nts.uk.ui.dialog.bundledErrors({ errors: errors })    
+                            .then(function() { nts.uk.ui.block.clear(); });      
+                        }  
+                    }    
                  });
 
             }
