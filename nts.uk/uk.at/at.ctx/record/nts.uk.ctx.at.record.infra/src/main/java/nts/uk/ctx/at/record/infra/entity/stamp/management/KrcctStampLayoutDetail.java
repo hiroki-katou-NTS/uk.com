@@ -13,18 +13,18 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.stamp.management.AudioType;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonDisSet;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonName;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonNameSet;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonPositionNo;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonNameSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -58,26 +58,26 @@ private static final long serialVersionUID = 1L;
 	 * 予約区分 0:なし 1:予約 2:予約取消
 	 */
 	@Column(name ="RESERVATION_ART")
-	public int reservationArt;
+	public Integer reservationArt;
 	
 	/**
 	 * 時刻変更区分 0:出勤 1:退勤 2:入門 3:退門 4:応援開始 5:応援終了 6:応援出勤 7:外出 8:戻り 9:臨時+応援出勤
 	 * 10:臨時出勤 11:臨時退勤 12:PCログオン 13:PCログオフ
 	 */
 	@Column(name ="CHANGE_CLOCK_ART")
-	public int changeClockArt;
+	public Integer changeClockArt;
 	
 	/**
 	 * 計算区分変更対象 0:なし 1:早出 2:残業 3:休出 4:ﾌﾚｯｸｽ
 	 */
 	@Column(name ="CHANGE_CAL_ART")
-	public int changeCalArt;
+	public Integer changeCalArt;
 	
 	/**
 	 * 所定時刻セット区分 0:なし 1:直行 2:直帰
 	 */
 	@Column(name ="SET_PRE_CLOCK_ART")
-	public int setPreClockArt;
+	public Integer setPreClockArt;
 	
 	/**
 	 * 勤務種類を半休に変更する 0:False 1:True
@@ -111,7 +111,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public KrcctStampLayoutDetail(KrcctStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
-			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
+			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
 		this.pk = pk;
@@ -150,7 +150,7 @@ private static final long serialVersionUID = 1L;
 								this.changeHalfDay == 0 ? false : true  , 
 								this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
 								EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
-								EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
+								this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
 								EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
@@ -164,7 +164,7 @@ private static final long serialVersionUID = 1L;
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,
 				settings.getButtonType().getReservationArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
-						: settings.getButtonType().getStampType().get().getChangeClockArt().value,
+						: settings.getButtonType().getStampType().get().getChangeClockArt() == null ? null : settings.getButtonType().getStampType().get().getChangeClockArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getChangeCalArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null

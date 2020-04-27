@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.stamp.management;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

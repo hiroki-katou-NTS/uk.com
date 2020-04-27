@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.stamp.management;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 /**
  * 
  * @author phongtq

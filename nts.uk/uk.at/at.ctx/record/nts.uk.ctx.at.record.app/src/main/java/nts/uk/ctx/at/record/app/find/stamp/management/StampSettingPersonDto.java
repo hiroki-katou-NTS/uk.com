@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.app.find.stamp.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 /**
  * 
  * @author phongtq

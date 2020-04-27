@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp010.h {
             // H7_2
             optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
             selectedAudio: KnockoutObservable<number> = ko.observable(0);
-            
+
             defaultData: KnockoutObservable<number> = ko.observable(null);
 
             buttonPositionNo: KnockoutObservable<number> = ko.observable('');
@@ -47,10 +47,10 @@ module nts.uk.at.view.kdp010.h {
                 self.selectedDay.subscribe((newValue) => {
                     self.getDataFromContents(newValue);
                 })
-                
+
                 self.simpleValue.subscribe(function(codeChanged: string) {
-                        self.simpleValue($.trim(self.simpleValue()));
-                    });
+                    self.simpleValue($.trim(self.simpleValue()));
+                });
 
                 self.selectedHighlight.subscribe((newValue) => {
                     if (self.selectedHighlight() == 1)
@@ -65,7 +65,7 @@ module nts.uk.at.view.kdp010.h {
                 let self = this,
                     dfd = $.Deferred();
                 self.getDataStamp();
-                self.getDataFromContents(1);
+                self.getDataFromContents(self.selectedDay());
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -77,13 +77,14 @@ module nts.uk.at.view.kdp010.h {
                 self.buttonPositionNo(self.dataShare.buttonPositionNo);
                 if (self.dataShare.dataShare != undefined) {
                     let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
-                    if (data ) {
-                            self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
-                            self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
-                            self.backgroundColors(data.buttonDisSet.backGroundColor);
-                            self.selectedStamping(data.buttonType.stampType.goOutArt);
-                            self.selectedAudio(data.audioType);
-                            self.selectedHighlight(data.usrArt); 
+                    if (data) {
+                        self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
+                        self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
+                        self.backgroundColors(data.buttonDisSet.backGroundColor);
+                        self.selectedStamping(data.buttonType.stampType.goOutArt);
+                        self.selectedAudio(data.audioType);
+                        self.selectedHighlight(data.usrArt);
+                        self.getTypeButton(data);
                     }
                 }
                 $(document).ready(function() {
@@ -142,71 +143,150 @@ module nts.uk.at.view.kdp010.h {
                 nts.uk.ui.windows.setShared('KDP010_H', shareG);
                 nts.uk.ui.windows.close();
             }
+            public getTypeButton(data): void {
+                let self = this,
+                    changeClockArt = data.buttonType.stampType.changeClockArt,
+                    changeCalArt = data.buttonType.stampType.changeCalArt,
+                    setPreClockArt = data.buttonType.stampType.setPreClockArt,
+                    changeHalfDay = data.buttonType.stampType.changeHalfDay,
+                    reservationArt = data.buttonType.reservationArt;
+                let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
+                self.selectedDay(typeNumber);
+            }
+
+
+            public checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt): void {
+                if (changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+                    if (changeClockArt == 0)
+                        return 1;
+
+                    if (changeClockArt == 1)
+                        return 5;
+
+                    if (changeClockArt == 4)
+                        return 8;
+
+                    if (changeClockArt == 5)
+                        return 9;
+
+                    if (changeClockArt == 2)
+                        return 10;
+
+                    if (changeClockArt == 3)
+                        return 11;
+
+                    if (changeClockArt == 7)
+                        return 12;
+
+                    if (changeClockArt == 9)
+                        return 13;
+
+                    if (changeClockArt == 6)
+                        return 14;
+
+                    if (changeClockArt == 8)
+                        return 15;
+
+                    if (changeClockArt == 12)
+                        return 16;
+                }
+                if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && changeHalfDay == 0 && reservationArt == 0)
+                    return 2;
+
+                if (changeCalArt == 1 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+                    if (changeClockArt == 0)
+                        return 3;
+
+                    if (changeClockArt == 6)
+                        return 17;
+                }
+
+                if (changeCalArt == 3 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+                    if (changeClockArt == 0)
+                        return 4;
+
+                    if (changeClockArt == 6)
+                        return 18;
+                }
+
+                if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && changeHalfDay == 0 && reservationArt == 0)
+                    return 6;
+
+                if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 1 && changeHalfDay == 0 && reservationArt == 0)
+                    return 7;
+
+                if (changeClockArt == "" && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 1)
+                    return 19;
+
+                if (changeClockArt == "" && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 2)
+                    return 20;
+            }
 
             public getDataFromContents(number: value): void {
                 let self = this;
                 switch (self.selectedDay()) {
                     case 1:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 0, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 2:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 1, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 0, changeCalArt: 0, setPreClockArt: 1, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 3:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 0, changeCalArt: 1, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 4:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 0, changeCalArt: 3, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 5:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 1, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 6:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: 0, setPreClockArt: 2, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 1, changeCalArt: 0, setPreClockArt: 2, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 7:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[1].value, changeCalArt: self.lstChangeCalArt()[2].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 1, changeCalArt: 2, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 8:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[4].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 9:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[5].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 5, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 10:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[2].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 2, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 11:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[3].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 3, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 12:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[7].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 7, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 13:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[9].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 9, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 14:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 6, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 15:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[8].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 8, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 16:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[12].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 12, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 17:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[1].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 6, changeCalArt: 1, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 18:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[6].value, changeCalArt: self.lstChangeCalArt()[3].value, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
+                        self.lstData = { changeClockArt: 6, changeCalArt: 3, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
+                        self.lstData = { changeClockArt: "", changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
                         break;
                     case 20:
-                        self.lstData = { changeClockArt: self.lstChangeClock()[0].value, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 2 };
+                        self.lstData = { changeClockArt: "", changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 2 };
                         break;
                 }
+
             }
 
             /**
@@ -233,6 +313,7 @@ module nts.uk.at.view.kdp010.h {
             this.pageComment = param.pageComment;
             this.commentColor = param.commentColor;
         }
+
     }
 
     interface IStampPageCommentCommand {
@@ -260,6 +341,7 @@ module nts.uk.at.view.kdp010.h {
             this.usrArt = param.usrArt;
             this.audioType = param.audioType;
         }
+
     }
 
     interface IStampPageCommentCommand {
@@ -287,6 +369,7 @@ module nts.uk.at.view.kdp010.h {
             this.buttonNameSet = param.buttonNameSet;
             this.backGroundColor = param.backGroundColor;
         }
+
     }
 
     interface IButtonDisSetCommand {
@@ -306,6 +389,7 @@ module nts.uk.at.view.kdp010.h {
             this.textColor = param.textColor;
             this.buttonName = param.buttonName;
         }
+
     }
 
     interface IButtonNameSetCommand {
@@ -325,6 +409,7 @@ module nts.uk.at.view.kdp010.h {
             this.reservationArt = param.reservationArt;
             this.stampType = param.stampType;
         }
+
     }
 
     interface IButtonTypeCommand {
@@ -353,11 +438,12 @@ module nts.uk.at.view.kdp010.h {
             this.changeClockArt = param.changeClockArt;
             this.changeCalArt = param.changeCalArt;
         }
+
     }
 
     interface IStampTypeCommand {
         changeHalfDay: boolean;
-        goOutArt: number ;
+        goOutArt: number
         setPreClockArt: number;
         changeClockArt: number;
         changeCalArt: number;
