@@ -195,7 +195,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 appTypeSet = _.find(listAppTypeSet, o => o.appType == 2);
             self.kaf000_a.initData({
                 errorFlag: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                listApprovalPhaseStateDto: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                listApprovalPhaseStateDto: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
+                isNew: true        
             });
             if(!_.isEmpty(self.employeeIDLst)) {
                 self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));             

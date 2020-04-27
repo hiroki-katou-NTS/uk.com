@@ -201,24 +201,27 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                         self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
                     }
                 }
+                let msgID = "";
                 switch(data.errorFlag){
                     case 1:
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_324";
                         break;
                     case 2: 
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_238";
                         break;
                     case 3:
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_237";
                         break;
                     default: 
                 }  
+                if(!nts.uk.util.isNullOrEmpty(msgID)) {
+                    nts.uk.ui.dialog.alertError({ messageId: msgID }).then(function(){
+                        if(!nts.uk.util.isNullOrUndefined(data.isNew) && data.isNew) {
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");            
+                        }
+                        nts.uk.ui.block.clear();
+                    });    
+                }
             }    
         }    
         
