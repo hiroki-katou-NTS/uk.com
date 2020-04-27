@@ -160,13 +160,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                
                 dfd.resolve();
             }).fail((res) => {
-                if (res.messageId == 'Msg_426') {
-                    dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
-                    });
-                } else {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }); 
-                }
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                });
                 dfd.reject();
             }).always(() => {
                 nts.uk.ui.block.clear();
