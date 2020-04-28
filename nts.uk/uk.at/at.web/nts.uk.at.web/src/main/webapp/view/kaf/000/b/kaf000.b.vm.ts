@@ -137,6 +137,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     };
                     service.writeLog(paramLog);
                 }    
+                nts.uk.ui.block.clear();
                 dfd.resolve();
                 return dfd.promise();
             }

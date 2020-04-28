@@ -308,8 +308,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 errorFlag: appDispInfoWithDateOutput.errorFlag,
                 listApprovalPhaseStateDto: appDispInfoWithDateOutput.listApprovalPhaseState        
             });
-            self.preExcessDisplaySetting(data.preExcessDisplaySetting);
-            self.performanceExcessAtr(data.performanceExcessAtr);
+            self.preExcessDisplaySetting(overtimeRestAppCommonSettingDto.preExcessDisplaySetting);
+            self.performanceExcessAtr(overtimeRestAppCommonSettingDto.performanceExcessAtr);
             self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
             self.enableOvertimeInput(approvalFunctionSet.timeInputUseAtr == 1 ? true : false);
             self.checkBoxValue(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);

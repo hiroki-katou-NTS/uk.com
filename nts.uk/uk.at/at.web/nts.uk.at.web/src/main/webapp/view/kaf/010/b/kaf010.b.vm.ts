@@ -248,8 +248,8 @@ module nts.uk.at.view.kaf010.b {
                     appDetailScreenInfo.alternateExpiration,
                     data.loginInputOrApproval);
                 self.editable(appDetailScreenInfo.outputMode == 0 ? false : true);
-                self.preExcessDisplaySetting(data.preExcessDisplaySetting);
-                self.performanceExcessAtr(data.performanceExcessAtr);
+                self.preExcessDisplaySetting(overtimeRestAppCommonSettingDto.preExcessDisplaySetting);
+                self.performanceExcessAtr(overtimeRestAppCommonSettingDto.performanceExcessAtr);
                 self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
                 self.version = applicationDto.version;
                 self.enableOvertimeInput(approvalFunctionSet.timeInputUseAtr == 1 ? true : false);
