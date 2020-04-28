@@ -303,7 +303,7 @@
 					<div data-bind="ntsFormLabel: { required: requiredReason}">#{i18n.getText('KAF011_16')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<div id="reasonCombo" class="kaf-011-combo-box"
+					<div id="reasonCombo" class="kaf-011-combo-box" style="width: 390px"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_16')}',
 										options: appReasons ,
@@ -314,7 +314,7 @@
 										editable: false,
 										enable: kaf011FixedReasonIsEditable ,
 										columns:[
-											{ prop: 'reasonTemp', length: 10 },
+											{ prop: 'reasonTemp', length: 20 },
 										]}">
 					</div>
 				</div>

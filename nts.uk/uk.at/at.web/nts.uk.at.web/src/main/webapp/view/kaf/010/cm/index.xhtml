@@ -477,14 +477,14 @@
 			<!--A9_1 定型理由ラベル--> 			
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{required: requiredReason}">#{i18n.getText('KAF005_86')}</div>
 			<!--A9_2 定型理由選択--> 			
-			<div class="combo-box"
+			<div class="combo-box" style="width: 390px"
 				data-bind="ntsComboBox: {name: '#[KAF005_87]', 
 								options: reasonCombo,
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: $vm.editable,
-								columns: [{ prop: 'reasonName', length: 10 }]}">
+								columns: [{ prop: 'reasonName', length: 20 }]}">
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
