@@ -129,8 +129,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// 基準日=INPUT．「申請対象日リスト」の1個目
 		Optional<GeneralDate> targetDate = Optional.empty();
-		if(dateLst.stream().findFirst().isPresent()) {
-			GeneralDate firstDate = dateLst.stream().findFirst().get();
+		if(!CollectionUtil.isEmpty(dateLst)) {
+			GeneralDate firstDate = dateLst.get(0);
 			if(firstDate == null) {
 				targetDate = Optional.empty();
 			} else {
