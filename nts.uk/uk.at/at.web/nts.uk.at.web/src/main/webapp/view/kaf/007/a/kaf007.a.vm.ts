@@ -130,10 +130,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             } else {
                 return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
             }    
-            }
+        }
         showRightContent(){
-        let self =this;
-         return   self.appChangeSetting().displayResultAtr() && self.appWorkChange().application().prePostAtr() == 1   ; 
+            let self =this;
+            return _.isEmpty(self.employeeIDLst) ? true : false;
         }
         /**
          * 起動する
@@ -510,6 +510,28 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 //                    //self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime2);
 //                    //self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
 //                }
+                let achievementOutput = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.achievementOutputLst[0];
+                self.recordWorkInfo().appDate(achievementOutput.date);
+                self.recordWorkInfo().workTypeCode(achievementOutput.workType.workTypeCode);
+                self.recordWorkInfo().workTypeName(achievementOutput.workType.name);
+                self.recordWorkInfo().workTimeCode(achievementOutput.workTime.workTimeCD);
+                self.recordWorkInfo().workTimeName(achievementOutput.workTime.workTimeName);
+                if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
+                    self.recordWorkInfo().startTime1(achievementOutput.startTime1);
+                    self.recordWorkInfo().endTime1(achievementOutput.endTime1);
+                    self.recordWorkInfo().startTime2(achievementOutput.startTime2);
+                    self.recordWorkInfo().endTime2(achievementOutput.endTime2);    
+                }
+                
+                
+//                ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
+//                
+//                    self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
+//                    self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
+//                    //self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime2);
+//                    //self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
+//                }
+                
                 if(!nts.uk.util.isNullOrUndefined(data.predetemineTimeSetting)){
                     let timeZone = data.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
                     self.appWorkChange().workChange().workTimeStart1(timeZone[0].start);    

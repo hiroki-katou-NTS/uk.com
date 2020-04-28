@@ -164,6 +164,18 @@ module nts.uk.at.view.kaf007.b {
                     self.workTimeCodes = _.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode);
                     self.requiredCheckTime(appWorkChangeDispInfo.setupType == 0 && appWorkChangeDispInfo.appWorkChangeSet.workChangeTimeAtr == 1);
                     self.timeRequired(appWorkChangeDispInfo.setupType == 0);
+                    let achievementOutput = appDispInfoWithDateOutput.achievementOutputLst[0];
+                    self.recordWorkInfo().appDate(achievementOutput.date);
+                    self.recordWorkInfo().workTypeCode(achievementOutput.workType.workTypeCode);
+                    self.recordWorkInfo().workTypeName(achievementOutput.workType.name);
+                    self.recordWorkInfo().workTimeCode(achievementOutput.workTime.workTimeCD);
+                    self.recordWorkInfo().workTimeName(achievementOutput.workTime.workTimeName);
+                    if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
+                        self.recordWorkInfo().startTime1(achievementOutput.startTime1);
+                        self.recordWorkInfo().endTime1(achievementOutput.endTime1);
+                        self.recordWorkInfo().startTime2(achievementOutput.startTime2);
+                        self.recordWorkInfo().endTime2(achievementOutput.endTime2);    
+                    }
 //                            //画面モード(表示/編集)
 //                            //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
 //                            
@@ -244,7 +256,7 @@ module nts.uk.at.view.kaf007.b {
             
             showRightContent() {
                 let self = this;
-                return self.appChangeSetting().displayResultAtr() == 1 && self.appWorkChange().application().prePostAtr() == 1;
+                return true;
             }
 
             /**
