@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.rank;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +33,8 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 			+ "WHERE k.kscmtRankPk.companyId = :companyId order by k.kscmtRankPk.rankCd ASC";
 	private static final String GET_LIST_RANK = SELECT
 			+ "WHERE k.kscmtRankPk.companyId = :companyId and k.kscmtRankPk.rankCd IN :listRankCd";
+	private static final String GET_LIST_RANK__ORDER_BY_PRIORITY = SELECT
+			+ "WHERE k.kscmtRankPk.companyId = :companyId order by k.priority ASC";
 
 	@Override
 	public Rank getRank(String companyId, RankCode rankCd) {
@@ -163,6 +164,12 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 		KscmtRank entity = new KscmtRank(pk, rank.getRankSymbol().v(), priority);
 
 		return entity;
+	}
+
+	@Override
+	public List<Rank> getListRankOrderbyPriority(String companyId) {
+		return this.queryProxy().query(GET_LIST_RANK__ORDER_BY_PRIORITY, KscmtRank.class).setParameter("companyId", companyId)
+				.getList(x -> toRankDomain(x));
 	}
 
 }

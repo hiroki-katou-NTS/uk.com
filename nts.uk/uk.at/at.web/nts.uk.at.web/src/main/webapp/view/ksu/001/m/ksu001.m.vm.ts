@@ -72,6 +72,12 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 optionalColumnDatasource: self.optionalColumnDatasource,
                 maxRows: 15
             };
+            self.selectedCode.subscribe(function(value) {
+                if (nts.uk.util.isNullOrEmpty(self.listEmpData())) {
+                    self.enableSave(false);
+                }
+                self.enableSave(true);
+            });
         }
 
 
@@ -93,7 +99,8 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
             service.startPage(self.selectedCode()).done(function(data) {
                 console.log(data);
-
+                _.orderBy(data.listRankDto, 'priority', 'asc');
+                
                 _.forEach(data.listEmpRankDto, function(item) {
                     let matchRank = _.find(data.listRankDto, ['rankCd', item.emplRankCode]);
                     if (matchRank != undefined) {
@@ -132,7 +139,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                         $("#component-items-list .bg-green").width(500);
                     });
                 });
-
+                self.enableSave(false);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -141,7 +148,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             // dfd.resolve(); -- đéo có thì nó disable luôn vcc
             return dfd.promise();
         }
-
+        
 
         registryButtonClick() {
             var self = this;

@@ -74,4 +74,6 @@ public interface RankRepository {
 	 * @return
 	 */
 	Optional<RankPriority> getRankPriority(String companyId);
+	
+	List<Rank> getListRankOrderbyPriority(String companyId);
 }
