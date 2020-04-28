@@ -188,67 +188,67 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
+            key: "_1", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "_2", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
+            key: "_3", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
-            key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
+            key: "_4", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
+            key: "_5", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
-            key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "_6", width: "150px", handlerType: "input", dataType: "label/label/time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_7", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_8", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_8", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_9", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_9", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_10", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_10", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_11", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_11", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_12", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_12", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_13", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_13", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_14", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_14", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_15", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_15", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_16", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_16", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_17", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_17", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_18", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_18", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_19", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_19", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_20", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_20", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_21", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_21", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_22", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_22", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_23", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_23", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_24", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_24", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_25", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_26", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_27", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_28", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_29", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_30", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }];
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact per-icon", width: "35px" }, 
@@ -355,12 +355,10 @@ __viewContext.ready(function () {
                 case "symbol": 
                     return [ "symbol" ];
                 case "time":
-                    return [ "startTime", "endTime" ]; 
+                    return ["workTypeName", "workTimeName", "startTime", "endTime" ]; 
             }
         },
         fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
-        upperInput: "startTime",
-        lowerInput: "endTime",
         banEmptyInput: [ "time" ]
     };
     
@@ -433,10 +431,10 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "stick",
+            updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             showTooltipIfOverflow: true,
             secondaryTable: $("#subtable"),
             determination: {
