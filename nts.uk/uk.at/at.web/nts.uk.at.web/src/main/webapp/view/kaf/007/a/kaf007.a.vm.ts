@@ -485,7 +485,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let dateLst = [];
             let loopDate = momentStart;
             while(loopDate.isSameOrBefore(momentEnd)) {
-                dateLst.push(loopDate.utc().format(self.dateFormat));
+                dateLst.push(loopDate.format(self.dateFormat));
                 loopDate.add(1, 'days');                
             }
             
