@@ -160,29 +160,31 @@ module nts.uk.at.view.ksu001.m.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var arrEmpSelect: any = [];
-                var select: any = []; 
+                var select: any = [];
+                 
                 arrEmpSelect = _.filter(self.employeeList(), (o) => {
                     return self.selectedCode().indexOf(o.code) !== -1;
                 });
-              self.selectIds(_.map(arrEmpSelect, "code"));
+                self.selectIds(_.map(arrEmpSelect, "code"));
                 let param = {
                     listEmpId:_.map(arrEmpSelect, "id"),
                     rankCd: self.selectedRankCode()
                 };
                 block.invisible();
-
                 service.regis(param).done((data) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        $("#combo-box").focus();
+                         $("#combo-box").focus();
+                         self.startPage().done(() => {
+                         self.selectedCode(self.selectIds());
+                         });
                     });
                     block.clear();
-                    self.startPage().done(() => {
-                        self.selectedCode(self.selectIds());
-                         });
+                   
                 }).fail((res: any) => {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId });
                     block.clear();
                 }).always(() => {
+                    $("#combo-box").focus();
                     block.clear();
 
                 });
