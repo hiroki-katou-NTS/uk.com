@@ -1004,6 +1004,21 @@ public class HolidayServiceImpl implements HolidayService {
 			result.setPreActualColorResult(preActualColorResult);
 		}
 		
+		// 1-3.起動時勤務種類・就業時間帯の初期選択
+		InitWorkTypeWorkTime initWorkTypeWorkTime = this.initWorkTypeWorkTime(
+				appHolidayWork.getCompanyID(), 
+				appHolidayWork.getApplication().getEmployeeID(), 
+				Optional.of(appHolidayWork.getApplication().getAppDate()), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
+				workTypeLst, 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst(), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getAchievementOutputLst(), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
+		hdWorkDispInfoWithDateOutput.setWorkTypeCD(initWorkTypeWorkTime.getWorkTypeCD());
+		hdWorkDispInfoWithDateOutput.setWorkTypeName(initWorkTypeWorkTime.getWorkTypeName());
+		hdWorkDispInfoWithDateOutput.setWorkTimeCD(initWorkTypeWorkTime.getWorkTimeCD());
+		hdWorkDispInfoWithDateOutput.setWorkTimeName(initWorkTypeWorkTime.getWorkTimeName());
+		
 		hdWorkDispInfoWithDateOutput.setAppHdWorkInstruction(holidayWorkInstruction);
 		hdWorkDispInfoWithDateOutput.setWorkTypeLst(CollectionUtil.isEmpty(workTypeLst) ? Optional.empty() : Optional.of(workTypeLst));
 		hdWorkDispInfoWithDateOutput.setAgreementTimeStatusOfMonthly(agreementTimeStatusOfMonthly);
