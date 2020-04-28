@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
-import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
@@ -56,9 +55,6 @@ public class HolidayWorkWebService extends WebService{
 	
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
-	
-	@Inject
-	private HttpSubSession session;
 	
 	@POST
 	@Path("getHolidayWorkByUI")
@@ -164,8 +160,9 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
-		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
-		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDto);
+		/*AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");*/
+		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), 
+				param.getAppID(), param.getAppHdWorkDispInfoCmd());
 	}
 	
 	@POST

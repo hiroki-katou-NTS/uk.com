@@ -306,7 +306,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.appHdWorkDispInfoDto = data;
             self.kaf000_a.initData({
                 errorFlag: appDispInfoWithDateOutput.errorFlag,
-                listApprovalPhaseStateDto: appDispInfoWithDateOutput.listApprovalPhaseState        
+                listApprovalPhaseStateDto: appDispInfoWithDateOutput.listApprovalPhaseState,
+                isSystemDate: appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate          
             });
             self.preExcessDisplaySetting(overtimeRestAppCommonSettingDto.preExcessDisplaySetting);
             self.performanceExcessAtr(overtimeRestAppCommonSettingDto.performanceExcessAtr);
@@ -860,7 +861,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             prePostAtr: self.prePostSelected(),
                             overtimeHours: ko.toJS(self.breakTimes()),
                             workTypeCD: self.workTypeCd(),
-                            appID: null
+                            appID: null,
+                            appHdWorkDispInfoCmd: self.appHdWorkDispInfoDto
                         }
                     ).done(data => {
                         self.timeStart1(data.startTime1 == null ? null : data.startTime1);
@@ -928,7 +930,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         		let actualLst = data.actualStatusCheckResult.actualLst;
                 for (let i = 0; i < actualLst.length; i++) {
                     if (actualLst[i].attendanceID == 2) {
-                        self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));
+                        if(!_.isUndefined(self.breakTimes()[i])) {
+                            self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));    
+                        }
                     }
                 }
             }

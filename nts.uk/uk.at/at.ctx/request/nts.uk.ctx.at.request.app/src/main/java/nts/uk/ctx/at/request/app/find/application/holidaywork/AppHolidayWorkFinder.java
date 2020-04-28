@@ -36,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColor
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -601,7 +600,8 @@ public class AppHolidayWorkFinder {
 	 * @return
 	 */
 	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours, String workTypeCD, 
-			String appID, AppHolidayWorkDto appHolidayWorkDto){
+			String appID, AppHdWorkDispInfoCmd appHdWorkDispInfoCmd){
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = appHdWorkDispInfoCmd.toDomain();
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = -1; 
 		Integer endTime1 = -1;
@@ -644,8 +644,10 @@ public class AppHolidayWorkFinder {
 				if (!opAppHolidayWork.isPresent()) {
 					throw new BusinessException("Msg_198");
 				}
-				DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = appHolidayWorkDto.getDetailedScreenPreBootModeOutput();
-				if (detailedScreenPreBootModeOutput.getUser() == User.APPLICANT_APPROVER || detailedScreenPreBootModeOutput.getUser() == User.APPLICANT) {
+				// DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = appHolidayWorkDto.getDetailedScreenPreBootModeOutput();
+				User user = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getUser();
+				
+				if (user == User.APPLICANT_APPROVER || user == User.APPLICANT) {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
 							siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()));

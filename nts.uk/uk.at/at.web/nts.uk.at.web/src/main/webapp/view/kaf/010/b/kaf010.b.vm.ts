@@ -176,24 +176,31 @@ module nts.uk.at.view.kaf010.b {
                 var dfd = $.Deferred();
                 service.findByAppID(appID).done((data) => { 
                     self.initData(data);
+                    self.preWorkContent = {
+                        applicationDate: self.appDate(),
+                        workType: self.workTypeCd(),
+                        siftType: self.siftCD(),
+                        workClockFrom1: self.timeStart1(),
+                        workClockTo1: self.timeEnd1(),
+                        workClockFrom2: self.timeStart2(),
+                        workClockTo2: self.timeEnd2(),
+                        breakTimes:  ko.toJS(self.breakTimes()),
+                        restTime:  ko.toJS(self.restTime()),
+                    }
                     self.checkRequiredBreakTimes();
                     //Check work content Changed
                     self.checkWorkContentChanged();
                     dfd.resolve();
                 })
                 .fail(function(res) {
-                    if(res.messageId == 'Msg_423'){
-                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                            .then(function() {
-                                nts.uk.ui.block.clear();
-                                appcommon.CommonProcess.callCMM045();
-                            });
-                    }else if (res.messageId != 'Msg_426'){ 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.ui.block.clear();
+                        if (res.messageId === "Msg_198" || res.messageId == 'Msg_426') {
                             appcommon.CommonProcess.callCMM045();
-                            nts.uk.ui.block.clear();
-                        });
-                    }
+                        } else {
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");        
+                        }
+                    });
                     dfd.reject(res);  
                 });
                 return dfd.promise();
@@ -228,6 +235,15 @@ module nts.uk.at.view.kaf010.b {
                     appHolidayWork = data.appHolidayWork,
                     appDetailScreenInfo = appHdWorkDispInfoDto.appDispInfoStartupOutput.appDetailScreenInfo,
                     applicationDto = appDetailScreenInfo.application;
+                let appType = applicationDto.applicationType
+                if (appType != 0) {
+                    let paramLog = {
+                        programId: 'KAF000',
+                        screenId: 'B',
+                        queryString: 'apptype=' + appType
+                    };
+                    nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
+                }
                 self.appHdWorkDispInfoDto = appHdWorkDispInfoDto;
                 self.inputCommandEvent().version = applicationDto.version;
                 self.version = applicationDto.version;
@@ -671,7 +687,8 @@ module nts.uk.at.view.kaf010.b {
                         		prePostAtr: self.prePostSelected(),
                         		overtimeHours: ko.toJS(self.breakTimes()),
                         		workTypeCD: self.workTypeCd(), 
-                        		appID: self.appID()
+                        		appID: self.appID(),
+                                appHdWorkDispInfoCmd: self.appHdWorkDispInfoDto
                         	}
                         ).done(data => {
                         	self.timeStart1(data.startTime1 == null ? null : data.startTime1);
@@ -915,7 +932,9 @@ module nts.uk.at.view.kaf010.b {
             		let actualLst = data.actualStatusCheckResult.actualLst;
                     for (let i = 0; i < actualLst.length; i++) {
                         if (actualLst[i].attendanceID == 2) {
-                            self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));
+                            if(!_.isUndefined(self.breakTimes()[i])) {
+                                self.breakTimes()[i].caculationTime(nts.uk.time.format.byId("Clock_Short_HM", actualLst[i].actualTime));    
+                            }
                         }
                     }
                 }
