@@ -246,15 +246,15 @@ module nts.uk.at.view.ksm007.a {
         }
 
         public reCalGridWidth() {
-            let panelWidthResize = window.innerWidth - 100;
-            let totalColWidth = 550;            
-            panelWidthResize = panelWidthResize > totalColWidth ? totalColWidth : panelWidthResize;
-            console.log(panelWidthResize);
-            $('#workplace-list').igGrid("option", "width", panelWidthResize);
-            if(panelWidthResize == 550) {
-                $('#workplace-list_displayContainer').css("width", panelWidthResize);
-                $('#workplace-list_headers_v').css("width", panelWidthResize);
-            }
+            // let panelWidthResize = window.innerWidth;
+            // let totalColWidth = 500;            
+            // panelWidthResize = panelWidthResize > totalColWidth ? totalColWidth : panelWidthResize;
+            // console.log(panelWidthResize);
+            // $('#workplace-list').igGrid("option", "width", panelWidthResize);
+            // if(panelWidthResize == 500) {
+            //     $('#workplace-list_displayContainer').css("width", panelWidthResize);
+            //     $('#workplace-list_headers_v').css("width", panelWidthResize);
+            // }
 		}
     }
 }

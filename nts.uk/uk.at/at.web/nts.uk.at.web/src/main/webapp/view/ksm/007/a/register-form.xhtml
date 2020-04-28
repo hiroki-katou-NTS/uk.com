@@ -41,7 +41,7 @@ required: true}"
   <!-- A6 -->
   <div class="valign-center control-group">
     <div
-      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}"
+      data-bind="ntsFormLabel: {required: true, enable: true}"
     >
       #{i18n.getText('KSM007_10')}
     </div>
@@ -70,7 +70,7 @@ required: true}"
       id="workplace-list"
       data-bind="ntsGridList: {
                 height: 265,
-                width: 550,
+                width: 600,
                 dataSource: registerForm().workplaces,
                 optionsValue: 'workplaceId',
                 columns: registerForm().gridColumns,

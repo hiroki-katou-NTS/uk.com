@@ -11,8 +11,8 @@ class RegisterForm {
     gridColumns: Array<any> = ko.observableArray([
         { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceId', width: 100, hidden: true },
         { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceCode', width: 100,}, 
-        { headerText: nts.uk.resource.getText('KSM007_14'), key: 'workplaceName', width: 200 },
-        { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 220 }
+        { headerText: nts.uk.resource.getText('KSM007_14'), key: 'workplaceName', width: 170 },
+        { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 300 }
     ]);
     selectedWorkplaces: KnockoutObservableArray<any> = ko.observableArray([]);
     constructor() {
@@ -40,6 +40,7 @@ class RegisterForm {
     public bindWorkplace(workplaces) {
         let sorted = _.orderBy(workplaces, (val) =>  'hierarchyCode');
         this.workplaces(sorted);
+        this.selectedWorkplaces([]);
     }
 
     public removeWorkplace() {

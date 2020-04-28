@@ -32,7 +32,7 @@ module test2.viewmodel {
                 // trigger reload lai data cua component
                 reloadData: ko.observable(''),
                 reloadComponent: ko.observable({}),
-                height: 365,
+                height: 370,
                 // NONE = 0, FIRST = 1, ALL = 2
                 selectedMode: dataShare.selectedMode
             };

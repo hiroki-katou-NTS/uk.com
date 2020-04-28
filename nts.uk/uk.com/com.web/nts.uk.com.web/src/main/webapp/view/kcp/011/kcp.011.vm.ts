@@ -198,7 +198,7 @@ ko.components.register('workplace-group', {
         </div>
     </div>
     <div data-bind="if:!setting().showPanel ">
-        <div id="workplace-group-pannel" class="caret-right caret-background" style="width: 380px" data-bind="if: !setting().showPanel">
+        <div id="workplace-group-pannel" class="" style="width: 380px" data-bind="if: !setting().showPanel">
             <div  data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'multi-list-nopanel', 
                     items: workplaceGroups, selectedKey: 'id', 
                     fields: ['code', 'name'], 
