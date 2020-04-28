@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,6 +13,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
@@ -33,7 +37,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegistrationListDateSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -77,6 +83,14 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
+	
+	public static int MAX_DELAY_PARALLEL = 0;
+	
+	@Inject
+	private CorrectWorkSchedule correctWorkSchedule;
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -126,33 +140,46 @@ public class ScheduleCreatorExecutionTransaction {
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
 			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreateContent content) {
-
+		String companyId = AppContexts.user().companyId();
 		// 実施区分を判断, 処理実行区分を判断
 		// EA No2115
 		// 中断フラグを確認する
 		// if 中断
-		if (content.getImplementAtr() == ImplementAtr.CREATE_WORK_SCHEDULE
-				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(command, companySetting,
-					scheduleCreator, content);
-			// スケジュールを再設定する (Thiết lập lại schedule)
-			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
-			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
-					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
-		} else {
+//		if (content.getImplementAtr() == ImplementAtr.CREATE_WORK_SCHEDULE
+//				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
+//			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(command, companySetting,
+//					scheduleCreator, content);
+//			// スケジュールを再設定する (Thiết lập lại schedule)
+//			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
+//			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
+//					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+//		} else {
 			// else 中断じゃない
 			// 入力パラメータ「作成方法区分」を判断-check parameter
 			// CreateMethodAtr
-			if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-				command.setCompanySetting(companySetting);
-				// 勤務予定を作成する
-				// return
-				// ・勤務予定一覧
-				// ・エラー一覧
-				this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog, context,
-						period, masterCache, listBasicSchedule, registrationListDateSchedule);
-			}
-		}
+//			if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+		command.setCompanySetting(companySetting);
+		// 勤務予定を作成する
+		// return
+		// ・勤務予定一覧
+		// ・エラー一覧
+		OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog, context,
+				period, masterCache, listBasicSchedule, registrationListDateSchedule);
+		
+		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+				result.getListWorkSchedule(),ws->{
+				//暫定データの登録
+				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeId(), Arrays.asList(ws.getYmd()));
+			}); 
+		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+				result.getListError(),error ->{
+				//エラーを登録する
+				this.scheduleErrorLogRepository.addByTransaction(error);
+			} 
+		);
+				
+//			}
+//		}
 	}
 	//勤務予定削除
 	private void deleteSchedule(String employeeId,DatePeriod period) {
@@ -356,18 +383,21 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
-	private void createScheduleBasedPersonWithMultiThread(ScheduleCreatorExecutionCommand command,
+	private OutputCreateSchedule createScheduleBasedPersonWithMultiThread(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule) {
-		// 空の勤務予定一覧を作成する (khong biet co phai day khong)
+		// 空の勤務予定一覧を作成する 
+		List<WorkSchedule> listWorkSchedule = new ArrayList<>();
+		List<ScheduleErrorLog> listError = new ArrayList<>();
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
-
-		// 空のエラー一覧を作成する (chua viet)
-
 		// 入力パラメータ「対象開始日」から「対象終了日」をループ処理する
+		AtomicBoolean checkEndProcess = new AtomicBoolean(false);
 		targetPeriod.datesBetween().forEach(dateInPeriod -> {
+			if(checkEndProcess.get()) {
+				return;
+			}
 			// 勤務予定反映する
 			/**
 			 * 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日 ・勤務サイクルコード
@@ -377,11 +407,30 @@ public class ScheduleCreatorExecutionTransaction {
 					masterCache, listBasicSchedule, dateRegistedEmpSche);
 			if (isEndLoop)
 				return;
+			OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
+			switch(createScheduleOneDate.getProcessingStatus()) {
+			case NEXT_DAY://次の日へ
+				break;
+			case END_PROCESS://処理終了する
+				checkEndProcess.set(true);
+				break;
+			case NEXT_DAY_WITH_ERROR://次の日へ（エラーあり）
+				listError.add(createScheduleOneDate.getScheduleErrorLog());
+				break;
+			default://処理正常
+				//勤務予定を補正する
+				WorkSchedule workSchedule =  correctWorkSchedule.createWorkSchedule(createScheduleOneDate.getWorkSchedule(), creator.getEmployeeId(), dateInPeriod);
+				listWorkSchedule.add(workSchedule);
+				break;
+			}
+			
 		});
 
 		if (dateRegistedEmpSche.getListDate().size() > 0) {
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
 		}
+		//勤務予定一覧、エラー一覧を返す
+		return new OutputCreateSchedule(listWorkSchedule, listError);
 
 	}
 
