@@ -1271,7 +1271,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             let confirmMsgLst = result.confirmMsgLst;
             let confirmMsg = confirmMsgLst[confirmIndex];
             if(_.isUndefined(confirmMsg)) {
-                paramInsert.appOvertimeDetail = result.appOvertimeDetail;
+                paramInsert.appOvertimeDetail = result.appOvertimeDetailOtp;
                 self.registerData(paramInsert);
                 return;
             }

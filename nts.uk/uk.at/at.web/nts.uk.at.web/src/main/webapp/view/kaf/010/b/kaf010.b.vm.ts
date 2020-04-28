@@ -1252,7 +1252,7 @@ module nts.uk.at.view.kaf010.b {
                 let confirmMsgLst = result.confirmMsgLst;
                 let confirmMsg = confirmMsgLst[confirmIndex];
                 if(_.isUndefined(confirmMsg)) {
-                    paramInsert.appOvertimeDetail = result.appOvertimeDetail;
+                    paramInsert.appOvertimeDetail = result.appOvertimeDetailOtp;
                     self.updateOvertime(paramInsert);
                     return;
                 }
