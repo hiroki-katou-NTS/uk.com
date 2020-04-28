@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
@@ -60,7 +60,6 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class OptionalWidgetKtgFinder {
@@ -109,9 +108,6 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
-	
-	@Inject
-	private InitDisplayPeriodSwitchSetFinder initDisplayPeriodSwitchSetFinder;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DatePeriodDto getCurrentMonth() {
@@ -395,7 +391,7 @@ public class OptionalWidgetKtgFinder {
 					//AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					//AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					// 26/09 đổi sang lấy thông tin từ request 506
-					dto.setRemainsLeft(absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate));
+					dto.setRemainsLeft(absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate).getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {

@@ -22,6 +22,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
@@ -61,12 +63,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
@@ -90,22 +90,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SaveHolidayShipmentCommandHandler
 		extends CommandHandlerWithResult<SaveHolidayShipmentCommand, ProcessResult> {
-
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeSetRepo;
-	@Inject
-	private ApplicationSettingRepository appSetRepo;
+	
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-//	@Inject
-//	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-//	@Inject
-//	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private ApplicationRepository_New appRepo;
 	@Inject
@@ -152,6 +143,8 @@ public class SaveHolidayShipmentCommandHandler
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	@Inject
+	private RequestSettingRepository requestSettingRepository;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -174,10 +167,10 @@ public class SaveHolidayShipmentCommandHandler
 			GeneralDate recDate, GeneralDate absDate, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
-		// アルゴリズム「登録前エラーチェック（新規）」を実行する
-		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
-		//振休残数不足チェック
-		checkForlackOfRest(companyID, sID, command);
+//		// アルゴリズム「登録前エラーチェック（新規）」を実行する
+//		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
+//		//振休残数不足チェック
+//		checkForlackOfRest(companyID, sID, command);
 		if (isSaveBothApp(comType)) {
 			// アルゴリズム「振休申請・振出申請の同時登録」を実行する
 			return registerBothApp(command, companyID, sID, absDate, recDate, appReason);
@@ -193,6 +186,57 @@ public class SaveHolidayShipmentCommandHandler
 		}
 		return null;
 	}
+	
+	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command){
+		
+		String companyID = AppContexts.user().companyId();
+
+		String sID = command.getAppCmd().getEmployeeID() != null ? command.getAppCmd().getEmployeeID()
+				: AppContexts.user().employeeId();// Sua ho
+		GeneralDate absDate = command.getAbsCmd().getAppDate();
+		GeneralDate recDate = command.getRecCmd().getAppDate();
+		int comType = command.getComType();
+		List<ConfirmMsgDto> result = new ArrayList<>();
+		
+		// アルゴリズム「事前条件チェック」を実行する
+		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
+		// アルゴリズム「登録前エラーチェック（新規）」を実行する
+		result.addAll(errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason));
+		//振休残数不足チェック
+		checkForlackOfRest(companyID, sID, command);
+		
+		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		
+		if (isSaveRec(comType)) {
+			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
+					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+					companyID, 
+					EmploymentRootAtr.APPLICATION, 
+					false, 
+					commonApp, 
+					null, 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
+			result.addAll(listConfirmMsg);
+		}
+		if (isSaveAbs(comType)) {
+			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
+					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
+			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+					companyID, 
+					EmploymentRootAtr.APPLICATION, 
+					false, 
+					commonApp, 
+					null, 
+					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
+					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
+			result.addAll(listConfirmMsg);
+		}
+		
+		return result;
+	}
+	
 
 	private void checkForlackOfRest(String companyID, String sID, SaveHolidayShipmentCommand command) {
 		//4.社員の当月の期間を算出する
@@ -576,9 +620,10 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String sID,
+	private List<ConfirmMsgDto> errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, GeneralDate absDate, int comType, String appReason) {
 
+		List<ConfirmMsgDto> result = new ArrayList<>();
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「申請前勤務種類の取得」を実行する takingout
@@ -592,11 +637,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「申請日関連チェック」を実行する
 		ApplicationDateRelatedCheck(command, withDrawReqSet.get(), sID, recDate, absDate, comType);
 		// アルゴリズム「勤務種類矛盾チェック」を実行する
-		checkWorkTypeConflict(sID,companyID,command, withDrawReqSet.get());
+		result.addAll(checkWorkTypeConflict(sID,companyID,command, withDrawReqSet.get()));
 		// アルゴリズム「終日半日矛盾チェック」を実行する
 		checkDayConflict(command, comType);
 		// アルゴリズム「法内法外矛盾チェック」を実行する
 		checkSetting(companyID, withDrawReqSet.get(), command, sID);
+		return result;
 	}
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
@@ -657,22 +703,25 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private void checkWorkTypeConflict(String Sid, String companyID, SaveHolidayShipmentCommand command,
+	private List<ConfirmMsgDto> checkWorkTypeConflict(String Sid, String companyID, SaveHolidayShipmentCommand command,
 			WithDrawalReqSet withDrawalReqSet) {
 
+		List<ConfirmMsgDto> result = new ArrayList<>();
+		
 		ContractCheck checkMode = withDrawalReqSet.getAppliDateContrac();
 		boolean isCheck = !checkMode.equals(ContractCheck.DONT_CHECK);
 		if (isCheck) {
 			boolean isNotSelectYes = command.getIsNotSelectYes() == null ? true : command.getIsNotSelectYes();
 			// アルゴリズム「振出勤務種類矛盾チェック」を実行する
 			if (isSaveRec(command.getComType())) {
-				workTypeContradictionCheck(companyID, Sid, command.getRecCmd().getAppDate(), checkMode, isNotSelectYes,true);
+				result.addAll(workTypeContradictionCheck(companyID, Sid, command.getRecCmd().getAppDate(), checkMode, isNotSelectYes,true));
 			}
 			// アルゴリズム「振休勤務種類矛盾チェック」を実行する
 			if (isSaveAbs(command.getComType())) {
-				workTypeContradictionCheck(companyID, Sid, command.getAbsCmd().getAppDate(), checkMode, isNotSelectYes,false);
+				result.addAll(workTypeContradictionCheck(companyID, Sid, command.getAbsCmd().getAppDate(), checkMode, isNotSelectYes,false));
 			}
 		}
+		return result;
 	}
 
 	/**
@@ -685,8 +734,9 @@ public class SaveHolidayShipmentCommandHandler
 	 * @param isNotSelectYes
 	 * @param ischeckRec
 	 */
-	private void workTypeContradictionCheck(String companyID, String sid, GeneralDate appDate, ContractCheck checkMode,
+	private List<ConfirmMsgDto> workTypeContradictionCheck(String companyID, String sid, GeneralDate appDate, ContractCheck checkMode,
 			boolean isNotSelectYes, boolean ischeckRec) {
+		List<ConfirmMsgDto> result = new ArrayList<>();
 		// アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
 		WorkType workType = this.otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, sid, appDate);
 		String appDateText = appDate.toString("yyyy/MM/dd");
@@ -695,7 +745,8 @@ public class SaveHolidayShipmentCommandHandler
 				throw new BusinessException("Msg_1519", appDateText);
 			}
 			if (checkMode.equals(ContractCheck.CHECK_AVAILABE) && isNotSelectYes) {
-				throw new BusinessException("Msg_1520", appDateText);
+				result.add(new ConfirmMsgDto("Msg_1520", Arrays.asList(appDateText)));
+				//throw new BusinessException("Msg_1520", appDateText);
 			}
 
 		} else {
@@ -717,13 +768,15 @@ public class SaveHolidayShipmentCommandHandler
 						throw new BusinessException("Msg_1521", appDateText, wkTypeName);
 					}
 					if (checkMode.equals(ContractCheck.CHECK_AVAILABE) && isNotSelectYes) {
-						throw new BusinessException("Msg_1522", appDateText, wkTypeName);
+						result.add(new ConfirmMsgDto("Msg_1522", Arrays.asList(appDateText, wkTypeName)));
+						//throw new BusinessException("Msg_1522", appDateText, wkTypeName);
 					}
 
 				}
 
 			
 		}
+		return result;
 	}
 
 	public boolean isSaveRec(int comType) {
@@ -971,28 +1024,28 @@ public class SaveHolidayShipmentCommandHandler
 
 	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command, String companyID,
 			ApplicationType appType) {
-		AppTypeDiscreteSetting appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
-				.get();
+		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
+		
+		AppTypeSetting appTypeSetting = requestSetting.getApplicationSetting().getListAppTypeSetting()
+				.stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION)
+				.findFirst().get();
 
-		String typicalReason = getTypicalReason(command, appTypeSet);
+		String typicalReason = getTypicalReason(command, appTypeSetting);
 
-		String displayReason = getDisplayReason(typicalReason, command, appTypeSet, command.isScreenB());
+		String displayReason = getDisplayReason(typicalReason, command, appTypeSetting, command.isScreenB());
 
 		String appReason = typicalReason + displayReason;
 
-		validateReasonText(appReason, appTypeSet, companyID);
+		validateReasonText(appReason, requestSetting, appTypeSetting);
 
 		return appReason;
 	}
 
-	private void validateReasonText(String appReason, AppTypeDiscreteSetting appTypeSet, String companyID) {
-		Optional<ApplicationSetting> appSetOp = appSetRepo.getApplicationSettingByComID(companyID);
+	private void validateReasonText(String appReason, RequestSetting requestSetting, AppTypeSetting appTypeSetting) {
 
-		ApplicationSetting appSet = appSetOp.get();
+		boolean isAnyReasonControlDisplay = isComboBoxReasonDisplay(appTypeSetting) || isReasonTextFieldDisplay(appTypeSetting);
 
-		boolean isAnyReasonControlDisplay = isComboBoxReasonDisplay(appTypeSet) || isReasonTextFieldDisplay(appTypeSet);
-
-		boolean isReasonBlankWhenRequired = appSet.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+		boolean isReasonBlankWhenRequired = requestSetting.getApplicationSetting().getAppLimitSetting().getRequiredAppReason()
 				&& Strings.isBlank(appReason);
 
 		if (isAnyReasonControlDisplay && isReasonBlankWhenRequired) {
@@ -1004,9 +1057,9 @@ public class SaveHolidayShipmentCommandHandler
 	}
 
 	private String getDisplayReason(String typicalReason, SaveHolidayShipmentCommand command,
-			AppTypeDiscreteSetting appTypeSet, boolean isScreenB) {
+			AppTypeSetting appTypeSetting, boolean isScreenB) {
 		String disPlayReason = Strings.EMPTY;
-		if (isReasonTextFieldDisplay(appTypeSet)) {
+		if (isReasonTextFieldDisplay(appTypeSetting)) {
 
 			if (Strings.isNotBlank(typicalReason)) {
 
@@ -1024,15 +1077,15 @@ public class SaveHolidayShipmentCommandHandler
 		return disPlayReason;
 	}
 
-	private boolean isReasonTextFieldDisplay(AppTypeDiscreteSetting appTypeSet) {
+	private boolean isReasonTextFieldDisplay(AppTypeSetting appTypeSetting) {
 
-		return appTypeSet.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY);
+		return appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY;
 
 	}
 
-	private String getTypicalReason(SaveHolidayShipmentCommand command, AppTypeDiscreteSetting appTypeSet) {
+	private String getTypicalReason(SaveHolidayShipmentCommand command, AppTypeSetting appTypeSetting) {
 
-		if (isComboBoxReasonDisplay(appTypeSet)) {
+		if (isComboBoxReasonDisplay(appTypeSetting)) {
 
 			return command.getAppCmd().getAppReasonText();
 
@@ -1040,8 +1093,8 @@ public class SaveHolidayShipmentCommandHandler
 		return "";
 	}
 
-	private boolean isComboBoxReasonDisplay(AppTypeDiscreteSetting appTypeSet) {
-		return appTypeSet.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY);
+	private boolean isComboBoxReasonDisplay(AppTypeSetting appTypeSetting) {
+		return appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY;
 
 	}
 

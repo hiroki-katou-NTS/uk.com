@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -84,6 +86,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private WorkTypeRepository wkTypeRepo;
+	
+	@Inject
+	private HolidayShipmentService holidayShipmentService;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType) {
@@ -122,9 +127,18 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType appType,
 			List<GeneralDate> dateLst, AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
+		// 基準日=INPUT．「申請対象日リスト」の1個目
+		Optional<GeneralDate> targetDate = dateLst.stream().findFirst();
+		// INPUT．申請種類をチェックする
+		if(appType == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && !CollectionUtil.isEmpty(dateLst)) {
+			// 基準申請日の決定
+			GeneralDate recDate = dateLst.size() >= 1 ? dateLst.get(0) : null;
+			GeneralDate absDate = dateLst.size() >= 2 ? dateLst.get(1) : null;
+			targetDate = Optional.of(holidayShipmentService.detRefDate(recDate, absDate));
+		}
 		// 基準日として扱う日の取得
 		RecordDate recordDate = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate();
-		GeneralDate baseDate = baseDateGet.getBaseDate(dateLst.stream().findFirst(), recordDate);
+		GeneralDate baseDate = baseDateGet.getBaseDate(targetDate, recordDate);
 		// 社員IDから申請承認設定情報の取得
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSetting approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
@@ -142,9 +156,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			throw new BusinessException("Msg_426");
 		}
 		// 雇用別申請承認設定を取得する
-		List<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
-		output.setEmploymentSet(employmentSetLst);
-		
+		Optional<AppEmploymentSetting>  employmentSetLst = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
+		if(employmentSetLst.isPresent()) {
+			// just have 1 record
+			output.setEmploymentSet(employmentSetLst.get());
+		}
+	
 		// INPUT．「新規詳細モード」を確認する
 		ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(null, ErrorFlagImport.NO_APPROVER);
 		if(mode) {
@@ -170,6 +187,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		output.setBaseDate(baseDate);
 		output.setAchievementOutputLst(appDispInfoWithDateOutput.getAchievementOutputLst());
 		output.setAppDetailContentLst(appDispInfoWithDateOutput.getAppDetailContentLst());
+		output.setEmpHistImport(empHistImport);
 		// 「申請表示情報(基準日関係あり)」を返す
 		return output;
 	}
@@ -204,13 +222,20 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
-			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, CollectionUtil.isEmpty(dateLst) ? null : dateLst.stream().findFirst().get(), 0);
-			output.setPrePostAtr(prePostAtrJudgment);
+			// INPUT．申請対象日リストをチェックする
+			if(CollectionUtil.isEmpty(dateLst)) {
+				// OUTPUT．「事前事後区分」=事前
+				output.setPrePostAtr(PrePostAtr.PREDICT);
+			} else  {
+				// 3.事前事後の判断処理(事前事後非表示する場合)
+				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
+				output.setPrePostAtr(prePostAtrJudgment);
+			}
 		} else {
 			// 申請表示情報(基準日関係あり)．事前事後区分=INPUT．事前事後区分の初期表示
 			output.setPrePostAtr(EnumAdaptor.valueOf(initValueAtr.value, PrePostAtr.class));
 		}
+		dateLst = dateLst.stream().filter(x -> x != null).collect(Collectors.toList());
 		// 実績内容の取得
 		List<AchievementOutput> achievementOutputLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);
 		output.setAchievementOutputLst(achievementOutputLst);
@@ -235,7 +260,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			GeneralDate targetDate, ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
+			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する

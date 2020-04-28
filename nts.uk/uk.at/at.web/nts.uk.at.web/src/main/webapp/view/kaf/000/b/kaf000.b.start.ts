@@ -1,11 +1,9 @@
-import kaf002 = nts.uk.at.view.kaf002;
-//import kaf009 = nts.uk.at.view.kaf009;
 import model = nts.uk.at.view.kaf000.shr.model;
 
 function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata): void {
     if (currentApp.appType == 7) {
         getProgramName("KAF002", "C");
-        screenModel = new kaf002.c.viewmodel.ScreenModel(listAppMeta, currentApp);
+        screenModel = new nts.uk.at.view.kaf002.c.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 9) {
         getProgramName("KAF004", "E");
         screenModel = new nts.uk.at.view.kaf004.e.viewmodel.ScreenModel(listAppMeta, currentApp);
@@ -29,35 +27,52 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         screenModel = new nts.uk.at.view.kaf011.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     }
     __viewContext['viewModel'] = screenModel;
-    if(currentApp.appType == 1 || currentApp.appType == 6) { 
-        __viewContext.bind(screenModel);
-        if (currentApp.appType == 10) {
-            $("#fixed-table").ntsFixedTable({ width: 100 });
-        }
-        nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
-            screenModel.errorEmpty(values);
-        });
-        $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
-            let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
-            let htmlF = htmlN.replace("<!DOCTYPE html>", "");
-            __viewContext.html = htmlF;
-        });     
+    if(currentApp.appType == 1 || currentApp.appType == 2 || currentApp.appType == 6 || currentApp.appType == 10) {
+        bindScreen(screenModel, currentApp.appType);
+//        __viewContext.bind(screenModel);
+//        if (currentApp.appType == 10) {
+//            $("#fixed-table").ntsFixedTable({ width: 100 });
+//        }
+//        nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+//            screenModel.errorEmpty(values);
+//        });
+//        $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+//            let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+//            let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+//            __viewContext.html = htmlF;
+//        });     
     } else {
         screenModel.start(moment.utc().format("YYYY/MM/DD"), true).done(function() {
-            __viewContext.bind(screenModel);
-            if (currentApp.appType == 10) {
-                $("#fixed-table").ntsFixedTable({ width: 100 });
-            }
-            nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
-                screenModel.errorEmpty(values);
-            });
-            $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
-                let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
-                let htmlF = htmlN.replace("<!DOCTYPE html>", "");
-                __viewContext.html = htmlF;
-            });
+            bindScreen(screenModel, currentApp.appType);
+//            __viewContext.bind(screenModel);
+//            if (currentApp.appType == 10) {
+//                $("#fixed-table").ntsFixedTable({ width: 100 });
+//            }
+//            nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+//                screenModel.errorEmpty(values);
+//            });
+//            $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+//                let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+//                let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+//                __viewContext.html = htmlF;
+//            });
         });
     }
+}
+
+function bindScreen(screenModel, appType) {
+    __viewContext.bind(screenModel);
+    if (appType == 10) {
+        $("#fixed-table").ntsFixedTable({ width: 100 });
+    }
+    nts.uk.ui._viewModel.errors.isEmpty.subscribe((values) => {
+        screenModel.errorEmpty(values);
+    });
+    $.get('/nts.uk.at.web/view/kaf/000/b/index2.xhtml').done(html => {
+        let htmlN = html.replace(/\<\?xml version='1\.0' encoding='UTF\-8' \?\>/, "");
+        let htmlF = htmlN.replace("<!DOCTYPE html>", "");
+        __viewContext.html = htmlF;
+    });      
 }
     
 __viewContext.initScreen = initScreen;
@@ -77,10 +92,19 @@ __viewContext.ready(function() {
                 __viewContext.transferred.value = {'listAppMeta': listValue, 'currentApp': currentValue};
                 nts.uk.at.view.kaf000.b.service.getAppByListID(listValue).done((data) => {
                     _.forEach(listValue, (value) => {
-                        listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
+                        let appMeta = _.find(data, (o) => { return o.appID == value; });
+                        if(!_.isUndefined(appMeta)) {
+                            listAppMeta.push(appMeta);       
+                        }
                     });
                     currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
-                    initScreen(screenModel, listAppMeta, currentApp);
+                    if(_.isUndefined(currentApp)) {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
+                            model.CommonProcess.callCMM045();
+                        });        
+                    } else {
+                        initScreen(screenModel, listAppMeta, currentApp);    
+                    }
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                         model.CommonProcess.callCMM045();
@@ -94,27 +118,19 @@ __viewContext.ready(function() {
         nts.uk.characteristics.save('paramInitKAF000', { 'listAppMeta': listValue, 'currentApp': currentValue });
         nts.uk.at.view.kaf000.b.service.getAppByListID(listValue).done((data) => {
             _.forEach(listValue, (value) => {
-                listAppMeta.push(_.find(data, (o) => { return o.appID == value; }));
-            });
-            // do not find app so listAppMeta === undefined bug #110138
-            //show msg when a application is not exist
-            try {
-                currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
-                if( currentApp === undefined){
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
-                        model.CommonProcess.callCMM045();
-                    });
+                let appMeta = _.find(data, (o) => { return o.appID == value; });
+                if(!_.isUndefined(appMeta)) {
+                    listAppMeta.push(appMeta);       
                 }
-  
+            });
+            currentApp = _.find(listAppMeta, x => { return x.appID == currentValue; });
+            if(_.isUndefined(currentApp)) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
+                    model.CommonProcess.callCMM045();
+                });        
+            } else {
+                initScreen(screenModel, listAppMeta, currentApp);    
             }
-            catch(err) {
-               nts.uk.ui.dialog.alertError({ messageId: 'Msg_198' }).then(function() {
-                        model.CommonProcess.callCMM045();
-                    });
-            }
-            initScreen(screenModel, listAppMeta, currentApp);  
-            
-            
         }).fail((res) => {
             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                 model.CommonProcess.callCMM045();

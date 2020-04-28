@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.app.command.stamp.management.ButtonSettingsCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.ButtonTypeCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageCommentCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampTypeCommand;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 /**
  * 
  * @author phongtq

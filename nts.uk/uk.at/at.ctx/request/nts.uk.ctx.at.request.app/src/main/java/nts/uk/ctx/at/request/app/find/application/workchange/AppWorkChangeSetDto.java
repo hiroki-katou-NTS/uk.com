@@ -74,5 +74,20 @@ public class AppWorkChangeSetDto {
 				domain.getCommentFontWeight2() != null ? domain.getCommentFontWeight2().value : null,
 				domain.getCommentFontColor2() != null ? domain.getCommentFontColor2().v() : null);
 	}
+	
+	public AppWorkChangeSet toDomain() {
+		return AppWorkChangeSet.createFromJavaType(
+				cid, 
+				excludeHoliday, 
+				workChangeTimeAtr, 
+				displayResultAtr, 
+				initDisplayWorktime, 
+				commentContent1, 
+				commentFontWeight1, 
+				commentFontColor1, 
+				commentContent2, 
+				commentFontWeight2, 
+				commentFontColor2); 
+	}
 
 }
