@@ -81,6 +81,7 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
@@ -571,8 +572,7 @@ public class HolidayServiceImpl implements HolidayService {
 				dateLst.stream().findFirst(), 
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny().orElse(null), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet(), 
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst(), 
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getApprovalFunctionSet(), 
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getRequestSetting(), 
@@ -683,14 +683,19 @@ public class HolidayServiceImpl implements HolidayService {
 			// ドメインモデル「勤務種類」を取得
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
-		List<AppEmployWorkType> workTypeLst = appEmploymentSetting.getLstWorkType();
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
-		if(CollectionUtil.isEmpty(workTypeLst)) {
-			// ドメインモデル「勤務種類」を取得
+		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny();
+		if(!opWorkTypeObjAppHoliday.isPresent()) {
+			// ドメインモデル「勤務種類」を取得して返す
+			return workTypeRepository.findNotDeprecated(companyID);
+		}
+		if(!opWorkTypeObjAppHoliday.get().getWorkTypeSetDisplayFlg() || CollectionUtil.isEmpty(opWorkTypeObjAppHoliday.get().getWorkTypeList())) {
+			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
-		List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+		List<String> workTypeCDLst = opWorkTypeObjAppHoliday.get().getWorkTypeList();
 		// ドメインモデル「勤務種類」を取得
 		return workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
 	}
@@ -917,8 +922,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// 1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeLst = this.getWorkTypeLstStart(
 				companyID, 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet().stream().filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION)
-				.findAny().orElse(null));
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
 		// 起動時の36協定時間の状態を取得する
 		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = null;
 		if(appHolidayWork.getAppOvertimeDetail().isPresent()) {

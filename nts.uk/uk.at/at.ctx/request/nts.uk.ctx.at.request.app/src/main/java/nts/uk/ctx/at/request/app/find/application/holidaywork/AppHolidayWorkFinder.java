@@ -223,8 +223,7 @@ public class AppHolidayWorkFinder {
 		// 共通インタラクション「申請日を変更する」を実行する
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
-				dateLst, 
-				targetDate,
+				dateLst,
 				ApplicationType.BREAK_TIME_APPLICATION, 
 				appDispInfoNoDateOutput,
 				appDispInfoWithDateOutput);
@@ -237,8 +236,7 @@ public class AppHolidayWorkFinder {
 				dateLst.stream().findFirst(), 
 				targetDate, 
 				appDispInfoWithDateOutput.getPrePostAtr(), 
-				appDispInfoWithDateOutput.getEmploymentSet().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny().orElse(null), 
+				appDispInfoWithDateOutput.getEmploymentSet(), 
 				appDispInfoWithDateOutput.getWorkTimeLst(), 
 				appDispInfoWithDateOutput.getApprovalFunctionSet(), 
 				appDispInfoNoDateOutput.getRequestSetting(), 
