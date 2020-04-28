@@ -100,6 +100,9 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
             service.startPage(self.selectedCode()).done(function(data) {
                 console.log(data);
+               if(data.listRankDto.length == 0){
+                  nts.uk.ui.dialog.error({ messageId: "Msg_1643"});
+                   }
                 _.orderBy(data.listRankDto, 'priority', 'asc');
                 
                 _.forEach(data.listEmpRankDto, function(item) {
@@ -144,7 +147,8 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
-                alert(error.message);
+                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+              
             });
             // dfd.resolve(); -- đéo có thì nó disable luôn vcc
             return dfd.promise();
