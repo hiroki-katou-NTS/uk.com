@@ -27,7 +27,4 @@ public class WorkSchedule implements DomainAggregate {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
 	}
-	
-	
-	
 }

@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 
+ * 労働条件項目
  * @author sonnh1
  *
  */
@@ -35,6 +35,7 @@ public class WorkCondItemDto {
 
 	private HourlyPaymentAtr hourlyPaymentAtr;
 
+	/** 予定管理区分 */
 	private ManageAtr scheduleManagementAtr;
 
 	private PersonalDayOfWeek workDayOfWeek;
