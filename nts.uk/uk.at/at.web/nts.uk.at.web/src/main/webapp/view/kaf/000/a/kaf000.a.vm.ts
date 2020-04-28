@@ -64,18 +64,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.appType(appType);
             
             let dfd = $.Deferred();
-            if(appType == 1 || appType == 2 || appType == 10) {
-                dfd.resolve();  
-            } else {
-                //Call approval list
-                self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
-                    dfd.resolve(data); 
-                }).fail((res)=>{
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                        nts.uk.ui.block.clear();
-                    });  
-                });
-            }
+            //Call approval list
+            self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
+                dfd.resolve(data); 
+            }).fail((res)=>{
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                    nts.uk.ui.block.clear();
+                });  
+            });
             return dfd.promise();
         }
         
@@ -216,7 +212,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 }  
                 if(!nts.uk.util.isNullOrEmpty(msgID)) {
                     nts.uk.ui.dialog.alertError({ messageId: msgID }).then(function(){
-                        if(!nts.uk.util.isNullOrUndefined(data.isNew) && data.isNew) {
+                        if(!nts.uk.util.isNullOrUndefined(data.isSystemDate) && data.isSystemDate == 0) {
                             nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");            
                         }
                         nts.uk.ui.block.clear();

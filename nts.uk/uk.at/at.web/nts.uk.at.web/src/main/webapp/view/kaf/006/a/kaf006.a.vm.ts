@@ -227,7 +227,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.appAbsenceStartInfoDto = data; 
                 self.kaf000_a.initData({
                     errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
+                    isSystemDate: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate     
                 });
                 // self.approvalSource = self.kaf000_a.approvalList;
                 $("#inputdate").focus();
@@ -514,7 +515,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 self.appAbsenceStartInfoDto = result;
                 self.kaf000_a.initData({
                     errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
+                    isSystemDate: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate        
                 });
                 if (!nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
                     let a = [];

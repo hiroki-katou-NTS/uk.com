@@ -5,12 +5,10 @@ module nts.uk.at.view.kaf011.a.start {
         let vm = __viewContext['viewModel'] = new a.screenModel.ViewModel();
         __viewContext['viewModel'].start().done((data) => {
             __viewContext.bind(__viewContext['viewModel']);
-            __viewContext['viewModel'].kaf000_a.start(vm.employeeID(), 1, 10, formatDate(vm.appDate())).done(() => {
-            });
             vm.kaf000_a.initData({
                 errorFlag: data.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
                 listApprovalPhaseStateDto: data.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
-                isNew: true        
+                isSystemDate: data.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate         
             });
             let transDate = vm.transferDate();
             if (transDate) {

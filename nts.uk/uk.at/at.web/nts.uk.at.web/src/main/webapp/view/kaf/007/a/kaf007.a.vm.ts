@@ -196,7 +196,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.kaf000_a.initData({
                 errorFlag: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
                 listApprovalPhaseStateDto: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
-                isNew: true        
+                isSystemDate: appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate       
             });
             if(!_.isEmpty(self.employeeIDLst)) {
                 self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));             
@@ -498,7 +498,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.appWorkChangeDispInfoDto = data;
                 self.kaf000_a.initData({
                     errorFlag: data.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: data.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState        
+                    listApprovalPhaseStateDto: data.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
+                    isSystemDate: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate         
                 });
                 //Binding data
 //                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
