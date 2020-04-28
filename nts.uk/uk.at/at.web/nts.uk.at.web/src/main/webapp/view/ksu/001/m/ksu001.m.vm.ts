@@ -73,10 +73,11 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 maxRows: 15
             };
             self.selectedCode.subscribe(function(value) {
-                if (nts.uk.util.isNullOrEmpty(self.listEmpData())) {
+                if (nts.uk.util.isNullOrEmpty(value)) {
                     self.enableSave(false);
+                } else {
+                    self.enableSave(true);
                 }
-                self.enableSave(true);
             });
         }
 
