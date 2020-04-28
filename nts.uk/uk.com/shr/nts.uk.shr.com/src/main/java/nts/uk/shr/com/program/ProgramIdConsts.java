@@ -190,6 +190,8 @@ public class ProgramIdConsts {
 	public static final String KSU001C = "KSU001C";
 
 	public static final String KSU001D = "KSU001D";
+	
+	public static final String KSU001M = "KSU001M";
 
 	public static final String KSU001JB = "KSU001JB";
 
