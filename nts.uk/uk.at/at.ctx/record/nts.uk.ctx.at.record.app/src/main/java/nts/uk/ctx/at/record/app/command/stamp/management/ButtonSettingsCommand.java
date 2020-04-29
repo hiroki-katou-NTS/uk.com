@@ -57,8 +57,8 @@ public class ButtonSettingsCommand {
 		GoingOutReason goOutArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
 		SetPreClockArt setPreClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
 				SetPreClockArt.class);
-		ChangeClockArt changeClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
-				ChangeClockArt.class);
+		ChangeClockArt changeClockArt = x.getButtonType().getStampType().getChangeClockArt() != null ? EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
+				ChangeClockArt.class) : null;
 		ChangeCalArt changeCalArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
 				ChangeCalArt.class);
 		StampType stampType = new StampType(x.getButtonType().getStampType().isChangeHalfDay(), goOutArt, setPreClockArt,

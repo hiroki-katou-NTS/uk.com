@@ -57,7 +57,7 @@ public class RegisterStampDataCommand {
 
 	public ButtonType toButtonType() {
 		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
-				SetPreClockArt.valueOf(setPreClockArt), ChangeClockArt.valueOf(changeClockArt),
+				SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockArt.valueOf(changeClockArt),
 				ChangeCalArt.valueOf(changeCalArt));
 		return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
 	}

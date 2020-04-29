@@ -48,7 +48,7 @@ public class ButtonSettingDto {
 			this.changeHalfDay = stampType.isChangeHalfDay();
 			this.goOutArt = stampType.getGoOutArt().isPresent() ? stampType.getGoOutArt().get().value : null;
 			this.setPreClockArt = stampType.getSetPreClockArt().value;
-			this.changeClockArt = stampType.getChangeClockArt().value;
+			this.changeClockArt = stampType.getChangeClockArt() == null ? null : stampType.getChangeClockArt().value;
 			this.changeCalArt = stampType.getChangeCalArt().value;
 		}
 		
