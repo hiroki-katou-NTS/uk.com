@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.management;
+package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
+
 
 import java.io.Serializable;
 

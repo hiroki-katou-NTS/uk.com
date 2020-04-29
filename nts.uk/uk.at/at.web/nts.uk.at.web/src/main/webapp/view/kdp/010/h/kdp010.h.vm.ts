@@ -215,10 +215,10 @@ module nts.uk.at.view.kdp010.h {
                 if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 1 && changeHalfDay == 0 && reservationArt == 0)
                     return 7;
 
-                if (changeClockArt == "" && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 1)
+                if ((changeClockArt == "" || changeClockArt == null) && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 1)
                     return 19;
 
-                if (changeClockArt == "" && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 2)
+                if ((changeClockArt == "" || changeClockArt == null) && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 2)
                     return 20;
             }
 
