@@ -849,21 +849,23 @@ public class HolidayServiceImpl implements HolidayService {
 					actualStatusCheckResult.actualLst,
 					actualStatusCheckResult.actualStatus);
 		}
-		// 03-01_事前申請超過チェック（＃108410）
-		List<ConfirmMsgOutput> outputLst1 = commonOvertimeHoliday.preAppExcessCheckHdApp(
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
-				appDate, 
-				preActualColorResult, 
-				appHdWorkDispInfoOutput.getBreaktimeFrames());
-		outputLst.addAll(outputLst1);
-		// 03-02_実績超過チェック（＃108410）
-		List<ConfirmMsgOutput> outputLst2 = commonOvertimeHoliday.achievementCheckHdApp(
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
-				appDate, 
-				appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPerformanceExcessAtr(), 
-				preActualColorResult, 
-				appHdWorkDispInfoOutput.getBreaktimeFrames());
-		outputLst.addAll(outputLst2);
+		if(preActualColorResult!=null) {
+			// 03-01_事前申請超過チェック（＃108410）
+			List<ConfirmMsgOutput> outputLst1 = commonOvertimeHoliday.preAppExcessCheckHdApp(
+					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
+					appDate, 
+					preActualColorResult, 
+					appHdWorkDispInfoOutput.getBreaktimeFrames());
+			outputLst.addAll(outputLst1);
+			// 03-02_実績超過チェック（＃108410）
+			List<ConfirmMsgOutput> outputLst2 = commonOvertimeHoliday.achievementCheckHdApp(
+					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
+					appDate, 
+					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPerformanceExcessAtr(), 
+					preActualColorResult, 
+					appHdWorkDispInfoOutput.getBreaktimeFrames());
+			outputLst.addAll(outputLst2);
+		}
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = Optional.empty();
 		// INPUT．入力モードをチェックする
 		if(mode) {
