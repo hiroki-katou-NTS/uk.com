@@ -11,10 +11,14 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 @Setter
 @NoArgsConstructor
 public class OutputCreateScheduleOneDate {
+	
+	/** 勤務予定 */
 	private WorkSchedule workSchedule;
 	
+	/** エラー */
 	private ScheduleErrorLog scheduleErrorLog ;
 	
+	/** 処理状態 */
 	private ProcessingStatus processingStatus;
 
 	public OutputCreateScheduleOneDate(WorkSchedule workSchedule, ScheduleErrorLog scheduleErrorLog,

@@ -93,7 +93,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private CorrectWorkSchedule correctWorkSchedule;
-
+	
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
 			DatePeriod period, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
@@ -269,9 +269,7 @@ public class ScheduleCreatorExecutionTransaction {
 	// */
 
 	/**
-	 * 日のデータを用意する 
-	 * 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 
-	 * 「Output」 ・データ（処理状態付き）
+	 * 日のデータを用意する 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 「Output」 ・データ（処理状態付き）
 	 */
 	private DataProcessingStatusResult createScheduleBasedPersonOneDate(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
@@ -377,16 +375,16 @@ public class ScheduleCreatorExecutionTransaction {
 				return new DataProcessingStatusResult(CID, null,
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			}
-		} 
-		
+		}
+
 		// else 取得できない
 		// 空の勤務予定を作成する
 		WorkSchedule workSchedules = new WorkSchedule(creator.getEmployeeId(), dateInPeriod);
 
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
-				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), workSchedules, workingConditionItem, employmentInfo);
-		
+				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), workSchedules, workingConditionItem,
+				employmentInfo);
 
 		// ko thay dung trong EA
 		// if (!workingConditionItem.getScheduleMethod().isPresent()) {
@@ -458,16 +456,16 @@ public class ScheduleCreatorExecutionTransaction {
 				return;
 			}
 			// 勤務予定反映する
-			// 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日 ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
+			// 「パラメータ」 ・パラメータ（Temporary） ・勤務ペアリスト ・勤務種類コード ・就業時間帯コード ・年月日
+			// ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
 			// 「Output」 ・勤務予定 ・エラー ・処理状態/
-			DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate(command, creator, domain,
-					context, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
+			DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate(command, creator, domain, context,
+					dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
 			// Output。処理状態を確認する
-			
+			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(result);
 			// code cu, bi loi nen tam comment vao
 			// if (isEndLoop)
 			// return;
-			OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
 			switch (createScheduleOneDate.getProcessingStatus()) {
 			case NEXT_DAY:// 次の日へ
 				break;
@@ -493,6 +491,50 @@ public class ScheduleCreatorExecutionTransaction {
 		// 勤務予定一覧、エラー一覧を返す
 		return new OutputCreateSchedule(listWorkSchedule, listError);
 
+	}
+	
+	/**
+	 * 勤務予定反映する
+	 * @param result
+	 * @return
+	 */
+	private OutputCreateScheduleOneDate reflectWorkSchedule(DataProcessingStatusResult result) {
+		// if 以外
+		OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
+		if (result.getProcessingStatus().value != ProcessingStatus.NORMAL_PROCESS.value) {
+			// 「処理状態」、「勤務予定」、「エラー」を返す
+			createScheduleOneDate = new OutputCreateScheduleOneDate(null, result.getErrorLog(),
+					ProcessingStatus.valueOf(result.getProcessingStatus().value));
+		} else {
+			// 日別のコンバーターを作成する - đợi chuyển sang share
+			
+			// 勤務予定のデータをコンバーターに入れる - chưa làm đợi sử lý trên
+			WorkSchedule workSchedule = correctWorkSchedule.createWorkSchedule(
+					createScheduleOneDate.getWorkSchedule(), result.getWorkingCondition().getEmployeeId(), result.getErrorLog().getDate());
+			
+			// 所属情報を反映する - chưa tìm thấy nên chưa làm
+			ReflectAffiliationInformation affiliationInformation = new ReflectAffiliationInformation();
+			// Outputを確認する
+			// if エラーあり
+			if(affiliationInformation != null) {
+				// 「処理状態」、「勤務予定」、「エラー」を返す - null thứ 2 đang fake vì chưa lấy được Output phía trên
+				createScheduleOneDate = new OutputCreateScheduleOneDate(null, null,
+						ProcessingStatus.valueOf(result.getProcessingStatus().NEXT_DAY_WITH_ERROR.value));
+			}
+			
+			// 勤務情報・勤務時間を用意する - chưa làm vì nhiều quá :((
+				
+			// Outputを確認する - đang fake
+			if(affiliationInformation != null) {
+				// 「処理状態」、「勤務予定」、「エラー」を返す - null thứ 2 đang fake vì chưa lấy được Output phía trên
+				createScheduleOneDate = new OutputCreateScheduleOneDate(null, null,
+						ProcessingStatus.valueOf(result.getProcessingStatus().NEXT_DAY_WITH_ERROR.value));
+			}
+			
+			// 取得した情報をもとに「勤務予定」を入れる
+			
+		}
+		return createScheduleOneDate;
 	}
 
 	/**
