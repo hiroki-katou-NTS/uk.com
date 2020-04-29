@@ -325,7 +325,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// 退勤打刻補正をチェックする
 		if(stampLeaveChange){
 			// 計算退勤時刻：システム時刻
-			calcLeaveStamp = GeneralDateTime.now().minutes();
+			calcLeaveStamp = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		} else {
 			// 計算退勤時刻：INPUT.退勤時刻
 			calcLeaveStamp = endTime;
