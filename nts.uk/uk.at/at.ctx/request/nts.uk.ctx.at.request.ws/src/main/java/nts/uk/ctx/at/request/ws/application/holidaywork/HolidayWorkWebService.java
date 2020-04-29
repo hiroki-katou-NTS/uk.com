@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
@@ -185,9 +186,11 @@ public class HolidayWorkWebService extends WebService{
 				ApplicationType.BREAK_TIME_APPLICATION,
 				overTimeSettingOpt.get().getAppDateContradictionAtr());
 		List<String> result = new ArrayList<>();
-		result.add(outputLst.get(0).getMsgID());
-		for(String param : outputLst.get(0).getParamLst()) {
-			result.add(param);
+		if(!CollectionUtil.isEmpty(outputLst)) {
+			result.add(outputLst.get(0).getMsgID());
+			for(String param : outputLst.get(0).getParamLst()) {
+				result.add(param);
+			}
 		}
 		return result; 
 	}

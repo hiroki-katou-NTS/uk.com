@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -227,9 +228,11 @@ public class OvertimeWebService extends WebService{
 				ApplicationType.OVER_TIME_APPLICATION,
 				overTimeSettingOpt.get().getAppDateContradictionAtr());
 		List<String> result = new ArrayList<>();
-		result.add(outputLst.get(0).getMsgID());
-		for(String param : outputLst.get(0).getParamLst()) {
-			result.add(param);
+		if(!CollectionUtil.isEmpty(outputLst)) {
+			result.add(outputLst.get(0).getMsgID());
+			for(String param : outputLst.get(0).getParamLst()) {
+				result.add(param);
+			}
 		}
 		return result; 
 	}
