@@ -175,7 +175,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                          $("#combo-box").focus();
                          self.startPage().done(() => {
-                         self.selectedCode(self.selectIds());
+                         self.selectedCode([]);
                          });
                     });
                     block.clear();

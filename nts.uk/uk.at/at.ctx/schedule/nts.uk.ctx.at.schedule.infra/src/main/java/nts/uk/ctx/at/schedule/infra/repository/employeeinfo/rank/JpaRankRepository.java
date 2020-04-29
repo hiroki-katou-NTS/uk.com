@@ -34,7 +34,7 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 	private static final String GET_LIST_RANK = SELECT
 			+ "WHERE k.kscmtRankPk.companyId = :companyId and k.kscmtRankPk.rankCd IN :listRankCd";
 	private static final String GET_LIST_RANK__ORDER_BY_PRIORITY = SELECT
-			+ "WHERE k.kscmtRankPk.companyId = :companyId order by k.priority ASC";
+			+ "WHERE k.kscmtRankPk.companyId = :companyId order by k.priority ASC"; 
 
 	@Override
 	public Rank getRank(String companyId, RankCode rankCd) {
