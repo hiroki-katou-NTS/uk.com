@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.ietf.jgss.Oid;
-
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -92,7 +90,9 @@ public class ReportItemFinder {
 	public ReportLayoutDto getDetailReportCls(ReportParams params) {
 
 		String cid = AppContexts.user().companyId();
-
+		String appSid = "";
+		String appBussinessName = "";
+		
 		ApprRootStateHrImport approvalStateHrImport = new ApprRootStateHrImport();
 		
 		approve = true;
@@ -107,6 +107,9 @@ public class ReportItemFinder {
 		
 		if(registrationPersonReport.isPresent()) {
 			
+			appSid = registrationPersonReport.get().getAppSid();
+			appBussinessName = registrationPersonReport.get().getAppBussinessName();
+			
 			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
 					registrationPersonReport.get().getReportLayoutID());
 			
@@ -119,9 +122,14 @@ public class ReportItemFinder {
 			reportClsOpt.get().setPReportName(new String_Any_20(registrationPersonReport.get().getReportName()));
 			
 		 } else {
+
+			Optional<RegistrationPersonReport> domain = this.registrationPersonReportRepo.getDomain(cid, params.getReportLayoutId());
+			if (domain.isPresent()) {
+				appSid = domain.get().getAppSid();
+				appBussinessName = domain.get().getAppBussinessName();
+			}
 			
-			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid,
-					params.getReportLayoutId());
+			reportClsOpt = this.reportClsRepo.getDetailReportClsByReportClsID(cid, params.getReportLayoutId());
 			
 		}
 		 
@@ -166,7 +174,7 @@ public class ReportItemFinder {
 		
 		return reportClsOpt.isPresent() == true
 				? ReportLayoutDto.createFromDomain(reportClsOpt.get(), reportStartSetting, registrationPersonReport,
-						itemInter, documentSampleDtoLst, appPhaseLst, release, approve)
+						itemInter, documentSampleDtoLst, appPhaseLst, release, approve, appSid, appBussinessName)
 				: new ReportLayoutDto();
 	}
 	

@@ -27,7 +27,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.laborcontracthistory.WageType;
 @AllArgsConstructor
 public class DissisalNoticeTerm extends DomainObject{
 	
-	/** 賃金種類  */
+	/** 給与区分  */
 	private  WageType wageType;
 	
 	/** 条件有無  */

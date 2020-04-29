@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.ApprovalStatus;
 
 /**
  *  退職者情報
@@ -143,6 +144,35 @@ public class RetirementInformation extends DomainObject{
 	
 	// 個人ID
 	public String pId;
+	
+	public String approveSid1;
+
+	// 承認者社員名_1
+	public String approvePerName1;
+
+	// 承認ステータス_1
+	public Integer approveStatus1;
+
+	// 承認コメント_1
+	public String approveComment1;
+
+	// 承認メール送信済みフラグ_1
+	public boolean approveSendMailFlg1;
+
+	// 承認者社員ID_2
+	public String approveSid2;
+
+	// 承認者社員名_2
+	public String approvePerName2;
+
+	// 承認ステータス_2
+	public Integer approveStatus2;
+
+	// 承認コメント_2
+	public String approveComment2;
+
+	// 承認メール送信済みフラグ_2
+	public boolean approveSendMailFlg2;
 	
 	
 }

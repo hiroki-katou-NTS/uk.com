@@ -2,6 +2,7 @@
 package nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingPerInfo;
+import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.DataBeforeReflectingRepository;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.NoteRetiment;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.OnHoldFlag;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.RequestFlag;
@@ -20,6 +22,8 @@ import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.Status;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.common.service.DataBeforeReflectingPerInfoService;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
+import nts.uk.ctx.hr.shared.dom.employee.AffCompanyHistItemImport;
+import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -27,13 +31,28 @@ public class RetirementInformationService {
 
 	@Inject
 	DataBeforeReflectingPerInfoService dataBeforeReflectPerInfoService;
+	
+	@Inject
+	private EmployeeInformationAdaptor empInfoAdaptor;
+	
+	@Inject
+	private  DataBeforeReflectingRepository dataBeforeReflectingRepo;
 
 	// 退職者情報の取得
-	public List<RetirementInformation> getRetirementInfo(String cid, Integer workId, List<String> listPid,
-			Optional<Boolean> includReflected, Optional<String> sortByColumnName, Optional<String> orderType) {
+	public List<RetirementInformation> getRetirementInfo(String cid, List<String> listSid, Optional<Boolean> includReflected) {
 
 		List<DataBeforeReflectingPerInfo> listDataBeforeReflectPerInfo = dataBeforeReflectPerInfoService
-				.getDataBeforeReflectPerInfo(cid, workId, listPid, includReflected, sortByColumnName, orderType);
+				.getDataBeforeReflectPerInfo(cid, 1, listSid, new ArrayList<>(), 
+				includReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
+		return convertData(listDataBeforeReflectPerInfo);
+	}
+	
+	// 承認データの取得
+	public List<RetirementInformation> getApproveData(String cid, String sID, Optional<Boolean> includReflected) {
+
+		List<DataBeforeReflectingPerInfo> listDataBeforeReflectPerInfo = dataBeforeReflectPerInfoService
+				.getDataBeforeReflectPerInfo(cid, 1, sID, includReflected,
+						Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
 		return convertData(listDataBeforeReflectPerInfo);
 	}
 
@@ -84,7 +103,14 @@ public class RetirementInformationService {
 			obj.naturalUnaReasons_4Val = i.str_07 == null ? "" : i.str_07.toString();
 			obj.naturalUnaReasons_5Val = i.str_08 == null ? "" : i.str_08.toString();
 			obj.naturalUnaReasons_6Val = i.str_09 == null ? "" : i.str_09.toString();
-
+			obj.approveSid1 = i.approveSid1;
+			obj.approveStatus1 = i.approveStatus1 != null ? i.approveStatus1.value : null;
+			obj.approveComment1 = i.approveComment1;
+			obj.approveSendMailFlg1 = i.approveSendMailFlg1;
+			obj.approveSid2 = i.approveSid2;
+			obj.approveStatus2 = i.approveStatus2 != null ? i.approveStatus2.value : null;
+			obj.approveComment2 = i.approveComment2;
+			obj.approveSendMailFlg2 = i.approveSendMailFlg2;
 			return obj;
 		}).collect(Collectors.toList());
 
@@ -92,95 +118,148 @@ public class RetirementInformationService {
 	}
 
 	// 退職者情報の追加
-	public void addRetireInformation(RetirementInformation domainObj) {
+	// path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報反映前データ.個人情報反映前データ_退職者情報.アルゴリズム.退職者情報の追加.退職者情報の追加
+	public void addRetireInformation(List<RetirementInformation> listDomain) {
 
 		// 退職者情報リストを個人情報反映前データリストへ変換する (Convert retired employee information
 		// list to list data before reflecting personal information)
-		DataBeforeReflectingPerInfo domain = DataBeforeReflectingPerInfo.builder().build();
-		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
-		this.dataBeforeReflectPerInfoService.addDataBeforeReflectingPerInfo(domain);
-	}
-
-	// 退職者情報リストを個人情報反映前データリストへ変換する
-	private void convertRetiredEmpIntoDataBefReflec(RetirementInformation domainObj,
-			DataBeforeReflectingPerInfo domain) {
-		domain.historyId = domainObj.historyId;
-		domain.companyId = domainObj.companyId;
-		domain.sId = domainObj.sId;
-		domain.scd = domainObj.scd;
-		domain.pId = domainObj.pId;
-		domain.personName = domainObj.personName;
-		domain.requestFlag = EnumAdaptor.valueOf(domainObj.notificationCategory, RequestFlag.class);
-		domain.onHoldFlag = EnumAdaptor.valueOf(domainObj.pendingFlag, OnHoldFlag.class);
-		domain.registerDate = GeneralDate.today();
-		domain.releaseDate = domainObj.releaseDate;
-		domain.stattus = EnumAdaptor.valueOf(domainObj.status, Status.class);
-		domain.date_01 = domainObj.retirementDate;
-		domain.select_code_01 = domainObj.retirementCategory.value + "";
-
-		domain.select_code_02 = domainObj.retirementReasonCtgCode1;
-		domain.select_name_02 = domainObj.retirementReasonCtgName1;
-
-		domain.select_code_03 = domainObj.retirementReasonCtgCode2;
-		domain.select_name_03 = domainObj.retirementReasonCtgName2;
-
-		domain.str_01 = domainObj.retirementRemarks != "" ? new NoteRetiment(domainObj.retirementRemarks) : null;
-		domain.str_02 = domainObj.retirementReasonVal != "" ? new NoteRetiment(domainObj.retirementReasonVal) : null;
-		domain.date_02 = domainObj.dismissalNoticeDate != null
-				? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDate.date()) : null;
-		domain.date_03 = domainObj.dismissalNoticeDateAllow != null
-				? GeneralDateTime.legacyDateTime(domainObj.dismissalNoticeDateAllow.date()) : null;
-		domain.str_03 = domainObj.reaAndProForDis != "" ? new NoteRetiment(domainObj.reaAndProForDis) : null;
-		domain.int_01 = domainObj.naturalUnaReasons_1;
-		domain.str_04 = domainObj.naturalUnaReasons_1Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_1Val)
-				: null;
-		domain.int_02 = domainObj.naturalUnaReasons_2;
-		domain.str_05 = domainObj.naturalUnaReasons_2Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_2Val)
-				: null;
-		domain.int_03 = domainObj.naturalUnaReasons_3;
-		domain.str_06 = domainObj.naturalUnaReasons_3Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_3Val)
-				: null;
-		domain.int_04 = domainObj.naturalUnaReasons_4;
-		domain.str_07 = domainObj.naturalUnaReasons_4Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_4Val)
-				: null;
-		domain.int_05 = domainObj.naturalUnaReasons_5;
-		domain.str_08 = domainObj.naturalUnaReasons_5Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_5Val)
-				: null;
-		domain.int_06 = domainObj.naturalUnaReasons_6;
-		domain.str_09 = domainObj.naturalUnaReasons_6Val != "" ? new NoteRetiment(domainObj.naturalUnaReasons_6Val)
-				: null;
-
-		domain.contractCode = AppContexts.user().contractCode();
-		domain.companyCode = AppContexts.user().companyCode();
-		domain.workId = 1;
-		domain.workName = "退職者情報の登録";
-		switch (domainObj.retirementCategory.value) {
-		case 1:
-			domain.select_name_01 = "退職";
-			break;
-		case 2:
-			domain.select_name_01 = "転籍";
-			break;
-
-		case 3:
-			domain.select_name_01 = "解雇";
-			break;
-
-		case 4:
-			domain.select_name_01 = "定年";
-			break;
+		if (!listDomain.isEmpty()) {
+			List<DataBeforeReflectingPerInfo> listDataBeforeReflect = convertRetiredEmpIntoDataBefReflec(listDomain);
+			this.dataBeforeReflectPerInfoService.addDataBeforeReflectingPerInfo(listDataBeforeReflect);
 		}
 	}
 
-	public void updateRetireInformation(RetirementInformation domainObj) {
-		DataBeforeReflectingPerInfo domain = DataBeforeReflectingPerInfo.builder().build();
-		convertRetiredEmpIntoDataBefReflec(domainObj, domain);
-		this.dataBeforeReflectPerInfoService.updateDataBeforeReflectingPerInfo(domain);
+	// 退職者情報リストを個人情報反映前データリストへ変換する
+	private List<DataBeforeReflectingPerInfo> convertRetiredEmpIntoDataBefReflec(List<RetirementInformation> listDomainRetirementInfor) {
+		List<DataBeforeReflectingPerInfo> result = new ArrayList<>();
+		for (int i = 0; i < listDomainRetirementInfor.size(); i++) {
+			DataBeforeReflectingPerInfo dataBeforeReflect = DataBeforeReflectingPerInfo.builder().build();
+			dataBeforeReflect.historyId = listDomainRetirementInfor.get(i).historyId;
+			dataBeforeReflect.companyId = listDomainRetirementInfor.get(i).companyId;
+			dataBeforeReflect.sId = listDomainRetirementInfor.get(i).sId;
+			dataBeforeReflect.scd = listDomainRetirementInfor.get(i).scd;
+			dataBeforeReflect.pId = listDomainRetirementInfor.get(i).pId;
+			dataBeforeReflect.personName = listDomainRetirementInfor.get(i).personName;
+			dataBeforeReflect.requestFlag = EnumAdaptor.valueOf(listDomainRetirementInfor.get(i).notificationCategory, RequestFlag.class);
+			dataBeforeReflect.onHoldFlag = EnumAdaptor.valueOf(listDomainRetirementInfor.get(i).pendingFlag, OnHoldFlag.class);
+			dataBeforeReflect.registerDate = GeneralDate.today();
+			dataBeforeReflect.releaseDate = listDomainRetirementInfor.get(i).releaseDate;
+			dataBeforeReflect.stattus = EnumAdaptor.valueOf(listDomainRetirementInfor.get(i).status, Status.class);
+			dataBeforeReflect.date_01 = listDomainRetirementInfor.get(i).retirementDate;
+			dataBeforeReflect.select_code_01 = listDomainRetirementInfor.get(i).retirementCategory.value + "";
 
+			dataBeforeReflect.select_code_02 = listDomainRetirementInfor.get(i).retirementReasonCtgCode1;
+			dataBeforeReflect.select_name_02 = listDomainRetirementInfor.get(i).retirementReasonCtgName1;
+
+			dataBeforeReflect.select_code_03 = listDomainRetirementInfor.get(i).retirementReasonCtgCode2;
+			dataBeforeReflect.select_name_03 = listDomainRetirementInfor.get(i).retirementReasonCtgName2;
+
+			dataBeforeReflect.str_01 = listDomainRetirementInfor.get(i).retirementRemarks != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).retirementRemarks) : null;
+			dataBeforeReflect.str_02 = listDomainRetirementInfor.get(i).retirementReasonVal != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).retirementReasonVal) : null;
+			dataBeforeReflect.date_02 = listDomainRetirementInfor.get(i).dismissalNoticeDate != null
+					? GeneralDateTime.legacyDateTime(listDomainRetirementInfor.get(i).dismissalNoticeDate.date()) : null;
+			dataBeforeReflect.date_03 = listDomainRetirementInfor.get(i).dismissalNoticeDateAllow != null
+					? GeneralDateTime.legacyDateTime(listDomainRetirementInfor.get(i).dismissalNoticeDateAllow.date()) : null;
+			dataBeforeReflect.str_03 = listDomainRetirementInfor.get(i).reaAndProForDis != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).reaAndProForDis) : null;
+			dataBeforeReflect.int_01 = listDomainRetirementInfor.get(i).naturalUnaReasons_1;
+			dataBeforeReflect.str_04 = listDomainRetirementInfor.get(i).naturalUnaReasons_1Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_1Val)
+					: null;
+			dataBeforeReflect.int_02 = listDomainRetirementInfor.get(i).naturalUnaReasons_2;
+			dataBeforeReflect.str_05 = listDomainRetirementInfor.get(i).naturalUnaReasons_2Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_2Val)
+					: null;
+			dataBeforeReflect.int_03 = listDomainRetirementInfor.get(i).naturalUnaReasons_3;
+			dataBeforeReflect.str_06 = listDomainRetirementInfor.get(i).naturalUnaReasons_3Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_3Val)
+					: null;
+			dataBeforeReflect.int_04 = listDomainRetirementInfor.get(i).naturalUnaReasons_4;
+			dataBeforeReflect.str_07 = listDomainRetirementInfor.get(i).naturalUnaReasons_4Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_4Val)
+					: null;
+			dataBeforeReflect.int_05 = listDomainRetirementInfor.get(i).naturalUnaReasons_5;
+			dataBeforeReflect.str_08 = listDomainRetirementInfor.get(i).naturalUnaReasons_5Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_5Val)
+					: null;
+			dataBeforeReflect.int_06 = listDomainRetirementInfor.get(i).naturalUnaReasons_6;
+			dataBeforeReflect.str_09 = listDomainRetirementInfor.get(i).naturalUnaReasons_6Val != "" ? new NoteRetiment(listDomainRetirementInfor.get(i).naturalUnaReasons_6Val)
+					: null;
+
+			dataBeforeReflect.contractCode = AppContexts.user().contractCode();
+			dataBeforeReflect.companyCode = AppContexts.user().companyCode();
+			dataBeforeReflect.workId = 1;
+			dataBeforeReflect.workName = "退職者情報の登録";
+			switch (listDomainRetirementInfor.get(i).retirementCategory.value) {
+			case 1:
+				dataBeforeReflect.select_name_01 = "退職";
+				break;
+			case 2:
+				dataBeforeReflect.select_name_01 = "転籍";
+				break;
+
+			case 3:
+				dataBeforeReflect.select_name_01 = "解雇";
+				break;
+
+			case 4:
+				dataBeforeReflect.select_name_01 = "定年";
+				break;
+			}
+			
+			result.add(dataBeforeReflect);
+		}
+		
+		return result;
 	}
 
+	// 退職者情報の変更
+	public void updateRetireInformation(List<RetirementInformation> listRetirementInfor) {
+		if (!listRetirementInfor.isEmpty()) {
+			List<DataBeforeReflectingPerInfo> listDataBeforeReflect = convertRetiredEmpIntoDataBefReflec(listRetirementInfor);
+			this.dataBeforeReflectPerInfoService.updateDataBeforeReflectingPerInfo(listDataBeforeReflect);
+		}
+	}
+
+	
 	public void removeRetireInformation(String histId) {
 		this.dataBeforeReflectPerInfoService.removeDataBeforeReflectingPerInfo(histId);
 
 	}
+	
+	// 退職登録済みチェック
+	//[Input]
+	//・会社ID// companyID
+	//・社員ID// EmployeeID
+	//・基準日/ BaseDate
+	public int retirementRegisteredCheck(String cid, String sid, GeneralDate baseDate) {
+		
+		// 社員ID（List）と基準日から所属会社履歴項目を取得する(Lấy AffCompanyHistoryItem từ EmployeeID(List) và BaseDate)
+		List<AffCompanyHistItemImport> listAffCompanyHistItemImport = this.empInfoAdaptor.getByIDAndBasedate(baseDate, Arrays.asList(sid));
+		
+		// List<所属会社履歴項目> を確認する
+		boolean check = false;
+		Integer confirmationResul =9;
+		
+		for (int i = 0; i < listAffCompanyHistItemImport.size(); i++) {
+			AffCompanyHistItemImport affComHistItem = listAffCompanyHistItemImport.get(i);
+			if ((affComHistItem.isDestinationData() == false) && (!affComHistItem.getEndDate().equals(GeneralDate.max()))) {
+				check = true;
+			}
+		}
+		if (check) {
+			confirmationResul = 1;
+		}
+		
+		if (confirmationResul == 1) {
+			return confirmationResul;
+		}
+		
+		if (confirmationResul == 9) {
+			// ドメイン [個人情報反映前データ_退職者情報] を取得する
+			boolean domainExit = dataBeforeReflectingRepo.checkExitByWorkIdCidSid(cid, sid);
+			if (domainExit) {
+				confirmationResul = 2;
+			}else{
+				confirmationResul = 9;
+			}
+		}
+		
+		return confirmationResul;
+	}
+	
 }

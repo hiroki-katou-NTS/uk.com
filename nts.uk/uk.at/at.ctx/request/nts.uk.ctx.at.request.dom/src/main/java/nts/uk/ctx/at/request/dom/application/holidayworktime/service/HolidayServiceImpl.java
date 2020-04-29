@@ -299,8 +299,16 @@ public class HolidayServiceImpl implements HolidayService {
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings) && appEmploymentSettings.get(0) != null){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			AppEmploymentSetting appSet =  appEmploymentSettings.get(0);
-			List<AppEmployWorkType> lstEmploymentWorkType = appSet.getLstWorkType();
-			boolean isDisplay = appSet.isDisplayFlag();
+			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get(0).getListWTOAH()) ? null : 
+				CollectionUtil.isEmpty(appEmploymentSettings.get(0).getListWTOAH().get(0).getWorkTypeList()) ? null :
+					appEmploymentSettings.get(0).getListWTOAH().get(0).getWorkTypeList()
+					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType(),
+							appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get(0).getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get(0).getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+					.collect(Collectors.toList());
+			boolean isDisplay = false;
+			if(!CollectionUtil.isEmpty(appSet.getListWTOAH())) {
+				isDisplay = appSet.getListWTOAH().get(0).getWorkTypeSetDisplayFlg();				
+			}
 			if(!CollectionUtil.isEmpty(lstEmploymentWorkType) && isDisplay) {
                 List<String> sortedCodes = this.workTypeRepository
                         .getPossibleWorkTypeAndOrder(companyID,

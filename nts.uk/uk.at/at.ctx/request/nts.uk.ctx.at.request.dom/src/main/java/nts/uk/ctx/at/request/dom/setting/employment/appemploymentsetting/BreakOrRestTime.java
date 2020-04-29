@@ -14,11 +14,8 @@ public enum BreakOrRestTime {
 	/**
 	 * 振出 
 	 */
-	BREAKTIME(1),
-	/**
-	 * その他
-	 */
-	OTHER(9);
+	BREAKTIME(1);
+
 	public final int value;
 	
 	BreakOrRestTime(int value){

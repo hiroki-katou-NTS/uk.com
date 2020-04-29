@@ -12,6 +12,8 @@ module jcm007.a.service {
         'modifyRetireeInformation': 'databeforereflecting/modify-retiree-information',
         'remove': 'databeforereflecting/remove/{0}',
         'exportExcel': 'file/hr/report/databeforereflecting/export',
+        'eventChangeRetirementDate': 'databeforereflecting/event-change-retirementdate',
+        'getInterviewRecord': 'databeforereflecting/get-interview-record/{0}',
     }
 
     export function getData(): JQueryPromise<any> {
@@ -22,7 +24,7 @@ module jcm007.a.service {
         return ajax(paths.findEmployeeInfo, data);
     }
 
-    export function CheckStatusRegistration(sid: any): JQueryPromise<any> {
+    export function checkStatusRegistration(sid: any): JQueryPromise<any> {
         return ajax('hr', format(paths.checkStatusRegistration, sid));
     }
 
@@ -45,9 +47,17 @@ module jcm007.a.service {
     export function remove(hisId: any): JQueryPromise<any> {
         return ajax('hr', format(paths.remove, hisId));
     }
+    
+    export function getInterviewRecord(sid: any): JQueryPromise<any> {
+        return ajax('hr', format(paths.getInterviewRecord, sid));
+    }
 
     export function exportExcel(): JQueryPromise<any> {
         return nts.uk.request.exportFile(paths.exportExcel);
+    }
+    
+    export function eventChangeRetirementDate(object): JQueryPromise<any> {
+        return ajax(paths.eventChangeRetirementDate, object);
     }
 
 

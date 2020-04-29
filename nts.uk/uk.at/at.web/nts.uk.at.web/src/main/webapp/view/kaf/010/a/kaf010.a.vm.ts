@@ -264,6 +264,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 if(res.messageId == 'Msg_426'){
                     dialog.alertError({messageId : res.messageId}).then(function(){
                         nts.uk.ui.block.clear();
+                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                     });
                 }else{
                     nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){

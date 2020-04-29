@@ -92,16 +92,21 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 */
 	@Override
 	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings) {
+			ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings) {
 		List<WorkTypeOvertime> result = new ArrayList<>();
 		// 時刻計算利用チェック
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 		
 		if (sEmpHistImport != null 
-				&& !CollectionUtil.isEmpty(appEmploymentSettings)) {
+				&& appEmploymentSettings.isPresent()) {
 			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
+			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
+				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
+					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
+					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
+							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+					.collect(Collectors.toList());;
 			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
 				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
 				List<String> workTypeCodes = new ArrayList<>();

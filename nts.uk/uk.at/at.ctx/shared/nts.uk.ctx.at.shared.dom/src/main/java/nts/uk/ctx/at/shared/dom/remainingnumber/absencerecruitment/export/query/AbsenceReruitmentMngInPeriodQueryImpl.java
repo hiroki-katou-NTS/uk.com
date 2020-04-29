@@ -780,7 +780,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public double getAbsRecMngRemain(String employeeID, GeneralDate date) {
+	public AbsRecRemainMngOfInPeriod getAbsRecMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
 		//社員に対応する締め期間を取得する
 		DatePeriod period = closureService.findClosurePeriod(employeeID, date);
@@ -795,7 +795,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				Collections.emptyList(), 
 				Collections.emptyList(),
 				Optional.empty(),Optional.empty(),Optional.empty());
-		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();
+		return this.getAbsRecMngInPeriod(paramInput);
 	}
 	
 }

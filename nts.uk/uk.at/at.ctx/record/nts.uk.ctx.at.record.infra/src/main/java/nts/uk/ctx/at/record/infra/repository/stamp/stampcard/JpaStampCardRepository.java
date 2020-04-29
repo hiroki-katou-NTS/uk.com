@@ -49,11 +49,26 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}') ORDER BY sc.SID, sc.REGISTER_DATE ASC, sc.CARD_NUMBER ASC";
 
+	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.registerDate DESC";
+
 	
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
 		List<KwkdtStampCard> entities = this.queryProxy().query(GET_ALL_BY_SID, KwkdtStampCard.class)
 				.setParameter("sid", sid).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
+
+		return entities.stream()
+				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<StampCard> getLstStampCardBySidAndContractCd(String contractCd, String sid) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_ALL_BY_SID_CONTRACT_CODE, KwkdtStampCard.class)
+				.setParameter("sid", sid)
+				.setParameter("contractCd", contractCd).getList();
 		if (entities.isEmpty())
 			return Collections.emptyList();
 
@@ -84,10 +99,10 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	@Override
 	public Optional<StampCard> getByCardNoAndContractCode(String cardNo, String contractCd) {
-		Optional<StampCard> entity = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE, KwkdtStampCard.class)
+		Optional<StampCard> domain = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE, KwkdtStampCard.class)
 				.setParameter("cardNo", cardNo).setParameter("contractCd", contractCd).getSingle(x -> toDomain(x));
-		if (entity.isPresent())
-			return entity;
+		if (domain.isPresent())
+			return domain;
 		else
 			return Optional.empty();
 	}
@@ -115,6 +130,16 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			this.commandProxy().remove(entity);
 		}
 
+	}
+	
+	@Override
+	public void delete(StampCard domain) {
+		Optional<KwkdtStampCard> entityOpt = this.queryProxy().find(domain.getStampCardId(), KwkdtStampCard.class);
+		if (entityOpt.isPresent()) {
+			KwkdtStampCard entity = entityOpt.get();
+			this.commandProxy().remove(entity);
+		}
+		
 	}
 	
 	@Override
@@ -363,4 +388,5 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 		return stampCards;
 	}
+
 }

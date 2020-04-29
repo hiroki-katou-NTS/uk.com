@@ -1,24 +1,30 @@
 package nts.uk.screen.hr.app.databeforereflecting.command;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementCategory;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.RetirementInformation;
 import nts.uk.ctx.hr.shared.dom.databeforereflecting.retiredemployeeinfo.service.RetirementInformationService;
+import nts.uk.screen.hr.app.databeforereflecting.find.DatabeforereflectingFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeReflectCommand> {
+public class RegisterNewEmpCommandHandler extends CommandHandlerWithResult<DataBeforeReflectCommand, Boolean> {
 
 	@Inject
 	private RetirementInformationService retirementInformationService;
+	
+	@Inject
+	private DatabeforereflectingFinder finder;
 	
 	public static final String TIME_DAY_START = " 00:00:00";
 	
@@ -27,10 +33,18 @@ public class RegisterNewEmpCommandHandler extends CommandHandler<DataBeforeRefle
 	
 	// 2.退職者を新規登録する(Đăng ký mới người nghỉ hưu)
 	@Override
-	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
+	protected Boolean handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		DataBeforeReflectCommand command = context.getCommand();
 		RetirementInformation domainObj = convertDataToDomainObj(command);
-		retirementInformationService.addRetireInformation(domainObj);
+		retirementInformationService.addRetireInformation(Arrays.asList(domainObj));
+
+		boolean checkRetiredEmployeeList = finder.getRetiredEmployeeList(AppContexts.user().companyId());
+
+		if (checkRetiredEmployeeList) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){

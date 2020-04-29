@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.management;
+package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcctStampLayoutDetailPk implements Serializable {
+public class KrcmtStampLayoutDetailPk implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +26,8 @@ public class KrcctStampLayoutDetailPk implements Serializable {
 	public String companyId;
 	
 	/** 運用方法 (0: 共有利用, 1: 個人利用) */
-	@Column(name = "OPERATION_METHOD")
-	public int operationMethod;
+	@Column(name = "STAMP_MEANS")
+	public int stampMeans;
 	
 	/** ページNO */
 	@Column(name = "PAGE_NO")

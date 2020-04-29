@@ -14,5 +14,10 @@ import nts.uk.ctx.hr.develop.dom.retiredismissalregulation.RetireDismissalRegula
 public interface RetireDismissalRegulationRepository {
 	
 	Optional<RetireDismissalRegulation> getDomain(String cid, String histId);
+	
+	void addRetireDismissalRegulation(RetireDismissalRegulation domain);
+	
+	void updateRetireDismissalRegulation(RetireDismissalRegulation domain);
+	
 
 }
