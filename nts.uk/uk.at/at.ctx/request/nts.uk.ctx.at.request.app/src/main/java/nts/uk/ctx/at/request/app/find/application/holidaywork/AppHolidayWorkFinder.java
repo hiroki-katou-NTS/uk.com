@@ -18,6 +18,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
@@ -62,6 +63,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
@@ -259,7 +261,8 @@ public class AppHolidayWorkFinder {
 				hdWorkDispInfoWithDateOutput.getWorkTypeCD(), 
 				hdWorkDispInfoWithDateOutput.getWorkTimeCD(), 
 				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty());
+				Optional.empty(),
+				Collections.emptyList());
 		appHdWorkDispInfoOutput.setPreAppCheckResult(preAppCheckResult);
 		appHdWorkDispInfoOutput.setActualStatusCheckResult(actualStatusCheckResult);
 		
@@ -459,7 +462,8 @@ public class AppHolidayWorkFinder {
 				workTypeCD, 
 				workTimeCD, 
 				withdrawalAppSet.getOverrideSet(), 
-				Optional.empty());
+				Optional.empty(),
+				Collections.emptyList());
 		// 07_事前申請・実績超過チェック
 		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
@@ -654,6 +658,14 @@ public class AppHolidayWorkFinder {
 		// 休憩時間帯を取得する
 		List<DeductionTimeDto> timeZones = getBreakTimes(workTypeCD, siftCD, Optional.empty(), Optional.empty());
 		
+		List<DeductionTime> deductionTimeLst = CollectionUtil.isEmpty(timeZones) ? Collections.emptyList() : 
+			timeZones.stream().map(x -> {
+					nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto cmd = new nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto();
+					cmd.setStart(x.getStart());
+					cmd.setEnd(x.getEnd());
+					return new DeductionTime(cmd);
+				}).collect(Collectors.toList());
+		
 		// 07-02_実績取得・状態チェック
 		// アルゴリズム「残業申請設定を取得する」を実行する
 		ActualStatusCheckResult actualStatusCheckResult = null;
@@ -671,16 +683,16 @@ public class AppHolidayWorkFinder {
 				if (user == User.APPLICANT_APPROVER || user == User.APPLICANT) {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
-							siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()));
+							siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()), deductionTimeLst);
 				} else {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
-							siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS));
+							siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeLst);
 				}			
 			} else {
 				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 						GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
-						siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS));
+						siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeLst);
 			}
 			
 		}

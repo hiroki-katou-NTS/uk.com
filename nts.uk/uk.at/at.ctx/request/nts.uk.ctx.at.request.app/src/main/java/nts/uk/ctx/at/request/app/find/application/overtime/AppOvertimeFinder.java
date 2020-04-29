@@ -706,7 +706,8 @@ public class AppOvertimeFinder {
 					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
 					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
 					appOvertimeSetting.getPriorityStampSetAtr(), 
-					Optional.empty());
+					Optional.empty(),
+					Collections.emptyList());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
 					preExcessDisplaySetting, 
@@ -1355,7 +1356,7 @@ public class AppOvertimeFinder {
 				AppOvertimeSetting appOvertimeSetting = appOvertimeSettingRepository.getAppOver().get();
 				ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck
 						.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
-								workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
+								workTypeCode, siftCD, appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty(), breakTimes);
 				appOvertimeReference.setAppDateRefer(appDate);
 				List<CaculationTime> overTimeInputsRefer = new ArrayList<>();
 				List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(0, companyID);
@@ -1494,7 +1495,8 @@ public class AppOvertimeFinder {
 					appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(), 
 					appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v(), 
 					appOvertimeSetting.getPriorityStampSetAtr(), 
-					Optional.empty());
+					Optional.empty(),
+					Collections.emptyList());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
 					preExcessDisplaySetting, 
@@ -1741,7 +1743,7 @@ public class AppOvertimeFinder {
 					.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
 							result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
 							result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
-							appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
+							appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty(), Collections.emptyList());
 			result.setOpAppBefore(preAppCheckResult.opAppBefore.map(x -> ApplicationDto_New.fromDomain(x)).orElse(null));
 			result.setBeforeAppStatus(preAppCheckResult.beforeAppStatus);
 			result.setActualStatus(actualStatusCheckResult.actualStatus.value);

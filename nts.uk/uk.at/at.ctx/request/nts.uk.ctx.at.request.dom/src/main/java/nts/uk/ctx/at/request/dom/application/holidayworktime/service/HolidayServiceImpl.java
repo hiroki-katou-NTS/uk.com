@@ -662,7 +662,8 @@ public class HolidayServiceImpl implements HolidayService {
 					initWorkTypeWorkTime.getWorkTypeCD(), 
 					initWorkTypeWorkTime.getWorkTimeCD(), 
 					withdrawalAppSet.getOverrideSet(), 
-					Optional.of(withdrawalAppSet.getCalStampMiss()));
+					Optional.of(withdrawalAppSet.getCalStampMiss()),
+					hdWorkBreakTimeSetOutput.getDeductionTimeLst());
 		}
 		
 		result.setAppHdWorkInstruction(holidayWorkInstruction);
@@ -815,7 +816,8 @@ public class HolidayServiceImpl implements HolidayService {
 					holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(), 
 					holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v(), 
 					appHdWorkDispInfoOutput.getWithdrawalAppSet().getOverrideSet(), 
-					Optional.empty());
+					Optional.empty(),
+					Collections.emptyList());
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
 					.collect(groupingBy(HolidayWorkInput::getAttendanceType));
@@ -930,6 +932,10 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 		// 取得した「申請」．事前事後区分をチェックする
 		if(appHolidayWork.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
+			List<DeductionTime> deductionTimeLst = appHolidayWork.getHolidayWorkInputs().stream()
+					.filter(x -> x.getAttendanceType() == AttendanceType.RESTTIME)
+					.map(x -> new DeductionTime(new TimeWithDayAttr(x.getStartTime().v()), new TimeWithDayAttr(x.getEndTime().v())))
+					.collect(Collectors.toList());
 			// 07-01_事前申請状態チェック
 			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
 					companyID, 
@@ -949,7 +955,8 @@ public class HolidayServiceImpl implements HolidayService {
 						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
 						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
 						OverrideSet.TIME_OUT_PRIORITY, 
-						Optional.of(CalcStampMiss.CAN_NOT_REGIS));
+						Optional.of(CalcStampMiss.CAN_NOT_REGIS),
+						deductionTimeLst);
 			} else {
 				// 07-02_実績取得・状態チェック
 				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
@@ -960,7 +967,8 @@ public class HolidayServiceImpl implements HolidayService {
 						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
 						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
 						withdrawalAppSet.getOverrideSet(), 
-						Optional.of(withdrawalAppSet.getCalStampMiss()));
+						Optional.of(withdrawalAppSet.getCalStampMiss()),
+						deductionTimeLst);
 			}
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
 			Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
