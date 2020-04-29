@@ -6,6 +6,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
@@ -74,4 +76,9 @@ public class AppHdWorkDispInfoOutput {
 	private Optional<List<DivergenceReason>> comboDivergenceReason;
 	
 	private OvertimeRestAppCommonSetting overtimeRestAppCommonSetting;
+	
+	private PreAppCheckResult preAppCheckResult;
+	
+	private ActualStatusCheckResult actualStatusCheckResult;
+	
 }

@@ -922,6 +922,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.workTypeName(hdWorkDispInfoWithDateOutput.workTypeName);
             self.timeStart1(hdWorkDispInfoWithDateOutput.startTime);
             self.timeEnd1(hdWorkDispInfoWithDateOutput.endTime);
+            self.convertActualList(data);
         }
         
         convertActualList(data :any){

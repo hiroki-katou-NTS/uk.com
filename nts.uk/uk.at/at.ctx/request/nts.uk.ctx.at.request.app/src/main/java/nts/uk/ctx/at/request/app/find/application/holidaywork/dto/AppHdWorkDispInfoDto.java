@@ -9,6 +9,8 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 
@@ -67,6 +69,10 @@ public class AppHdWorkDispInfoDto {
 	
 	public OvertimeRestAppCommonSettingDto overtimeRestAppCommonSettingDto;
 	
+	public PreAppCheckResult preAppCheckResult;
+	
+	public ActualStatusCheckResult actualStatusCheckResult;
+	
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
 		AppHdWorkDispInfoDto result = new AppHdWorkDispInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
@@ -90,6 +96,8 @@ public class AppHdWorkDispInfoDto {
 			).orElse(Collections.emptyList());
 		}
 		result.overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto.convertToDto(appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting());
+		result.preAppCheckResult = appHdWorkDispInfoOutput.getPreAppCheckResult();
+		result.actualStatusCheckResult = appHdWorkDispInfoOutput.getActualStatusCheckResult();
 		return result;
 	}
 }

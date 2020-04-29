@@ -242,6 +242,27 @@ public class AppHolidayWorkFinder {
 				appDispInfoWithDateOutput.getAchievementOutputLst());
 		// 「休日出勤申請起動時の表示情報」．休日出勤申請起動時の表示情報(申請対象日関係あり)=上記取得した「休日出勤申請起動時の表示情報(申請対象日関係あり)」
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
+		
+		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
+		// 07-01_事前申請状態チェック
+		PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
+				companyID, 
+				appDispInfoNoDateOutput.getEmployeeInfoLst().get(0).getSid(), 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.BREAK_TIME_APPLICATION);
+		// 07-02_実績取得・状態チェック
+		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
+				companyID, 
+				appDispInfoNoDateOutput.getEmployeeInfoLst().get(0).getSid(), 
+				GeneralDate.fromString(appDate, DATE_FORMAT), 
+				ApplicationType.BREAK_TIME_APPLICATION, 
+				hdWorkDispInfoWithDateOutput.getWorkTypeCD(), 
+				hdWorkDispInfoWithDateOutput.getWorkTimeCD(), 
+				withdrawalAppSet.getOverrideSet(), 
+				Optional.empty());
+		appHdWorkDispInfoOutput.setPreAppCheckResult(preAppCheckResult);
+		appHdWorkDispInfoOutput.setActualStatusCheckResult(actualStatusCheckResult);
+		
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
 	}
 	/**
