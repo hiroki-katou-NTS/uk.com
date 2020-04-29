@@ -22,6 +22,7 @@ public interface CalculateDailyRecordServiceCenter{//
 		return calculatePassCompanySetting(CalculateOption.asDefault(), integrationOfDaily, companySet,reCalcAtr);
 	}
 
+	//勤務予定情報を計算する
 	//計算(会社共通のマスタを渡せる場合)
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,ExecutionType reCalcAtr);
 	
