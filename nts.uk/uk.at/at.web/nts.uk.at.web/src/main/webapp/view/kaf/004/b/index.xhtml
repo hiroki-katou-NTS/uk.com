@@ -276,7 +276,7 @@
 						<div class="valign-center control-group">
 							<div id="lblReasonTemp" class="leftWidth"
 								data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF004_17')}</div>
-							<div id="inpReasonTemp"
+							<div id="inpReasonTemp" style="width: 390px"
 								data-bind="ntsComboBox: {
 							name: '#[KAF004_17]',
 							dropDownAttachedToBody:true,
@@ -287,7 +287,7 @@
 							optionsText: 'reasonTemp',
 							enable: true,
 							columns: [
-								{ prop: 'reasonTemp', length: 15 },
+								{ prop: 'reasonTemp', length: 20 },
 							
 							]}"></div>
 						</div>

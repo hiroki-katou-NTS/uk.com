@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 
 public interface OvertimeService {
 	/**
@@ -57,6 +58,6 @@ public interface OvertimeService {
 	 * @param appOvertimeDetail
 	 * @return
 	 */
-	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail);
+	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 	
 }

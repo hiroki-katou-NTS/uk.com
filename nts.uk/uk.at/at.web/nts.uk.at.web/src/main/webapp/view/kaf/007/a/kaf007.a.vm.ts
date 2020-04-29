@@ -517,12 +517,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.recordWorkInfo().workTypeName(achievementOutput.workType.name);
                 self.recordWorkInfo().workTimeCode(achievementOutput.workTime.workTimeCD);
                 self.recordWorkInfo().workTimeName(achievementOutput.workTime.workTimeName);
-                if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
-                    self.recordWorkInfo().startTime1(achievementOutput.startTime1);
-                    self.recordWorkInfo().endTime1(achievementOutput.endTime1);
-                    self.recordWorkInfo().startTime2(achievementOutput.startTime2);
-                    self.recordWorkInfo().endTime2(achievementOutput.endTime2);    
-                }
+                self.recordWorkInfo().startTime1(achievementOutput.startTime1);
+                self.recordWorkInfo().endTime1(achievementOutput.endTime1);
+                self.recordWorkInfo().startTime2(achievementOutput.startTime2);
+                self.recordWorkInfo().endTime2(achievementOutput.endTime2);    
                 
                 
 //                ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);

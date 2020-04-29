@@ -149,4 +149,6 @@ public class CreateHolidayWorkCommand {
 	private boolean checkOver1Year;
 	
 	private boolean actualExceedConfirm;
+	
+	private AppHdWorkDispInfoCmd appHdWorkDispInfoCmd;
 }

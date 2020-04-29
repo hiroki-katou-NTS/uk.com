@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -300,7 +301,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
+	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
 		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
 			return null;
 		}
@@ -309,6 +310,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
 				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
 				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime()).value;
+				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
 	}
 }

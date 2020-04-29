@@ -15,59 +15,44 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexExcessUseSetAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CheckBeforeRegisterHolidayWork {
-	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	/*@Inject
+	private NewBeforeRegister_New newBeforeRegister;*/
 	@Inject
 	private IErrorCheckBeforeRegister beforeCheck;
 	@Inject
@@ -76,7 +61,7 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
-	@Inject
+	/*@Inject
 	private OvertimeRestAppCommonSetRepository overTimeSetRepo;
 	
 	@Inject
@@ -86,27 +71,33 @@ public class CheckBeforeRegisterHolidayWork {
 	private WithdrawalAppSetRepository withdrawalAppSetRepository;
 	
 	@Inject
-	private IOvertimePreProcess iOvertimePreProcess;
+	private IOvertimePreProcess iOvertimePreProcess;*/
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
-	@Inject
+	/*@Inject
 	private AppOvertimeSettingRepository appOvertimeSettingRepository;
 	
 	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
+	private WorkingConditionItemRepository workingConditionItemRepository;*/
 	
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	
-	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
+	@Inject
+	private HolidayService holidayService;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
+	/*public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
@@ -158,14 +149,41 @@ public class CheckBeforeRegisterHolidayWork {
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
 
 		return beforeRegisterColorConfirm(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isCheckOver1Year());
-	}
+	}*/
 
-	public OvertimeCheckResultDto CheckBeforeRegister(CreateHolidayWorkCommand command) {
+	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-
+		
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
+		
+		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
+		
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
+			typicalReason += command.getAppReasonID();
+		}
+		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.getApplicationReason();
+		}
+		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting();
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
+					&& Strings.isBlank(typicalReason+displayReason)) {
+				throw new BusinessException("Msg_115");
+			}
+		}
+		
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
@@ -184,11 +202,25 @@ public class CheckBeforeRegisterHolidayWork {
 				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				 command.getOverTimeShiftNight(),
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
-
-		return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isActualExceedConfirm());
+		
+		HdWorkCheckRegisterOutput output = holidayService.checkBeforeRegister(
+				companyId, 
+				appHdWorkDispInfoOutput, 
+				appRoot, 
+				false, 
+				holidayWorkDomain, 
+				command.getCalculateFlag());
+		
+		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
+		
+		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
+		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
+		return hdWorkCheckRegisterDto;
+		
+		// return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isActualExceedConfirm());
 	}
 	
-	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
+	/*public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean checkOver1Year) {
 		String companyID = AppContexts.user().companyId();
 		// 社員ID
 		String employeeId = AppContexts.user().employeeId();
@@ -196,9 +228,14 @@ public class CheckBeforeRegisterHolidayWork {
 		newBeforeRegister.processBeforeRegister(app, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		//03-06_計算ボタンチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
-				ApplicationType.BREAK_TIME_APPLICATION, app.getAppDate());
+		// Get setting info
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+				.prelaunchAppCommonSetService(app.getCompanyID(), employeeId, 1, ApplicationType.BREAK_TIME_APPLICATION, app.getAppDate());
+		// 時刻計算利用する場合にチェックしたい
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if (null != requestSetting) {
+			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+		}
 		// 03-01_事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
@@ -208,8 +245,6 @@ public class CheckBeforeRegisterHolidayWork {
 		
 		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>(); 
 		holidayWorkInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BREAKTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BREAKTIME));
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, app.getEmployeeID(), 1, 
-				EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), app.getAppDate());
 		List<OvertimeColorCheck> holidayTimeLst = new ArrayList<>();
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
@@ -278,7 +313,7 @@ public class CheckBeforeRegisterHolidayWork {
 					actualStatusCheckResult.actualStatus);
 		}
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
-	}
+	}*/
 
 	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
@@ -323,8 +358,14 @@ public class CheckBeforeRegisterHolidayWork {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		otherCommonAlgorithm.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
 		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
-				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+		// Get setting info
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
+		// 時刻計算利用する場合にチェックしたい
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if (null != requestSetting) {
+			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+		}
 		// 事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
@@ -343,9 +384,107 @@ public class CheckBeforeRegisterHolidayWork {
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 	
-	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command) {
+	public HdWorkCheckRegisterDto checkBeforeUpdate(UpdateHolidayWorkCommand command) {
+		String companyID = AppContexts.user().companyId();
+		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, command.getAppID());
+		if(!opAppHolidayWork.isPresent()){
+			throw new RuntimeException("khong tim dc doi tuong");
+		}
+		
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
+		
+		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
+		String appReason = Strings.EMPTY;	
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
+			typicalReason += command.getAppReasonID();
+		}
+		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.getApplicationReason();
+		} else {
+			if(Strings.isBlank(typicalReason)){
+				displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
+			}
+		} 
+		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+				.getRequestSetting().getApplicationSetting();
+		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
+					&& Strings.isBlank(typicalReason+displayReason)) {
+				throw new BusinessException("Msg_115");
+			}
+		}
+		appReason = typicalReason + displayReason;
+		
+		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
+		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>();
+		holidayWorkInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		holidayWorkInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		holidayWorkInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		holidayWorkInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
+				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyID, appHolidayWork.getAppID()));
+		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
+		String applicationReason = appReason;
+		appHolidayWork.setDivergenceReason(divergenceReason);
+		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
+		appHolidayWork.setAppOvertimeDetail(appOvertimeDetailOtp);
+		appHolidayWork.setHolidayShiftNight(command.getHolidayWorkShiftNight());
+		appHolidayWork.setWorkTimeCode(Strings.isBlank(command.getSiftTypeCode()) ? null : new WorkTimeCode(command.getSiftTypeCode()));
+		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(command.getWorkClockStart1(), command.getWorkClockEnd1(), command.getGoAtr1(), command.getBackAtr1()));
+		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(command.getWorkClockStart2(), command.getWorkClockEnd2(), command.getGoAtr2(), command.getBackAtr2()));
+		appHolidayWork.setWorkTypeCode(Strings.isBlank(command.getWorkTypeCode()) ? null : new WorkTypeCode(command.getWorkTypeCode()));
+		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
+		appHolidayWork.setVersion(appHolidayWork.getVersion());
+		appHolidayWork.getApplication().setVersion(command.getVersion());
+		
+		/*// 会社ID
+		String companyId = AppContexts.user().companyId();
+		// 申請ID
+		String appID = IdentifierUtil.randomUniqueId();
+		
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
 
-		// 会社ID
+		// Create Application
+		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+
+		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
+		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
+		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
+		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
+		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
+
+		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
+				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				 command.getOverTimeShiftNight(),
+				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());*/
+		
+		HdWorkCheckRegisterOutput output = holidayService.checkBeforeUpdate(
+				companyID, 
+				appHolidayWork.getApplication(), 
+				appHdWorkDispInfoOutput, 
+				command.getCalculateFlag(), 
+				appHolidayWork);
+		
+		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
+		
+		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
+		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
+		return hdWorkCheckRegisterDto;
+
+		/*// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
@@ -385,7 +524,7 @@ public class CheckBeforeRegisterHolidayWork {
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
 
-		return result;
+		return result;*/
 	}
 
 	public static List<HolidayWorkInput> getHolidayWorkInput(CreateHolidayWorkCommand command, String Cid, String appId) {

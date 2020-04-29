@@ -28,7 +28,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
     }
     __viewContext['viewModel'] = screenModel;
     if(currentApp.appType == 1 || currentApp.appType == 2 || currentApp.appType == 6 || currentApp.appType == 10) {
-        bindScreen(screenModel, currentApp.appType)
+        bindScreen(screenModel, currentApp.appType);
 //        __viewContext.bind(screenModel);
 //        if (currentApp.appType == 10) {
 //            $("#fixed-table").ntsFixedTable({ width: 100 });
@@ -43,7 +43,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
 //        });     
     } else {
         screenModel.start(moment.utc().format("YYYY/MM/DD"), true).done(function() {
-            bindScreen(screenModel, currentApp.appType)
+            bindScreen(screenModel, currentApp.appType);
 //            __viewContext.bind(screenModel);
 //            if (currentApp.appType == 10) {
 //                $("#fixed-table").ntsFixedTable({ width: 100 });

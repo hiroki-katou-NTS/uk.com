@@ -139,9 +139,10 @@ module nts.uk.at.view.kaf006.b{
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
-                service.changeRelaCD({
-                        frameNo: self.appAbsenceStartInfoDto.specAbsenceDispInfo.frameNo,
-                        specHdEvent: self.appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent,
+                if(self.appAbsenceStartInfoDto.specAbsenceDispInfo != null){
+                    service.changeRelaCD({
+                        frameNo: self.appAbsenceStartInfoDto.specAbsenceDispInfo == null ? '' : self.appAbsenceStartInfoDto.specAbsenceDispInfo.frameNo,
+                        specHdEvent: self.appAbsenceStartInfoDto.specAbsenceDispInfo == null ? '' : self.appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent,
                         relationCD: codeChange
                     }).done(function(data){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
@@ -163,10 +164,16 @@ module nts.uk.at.view.kaf006.b{
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //bug #110129
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.maxDay = self.maxDay();
+                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.dayOfRela = self.dayOfRela();
+                    
                     //ver21
                     let relaS = self.findRelaSelected(codeChange);
                     self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
+                }
+                
             self.isCheck.subscribe(function(checkChange){
                 if(self.mournerDis()){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
@@ -402,6 +409,26 @@ module nts.uk.at.view.kaf006.b{
         getChangeAllDayHalfDayForDetail(value: any){
             let self = this;
             let dfd = $.Deferred();
+            
+            if (value == 0) {               
+                        service.findWorkTimeCode(
+                           [self.workTimeCode()]
+                        ).done(data => {
+                            if(nts.uk.util.isNullOrEmpty(data)){
+                                
+                            } else {
+                                if(nts.uk.util.isNullOrUndefined(data[0])){
+                                       
+                                } else {
+                                    self.timeStart1(data[0].firstStartTime == null ? null : data[0].firstStartTime);
+                                    self.timeEnd1(data[0].firstEndTime == null ? null : data[0].firstEndTime);        
+                                }
+                            }
+                        }).fail(() => {
+                            
+                        });
+                    
+           }
             service.getChangeAllDayHalfDayForDetail({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                 endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
@@ -502,6 +529,8 @@ module nts.uk.at.view.kaf006.b{
             if(self.selectedTypeOfDuty() == null || self.selectedTypeOfDuty() == undefined || self.selectedTypeOfDuty().length == 0){
                 return;
             }
+            self.appAbsenceStartInfoDto.selectedWorkTimeCD = self.workTimeCode();
+            self.appAbsenceStartInfoDto.selectedWorkTypeCD = self.selectedTypeOfDuty();
             service.getChangeWorkType({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
                 employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
@@ -514,11 +543,14 @@ module nts.uk.at.view.kaf006.b{
                 //hoatt 2018.08.09
                 self.changeForSpecHd(result);
                 self.changeWorkHourValueFlg(result.workHoursDisp);
-                if(result.startTime1 != null){
-                    self.timeStart1(result.startTime1);    
-                }
-                if(result.endTime1 != null){
-                    self.timeEnd1(result.endTime1);    
+                if (result.workTimeLst != null && result.workTimeLst.length >=1 ) {
+                    if (result.workTimeLst[0].startTime != null) {
+                        self.timeStart1(result.workTimeLst[0].startTime);
+                    }
+                    if (result.workTimeLst[0].endTime != null) {
+                        self.timeEnd1(result.workTimeLst[0].endTime)
+                    }
+                    
                 }
                 dfd.resolve(result);
             }).fail((res) =>{
