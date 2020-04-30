@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber;
+package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 
 /**
  * 休暇残数シフトWORK

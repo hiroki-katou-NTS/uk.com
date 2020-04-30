@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.param;
+package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 休暇残数シフトリストWORK
@@ -22,7 +21,7 @@ public class RemNumShiftListWork {
 	 */
 	public void GetTotalRemNum(){
 		
-		List<RemNumShiftWork> list = remNumShiftWorkListOpt.get();
+		//List<RemNumShiftWork> list = remNumShiftWorkListOpt.get();
 		
 
 	}
