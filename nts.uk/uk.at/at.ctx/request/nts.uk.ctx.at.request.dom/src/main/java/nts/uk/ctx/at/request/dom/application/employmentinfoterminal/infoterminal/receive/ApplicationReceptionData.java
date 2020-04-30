@@ -64,7 +64,7 @@ public class ApplicationReceptionData {
 									.inputDate(NRHelper.getDateTime(ymd, time))
 									.enteredPersonID(employeeId)
 									.reversionReason(new AppReason(""))
-									.appDate(startDate.get())
+									.appDate(startDate.isPresent() ? startDate.get() : GeneralDate.today())
 									.appReason(new AppReason(""))//TODO: optional
 									.appType(typeCategory)
 									.employeeID(employeeId)

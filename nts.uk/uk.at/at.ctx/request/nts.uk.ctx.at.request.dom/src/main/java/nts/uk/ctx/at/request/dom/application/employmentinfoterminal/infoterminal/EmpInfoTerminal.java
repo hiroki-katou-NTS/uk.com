@@ -146,7 +146,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
 					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
 			AppAbsence appAbsence = new AppAbsence(companyId, appAbsenceNew.getAppID(),
-					NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value,
+					workTypeOpt.isPresent() ? NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value : null,
 					appAbsenceData.getWorkType(), null, true, false, AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE.value, null,
 					null, null, null, null);
 			appAbsence.setApplication(appAbsenceNew);
@@ -167,11 +167,15 @@ public class EmpInfoTerminal implements DomainAggregate {
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())), Optional.empty(),
 					appHolidayData.getReason());
-			SingleDaySchedule singleDay = workingConItemOpt.get().getWorkCategory().getHolidayTime();
+			SingleDaySchedule singleDay = workingConItemOpt.isPresent() ? workingConItemOpt.get().getWorkCategory().getHolidayTime() : null;
 			AppHolidayWork appHoliday = AppHolidayWork.createSimpleFromJavaType(companyId, appHolidayNew.getAppID(),
-					singleDay.getWorkTypeCode().isPresent() ? singleDay.getWorkTypeCode().get().v() : null,
-					singleDay.getWorkTimeCode().isPresent() ? singleDay.getWorkTimeCode().get().v() : null, null, null,
-					null, null, 0, 0, 0, 0, "", 0);
+					(singleDay != null && singleDay.getWorkTypeCode().isPresent())
+							? singleDay.getWorkTypeCode().get().v()
+							: null,
+					(singleDay != null && singleDay.getWorkTimeCode().isPresent())
+							? singleDay.getWorkTimeCode().get().v()
+							: null,
+					null, null, null, null, 0, 0, 0, 0, "", 0);
 			appHoliday.setHolidayWorkInputs(appHolidayData.holidayWorkInput(companyId, appHolidayNew.getAppID()));
 			// 乖離理由 -> ""
 			// 就業時間外深夜時間 -> 0
