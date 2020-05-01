@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -42,5 +43,12 @@ public interface StampRecordRepository {
 	 * @return
 	 */
 	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period);
+	
+	/**
+	 * @param stampNumber
+	 * @param stampDateTime
+	 * @return
+	 */
+	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime);
 
 }

@@ -11,7 +11,7 @@ public class NRHelper {
 	private NRHelper() {
 	};
 
-	protected static final List<Integer> APPREASON_TYPE = Arrays.asList(0, 1, 2, 6, 7, 8, 9);
+	public static final List<Integer> APPREASON_TYPE = Arrays.asList(0, 1, 2, 6, 7, 8, 9);
 	
 	protected static final List<String> BENTO_NO = IntStream
 			.concat(IntStream.rangeClosed('A', 'Z'),

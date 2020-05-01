@@ -83,6 +83,14 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStampRecord.class)
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
+	
+	//
+	@Override
+	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime) {
+		return this.queryProxy().find(
+				new KrcdtStampRecordPk(stampNumber.v(), stampDateTime),
+				KrcdtStampRecord.class).map(x -> toDomain(x));
+	}
 
 	public KrcdtStampRecord toEntity(StampRecord domain) {
 		String cid = AppContexts.user().companyId();
@@ -96,5 +104,6 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 				ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
 						entity.workTerminalInfoCd == null ? null : new EmpInfoTerminalCode(entity.workTerminalInfoCd)));
 	}
+
 
 }

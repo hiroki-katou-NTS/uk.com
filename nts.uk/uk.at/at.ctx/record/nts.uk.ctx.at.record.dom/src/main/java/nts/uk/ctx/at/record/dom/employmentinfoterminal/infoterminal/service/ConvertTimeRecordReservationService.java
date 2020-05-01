@@ -34,7 +34,7 @@ public class ConvertTimeRecordReservationService {
 
 	// 変換する
 	public static Optional<AtomTask> convertData(Require require, EmpInfoTerminalCode empInfoTerCode,
-			ContractCode contractCode, ReservationReceptionData reservReceptData) throws BusinessException {
+			ContractCode contractCode, ReservationReceptionData reservReceptData) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
