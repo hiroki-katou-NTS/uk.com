@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -101,8 +102,9 @@ public class OutsideWorkTimeSheet {
 			DailyCalculationPersonalInformation personalInfo,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet,
     		VacationClass vacationClass, AttendanceTime timevacationUseTimeOfDaily,
     		PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
-    		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+    		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+    		AddSetting addSetting,
+    		HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,
     		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, WorkTimeDailyAtr workTimeDailyAtr) {
 		
@@ -115,7 +117,7 @@ public class OutsideWorkTimeSheet {
 					autoCalculationSet, statutorySet, prioritySet,bonuspaySetting,midNightTimeSheet,
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
-					predetermineTimeSet, siftCode, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,
+					predetermineTimeSet, siftCode, autoCalcOfLeaveEarlySetting, addSetting, holidayAddtionSet,commonSetting,conditionItem,
 					predetermineTimeSetByPersonInfo,coreTimeSetting, specificDateAttrSheets,workTimeDailyAtr);
 
 			/* 0時跨ぎ処理 */
@@ -184,21 +186,15 @@ public class OutsideWorkTimeSheet {
 	 * @param bonuspaySetting 加給設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param midNightTimeSheet 深夜時間帯
-	 * @param overtimeSetting 残業時間の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
 	 * @param zeroTime 0時跨ぎ計算設定
-	 * @param yesterdayInfo 勤務情報（前日）
-	 * @param tommorowInfo 勤務情報（翌日）
 	 * @param todayWorkType 勤務種類（当日）
 	 * @param yesterdayWorkType 勤務種類（前日）
 	 * @param tommorowWorkType 勤務種類（翌日）
 	 * @param withinWorkTimeSheet 就業時間内時間帯
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
 	 * @param vacation 休暇クラス
-	 * @param illegularAddSetting 変形労働勤務の加算設定
-	 * @param flexAddSetting フレックス勤務の加算設定
-	 * @param regularAddSetting 通常勤務の加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @return 残業時間帯
 	 */
@@ -223,9 +219,6 @@ public class OutsideWorkTimeSheet {
 			WithinWorkTimeSheet withinWorkTimeSheet,
 			ManagePerPersonDailySet personCommonSetting,
 			VacationClass vacation,
-			WorkDeformedLaborAdditionSet illegularAddSetting,
-			WorkFlexAdditionSet flexAddSetting,
-			WorkRegularAdditionSet regularAddSetting,
 			HolidayAddtionSet holidayAddtionSet) {
 		
 		OverTimeSheet overTimeSheet = OverTimeSheet.createAsFlow(
@@ -239,19 +232,11 @@ public class OutsideWorkTimeSheet {
 				midNightTimeSheet,
 				addSetting,
 				timeVacationAdditionRemainingTime,
-				zeroTime,
 				todayWorkType,
-				yesterdayWorkType,
-				tommorowWorkType,
 				//共通処理呼ぶ用
-				yesterdayInfo,
-				tommorowInfo,
 				withinWorkTimeSheet,
 				personCommonSetting,
 				vacation,
-				illegularAddSetting,
-				flexAddSetting,
-				regularAddSetting,
 				holidayAddtionSet);
 		
 		//0時跨ぎの時間帯分割

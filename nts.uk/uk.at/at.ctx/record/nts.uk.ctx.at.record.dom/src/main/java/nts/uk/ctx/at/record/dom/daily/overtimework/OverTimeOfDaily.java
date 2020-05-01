@@ -249,12 +249,8 @@ public class OverTimeOfDaily {
 					vacationClass,
 					recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 					statutoryDivision,siftCode,
-					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-					recordReGet.getPersonalInfo().getWorkingSystem(),
-					recordReGet.getWorkDeformedLaborAdditionSet(),
-					recordReGet.getWorkFlexAdditionSet(),
-					recordReGet.getWorkRegularAdditionSet(),
+					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+					recordReGet.GetAddSetting(),
 					recordReGet.getHolidayAddtionSet().get(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),flexPreAppTime,
 					recordReGet.getDailyUnit(),recordReGet.getWorkTimezoneCommonSet(),conditionItem,

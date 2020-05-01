@@ -50,5 +50,12 @@ public class PremiumHolidayCalcMethod extends DomainObject{
 		this.advanceSet = emptyItem;
 	}
 	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public PremiumHolidayCalcMethod createCalculationByActualTime() {
+		return new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advanceSet);
+	}
 }
 

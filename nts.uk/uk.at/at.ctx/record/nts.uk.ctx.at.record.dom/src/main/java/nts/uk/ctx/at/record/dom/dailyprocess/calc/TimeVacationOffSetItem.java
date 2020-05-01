@@ -23,8 +23,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 
+	/** 控除相殺時間 */
 	@Setter
-	// 控除相殺時間
 	protected Optional<DeductionOffSetTime> deductionOffSetTime = Optional.empty();
 
 	/**
@@ -69,7 +69,7 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 	 */
 	public AttendanceTime calcTotalTime(NotUseAtr deductionOffSetTimeAtr, NotUseAtr roundAtr) {
 		
-		int calcTime = this.timeSheet.timeSpan.lengthAsMinutes();
+		int calcTime = this.timeSheet.getTimeSpan().lengthAsMinutes();
 		
 		// 全ての控除時間を控除する
 		if (!this.deductionTimeSheet.isEmpty()) {

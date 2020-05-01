@@ -131,4 +131,12 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot implements AddSe
 	public CalcurationByActualTimeAtr getCalculationByActualTimeAtr(PremiumAtr premiumAtr) {
 		return this.vacationCalcMethodSet.getCalcurationByActualTimeAtr(premiumAtr);
 	}
+	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public WorkDeformedLaborAdditionSet createCalculationByActualTime() {
+		return new WorkDeformedLaborAdditionSet(this.companyId, this.vacationCalcMethodSet.createCalculationByActualTime());
+	}
 }

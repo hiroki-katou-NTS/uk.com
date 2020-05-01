@@ -653,21 +653,12 @@ public class OverTimeSheet {
 	 * @param bonuspaySetting 加給設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param midNightTimeSheet 深夜時間帯
-	 * @param overtimeSetting 残業時間の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
-	 * @param zeroTime 0時跨ぎ計算設定
-	 * @param yesterdayInfo 勤務情報（前日）
-	 * @param tommorowInfo 勤務情報（翌日）
 	 * @param todayWorkType 勤務種類（当日）
-	 * @param yesterdayWorkType 勤務種類（前日）
-	 * @param tommorowWorkType 勤務種類（翌日）
 	 * @param withinWorkTimeSheet 就業時間内時間帯
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
 	 * @param vacation 休暇クラス
-	 * @param illegularAddSetting 変形労働勤務の加算設定
-	 * @param flexAddSetting フレックス勤務の加算設定
-	 * @param regularAddSetting 通常勤務の加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @return 残業時間帯
 	 */
@@ -682,19 +673,10 @@ public class OverTimeSheet {
 			MidNightTimeSheet midNightTimeSheet,
 			AddSetting addSetting,
 			AttendanceTime timeVacationAdditionRemainingTime,
-			ZeroTime zeroTime,
 			WorkType todayWorkType,
-			WorkType yesterdayWorkType,
-			WorkType tommorowWorkType,
-			//共通処理呼ぶ用
-			Optional<WorkInformation> yesterdayInfo,
-			Optional<WorkInformation> tommorowInfo,
 			WithinWorkTimeSheet withinWorkTimeSheet,
 			ManagePerPersonDailySet personCommonSetting,
 			VacationClass vacation,
-			WorkDeformedLaborAdditionSet illegularAddSetting,
-			WorkFlexAdditionSet flexAddSetting,
-			WorkRegularAdditionSet regularAddSetting,
 			HolidayAddtionSet holidayAddtionSet) {
 		
 		//残業開始時刻
@@ -770,12 +752,8 @@ public class OverTimeSheet {
 				todayWorkType,
 				predetermineTimeSetForCalc,
 				Optional.of(flowWorkSetting.getWorkingCode()),
-				integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLate(),
-				integrationOfDaily.getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-				personCommonSetting.personInfo.get().getLaborSystem(),
-				illegularAddSetting,
-				flexAddSetting,
-				regularAddSetting,
+				integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
+				addSetting,
 				holidayAddtionSet,
 				Optional.of(flowWorkSetting.getCommonSetting()),
 				personCommonSetting.personInfo.get(),

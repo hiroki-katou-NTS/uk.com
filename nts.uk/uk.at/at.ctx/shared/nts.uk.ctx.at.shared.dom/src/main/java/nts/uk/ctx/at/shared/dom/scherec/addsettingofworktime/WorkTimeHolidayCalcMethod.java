@@ -62,5 +62,12 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 		this.advancedSet = emptyItem;
 	}
 	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public WorkTimeHolidayCalcMethod createCalculationByActualTime() {
+		return new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advancedSet);
+	}
 }
 

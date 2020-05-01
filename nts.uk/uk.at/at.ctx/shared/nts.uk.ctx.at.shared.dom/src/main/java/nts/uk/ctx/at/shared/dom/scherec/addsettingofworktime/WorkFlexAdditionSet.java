@@ -134,4 +134,12 @@ public class WorkFlexAdditionSet extends AggregateRoot implements AddSetting{
 	public CalcurationByActualTimeAtr getCalculationByActualTimeAtr(PremiumAtr premiumAtr) {
 		return this.vacationCalcMethodSet.getCalcurationByActualTimeAtr(premiumAtr);
 	}
+	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public WorkFlexAdditionSet createCalculationByActualTime() {
+		return new WorkFlexAdditionSet(this.companyId, this.vacationCalcMethodSet.createCalculationByActualTime());
+	}
 }

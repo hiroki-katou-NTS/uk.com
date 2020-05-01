@@ -32,6 +32,8 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
@@ -202,8 +204,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet,
                                         		VacationClass vacationClass, AttendanceTime timevacationUseTimeOfDaily, 
                                         		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
-                                        		boolean late, boolean leaveEarly,WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-                                        		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+                                        		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+                                        		AddSetting addSetting,
+                                        		HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
                                         		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, WorkTimeDailyAtr workTimeDailyAtr) {
 		List<OverTimeFrameTimeSheetForCalc> createTimeSheet = new ArrayList<>();
 		
@@ -222,8 +225,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = new ArrayList<>();
 		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,afterVariableWork,autoCalculationSet,breakdownTimeDay,overTimeHourSetList,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
-															   vacationClass, timevacationUseTimeOfDaily, workType, predetermineTimeSet, siftCode, leaveEarly, leaveEarly, 
-															   workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,
+															   vacationClass, timevacationUseTimeOfDaily, workType, predetermineTimeSet, siftCode, autoCalcOfLeaveEarlySetting, addSetting,
+															   holidayAddtionSet,commonSetting,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,
 															   workTimeDailyAtr);
 				
 		
@@ -340,8 +343,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
                                                                     		List<OverTimeOfTimeZoneSet> overTimeHourSetList,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet, 
                                                                     		VacationClass vacationClass, AttendanceTime timevacationUseTimeOfDaily, 
                                                                     		WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode,
-                                                                    		boolean late, boolean leaveEarly, WorkingSystem workingSystem, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-                                                                    		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+                                                                    		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+                                                                    		AddSetting addSetting,
+                                                                    		HolidayAddtionSet holidayAddtionSet, Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
                                                                     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting, WorkTimeDailyAtr workTimeDailyAtr) {
         if(statutorySet.isLegal()) {//statutorySet.isLegal()) {
             /*振替処理   法定内基準時間を計算する*/
@@ -354,12 +358,8 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
         			workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(createWithinWorkTimeSheet, 
 																  vacationClass, 
 																  workType, 
-																  late, 
-																  leaveEarly, 
-																  workingSystem, 
-																  illegularAddSetting, 
-																  flexAddSetting, 
-																  regularAddSetting, 
+																  autoCalcOfLeaveEarlySetting,
+																  addSetting,
 																  holidayAddtionSet, 
 																  holidayCalcMethodSet, 
 																  CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
@@ -386,19 +386,13 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
 							:commonSetting;
             		workTime = createWithinWorkTimeSheet.calcWorkTime(PremiumAtr.RegularWork, 
-							  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
 							  vacationClass, 
 							  timevacationUseTimeOfDaily, 
-							  StatutoryDivision.Nomal, 
 							  workType, 
 							  predetermineTimeSet, 
 							  siftCode, 
-							  late, 
-							  leaveEarly, 
-							  workingSystem, 
-							  illegularAddSetting, 
-							  flexAddSetting, 
-							  regularAddSetting, 
+							  autoCalcOfLeaveEarlySetting,
+							  addSetting,
 							  holidayAddtionSet, 
 							  holidayCalcMethodSet,
 							  dailyUnit,
@@ -406,7 +400,6 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							  conditionItem,
 							  predetermineTimeSetByPersonInfo,coreTimeSetting
 							  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
-							  new DeductLeaveEarly(1, 0),
 							  NotUseAtr.NOT_USE
 							).getWorkTime();
         		}

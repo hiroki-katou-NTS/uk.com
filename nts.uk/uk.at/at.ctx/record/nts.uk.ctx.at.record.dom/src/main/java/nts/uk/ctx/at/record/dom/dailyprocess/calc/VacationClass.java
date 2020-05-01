@@ -234,7 +234,7 @@ public class VacationClass {
 	 * @return
 	 */
 	public VacationAddTime calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr, WorkType workType,
-			WorkingSystem workingSystem, Optional<WorkTimeCode> siftCode, WorkingConditionItem conditionItem,
+			Optional<WorkTimeCode> siftCode, WorkingConditionItem conditionItem,
 			Optional<HolidayAddtionSet> holidayAdditionSet, HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<PredetermineTimeSetForCalc> predTimeSettingForCalc,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
@@ -245,7 +245,7 @@ public class VacationClass {
 			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predTimeSettingForCalc, siftCode,
 					holidayAdditionSet.get(), conditionItem, predetermineTimeSetByPersonInfo);
 			// 休暇加算時間を加算するかどうか判断
-			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, workingSystem, premiumAtr,
+			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
 					holidayAdditionSet.get(), workType, holidayCalcMethodSet);
 		} else {// 実働時間のみで計算する 場合
 				// 休暇加算時間を全て 0 で返す
@@ -260,7 +260,7 @@ public class VacationClass {
 	 * @author ken_takasu
 	 * @return
 	 */
-	public VacationAddTime judgeVacationAddTime(BreakDownTimeDay breakdownTimeDay, WorkingSystem workingSystem,
+	public VacationAddTime judgeVacationAddTime(BreakDownTimeDay breakdownTimeDay,
 			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr, HolidayAddtionSet holidayAddtionSet, WorkType workType,
 			HolidayCalcMethodSet holidayCalcMethodSet) {
 		VacationAddTime vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0),

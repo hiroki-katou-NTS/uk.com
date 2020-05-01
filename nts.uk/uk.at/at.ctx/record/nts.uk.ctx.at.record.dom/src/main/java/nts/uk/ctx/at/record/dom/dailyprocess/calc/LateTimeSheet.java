@@ -282,7 +282,12 @@ public class LateTimeSheet{
 			boolean late //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			) {
 		//遅刻時間の計算
-		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		AttendanceTime calcforRecordTime = AttendanceTime.ZERO;
+
+		if(this.forRecordTimeSheet.isPresent()) {
+			calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		}
+		
 		//インターバル免除時間を控除する
 		
 		//遅刻計上時間の作成
@@ -687,12 +692,10 @@ public class LateTimeSheet{
 		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
 		TimevacationUseTimeOfDaily timeVacationUseTime) {
 		
-		if(!this.OffsetTime.isPresent()) this.OffsetTime = Optional.of(DeductionOffSetTime.createAllZero());
-		
 		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
 				deductionAtr,
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
-				this.OffsetTime.get());
+				this.OffsetTime.isPresent()?this.OffsetTime.get():DeductionOffSetTime.createAllZero());
 	}
 }

@@ -398,12 +398,8 @@ public class TotalWorkingTime {
 																							 StatutoryDivision.Nomal,workType,
 																							 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 																							 recordWorkTimeCode,
-																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																							 recordClass.getPersonalInfo().getWorkingSystem(),
-																							 recordClass.getWorkDeformedLaborAdditionSet(),
-																							 recordClass.getWorkFlexAdditionSet(),
-																							 recordClass.getWorkRegularAdditionSet(),
+																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+																							 recordClass.GetAddSetting(),
 																							 recordClass.getHolidayAddtionSet().get(),
 																							 recordClass.getHolidayCalcMethodSet(),
 																							 recordClass.getCoreTimeSetting(),
@@ -426,12 +422,8 @@ public class TotalWorkingTime {
 					 																				  StatutoryDivision.Nomal,workType,
 					 																				  recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					 																				  recordWorkTimeCode,
-					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-					 																				  recordClass.getPersonalInfo().getWorkingSystem(),
-					 																				  recordClass.getWorkDeformedLaborAdditionSet(),
-					 																				  recordClass.getWorkFlexAdditionSet(),
-					 																				  recordClass.getWorkRegularAdditionSet(),
+					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+					 																				  recordClass.GetAddSetting(),
 					 																				  recordClass.getHolidayAddtionSet().get(),
 					 																				  recordClass.getHolidayCalcMethodSet(),
 					 																				  recordClass.getCoreTimeSetting(),
@@ -1054,12 +1046,8 @@ public class TotalWorkingTime {
 																	  recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 																	  StatutoryDivision.Nomal,
 																	  workTimeCode,
-																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
-																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																	  recordClass.getPersonalInfo().getWorkingSystem(),
-																	  recordClass.getWorkDeformedLaborAdditionSet(),
-																	  recordClass.getWorkFlexAdditionSet(),
-																	  recordClass.getWorkRegularAdditionSet(),
+																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+																	  recordClass.GetAddSetting(),
 																	  recordClass.getHolidayAddtionSet().get(),
 																	  recordClass.getDailyUnit(),
 																	  recordClass.getWorkTimezoneCommonSet(),
@@ -1073,19 +1061,13 @@ public class TotalWorkingTime {
 			
 			//フレックス以外の場合
 			WorkHour workHour = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
-																														 recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																														 vacationClass,
 																														 recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
-																														 StatutoryDivision.Nomal,
 																														 workType,
 																														 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 																														 workTimeCode,
-																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
-																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																														 recordClass.getPersonalInfo().getWorkingSystem(),
-																														 recordClass.getWorkDeformedLaborAdditionSet(),
-																														 recordClass.getWorkFlexAdditionSet(),
-																														 recordClass.getWorkRegularAdditionSet(),
+																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+																														 recordClass.GetAddSetting(),
 																														 recordClass.getHolidayAddtionSet().get(),
 																														 recordClass.getHolidayCalcMethodSet(),
 																														 recordClass.getDailyUnit(),
@@ -1094,7 +1076,6 @@ public class TotalWorkingTime {
 																														 predetermineTimeSetByPersonInfo,
 																														 recordClass.getCoreTimeSetting()
 																														 ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-																														  new DeductLeaveEarly(1, 1),
 																														  NotUseAtr.USE
 																														 );
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();

@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 /**
@@ -15,7 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @NoArgsConstructor
 /*時給者の加算設定*/
-public class HourlyPaymentAdditionSet extends AggregateRoot{
+public class HourlyPaymentAdditionSet extends AggregateRoot implements AddSetting{
 	
 	/**  会社ID. */
 	private String companyId;
@@ -37,6 +39,17 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 				notDeductLateLeaveEarly,
 				calculateIncludeIntervalExemptionTime2,
 				enableSetPerWorkHour1);
+	}
+	
+	/**
+	 * constructor
+	 * @param companyId
+	 * @param vacationCalcMethodSet
+	 */
+	public HourlyPaymentAdditionSet(String companyId, HolidayCalcMethodSet vacationCalcMethodSet) {
+		super();
+		this.companyId = companyId;
+		this.vacationCalcMethodSet = vacationCalcMethodSet;
 	}
 
 	/**
@@ -84,5 +97,31 @@ public class HourlyPaymentAdditionSet extends AggregateRoot{
 		HolidayCalcMethodSet calcMethodSet = new HolidayCalcMethodSet(premiumHolidayCalcMethod, workTimeHolidayCalcMethod);
 		
 		this.vacationCalcMethodSet = calcMethodSet;
+	}
+	
+	/**
+	 * 休暇加算するかを取得する
+	 * @param premiumAtr
+	 * @return 加算する：USE 加算しない：NOT_USE
+	 */
+	public NotUseAtr getNotUseAtr(PremiumAtr premiumAtr) {
+		return this.vacationCalcMethodSet.getNotUseAtr(premiumAtr);
+	}
+	
+	/**
+	 * 実働のみで計算するかを取得する
+	 * @param premiumAtr
+	 * @return 実働時間のみで計算する：CALCULATION_BY_ACTUAL_TIME 実働時間以外も含めて計算する： CALCULATION_OTHER_THAN_ACTUAL_TIME
+	 */
+	public CalcurationByActualTimeAtr getCalculationByActualTimeAtr(PremiumAtr premiumAtr) {
+		return this.vacationCalcMethodSet.getCalcurationByActualTimeAtr(premiumAtr);
+	}
+	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public HourlyPaymentAdditionSet createCalculationByActualTime() {
+		return new HourlyPaymentAdditionSet(this.companyId, this.vacationCalcMethodSet.createCalculationByActualTime());
 	}
 }

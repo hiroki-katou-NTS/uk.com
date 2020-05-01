@@ -509,12 +509,10 @@ public class LeaveEarlyTimeSheet {
 		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
 		TimevacationUseTimeOfDaily timeVacationUseTime) {
 		
-		if(!this.OffsetTime.isPresent()) this.OffsetTime = Optional.of(DeductionOffSetTime.createAllZero());
-		
 		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
 				deductionAtr,
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
-				this.OffsetTime.get());
+				this.OffsetTime.isPresent()?this.OffsetTime.get():DeductionOffSetTime.createAllZero());
 	}
 }

@@ -1,6 +1,11 @@
 package nts.uk.ctx.at.record.dom.daily.holidaypriorityorder;
 
 
+/**
+ * 時間休暇相殺優先順位の項目
+ * @author daiki_ichioka
+ *
+ */
 public enum HolidayPriorityOrder {
 
 	/** 代休 */
@@ -15,7 +20,7 @@ public enum HolidayPriorityOrder {
 	/** 年休 */
 	ANNUAL_HOLIDAY(3);
 	
-	public int value;
+	private int value;
 
 	private HolidayPriorityOrder(int value) {
 		this.value = value;

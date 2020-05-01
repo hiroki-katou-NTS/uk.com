@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -68,21 +69,29 @@ public class DeductionTimeSheet {
 	
 	public static DeductionTimeSheet createTimeSheetForFixBreakTime(WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage,  Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet, TimeSpanForDailyCalc oneDayRange,
+			FixedWorkSetting fixedWorkSetting,
 			CommonRestSetting CommonSet, TimeLeavingOfDailyPerformance attendanceLeaveWork,
-			Optional<FixedRestCalculateMethod> fixedCalc, WorkTimeDivision workTimeDivision,
+			WorkTimeDivision workTimeDivision,
 			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,List<ShortWorkingTimeSheet> shortTimeSheets,
-			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting
-			,HolidayCalcMethodSet holidayCalcMethodSet,PredetermineTimeSetForCalc predetermineTimeSetForCalc,WorkType workType, List<EmTimeZoneSet> fixWoSetting) {
+			HolidayCalcMethodSet holidayCalcMethodSet,PredetermineTimeSetForCalc predetermineTimeSetForCalc, List<EmTimeZoneSet> fixWoSetting) {
 		// 計上用
 		val record = createDedctionTimeSheet(DeductionAtr.Appropriate, setMethod, clockManage, dailyGoOutSheet,
-				oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(),
-				Optional.empty(), breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
-				,predetermineTimeSetForCalc,workType,fixWoSetting);
+				oneDayRange, CommonSet, attendanceLeaveWork, 
+				Optional.of(fixedWorkSetting.getFixedWorkRestSetting().getCalculateMethod()),
+				workTimeDivision, Optional.empty(),
+				Optional.empty(), breakTimeOfDailyList, shortTimeSheets,
+				fixedWorkSetting.getCommonSetting(),
+				holidayCalcMethodSet
+				,predetermineTimeSetForCalc,fixWoSetting);
 		// 控除用
 		val ded = createDedctionTimeSheet(DeductionAtr.Deduction, setMethod, clockManage, dailyGoOutSheet, oneDayRange,
-				CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(), Optional.empty(),
-				breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
-				,predetermineTimeSetForCalc,workType,fixWoSetting);
+				CommonSet, attendanceLeaveWork,
+				Optional.of(fixedWorkSetting.getFixedWorkRestSetting().getCalculateMethod()), workTimeDivision,
+				Optional.empty(), Optional.empty(),
+				breakTimeOfDailyList, shortTimeSheets,
+				fixedWorkSetting.getCommonSetting(),
+				holidayCalcMethodSet
+				,predetermineTimeSetForCalc,fixWoSetting);
 		
 		return new DeductionTimeSheet(ded,record,breakTimeOfDailyList,dailyGoOutSheet,shortTimeSheets);
 	}
@@ -121,13 +130,13 @@ public class DeductionTimeSheet {
 			Optional<FixedRestCalculateMethod> fixedCalc, WorkTimeDivision workTimeDivision,
 			Optional<FlowWorkRestSettingDetail> flowDetail, Optional<FlowWorkRestTimezone> fluRestTime,
 			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,List<ShortWorkingTimeSheet> shortTimeSheets,
-			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting,HolidayCalcMethodSet holidayCalcMethodSet
-			,PredetermineTimeSetForCalc predetermineTimeSetForCalc,WorkType workType, List<EmTimeZoneSet> fixWoSetting) {
+			WorkTimezoneCommonSet commonSetting,HolidayCalcMethodSet holidayCalcMethodSet
+			,PredetermineTimeSetForCalc predetermineTimeSetForCalc, List<EmTimeZoneSet> fixWoSetting) {
 
 		/* 控除時間帯取得 控除時間帯リストへコピー */
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes(goOutTimeSheetList, oneDayRange, CommonSet,
 				attendanceLeaveWork, fixedCalc, workTimeDivision, flowDetail, dedAtr, setMethod, fluRestTime,
-				breakTimeOfDailyList, shortTimeSheets, workTimeShortTimeSet,holidayCalcMethodSet);
+				breakTimeOfDailyList, shortTimeSheets, commonSetting.getShortTimeWorkSet(),holidayCalcMethodSet);
 
 		/* 重複部分補正処理 */
 		useDedTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet).reCreate(setMethod, clockManage,
@@ -143,14 +152,12 @@ public class DeductionTimeSheet {
 		}
 
 		/* 丸め処理(未完成)*/
-		if(commonSetting.isPresent()) {
-			if(commonSetting.get().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
-				val mostFastOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == 1).findFirst();
-				val mostLateOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == fixWoSetting.size()).findFirst();
-				if(mostFastOclock.isPresent() && mostLateOclock.isPresent())
-					goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.get().getGoOutSet().getTotalRoundingSet(),mostFastOclock.get().getTimezone().getStart(),mostLateOclock.get().getTimezone().getEnd(),
-												predetermineTimeSetForCalc.getOneDayTimeSpan());
-			}
+		if(commonSetting.getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
+			val mostFastOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == 1).findFirst();
+			val mostLateOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == fixWoSetting.size()).findFirst();
+			if(mostFastOclock.isPresent() && mostLateOclock.isPresent())
+				goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.getGoOutSet().getTotalRoundingSet(),mostFastOclock.get().getTimezone().getStart(),mostLateOclock.get().getTimezone().getEnd(),
+											predetermineTimeSetForCalc.getOneDayTimeSpan());
 		}
 		return goOutDeletedList;
 	}
@@ -557,8 +564,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
-						,predetermineTimeSetForCalc,worktype,fixWoSetting);
+						breakTimeOfDailyList, shortTimeSheets,commonSetting.get(),holidayCalcMethodSet
+						,predetermineTimeSetForCalc,fixWoSetting);
 			// 予定を参照する
 			case REFER_SCHEDULE:
 				return createDedctionTimeSheet(dedAtr, WorkTimeMethodSet.FLOW_WORK,
@@ -566,8 +573,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
-						,predetermineTimeSetForCalc,worktype,fixWoSetting);
+						breakTimeOfDailyList, shortTimeSheets,commonSetting.get(),holidayCalcMethodSet
+						,predetermineTimeSetForCalc,fixWoSetting);
 			// 参照せずに打刻する
 			case STAMP_WHITOUT_REFER:
 				return createDedctionTimeSheet(dedAtr, WorkTimeMethodSet.FLOW_WORK,
@@ -575,8 +582,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
-						,predetermineTimeSetForCalc,worktype,fixWoSetting);
+						breakTimeOfDailyList, shortTimeSheets,commonSetting.get(),holidayCalcMethodSet
+						,predetermineTimeSetForCalc,fixWoSetting);
 			}
 		} else {// 流動休憩の場合
 			// switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod())

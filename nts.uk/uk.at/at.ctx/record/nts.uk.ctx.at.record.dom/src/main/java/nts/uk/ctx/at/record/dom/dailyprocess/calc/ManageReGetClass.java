@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -327,4 +328,17 @@ public class ManageReGetClass {
 		this.dailyUnit = managePerPerson.getDailyUnit();
 	}
 
+	/**
+	 * 加算設定を取得する
+	 * @return 自身の労働制の加算設定
+	 */
+	public AddSetting GetAddSetting() {
+		switch(this.personalInfo.getWorkingSystem()) {
+		case REGULAR_WORK: return this.workRegularAdditionSet;
+		case FLEX_TIME_WORK: return this.workFlexAdditionSet;
+		case VARIABLE_WORKING_TIME_WORK: return this.workDeformedLaborAdditionSet;
+		case EXCLUDED_WORKING_CALCULATE: return this.hourlyPaymentAdditionSet;
+		default: return this.workRegularAdditionSet;
+		}
+	}
 }

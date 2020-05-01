@@ -20,7 +20,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class TimeSpanForDailyCalc {
 	
-	public TimeSpanForCalc timeSpan;
+	/** 計算時間帯 */
+	private TimeSpanForCalc timeSpan;
 	
 	/**
 	 * @param start

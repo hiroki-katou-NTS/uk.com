@@ -74,7 +74,16 @@ public class HolidayCalcMethodSet extends DomainObject{
 		}else {
 			return this.premiumCalcMethodOfHoliday.getCalculateActualOperation();
 		}
-		
+	}
+	
+	/**
+	 * 「実働時間のみで計算する」に変更して作成する
+	 * @return 「実働時間のみで計算する」に変更したインスタンス
+	 */
+	public HolidayCalcMethodSet createCalculationByActualTime() {
+		return new HolidayCalcMethodSet(
+				this.premiumCalcMethodOfHoliday.createCalculationByActualTime(),
+				this.workTimeCalcMethodOfHoliday.createCalculationByActualTime());
 	}
 }
 

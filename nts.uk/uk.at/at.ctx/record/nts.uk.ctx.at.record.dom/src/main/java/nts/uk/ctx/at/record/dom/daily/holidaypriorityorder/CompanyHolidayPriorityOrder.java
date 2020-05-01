@@ -9,8 +9,12 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * 時間休暇相殺優先順位
+ * @author daiki_ichioka
+ *
+ */
 @Getter
-// 時間休暇相殺優先順位
 public class CompanyHolidayPriorityOrder extends AggregateRoot{
 
 	/** 会社ID */
@@ -21,7 +25,7 @@ public class CompanyHolidayPriorityOrder extends AggregateRoot{
 	
 	
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param companyId 会社ID
 	 */
 	public CompanyHolidayPriorityOrder(String companyId){
@@ -30,6 +34,10 @@ public class CompanyHolidayPriorityOrder extends AggregateRoot{
 		this.holidayPriorityOrders = setDefaultOrders();
 	}
 	
+	/**
+	 * デフォルトの優先順位を設定する
+	 * @return 優先順位(List)
+	 */
 	private List<HolidayPriorityOrder> setDefaultOrders(){
 		List<HolidayPriorityOrder> orders = Collections.emptyList();
 		orders = Arrays.asList(HolidayPriorityOrder.values());

@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -17,9 +16,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 public class TimeSheetOfDeductionItemList {
 
-	//控除項目の時間帯(List)
-	public List<TimeSheetOfDeductionItem> items = new ArrayList<>();
-	
+	/** 控除項目の時間帯(List) */
+	private List<TimeSheetOfDeductionItem> items = new ArrayList<>();
 	
 	/**
 	 * 渡された計算範囲と重複する控除項目の時間帯(List)を求める
@@ -53,7 +51,7 @@ public class TimeSheetOfDeductionItemList {
 	 */
 	public TimeWithDayAttr forwardByDeductionTime(TimeSpanForDailyCalc TimeSpan) {
 		//重複している時間帯
-		List<TimeSpanForDailyCalc> overlapptingTimes = items.stream()
+		List<TimeSpanForDailyCalc> overlapptingTimes = this.items.stream()
 				.filter(item -> item.getTimeSheet().getDuplicatedWith(TimeSpan).isPresent())
 				.map(item -> item.getTimeSheet().getDuplicatedWith(TimeSpan).get())
 				.collect(Collectors.toList());
