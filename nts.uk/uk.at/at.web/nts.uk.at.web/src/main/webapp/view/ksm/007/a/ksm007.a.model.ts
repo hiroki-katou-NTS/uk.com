@@ -55,14 +55,16 @@ class RegisterForm {
         self.workplaceGroupName(self.workplaceGroupName().trim());
  }
     
-    public convertToCommand() {
+    public convertToCommand(wkpGrID: number) {
         let self = this;
         return {
+            wkpGrID: wkpGrID,
             wkpGrCD: self.workplaceGroupCd(),
             wkpGrName: self.workplaceGroupName(),
             wkpGrType: self.selectedWkpType(),
             lstWKPID: _.map(self.workplaces(), "workplaceId")
         }
+        
     }
 }
 

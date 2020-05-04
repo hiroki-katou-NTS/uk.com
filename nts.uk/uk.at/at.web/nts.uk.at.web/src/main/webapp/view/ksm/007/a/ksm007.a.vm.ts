@@ -73,7 +73,7 @@ module nts.uk.at.view.ksm007.a {
             }
             nts.uk.ui.block.grayout();
             if(self.registerForm().newMode()) {
-                service.registerWorkplaceGroup(self.registerForm().convertToCommand())
+                service.registerWorkplaceGroup(self.registerForm().convertToCommand(null))
                 .done((res)=> {
                     self.checkWorkplaceGroupRegisterResult(res)
                     .done(() => {
@@ -86,12 +86,12 @@ module nts.uk.at.view.ksm007.a {
                     nts.uk.ui.block.clear();
                 });
             } else {
-                service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds[0]))
+                service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds()))
                 .done((res)=> {
                     self.checkWorkplaceGroupRegisterResult(res)
                     .done(() => {
                         self.options.reloadData.valueHasMutated();
-                        self.options.currentIds(res.wkpGrId);
+                        // self.options.currentIds(res.wkpGrId);
                         self.options.currentIds.valueHasMutated();
                     });
                 }).fail((res) => {
