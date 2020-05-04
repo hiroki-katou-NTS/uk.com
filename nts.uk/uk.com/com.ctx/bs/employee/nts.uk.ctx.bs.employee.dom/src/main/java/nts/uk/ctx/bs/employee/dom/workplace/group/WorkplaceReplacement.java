@@ -58,4 +58,11 @@ public enum WorkplaceReplacement {
 		// Not found.
 		return null;
 	}
+	
+	// [1] 指定職場グループに所属するか	
+	public boolean checkWplReplace() {
+		if (this == WorkplaceReplacement.ADD || this == WorkplaceReplacement.ALREADY_BELONGED)
+			return true;
+		return false;
+	}
 }

@@ -10,7 +10,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 
 /**
  * 職場グループに所属していない職場を取得する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに所属していない職場を取得する.職場グループに所属していない職場を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに所属していない職場を取得する
  * @author phongtq
  *
  */

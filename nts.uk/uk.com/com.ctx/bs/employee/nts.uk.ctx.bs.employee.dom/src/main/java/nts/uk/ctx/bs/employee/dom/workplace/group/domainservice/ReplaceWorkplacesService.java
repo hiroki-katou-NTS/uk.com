@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 /**
  * 職場グループに所属する職場を入れ替える
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに所属する職場を入れ替える.職場グループに所属する職場を入れ替える
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに所属する職場を入れ替える
  * @author phongtq
  *
  */

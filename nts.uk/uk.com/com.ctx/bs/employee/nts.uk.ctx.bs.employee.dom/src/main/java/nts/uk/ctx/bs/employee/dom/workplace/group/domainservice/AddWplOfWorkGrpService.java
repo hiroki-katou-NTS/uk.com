@@ -8,7 +8,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 /**
  * 職場グループに所属する職場を追加する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに職場を追加する.職場グループに所属する職場を追加する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループに所属する職場を追加する
+ * 
  * @author phongtq
  *
  */
@@ -21,10 +22,10 @@ public class AddWplOfWorkGrpService {
 			// if $旧所属情報.職場グループID == 職場グループ.職場グループID																
 			if (formerAffInfo.get().getWKPGRPID().equals(group.getWKPGRPID())) {
 				// return 職場グループの職場入替処理結果#所属済み()													
-				return WorkplaceReplaceResult.alreadyBelong();
+				return WorkplaceReplaceResult.alreadyBelong(formerAffInfo.get().getWKPGRPID());
 			} else {
 				// return 職場グループの職場入替処理結果#別職場に所属()														
-				return WorkplaceReplaceResult.belongAnother();
+				return WorkplaceReplaceResult.belongAnother(formerAffInfo.get().getWKPGRPID());
 			}
 		}
 		Optional<AtomTask> atomTaks = Optional.of(AtomTask.of(() -> {

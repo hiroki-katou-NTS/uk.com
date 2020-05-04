@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.employee.employeeinfo.workplacegroup;
+package nts.uk.ctx.bs.employee.app.command.workplace.group;
 
 import java.util.List;
 

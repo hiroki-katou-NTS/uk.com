@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 import nts.arc.task.tran.AtomTask;
 /**
  * 職場グループを削除する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループを削除する.職場グループを削除する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループを削除する
  * @author phongtq
  *
  */
