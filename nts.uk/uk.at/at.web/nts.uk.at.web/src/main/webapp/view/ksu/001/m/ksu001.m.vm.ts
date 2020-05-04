@@ -100,35 +100,40 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
             service.startPage(self.selectedCode()).done(function(data) {
                 console.log(data);
-               if(data.listRankDto.length == 0){
-                  nts.uk.ui.dialog.error({ messageId: "Msg_1643"});
-                   }
+                 if(data.listRankDto.length == 0) {
+                     nts.uk.ui.dialog.error({ messageId: "Msg_1643"});
+                 }
                 _.orderBy(data.listRankDto, 'priority', 'asc');
                 
                 _.forEach(data.listEmpRankDto, function(item) {
                     let matchRank = _.find(data.listRankDto, ['rankCd', item.emplRankCode]);
                     if (matchRank != undefined) {
                         item.rankName = matchRank.rankSymbol;
-
+                        item.priority = matchRank.priority;
                     }
                     else {
                         item.rankName = item.emplRankCode + " " +  "マスタ未登録";
                     }
                     //item.rankName = (matchRank != null) ? matchRank.rankSymbol : "";
                 });
-
+                
                 _.forEach(self.listEmpData(), function(item) {
                     let matchRank = _.find(data.listEmpRankDto, ['employeeID', item.id]);
                     item.emplRankCode = matchRank != null ? matchRank.emplRankCode : "";
                     item.rankName = matchRank != null ? matchRank.rankName : "";
+                    item.priority = matchRank != null ? matchRank.priority : "z";
 
                 });
                 //Sort theo emplRankCode và employeeCode 
+                
                 self.listRankDto(data.listRankDto);
                 self.listEmpRankDto(data.listEmpRankDto);
+                
                 self.employeeList(_.sortBy(self.listEmpData(), [(item) => { 
                     return item.emplRankCode == "" ? "z" : item.emplRankCode; 
                }, 'code']));
+               // _.orderBy(self.employeeList(), ['priority', 'code'], ['asc', 'asc']);
+                self.employeeList(_.orderBy(self.employeeList(), ['priority', 'code'], ['asc', 'asc']));
                 var tempOptionalDataSource: any = [];
                 if (self.listEmpData() != null) {
                     self.listEmpData().forEach(function(item) {

@@ -33,7 +33,8 @@ public class GetRankEmpFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		List<RankDto> listRankDto = rankRepository.getListRankOrderbyPriority(companyId).stream()
-				.map(x -> new RankDto(x.getRankCode().v(), x.getRankSymbol().v())).collect(Collectors.toList());
+				.map(x -> new RankDto(x.getRankCode(), x.getRankSymbol(), x.getPriority())).collect(Collectors.toList());
+		
 		// Query ランクマスタを優先順に並べて取得する
 		// 優先順でランクリストを取得する(ログイン会社ID)
 		List<EmployeeRankDto> listEmpRankDto = employeeRankRepository.getAll(listEmpId).stream()

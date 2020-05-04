@@ -15,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankSymbol;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.valueobject.RankWithPriority;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.rank.KscmtRank;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.rank.KscmtRankPk;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -167,9 +168,9 @@ public class JpaRankRepository extends JpaRepository implements RankRepository {
 	}
 
 	@Override
-	public List<Rank> getListRankOrderbyPriority(String companyId) {
+	public List<RankWithPriority> getListRankOrderbyPriority(String companyId) {
 		return this.queryProxy().query(GET_LIST_RANK__ORDER_BY_PRIORITY, KscmtRank.class).setParameter("companyId", companyId)
-				.getList(x -> toRankDomain(x));
+				.getList(x -> new RankWithPriority(x.kscmtRankPk.companyId, x.kscmtRankPk.rankCd, x.rankSymbol, x.priority));
 	}
 
 }

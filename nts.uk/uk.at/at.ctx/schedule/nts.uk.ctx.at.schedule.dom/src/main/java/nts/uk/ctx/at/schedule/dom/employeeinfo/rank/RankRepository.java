@@ -3,6 +3,8 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.valueobject.RankWithPriority;
+
 /**
  * ランクRepository
  * 
@@ -75,5 +77,5 @@ public interface RankRepository {
 	 */
 	Optional<RankPriority> getRankPriority(String companyId);
 	
-	List<Rank> getListRankOrderbyPriority(String companyId);
+	List<RankWithPriority> getListRankOrderbyPriority(String companyId);
 }
