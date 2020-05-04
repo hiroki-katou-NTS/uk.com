@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -96,17 +97,18 @@ public class UpdateWorkplaceGroupCommandHandler
 		if (!lstWplGrId.isEmpty()) {
 			lstWplGroups = repo.getAllById(CID, lstWplGrId);
 		}
+		AtomicBoolean checkStop = new AtomicBoolean(false);
 		resultProcessData.forEach(x -> {
 			// 7: not 所属対象がある
-			boolean check = false;
 			if (x.getWorkplaceReplacement().checkWplReplace() == false) {
-				check = true;
-				return;
-			}
-			if(check == true) {
+				checkStop.set(true);
 				return;
 			}
 		});
+		
+		if(checkStop.get() == true) {
+			return new ResWorkplaceGroupResult();
+		}
 
 		// 8: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
 		// map $.永続化処理

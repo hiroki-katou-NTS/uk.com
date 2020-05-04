@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 /**
  * 
@@ -12,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ResWorkplaceGroupResult {
 
 	/** 職場グループ登録処理結果 */
