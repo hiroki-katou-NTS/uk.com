@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.schedule.app.query.RankDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
@@ -15,8 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author hieult
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.社員情報.ランク.App.ランクの明細を取得する
- *
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).M：ランク分け.メニュー別OCD.起動時
  */
 @Stateless
 public class GetRankEmpFinder {
@@ -27,9 +25,13 @@ public class GetRankEmpFinder {
 	@Inject
 	private EmployeeRankRepository employeeRankRepository;
 
-	// ランクマスタを優先順に並べて取得する
+	/**
+	 * 
+	 * @param listEmpId
+	 * @return
+	 */
 	public RankDivisionDto getRankbyPriorityOrder(List<String> listEmpId) {
-
+		// ランクマスタを優先順に並べて取得する	
 		String companyId = AppContexts.user().companyId();
 		
 		List<RankDto> listRankDto = rankRepository.getListRankOrderbyPriority(companyId).stream()

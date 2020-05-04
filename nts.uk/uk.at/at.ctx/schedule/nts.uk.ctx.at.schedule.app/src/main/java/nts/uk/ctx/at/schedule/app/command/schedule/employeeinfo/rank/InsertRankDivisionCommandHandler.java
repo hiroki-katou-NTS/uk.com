@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
@@ -18,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 /**
  * 
  * @author hieult
- *
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).M：ランク分け.メニュー別OCD.登録する
  */
 @Stateless
 public class InsertRankDivisionCommandHandler extends CommandHandler<RankDivisionCommand> {

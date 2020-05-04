@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RankDto {
-	
+	/** ランクコード **/
 	public String rankCd;
-
+	/** 記号 **/
 	public String rankSymbol;
-	
+	/** priority **/
 	public int priority;
 	
 	public RankDto(String rankCd, String rankSymbol) {

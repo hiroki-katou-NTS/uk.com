@@ -129,11 +129,14 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 self.listRankDto(data.listRankDto);
                 self.listEmpRankDto(data.listEmpRankDto);
                 
-                self.employeeList(_.sortBy(self.listEmpData(), [(item) => { 
-                    return item.emplRankCode == "" ? "z" : item.emplRankCode; 
+                self.employeeList(_.sortBy(self.listEmpData(), [(item) => {
+                    if(!item.priority) {
+                        return 9998;
+                    } 
+                    return item.emplRankCode == "" ? 9999 : item.priority; 
                }, 'code']));
                // _.orderBy(self.employeeList(), ['priority', 'code'], ['asc', 'asc']);
-                self.employeeList(_.orderBy(self.employeeList(), ['priority', 'code'], ['asc', 'asc']));
+              //  self.employeeList(_.orderBy(self.employeeList(), ['priority', 'code'], ['asc', 'asc']));
                 var tempOptionalDataSource: any = [];
                 if (self.listEmpData() != null) {
                     self.listEmpData().forEach(function(item) {
