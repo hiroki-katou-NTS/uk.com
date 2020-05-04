@@ -35,7 +35,7 @@ public class AsposeCreateUnsetWorkplaceGenerator extends AsposeCellsReportGenera
 			OutputExportKSM007 query) {
 		String companyId = AppContexts.user().companyId();
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
-			reportContext.getWorkbook().getWorksheets().get(0).setName(TextResource.localize("KSM007_1"));
+			reportContext.getWorkbook().getWorksheets().get(0).setName("Sheet1");
 			
 			Optional<Company> optionalCompany = companyRepo.find(companyId);
 			
