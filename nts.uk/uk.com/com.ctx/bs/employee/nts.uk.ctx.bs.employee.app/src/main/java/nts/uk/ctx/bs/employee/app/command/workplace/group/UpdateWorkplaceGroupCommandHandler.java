@@ -106,8 +106,19 @@ public class UpdateWorkplaceGroupCommandHandler
 			}
 		});
 		
+		// List<職場ID, 職場コード, 職場名称>
+		List<WorkplaceParam> workplaceParams = listWorkplaceInfo.stream()
+				.map(x -> new WorkplaceParam(x.getWorkplaceId(), x.getWorkplaceCode(), x.getWorkplaceName()))
+				.collect(Collectors.toList());
+		
+		// List<Optional<職場グループコード, 職場グループ名称>>
+		List<WorkplaceGroupResult> groupResults = lstWplGroups.stream()
+				.map(x -> new WorkplaceGroupResult(Optional.of(x.getWKPGRPCode().v()), Optional.of(x.getWKPGRPName().v())))
+				.collect(Collectors.toList());
+		boolean checkProcessResult = false;
 		if(checkStop.get() == true) {
-			return new ResWorkplaceGroupResult();
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
+					resultProcessData, groupResults);
 		}
 
 		// 8: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -118,7 +129,7 @@ public class UpdateWorkplaceGroupCommandHandler
 
 		// 9.1: persist
 		this.repo.update(wpgrp.get());
-		boolean checkProcessResult = true;
+		checkProcessResult = true;
 
 		// 9.2: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x -> {
@@ -128,18 +139,9 @@ public class UpdateWorkplaceGroupCommandHandler
 			});
 		});
 		
-		// List<職場ID, 職場コード, 職場名称>
-				List<WorkplaceParam> workplaceParams = listWorkplaceInfo.stream()
-						.map(x -> new WorkplaceParam(x.getWorkplaceId(), x.getWorkplaceCode(), x.getWorkplaceName()))
-						.collect(Collectors.toList());
-				
-				// List<Optional<職場グループコード, 職場グループ名称>>
-				List<WorkplaceGroupResult> groupResults = lstWplGroups.stream()
-						.map(x -> new WorkplaceGroupResult(Optional.of(x.getWKPGRPCode().v()), Optional.of(x.getWKPGRPName().v())))
-						.collect(Collectors.toList());
 
 		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
-				resultProcess, groupResults);
+				resultProcessData, groupResults);
 
 		return groupResult;
 	}
