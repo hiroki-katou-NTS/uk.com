@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,14 +32,20 @@ public class ReplaceWorkplacesServiceTest {
 			{
 				require.getByWKPGRPID("00000000000001");// dummy
 				result = lstFormerAffInfo;
-				
 			}
 		};
 		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.getWorkplace(require, group, lstWorkplaceId);
 		workplacesService.forEach((WKPID, result) -> {
+			
+			new Expectations() {
+				{
+					require.deleteByWKPID("00000000000001");// dummy
+				}
+			};
 			result.getPersistenceProcess().get().run();
 		});
 		
 		assertThat(workplacesService.isEmpty()).isFalse();
-	} 
+	}
+	
 }

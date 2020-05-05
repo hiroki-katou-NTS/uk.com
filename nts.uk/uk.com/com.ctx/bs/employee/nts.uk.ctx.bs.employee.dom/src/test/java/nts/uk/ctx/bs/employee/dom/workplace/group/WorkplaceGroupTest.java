@@ -8,7 +8,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup.Require;
-import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.DeleteWorkplaceGroupService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.DomainServiceHelper;
 
 public class WorkplaceGroupTest {
@@ -24,9 +23,12 @@ public class WorkplaceGroupTest {
 	
 	@Test
 	public void addAffWorkplaceGroup() {
-		AffWorkplaceGroup group = DomainServiceHelper.Helper.DUMMY_AFF;
+		AffWorkplaceGroup group = new AffWorkplaceGroup(
+				"01",
+				"01");
 		group = WorkplaceGroup.addAffWorkplaceGroup(group.getWKPGRPID(), group.getWKPID());
 		NtsAssert.invokeGetters(group);
+		assertThat(group.getWKPGRPID().equals("01")).isTrue();
 	}
 	
 	@Test

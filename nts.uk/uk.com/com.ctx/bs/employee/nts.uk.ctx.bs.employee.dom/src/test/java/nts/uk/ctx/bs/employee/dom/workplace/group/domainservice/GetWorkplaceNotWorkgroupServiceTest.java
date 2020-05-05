@@ -2,9 +2,11 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -51,21 +53,29 @@ public class GetWorkplaceNotWorkgroupServiceTest {
 				require.getAll();// dummy
 			}
 		};
-		
 		List<WorkplaceInformation> importss = GetWorkplaceNotWorkgroupService.getWorkplace(require, baseDate);
-		assertThat(importss).isNotEmpty();
+		Assert.assertEquals(lstInfoImports, importss);
 	}
 	
 	@Test
 	public void get_empty_2() {
-		List<WorkplaceInformation> lstInfoImports = DomainServiceHelper.getLstWpIISecond();
+		List<WorkplaceInformation> lstInfoImports = Arrays.asList(
+				new WorkplaceInformation("dummy", true, "dummy", "000000000000000000000000000000000012", "dummy", "dummy", "dummy", "dummy", "dummy", "dummy"),
+				new WorkplaceInformation("dummy", true, "dummy", "000000000000000000000000000000000013", "dummy", "dummy", "dummy", "dummy", "dummy", "dummy"),
+				new WorkplaceInformation("dummy", true, "dummy", "000000000000000000000000000000000014", "dummy", "dummy", "dummy", "dummy", "dummy", "dummy"),
+				new WorkplaceInformation("dummy", true, "dummy", "000000000000000000000000000000000015", "dummy", "dummy", "dummy", "dummy", "dummy", "dummy"));
 		new Expectations() {
 			{
 				require.getAllActiveWorkplace(baseDate);// dummy
 				result = lstInfoImports;
 			}
 		};
-		List<AffWorkplaceGroup> workplaceGroup = DomainServiceHelper.getHelper();
+		
+		List<AffWorkplaceGroup> workplaceGroup = Arrays.asList(
+				new AffWorkplaceGroup("00000000000006", "000000000000000000000000000000000015"),
+				new AffWorkplaceGroup("00000000000007", "000000000000000000000000000000000012"),
+				new AffWorkplaceGroup("00000000000008", "000000000000000000000000000000000013"),
+				new AffWorkplaceGroup("00000000000009", "000000000000000000000000000000000014"));
 		new Expectations() {
 			{
 				require.getAll();// dummy
@@ -73,7 +83,6 @@ public class GetWorkplaceNotWorkgroupServiceTest {
 			}
 		};
 		List<WorkplaceInformation> importss = GetWorkplaceNotWorkgroupService.getWorkplace(require, baseDate);
-		assertThat(importss).isEmpty();
-		
+		assertThat(importss.isEmpty()).isTrue();
 	}
 }

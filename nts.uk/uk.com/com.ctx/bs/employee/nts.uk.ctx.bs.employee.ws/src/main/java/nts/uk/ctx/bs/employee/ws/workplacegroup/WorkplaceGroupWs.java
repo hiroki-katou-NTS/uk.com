@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.app.command.workplace.group.DeleteWorkplaceGroupCo
 import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupResult;
+import nts.uk.ctx.bs.employee.app.command.workplace.group.ResWorkplaceGroupResult;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.UpdateWorkplaceGroupCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupDto;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupFinder;
@@ -72,13 +73,13 @@ public class WorkplaceGroupWs extends WebService {
 
 	@POST
 	@Path("registerWorkplaceGroup")
-	public RegisterWorkplaceGroupResult registerWorkplaceGroup(RegisterWorkplaceGroupCommand command) {
+	public ResWorkplaceGroupResult registerWorkplaceGroup(RegisterWorkplaceGroupCommand command) {
 		return registerWkpGroupCmd.handle(command);
 	}
 	
 	@POST
 	@Path("updateWorkplaceGroup")
-	public RegisterWorkplaceGroupResult updateWorkplaceGroup(RegisterWorkplaceGroupCommand command) {
+	public ResWorkplaceGroupResult updateWorkplaceGroup(RegisterWorkplaceGroupCommand command) {
 		return updateWkpGroupCmd.handle(command);
 	}
 

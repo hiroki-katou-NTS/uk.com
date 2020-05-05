@@ -48,26 +48,32 @@ public class DomainServiceHelper {
 	
 	public static List<WorkplaceInformation> getLstWpII(){
 		String wKPID = "000000000000000000000000000000000011";
+		String wKPID2 = "000000000000000000000000000000000013";
+		String wKPID3 = "000000000000000000000000000000000014";
+		String wKPID4 = "000000000000000000000000000000000015";
 		List<WorkplaceInformation> lstInfoImports = Arrays.asList(new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"));
+				new WorkplaceInformation("companyId", true, "historyId", wKPID4, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
+				new WorkplaceInformation("companyId", true, "historyId", wKPID2, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
+				new WorkplaceInformation("companyId", true, "historyId", wKPID3, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"));
 		
 		return lstInfoImports;
 	}
 	
 	public static List<WorkplaceInformation> getLstWpIISecond(){
+		String wKPID2 = "000000000000000000000000000000000013";
+		String wKPID3 = "000000000000000000000000000000000014";
+		String wKPID4 = "000000000000000000000000000000000015";
 		String wKPID = "000000000000000000000000000000000012";
 		List<WorkplaceInformation> lstInfoImports = Arrays.asList(new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
-				new WorkplaceInformation("companyId", true, "historyId", wKPID, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"));
+				new WorkplaceInformation("companyId", true, "historyId", wKPID2, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
+				new WorkplaceInformation("companyId", true, "historyId", wKPID3, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"),
+				new WorkplaceInformation("companyId", true, "historyId", wKPID4, "workplaceCode", "workplaceName", "workplaceGeneric", "workplaceDisplayName", "hierarchyCode", "externalCode"));
 		
 		return lstInfoImports;
 	}
 	
 	public static WorkplaceReplaceResult getWorkplaceReplaceResultDefault(int i) {
-		return new WorkplaceReplaceResult(EnumAdaptor.valueOf(i, WorkplaceReplacement.class)
+		return new WorkplaceReplaceResult(EnumAdaptor.valueOf(i, WorkplaceReplacement.class), Optional.ofNullable(null)
 				, Optional.of(AtomTask.of(() -> {
 		})));
 	}

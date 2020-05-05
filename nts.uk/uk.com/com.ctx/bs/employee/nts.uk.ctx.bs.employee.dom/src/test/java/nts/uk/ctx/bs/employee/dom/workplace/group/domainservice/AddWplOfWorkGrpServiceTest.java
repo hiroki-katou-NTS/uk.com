@@ -8,9 +8,15 @@ import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpService.Require;
 /**
  * 
@@ -24,7 +30,7 @@ public class AddWplOfWorkGrpServiceTest {
 	
 	@Test
 	public void insert_return_alreadybelong() {
-		String wKPID = "000000000000000000000000000000000011";
+		String wKPID = "000000000000000000000000000000000011";// dummy
 		String wKPGRPID = "00000000000001";
 		new Expectations() {
 			{
@@ -34,13 +40,21 @@ public class AddWplOfWorkGrpServiceTest {
 			}
 		};
 		
-		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
-		assertThat(workplaceReplaceResult.getPersistenceProcess().isPresent()).isFalse();
+		WorkplaceGroup DUMMY = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // 職場グループID
+				new WorkplaceGroupCode("0000000001"),  // dummy
+				new WorkplaceGroupName("00000000000000000011"),  // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class)); // dummy
+		
+		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DUMMY ,wKPID);
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.ALREADY_BELONGED)).isTrue();
 	}
 	
 	@Test
 	public void insert_return_belonganother() {
-		String wKPID = "000000000000000000000000000000000011";
+		String wKPID = "000000000000000000000000000000000011"; // dummy
+		// 職場グループID
 		String wKPGRPID = "000000000000000000000000000000000011";
 		new Expectations() {
 			{
@@ -50,8 +64,15 @@ public class AddWplOfWorkGrpServiceTest {
 			}
 		};
 		
-		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DomainServiceHelper.Helper.DUMMY,wKPID);
-		assertThat(workplaceReplaceResult.getPersistenceProcess().isPresent()).isFalse();
+		WorkplaceGroup DUMMY = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // 職場グループID
+				new WorkplaceGroupCode("0000000001"),  // dummy
+				new WorkplaceGroupName("00000000000000000011"),  // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class)); // dummy
+		
+		WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require, DUMMY, wKPID);
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.BELONGED_ANOTHER)).isTrue();
 	}
 	
 	@Test
@@ -69,6 +90,9 @@ public class AddWplOfWorkGrpServiceTest {
 				() -> workplaceReplaceResult.getPersistenceProcess().get(),
 				any -> require.insert((AffWorkplaceGroup) any.get())
 		);
+		
+		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.ADD)).isTrue();
+		
 	}
 	
 }
