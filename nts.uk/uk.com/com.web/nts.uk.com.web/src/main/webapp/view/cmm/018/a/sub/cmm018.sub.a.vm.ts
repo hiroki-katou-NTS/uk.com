@@ -13,6 +13,7 @@ module nts.uk.com.view.cmm018.a.sub {
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             intervalDetectResolution: any;
+            gridName: any;
             constructor() {  
             }
             // fix bug 109950
@@ -27,7 +28,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         }
                     }
                 }  
-                $('#grid_matome').igGrid("virtualScrollTo", index);
+                $(this.gridName).igGrid("virtualScrollTo", index);
 
             }
             reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE): JQueryPromise<void>{
@@ -36,12 +37,12 @@ module nts.uk.com.view.cmm018.a.sub {
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
                 let height = 530;
-                let gridName = '#grid_matome';
+                self.gridName = '#grid_matome';
                 $('html.sidebar-html').css('overflow','visible');
                 $('div#left-contents').css('margin-top',"0px"); 
                 if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
-                        gridName = '#grid_matome';        
+                        self.gridName = '#grid_matome';        
                         if(systemAtr == 0) {
 //                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
 //                            width = (screen.width * 1000)/(1920);
@@ -68,7 +69,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
-                        gridName = '#grid_matomeB';   
+                        self.gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = (screen.width * 900)/(1920);
                             height = (screen.height * 450)/(1080 - 40);  
@@ -78,7 +79,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
                     if(mode == vmbase.MODE.MATOME) {
-                        gridName = '#grid_matomeC';    
+                        self.gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
                            if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -98,7 +99,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
                     } else {
-                        gridName = '#grid_matomeD'; 
+                        self.gridName = '#grid_matomeD'; 
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                         } else {
@@ -107,7 +108,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                 }else{//PERSON
                     if(mode == vmbase.MODE.MATOME) {
-                        gridName = '#grid_matomeE';   
+                        self.gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
                             
                            if (screen.height == 1080 && screen.width == 1920) {
@@ -137,7 +138,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
                     } else {
-                        gridName = '#grid_matomeF';     
+                        self.gridName = '#grid_matomeF';     
                         if(systemAtr == 0) {
                             width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                         } else {
@@ -145,8 +146,8 @@ module nts.uk.com.view.cmm018.a.sub {
                         }   
                     }
                 }
-                if($(gridName + '_container').length > 0){
-                    $(gridName).ntsGrid("destroy");
+                if($(self.gridName + '_container').length > 0){
+                    $(self.gridName).ntsGrid("destroy");
                 }
                 self.items([]);
                 self.lstData(lstRoot);
@@ -160,7 +161,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 }
                 
                 
-              $(gridName).ntsGrid({
+              $(self.gridName).ntsGrid({
                 width: width,
                 height: heightG,
                 dataSource: self.items(),
@@ -199,7 +200,7 @@ module nts.uk.com.view.cmm018.a.sub {
                  ],
                 ntsControls: [{ name: 'Button', controlType: 'Button', enable: true }],
             });
-            $(gridName).on("click", ".button-delete", function(evt, ui) {
+            $(self.gridName).on("click", ".button-delete", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
@@ -207,28 +208,28 @@ module nts.uk.com.view.cmm018.a.sub {
                 self.deleteRowSub(empRType, appType);
             });
             //Phase1
-            $(gridName).on("click", ".openK_Phase1", function(evt, ui) {
+            $(self.gridName).on("click", ".openK_Phase1", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(1, empRType, appType);
             });
-            $(gridName).on("click", ".openK_Phase2", function(evt, ui) {
+            $(self.gridName).on("click", ".openK_Phase2", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(2, empRType, appType);
             });
-            $(gridName).on("click", ".openK_Phase3", function(evt, ui) {
+            $(self.gridName).on("click", ".openK_Phase3", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(3, empRType, appType);
             });
-            $(gridName).on("click", ".openK_Phase4", function(evt, ui) {
+            $(self.gridName).on("click", ".openK_Phase4", function(evt, ui) {
                     console.log('Phase4');
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
@@ -236,7 +237,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(4, empRType, appType);
             });
-            $(gridName).on("click", ".openK_Phase5", function(evt, ui) {
+            $(self.gridName).on("click", ".openK_Phase5", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
@@ -245,8 +246,8 @@ module nts.uk.com.view.cmm018.a.sub {
             });
                 // fix bug  109946
             if (systemAtr == 0) {
-                $(gridName).igGrid("option", "width", width);
-                $(gridName).igGrid("option", "height", height);
+                $(self.gridName).igGrid("option", "width", width);
+                $(self.gridName).igGrid("option", "height", height);
                 
             }
                 
@@ -269,7 +270,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     let height = 0;
                     if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
-                        gridName = '#grid_matome';        
+                        self.gridName = '#grid_matome';        
                         if(systemAtr == 0) {
                              if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -291,7 +292,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
-                        gridName = '#grid_matomeB';   
+                        self.gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                         } else {
@@ -300,7 +301,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                     }else if(rootType == vmbase.RootType.WORKPLACE){
                         if(mode == vmbase.MODE.MATOME) {
-                            gridName = '#grid_matomeC';    
+                            self.gridName = '#grid_matomeC';    
                             if(systemAtr == 0) {
                                if (screen.height == 1080 && screen.width == 1920) {
                                         width = 950;
@@ -320,7 +321,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                             }     
                         } else {
-                            gridName = '#grid_matomeD'; 
+                            self.gridName = '#grid_matomeD'; 
                             if(systemAtr == 0) {
                                 width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                             } else {
@@ -329,7 +330,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         }
                     }else{//PERSON
                         if(mode == vmbase.MODE.MATOME) {
-                            gridName = '#grid_matomeE';   
+                            self.gridName = '#grid_matomeE';   
                             if(systemAtr == 0) {
                                 if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -357,7 +358,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                             }     
                         } else {
-                            gridName = '#grid_matomeF';     
+                            self.gridName = '#grid_matomeF';     
                             if(systemAtr == 0) {
                                 width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                             } else {
@@ -365,12 +366,12 @@ module nts.uk.com.view.cmm018.a.sub {
                             }   
                         }
                     }
-                    if ($(gridName).igGrid("option", "width") != width){
-                        $(gridName).igGrid("option", "width", width);
+                    if ($(self.gridName).igGrid("option", "width") != width){
+                        $(self.gridName).igGrid("option", "width", width);
                     }
                         
-                    if ($(gridName).igGrid("option", "height") != height){
-                        $(gridName).igGrid("option", "height", height);
+                    if ($(self.gridName).igGrid("option", "height") != height){
+                        $(self.gridName).igGrid("option", "height", height);
                     }          
                     }
                 }, 50);
