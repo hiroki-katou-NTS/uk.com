@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
+import java.util.ArrayList;
 /*
 import java.util.Optional;
 import java.util.List;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -88,9 +90,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
 	/**
 	 * 
 	 */
+	// insert ref
 	@Override
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
@@ -149,12 +154,28 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 
 	
 	@Override
-	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year) {
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year) {
 		String companyID = AppContexts.user().companyId();
+		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
+//		確認メッセージリスト＝Empty
+		
+//		モードチェックする(check mode)
+		if(checkOver1Year) {
+//			直行直帰更新前チェック
+			// return list message
+//			goBackDirectlyUpdateService.checkErrorBeforeUpdate(goBackDirectly, companyID, application.getAppID(), null);
+		}else {
+//			直行直帰登録前チェック
+			//アルゴリズム「2-1.新規画面登録前の処理」を実行する
+//			processBeforeRegister.processBeforeRegister_New(companyID, employmentRootAtr, agentAtr, application, overTimeAtr, errorFlg, lstDateHd);
+			
+		}
+
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
+		
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 		GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly, application);
 		//直行直帰遅刻早退のチェック
@@ -167,6 +188,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				this.createThrowMsg("Msg_298", goBackLateEarly.msgLst);
 			}
 		}
+		return lstConfirm;
 	}
 	
 	public void createThrowMsg(String msgConfirm, List<String> msgLst){

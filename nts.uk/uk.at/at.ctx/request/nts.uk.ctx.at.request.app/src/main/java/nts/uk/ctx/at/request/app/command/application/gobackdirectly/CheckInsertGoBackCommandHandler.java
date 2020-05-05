@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,7 +54,8 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		//直行直帰登録前チェック 
-		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp, command.isCheckOver1Year());
+//		New 共通登録前のエラーチェック処理
+		List<ConfirmMsgOutput> confirmMsgLst = goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp, command.isCheckOver1Year());		
 	}
 
 }

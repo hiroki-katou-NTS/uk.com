@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -24,8 +25,9 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @param application
 	 * @param appApprovalPhases
+	 * @return 
 	 */
-	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year);
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する

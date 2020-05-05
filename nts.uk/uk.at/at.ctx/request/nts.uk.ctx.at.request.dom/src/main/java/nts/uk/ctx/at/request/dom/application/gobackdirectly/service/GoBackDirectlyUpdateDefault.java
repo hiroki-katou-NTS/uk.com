@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 /*import nts.arc.error.BusinessException;*/
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -79,7 +81,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				application_New.getAppDate(), 
 				EmploymentRootAtr.APPLICATION.value,
 				application_New.getAppID(), 
-				application_New.getPrePostAtr(), 
+				application_New.getPrePostAtr(),  
 				version,
 				!goBackDirectly.getWorkTypeCD().isPresent() || goBackDirectly.getWorkTypeCD().get() == null ? null : goBackDirectly.getWorkTypeCD().get().v(),
 				!goBackDirectly.getSiftCD().isPresent() || goBackDirectly.getSiftCD().get() == null ? null : goBackDirectly.getSiftCD().get().v());
