@@ -174,6 +174,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     block.invisible();
                     self.getDataWpl().done(function(lstA){
                         block.clear();
+                        lstA = _.orderBy(lstA, ['code'],['asc']); // Use Lodash to sort array by 'code'
                         self.employeeList(lstA);
                     }).fail(()=>{
                         block.clear();
