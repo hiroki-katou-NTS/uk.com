@@ -194,7 +194,22 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){
                 if(data.errorFlag==0){
                     if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
-                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
+                        
+                        // sort list approval
+                        if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
+                            data.listApprovalPhaseStateDto.forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                  el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                               }
+                                        });
+                                }
+                            });  
+                        }
+                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                        console.log('list approver');
+                        console.log(self.approvalRootState());      
                     }
                 }
                 let msgID = "";
@@ -241,7 +256,12 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 case 2: return nts.uk.resource.getText("KAF000_10"); 
                 case 3: return nts.uk.resource.getText("KAF000_11"); 
                 case 4: return nts.uk.resource.getText("KAF000_12"); 
-                case 5: return nts.uk.resource.getText("KAF000_13");    
+                case 5: return nts.uk.resource.getText("KAF000_13");
+                case 6: return "承認者6";
+                case 7: return "承認者7";
+                case 8: return "承認者8";
+                case 9: return "承認者9";
+                case 10: return "承認者10";
                 default: return "";
             }     
         }
