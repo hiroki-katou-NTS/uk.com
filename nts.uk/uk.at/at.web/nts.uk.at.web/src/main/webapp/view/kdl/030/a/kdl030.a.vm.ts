@@ -75,6 +75,19 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                             });
                             listPhaseDto.push(new ApprovalPhaseState(phase.phaseOrder, listFrameDto));
                         });
+                        // sort list approval
+                        if(listPhaseDto != undefined && listPhaseDto.length != 0) {
+                            listPhaseDto.forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                   el1.listApprover = _.orderBy(el1.listApprover, ['dispApproverName'],['asc']);                                   
+                                               }
+                                        });
+                                }
+                            });  
+                        }
+                        
                         self.approvalRootState(listPhaseDto);
                     }
                     dfd.resolve();
@@ -88,6 +101,22 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return dfd.promise();
             }
         }
+        getApproverLabel(index) {
+            switch(index) {
+                case 0: return nts.uk.resource.getText("KAF000_9"); 
+                case 1: return nts.uk.resource.getText("KAF000_10"); 
+                case 2: return nts.uk.resource.getText("KAF000_11"); 
+                case 3: return nts.uk.resource.getText("KAF000_12"); 
+                case 4: return nts.uk.resource.getText("KAF000_13");
+                case 5: return "承認者6";
+                case 6: return "承認者7";
+                case 7: return "承認者8";
+                case 8: return "承認者9";
+                case 9: return "承認者10";
+                default: return "";
+            }     
+        }
+        
         // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
@@ -97,6 +126,19 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return;
             }
             let listSendMail: Array<String> = [];
+            // sort list approval
+                        if(self.approvalRootState() != undefined && self.approvalRootState().length != 0) {
+                            self.approvalRootState().forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                   el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                               }
+                                        });
+                                }
+                            });  
+                        }
+            
             _.forEach(self.approvalRootState(), x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
