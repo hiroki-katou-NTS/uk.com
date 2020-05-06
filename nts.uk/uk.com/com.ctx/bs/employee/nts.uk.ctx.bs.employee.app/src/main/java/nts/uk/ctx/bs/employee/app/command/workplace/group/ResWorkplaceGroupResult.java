@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 /**
  * 
  * @author phongtq
@@ -23,7 +22,7 @@ public class ResWorkplaceGroupResult {
 	private List<WorkplaceParam> listWorkplaceInfo;
 	
 	/** 職場グループの職場入替処理結果 */
-	private List<WorkplaceReplaceResult> replaceResult;
+	private List<WorkplaceReplaceResultDto> replaceResult;
 	
 	/** List Optional<職場グループコード, 職場グループ名称> */
 	private List<WorkplaceGroupResult> workplaceGroupResult;

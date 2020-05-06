@@ -74,10 +74,16 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		
 		// 4: 処理結果リスト = 追加する(Require, 職場グループ, 職場ID):職場グループの職場入替処理結果
 		// loop： 職場ID in 職場IDリスト
+		List<WorkplaceReplaceResultDto> resultProcessData = new ArrayList<>();
 		cmd.getLstWKPID().forEach(x->{
 			// DS: 職場グループに所属する職場を追加する
 			// 4.1
-			wplResult.add(AddWplOfWorkGrpService.addWorkplace(addRequire, group, x));
+			WorkplaceReplaceResult result = AddWplOfWorkGrpService.addWorkplace(addRequire, group, x);
+			resultProcessData.add(WorkplaceReplaceResultDto.toDtoWithId(result.getWorkplaceReplacement().value, 
+					result.getWKPGRPID().isPresent() ? result.getWKPGRPID().get() : null, 
+							x, 
+							result.getPersistenceProcess().isPresent() ? result.getPersistenceProcess().get() : null));
+			wplResult.add(result);
 		});
 		
 		// 5: [No.560]職場IDから職場の情報をすべて取得する
@@ -87,6 +93,10 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		// 6: 所属職場グループIDリスト＝処理結果リスト : filter $.処理結果 == 別職場に所属
 		// map $.所属職場グループID
 		List<WorkplaceReplaceResult> lstResultProcess = wplResult.stream().filter(x->x.getWorkplaceReplacement().value == WorkplaceReplacement.BELONGED_ANOTHER.value).collect(Collectors.toList());
+		
+		List<WorkplaceReplaceResultDto> resultProcessDatas = wplResult.stream().map(x -> WorkplaceReplaceResultDto
+				.toDto(x.getWorkplaceReplacement().value, x.getWKPGRPID().isPresent() ? x.getWKPGRPID().get() : null, x.getPersistenceProcess().isPresent() ? x.getPersistenceProcess().get() : null))
+				.collect(Collectors.toList());
 		
 		// flow
 		// 所属職場グループIDリスト
@@ -114,12 +124,12 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 
 		// List<Optional<職場グループコード, 職場グループ名称>>
 		List<WorkplaceGroupResult> groupResults = lstWplGroups.stream().map(
-				x -> new WorkplaceGroupResult(Optional.of(x.getWKPGRPCode().v()), Optional.of(x.getWKPGRPName().v())))
+				x -> new WorkplaceGroupResult(x.getWKPGRPID(), x.getWKPGRPCode().v(), x.getWKPGRPName().v()))
 				.collect(Collectors.toList());
 		
 		boolean checkProcessResult = false;
 		if(checkStop.get() == true) {
-			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, wplResult, groupResults);
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults);
 		}
 		
 		// 9: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -138,7 +148,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			});
 		});
 		
-		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, wplResult, groupResults);
+		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults);
 		
 		return groupResult;
 	}

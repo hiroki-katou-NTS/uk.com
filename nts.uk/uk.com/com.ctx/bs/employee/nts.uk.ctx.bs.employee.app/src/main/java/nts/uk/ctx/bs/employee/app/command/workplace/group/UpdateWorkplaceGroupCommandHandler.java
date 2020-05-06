@@ -75,6 +75,11 @@ public class UpdateWorkplaceGroupCommandHandler
 				wpgrp.get(), cmd.getLstWKPID());
 		List<WorkplaceReplaceResult> resultProcessData = wplResult.entrySet().stream()
 				.map(x -> (WorkplaceReplaceResult) x.getValue()).collect(Collectors.toList());
+		
+		List<WorkplaceReplaceResultDto> resultData = new ArrayList<>();
+		wplResult.forEach((a,b)->{
+			resultData.add(new WorkplaceReplaceResultDto(b.getWorkplaceReplacement().value, b.getWKPGRPID().isPresent() ? b.getWKPGRPID().get() : null,a, b.getPersistenceProcess().isPresent() ? b.getPersistenceProcess().get() : null));
+		});
 
 		// 4: [No.560]職場IDから職場の情報をすべて取得する
 		GeneralDate baseDate = GeneralDate.today();
@@ -87,6 +92,10 @@ public class UpdateWorkplaceGroupCommandHandler
 				.filter(x -> x.getWorkplaceReplacement().value == WorkplaceReplacement.BELONGED_ANOTHER.value)
 				.collect(Collectors.toList());
 
+		List<WorkplaceReplaceResultDto> resultProcessDatas = resultProcessData.stream().map(x -> WorkplaceReplaceResultDto
+				.toDto(x.getWorkplaceReplacement().value, x.getWKPGRPID().isPresent() ? x.getWKPGRPID().get() : null, x.getPersistenceProcess().isPresent() ? x.getPersistenceProcess().get() : null))
+				.collect(Collectors.toList());
+
 		// flow
 		// 所属職場グループIDリスト
 		List<String> lstWplGrId = lstResultProcess.stream().map(mapper -> mapper.getWKPGRPID().get())
@@ -97,6 +106,7 @@ public class UpdateWorkplaceGroupCommandHandler
 		if (!lstWplGrId.isEmpty()) {
 			lstWplGroups = repo.getAllById(CID, lstWplGrId);
 		}
+
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		resultProcessData.forEach(x -> {
 			// 7: not 所属対象がある
@@ -105,20 +115,19 @@ public class UpdateWorkplaceGroupCommandHandler
 				return;
 			}
 		});
-		
+
 		// List<職場ID, 職場コード, 職場名称>
 		List<WorkplaceParam> workplaceParams = listWorkplaceInfo.stream()
 				.map(x -> new WorkplaceParam(x.getWorkplaceId(), x.getWorkplaceCode(), x.getWorkplaceName()))
 				.collect(Collectors.toList());
-		
+
 		// List<Optional<職場グループコード, 職場グループ名称>>
 		List<WorkplaceGroupResult> groupResults = lstWplGroups.stream()
-				.map(x -> new WorkplaceGroupResult(Optional.of(x.getWKPGRPCode().v()), Optional.of(x.getWKPGRPName().v())))
+				.map(x -> new WorkplaceGroupResult(x.getWKPGRPID(), x.getWKPGRPCode().v(), x.getWKPGRPName().v()))
 				.collect(Collectors.toList());
 		boolean checkProcessResult = false;
-		if(checkStop.get() == true) {
-			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
-					resultProcessData, groupResults);
+		if (checkStop.get() == true) {
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults);
 		}
 
 		// 8: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -138,10 +147,9 @@ public class UpdateWorkplaceGroupCommandHandler
 				atomTask.run();
 			});
 		});
-		
 
 		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
-				resultProcessData, groupResults);
+				resultData, groupResults);
 
 		return groupResult;
 	}
