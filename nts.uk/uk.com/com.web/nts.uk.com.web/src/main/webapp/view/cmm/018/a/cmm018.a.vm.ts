@@ -1515,7 +1515,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     if(modeA == vmbase.MODE.SHINSEI){
                         __viewContext.viewModel.viewmodelSubB.comRoot(a);
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN([a], tabSel, vmbase.MODE.SHINSEI);
+                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), tabSel, vmbase.MODE.SHINSEI).then(__viewContext.viewModel.viewmodelSubA.scrollToIndex(a));
                         vmbase.ProcessHandler.resizeColumn([a], tabSel, vmbase.MODE.SHINSEI);
                     }else{
                         let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
