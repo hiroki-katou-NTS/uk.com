@@ -484,6 +484,12 @@ public class AnnualLeaveInfo implements Cloneable {
 					
 					// 年休を指定日数消化する
 					remainDaysWork = new ManagementDays(targetRemainingData.digest(remainDaysWork.v(), false));
+					
+					
+					
+					// 休暇残数を指定日数消化する
+					
+					
 				}
 				
 				// 消化しきれなかった年休の消化処理

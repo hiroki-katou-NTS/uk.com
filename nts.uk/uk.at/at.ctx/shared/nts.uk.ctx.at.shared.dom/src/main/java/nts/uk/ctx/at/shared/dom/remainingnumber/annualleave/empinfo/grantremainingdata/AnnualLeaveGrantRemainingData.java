@@ -6,57 +6,56 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
-public class AnnualLeaveGrantRemainingData extends AggregateRoot {
+public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 	private String annLeavID;
 	
-	private String cid;
-	/**
-	 * 社員ID
-	 */
-	private String employeeId;
-
-	/**
-	 * 付与日
-	 */
-	private GeneralDate grantDate;
-
-	/**
-	 * 期限日
-	 */
-	private GeneralDate deadline;
-
-	/**
-	 * 期限切れ状態
-	 */
-	@Setter
-	private LeaveExpirationStatus expirationStatus;
-
-	/**
-	 * 登録種別
-	 */
-	private GrantRemainRegisterType registerType;
-
-	/**
-	 * 明細
-	 */
-	private AnnualLeaveNumberInfo details;
+//	private String cid;
+//	/**
+//	 * 社員ID
+//	 */
+//	private String employeeId;
+//
+//	/**
+//	 * 付与日
+//	 */
+//	private GeneralDate grantDate;
+//
+//	/**
+//	 * 期限日
+//	 */
+//	private GeneralDate deadline;
+//
+//	/**
+//	 * 期限切れ状態
+//	 */
+//	@Setter
+//	private LeaveExpirationStatus expirationStatus;
+//
+//	/**
+//	 * 登録種別
+//	 */
+//	private GrantRemainRegisterType registerType;
+//
+//	/**
+//	 * 明細
+//	 */
+//	private AnnualLeaveNumberInfo details;
 
 	/**
 	 * 年休付与条件情報

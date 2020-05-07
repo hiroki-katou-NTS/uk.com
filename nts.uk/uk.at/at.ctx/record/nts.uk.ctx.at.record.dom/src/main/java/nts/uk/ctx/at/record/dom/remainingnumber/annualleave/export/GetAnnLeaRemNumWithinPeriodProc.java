@@ -575,6 +575,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 		}
 		
+		
+		
+		
+		
+		
 		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
 		boolean isAfterClosureStart = false;
 		Optional<GeneralDate> closureStartOpt = Optional.empty();

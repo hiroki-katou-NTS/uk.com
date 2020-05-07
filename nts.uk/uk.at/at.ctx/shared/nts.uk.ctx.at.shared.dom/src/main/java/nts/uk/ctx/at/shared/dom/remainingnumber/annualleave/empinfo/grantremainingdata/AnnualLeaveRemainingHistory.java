@@ -106,7 +106,7 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
-		this.details = data.getDetails();
+		this.details = (AnnualLeaveNumberInfo) data.getDetails();
 		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
 	}
 
