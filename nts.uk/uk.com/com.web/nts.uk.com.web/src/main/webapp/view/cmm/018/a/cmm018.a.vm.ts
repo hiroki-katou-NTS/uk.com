@@ -1519,7 +1519,9 @@ module nts.uk.com.view.cmm018.a {
                         vmbase.ProcessHandler.resizeColumn([a], tabSel, vmbase.MODE.SHINSEI);
                     }else{
                         let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
+                        a.appTypeValue = parseInt(a.appTypeValue);
                         dataOld.push(a);
+                        
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
                         // bug #109950
