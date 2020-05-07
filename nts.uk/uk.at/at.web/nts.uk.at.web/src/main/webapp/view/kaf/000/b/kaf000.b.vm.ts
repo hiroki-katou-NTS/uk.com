@@ -821,19 +821,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
                 index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
-            switch(index) {
-                case 1: return nts.uk.resource.getText("KAF000_9"); 
-                case 2: return nts.uk.resource.getText("KAF000_10"); 
-                case 3: return nts.uk.resource.getText("KAF000_11"); 
-                case 4: return nts.uk.resource.getText("KAF000_12"); 
-                case 5: return nts.uk.resource.getText("KAF000_13");
-                case 6: return "承認者6";
-                case 7: return "承認者7";
-                case 8: return "承認者8";
-                case 9: return "承認者9";
-                case 10: return "承認者10";   
-                default: return "";
-            }     
+           if(index <= 10){
+                return nts.uk.resource.getText("KAF000_9",index+'');    
+            }
+            return "";   
         }
     }
 

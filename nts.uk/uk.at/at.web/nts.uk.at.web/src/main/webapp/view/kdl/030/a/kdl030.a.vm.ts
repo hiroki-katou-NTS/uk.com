@@ -102,19 +102,10 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
         }
         getApproverLabel(index) {
-            switch(index) {
-                case 0: return nts.uk.resource.getText("KAF000_9"); 
-                case 1: return nts.uk.resource.getText("KAF000_10"); 
-                case 2: return nts.uk.resource.getText("KAF000_11"); 
-                case 3: return nts.uk.resource.getText("KAF000_12"); 
-                case 4: return nts.uk.resource.getText("KAF000_13");
-                case 5: return "承認者6";
-                case 6: return "承認者7";
-                case 7: return "承認者8";
-                case 8: return "承認者9";
-                case 9: return "承認者10";
-                default: return "";
-            }     
+            if(index <=9){
+                return nts.uk.resource.getText("KAF000_9",(index +1)+'');    
+            }
+            return ""; 
         }
         
         // アルゴリズム「メール送信」を実行する
