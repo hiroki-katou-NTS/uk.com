@@ -822,7 +822,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this,
                 index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
            if(index <= 10){
-                return nts.uk.resource.getText("KAF000_9",index+'');    
+                return nts.uk.resource.getText("KAF000_9",[index+'']);    
             }
             return "";   
         }
