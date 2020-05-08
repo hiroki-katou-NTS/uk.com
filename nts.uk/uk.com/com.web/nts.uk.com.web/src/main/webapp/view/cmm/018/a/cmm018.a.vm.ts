@@ -215,8 +215,8 @@ module nts.uk.com.view.cmm018.a {
                             self.cpA([]);
                         }
                     }
-                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
+//                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+//                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
                 });
                 //---subscribe tab selected---
                 self.tabSelected.subscribe(function(codeChanged) {
@@ -1179,8 +1179,8 @@ module nts.uk.com.view.cmm018.a {
                         //TH: list left
                         //TH: list right
                         self.cpA(self.createNew(data.lstAppType,data.overLap));
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+//                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+//                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     }else{
                         //TH: list left
                         if(checkReload){

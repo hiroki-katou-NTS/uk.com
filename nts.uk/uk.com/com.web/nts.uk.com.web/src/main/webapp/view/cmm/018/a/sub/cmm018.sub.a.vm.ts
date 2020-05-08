@@ -160,7 +160,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     heightG = 181;
                 }
                 
-                
+            
               $(self.gridName).ntsGrid({
                 width: width,
                 height: heightG,
@@ -171,6 +171,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
                 columns: [
+                    { headerText: 'ID', key: 'typeRoot', dataType: 'string', ntsControl: "Label", width: "0px", hidden: true },
                     { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '130px'},
                     { headerText: getText('CMM018_28'), 
                         group:[{ headerText: getText('CMM018_30'), key: 'phase1', dataType: 'string', width: '100px' },
@@ -179,15 +180,28 @@ module nts.uk.com.view.cmm018.a.sub {
                                { headerText: '⇐' + getText('CMM018_33'), key: 'phase4', dataType: 'string', width: '100px' },
                                { headerText: '⇐' + getText('CMM018_34'), key: 'phase5', dataType: 'string', width: '100px' }]
                     },
-                    { headerText: getText('CMM018_95'), key: 'deleteRoot', dataType: 'string', width: '75px'},
-                    { headerText: 'ID', key: 'typeRoot', dataType: 'string', width: '0px', hidden: true }
+                    { headerText: getText('CMM018_95'), key: 'deleteRoot', dataType: 'string', width: '75px'}
                 ],
                 features: [
-                    { name: "MultiColumnHeaders" },
-                    { name: 'ColumnFixing', fixingDirection: 'left',
-                                            showFixButtons: false,
-                                            //resize column in gridlist
-                                            columnSettings: [{ columnKey: 'appName', allowResizing: false, minimumWidth: 0 } ]},
+                    { name: 'Resizing',
+                        columnSettings: [{
+//                            columnKey: 'typeRoot', allowResizing: false, minimumWidth: 0,
+                            columnKey: 'appName', allowResizing: false,
+                            columnKey: 'phase1', allowResizing: false,
+                            columnKey: 'phase2', allowResizing: false,
+                            columnKey: 'phase3', allowResizing: false,
+                            columnKey: 'phase4', allowResizing: false,
+                            columnKey: 'phase5', allowResizing: false,
+                            columnKey: 'deleteRoot', allowResizing: false
+                        }],
+                        columnResized: function(event, ui) {
+                            if (ui.columnKey === "appName") {
+                                uk.localStorage.setItem("AppName_CMM018", ui.newWidth);
+                            }
+                           
+                        }
+                    },
+                    { name: "MultiColumnHeaders" }
                 ],
                  ntsFeatures:[
                     {
@@ -200,6 +214,15 @@ module nts.uk.com.view.cmm018.a.sub {
                  ],
                 ntsControls: [{ name: 'Button', controlType: 'Button', enable: true }],
             });
+                
+            setTimeout(() => {
+                let width = uk.localStorage.getItem("AppName_CMM018");
+                if (width.isPresent()) {
+                    $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
+                }
+                
+            }, 0);
+                
             $(self.gridName).on("click", ".button-delete", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
@@ -252,7 +275,11 @@ module nts.uk.com.view.cmm018.a.sub {
             }
                 
             $(window).resize(function() {
-                  $('html.sidebar-html').css('overflow','visible')
+                  $('html.sidebar-html').css('overflow','visible');
+                    let width = uk.localStorage.getItem("AppName_CMM018");
+                    if (width.isPresent()) {
+                        $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
+                    }
                  }); 
            clearInterval(this.intervalDetectResolution);      
            this.intervalDetectResolution = (function () {
