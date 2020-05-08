@@ -221,6 +221,18 @@ module nts.uk.at.view.kaf006.b{
                 self.version = applicationDto.version;
                 self.dataApplication(applicationDto);
                 self.appType(applicationDto.applicationType);
+                 // sort list approval
+                    if(data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo.approvalLst != undefined && data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo.approvalLst.length != 0) {
+                        data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo.approvalLst.forEach((el) => {
+                            if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                    el.listApprovalFrame.forEach((el1) =>{
+                                           if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                               el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                           }
+                                    });
+                            }
+                        });  
+                    }
                 self.approvalRootState(ko.mapping.fromJS(data.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDetailScreenInfo.approvalLst)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
                 if (self.displayReturnReasonPanel()) {
