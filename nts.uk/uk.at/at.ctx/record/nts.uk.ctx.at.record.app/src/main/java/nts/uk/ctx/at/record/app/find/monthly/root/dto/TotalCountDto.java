@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalCountDto implements ItemConst {
+public class TotalCountDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 回数集計NO */
 	private int no;
@@ -47,4 +49,43 @@ public class TotalCountDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(count).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case COUNT:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case COUNT:
+			count = value.valueOrDefault(0d); break;
+		case TIME:
+			time = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

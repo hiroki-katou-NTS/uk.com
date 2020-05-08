@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
 //import java.util.stream.Collectors;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutRe
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoOutTimeSheetDailyPerformDto implements ItemConst {
+public class GoOutTimeSheetDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 時間休暇使用時間: 日別実績の時間休暇使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = HOLIDAY + USAGE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
@@ -55,20 +56,159 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	/** 補正後時間帯: 外出時間帯 */
 	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = AFTER_CORRECTED, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<GoOutTimeDto> goOutTime;
-	
+
 	@Override
-	public GoOutTimeSheetDailyPerformDto clone(){
-		return new GoOutTimeSheetDailyPerformDto(
-						valicationUseTime == null ? null : valicationUseTime.clone(), 
-						totalTimeForDeduction == null ? null : totalTimeForDeduction.clone(), 
-						totalTimeForCalc == null ? null : totalTimeForCalc.clone(), 
-						coreTotalTimeForDeduction == null ? null : coreTotalTimeForDeduction.clone(),  
-						coreTotalTimeForCalc == null ? null : coreTotalTimeForCalc.clone(), 
-						times, 
-						attr, 
-						ConvertHelper.mapTo(goOutTime, c -> c.clone()));
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case REASON:
+			return Optional.of(ItemValue.builder().value(attr).valueType(ValueType.ATTR));
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(times).valueType(ValueType.COUNT));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
 	}
 
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case (HOLIDAY + USAGE):
+			return new ValicationUseDto();
+		case DEDUCTION:
+		case CALC:
+			return new OutingTotalTimeDto();
+		case (DEDUCTION + OUT_CORE):
+		case (CALC + OUT_CORE):
+			return new CalcAttachTimeDto();
+		case AFTER_CORRECTED:
+			return new GoOutTimeDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (HOLIDAY + USAGE):
+			return Optional.ofNullable(valicationUseTime);
+		case DEDUCTION:
+			return Optional.ofNullable(totalTimeForDeduction);
+		case CALC:
+			return Optional.ofNullable(totalTimeForCalc);
+		case (DEDUCTION + OUT_CORE):
+			return Optional.ofNullable(coreTotalTimeForDeduction);
+		case (CALC + OUT_CORE):
+			return Optional.ofNullable(coreTotalTimeForCalc);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (path.equals(AFTER_CORRECTED)) {
+			return 10;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case REASON:
+		case COUNT:
+			return PropType.VALUE;
+		case AFTER_CORRECTED:
+			return PropType.OBJECT;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(AFTER_CORRECTED)) {
+			return (List<T>) goOutTime;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}	
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case REASON:
+			attr = value.valueOrDefault(0);
+			break;
+		case COUNT:
+			times = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (HOLIDAY + USAGE):
+			valicationUseTime = (ValicationUseDto) value;
+			break;
+		case DEDUCTION:
+			totalTimeForDeduction = (OutingTotalTimeDto) value;
+			break;
+		case CALC:
+			totalTimeForCalc = (OutingTotalTimeDto) value;
+			break;
+		case (DEDUCTION + OUT_CORE):
+			coreTotalTimeForDeduction = (CalcAttachTimeDto) value;
+			break;
+		case (CALC + OUT_CORE):
+			coreTotalTimeForCalc = (CalcAttachTimeDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+//	@Override
+//	public boolean enumNeedSet(){
+//		return true;
+//	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(AFTER_CORRECTED)) {
+			goOutTime = (List<GoOutTimeDto>) value;
+		}
+	}
+
+	@Override
+	public void setEnum(String enumText) {
+		switch (enumText) {
+		case E_SUPPORT:
+			this.attr = 0;
+			break;
+		case E_UNION:
+			this.attr = 1;
+			break;
+		case E_CHARGE:
+			this.attr = 2;
+			break;
+		case E_OFFICAL:
+			this.attr = 3;
+			break;
+		default:
+		}
+	}
+	
+	@Override
 	public String enumText() {
 		switch (this.attr) {
 		case 0:
@@ -82,6 +222,19 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 		default:
 			return EMPTY_STRING;
 		}
+	}
+	
+	@Override
+	public GoOutTimeSheetDailyPerformDto clone(){
+		return new GoOutTimeSheetDailyPerformDto(
+						valicationUseTime == null ? null : valicationUseTime.clone(), 
+						totalTimeForDeduction == null ? null : totalTimeForDeduction.clone(), 
+						totalTimeForCalc == null ? null : totalTimeForCalc.clone(), 
+						coreTotalTimeForDeduction == null ? null : coreTotalTimeForDeduction.clone(),  
+						coreTotalTimeForCalc == null ? null : coreTotalTimeForCalc.clone(), 
+						times, 
+						attr, 
+						ConvertHelper.mapTo(goOutTime, c -> c.clone()));
 	}
 	
 	public static GoOutTimeSheetDailyPerformDto toDto(OutingTimeOfDaily domain){
@@ -105,14 +258,14 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	
 	public OutingTimeOfDaily toDomain(){
 		return new OutingTimeOfDaily(times == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(times), 
-								reason(), 
+								toEnum(), 
 								valicationUseTime == null ? ValicationUseDto.createEmpty() : valicationUseTime.toDomain(), 
 								totalTimeForCalc == null ? OutingTotalTimeDto.createEmpty() : totalTimeForCalc.createDeductionTime(),
 								totalTimeForDeduction == null ? OutingTotalTimeDto.createEmpty() : totalTimeForDeduction.createDeductionTime(), 
 								ConvertHelper.mapTo(goOutTime, c -> c.toDomain()));
 	}
 	
-	public GoOutReason reason() {
+	public GoOutReason toEnum() {
 		switch (attr) {
 		case 0:
 			return GoOutReason.SUPPORT;

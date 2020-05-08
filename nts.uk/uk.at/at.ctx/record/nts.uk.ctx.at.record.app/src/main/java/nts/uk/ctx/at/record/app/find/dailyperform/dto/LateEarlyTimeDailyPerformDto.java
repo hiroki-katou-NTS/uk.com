@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +9,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
 /** 日別実績の早退時間 */
+/** 日別実績の遅刻時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LeaveEarlyTimeDailyPerformDto implements ItemConst {
+public class LateEarlyTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 早退時間: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
@@ -32,11 +35,53 @@ public class LeaveEarlyTimeDailyPerformDto implements ItemConst {
 	/** 勤務NO/勤務回数: 勤務NO */
 	// @AttendanceItemLayout(layout = "E")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer no;
+	private int no;
 	
 	@Override
-	public LeaveEarlyTimeDailyPerformDto clone() {
-		return new LeaveEarlyTimeDailyPerformDto(time == null ? null : time.clone(),
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case TIME:
+		case (DEDUCTION):
+			return new CalcAttachTimeDto();
+		case (HOLIDAY + USAGE):
+			return new ValicationUseDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (TIME):
+			return Optional.ofNullable(time);
+		case (DEDUCTION):
+			return Optional.ofNullable(deductionTime);
+		case (HOLIDAY + USAGE):
+			return Optional.ofNullable(valicationUseTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (TIME):
+			time = (CalcAttachTimeDto) value;
+			break;
+		case (DEDUCTION):
+			deductionTime = (CalcAttachTimeDto) value;
+			break;
+		case (HOLIDAY + USAGE):
+			valicationUseTime = (ValicationUseDto) value;
+		default:
+		}
+	}
+	
+	@Override
+	public LateEarlyTimeDailyPerformDto clone() {
+		return new LateEarlyTimeDailyPerformDto(time == null ? null : time.clone(),
 						deductionTime == null ? null : deductionTime.clone(),
 						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no);
 	}

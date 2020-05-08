@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -23,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 @AttendanceItemRoot(rootName = ItemConst.DAILY_AFFILIATION_INFO_NAME)
 public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_AFFILIATION_INFO_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -45,7 +49,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = CLASSIFICATION)
 	@AttendanceItemValue
-	private String classificationCode;
+	private String clsCode;
 
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = RAISING_SALARY)
 	@AttendanceItemValue
@@ -58,35 +62,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
-			dto.setClassificationCode(domain.getAffiliationInfor().getClsCode() == null ? null : domain.getAffiliationInfor().getClsCode().v());
-			dto.setEmploymentCode(domain.getAffiliationInfor().getEmploymentCode() == null ? null : domain.getAffiliationInfor().getEmploymentCode().v());
-			dto.setJobId(domain.getAffiliationInfor().getJobTitleID());
-			dto.setSubscriptionCode(domain.getAffiliationInfor().getBonusPaySettingCode() == null ? null 
-					: domain.getAffiliationInfor().getBonusPaySettingCode().v());
-			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
-			dto.setBaseDate(domain.getYmd());
-			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setBusinessTypeCode(domain.getAffiliationInfor().getBusinessTypeCode().isPresent()?
-					domain.getAffiliationInfor().getBusinessTypeCode().get().v():null);
-			dto.exsistData();
-			
-		}
-		return dto;
-	}
-	
-	public static AffiliationInforOfDailyPerforDto getDto(String employeeID,GeneralDate ymd,AffiliationInforOfDailyAttd domain){
-		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
-		if(domain != null){
-			dto.setClassificationCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
+			dto.setClsCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
 			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
 					: domain.getBonusPaySettingCode().v());
 			dto.setWorkplaceID(domain.getWplID());
-			dto.setBaseDate(ymd);
-			dto.setEmployeeId(employeeID);
-			dto.setBusinessTypeCode(domain.getBusinessTypeCode() != null && domain.getBusinessTypeCode().isPresent()?
-					domain.getBusinessTypeCode().get().v():null);
 			dto.exsistData();
 		}
 		return dto;
@@ -95,7 +76,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	@Override
 	public AffiliationInforOfDailyPerforDto clone(){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
-		dto.setClassificationCode(classificationCode);
+		dto.setClsCode(clsCode);
 		dto.setEmploymentCode(employmentCode);
 		dto.setJobId(jobId);
 		dto.setSubscriptionCode(subscriptionCode);
@@ -133,9 +114,63 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		}
 		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
 												employeeId, this.jobId, this.workplaceID, date,
-												new ClassificationCode(this.classificationCode),
+												new ClassificationCode(this.clsCode),
 												this.subscriptionCode ==null?null:new BonusPaySettingCode(this.subscriptionCode),
 												this.businessTypeCode ==null?null:new BusinessTypeCode(this.businessTypeCode));
 		return domain.getAffiliationInfor();
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case EMPLOYEMENT:
+			return Optional.of(ItemValue.builder().value(employmentCode).valueType(ValueType.CODE));
+		case JOB_TITLE:
+			return Optional.of(ItemValue.builder().value(jobId).valueType(ValueType.CODE));
+		case WORKPLACE:
+			return Optional.of(ItemValue.builder().value(workplaceID).valueType(ValueType.CODE));
+		case CLASSIFICATION:
+			return Optional.of(ItemValue.builder().value(clsCode).valueType(ValueType.CODE));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case EMPLOYEMENT:
+			this.employmentCode = value.valueOrDefault(null);
+			break;
+		case JOB_TITLE:
+			this.jobId = value.valueOrDefault(null);
+			break;
+		case WORKPLACE:
+			this.workplaceID = value.valueOrDefault(null);
+			break;
+		case CLASSIFICATION:
+			this.clsCode = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case EMPLOYEMENT:
+		case JOB_TITLE:
+		case WORKPLACE:
+		case CLASSIFICATION:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return PropType.OBJECT;
 	}
 }

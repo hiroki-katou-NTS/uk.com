@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の遅刻早退 */
-public class LateLeaveEarlyOfMonthlyDto implements ItemConst {
+public class LateLeaveEarlyOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 早退: 早退 */
 	@AttendanceItemLayout(jpPropertyName = LEAVE_EARLY, layout = LAYOUT_A)
@@ -36,4 +38,37 @@ public class LateLeaveEarlyOfMonthlyDto implements ItemConst {
 		return LateLeaveEarlyOfMonthly.of(leaveEarly == null ? new LeaveEarly() : leaveEarly.toLeaveEarly(),
 										late == null ? new Late() : late.toLate());
 	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case LEAVE_EARLY:
+		case LATE:
+			return new CommonTimeCountDto();
+		default:
+			return null;
+		}
+	}
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case LEAVE_EARLY:
+			return Optional.ofNullable(leaveEarly);
+		case LATE:
+			return Optional.ofNullable(late);
+		default:
+			return Optional.empty();
+		}
+	}
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case LEAVE_EARLY:
+			leaveEarly = (CommonTimeCountDto) value; break;
+		case LATE:
+			late = (CommonTimeCountDto) value; break;
+		default:
+		}
+	}
+
+	
 }

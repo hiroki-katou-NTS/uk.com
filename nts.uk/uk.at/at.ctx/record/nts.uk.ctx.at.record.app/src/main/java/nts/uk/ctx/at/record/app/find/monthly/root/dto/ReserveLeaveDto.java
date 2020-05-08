@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 /** 積立年休 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReserveLeaveDto implements ItemConst {
+public class ReserveLeaveDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 使用数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE, layout = LAYOUT_A)
@@ -79,4 +79,77 @@ public class ReserveLeaveDto implements ItemConst {
 				remainingNumberBeforeGrant == null ? new ReserveLeaveRemainingNumber() : remainingNumberBeforeGrant.toReserveDomain(),
 				Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toReserveDomain()));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (NOT_DIGESTION.equals(path)) {
+			return Optional.of(ItemValue.builder().value(undigestedNumber).valueType(ValueType.DAYS));
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case USAGE:
+			return new DayUsedNumberDto();
+		case REMAIN:
+		case (GRANT + BEFORE):
+		case (GRANT + AFTER):
+			return new CommonLeaveRemainingNumberDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case USAGE:
+			return Optional.ofNullable(usedNumber);
+		case REMAIN:
+			return Optional.ofNullable(remainingNumber);
+		case (GRANT + BEFORE):
+			return Optional.ofNullable(remainingNumberBeforeGrant);
+		case (GRANT + AFTER):
+			return Optional.ofNullable(remainingNumberAfterGrant);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (NOT_DIGESTION.equals(path)) {
+			return PropType.VALUE;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (NOT_DIGESTION.equals(path)) {
+			undigestedNumber = value.valueOrDefault(0d);
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case USAGE:
+			usedNumber = (DayUsedNumberDto) value; break;
+		case REMAIN:
+			remainingNumber = (CommonLeaveRemainingNumberDto) value; break;
+		case (GRANT + BEFORE):
+			remainingNumberBeforeGrant = (CommonLeaveRemainingNumberDto) value; break;
+		case (GRANT + AFTER):
+			remainingNumberAfterGrant = (CommonLeaveRemainingNumberDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	
 }

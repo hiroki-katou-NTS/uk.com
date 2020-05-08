@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 /** 集計割増時間 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregatePremiumTimeDto implements ItemConst {
+public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 割増時間項目NO: 割増時間項目NO */
 	private int no;
@@ -43,4 +45,29 @@ public class AggregatePremiumTimeDto implements ItemConst {
 	public AggregatePremiumTime toDomain(){
 		return AggregatePremiumTime.of(no, new AttendanceTimeMonth(time), new AttendanceAmountMonth(amount));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (path.equals(TIME)) {
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME)) {
+			return PropType.VALUE;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(TIME)) {
+			time = value.valueOrDefault(0);
+		}
+	}
+
+	
 }

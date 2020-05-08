@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Getter;
@@ -24,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_TIME_NAME)
 public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_ATTENDANCE_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -59,6 +63,102 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = UNEMPLOYED)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer unemployedTime;
+
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+			return Optional.of(ItemValue.builder().value(budgetTimeVariance).valueType(ValueType.TIME));
+		case UNEMPLOYED:
+			return Optional.of(ItemValue.builder().value(unemployedTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+		case UNEMPLOYED:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case ACTUAL:
+			return new ActualWorkTimeDailyPerformDto();
+		case PLAN:
+			return new WorkScheduleTimeDailyPerformDto();
+		case STAYING:
+			return new StayingTimeDto();
+		case MEDICAL:
+			return new MedicalTimeDailyPerformDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case ACTUAL:
+			return Optional.ofNullable(actualWorkTime);
+		case PLAN:
+			return Optional.ofNullable(scheduleTime);
+		case STAYING:
+			return Optional.ofNullable(stayingTime);
+		case MEDICAL:
+			return Optional.ofNullable(medicalTime);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+			budgetTimeVariance = value.valueOrDefault(null);
+			break;
+		case UNEMPLOYED:
+			unemployedTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case ACTUAL:
+			actualWorkTime = (ActualWorkTimeDailyPerformDto) value;
+			break;
+		case PLAN:
+			scheduleTime = (WorkScheduleTimeDailyPerformDto) value;
+			break;
+		case STAYING:
+			stayingTime = (StayingTimeDto) value;
+			break;
+		case MEDICAL:
+			medicalTime = (MedicalTimeDailyPerformDto) value;
+			break;
+		default:
+			break;
+		}
+	}
 	
 	public static AttendanceTimeDailyPerformDto getDto(AttendanceTimeOfDailyPerformance domain) {
 		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();

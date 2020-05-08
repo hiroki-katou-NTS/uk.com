@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValicationUseDto implements ItemConst {
+public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 時間年休使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ANNUNAL_LEAVE)
@@ -37,6 +39,55 @@ public class ValicationUseDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = COMPENSATORY)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeCompensatoryLeaveUseTime;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+			return Optional.of(ItemValue.builder().value(timeAnnualLeaveUseTime).valueType(ValueType.TIME));
+		case EXCESS:
+			return Optional.of(ItemValue.builder().value(excessHolidayUseTime).valueType(ValueType.TIME));
+		case SPECIAL:
+			return Optional.of(ItemValue.builder().value(timeSpecialHolidayUseTime).valueType(ValueType.TIME));
+		case COMPENSATORY:
+			return Optional.of(ItemValue.builder().value(timeCompensatoryLeaveUseTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+		case EXCESS:
+		case SPECIAL:
+		case COMPENSATORY:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+			this.timeAnnualLeaveUseTime = value.valueOrDefault(null);
+			break;
+		case EXCESS:
+			this.excessHolidayUseTime = value.valueOrDefault(null);
+			break;
+		case SPECIAL:
+			this.timeSpecialHolidayUseTime = value.valueOrDefault(null);
+			break;
+		case COMPENSATORY:
+			this.timeCompensatoryLeaveUseTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
 	
 	public TimevacationUseTimeOfDaily toDomain(){
 		return new TimevacationUseTimeOfDaily(

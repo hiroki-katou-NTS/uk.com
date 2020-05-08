@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の36協定時間 */
-public class AgreementTimeOfMonthlyDto implements ItemConst {
+public class AgreementTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 36協定時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -56,5 +56,65 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 			dto.setExceptionLimitTime(domain.getThreshold().getUpperLimit().v());
 		}
 		return dto;
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case AGREEMENT:
+			return Optional.of(ItemValue.builder().value(agreementTime).valueType(ValueType.TIME));
+		case LIMIT_ALARM:
+			return Optional.of(ItemValue.builder().value(limitAlarmTime).valueType(ValueType.TIME));
+		case LIMIT_ERROR:
+			return Optional.of(ItemValue.builder().value(limitErrorTime).valueType(ValueType.TIME));
+		case STATE:
+			return Optional.of(ItemValue.builder().value(status).valueType(ValueType.ATTR));
+		case (EXCEPTION +  LIMIT_ALARM):
+			return Optional.of(ItemValue.builder().value(exceptionLimitAlarmTime).valueType(ValueType.TIME));
+		case (EXCEPTION +  LIMIT_ERROR):
+			return Optional.of(ItemValue.builder().value(exceptionLimitErrorTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case AGREEMENT:
+		case LIMIT_ALARM:
+		case LIMIT_ERROR:
+		case STATE:
+		case (EXCEPTION +  LIMIT_ALARM):
+		case (EXCEPTION +  LIMIT_ERROR):
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case AGREEMENT:
+			agreementTime = value.valueOrDefault(0);
+			break;
+		case LIMIT_ALARM:
+			limitAlarmTime = value.valueOrDefault(0);
+			break;
+		case LIMIT_ERROR:
+			limitErrorTime = value.valueOrDefault(0);
+			break;
+		case STATE:
+			status = value.valueOrDefault(0);
+			break;
+		case (EXCEPTION +  LIMIT_ALARM):
+			exceptionLimitAlarmTime = value.valueOrDefault(null);
+			break;
+		case (EXCEPTION +  LIMIT_ERROR):
+			exceptionLimitErrorTime = value.valueOrDefault(null);
+			break;
+		default:
+		}
 	}
 }

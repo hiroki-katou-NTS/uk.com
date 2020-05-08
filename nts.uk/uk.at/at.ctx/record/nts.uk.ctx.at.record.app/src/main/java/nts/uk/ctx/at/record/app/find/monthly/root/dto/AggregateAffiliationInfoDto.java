@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 /** 集計所属情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AggregateAffiliationInfoDto implements ItemConst {
+public class AggregateAffiliationInfoDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 分類コード: 分類コード */
 	@AttendanceItemValue
@@ -65,5 +65,61 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 				new JobTitleId(jobTitle),
 				new ClassificationCode(classificationCode),
 				Optional.ofNullable(businessTypeCode == null ? null : new BusinessTypeCode(businessTypeCode)));
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case EMPLOYEMENT:
+			return Optional.of(ItemValue.builder().value(employmentCode).valueType(ValueType.CODE));
+		case JOB_TITLE:
+			return Optional.of(ItemValue.builder().value(jobTitle).valueType(ValueType.CODE));
+		case WORKPLACE:
+			return Optional.of(ItemValue.builder().value(workPlaceCode).valueType(ValueType.CODE));
+		case CLASSIFICATION:
+			return Optional.of(ItemValue.builder().value(classificationCode).valueType(ValueType.CODE));
+		case BUSINESS_TYPE:
+			return Optional.of(ItemValue.builder().value(businessTypeCode).valueType(ValueType.CODE));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case EMPLOYEMENT:
+			this.employmentCode = value.valueOrDefault(null);
+			break;
+		case JOB_TITLE:
+			this.jobTitle = value.valueOrDefault(null);
+			break;
+		case WORKPLACE:
+			this.workPlaceCode = value.valueOrDefault(null);
+			break;
+		case CLASSIFICATION:
+			this.classificationCode = value.valueOrDefault(null);
+			break;
+		case BUSINESS_TYPE:
+			this.businessTypeCode = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case EMPLOYEMENT:
+		case JOB_TITLE:
+		case WORKPLACE:
+		case CLASSIFICATION:
+		case BUSINESS_TYPE:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return PropType.OBJECT;
 	}
 }

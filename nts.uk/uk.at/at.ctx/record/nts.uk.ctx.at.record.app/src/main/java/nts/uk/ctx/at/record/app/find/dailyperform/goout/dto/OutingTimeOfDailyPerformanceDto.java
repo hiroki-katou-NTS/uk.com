@@ -27,6 +27,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AttendanceItemRoot(rootName = ItemConst.DAILY_OUTING_TIME_NAME)
 public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_OUTING_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -95,6 +97,10 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	public GeneralDate workingDate() {
 		return this.ymd;
 	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
 	
 
 	@Override
@@ -118,4 +124,49 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
 		return c == null ? Optional.empty() : Optional.of(c.toDomain());
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new OutingTimeZoneDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.timeZone;
+		}
+		
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		
+		if (path.equals(TIME_ZONE)) {
+			this.timeZone = (List<OutingTimeZoneDto>) value;
+		}
+	}
+	
+	@Override
+	public int size(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return 10;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		
+		return PropType.OBJECT;
+	}
+	
 }

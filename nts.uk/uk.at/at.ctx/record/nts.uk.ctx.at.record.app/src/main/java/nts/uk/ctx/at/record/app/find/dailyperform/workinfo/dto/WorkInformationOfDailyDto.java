@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -27,6 +29,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 @AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_WORK_INFO_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -145,8 +149,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		return domain.getWorkInformation();
 	}
 	
-	
-
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
 		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
@@ -170,4 +172,82 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		}
 		return result;
 	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case ACTUAL:
+			return Optional.of(this.actualWorkInfo);
+		case PLAN:
+			return Optional.of(this.planWorkInfo);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return (List<T>) this.scheduleTimeZone;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			this.scheduleTimeZone = (List<ScheduleTimeZoneDto>) value;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case ACTUAL:
+			this.actualWorkInfo = (WorkInfoDto) value;
+			break;
+		case PLAN:
+			this.planWorkInfo = (WorkInfoDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case ACTUAL:
+		case PLAN:
+			return new WorkInfoDto();
+		case (PLAN + TIME_ZONE):
+			return new ScheduleTimeZoneDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return 2;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		
+		return PropType.OBJECT;
+	}
+	
 }

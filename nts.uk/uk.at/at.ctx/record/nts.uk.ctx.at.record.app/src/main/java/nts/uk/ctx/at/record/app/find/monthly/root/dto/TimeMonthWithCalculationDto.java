@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalc
 @NoArgsConstructor
 @AllArgsConstructor
 /** 計算付き月間時間 */
-public class TimeMonthWithCalculationDto implements ItemConst {
+public class TimeMonthWithCalculationDto implements ItemConst, AttendanceItemDataGate {
+
 
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -57,5 +60,40 @@ public class TimeMonthWithCalculationDto implements ItemConst {
 
 	private AttendanceTimeMonthWithMinus toTimeWithMinus(Integer time) {
 		return time == null ? new AttendanceTimeMonthWithMinus(0) : new AttendanceTimeMonthWithMinus(time);
+	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TIME:
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		case CALC:
+			return Optional.of(ItemValue.builder().value(calcTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TIME:
+		case CALC:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TIME:
+			time = value.valueOrDefault(null);
+			break;
+		case CALC:
+			calcTime = value.valueOrDefault(null);
+			break;
+		default:
+		}
 	}
 }

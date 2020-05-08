@@ -27,6 +27,8 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_OPTIONAL_ITEM_NAME)
 public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_OPTIONAL_ITEM_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -163,5 +165,47 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, OptionalItemValueDto c) {
 		return master == null ? null : master.get(c.getNo());
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return new OptionalItemValueDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 100;
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public PropType typeOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return (List<T>) this.optionalItems;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			this.optionalItems = (List<OptionalItemValueDto>) value;
+		}
 	}
 }

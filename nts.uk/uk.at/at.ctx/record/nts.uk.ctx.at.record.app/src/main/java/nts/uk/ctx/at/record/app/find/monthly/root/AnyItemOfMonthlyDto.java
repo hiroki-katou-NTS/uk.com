@@ -143,4 +143,55 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, AnyItemOfMonthly c) {
 		return master == null ? null : master.get(c.getAnyItemId());
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return new OptionalItemValueDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return 200;
+		}
+		return super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return (List<T>) values;
+		}
+		return super.gets(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			values = (List<OptionalItemValueDto>) value;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_OPTIONAL_ITEM_NAME;
+	}
 }

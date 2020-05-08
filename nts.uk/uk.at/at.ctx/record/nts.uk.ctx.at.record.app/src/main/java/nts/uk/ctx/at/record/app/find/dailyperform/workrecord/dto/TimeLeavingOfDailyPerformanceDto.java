@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -26,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDACE_LEAVE_NAME)
 public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_ATTENDACE_LEAVE_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -113,5 +117,66 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private int toWorkTime() {
 		return workTimes == null ? (workAndLeave == null ? 0 : workAndLeave.size()) : (workTimes);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.workAndLeave;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(TIME_ZONE)) {
+			this.workAndLeave = (List<WorkLeaveTimeDto>) value;
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new WorkLeaveTimeDto();
+		}
+		return null;
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		
+		if (path.equals(COUNT)) {
+			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
+		}
+		
+		return Optional.empty();
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(COUNT)) {
+			this.workTimes = value.valueOrDefault(null);
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		return 2;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		if (path.equals(COUNT)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
 	}
 }

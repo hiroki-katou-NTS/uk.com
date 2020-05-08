@@ -30,6 +30,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_BREAK_TIME_NAME)
 public class BreakTimeDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_BREAK_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -119,5 +121,52 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
 		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(FAKED)) {
+			return new DailyBreakDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(FAKED)) {
+			return (List<T>) this.breakTimes;
+		}
+		
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		
+		if (path.equals(FAKED)) {
+			this.breakTimes = (List<DailyBreakDto>) value;
+		}
+	}
+	
+	@Override
+	public int size(String path) {
+		if (path.equals(FAKED)) {
+			return 2;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (!path.equals(FAKED)) {
+			return PropType.OBJECT;
+		}
+		return PropType.ENUM_LIST;
 	}
 }

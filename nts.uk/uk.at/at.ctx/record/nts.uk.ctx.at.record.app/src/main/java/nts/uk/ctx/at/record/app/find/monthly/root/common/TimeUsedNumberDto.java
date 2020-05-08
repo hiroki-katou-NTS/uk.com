@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 @AllArgsConstructor
 /** 時間年休使用時間 */
 /** 年休上限残時間 */
-public class TimeUsedNumberDto implements ItemConst {
+public class TimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 使用回数 */
 	@AttendanceItemValue(type = ValueType.COUNT)
@@ -88,4 +88,53 @@ public class TimeUsedNumberDto implements ItemConst {
 										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
 										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(usedTimes).valueType(ValueType.COUNT));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(usedTime).valueType(ValueType.TIME));
+		case (GRANT + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedTimeBeforeGrant).valueType(ValueType.TIME));
+		case (GRANT + AFTER):
+			return Optional.of(ItemValue.builder().value(usedTimeAfterGrant).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case COUNT:
+		case TIME:
+		case (GRANT + BEFORE):
+		case (GRANT + AFTER):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case COUNT:
+			usedTimes = value.valueOrDefault(0); break;
+		case TIME:
+			usedTime = value.valueOrDefault(0); break;
+		case (GRANT + BEFORE):
+			usedTimeBeforeGrant = value.valueOrDefault(0); break;
+		case (GRANT + AFTER):
+			usedTimeAfterGrant = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

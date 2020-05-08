@@ -459,5 +459,147 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			return Optional.ofNullable(this.workInfo);
+		case DAILY_CALCULATION_ATTR_NAME:
+			return Optional.ofNullable(this.calcAttr);
+		case DAILY_AFFILIATION_INFO_NAME:
+			return Optional.ofNullable(this.affiliationInfo);
+		case DAILY_BUSINESS_TYPE_NAME:
+			return Optional.ofNullable(this.businessType.orElse(null));
+		case DAILY_OUTING_TIME_NAME:
+			return Optional.ofNullable(this.outingTime.orElse(null));
+		case DAILY_BREAK_TIME_NAME:
+			return Optional.ofNullable(this.breakTime);
+		case DAILY_ATTENDANCE_TIME_NAME:
+			return Optional.ofNullable(this.attendanceTime.orElse(null));
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
+			return Optional.ofNullable(this.attendanceTimeByWork.orElse(null));
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			return Optional.ofNullable(this.timeLeaving.orElse(null));
+		case DAILY_SHORT_TIME_NAME:
+			return Optional.ofNullable(this.shortWorkTime.orElse(null));
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			return Optional.ofNullable(this.specificDateAttr.orElse(null));
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			return Optional.ofNullable(this.attendanceLeavingGate.orElse(null));
+		case DAILY_OPTIONAL_ITEM_NAME:
+			return Optional.ofNullable(this.optionalItem.orElse(null));
+		case DAILY_TEMPORARY_TIME_NAME:
+			return Optional.ofNullable(this.temporaryTime.orElse(null));
+		case DAILY_PC_LOG_INFO_NAME:
+			return Optional.ofNullable(this.pcLogInfo.orElse(null));
+		case DAILY_REMARKS_NAME:
+			return Optional.ofNullable(this.remarks);
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			this.workInfo = (WorkInformationOfDailyDto) value;
+			break;
+		case DAILY_CALCULATION_ATTR_NAME:
+			this.calcAttr = (CalcAttrOfDailyPerformanceDto) value;
+			break;
+		case DAILY_AFFILIATION_INFO_NAME:
+			this.affiliationInfo = (AffiliationInforOfDailyPerforDto) value;
+			break;
+		case DAILY_BUSINESS_TYPE_NAME:
+			this.businessType = Optional.ofNullable((BusinessTypeOfDailyPerforDto) value);
+			break;
+		case DAILY_OUTING_TIME_NAME:
+			this.outingTime = Optional.ofNullable((OutingTimeOfDailyPerformanceDto) value);
+			break;
+		case DAILY_BREAK_TIME_NAME:
+			this.breakTime = (BreakTimeDailyDto) value;
+			break;
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:/** まだ対応しない */
+			this.attendanceTimeByWork = Optional.ofNullable((AttendanceTimeByWorkOfDailyDto) value);
+			break;
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			this.timeLeaving = Optional.ofNullable((TimeLeavingOfDailyPerformanceDto) value);
+			break;
+		case DAILY_SHORT_TIME_NAME:
+			this.shortWorkTime = Optional.ofNullable((ShortTimeOfDailyDto) value);
+			break;
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			this.specificDateAttr = Optional.ofNullable((SpecificDateAttrOfDailyPerforDto) value);
+			break;
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			this.attendanceLeavingGate = Optional.ofNullable((AttendanceLeavingGateOfDailyDto) value);
+			break;
+		case DAILY_OPTIONAL_ITEM_NAME:
+			this.optionalItem = Optional.ofNullable((OptionalItemOfDailyPerformDto) value);
+			break;
+		case DAILY_TEMPORARY_TIME_NAME:
+			this.temporaryTime = Optional.ofNullable((TemporaryTimeOfDailyPerformanceDto) value);
+			break;
+		case DAILY_PC_LOG_INFO_NAME:
+			this.pcLogInfo = Optional.ofNullable((PCLogOnInforOfDailyPerformDto) value);
+			break;
+		case DAILY_REMARKS_NAME:
+			this.remarks = (RemarksOfDailyDto) value;
+			break;
+		case DAILY_ATTENDANCE_TIME_NAME:
+			this.attendanceTime = Optional.ofNullable((AttendanceTimeDailyPerformDto) value);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			return new WorkInformationOfDailyDto();
+		case DAILY_CALCULATION_ATTR_NAME:
+			return new CalcAttrOfDailyPerformanceDto();
+		case DAILY_AFFILIATION_INFO_NAME:
+			return new AffiliationInforOfDailyPerforDto();
+		case DAILY_BUSINESS_TYPE_NAME:
+			return new BusinessTypeOfDailyPerforDto();
+		case DAILY_OUTING_TIME_NAME:
+			return new OutingTimeOfDailyPerformanceDto();
+		case DAILY_BREAK_TIME_NAME:
+			return new BreakTimeDailyDto();
+		case DAILY_ATTENDANCE_TIME_NAME:
+			return new AttendanceTimeDailyPerformDto();
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
+			return new AttendanceTimeByWorkOfDailyDto();
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			return new TimeLeavingOfDailyPerformanceDto();
+		case DAILY_SHORT_TIME_NAME:
+			return new ShortTimeOfDailyDto();
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			return new SpecificDateAttrOfDailyPerforDto();
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			return new AttendanceLeavingGateOfDailyDto();
+		case DAILY_OPTIONAL_ITEM_NAME:
+			return new OptionalItemOfDailyPerformDto();
+		case DAILY_TEMPORARY_TIME_NAME:
+			return new TemporaryTimeOfDailyPerformanceDto();
+		case DAILY_PC_LOG_INFO_NAME:
+			return new PCLogOnInforOfDailyPerformDto();
+		case DAILY_REMARKS_NAME:
+			return new RemarksOfDailyDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() { return true; }
+	
+	@Override
+	public boolean isContainer() { return true; }
 }
 

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Rai
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaisingSalaryTimeDailyPerformDto implements ItemConst {
+public class RaisingSalaryTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 特定日加給時間 : 加給時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = SPECIFIC, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -25,6 +25,69 @@ public class RaisingSalaryTimeDailyPerformDto implements ItemConst {
 	/** 加給時間 : 加給時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = RAISING_SALARY, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<RaisingSalaryTimeDto> raisingSalaryTime;
+	
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case SPECIFIC:
+		case RAISING_SALARY:
+			return new RaisingSalaryTimeDto();
+
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		switch (path) {
+		case SPECIFIC:
+		case RAISING_SALARY:
+			return 10;
+		default:
+			return AttendanceItemDataGate.super.size(path);
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case SPECIFIC:
+		case RAISING_SALARY:
+			return PropType.IDX_LIST;
+		default:
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		switch (path) {
+		case SPECIFIC:
+			return (List<T>) specificDayOfRaisingSalaryTime;
+		case RAISING_SALARY:
+			return (List<T>) raisingSalaryTime;
+		default:
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		switch (path) {
+		case SPECIFIC:
+			specificDayOfRaisingSalaryTime = (List<RaisingSalaryTimeDto>) value;
+			break;
+		case RAISING_SALARY:
+			raisingSalaryTime = (List<RaisingSalaryTimeDto>)  value;
+			break;
+		default:
+		}
+	}
 	
 	public static RaisingSalaryTimeDailyPerformDto toDto(RaiseSalaryTimeOfDailyPerfor domain){
 		return domain == null ? null : new RaisingSalaryTimeDailyPerformDto(toArray(domain.getAutoCalRaisingSalarySettings()), toArray(domain.getRaisingSalaryTimes()));

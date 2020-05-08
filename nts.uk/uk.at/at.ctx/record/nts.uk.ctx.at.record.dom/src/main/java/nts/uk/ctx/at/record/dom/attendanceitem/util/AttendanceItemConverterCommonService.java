@@ -18,7 +18,9 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.shr.com.context.AppContexts;
@@ -107,8 +109,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (this.mergeGroups.containsKey(type)) {
 			List<ItemValue> values = this.mergeGroups.get(type);
 			
-			dto = AttendanceItemUtil.fromItemValues(dto, values,
-					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
+			dto = AttendanceItemUtilRes.merge(dto, values);
 			
 			this.mergeGroups.remove(type);
 			this.needMergeItems.removeAll(values);
@@ -193,9 +194,11 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		Map<String, List<Integer>> groups = AttendanceItemIdContainer.groupItemByDomain(
 													attendanceItemIds, id -> id, isMonthly());
 		
-		List<ItemValue> converted = Collections.synchronizedList(new ArrayList<>());
+//		List<ItemValue> converted = Collections.synchronizedList(new ArrayList<>());
+		List<ItemValue> converted = new ArrayList<>();
 
-		groups.entrySet().stream().parallel().forEach(es -> {
+		groups.entrySet().stream().forEach(es -> {
+//			groups.entrySet().stream().parallel().forEach(es -> {
 			List<Integer> needConvert = new ArrayList<>();
 			Set<ItemValue> cached = this.itemValues.get(es.getKey());
 			if (cached == null) {
@@ -237,7 +240,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 			return new ArrayList<>();
 		} else {
 			
-			return AttendanceItemUtil.toItemValues((AttendanceItemCommon) dto, itemIds,
+			return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds,
 					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
 		}
 	}

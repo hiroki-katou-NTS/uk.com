@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 /** 育児外出 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoOutForChildCareDto implements ItemConst {
+public class GoOutForChildCareDto implements ItemConst , AttendanceItemDataGate{
 
 	/** 育児介護区分: 育児介護区分 */
 //	@AttendanceItemValue(type = ValueType.INTEGER)
@@ -43,6 +45,7 @@ public class GoOutForChildCareDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = EXCESS_STATUTORY, layout = LAYOUT_E, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int excessTime;
 	
+	@Override
 	public String enumText(){
 		switch (this.attr) {
 		case 0:
@@ -70,5 +73,49 @@ public class GoOutForChildCareDto implements ItemConst {
 						new AttendanceTimesMonth(times), new AttendanceTimeMonth(time), 
 						new AttendanceTimeMonth(withinTime), new AttendanceTimeMonth(excessTime));
 	}
-	
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(times).valueType(ValueType.COUNT));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case COUNT:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case COUNT:
+			times = value.valueOrDefault(0); break;
+		case TIME:
+			time = value.valueOrDefault(0); break;
+		default:
+		}
+	}
+
+	@Override
+	public void setEnum(String enumText) {
+		switch (enumText) {
+		case E_CHILD_CARE:
+			this.attr = 0; break;
+		case E_CARE:
+			this.attr = 1; break;
+		default:
+		}
+	}
 }

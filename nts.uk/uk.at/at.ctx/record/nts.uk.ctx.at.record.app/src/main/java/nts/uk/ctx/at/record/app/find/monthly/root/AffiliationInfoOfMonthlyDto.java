@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -100,4 +102,49 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 		return dto;
 	}
 
+	@Override
+	public boolean isRoot() { return true; }
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case START_MONTH:
+		case END_MONTH:
+			return new AggregateAffiliationInfoDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case START_MONTH:
+			return Optional.ofNullable(startMonthInfo);
+		case END_MONTH:
+			return Optional.ofNullable(endMonthInfo);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case START_MONTH:
+			this.startMonthInfo = (AggregateAffiliationInfoDto) value;
+			break;
+		case END_MONTH:
+			this.endMonthInfo = (AggregateAffiliationInfoDto) value;
+			break;
+		default:
+		}
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_AFFILIATION_INFO_NAME;
+	}
+	
+	
 }

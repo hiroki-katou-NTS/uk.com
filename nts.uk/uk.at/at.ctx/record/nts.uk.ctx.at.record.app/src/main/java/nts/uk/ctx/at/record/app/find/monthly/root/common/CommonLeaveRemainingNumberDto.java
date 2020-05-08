@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 /** 年休残数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonLeaveRemainingNumberDto implements ItemConst {
+public class CommonLeaveRemainingNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 合計残日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -63,4 +63,43 @@ public class CommonLeaveRemainingNumberDto implements ItemConst {
 				new ReserveLeaveRemainingDayNumber(totalRemainingDays), 
 				ConvertHelper.mapTo(details, c -> c == null ? null : c.toReserveDomain()));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(totalRemainingDays).valueType(ValueType.DAYS));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(totalRemainingTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case DAYS:
+			totalRemainingDays = value.valueOrDefault(0d); break;
+		case TIME:
+			totalRemainingTime = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

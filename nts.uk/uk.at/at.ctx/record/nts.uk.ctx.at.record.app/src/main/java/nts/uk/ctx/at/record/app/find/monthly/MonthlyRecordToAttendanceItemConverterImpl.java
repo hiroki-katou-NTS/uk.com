@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
@@ -46,7 +45,6 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	private String employeeId;
 	private YearMonth yearMonth;
 	private ClosureId closureId;
-	private ClosureDate closureDate;
 	private ClosureDateDto closureDateDto;
 	
 	private MonthlyRecordToAttendanceItemConverterImpl(OptionalItemRepository optionalItem){
@@ -128,7 +126,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 		this.employeeId = (employeeId);
 		this.yearMonth = (yearMonth);
 		this.closureId = (closureId);
-		this.closureDate = (closureDate);
+//		this.closureDate = (closureDate);
 		this.closureDateDto = new ClosureDateDto(closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth());
 		return this;
 	}

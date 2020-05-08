@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkScheduleTimeDto implements ItemConst {
+public class WorkScheduleTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 合計時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PLAN)
@@ -28,5 +30,28 @@ public class WorkScheduleTimeDto implements ItemConst {
 	@Override
 	public WorkScheduleTimeDto clone() {
 		return new WorkScheduleTimeDto(total, excessOfStatutoryTime, withinStatutoryTime);
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (PLAN.equals(path)) {
+			return Optional.of(ItemValue.builder().value(total).valueType(ValueType.TIME));
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+	
+	@Override
+	public void set(String path, ItemValue value) {
+		if (PLAN.equals(path)) {
+			total = value.valueOrDefault(0);
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (PLAN.equals(path)) {
+			return PropType.VALUE;
+		}
+		return PropType.OBJECT;
 	}
 }

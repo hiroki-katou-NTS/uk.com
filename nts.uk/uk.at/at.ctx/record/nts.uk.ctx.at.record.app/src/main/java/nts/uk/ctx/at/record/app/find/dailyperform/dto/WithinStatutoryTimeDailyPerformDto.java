@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
+public class WithinStatutoryTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 就業時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = WORK_TIME)
@@ -46,6 +48,78 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
 
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (LATE_NIGHT.equals(path)) {
+			return new CalcAttachTimeDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (LATE_NIGHT.equals(path)) {
+			return Optional.ofNullable(withinStatutoryMidNightTime);
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (LATE_NIGHT.equals(path)) {
+			withinStatutoryMidNightTime = (CalcAttachTimeDto) value;
+		}
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case WORK_TIME:
+			return Optional.of(ItemValue.builder().value(workTime).valueType(ValueType.TIME));
+		case (ACTUAL + WORK_TIME):
+			return Optional.of(ItemValue.builder().value(workTimeIncludeVacationTime).valueType(ValueType.TIME));
+		case PREMIUM:
+			return Optional.of(ItemValue.builder().value(withinPrescribedPremiumTime).valueType(ValueType.TIME));
+		case (HOLIDAY + ADD):
+			return Optional.of(ItemValue.builder().value(vacationAddTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case WORK_TIME:
+			this.workTime = value.valueOrDefault(null);
+			break;
+		case (ACTUAL + WORK_TIME):
+			this.workTimeIncludeVacationTime = value.valueOrDefault(null);
+			break;
+		case PREMIUM:
+			this.withinPrescribedPremiumTime = value.valueOrDefault(null);
+			break;
+		case (HOLIDAY + ADD):
+			this.vacationAddTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case WORK_TIME:
+		case (ACTUAL + WORK_TIME):
+		case PREMIUM:
+		case (HOLIDAY + ADD):
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	
 	public static WithinStatutoryTimeDailyPerformDto fromWithinStatutoryTimeDailyPerform(
 			WithinStatutoryTimeOfDaily domain) {
 		return domain == null ? null: new WithinStatutoryTimeDailyPerformDto(

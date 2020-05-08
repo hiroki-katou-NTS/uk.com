@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayUseTimeDto implements ItemConst {
+public class HolidayUseTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 時間消化休暇使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_DIGESTION)
@@ -28,6 +30,44 @@ public class HolidayUseTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TIME_DIGESTION:
+			return Optional.of(ItemValue.builder().value(timeDigestionVacationUseTime).valueType(ValueType.TIME));
+		case USAGE:
+			return Optional.of(ItemValue.builder().value(useTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TIME_DIGESTION:
+		case USAGE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TIME_DIGESTION:
+			timeDigestionVacationUseTime = value.valueOrDefault(null);
+			break;
+		case USAGE:
+			useTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
 	
 	@Override
 	public HolidayUseTimeDto clone() {

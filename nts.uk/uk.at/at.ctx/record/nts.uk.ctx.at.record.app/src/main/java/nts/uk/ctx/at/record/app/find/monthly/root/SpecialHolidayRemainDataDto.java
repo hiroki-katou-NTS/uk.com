@@ -89,4 +89,57 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	public YearMonth yearMonth() {
 		return ym;
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (FAKED.equals(path)) {
+			return new SpecialHolidayRemainDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (FAKED.equals(path)) {
+			return 20;
+		}
+		return super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (FAKED.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FAKED.equals(path)) {
+			return (List<T>) specialHoliday;
+		}
+		return super.gets(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FAKED.equals(path)) {
+			specialHoliday = (List<SpecialHolidayRemainDto>) value;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME;
+	}
+
+	
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.Exc
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の時間外超過 */
-public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
+public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -60,4 +61,83 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+			return Optional.of(ItemValue.builder().value(monthlyTotalPremiumTime).valueType(ValueType.TIME));
+		case WEEKLY_PREMIUM:
+			return Optional.of(ItemValue.builder().value(weeklyTotalPremiumTime).valueType(ValueType.TIME));
+		case (IRREGULAR + CARRY_FORWARD):
+			return Optional.of(ItemValue.builder().value(deformationCarryforwardTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (TIME.equals(path)) {
+			return new ExcessOutsideWorkDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+		case WEEKLY_PREMIUM:
+		case (IRREGULAR + CARRY_FORWARD):
+			return PropType.VALUE;
+		case TIME:
+			return PropType.IDX_LIST;
+		default:
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (TIME.equals(path)){
+			return (List<T>) time;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+			monthlyTotalPremiumTime = value.valueOrDefault(0);
+			break;
+		case WEEKLY_PREMIUM:
+			weeklyTotalPremiumTime = value.valueOrDefault(0);
+			break;
+		case (IRREGULAR + CARRY_FORWARD):
+			deformationCarryforwardTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (TIME.equals(path)){
+			time = (List<ExcessOutsideWorkDto>) value;
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (TIME.equals(path)){
+			return 50;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	
 }

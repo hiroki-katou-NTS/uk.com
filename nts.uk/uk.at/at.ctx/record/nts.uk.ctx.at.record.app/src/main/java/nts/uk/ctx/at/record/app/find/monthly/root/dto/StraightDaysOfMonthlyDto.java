@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の給与用日数 */
-public class StraightDaysOfMonthlyDto implements ItemConst {
+public class StraightDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 給与出勤日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -39,4 +39,40 @@ public class StraightDaysOfMonthlyDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+			return Optional.of(ItemValue.builder().value(payAttendanceDays).valueType(ValueType.DAYS));
+		case ABSENCE:
+			return Optional.of(ItemValue.builder().value(payAbsenceDays).valueType(ValueType.DAYS));
+		default:
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+		case ABSENCE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case ATTENDANCE:
+			payAttendanceDays = value.valueOrDefault(0d); break;
+		case ABSENCE:
+			payAbsenceDays = value.valueOrDefault(0d); break;
+		default:
+		}
+	}
+
+	
 }

@@ -1,27 +1,25 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto.wrapper;
 
-import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.DayAndTimeDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialLeaveDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialLeaveUseNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 特別休暇 */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SpecialHolidayRemainDto implements ItemConst {
+public class SpecialHolidayRemainDto implements ItemConst, AttendanceItemDataGate {
 	
 	/** 締め期間: 期間 */
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
@@ -68,4 +66,96 @@ public class SpecialHolidayRemainDto implements ItemConst {
 		
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		case (SPECIAL_HOLIDAY + CODE):
+			return Optional.of(ItemValue.builder().value(no).valueType(ValueType.CODE));
+		case (GRANT + ATTRIBUTE):
+			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case (GRANT + DAYS):
+			return Optional.of(ItemValue.builder().value(grantDays).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case (REAL + SPECIAL_HOLIDAY):
+		case SPECIAL_HOLIDAY:
+			return new SpecialLeaveDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case (REAL + SPECIAL_HOLIDAY):
+			return Optional.ofNullable(actualSpecial);
+		case SPECIAL_HOLIDAY:
+			return Optional.ofNullable(specialLeave);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+		case (SPECIAL_HOLIDAY + CODE):
+		case (GRANT + ATTRIBUTE):
+		case (GRANT + DAYS):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case CLOSURE_STATE:
+			closureStatus = value.valueOrDefault(0); break;
+		case (SPECIAL_HOLIDAY + CODE):
+			no = value.valueOrDefault(0); break;
+		case (GRANT + ATTRIBUTE):
+			grantAtr = value.valueOrDefault(false); break;
+		case (GRANT + DAYS):
+			grantDays = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case (REAL + SPECIAL_HOLIDAY):
+			actualSpecial = (SpecialLeaveDto) value; break;
+		case SPECIAL_HOLIDAY:
+			specialLeave = (SpecialLeaveDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	
 }

@@ -172,4 +172,130 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	public YearMonth yearMonth() {
 		return this.ym;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case (CLOSURE_STATE):
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case ANNUNAL_LEAVE:
+		case (REAL + ANNUNAL_LEAVE):
+			return new AnnualLeaveDto();
+		case (HALF_DAY + ANNUNAL_LEAVE):
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			return new HalfDayAnnualLeaveDto();
+		case (ANNUNAL_LEAVE + GRANT):
+			return new AnnualLeaveGrantDto();
+		case (UPPER_LIMIT + REMAIN):
+		case (REAL + UPPER_LIMIT + REMAIN):
+			return new TimeUsedNumberDto();
+		case (ATTENDANCE + RATE):
+			return new AnnualLeaveAttdRateDaysDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case ANNUNAL_LEAVE:
+			return Optional.ofNullable(annualLeave);
+		case (REAL + ANNUNAL_LEAVE):
+			return Optional.ofNullable(realAnnualLeave);
+		case (HALF_DAY + ANNUNAL_LEAVE):
+			return Optional.ofNullable(halfDayAnnualLeave);
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			return Optional.ofNullable(realHalfDayAnnualLeave);
+		case (ANNUNAL_LEAVE + GRANT):
+			return Optional.ofNullable(annualLeaveGrant);
+		case (UPPER_LIMIT + REMAIN):
+			return Optional.ofNullable(maxRemainingTime);
+		case (REAL + UPPER_LIMIT + REMAIN):
+			return Optional.ofNullable(realMaxRemainingTime);
+		case (ATTENDANCE + RATE):
+			return Optional.ofNullable(attendanceRateDays);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+		case (CLOSURE_STATE):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+			grantAtr = value.valueOrDefault(false); break;
+		case (CLOSURE_STATE):
+			closureStatus = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case ANNUNAL_LEAVE:
+			(annualLeave) = (AnnualLeaveDto) value; break;
+		case (REAL + ANNUNAL_LEAVE):
+			(realAnnualLeave)= (AnnualLeaveDto) value; break;
+		case (HALF_DAY + ANNUNAL_LEAVE):
+			(halfDayAnnualLeave) = (HalfDayAnnualLeaveDto) value; break;
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			(realHalfDayAnnualLeave) = (HalfDayAnnualLeaveDto) value; break;
+		case (ANNUNAL_LEAVE + GRANT):
+			(annualLeaveGrant) = (AnnualLeaveGrantDto) value; break;
+		case (UPPER_LIMIT + REMAIN):
+			(maxRemainingTime) = (TimeUsedNumberDto) value; break;
+		case (REAL + UPPER_LIMIT + REMAIN):
+			(realMaxRemainingTime) = (TimeUsedNumberDto) value; break;
+		case (ATTENDANCE + RATE):
+			(attendanceRateDays) = (AnnualLeaveAttdRateDaysDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_ANNUAL_LEAVING_REMAIN_NAME;
+	}
+
+	
 }

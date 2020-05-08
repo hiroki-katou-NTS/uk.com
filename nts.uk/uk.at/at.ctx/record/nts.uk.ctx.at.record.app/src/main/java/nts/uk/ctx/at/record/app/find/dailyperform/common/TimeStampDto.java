@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /** 勤怠打刻 */
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimeStampDto implements ItemConst {
+public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 時刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CLOCK)
@@ -34,6 +36,49 @@ public class TimeStampDto implements ItemConst {
 	private String placeCode;
 	
 	private int stampSourceInfo;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case CLOCK:
+			return Optional.of(ItemValue.builder().value(timesOfDay).valueType(ValueType.TIME_WITH_DAY));
+		case ROUNDING:
+			return Optional.of(ItemValue.builder().value(afterRoundingTimesOfDay).valueType(ValueType.TIME_WITH_DAY));
+		case PLACE:
+			return Optional.of(ItemValue.builder().value(placeCode).valueType(ValueType.CODE));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case CLOCK:
+			this.timesOfDay = value.valueOrDefault(null);
+			break;
+		case ROUNDING:
+			this.afterRoundingTimesOfDay = value.valueOrDefault(null);
+			break;
+		case PLACE:
+			this.placeCode = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case CLOCK:
+		case ROUNDING:
+		case PLACE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
 		return  c == null || c.getTimeDay().getTimeWithDay()  == null || c.getTimeDay().getReasonTimeChange() ==null || c.getTimeDay().getReasonTimeChange().getTimeChangeMeans() ==null  || !c.getTimeDay().getTimeWithDay().isPresent()? null : new TimeStampDto(

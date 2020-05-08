@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の休暇使用時間 */
-public class VacationUseTimeOfMonthlyDto implements ItemConst {
+public class VacationUseTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 年休 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -58,4 +60,57 @@ public class VacationUseTimeOfMonthlyDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+			return Optional.of(ItemValue.builder().value(annualLeave).valueType(ValueType.TIME));
+		case RETENTION:
+			return Optional.of(ItemValue.builder().value(retentionYearly).valueType(ValueType.TIME));
+		case SPECIAL:
+			return Optional.of(ItemValue.builder().value(specialHoliday).valueType(ValueType.TIME));
+		case COMPENSATORY:
+			return Optional.of(ItemValue.builder().value(compensatoryLeave).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+		case RETENTION:
+		case SPECIAL:
+		case COMPENSATORY:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case ANNUNAL_LEAVE:
+			annualLeave = value.valueOrDefault(0);
+			break;
+		case RETENTION:
+			retentionYearly = value.valueOrDefault(0);
+			break;
+		case SPECIAL:
+			specialHoliday = value.valueOrDefault(0);
+			break;
+		case COMPENSATORY:
+			compensatoryLeave = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+
+	
 }

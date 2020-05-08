@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @AllArgsConstructor
 /** 月別実績の欠勤日数 */
 /** 月別実績の特別休暇日数 */
-public class CommonDaysOfMonthlyDto implements ItemConst {
+public class CommonDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 欠勤合計日数: 勤怠月間日数 */
 	/** 特別休暇合計日数: 勤怠月間日数 */
@@ -84,4 +85,78 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 									new AttendanceDaysMonth(c.getDays()),
 									new AttendanceTimeMonth(c.getTime()))));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (TOTAL + DAYS):
+			return Optional.of(ItemValue.builder().value(totalAbsenceDays).valueType(ValueType.DAYS));
+		case (TOTAL + TIME):
+			return Optional.of(ItemValue.builder().value(totalAbsenceTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (DAYS.equals(path)) {
+			return new CommonAggregateDaysDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (DAYS.equals(path)) {
+			return 30;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (TOTAL + DAYS):
+		case (TOTAL + TIME):
+			return PropType.VALUE;
+		case (DAYS):
+			return PropType.IDX_LIST;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (DAYS.equals(path)) {
+			return (List<T>) daysList;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (TOTAL + DAYS):
+			totalAbsenceDays = value.valueOrDefault(0d); break;
+		case (TOTAL + TIME):
+			totalAbsenceTime = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (DAYS.equals(path)) {
+			daysList = (List<CommonAggregateDaysDto>) value;
+		}
+	}
+
+	
 }

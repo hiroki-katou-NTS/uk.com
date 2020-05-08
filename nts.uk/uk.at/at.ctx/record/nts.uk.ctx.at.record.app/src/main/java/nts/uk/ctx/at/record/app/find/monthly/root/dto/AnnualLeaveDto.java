@@ -18,11 +18,11 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveDto implements ItemConst {
+public class AnnualLeaveDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 使用数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + NUMBER, layout = LAYOUT_A)
-	private AnnualLeaveUsedNumberDto usedNumber;
+	private DayTimeUsedNumberDto usedNumber;
 	
 	/** 残数 */
 	@AttendanceItemLayout(jpPropertyName = REMAIN, layout = LAYOUT_B)
@@ -42,7 +42,7 @@ public class AnnualLeaveDto implements ItemConst {
 	
 	public static AnnualLeaveDto from(AnnualLeave domain){
 		return domain == null ? null : new AnnualLeaveDto(
-				AnnualLeaveUsedNumberDto.from(domain.getUsedNumber()), 
+				DayTimeUsedNumberDto.from(domain.getUsedNumber()), 
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()), 
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)), 
@@ -51,7 +51,7 @@ public class AnnualLeaveDto implements ItemConst {
 	
 	public AnnualLeave toDomain(){
 		return AnnualLeave.of(
-						usedNumber == null ? new AnnualLeaveUsedNumber()  : usedNumber.toDomain(),
+						usedNumber == null ? new AnnualLeaveUsedNumber()  : usedNumber.toAnnual(),
 						remainingNumber == null ? new AnnualLeaveRemainingNumber()  : remainingNumber.toDomain(), 
 						remainingNumberBeforeGrant == null ? new AnnualLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(), 
 						Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toDomain()),
@@ -60,7 +60,7 @@ public class AnnualLeaveDto implements ItemConst {
 	
 	public static AnnualLeaveDto from(RealAnnualLeave domain){
 		return domain == null ? null : new AnnualLeaveDto(
-				AnnualLeaveUsedNumberDto.from(domain.getUsedNumber()), 
+				DayTimeUsedNumberDto.from(domain.getUsedNumber()), 
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()), 
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 				CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
@@ -69,9 +69,65 @@ public class AnnualLeaveDto implements ItemConst {
 	
 	public RealAnnualLeave toRealDomain(){
 		return RealAnnualLeave.of(
-						usedNumber == null ? new AnnualLeaveUsedNumber() : usedNumber.toDomain(),
+						usedNumber == null ? new AnnualLeaveUsedNumber() : usedNumber.toAnnual(),
 						remainingNumber == null ? new AnnualLeaveRemainingNumber() : remainingNumber.toDomain(), 
 						remainingNumberBeforeGrant == null ? new AnnualLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(), 
 						Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toDomain()));
 	}
+
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case (USAGE + NUMBER):
+			return new DayTimeUsedNumberDto();
+		case (REMAIN):
+		case (REMAIN + GRANT + BEFORE):
+		case (REMAIN + GRANT + AFTER):
+			return new CommonLeaveRemainingNumberDto();
+		case (NOT_DIGESTION):
+			return new AnnualLeaveUndigestedNumberDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (USAGE + NUMBER):
+			return Optional.ofNullable(usedNumber);
+		case (REMAIN):
+			return Optional.ofNullable(remainingNumber);
+		case (REMAIN + GRANT + BEFORE):
+			return Optional.ofNullable(remainingNumberBeforeGrant);
+		case (REMAIN + GRANT + AFTER):
+			return Optional.ofNullable(remainingNumberAfterGrant);
+		case (NOT_DIGESTION):
+			return Optional.ofNullable(undigestedNumber);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (USAGE + NUMBER):
+			usedNumber = (DayTimeUsedNumberDto) value; break;
+		case (REMAIN):
+			remainingNumber = (CommonLeaveRemainingNumberDto) value; break;
+		case (REMAIN + GRANT + BEFORE):
+			remainingNumberBeforeGrant = (CommonLeaveRemainingNumberDto) value; break;
+		case (REMAIN + GRANT + AFTER):
+			remainingNumberAfterGrant = (CommonLeaveRemainingNumberDto) value; break;
+		case (NOT_DIGESTION):
+			undigestedNumber = (AnnualLeaveUndigestedNumberDto) value; break;
+		default:
+			break;
+		}
+	}
+
 }

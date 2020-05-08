@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OverTimeWorkDailyPerformDto implements ItemConst {
+public class OverTimeWorkDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 残業枠時間: 残業枠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FRAMES, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -58,6 +59,109 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	/** フレックス時間: フレックス時間 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = FLEX)
 	private FlexTimeDto flexTime;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case RESTRAINT:
+			return Optional.of(ItemValue.builder().value(overTimeSpentAtWork).valueType(ValueType.TIME));
+		case (IRREGULAR + LEGAL):
+			return Optional.of(ItemValue.builder().value(irregularWithinPrescribedOverTimeWork).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FRAMES:
+			return new OverTimeFrameTimeDto();
+		case (LATE_NIGHT):
+			return new ExcessOverTimeWorkMidNightTimeDto();
+		case (FLEX):
+			return new FlexTimeDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (LATE_NIGHT):
+			return Optional.ofNullable(excessOfStatutoryMidNightTime);
+		case (FLEX):
+			return Optional.ofNullable(flexTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (FRAMES.equals(path)) {
+			return 10;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case RESTRAINT:
+		case (IRREGULAR + LEGAL):
+			return PropType.VALUE;
+		case FRAMES:
+			return PropType.IDX_LIST;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FRAMES.equals(path)) {
+			return (List<T>) overTimeFrameTime;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case RESTRAINT:
+			overTimeSpentAtWork = value.valueOrDefault(null);
+			break;
+		case (IRREGULAR + LEGAL):
+			irregularWithinPrescribedOverTimeWork = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (LATE_NIGHT):
+			excessOfStatutoryMidNightTime = (ExcessOverTimeWorkMidNightTimeDto) value;
+			break;
+		case (FLEX):
+			flexTime = (FlexTimeDto) value;
+		default:
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FRAMES.equals(path)) {
+			overTimeFrameTime = (List<OverTimeFrameTimeDto>) value;
+		}
+	}
 
 	public static OverTimeWorkDailyPerformDto fromOverTimeWorkDailyPerform(OverTimeOfDaily domain) {
 		return domain == null ? null

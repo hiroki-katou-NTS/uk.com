@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
+public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 所定外深夜時間: 所定外深夜時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LATE_NIGHT)

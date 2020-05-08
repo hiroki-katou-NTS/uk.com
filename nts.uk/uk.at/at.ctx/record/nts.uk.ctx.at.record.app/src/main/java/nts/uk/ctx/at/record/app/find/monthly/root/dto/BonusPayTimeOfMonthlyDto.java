@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の加給時間 + 集計加給時間 */
-public class BonusPayTimeOfMonthlyDto implements ItemConst {
+public class BonusPayTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 加給枠NO: 加給時間項目NO */
 	private int no;
@@ -85,4 +87,50 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst {
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time){
 		return new AttendanceTimeMonth(time);
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TIME:
+			return Optional.of(ItemValue.builder().value(bonus).valueType(ValueType.TIME));
+		case HOLIDAY_WORK:
+			return Optional.of(ItemValue.builder().value(holWorkBonus).valueType(ValueType.TIME));
+		case (HOLIDAY_WORK + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(holWorkSpecBonus).valueType(ValueType.TIME));
+		case SPECIFIC:
+			return Optional.of(ItemValue.builder().value(specBonus).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TIME:
+		case HOLIDAY_WORK:
+		case (HOLIDAY_WORK + SPECIFIC):
+		case SPECIFIC:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TIME:
+			bonus = value.valueOrDefault(0); break;
+		case HOLIDAY_WORK:
+			holWorkBonus = value.valueOrDefault(0); break;
+		case (HOLIDAY_WORK + SPECIFIC):
+			holWorkSpecBonus = value.valueOrDefault(0); break;
+		case SPECIFIC:
+			specBonus = value.valueOrDefault(0); break;
+		default:
+		}
+	}
+
+	
 }

@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -259,42 +258,16 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
 	
-	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain){
-		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
-		if(domain != null) {
-			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
-			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
-			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
-			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
-			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList()));
-			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
-			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
-			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
-			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
-			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
-			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
-			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
-			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
-			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
-			dto.exsistData();
-		}
-		return dto;
+	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain) {
+		return fromDtoWithOptional(domain, new HashMap<>());
 	}
 	
 	public static MonthlyRecordWorkDto fromDtoWithOptional(IntegrationOfMonthly domain, Map<Integer, OptionalItem> optionalMaster){
 		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 		if(domain != null) {
 			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
-			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
 			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (domain.getAgreementTimeList().size() > 0) {
+			if (!domain.getAgreementTimeList().isEmpty()) {
 				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
 			}
 			else {
@@ -308,12 +281,129 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
 			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
-			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
-			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
-			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
-			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
+			domain.getAffiliationInfo().ifPresent(aff -> {
+				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
+				dto.setYearMonth(aff.getYearMonth());
+				dto.setEmployeeId(aff.getEmployeeId());
+				dto.setClosureDate(ClosureDateDto.from(aff.getClosureDate()));
+				dto.setClosureID(aff.getClosureId().value);
+			});
 			dto.exsistData();
 		}
 		return dto;
 	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			return Optional.ofNullable(this.affiliation);
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			return Optional.ofNullable(this.attendanceTime);
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			return Optional.ofNullable(this.anyItem);
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			return Optional.ofNullable(this.annLeave);
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			return Optional.ofNullable(this.rsvLeave);
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			return Optional.ofNullable(this.specialHoliday);
+		case MONTHLY_OFF_REMAIN_NAME:
+			return Optional.ofNullable(this.dayOff);
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			return Optional.ofNullable(this.absenceLeave);
+		case MONTHLY_REMARKS_NAME:
+			return Optional.ofNullable(this.remarks);
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			return Optional.ofNullable(this.care);
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			return Optional.ofNullable(this.childCare);
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			return Optional.ofNullable(this.agreementTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			this.affiliation = (AffiliationInfoOfMonthlyDto) value;
+			break;
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			this.attendanceTime = (AttendanceTimeOfMonthlyDto) value;
+			break;
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			this.anyItem = (AnyItemOfMonthlyDto) value;
+			break;
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			this.annLeave = (AnnLeaRemNumEachMonthDto) value;
+			break;
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			this.rsvLeave = (RsvLeaRemNumEachMonthDto) value;
+			break;
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			this.specialHoliday = (SpecialHolidayRemainDataDto) value;
+			break;
+		case MONTHLY_OFF_REMAIN_NAME:
+			this.dayOff = (MonthlyDayoffRemainDataDto) value;
+			break;
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			this.absenceLeave = (AbsenceLeaveRemainDataDto) value;
+			break;
+		case MONTHLY_REMARKS_NAME:
+			this.remarks = (MonthlyRemarksDto) value;
+			break;
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			this.care = (MonthlyCareHdRemainDto) value;
+			break;
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			this.childCare = (MonthlyChildCareHdRemainDto) value;
+			break;
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			this.agreementTime = (AgreementTimeOfManagePeriodDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case MONTHLY_AFFILIATION_INFO_NAME:
+			return new AffiliationInfoOfMonthlyDto();
+		case MONTHLY_ATTENDANCE_TIME_NAME:
+			return new AttendanceTimeOfMonthlyDto();
+		case MONTHLY_OPTIONAL_ITEM_NAME:
+			return new AnyItemOfMonthlyDto();
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
+			return new AnnLeaRemNumEachMonthDto();
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
+			return new RsvLeaRemNumEachMonthDto();
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+			return new SpecialHolidayRemainDataDto();
+		case MONTHLY_OFF_REMAIN_NAME:
+			return new MonthlyDayoffRemainDataDto();
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
+			return new AbsenceLeaveRemainDataDto();
+		case MONTHLY_REMARKS_NAME:
+			return new MonthlyRemarksDto();
+		case MONTHLY_CARE_HD_REMAIN_NAME:
+			return new MonthlyCareHdRemainDto();
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
+			return new MonthlyChildCareHdRemainDto();
+		case AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
+			return new AgreementTimeOfManagePeriodDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() { return true; }
+	
+	@Override
+	public boolean isContainer() { return true; }
 }

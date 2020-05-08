@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休出勤率日数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveAttdRateDaysDto implements ItemConst {
+public class AnnualLeaveAttdRateDaysDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 労働日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -43,4 +45,48 @@ public class AnnualLeaveAttdRateDaysDto implements ItemConst {
 											new MonthlyDays(prescribedDays), 
 											new MonthlyDays(deductedDays));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case LABOR:
+			return Optional.of(ItemValue.builder().value(workingDays).valueType(ValueType.DAYS));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(prescribedDays).valueType(ValueType.DAYS));
+		case DEDUCTION:
+			return Optional.of(ItemValue.builder().value(deductedDays).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case LABOR:
+		case WITHIN_STATUTORY:
+		case DEDUCTION:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case LABOR:
+			workingDays = value.valueOrDefault(0d); break;
+		case WITHIN_STATUTORY:
+			(prescribedDays) = value.valueOrDefault(0d); break;
+		case DEDUCTION:
+			(deductedDays) = value.valueOrDefault(0d); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

@@ -48,7 +48,7 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 
 	@AttendanceItemLayout(jpPropertyName = FAKED, layout = LAYOUT_A, 
 			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<MonthlyRemarkDto> remarks;
+	private List<RemarkDto> remarks;
 	
 	@Override
 	public String employeeId() {
@@ -58,7 +58,7 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 	public List<RemarksMonthlyRecord> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		return ConvertHelper.mapTo(remarks, c -> new RemarksMonthlyRecord(employeeId, ConvertHelper.getEnum(closureID, ClosureId.class), 
 										c.getNo(), ym, closureDate == null ? null : closureDate.toDomain(),
-										c.getRemarks() == null ? null : new RecordRemarks(c.getRemarks())));
+										c.getRemark() == null ? null : new RecordRemarks(c.getRemark())));
 	}
 	@Override
 	public YearMonth yearMonth() {
@@ -72,10 +72,65 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 			dto.setYm(domain.get(0).getRemarksYM());
 			dto.setClosureID(domain.get(0).getClosureId().value);
 			dto.setClosureDate(ClosureDateDto.from(domain.get(0).getClosureDate()));
-			dto.setRemarks(ConvertHelper.mapTo(domain, c -> MonthlyRemarkDto.from(c)));
+			dto.setRemarks(ConvertHelper.mapTo(domain, c -> from(c)));
 			
 			dto.exsistData();
 		}
 		return dto;
 	}
+	
+	public static RemarkDto from(RemarksMonthlyRecord domain){
+		RemarkDto dto = new RemarkDto();
+		
+		dto.setRemark(domain.getRecordRemarks() == null ? null : domain.getRecordRemarks().v());
+		dto.setNo(domain.getRemarksNo());
+		
+		return dto;
+	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (FAKED.equals(path)) {
+			return new RemarkDto();
+		}
+		return super.newInstanceOf(path);
+	}
+	@Override
+	public int size(String path) {
+		if (FAKED.equals(path)) {
+			return 5;
+		}
+		return super.size(path);
+	}
+	@Override
+	public PropType typeOf(String path) {
+		if (FAKED.equals(path)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FAKED.equals(path)) {
+			return (List<T>) remarks;
+		}
+		return super.gets(path);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FAKED.equals(path)) {
+			remarks = (List<RemarkDto>) value;
+		}
+	}
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+	@Override
+	public String rootName() {
+		return MONTHLY_REMARKS_NAME;
+	}
+
+
 }

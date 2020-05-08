@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休未消化数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveUndigestedNumberDto implements ItemConst {
+public class AnnualLeaveUndigestedNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 未消化日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -43,5 +43,40 @@ public class AnnualLeaveUndigestedNumberDto implements ItemConst {
 				UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(undigestedDays)),
 				Optional.ofNullable(undigestedTime == null ? null
 						: UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(undigestedTime))));
+	}@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(undigestedDays).valueType(ValueType.DAYS));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(undigestedTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case DAYS:
+			undigestedDays = value.valueOrDefault(0d); break;
+		case TIME:
+			undigestedTime = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleTimeZoneDto implements ItemConst {
+public class ScheduleTimeZoneDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 勤務NO */
 	private int no;
@@ -30,5 +32,43 @@ public class ScheduleTimeZoneDto implements ItemConst {
 	@Override
 	protected ScheduleTimeZoneDto clone() {
 		return new ScheduleTimeZoneDto(no, working, leave);
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+			return Optional.of(ItemValue.builder().value(working).valueType(ValueType.TIME_WITH_DAY));
+		case LEAVE:
+			return Optional.of(ItemValue.builder().value(leave).valueType(ValueType.TIME_WITH_DAY));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case ATTENDANCE:
+			this.working = value.valueOrDefault(null);
+			break;
+		case LEAVE:
+			this.leave = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+		case LEAVE:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
 	}
 }

@@ -292,7 +292,7 @@ public class ErAlWorkRecordCheckService {
 			}
 		}
 		if(isTrue(checkCondition.getFilterByClassification())){
-			if(!checkCondition.getLstClassificationCode().contains(new ClassificationCode(affiliation.getClassificationCode()))){
+			if(!checkCondition.getLstClassificationCode().contains(new ClassificationCode(affiliation.getClsCode()))){
 				return false;
 			}
 		}

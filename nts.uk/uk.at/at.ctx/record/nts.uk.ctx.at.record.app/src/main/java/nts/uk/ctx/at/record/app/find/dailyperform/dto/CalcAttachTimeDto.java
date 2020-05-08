@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CalcAttachTimeDto implements ItemConst {
+public class CalcAttachTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 計算時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = CALC)
@@ -39,6 +41,49 @@ public class CalcAttachTimeDto implements ItemConst {
 		super();
 		this.calcTime = calcTime;
 		this.time = time;
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case CALC:
+			return Optional.of(ItemValue.builder().value(calcTime).valueType(ValueType.TIME));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		case DIVERGENCE:
+			return Optional.of(ItemValue.builder().value(divergenceTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case CALC:
+			this.calcTime = value.valueOrDefault(null);
+			break;
+		case TIME:
+			this.time = value.valueOrDefault(null);
+			break;
+		case DIVERGENCE:
+			this.divergenceTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case CALC:
+		case TIME:
+		case DIVERGENCE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
 	}
 	
 	@Override

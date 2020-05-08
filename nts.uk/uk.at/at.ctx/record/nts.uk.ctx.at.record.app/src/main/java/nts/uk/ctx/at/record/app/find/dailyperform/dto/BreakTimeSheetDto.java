@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BreakTimeSheetDto implements ItemConst {
+public class BreakTimeSheetDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 開始: 勤怠打刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = START)
@@ -32,7 +34,44 @@ public class BreakTimeSheetDto implements ItemConst {
 	/** 休憩枠NO: 休憩枠NO */
 //	@AttendanceItemLayout(layout = "D")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer no;
+	private int no;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case START:
+			return Optional.of(ItemValue.builder().value(start).valueType(ValueType.TIME_WITH_DAY));
+		case (END):
+			return Optional.of(ItemValue.builder().value(end).valueType(ValueType.TIME_WITH_DAY));
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case START:
+		case END:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case START:
+			this.start = value.valueOrDefault(null);
+			break;
+		case (END):
+			this.end = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
 	
 	@Override
 	public BreakTimeSheetDto clone() {

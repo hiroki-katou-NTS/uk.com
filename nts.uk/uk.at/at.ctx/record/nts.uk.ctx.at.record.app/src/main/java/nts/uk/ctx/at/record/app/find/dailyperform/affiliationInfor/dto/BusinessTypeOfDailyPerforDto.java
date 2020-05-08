@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AttendanceItemRoot(rootName = ItemConst.DAILY_BUSINESS_TYPE_NAME)
 public class BusinessTypeOfDailyPerforDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_BUSINESS_TYPE_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 
@@ -75,5 +79,35 @@ public class BusinessTypeOfDailyPerforDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new WorkTypeOfDailyPerformance(employeeId, date, this.businessTypeCode);
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (path.equals(BUSINESS_TYPE)) {
+			return Optional.of(ItemValue.builder().value(businessTypeCode).valueType(ValueType.CODE));
+		}
+		
+		return Optional.empty();	
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(BUSINESS_TYPE)) {
+			this.businessTypeCode = value.valueOrDefault(null);
+			
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(BUSINESS_TYPE)) {
+			return PropType.VALUE;
+			
+		}
+		return PropType.OBJECT;
 	}
 }

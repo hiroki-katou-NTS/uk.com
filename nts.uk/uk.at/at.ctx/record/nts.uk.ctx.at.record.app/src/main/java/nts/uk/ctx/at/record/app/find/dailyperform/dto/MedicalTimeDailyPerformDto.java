@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalTimeDailyPerformDto implements ItemConst {
+public class MedicalTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 日勤夜勤区分: 日勤夜勤区分 */
 	/**
@@ -41,6 +43,7 @@ public class MedicalTimeDailyPerformDto implements ItemConst {
 	private Integer workTime;
 
 	/** @see nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift */
+	@Override
 	public String enumText() {
 		switch (this.attr) {
 		case 0:
@@ -51,6 +54,68 @@ public class MedicalTimeDailyPerformDto implements ItemConst {
 			return EMPTY_STRING;
 		}
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TAKE_OVER:
+			return Optional.of(ItemValue.builder().value(takeOverTime).valueType(ValueType.TIME));
+		case DEDUCTION:
+			return Optional.of(ItemValue.builder().value(deductionTime).valueType(ValueType.TIME));
+		case WORKING_TIME:
+			return Optional.of(ItemValue.builder().value(workTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TAKE_OVER:
+		case DEDUCTION:
+		case WORKING_TIME:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TAKE_OVER:
+			takeOverTime = value.valueOrDefault(null);
+			break;
+		case DEDUCTION:
+			deductionTime = value.valueOrDefault(null);
+			break;
+		case WORKING_TIME:
+			workTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void setEnum(String enumText) {
+		switch (enumText) {
+		case E_DAY_WORK:
+			this.attr = 0;
+			break;
+		case E_NIGHT_WORK:
+			this.attr = 1;
+			break;
+		default:
+		}
+	}
+
+//	@Override
+//	public boolean enumNeedSet() {
+//		return true;
+//	}
 	
 	@Override
 	public MedicalTimeDailyPerformDto clone() {

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalWorkingTimeDto implements ItemConst {
+public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 総労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TOTAL_LABOR)
@@ -64,11 +65,11 @@ public class TotalWorkingTimeDto implements ItemConst {
 
 	/** 遅刻時間: 日別実績の遅刻時間 */
 	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = LATE, listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<LateTimeDto> lateTime;
+	private List<LateEarlyTimeDailyPerformDto> lateTime;
 
 	/** 早退時間: 日別実績の早退時間 */
 	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = LEAVE_EARLY, listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<LeaveEarlyTimeDailyPerformDto> leaveEarlyTime;
+	private List<LateEarlyTimeDailyPerformDto> leaveEarlyTime;
 
 	/** 休憩時間: 日別実績の休憩時間 */
 	@AttendanceItemLayout(layout = LAYOUT_I, jpPropertyName = BREAK)
@@ -115,6 +116,198 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_R, jpPropertyName = CALC + DIFF)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private int calcDiffTime;
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TOTAL_LABOR:
+			return Optional.of(ItemValue.builder().value(totalWorkingTime).valueType(ValueType.TIME));
+		case TOTAL_CALC:
+			return Optional.of(ItemValue.builder().value(totalCalcTime).valueType(ValueType.TIME));
+		case ACTUAL:
+			return Optional.of(ItemValue.builder().value(actualTime).valueType(ValueType.TIME));
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
+		case (HOLIDAY + ADD):
+			return Optional.of(ItemValue.builder().value(vacationAddTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case WITHIN_STATUTORY:
+			return new WithinStatutoryTimeDailyPerformDto();
+		case EXCESS_STATUTORY:
+			return new ExcessOfStatutoryTimeDailyPerformDto();
+		case TEMPORARY:
+			return new TemporaryTimeFrameDto();
+		case LATE:
+		case LEAVE_EARLY:
+			return new LateEarlyTimeDailyPerformDto();
+		case BREAK:
+			return new BreakTimeSheetDailyPerformDto();
+		case GO_OUT:
+			return new GoOutTimeSheetDailyPerformDto();
+		case SHORT_WORK:
+			return new ShortWorkTimeDto();
+		case RAISING_SALARY:
+			return new RaisingSalaryTimeDailyPerformDto();
+		case HOLIDAY:
+			return new HolidayDailyPerformDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case WITHIN_STATUTORY:
+			return Optional.ofNullable(withinStatutoryTime);
+		case EXCESS_STATUTORY:
+			return Optional.ofNullable(excessOfStatutoryTime);
+		case BREAK:
+			return Optional.ofNullable(breakTimeSheet);
+		case SHORT_WORK:
+			return Optional.ofNullable(shortWorkTime);
+		case RAISING_SALARY:
+			return Optional.ofNullable(raisingSalaryTime);
+		case HOLIDAY:
+			return Optional.ofNullable(dailyOfHoliday);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public int size(String path) {
+		switch (path) {
+		case TEMPORARY:
+			return 3;
+		case LATE:
+		case LEAVE_EARLY:
+			return 2;
+		case GO_OUT:
+			return 4;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TEMPORARY:
+		case LATE:
+		case LEAVE_EARLY:
+			return PropType.IDX_LIST;
+		case GO_OUT:
+			return PropType.ENUM_LIST;
+		case TOTAL_LABOR:
+		case TOTAL_CALC:
+		case ACTUAL:
+		case COUNT:
+		case (HOLIDAY + ADD):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		switch (path) {
+		case TEMPORARY:
+			return (List<T>) temporaryTime;
+		case LATE:
+			return (List<T>) lateTime;
+		case LEAVE_EARLY:
+			return (List<T>) leaveEarlyTime;
+		case GO_OUT:
+			return (List<T>) goOutTimeSheet;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TOTAL_LABOR:
+			totalWorkingTime = value.valueOrDefault(null);
+			break;
+		case TOTAL_CALC:
+			totalCalcTime = value.valueOrDefault(null);
+			break;
+		case ACTUAL:
+			actualTime = value.valueOrDefault(null);
+			break;
+		case COUNT:
+			workTimes = value.valueOrDefault(null);
+			break;
+		case (HOLIDAY + ADD):
+		vacationAddTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case WITHIN_STATUTORY:
+			this.withinStatutoryTime = (WithinStatutoryTimeDailyPerformDto) value;
+			break;
+		case EXCESS_STATUTORY:
+			this.excessOfStatutoryTime = (ExcessOfStatutoryTimeDailyPerformDto) value;
+			break;
+		case BREAK:
+			this.breakTimeSheet = (BreakTimeSheetDailyPerformDto) value;
+			break;
+		case SHORT_WORK:
+			this.shortWorkTime = (ShortWorkTimeDto) value;
+			break;
+		case RAISING_SALARY:
+			this.raisingSalaryTime = (RaisingSalaryTimeDailyPerformDto) value;
+			break;
+		case HOLIDAY:
+			this.dailyOfHoliday = (HolidayDailyPerformDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		switch (path) {
+		case TEMPORARY:
+			temporaryTime = (List<TemporaryTimeFrameDto>) value;
+			break;
+		case LATE:
+			lateTime = (List<LateEarlyTimeDailyPerformDto>) value;
+			break;
+		case LEAVE_EARLY:
+			leaveEarlyTime = (List<LateEarlyTimeDailyPerformDto>) value;
+			break;
+		case GO_OUT:
+			goOutTimeSheet = (List<GoOutTimeSheetDailyPerformDto>) value;
+			break;
+		default:
+			break;
+		}
+	}
 	
 	@Override
 	public TotalWorkingTimeDto clone() {
@@ -150,12 +343,12 @@ public class TotalWorkingTimeDto implements ItemConst {
 												getAttendanceTime(c.getTemporaryLateNightTime()),
 												getAttendanceTime(c.getTemporaryTime()))),
 						ConvertHelper.mapTo(domain.getLateTimeOfDaily(),
-								(c) -> new LateTimeDto(CalcAttachTimeDto.toTimeWithCal(c.getLateTime()),
+								(c) -> new LateEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLateTime()),
 										CalcAttachTimeDto.toTimeWithCal(c.getLateDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
 										getAttendanceTime(c.getExemptionTime().getExemptionTime()), c.getWorkNo().v())),
 						ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(),
-								(c) -> new LeaveEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyTime()),
+								(c) -> new LateEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyTime()),
 										CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
 										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v())),
@@ -189,9 +382,9 @@ public class TotalWorkingTimeDto implements ItemConst {
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? WithinStatutoryTimeOfDaily.defaultValue() : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
 				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
-											createTimeWithCalc(c.getLateTime()),
-											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getNo()),
-											createTimeValication(c.getBreakUse()),
+											createTimeWithCalc(c.getTime()),
+											createTimeWithCalc(c.getDeductionTime()), new WorkNo(c.getNo()),
+											createTimeValication(c.getValicationUseTime()),
 											new IntervalExemptionTime(toAttendanceTime(c.getIntervalExemptionTime())))),
 				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
 											createTimeWithCalc(c.getTime()),

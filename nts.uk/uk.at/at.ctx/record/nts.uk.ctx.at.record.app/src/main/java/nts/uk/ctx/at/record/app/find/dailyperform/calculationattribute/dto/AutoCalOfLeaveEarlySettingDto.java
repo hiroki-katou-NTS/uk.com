@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AllArgsConstructor
 @NoArgsConstructor
 /** 遅刻早退の自動計算設定 */
-public class AutoCalOfLeaveEarlySettingDto implements ItemConst {
+public class AutoCalOfLeaveEarlySettingDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 早退: 早退 */
 	/** @see nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr */
@@ -31,4 +33,41 @@ public class AutoCalOfLeaveEarlySettingDto implements ItemConst {
 		return new AutoCalOfLeaveEarlySettingDto(leaveEarly, leaveLate);
 	}
 	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case LEAVE_EARLY:
+			return Optional.of(ItemValue.builder().value(leaveEarly).valueType(ValueType.ATTR));
+		case LATE:
+			return Optional.of(ItemValue.builder().value(leaveLate).valueType(ValueType.ATTR));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case LEAVE_EARLY:
+			this.leaveEarly = value.valueOrDefault(0);
+			break;
+		case LATE:
+			this.leaveLate = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case LEAVE_EARLY:
+		case LATE:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
 }

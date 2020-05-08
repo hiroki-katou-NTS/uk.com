@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -101,4 +104,65 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 		}
 		return dto;
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case AGREEMENT:
+			return new AgreementTimeOfMonthlyDto();
+		case BREAK_DOWN:
+//		case (UPPER_LIMIT + BREAK_DOWN):
+			return new AgreementTimeBreakdownDto();
+//		case (UPPER_LIMIT + AGREEMENT):
+//			return new AgreMaxTimeOfMonthlyDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case AGREEMENT:
+			return Optional.ofNullable(agreementTime);
+		case BREAK_DOWN:
+			return Optional.ofNullable(breakdown);
+//		case (UPPER_LIMIT + BREAK_DOWN):
+//			return Optional.ofNullable(maxBreakdown);
+//		case (UPPER_LIMIT + AGREEMENT):
+//			return Optional.ofNullable(agreMax);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case AGREEMENT:
+			agreementTime = (AgreementTimeOfMonthlyDto) value; break;
+		case BREAK_DOWN:
+			breakdown = (AgreementTimeBreakdownDto) value; break;
+//		case (UPPER_LIMIT + BREAK_DOWN):
+//			maxBreakdown = (AgreementTimeBreakdownDto) value; break;
+//		case (UPPER_LIMIT + AGREEMENT):
+//			agreMax = (AgreMaxTimeOfMonthlyDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME;
+	}
+
+	
 }

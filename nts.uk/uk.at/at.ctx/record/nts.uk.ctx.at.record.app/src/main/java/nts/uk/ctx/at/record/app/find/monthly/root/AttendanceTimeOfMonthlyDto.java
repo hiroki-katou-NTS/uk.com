@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -154,4 +156,95 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	public YearMonth yearMonth() {
 		return this.ym;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			return Optional.of(ItemValue.builder().value(aggregateDays).valueType(ValueType.DAYS));
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case CALC:
+			return new MonthlyCalculationDto();
+		case EXCESS:
+			return new ExcessOutsideWorkOfMonthlyDto();
+		case VERTICAL_TOTAL:
+			return new VerticalTotalOfMonthlyDto();
+		case (COUNT + AGGREGATE):
+			return new TotalCountByPeriodDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case CALC:
+			return Optional.ofNullable(monthlyCalculation);
+		case EXCESS:
+			return Optional.ofNullable(excessOutsideWork);
+		case VERTICAL_TOTAL:
+			return Optional.ofNullable(verticalTotal);
+		case (COUNT + AGGREGATE):
+			return Optional.ofNullable(totalCount);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			aggregateDays = value.valueOrDefault(0d);
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case CALC:
+			monthlyCalculation = (MonthlyCalculationDto) value; break;
+		case EXCESS:
+			excessOutsideWork = (ExcessOutsideWorkOfMonthlyDto) value; break;
+		case VERTICAL_TOTAL:
+			verticalTotal = (VerticalTotalOfMonthlyDto) value; break;
+		case (COUNT + AGGREGATE):
+			totalCount = (TotalCountByPeriodDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_ATTENDANCE_TIME_NAME;
+	}
+
+	
 }

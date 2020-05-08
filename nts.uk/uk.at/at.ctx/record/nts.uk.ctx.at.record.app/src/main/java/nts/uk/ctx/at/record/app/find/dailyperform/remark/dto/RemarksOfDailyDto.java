@@ -34,7 +34,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	private GeneralDate ymd;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FAKED, listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<DailyRemarkDto> remarks = new ArrayList<>();
+	private List<RemarkDto> remarks = new ArrayList<>();
 	
 	@Override
 	public String employeeId() {
@@ -60,7 +60,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		if(domain != null && !domain.isEmpty()){
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYmd(domain.get(0).getYmd());
-			dto.setRemarks(domain.stream().map(c -> new DailyRemarkDto(c.getRemarks().v(), c.getRemarkNo()))
+			dto.setRemarks(domain.stream().map(c -> new RemarkDto(c.getRemarks().v(), c.getRemarkNo()))
 											.collect(Collectors.toList()));
 			dto.exsistData();
 		}
@@ -72,10 +72,54 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
 		dto.setEmployeeId(employeeId());
 		dto.setYmd(workingDate());
-		dto.setRemarks(remarks.stream().map(c -> new DailyRemarkDto(c.getRemark(), c.getNo())).collect(Collectors.toList()));
+		dto.setRemarks(remarks.stream().map(c -> new RemarkDto(c.getRemark(), c.getNo())).collect(Collectors.toList()));
 		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (FAKED.equals(path)) {
+			return new RemarkDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 5;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (FAKED.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+
+	@Override
+	public String rootName() { return DAILY_REMARKS_NAME; }
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FAKED.equals(path)) {
+			return (List<T>) this.remarks;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FAKED.equals(path)) {
+			this.remarks = (List<RemarkDto>) value;
+		}
 	}
 }

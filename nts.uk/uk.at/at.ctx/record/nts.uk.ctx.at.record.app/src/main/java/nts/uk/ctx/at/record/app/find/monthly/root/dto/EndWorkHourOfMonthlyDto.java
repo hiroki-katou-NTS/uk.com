@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の終業時刻 */
-public class EndWorkHourOfMonthlyDto implements ItemConst {
+public class EndWorkHourOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.COUNT)
@@ -46,4 +48,45 @@ public class EndWorkHourOfMonthlyDto implements ItemConst {
 									new AttendanceTimeMonth(totalHours),
 									new AttendanceTimeMonth(averageHours));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(times).valueType(ValueType.COUNT));
+		case TOTAL:
+			return Optional.of(ItemValue.builder().value(totalHours).valueType(ValueType.CLOCK));
+		case AVERAGE:
+			return Optional.of(ItemValue.builder().value(averageHours).valueType(ValueType.CLOCK));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case COUNT:
+		case TOTAL:
+		case AVERAGE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case COUNT:
+			times = value.valueOrDefault(0); break;
+		case TOTAL:
+			totalHours = value.valueOrDefault(0); break;
+		case AVERAGE:
+			averageHours = value.valueOrDefault(0); break;
+		default:
+		}
+	}
+
+	
 }
