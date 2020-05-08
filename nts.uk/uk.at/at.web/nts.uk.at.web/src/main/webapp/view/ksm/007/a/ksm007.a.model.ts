@@ -35,6 +35,7 @@ class RegisterForm {
         self.workplaceGroupName(val.name);
         self.selectedWkpType(val.type);
         self.newMode(false);
+        nts.uk.ui.errors.clearAll();
     }
 
     public bindWorkplace(workplaces) {

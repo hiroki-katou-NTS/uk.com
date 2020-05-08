@@ -42,8 +42,8 @@ module nts.uk.at.view.ksm007.a {
                         });
                     });
                     $('#requiredName').focus();
-                    nts.uk.ui.errors.clearAll();
                 }
+                nts.uk.ui.errors.clearAll();
             });
 
             if(self.workplaceGroupList().length === 0) {
@@ -107,16 +107,18 @@ module nts.uk.at.view.ksm007.a {
             dfd.resolve();
             let self = this;
             let lstWKPID = res.lstWKPID;
-            let resultProcess = res.resultProcess;
+            let resultProcess = res.replaceResult;
             let listWorkplaceInfo = res.listWorkplaceInfo;
+            let listWorkplaceGroupInfo = res.workplaceGroupResult;
             let bundledErrors = [];
-            for (let idx in lstWKPID) {
-                console.log(lstWKPID[idx]);
-                if(resultProcess[idx].workplaceReplacement == "BELONGED_ANOTHER") {
-                    let info = _.find(listWorkplaceInfo, (wkp) => {return wkp.workplaceId == lstWKPID[idx]; });
-                    if (info) {
+            for (let idx in resultProcess) {
+                let result = resultProcess[idx]; 
+                if(resultProcess[idx].workplaceReplacement == 3) {
+                    let workplaceInfo = _.find(listWorkplaceInfo, (wkp) => {return wkp.wkpid == result.wkpid; });
+                    let workplaceGroupInfo = _.find(listWorkplaceGroupInfo, (wkp) => {return wkp.wkpgrpid == result.wkpgrpid; });
+                    if (workplaceInfo && workplaceGroupInfo) {
                         bundledErrors.push({
-                            message: resource.getMessage('Msg_1630', [info.workplaceCode, info.workplaceName, self.registerForm().workplaceGroupName()]),
+                            message: resource.getMessage('Msg_1630', [workplaceInfo.workplaceCode, workplaceInfo.workplaceName, workplaceGroupInfo.wkpgrpname]),
                             messageId: "Msg_1630",
                             supplements: {}
                         });
@@ -124,12 +126,12 @@ module nts.uk.at.view.ksm007.a {
                 }
             }
             if( bundledErrors.length > 0) {
-               nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors }).then(() => {
+                nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors }).then(() => {
                    dfd.resolve();
-               });
+                });
             } else {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                    dfd.resolve();
+                   dfd.resolve();
                 });
             }
             
