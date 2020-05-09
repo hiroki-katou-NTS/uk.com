@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.gul.text.IdentifierUtil;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.職場グループ
@@ -42,7 +43,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	public WorkplaceGroup(String cID, String wKPGRPID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
 		super();
 		CID = cID;
-		WKPGRPID = wKPGRPID;
+		WKPGRPID = IdentifierUtil.randomUniqueId();
 		WKPGRPCode = wKPGRPCode;
 		WKPGRPName = wKPGRPName;
 		WKPGRPType = wKPGRPType;
@@ -52,8 +53,8 @@ public class WorkplaceGroup implements DomainAggregate {
 	 * @param WKPID
 	 * @return
 	 */
-	public static AffWorkplaceGroup addAffWorkplaceGroup(String WKPGRPID, String WKPID){
-		return new AffWorkplaceGroup(WKPGRPID, WKPID);
+	public AffWorkplaceGroup addAffWorkplaceGroup(String WKPID){
+		return new AffWorkplaceGroup(this.WKPGRPID, WKPID);
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	 * @return
 	 */
 	public List<String> getAffWorkplace(Require require){
-		return require.getWKPID(this.WKPGRPID);
+		return require.getWKPID(this.CID, this.WKPGRPID);
 	}
 	
 	/**
@@ -72,6 +73,6 @@ public class WorkplaceGroup implements DomainAggregate {
 	public static interface Require {
 		// 職場グループに属する職場を取得する																					
 		// 職場グループ所属情報Repository.職場グループに所属する職場を取得する(会社ID, 職場グループID)
-		List<String> getWKPID(String WKPGRPID);
+		List<String> getWKPID(String CID, String WKPGRPID);
 	}
 }

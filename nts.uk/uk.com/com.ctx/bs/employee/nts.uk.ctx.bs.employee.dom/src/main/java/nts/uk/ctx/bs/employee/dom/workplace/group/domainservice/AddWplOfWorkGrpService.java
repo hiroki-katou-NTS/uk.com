@@ -30,7 +30,7 @@ public class AddWplOfWorkGrpService {
 		}
 		Optional<AtomTask> atomTaks = Optional.of(AtomTask.of(() -> {
 			// $職場グループ所属情報 = 職場グループ.所属する職場を追加する( 職場ID )																			
-			AffWorkplaceGroup affWorkplaceGroup = WorkplaceGroup.addAffWorkplaceGroup(group.getWKPGRPID(),workplaceId);
+			AffWorkplaceGroup affWorkplaceGroup = group.addAffWorkplaceGroup(workplaceId);
 			
 			// require.職場グループに職場を追加する( $職場グループ所属情報 )																	
 			require.insert(affWorkplaceGroup);

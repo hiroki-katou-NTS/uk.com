@@ -92,10 +92,6 @@ public class UpdateWorkplaceGroupCommandHandler
 				.filter(x -> x.getWorkplaceReplacement().value == WorkplaceReplacement.BELONGED_ANOTHER.value)
 				.collect(Collectors.toList());
 
-		List<WorkplaceReplaceResultDto> resultProcessDatas = resultProcessData.stream().map(x -> WorkplaceReplaceResultDto
-				.toDto(x.getWorkplaceReplacement().value, x.getWKPGRPID().isPresent() ? x.getWKPGRPID().get() : null, x.getPersistenceProcess().isPresent() ? x.getPersistenceProcess().get() : null))
-				.collect(Collectors.toList());
-
 		// flow
 		// 所属職場グループIDリスト
 		List<String> lstWplGrId = lstResultProcess.stream().map(mapper -> mapper.getWKPGRPID().get())

@@ -50,7 +50,6 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected ResWorkplaceGroupResult handle(CommandHandlerContext<RegisterWorkplaceGroupCommand> context) {
 		String CID = AppContexts.user().companyId();
-		String WKPGRPID = IdentifierUtil.randomUniqueId();
 		RegisterWorkplaceGroupCommand cmd = context.getCommand();
 		
 		// check lstWKPID (đã kiểm tra dưới UI nhưng check ở server cho chắc chắn)
@@ -67,7 +66,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			throw new BusinessException("Msg_3");
 		
 		// 3: 職場グループを作成する([mapping]): 職場グループ
-		WorkplaceGroup group = cmd.toDomain(CID, WKPGRPID);
+		WorkplaceGroup group = cmd.toDomain(CID, cmd.getWkpGrID());
 		
 		AddWplOfWorkGrpService.Require addRequire = new AddWplOfWorkGrpRequireImpl(affRepo);
 		List<WorkplaceReplaceResult> wplResult = new ArrayList<>();
@@ -93,10 +92,6 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		// 6: 所属職場グループIDリスト＝処理結果リスト : filter $.処理結果 == 別職場に所属
 		// map $.所属職場グループID
 		List<WorkplaceReplaceResult> lstResultProcess = wplResult.stream().filter(x->x.getWorkplaceReplacement().value == WorkplaceReplacement.BELONGED_ANOTHER.value).collect(Collectors.toList());
-		
-		List<WorkplaceReplaceResultDto> resultProcessDatas = wplResult.stream().map(x -> WorkplaceReplaceResultDto
-				.toDto(x.getWorkplaceReplacement().value, x.getWKPGRPID().isPresent() ? x.getWKPGRPID().get() : null, x.getPersistenceProcess().isPresent() ? x.getPersistenceProcess().get() : null))
-				.collect(Collectors.toList());
 		
 		// flow
 		// 所属職場グループIDリスト
