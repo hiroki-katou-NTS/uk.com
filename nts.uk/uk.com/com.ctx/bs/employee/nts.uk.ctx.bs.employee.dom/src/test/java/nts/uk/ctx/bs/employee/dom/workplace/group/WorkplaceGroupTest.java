@@ -17,25 +17,22 @@ public class WorkplaceGroupTest {
 
 	@Test
 	public void getters() {
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
-		NtsAssert.invokeGetters(group);
+		WorkplaceGroup workplaceGroup = DomainServiceHelper.Helper.DUMMY;
+		NtsAssert.invokeGetters(workplaceGroup);
 	}
 	
 	@Test
 	public void addAffWorkplaceGroup() {
-		AffWorkplaceGroup group = new AffWorkplaceGroup(
-				"01",
-				"01");
-		group = WorkplaceGroup.addAffWorkplaceGroup(group.getWKPGRPID(), group.getWKPID());
-		NtsAssert.invokeGetters(group);
-		assertThat(group.getWKPGRPID().equals("01")).isTrue();
+		WorkplaceGroup workplaceGroup = DomainServiceHelper.Helper.DUMMY;
+		AffWorkplaceGroup affWorkplaceGroup = workplaceGroup.addAffWorkplaceGroup("01");
+		assertThat(affWorkplaceGroup.getWKPGRPID().equals(workplaceGroup.getWKPGRPID())).isTrue();
 	}
 	
 	@Test
 	public void getAffWorkplace() {
 		new Expectations() {
 			{
-				require.getWKPID("01");// dummy
+				require.getWKPID("0000000000001","01");// dummy
 			}
 		};
 		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;

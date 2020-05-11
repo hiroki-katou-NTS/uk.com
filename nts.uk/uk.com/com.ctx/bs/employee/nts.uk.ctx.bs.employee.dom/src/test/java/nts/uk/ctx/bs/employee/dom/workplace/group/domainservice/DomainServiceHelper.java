@@ -46,6 +46,17 @@ public class DomainServiceHelper {
 		return workplaceGroup;
 	}
 	
+	public static List<AffWorkplaceGroup> getHelper2() {
+		String wKPID = "000000000000000000000000000000000011";
+		String wKPGRPID = "00000000000001";
+		List<AffWorkplaceGroup> workplaceGroup = Arrays.asList(new AffWorkplaceGroup(wKPGRPID, wKPID),
+				new AffWorkplaceGroup("00000000000002", "000000000000000000000000000000000011"),
+				new AffWorkplaceGroup("00000000000003", "000000000000000000000000000000000012"),
+				new AffWorkplaceGroup("00000000000004", "000000000000000000000000000000000013"));
+		
+		return workplaceGroup;
+	}
+	
 	public static List<WorkplaceInformation> getLstWpII(){
 		String wKPID = "000000000000000000000000000000000011";
 		String wKPID2 = "000000000000000000000000000000000013";

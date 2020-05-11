@@ -31,30 +31,30 @@ public class WorkplaceReplaceResultTest {
 	
 	@Test
 	public void testAdd() {
-		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(0);
-		workplaceReplaceResult = WorkplaceReplaceResult.add(Optional.of(atomTask));
+		WorkplaceReplaceResult workplaceReplaceResult = new WorkplaceReplaceResult();
+		workplaceReplaceResult = workplaceReplaceResult.add(Optional.of(atomTask));
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.ADD)).isTrue();
 	}
 	
 	
 	@Test
 	public void testDelete () {
-		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(1);
-		workplaceReplaceResult = WorkplaceReplaceResult.delete(Optional.of(atomTask));
+		WorkplaceReplaceResult workplaceReplaceResult = new WorkplaceReplaceResult();
+		workplaceReplaceResult = workplaceReplaceResult.delete(Optional.of(atomTask));
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.DELETE)).isTrue();
 	}
 	
 	@Test
 	public void testAlreadyBelong () {
-		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(2);
-		workplaceReplaceResult = WorkplaceReplaceResult.alreadyBelong("01");
+		WorkplaceReplaceResult workplaceReplaceResult = new WorkplaceReplaceResult();
+		workplaceReplaceResult = workplaceReplaceResult.alreadyBelong("01");
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.ALREADY_BELONGED)).isTrue();
 	}
 	
 	@Test
 	public void testBelongAnother () {
-		WorkplaceReplaceResult workplaceReplaceResult = DomainServiceHelper.getWorkplaceReplaceResultDefault(3);
-		workplaceReplaceResult = WorkplaceReplaceResult.belongAnother("01");
+		WorkplaceReplaceResult workplaceReplaceResult = new WorkplaceReplaceResult();
+		workplaceReplaceResult = workplaceReplaceResult.belongAnother("01");
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().equals(WorkplaceReplacement.BELONGED_ANOTHER)).isTrue();
 	}
 }

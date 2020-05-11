@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
  */
 public class AddWplOfWorkGrpService {
 	public static WorkplaceReplaceResult addWorkplace(Require require, WorkplaceGroup group, String workplaceId) {
+		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		// require.職場グループ所属情報を取得する( 職場ID )
 		Optional<AffWorkplaceGroup> formerAffInfo = require.getByWKPID(workplaceId);
 		// if $旧所属情報.isPresent()						
@@ -22,10 +23,10 @@ public class AddWplOfWorkGrpService {
 			// if $旧所属情報.職場グループID == 職場グループ.職場グループID																
 			if (formerAffInfo.get().getWKPGRPID().equals(group.getWKPGRPID())) {
 				// return 職場グループの職場入替処理結果#所属済み()													
-				return WorkplaceReplaceResult.alreadyBelong(formerAffInfo.get().getWKPGRPID());
+				return replaceResult.alreadyBelong(formerAffInfo.get().getWKPGRPID());
 			} else {
 				// return 職場グループの職場入替処理結果#別職場に所属()														
-				return WorkplaceReplaceResult.belongAnother(formerAffInfo.get().getWKPGRPID());
+				return replaceResult.belongAnother(formerAffInfo.get().getWKPGRPID());
 			}
 		}
 		Optional<AtomTask> atomTaks = Optional.of(AtomTask.of(() -> {
@@ -36,7 +37,7 @@ public class AddWplOfWorkGrpService {
 			require.insert(affWorkplaceGroup);
 		}));
 		// 	return 職場グループの職場入替処理結果#追加する( $AtomTask )																													
-		return WorkplaceReplaceResult.add(atomTaks);
+		return replaceResult.add(atomTaks);
 	}
 
 	public static interface Require {

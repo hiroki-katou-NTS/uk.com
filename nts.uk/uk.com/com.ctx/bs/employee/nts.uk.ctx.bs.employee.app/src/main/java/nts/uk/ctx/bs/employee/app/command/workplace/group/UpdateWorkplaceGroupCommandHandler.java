@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -103,12 +102,11 @@ public class UpdateWorkplaceGroupCommandHandler
 			lstWplGroups = repo.getAllById(CID, lstWplGrId);
 		}
 
-		AtomicBoolean checkStop = new AtomicBoolean(false);
+		List<WorkplaceReplaceResult> lstReplaceAdd = new ArrayList<>();
 		resultProcessData.forEach(x -> {
 			// 7: not 所属対象がある
-			if (x.getWorkplaceReplacement().checkWplReplace() == false) {
-				checkStop.set(true);
-				return;
+			if (x.getWorkplaceReplacement().checkWplReplace() == true) {
+				lstReplaceAdd.add(x);
 			}
 		});
 
@@ -122,7 +120,7 @@ public class UpdateWorkplaceGroupCommandHandler
 				.map(x -> new WorkplaceGroupResult(x.getWKPGRPID(), x.getWKPGRPCode().v(), x.getWKPGRPName().v()))
 				.collect(Collectors.toList());
 		boolean checkProcessResult = false;
-		if (checkStop.get() == true) {
+		if (lstReplaceAdd.size() < 1) {
 			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults);
 		}
 

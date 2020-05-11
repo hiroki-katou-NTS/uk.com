@@ -29,26 +29,26 @@ public class WorkplaceReplaceResult {
 	private Optional<AtomTask> persistenceProcess;
 
 	// [C-1] 追加する
-	public static WorkplaceReplaceResult add(Optional<AtomTask> persistenceProcess) {
+	public WorkplaceReplaceResult add(Optional<AtomTask> persistenceProcess) {
 		return new WorkplaceReplaceResult(
 				EnumAdaptor.valueOf(WorkplaceReplacement.ADD.value, WorkplaceReplacement.class), Optional.empty(), persistenceProcess);
 	}
 
 	// [C-2] 削除する
-	public static WorkplaceReplaceResult delete(Optional<AtomTask> persistenceProcess) {
+	public WorkplaceReplaceResult delete(Optional<AtomTask> persistenceProcess) {
 		return new WorkplaceReplaceResult(
 				EnumAdaptor.valueOf(WorkplaceReplacement.DELETE.value, WorkplaceReplacement.class), Optional.empty(), persistenceProcess);
 	}
 
 	// [C-3] 所属済み
-	public static WorkplaceReplaceResult alreadyBelong(String wKPGRPID) {
+	public WorkplaceReplaceResult alreadyBelong(String wKPGRPID) {
 		return new WorkplaceReplaceResult(
 				EnumAdaptor.valueOf(WorkplaceReplacement.ALREADY_BELONGED.value, WorkplaceReplacement.class), Optional.of(wKPGRPID) ,
 				Optional.empty());
 	}
 
 	// [C-4] 別職場グループに所属
-	public static WorkplaceReplaceResult belongAnother(String wKPGRPID) {
+	public WorkplaceReplaceResult belongAnother(String wKPGRPID) {
 		return new WorkplaceReplaceResult(
 				EnumAdaptor.valueOf(WorkplaceReplacement.BELONGED_ANOTHER.value, WorkplaceReplacement.class), Optional.of(wKPGRPID) ,
 				Optional.empty());

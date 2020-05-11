@@ -42,7 +42,7 @@ public class AddWplOfWorkGrpServiceTest {
 		
 		WorkplaceGroup DUMMY = new WorkplaceGroup(
 				"000000000000000000000000000000000011", // dummy
-				"00000000000001", // 職場グループID
+				wKPGRPID, // 職場グループID
 				new WorkplaceGroupCode("0000000001"),  // dummy
 				new WorkplaceGroupName("00000000000000000011"),  // dummy
 				EnumAdaptor.valueOf(1, WorkplaceGroupType.class)); // dummy
@@ -65,8 +65,8 @@ public class AddWplOfWorkGrpServiceTest {
 		};
 		
 		WorkplaceGroup DUMMY = new WorkplaceGroup(
-				"000000000000000000000000000000000011", // dummy
-				"00000000000001", // 職場グループID
+				wKPID, // dummy
+				"999999999999999999", // 職場グループID
 				new WorkplaceGroupCode("0000000001"),  // dummy
 				new WorkplaceGroupName("00000000000000000011"),  // dummy
 				EnumAdaptor.valueOf(1, WorkplaceGroupType.class)); // dummy

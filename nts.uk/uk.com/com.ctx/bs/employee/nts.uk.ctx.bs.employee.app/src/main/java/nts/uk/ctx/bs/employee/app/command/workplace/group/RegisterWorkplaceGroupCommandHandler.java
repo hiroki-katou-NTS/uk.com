@@ -3,7 +3,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace.group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
@@ -103,12 +101,12 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		if (!lstWplGrId.isEmpty()) {
 			lstWplGroups = repo.getAllById(CID, lstWplGrId);
 		}
-		AtomicBoolean checkStop = new AtomicBoolean(false);
+		
+		List<WorkplaceReplaceResult> lstReplaceAdd = new ArrayList<>();
 		wplResult.forEach(x -> {
 			// 8: not 所属対象がある
 			if (x.getWorkplaceReplacement().checkWplReplace() == false) {
-				checkStop.set(true);
-				return;
+				lstReplaceAdd.add(x);
 			}
 		});
 		
@@ -123,7 +121,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 				.collect(Collectors.toList());
 		
 		boolean checkProcessResult = false;
-		if(checkStop.get() == true) {
+		if(lstReplaceAdd.size() < 1) {
 			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults);
 		}
 		
