@@ -575,15 +575,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 		}
 		
-		
-		
-		
-		
-		
 		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
 		boolean isAfterClosureStart = false;
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
-		if (!noCheckStartDate){
+//		if (!noCheckStartDate){
 			
 			// 休暇残数を計算する締め開始日を取得する
 			GeneralDate closureStart = null;	// 締め開始日
@@ -608,7 +603,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				// 締め開始日＜集計開始日　か確認する
 				if (closureStart.before(this.aggrPeriod.start())) isAfterClosureStart = true;
 			}
-		}
+//		}
 		if (!closureStartOpt.isPresent()) closureStartOpt = Optional.of(this.aggrPeriod.start());
 		
 		if (isAfterClosureStart){
@@ -900,7 +895,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (remainData.isDummyAtr() == false) continue;
 			
 			// 取得した年休付与残数の「年休使用数」、「年休残数」をそれぞれ合計
-			AnnualLeaveNumberInfo detail = remainData.getDetails();
+			AnnualLeaveNumberInfo detail = (AnnualLeaveNumberInfo) remainData.getDetails();
 			useDays += detail.getUsedNumber().getDays().v();
 			if (detail.getUsedNumber().getMinutes().isPresent()) {
 				if (useTime == null) useTime = 0;
