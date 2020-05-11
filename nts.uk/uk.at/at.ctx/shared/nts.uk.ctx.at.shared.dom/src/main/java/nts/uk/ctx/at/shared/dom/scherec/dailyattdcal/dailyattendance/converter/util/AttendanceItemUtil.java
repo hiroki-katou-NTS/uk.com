@@ -45,7 +45,7 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
 			AttendanceItemType type) {
 
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, Collections.emptyList(), type);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
@@ -62,7 +62,7 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			AttendanceItemType type) {
 
-		return toItemValues(attendanceItems, Collections.emptyList());
+		return toItemValues(attendanceItems, Collections.emptyList(), type);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
@@ -86,57 +86,48 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			Collection<Integer> itemIds, AttendanceItemType type) {
 
-		if (CollectionUtil.isEmpty(attendanceItems)) {
-			return new HashMap<>();
-		}
-
-		AttendanceItemRoot root = attendanceItems.get(0).getClass().getAnnotation(AttendanceItemRoot.class);
-
-		if (root == null) {
-			return new HashMap<>();
-		}
-
-		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
-
-		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(),
-				getItemMap(type, itemIds, null, layout));
+		
+		return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+//		if (CollectionUtil.isEmpty(attendanceItems)) {
+//			return new HashMap<>();
+//		}
+//
+//		AttendanceItemRoot root = attendanceItems.get(0).getClass().getAnnotation(AttendanceItemRoot.class);
+//
+//		if (root == null) {
+//			return new HashMap<>();
+//		}
+//
+//		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+//
+//		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(),
+//				getItemMap(type, itemIds, null, layout));
 	}
 
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			Collection<ItemValue> attendanceItems) {
-
-		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
-	}
-
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			Collection<ItemValue> attendanceItems, AttendanceItemType type) {
-
-		return fromItemValues(ReflectionUtil.newInstance(classType), attendanceItems);
-	}
-
-	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
 
 		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
 	}
 
-	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
 
-		if (CollectionUtil.isEmpty(itemValues)) {
-			return attendanceItems;
-		}
-
-		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
-
-		if (root == null) {
-			return attendanceItems;
-		}
-
-		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
-
-		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
-
-		return fromItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX,
-				false, getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
+		return AttendanceItemUtilRes.merge(attendanceItems, itemValues);
+//		if (CollectionUtil.isEmpty(itemValues)) {
+//			return attendanceItems;
+//		}
+//
+//		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+//
+//		if (root == null) {
+//			return attendanceItems;
+//		}
+//
+//		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+//
+//		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
+//
+//		return fromItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX,
+//				false, getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
 	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String path,
