@@ -17,26 +17,22 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author laitv
  *
  */
+@Getter
 public class TimeStampSetShareTStamp implements DomainAggregate {
 
 	// 会社ID
-	@Getter
 	private final String cid;
 	
-	// 打刻画面の表示設定
-	@Getter
+	// 打刻画面の表示設定r
 	private DisplaySettingsStampScreen displaySetStampScreen;
 	
 	// ページレイアウト設定 
-	@Getter
 	private List<StampPageLayout> lstStampPageLayout;
 	
 	// 氏名選択利用する
-	@Getter
 	private Boolean  useSelectName;
 	
 	// パスワード入力が必須か
-	@Getter
 	private Boolean passwordInputReq;
 	
 	// 社員コード認証利用するか
