@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
 /**
  * DS: 打刻カード未登録の最新打刻データを取得する
@@ -21,21 +22,28 @@ public class GetNewestStampNotRegisteredService {
 	 * 	[1] 取得する
 	 * @param require
 	 * @param period
-	 * @return
+	 * @return List<StampInfoDisp>
+	 * List<表示する打刻情報>
 	 */
 	
-	public Optional<GeneralDateTime> get(Require require,  DatePeriod period){
+	public List<StampInfoDisp> get(Require require,  DatePeriod period){
 		
 		//	$打刻情報リスト = 打刻カード未登録の打刻データを取得する#取得する(require, 期間)		
 		List<StampInfoDisp> list = RetrieveNoStampCardRegisteredService.get(require, period);
 		
 		if (list.isEmpty()) {
-			return null;
+			return new ArrayList<StampInfoDisp>();
 		}
 		
-		Optional<GeneralDateTime> stampDatetime = list.stream().map(x -> x.getStampDatetime()).sorted(Comparator.reverseOrder()).findFirst();
-		return stampDatetime;
-		
+	 Map<StampNumber, List<StampInfoDisp>> result =	list.stream().collect(Collectors.groupingBy(StampInfoDisp::getStampNumber, Collectors.toList()));
+
+		return result.values().stream()
+				.map(m -> m.stream()
+							.sorted((x, y) -> y.getStampDatetime().compareTo(x.getStampDatetime()))
+							.findFirst()
+							.orElse(null))
+				.filter(m -> m != null)
+				.collect(Collectors.toList());
 	}
 	
 	public static interface Require extends RetrieveNoStampCardRegisteredService.Require  {
