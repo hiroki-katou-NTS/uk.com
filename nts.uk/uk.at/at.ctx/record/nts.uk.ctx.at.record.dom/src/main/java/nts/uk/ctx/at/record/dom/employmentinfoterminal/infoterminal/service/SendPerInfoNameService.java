@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendPerInfoName;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 
 /**
@@ -24,9 +25,9 @@ public class SendPerInfoNameService {
 	private SendPerInfoNameService() {};
 
 	// [1] 各種名称送信に変換
-	public static List<SendPerInfoName> send(Require require, EmpInfoTerminalCode empInfoTerCode) {
+	public static List<SendPerInfoName> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!requestSetting.isPresent() || requestSetting.get().getEmployeeIds().isEmpty())
 			return Collections.emptyList();
@@ -70,7 +71,7 @@ public class SendPerInfoNameService {
 		public List<EmployeeDto> getByListSID(List<String> employeeIds);
 
 		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 
 	}
 }

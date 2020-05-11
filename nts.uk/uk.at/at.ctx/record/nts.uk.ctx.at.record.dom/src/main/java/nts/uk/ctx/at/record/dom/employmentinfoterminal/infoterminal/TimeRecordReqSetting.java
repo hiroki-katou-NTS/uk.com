@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -21,6 +22,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	 */
 	@Getter
 	private final EmpInfoTerminalCode terminalCode;
+	
+	/**
+	 * 契約コード
+	 */
+	@Getter
+	private final ContractCode contractCode;
 
 	/**
 	 * 会社ID
@@ -97,6 +104,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	public TimeRecordReqSetting(ReqSettingBuilder builder) {
 		super();
 		this.terminalCode = builder.terminalCode;
+		this.contractCode = builder.contractCode;
 		this.companyId = builder.companyId;
 		this.companyCode = builder.companyCode;
 		this.employeeIds = builder.employeeIds;
@@ -116,6 +124,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		 * コード
 		 */
 		private EmpInfoTerminalCode terminalCode;
+		
+		/**
+		 * 契約コード
+		 */
+		@Getter
+		private final ContractCode contractCode;
 
 		/**
 		 * 会社ID
@@ -177,8 +191,9 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		 */
 		private boolean timeSetting;
 
-		public ReqSettingBuilder(EmpInfoTerminalCode terminalCode, CompanyId companyId, String companyCode,
+		public ReqSettingBuilder(EmpInfoTerminalCode terminalCode, ContractCode contractCode, CompanyId companyId, String companyCode,
 				List<EmployeeId> employeeIds, List<Integer> bentoMenuFrameNumbers, List<WorkTypeCode> workTypeCodes) {
+			this.contractCode = contractCode;
 			this.terminalCode = terminalCode;
 			this.companyId = companyId;
 			this.companyCode = companyCode;

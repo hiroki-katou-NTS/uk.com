@@ -122,9 +122,9 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode);
+			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 		@Override

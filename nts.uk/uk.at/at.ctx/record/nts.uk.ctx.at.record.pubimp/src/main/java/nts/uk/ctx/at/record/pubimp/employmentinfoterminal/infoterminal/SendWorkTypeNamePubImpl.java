@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.SendWorkTypeNameService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendNRDataPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendWorkTypeNameExport;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -27,11 +28,11 @@ public class SendWorkTypeNamePubImpl implements SendNRDataPub<List<SendWorkTypeN
 	private WorkTypeRepository workTypeRepository;
 
 	@Override
-	public List<SendWorkTypeNameExport> send(Integer empInfoTerCode) {
+	public List<SendWorkTypeNameExport> send(Integer empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, workTypeRepository);
 
-		return SendWorkTypeNameService.send(impl, new EmpInfoTerminalCode(empInfoTerCode)).stream()
+		return SendWorkTypeNameService.send(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).stream()
 				.map(x -> new SendWorkTypeNameExport(x.getWorkTypeNumber(), x.getDaiClassifiNum(),
 						x.getMorningClassifiNum(), x.getAfternoonClassifiNum(), x.getWorkName()))
 				.collect(Collectors.toList());
@@ -50,8 +51,8 @@ public class SendWorkTypeNamePubImpl implements SendNRDataPub<List<SendWorkTypeN
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 	}

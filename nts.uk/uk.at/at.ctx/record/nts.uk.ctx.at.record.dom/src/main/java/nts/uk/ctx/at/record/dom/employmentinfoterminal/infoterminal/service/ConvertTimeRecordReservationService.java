@@ -38,7 +38,7 @@ public class ConvertTimeRecordReservationService {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
 			return Optional.empty();
@@ -95,7 +95,7 @@ public class ConvertTimeRecordReservationService {
 				GeneralDateTime dateTime);
 
 		// [R-3]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 
 		// [R-4] エラーNR-通信を作る
 		public void insert(ErrorNRCom errorNR);

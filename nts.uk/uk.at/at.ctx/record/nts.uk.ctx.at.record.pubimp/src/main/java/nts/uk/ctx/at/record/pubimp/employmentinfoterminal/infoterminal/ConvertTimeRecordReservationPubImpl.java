@@ -114,10 +114,10 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
 			Optional<TimeRecordReqSetting> timeOpt = timeRecordReqSettingRepository
-					.getTimeRecordReqSetting(empInfoTerCode);
+					.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 			if (timeOpt.isPresent()) {
 				companyId = timeOpt.get().getCompanyId().v();

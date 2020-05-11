@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 /**
  * @author ThanhNX
  *
+ * 申請定型理由 import
  */
 @AllArgsConstructor
 @Value

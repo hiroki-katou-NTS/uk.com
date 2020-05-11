@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendOvertimeName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendOvertimeName.SendOvertimeDetail;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
@@ -22,8 +23,9 @@ public class SendOvertimeNameService {
 	};
 
 	// [1] 各種名称送信に変換
-	public static Optional<SendOvertimeName> send(Require require, EmpInfoTerminalCode empInfoTerCode) {
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+	public static Optional<SendOvertimeName> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+		
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!requestSetting.isPresent() || !requestSetting.get().isOverTimeHoliday())
 			return Optional.empty();
@@ -62,7 +64,7 @@ public class SendOvertimeNameService {
 		public List<WorkdayoffFrame> getAllWorkdayoffFrame(String companyId);
 
 		// [R-3]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 	}
 
 }

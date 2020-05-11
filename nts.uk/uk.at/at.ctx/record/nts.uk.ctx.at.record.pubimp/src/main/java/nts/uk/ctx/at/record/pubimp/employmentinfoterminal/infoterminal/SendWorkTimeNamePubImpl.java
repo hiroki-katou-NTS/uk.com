@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.SendWorkTimeNameService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendNRDataPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendWorkTimeNameExport;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -32,11 +33,11 @@ public class SendWorkTimeNamePubImpl implements SendNRDataPub<List<SendWorkTimeN
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	@Override
-	public List<SendWorkTimeNameExport> send(Integer empInfoTerCode) {
+	public List<SendWorkTimeNameExport> send(Integer empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, timeSettingRepository,
 				predetemineTimeSettingRepository);
-		return SendWorkTimeNameService.send(impl, new EmpInfoTerminalCode(empInfoTerCode)).stream().map(x -> {
+		return SendWorkTimeNameService.send(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).stream().map(x -> {
 			return new SendWorkTimeNameExport(x.getWorkTimeNumber(), x.getWorkTimeName(), x.getTime());
 		}).collect(Collectors.toList());
 	}
@@ -61,8 +62,8 @@ public class SendWorkTimeNamePubImpl implements SendNRDataPub<List<SendWorkTimeN
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 	}

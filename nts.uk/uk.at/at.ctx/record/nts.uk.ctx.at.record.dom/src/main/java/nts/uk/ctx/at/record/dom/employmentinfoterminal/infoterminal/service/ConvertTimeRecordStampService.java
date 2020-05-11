@@ -34,7 +34,7 @@ public class ConvertTimeRecordStampService {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
 			return Pair.of(Optional.empty(), Optional.empty());
@@ -81,7 +81,7 @@ public class ConvertTimeRecordStampService {
 		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber);
 
 		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 
 		// [R-5] エラーNR-通信を作る
 		public void insert(ErrorNRCom errorNR);

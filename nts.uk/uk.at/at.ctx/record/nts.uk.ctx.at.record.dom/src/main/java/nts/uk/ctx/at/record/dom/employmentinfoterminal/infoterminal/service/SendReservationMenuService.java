@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendReservationMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
 /**
  * @author ThanhNX
@@ -22,9 +23,9 @@ public class SendReservationMenuService {
 	};
 
 	// [1] 各種名称送信に変換
-	public static List<SendReservationMenu> send(Require require, EmpInfoTerminalCode empInfoTerCode) {
+	public static List<SendReservationMenu> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!requestSetting.isPresent() || requestSetting.get().getBentoMenuFrameNumbers().isEmpty())
 			return Collections.emptyList();
@@ -47,7 +48,7 @@ public class SendReservationMenuService {
 		public List<Bento> getBento(String companyID, GeneralDate date, List<Integer> frameNos);
 
 		// [R-2]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 	}
 
 }

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.NRHelper;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendWorkTimeName;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
@@ -24,9 +25,9 @@ public class SendWorkTimeNameService {
 	};
 
 	// [1] 各種名称送信に変換
-	public static List<SendWorkTimeName> send(Require require, EmpInfoTerminalCode empInfoTerCode) {
+	public static List<SendWorkTimeName> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode);
+		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
 		if (!requestSetting.isPresent() || requestSetting.get().getWorkTimeCodes().isEmpty())
 			return Collections.emptyList();
@@ -72,6 +73,6 @@ public class SendWorkTimeNameService {
 		public List<PredetemineTimeSetting> findByCodeList(String companyID, List<String> lstWorkTimeCode);
 
 		// [R-3]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
 	}
 }

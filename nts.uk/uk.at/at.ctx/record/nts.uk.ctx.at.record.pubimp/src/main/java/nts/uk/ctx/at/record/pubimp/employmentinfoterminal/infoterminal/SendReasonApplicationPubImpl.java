@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.SendReasonApplicationService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendNRDataPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendReasonApplicationExport;
 
@@ -27,11 +28,11 @@ public class SendReasonApplicationPubImpl implements SendNRDataPub<List<SendReas
 	private ApplicationReasonRcAdapter applicationReasonRcAdapter;
 
 	@Override
-	public List<SendReasonApplicationExport> send(Integer empInfoTerCode) {
+	public List<SendReasonApplicationExport> send(Integer empInfoTerCode, String contractCode) {
 
 		RequireImpl requireImpl = new RequireImpl(timeRecordReqSettingRepository, applicationReasonRcAdapter);
 
-		return SendReasonApplicationService.send(requireImpl, new EmpInfoTerminalCode(empInfoTerCode)).stream()
+		return SendReasonApplicationService.send(requireImpl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).stream()
 				.map(x -> {
 					return new SendReasonApplicationExport(x.getAppReasonNo(), x.getAppReasonName());
 				}).collect(Collectors.toList());
@@ -50,9 +51,9 @@ public class SendReasonApplicationPubImpl implements SendNRDataPub<List<SendReas
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode);
+			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 	}

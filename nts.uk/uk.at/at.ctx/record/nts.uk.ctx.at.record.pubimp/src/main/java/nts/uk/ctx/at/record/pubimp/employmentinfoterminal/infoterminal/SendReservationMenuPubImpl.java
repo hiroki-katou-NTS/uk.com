@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.Send
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendNRDataPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.SendReservationMenuExport;
 
@@ -30,11 +31,11 @@ public class SendReservationMenuPubImpl implements SendNRDataPub<List<SendReserv
 	private BentoMenuRepository bentoMenuRepository;
 
 	@Override
-	public List<SendReservationMenuExport> send(Integer empInfoTerCode) {
+	public List<SendReservationMenuExport> send(Integer empInfoTerCode, String contractCode) {
 
 		RequireImpl requireImpl = new RequireImpl(timeRecordReqSettingRepository, bentoMenuRepository);
 
-		return SendReservationMenuService.send(requireImpl, new EmpInfoTerminalCode(empInfoTerCode)).stream()
+		return SendReservationMenuService.send(requireImpl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).stream()
 				.map(x -> new SendReservationMenuExport(x.getBentoMenu(), x.getUnit(), x.getFrameNumber()))
 				.collect(Collectors.toList());
 
@@ -58,8 +59,8 @@ public class SendReservationMenuPubImpl implements SendNRDataPub<List<SendReserv
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode) {
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 	}

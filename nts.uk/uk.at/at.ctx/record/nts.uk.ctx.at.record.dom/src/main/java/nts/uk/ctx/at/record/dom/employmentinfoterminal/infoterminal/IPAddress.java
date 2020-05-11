@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.StringRegEx;
  *         IPアドレス
  */
 @StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(12)
+@StringMaxLength(50)
 @StringRegEx("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
 public class IPAddress extends StringPrimitiveValue<IPAddress> {
 

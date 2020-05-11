@@ -67,9 +67,9 @@ public class ConvertTimeRecordApplicationService {
 		}
 		Object obj = empInfoTerOpt.get().createApplication(requestSetting.get().getCompanyId().v(), recept, workTypeOpt,
 				workingConItemOpt, stampCard.get().getEmployeeId());
-		createAppication(require, recept, obj);
+		return createAppication(require, recept, obj);
 		// TODO: ※処理にエラーがある場合、別の申請受信データの処理を続行、
-		return Optional.empty();
+		//return Optional.empty();
 	}
 
 	private static <T extends ApplicationReceptionData> Optional<AtomTask> createAppication(Require require, T recept,
