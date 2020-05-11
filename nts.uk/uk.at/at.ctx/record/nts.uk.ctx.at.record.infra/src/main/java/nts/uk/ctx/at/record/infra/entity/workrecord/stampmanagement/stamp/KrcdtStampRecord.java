@@ -23,7 +23,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KRCDT_STAMP_RECORD")
 public class KrcdtStampRecord extends ContractUkJpaEntity implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -38,7 +37,7 @@ public class KrcdtStampRecord extends ContractUkJpaEntity implements Serializabl
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String cid;
-
+	
 	/**
 	 * 打刻区分 0:False(通常打刻しない) 1:True(通常打刻する)
 	 */
@@ -71,5 +70,4 @@ public class KrcdtStampRecord extends ContractUkJpaEntity implements Serializabl
 		this.workTerminalInfoCd = domain.getEmpInfoTerCode().isPresent() ? domain.getEmpInfoTerCode().get().v() : null;
 		return this;
 	}
-
 }
