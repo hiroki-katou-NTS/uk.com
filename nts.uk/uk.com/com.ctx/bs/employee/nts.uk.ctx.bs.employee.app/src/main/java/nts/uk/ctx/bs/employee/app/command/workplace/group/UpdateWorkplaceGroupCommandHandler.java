@@ -131,9 +131,10 @@ public class UpdateWorkplaceGroupCommandHandler
 				.map(x -> (WorkplaceReplaceResult) x.getValue()).collect(Collectors.toList());
 
 		// 9.1: persist
+		if(lstReplaceAdd.size() > 0) {
 		this.repo.update(wpgrp.get());
 		checkProcessResult = true;
-
+		}
 		// 9.2: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x -> {
 			AtomTask atomTask = x.getPersistenceProcess().get();
