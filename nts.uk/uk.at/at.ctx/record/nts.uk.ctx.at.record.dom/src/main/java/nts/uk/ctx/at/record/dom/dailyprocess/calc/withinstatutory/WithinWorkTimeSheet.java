@@ -82,6 +82,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -188,7 +189,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													Optional<WorkTimeCode> workTimeCode, 
 													AttendanceTime preFlexTime, 
 													Finally<AttendanceTime> timeVacationAdditionRemainingTime,
-													Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+													WorkingConditionItem conditionItem,
 													Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 													Optional<DeductLeaveEarly> deductLeaveEarly,
 													Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
@@ -241,7 +242,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					 workTimeCode, 
 					 preFlexTime, 
 					 timeVacationAdditionRemainingTime,
-					 commonSetting,
 					 conditionItem,
 					 predetermineTimeSetByPersonInfo,
 					 deductLeaveEarly, specificDateAttrSheets
@@ -303,7 +303,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			Optional<WorkTimeCode> workTimeCode, 
 			AttendanceTime preFlexTime, 
 			Finally<AttendanceTime> timeVacationAdditionRemainingTime,
-			Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			Optional<DeductLeaveEarly> deductLeaveEarly,
 			Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets
@@ -349,7 +349,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				timeVacationAdditionRemainingTime,
 				lateDesClock, 
 				leaveEarlyDesClock,
-				dailyUnit,commonSetting,
+				dailyUnit,Optional.of(workTimeCommonSet),
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
 				deductLeaveEarly,
@@ -1081,12 +1081,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		
 		DeductLeaveEarly leaveLateset = new DeductLeaveEarly(1,1);
-//		if(flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-//			leaveLateset = flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
-//		}
 		if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
 			leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
-		}//ichioka見直し　フレックスじゃなくても大丈夫か
+		}
 		//コア無し計算遅刻時間
 		AttendanceTime noCore = clacNoCoreWorkTime(premiumAtr,
 				   								   calcActualTime,
@@ -1726,6 +1723,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * B.流動勤務(平日・就内)
+	 * @param workTime 就業時間帯の設定
 	 * @param holidayAdditionPerCompany 休暇加算時間設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param predetermineTimeSet 所定時間設定(計算用クラス)
@@ -1742,6 +1740,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
 	 */
 	public void createAsFlow(
+			WorkTimeSetting workTime,
 			HolidayAddtionSet holidayAdditionPerCompany,
 			IntegrationOfDaily integrationOfDaily,
 			PredetermineTimeSetForCalc predetermineTimeSet,
@@ -1784,7 +1783,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		this.withinWorkTimeFrame.get(0).setPremiumTimeSheetInPredetermined(
 				WithinWorkTimeSheet.predetermineWithinPremiumTime(
 						personCommonSetting.getDailyUnit().getDailyTime(),//1日の法定時間
-						predetermineTimeSet.getAdditionSet().getPredTime().getOneDay().minute(),//所定時間1日
+						predetermineTimeSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),//所定時間1日
 						this.withinWorkTimeFrame,//就業時間内時間枠
 						vacation,//休暇クラス
 						workType,//勤務種類
@@ -1794,19 +1793,25 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						addSetting.getVacationCalcMethodSet(),//休暇の計算方法の設定
 						CalcMethodOfNoWorkingDay.isNotCalculateFlexTime,//フレックス時間を計算しない
 						Optional.empty(),//フレックス勤務の設定
-						Optional.of(WorkTimeDailyAtr.REGULAR_WORK),//勤務形態区分 通常勤務・変形労働用
+						Optional.of(workTime.getWorkTimeDivision().getWorkTimeDailyAtr()),//Optional.of(WorkTimeDailyAtr.REGULAR_WORK),//勤務形態区分 通常勤務・変形労働用
 						Optional.of(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode()),//就業時間帯コード
 						AttendanceTime.ZERO,//preFlexTime？
 						Optional.empty(),//コアタイム時間帯設定
 						predetermineTimeSet,//計算用所定時間
-						Finally.empty(),//日別実績の時間休暇使用時間 どの時間渡せばいいかわからない。
-						Optional.empty(),//遅刻判断時刻
-						Optional.empty(),//早退判断時刻
-						DailyUnit.zero(),//DailyUnit 何を渡すのか不明
+						Finally.of(AttendanceTime.ZERO),//日別実績の時間休暇使用時間 使われていない。
+						this.lateDecisionClock.isEmpty()
+							?Optional.empty()
+							:Optional.of(this.lateDecisionClock.get(0)),//遅刻判断時刻
+						this.leaveEarlyDecisionClock.isEmpty()
+							?Optional.empty()
+							:Optional.of(this.leaveEarlyDecisionClock.get(0)),//早退判断時刻
+						personCommonSetting.getDailyUnit(),//DailyUnit
 						Optional.of(flowWorkSetting.getCommonSetting()),//共通設定
 						personCommonSetting.getPersonInfo().get(),//労働条件
 						Optional.empty(),//predetermineTimeSetByPersonInfo 何の為？個人用っぽい引数名。
-						Optional.empty(),//遅刻早退を控除する
+						addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+								?Optional.of(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly())
+								:Optional.empty(),//遅刻早退を控除する
 						deductionTimeSheet,//控除時間帯
 						NotUseAtr.NOT_USE//lateEarlyMinusAtr
 				).get(0).getPremiumTimeSheetInPredetermined());

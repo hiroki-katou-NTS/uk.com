@@ -199,14 +199,12 @@ public class CalculationRangeOfOneDay {
 	 * @param ootsukaIWFlag 
 	 * @param integrationOfDaily 
 	 */
-	public void createWithinWorkTimeSheet(WorkingSystem workingSystem, WorkTimeMethodSet setMethod,
+	public void createWithinWorkTimeSheet(
 			RestClockManageAtr clockManage,  Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet, CommonRestSetting commonSet,
-			WorkTimeDivision workTimeDivision, 
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			FixedWorkSetting fixedWorkSetting, Optional<BonusPaySetting> bonuspaySetting,
 			List<OverTimeOfTimeZoneSet> overTimeHourSetList, Optional<ZeroTime> overDayEndCalcSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
-			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, CalAttrOfDailyPerformance calcSetinIntegre,
+			CalAttrOfDailyPerformance calcSetinIntegre,
 			StatutoryPrioritySet prioritySet, WorkTimeSetting workTime,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList
 			,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,
 			HolidayCalcMethodSet holidayCalcMethodSet,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
@@ -221,9 +219,9 @@ public class CalculationRangeOfOneDay {
     		Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
-				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, fixedWorkSetting, commonSet, attendanceLeavingWork,
-				workTimeDivision, breakTimeOfDailyList, shortTimeSheets,holidayCalcMethodSet
-				,predetermineTimeSetForCalc,fixWoSetting);
+				workTime.getWorkTimeDivision().getWorkTimeMethodSet(), clockManage, dailyGoOutSheet, this.oneDayOfRange, fixedWorkSetting, commonSet, attendanceLeavingWork,
+				workTime.getWorkTimeDivision(), breakTimeOfDailyList, shortTimeSheets,holidayCalcMethodSet
+				,this.predetermineTimeSetForCalc,fixWoSetting);
 		
 		val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
 		fixedWorkTImeZoneSet.forFixed(fixedWorkSetting.getLstHalfDayWorkTimezone());
@@ -232,20 +230,21 @@ public class CalculationRangeOfOneDay {
 					 ?Optional.of(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly())
 					 :Optional.empty();
 					 
-		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonuspaySetting,
+		theDayOfWorkTimesLoop(this.predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonuspaySetting,
 				overTimeHourSetList,
 				fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone(),
 				overDayEndCalcSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
-				breakdownTimeDay, dailyTime, calcSetinIntegre,
+				this.predetermineTimeSetForCalc.getAdditionSet().getPredTime(),
+				calcSetinIntegre,
 				fixedWorkSetting.getLegalOTSetting(),
 				prioritySet, deductionTimeSheet,
 				workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,Optional.empty(),dailyUnit,breakTimeList, 
 				vacationClass, timevacationUseTimeOfDaily,  
 				siftCode, autoCalcOfLeaveEarlySetting, addSetting,
 				holidayAddtionSet, 
-				Optional.of(fixedWorkSetting.getCommonSetting()),
 				conditionItem,predetermineTimeSetByPersonInfo,
-				beforeInfo,afterInfo,leaveLateSet,specificDateAttrSheets,workTimeDivision);
+				beforeInfo,afterInfo,leaveLateSet,specificDateAttrSheets,
+				workTime.getWorkTimeDivision());
 	}
 
 	/**
@@ -293,12 +292,12 @@ public class CalculationRangeOfOneDay {
 	 * @param ootsukaIWFlag 
 	 * @param integrationOfDaily 
 	 */
-	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+	public void theDayOfWorkTimesLoop(PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
 			WorkTimezoneCommonSet workTimeCommonSet, Optional<BonusPaySetting> bonuspaySetting,
 			List<OverTimeOfTimeZoneSet> overTimeHourSetList, List<HDWorkTimeSheetSetting> fixOff, Optional<ZeroTime> overDayEndCalcSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
-			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, CalAttrOfDailyPerformance calcSetinIntegre,
+			BreakDownTimeDay breakdownTimeDay, CalAttrOfDailyPerformance calcSetinIntegre,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
 			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet,
 			DailyCalculationPersonalInformation personalInfo,HolidayCalcMethodSet holidayCalcMethodSet,
@@ -307,10 +306,10 @@ public class CalculationRangeOfOneDay {
     		Optional<WorkTimeCode> siftCode, 
     		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
     		AddSetting addSetting,
-    		HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+    		HolidayAddtionSet holidayAddtionSet,WorkingConditionItem conditionItem,
     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,
     		Optional<DeductLeaveEarly> deductLeaveEarly,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, WorkTimeDivision workTimeDivision) {
-		if (workingSystem.isExcludedWorkingCalculate()) {
+		if (personalInfo.getWorkingSystem().isExcludedWorkingCalculate()) {
 			/* 計算対象外 */
 			return;
 		}
@@ -340,7 +339,6 @@ public class CalculationRangeOfOneDay {
 																				siftCode, 
 																				new AttendanceTime(1440), 
 																				Finally.of(timevacationUseTimeOfDaily),
-																				commonSetting,
 																				conditionItem,
 																				predetermineTimeSetByPersonInfo,
 																				deductLeaveEarly,
@@ -356,10 +354,10 @@ public class CalculationRangeOfOneDay {
 			val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
 					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)).get(),
 					workNumber, overDayEndCalcSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-					workingSystem, breakdownTimeDay, dailyTime, calcSetinIntegre.getOvertimeSetting(), statutorySet, prioritySet
+					personalInfo.getWorkingSystem(), breakdownTimeDay, personalInfo.getStatutoryWorkTime(), calcSetinIntegre.getOvertimeSetting(), statutorySet, prioritySet
 					,bonuspaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, predetermineTimeSetForCalc, 
-					siftCode, autoCalcOfLeaveEarlySetting, addSetting, holidayAddtionSet,commonSetting,
+					siftCode, autoCalcOfLeaveEarlySetting, addSetting, holidayAddtionSet,
 					conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting, beforeInfo, afterInfo, specificDateAttrSheets,workTimeDivision.getWorkTimeDailyAtr()
 					);
 			if(!outsideWorkTimeSheet.isPresent()) {
@@ -407,7 +405,7 @@ public class CalculationRangeOfOneDay {
 			paramList = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets();
 		}
 		val overTimeFrame = forOOtsukaPartMethod(statutorySet, 
-							 dailyTime,
+							 personalInfo.getStatutoryWorkTime(),
 							 paramList,
 							 calcSetinIntegre.getOvertimeSetting(),
 							 breakdownTimeDay,
@@ -422,7 +420,7 @@ public class CalculationRangeOfOneDay {
 							 autoCalcOfLeaveEarlySetting,
 							 addSetting,
 							 holidayAddtionSet,
-							 commonSetting,
+							 Optional.of(workTimeCommonSet),
 							 conditionItem,
 							 predetermineTimeSetByPersonInfo,coreTimeSetting,workTimeDivision);
 		if(!overTimeFrame.isEmpty()) {
@@ -724,49 +722,52 @@ public class CalculationRangeOfOneDay {
 	 * @param integrationOfDaily 
 	 */
 	 public void createTimeSheetAsFlex(
-			 		WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 					Optional<BonusPaySetting> bonuspaySetting,
-					List<HDWorkTimeSheetSetting> fixOff,List<OverTimeOfTimeZoneSet> overTimeHourSetList,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,  
+					List<OverTimeOfTimeZoneSet> overTimeHourSetList,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,  
 					Optional<ZeroTime> overDayEndCalcSet,WorkType beforeDay, WorkType toDay, WorkType afterDay,
-					BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, CalAttrOfDailyPerformance calcSetinIntegre,
+					BreakDownTimeDay breakdownTimeDay, CalAttrOfDailyPerformance calcSetinIntegre,
 					LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
 					WorkTimeSetting workTime,
 					FlexWorkSetting flexWorkSetting,Optional<OutingTimeOfDailyPerformance> goOutTimeSheetList,
-					TimeSpanForDailyCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
-					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,
-					HolidayCalcMethodSet holidayCalcMethodSet,Optional<CoreTimeSetting> coreTimeSetting,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
+					List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo,
+					HolidayCalcMethodSet holidayCalcMethodSet,DailyUnit dailyUnit,List<TimeSheetOfDeductionItem> breakTimeList,
             		VacationClass vacationClass, AttendanceTime timevacationUseTimeOfDaily,
             		Optional<WorkTimeCode> siftCode, 
             		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
             		AddSetting addSetting,
-            		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
-            		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+            		HolidayAddtionSet holidayAddtionSet,WorkingConditionItem conditionItem,
             		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,List<ShortWorkingTimeSheet> shortTimeSheets,
             		WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,
             		List<EmTimeZoneSet> fixWoSetting,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets){
 
 		 //控除時間帯の作�?
 		 val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(goOutTimeSheetList,
-				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flexWorkSetting.getOffdayWorkTime().getRestTimezone(),flexWorkSetting.getRestSetting(), shortTimeSheets,
-				 workTimeShortTimeSet,commonSetting,holidayCalcMethodSet,predetermineTimeSetForCalc,toDay,fixWoSetting);
+				 this.oneDayOfRange, this.attendanceLeavingWork, workTime.getWorkTimeDivision(),breakTimeOfDailyList,flexWorkSetting.getOffdayWorkTime().getRestTimezone(),flexWorkSetting.getRestSetting(), shortTimeSheets,
+				 workTimeShortTimeSet,Optional.of(flexWorkSetting.getCommonSetting()),holidayCalcMethodSet,this.predetermineTimeSetForCalc,toDay,fixWoSetting);
 		 /*固定勤務�?時間帯作�?*/
 		 val fixedWorkTimeZoneSet = new CommonFixedWorkTimezoneSet();
 		 fixedWorkTimeZoneSet.forFlex(flexWorkSetting.getLstHalfDayWorkTimezone());
-		 Optional<DeductLeaveEarly> leaveLateSet = flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-				 								 ?Optional.of(flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly())
+		 Optional<DeductLeaveEarly> leaveLateSet = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+				 								 ?Optional.of(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly())
 				 								 :Optional.empty();
-		 theDayOfWorkTimesLoop( workingSystem,  predetermineTimeSetForCalc,
+		 theDayOfWorkTimesLoop(this.predetermineTimeSetForCalc,
 				 	fixedWorkTimeZoneSet,  flexWorkSetting.getCommonSetting(),  bonuspaySetting,
-					overTimeHourSetList,  fixOff,  overDayEndCalcSet,
+					overTimeHourSetList,
+					flexWorkSetting.getOffdayWorkTime().getLstWorkTimezone(),
+					overDayEndCalcSet,
 					holidayTimeWorkItem,  beforeDay,  toDay,  afterDay,
-					breakdownTimeDay,  dailyTime,  calcSetinIntegre,
+					breakdownTimeDay,
+					calcSetinIntegre,
 					statutorySet,  prioritySet,
-					deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,coreTimeSetting,dailyUnit,breakTimeList,
+					deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo,holidayCalcMethodSet,
+					Optional.of(flexWorkSetting.getCoreTimeSetting()),
+					dailyUnit,breakTimeList,
 					vacationClass, timevacationUseTimeOfDaily, siftCode, 
 					autoCalcOfLeaveEarlySetting,
 					addSetting,
 					holidayAddtionSet,
-					commonSetting,conditionItem,predetermineTimeSetByPersonInfo,beforeInfo,afterInfo,leaveLateSet,specificDateAttrSheets,workTimeDivision);
+					conditionItem,predetermineTimeSetByPersonInfo,beforeInfo,afterInfo,leaveLateSet,specificDateAttrSheets,
+					workTime.getWorkTimeDivision());
 		 /*コアタイ�?のセ�?��*/
 		 //this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 		 if(this.withinWorkingTimeSheet.isPresent())
@@ -957,42 +958,40 @@ public class CalculationRangeOfOneDay {
 	 * 流動勤務の時間帯作成
 	 * @param personalInfo 日別計算用の個人情報
 	 * @param workTime 就業時間帯の設定
-	 * @param yesterdayInfo 前日の勤務情報
-	 * @param tommorowInfo 翌日の勤務情報
-	 * @param todayWorkType 当日の勤務種類
-	 * @param yesterdayWorkType 前日の勤務種類
-	 * @param tommorowWorkType 翌日の勤務種類
+	 * @param addSetting 加算設定
+	 * @param holidayPriorityOrder 時間休暇相殺優先順位
 	 * @param flowWorkSetting 流動勤務設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
-	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
-	 * @param holidayPriorityOrder 時間休暇相殺優先順位
-	 * @param companyCommonSetting
-	 * @param midNightTimeSheet 深夜時間帯
-	 * @param addSetting 加算設定
-	 * @param zeroTime 0時跨ぎ計算設定
 	 * @param bonuspaySetting 加給設定
+	 * @param midNightTimeSheet 深夜時間帯
+	 * @param zeroTime 0時跨ぎ計算設定
+	 * @param previousWorkType 前日の勤務種類
+	 * @param nextInfo 翌日の勤務情報
+	 * @param todayWorkType 当日の勤務種類
+	 * @param previousInfo 前日の勤務情報
+	 * @param nextWorkType 翌日の勤務種類
+	 * @param manageReGetClassOfSchedule 勤務予定（所定変動の判断に使用する）
 	 * @param vacation 休暇クラス
 	 * @param holidayAddtionSet 会社別の休暇加算時間設定
 	 */
 	public void createFlowWork(
 			DailyCalculationPersonalInformation personalInfo,
 			WorkTimeSetting workTime,
-			Optional<WorkInformation> yesterdayInfo,
-			Optional<WorkInformation> tommorowInfo,
+			AddSetting addSetting,
+			CompanyHolidayPriorityOrder holidayPriorityOrder,
 			WorkType todayWorkType,
-			WorkType yesterdayWorkType,
-			WorkType tommorowWorkType,
 			FlowWorkSetting flowWorkSetting,
 			IntegrationOfDaily integrationOfDaily,
 			ManagePerPersonDailySet personCommonSetting,
-			Optional<ManageReGetClass> manageReGetClassOfSchedule,
-			CompanyHolidayPriorityOrder holidayPriorityOrder,
-			ManagePerCompanySet companyCommonSetting,
-			MidNightTimeSheet midNightTimeSheet,
-			AddSetting addSetting,
-			ZeroTime zeroTime,
 			Optional<BonusPaySetting> bonuspaySetting,
+			MidNightTimeSheet midNightTimeSheet,
+			ZeroTime zeroTime,
+			WorkType previousWorkType,
+			WorkType nextWorkType,
+			Optional<WorkInformation> previousInfo,
+			Optional<WorkInformation> nextInfo,
+			Optional<ManageReGetClass> manageReGetClassOfSchedule,
 			//共通処理呼ぶ用
 			VacationClass vacation,
 			HolidayAddtionSet holidayAdditionPerCompany) {
@@ -1028,6 +1027,7 @@ public class CalculationRangeOfOneDay {
 			
 			//流動勤務(就内、平日)
 			creatingWithinWorkTimeSheet.createAsFlow(
+					workTime,
 					holidayAdditionPerCompany,
 					integrationOfDaily,
 					this.predetermineTimeSetForCalc,
@@ -1060,11 +1060,11 @@ public class CalculationRangeOfOneDay {
 							creatingWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
 							zeroTime,
 							todayWorkType,
-							yesterdayWorkType,
-							tommorowWorkType,
+							previousWorkType,
+							nextWorkType,
 							//共通処理呼ぶ用
-							yesterdayInfo,
-							tommorowInfo,
+							previousInfo,
+							nextInfo,
 							creatingWithinWorkTimeSheet,
 							personCommonSetting,
 							vacation,
@@ -1081,10 +1081,10 @@ public class CalculationRangeOfOneDay {
 							integrationOfDaily,
 							midNightTimeSheet,
 							zeroTime,
-							yesterdayWorkType,
-							tommorowWorkType,
-							yesterdayInfo,
-							tommorowInfo,
+							previousWorkType,
+							nextWorkType,
+							previousInfo,
+							nextInfo,
 							oneDayOfRange));
 		}
 	}
@@ -1336,17 +1336,17 @@ public class CalculationRangeOfOneDay {
 		
 		if(workType.getAttendanceHolidayAttr().isMorning()) {
 			//午前終了の時刻までの時間帯に補正する
-			calcRange.shiftOnlyEnd(predetermineTimeSet.getAMEndTime());
+			calcRange = calcRange.shiftOnlyEnd(predetermineTimeSet.getAMEndTime());
 		}
 		
 		if(workType.getAttendanceHolidayAttr().isAfternoon()) {
 			//午後開始の時刻からの時間帯に補正する
-			calcRange.shiftOnlyStart(predetermineTimeSet.getPMStartTime());
+			calcRange = calcRange.shiftOnlyStart(predetermineTimeSet.getPMStartTime());
 		}
 		
 		if(isCalculateFromScheduleStartTime(calcRange.getStart(), integrationOfDaily, flowWorkSetting)) {
 			//予定勤務時間帯．出勤時刻までの時間帯に補正する
-			calcRange.shiftOnlyStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
+			calcRange = calcRange.shiftOnlyStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
 		}
 		
 		//就業時間内時間枠作成

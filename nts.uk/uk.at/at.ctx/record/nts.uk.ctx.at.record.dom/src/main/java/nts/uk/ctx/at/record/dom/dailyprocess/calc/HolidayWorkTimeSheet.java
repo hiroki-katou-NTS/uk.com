@@ -526,11 +526,6 @@ public class HolidayWorkTimeSheet{
 	 * @param bonuspaySetting 加給設定
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param midNightTimeSheet 深夜時間帯
-	 * @param zeroTime 0時跨ぎ計算設定
-	 * @param yesterdayWorkType 前日の勤務種類
-	 * @param tommorowWorkType 翌日の勤務種類
-	 * @param yesterdayInfo 前日の勤務情報
-	 * @param tommorowInfo 翌日の勤務情報
 	 * @param oneDayOfRange 1日の計算範囲
 	 * @return 休日出勤時間帯
 	 */
@@ -542,11 +537,6 @@ public class HolidayWorkTimeSheet{
 			Optional<BonusPaySetting> bonuspaySetting,
 			IntegrationOfDaily integrationOfDaily,
 			MidNightTimeSheet midNightTimeSheet,
-			ZeroTime zeroTime,
-			WorkType yesterdayWorkType,
-			WorkType tommorowWorkType,
-			Optional<WorkInformation> yesterdayInfo,
-			Optional<WorkInformation> tommorowInfo,
 			TimeSpanForDailyCalc oneDayOfRange) {
 		
 		TimeSpanForDailyCalc calcRange = holidayStartEnd.getDuplicatedWith(oneDayOfRange).orElse(holidayStartEnd);

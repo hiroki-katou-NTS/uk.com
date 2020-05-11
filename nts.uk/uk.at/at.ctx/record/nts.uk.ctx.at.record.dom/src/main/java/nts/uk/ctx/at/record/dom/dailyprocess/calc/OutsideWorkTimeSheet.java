@@ -104,7 +104,7 @@ public class OutsideWorkTimeSheet {
     		PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
     		AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
     		AddSetting addSetting,
-    		HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
+    		HolidayAddtionSet holidayAddtionSet,WorkingConditionItem conditionItem,
     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,
     		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, WorkTimeDailyAtr workTimeDailyAtr) {
 		
@@ -117,7 +117,7 @@ public class OutsideWorkTimeSheet {
 					autoCalculationSet, statutorySet, prioritySet,bonuspaySetting,midNightTimeSheet,
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
-					predetermineTimeSet, siftCode, autoCalcOfLeaveEarlySetting, addSetting, holidayAddtionSet,commonSetting,conditionItem,
+					predetermineTimeSet, siftCode, autoCalcOfLeaveEarlySetting, addSetting, holidayAddtionSet,Optional.of(overDayEndSet),conditionItem,
 					predetermineTimeSetByPersonInfo,coreTimeSetting, specificDateAttrSheets,workTimeDailyAtr);
 
 			/* 0時跨ぎ処理 */
@@ -127,7 +127,7 @@ public class OutsideWorkTimeSheet {
 				holidayWorkFrameTimeSheetForCalc = overTimeDayEnd.getHolList();
 			}
 		} else {
-			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting, specificDateAttrSheets);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,Optional.of(overDayEndSet), specificDateAttrSheets);
 
 			/* 0時跨ぎ */
 			if(overDayEndCalcSet.isPresent()) {
@@ -190,8 +190,8 @@ public class OutsideWorkTimeSheet {
 	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
 	 * @param zeroTime 0時跨ぎ計算設定
 	 * @param todayWorkType 勤務種類（当日）
-	 * @param yesterdayWorkType 勤務種類（前日）
-	 * @param tommorowWorkType 勤務種類（翌日）
+	 * @param previousWorkType 勤務種類（前日）
+	 * @param nextWorkType 勤務種類（翌日）
 	 * @param withinWorkTimeSheet 就業時間内時間帯
 	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
 	 * @param vacation 休暇クラス
@@ -211,11 +211,11 @@ public class OutsideWorkTimeSheet {
 			AttendanceTime timeVacationAdditionRemainingTime,
 			ZeroTime zeroTime,
 			WorkType todayWorkType,
-			WorkType yesterdayWorkType,
-			WorkType tommorowWorkType,
+			WorkType previousWorkType,
+			WorkType nextWorkType,
 			//共通処理呼ぶ用
-			Optional<WorkInformation> yesterdayInfo,
-			Optional<WorkInformation> tommorowInfo,
+			Optional<WorkInformation> previousInfo,
+			Optional<WorkInformation> nextInfo,
 			WithinWorkTimeSheet withinWorkTimeSheet,
 			ManagePerPersonDailySet personCommonSetting,
 			VacationClass vacation,
@@ -243,11 +243,11 @@ public class OutsideWorkTimeSheet {
 		OverDayEnd overDayEnd = OverDayEnd.forOverTime(
 				flowWorkSetting.getCommonSetting().isZeroHStraddCalculateSet(),
 				overTimeSheet.getFrameTimeSheets(),
-				yesterdayWorkType,
+				previousWorkType,
 				todayWorkType,
-				tommorowWorkType,
-				yesterdayInfo,
-				tommorowInfo,
+				nextWorkType,
+				previousInfo,
+				nextInfo,
 				zeroTime);
 		
 		return new OutsideWorkTimeSheet(
@@ -265,10 +265,10 @@ public class OutsideWorkTimeSheet {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param midNightTimeSheet 深夜時間帯
 	 * @param zeroTime 0時跨ぎ計算設定
-	 * @param yesterdayWorkType 前日の勤務種類
-	 * @param tommorowWorkType 翌日の勤務種類
-	 * @param yesterdayInfo 前日の勤務情報
-	 * @param tommorowInfo 翌日の勤務情報
+	 * @param previousWorkType 前日の勤務種類
+	 * @param nextWorkType 翌日の勤務種類
+	 * @param previousInfo 前日の勤務情報
+	 * @param nextInfo 翌日の勤務情報
 	 * @param oneDayOfRange 1日の計算範囲
 	 * @return 休日出勤時間帯
 	 */
@@ -281,10 +281,10 @@ public class OutsideWorkTimeSheet {
 			IntegrationOfDaily integrationOfDaily,
 			MidNightTimeSheet midNightTimeSheet,
 			ZeroTime zeroTime,
-			WorkType yesterdayWorkType,
-			WorkType tommorowWorkType,
-			Optional<WorkInformation> yesterdayInfo,
-			Optional<WorkInformation> tommorowInfo,
+			WorkType previousWorkType,
+			WorkType nextWorkType,
+			Optional<WorkInformation> previousInfo,
+			Optional<WorkInformation> nextInfo,
 			TimeSpanForDailyCalc oneDayOfRange) {
 		
 		HolidayWorkTimeSheet hollidayWorkTImeSheet = HolidayWorkTimeSheet.createAsFlow(
@@ -295,22 +295,17 @@ public class OutsideWorkTimeSheet {
 				bonuspaySetting,
 				integrationOfDaily,
 				midNightTimeSheet,
-				zeroTime,
-				yesterdayWorkType,
-				tommorowWorkType,
-				yesterdayInfo,
-				tommorowInfo,
 				oneDayOfRange);
 		
 		//0時跨ぎ処理
 		OverDayEnd overDayEnd = OverDayEnd.forHolidayWorkTime(
 				flowWorkSetting.getCommonSetting().isZeroHStraddCalculateSet(),
 				hollidayWorkTImeSheet.getWorkHolidayTime(),
-				yesterdayWorkType,
+				previousWorkType,
 				todayWorkType,
-				tommorowWorkType,
-				yesterdayInfo,
-				tommorowInfo,
+				nextWorkType,
+				previousInfo,
+				nextInfo,
 				zeroTime);
 		
 		return new OutsideWorkTimeSheet(

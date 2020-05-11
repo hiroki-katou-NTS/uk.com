@@ -378,7 +378,7 @@ public class WithinStatutoryTimeOfDaily {
 				leaveLateset = deductLeaveEarly.get();
 			}
 			else {
-				if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {//ichioka見直し　ここはフレだった。フレ以外もありえる？
+				if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
 					leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
@@ -418,7 +418,7 @@ public class WithinStatutoryTimeOfDaily {
 			}
 			else {
 				if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {//ichioka見直し　ここはフレだった
-					leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();//ichioka　ここは固定。あってるか？
+					leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();//ichioka　ここは通常。あってるか？
 				}
 			}
 //			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
