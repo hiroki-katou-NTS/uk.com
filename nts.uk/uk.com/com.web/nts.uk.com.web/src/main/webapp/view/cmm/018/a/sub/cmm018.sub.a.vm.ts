@@ -276,10 +276,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 
             $(window).resize(function() {
                   $('html.sidebar-html').css('overflow','visible');
-                    let width = uk.localStorage.getItem("AppName_CMM018");
-                    if (width.isPresent()) {
-                        $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
-                    }
+                    
                  }); 
            clearInterval(this.intervalDetectResolution);      
            this.intervalDetectResolution = (function () {
