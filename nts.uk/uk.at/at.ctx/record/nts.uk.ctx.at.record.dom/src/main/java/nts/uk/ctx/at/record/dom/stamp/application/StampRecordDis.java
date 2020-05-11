@@ -40,8 +40,9 @@ public class StampRecordDis implements DomainValue {
 	 */
 	
 	public ErrorInformationApplication getErrornformation() {
+		//	$エラーコードリスト = @チェックエラー種類.エラー種類に対応するエラーアラームを取得する()
 		List<String> list = this.checkErrorType.getErrorAlarm();
+		//申請促すエラー情報#申請促すエラー情報(@チェックエラー種類,$エラーコードリスト,@促すメッセージ)
 		return new ErrorInformationApplication(this.checkErrorType, list, this.promptingMssage);
 	}
-
 }

@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.stamp.application.CheckErrorType;
-import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
 
 /**
  * 
