@@ -130,9 +130,10 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		List<WorkplaceReplaceResult> resultProcess = wplResult.stream().filter(x->x.getPersistenceProcess().isPresent()).collect(Collectors.toList());
 		
 		// 10.1: persits
+		if(lstReplaceAdd.size() > 0) {
 		repo.insert(group);
 		checkProcessResult = true;
-		
+		}
 		// 10.2: 職場グループ所属情報の永続化処理
 		resultProcess.forEach(x->{
 			AtomTask atomTask = x.getPersistenceProcess().get();
