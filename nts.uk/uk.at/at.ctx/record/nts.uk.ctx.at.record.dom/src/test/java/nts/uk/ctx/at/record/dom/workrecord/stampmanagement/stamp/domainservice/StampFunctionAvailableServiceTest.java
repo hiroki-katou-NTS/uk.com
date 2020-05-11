@@ -38,8 +38,7 @@ public class StampFunctionAvailableServiceTest {
 				result = new ArrayList<>();
 			}
 		};
-//TODO: Chungnt 
-//		assertThat(StampFunctionAvailableService.decide(require, employeeId)).isFalse();	
+		assertThat(StampFunctionAvailableService.decide(require, employeeId)).isFalse();		
 	}
 	
 	/**
@@ -55,8 +54,7 @@ public class StampFunctionAvailableServiceTest {
 				result = Arrays.asList(StampHelper.getStampCardByInput("stampCardId", "stampNumber", GeneralDate.today()));
 			}
 		};
-//TODO: Chungnt 
-//		assertThat(StampFunctionAvailableService.decide(require, employeeId)).isTrue();
+		assertThat(StampFunctionAvailableService.decide(require, employeeId)).isTrue();		
 	}
 
 }
