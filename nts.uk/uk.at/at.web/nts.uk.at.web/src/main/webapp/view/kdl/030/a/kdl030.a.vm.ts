@@ -141,7 +141,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
         }
         getApproverLabel(index) {
-            if(index <=9){
+            if(index <=10){
                 return nts.uk.resource.getText("KAF000_9",[(index)+'']);    
             }
             return ""; 

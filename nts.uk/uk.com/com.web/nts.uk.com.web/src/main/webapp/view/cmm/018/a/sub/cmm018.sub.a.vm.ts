@@ -170,6 +170,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 virtualization: true,
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
+                autoFitWindow: false,
                 columns: [
                     { headerText: 'ID', key: 'typeRoot', dataType: 'string', ntsControl: "Label", width: "0px", hidden: true },
                     { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '130px'},
@@ -221,6 +222,9 @@ module nts.uk.com.view.cmm018.a.sub {
                     $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
                 }
                 
+                _.forEach(["grid_matome", "grid_matomeA", "grid_matomeB", "grid_matomeC", "grid_matomeD", "grid_matomeE", "grid_matomeF"], gridName => { 
+                    uk.localStorage.removeItem(request.location.current.rawUrl + "/" + gridName );
+                });
             }, 0);
                 
             $(self.gridName).on("click", ".button-delete", function(evt, ui) {
