@@ -43,7 +43,7 @@ public class WorkplaceGroup implements DomainAggregate {
 	public WorkplaceGroup(String cID, String wKPGRPID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
 		super();
 		CID = cID;
-		WKPGRPID = IdentifierUtil.randomUniqueId();
+		WKPGRPID = wKPGRPID == null ? IdentifierUtil.randomUniqueId() : wKPGRPID;
 		WKPGRPCode = wKPGRPCode;
 		WKPGRPName = wKPGRPName;
 		WKPGRPType = wKPGRPType;
