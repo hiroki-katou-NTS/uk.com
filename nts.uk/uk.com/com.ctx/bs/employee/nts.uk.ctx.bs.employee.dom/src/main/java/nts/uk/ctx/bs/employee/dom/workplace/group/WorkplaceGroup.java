@@ -31,6 +31,19 @@ public class WorkplaceGroup implements DomainAggregate {
 	
 	/** 職場グループ種別 */
 	private WorkplaceGroupType WKPGRPType;
+	
+	/**
+	 * [C-0] 職場グループを作成する
+	 */
+	public WorkplaceGroup(String cID, String wKPGRPID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName,
+			WorkplaceGroupType wKPGRPType) {
+		super();
+		CID = cID;
+		WKPGRPID = wKPGRPID;
+		WKPGRPCode = wKPGRPCode;
+		WKPGRPName = wKPGRPName;
+		WKPGRPType = wKPGRPType;
+	}
 
 	/**
 	 * [C-1] 職場グループを作成する
@@ -40,10 +53,10 @@ public class WorkplaceGroup implements DomainAggregate {
 	 * @param wKPGRPName
 	 * @param wKPGRPType
 	 */
-	public WorkplaceGroup(String cID, String wKPGRPID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
+	public WorkplaceGroup(String cID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
 		super();
 		CID = cID;
-		WKPGRPID = wKPGRPID == null ? IdentifierUtil.randomUniqueId() : wKPGRPID;
+		WKPGRPID = IdentifierUtil.randomUniqueId();
 		WKPGRPCode = wKPGRPCode;
 		WKPGRPName = wKPGRPName;
 		WKPGRPType = wKPGRPType;

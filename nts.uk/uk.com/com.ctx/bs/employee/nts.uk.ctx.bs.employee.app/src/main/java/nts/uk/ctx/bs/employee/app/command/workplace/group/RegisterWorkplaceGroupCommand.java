@@ -32,10 +32,9 @@ public class RegisterWorkplaceGroupCommand {
 	/** 職場IDリスト */
 	private List<String> lstWKPID;
 	
-	public WorkplaceGroup toDomain(String CID, String WKPGRPID) {
+	public WorkplaceGroup toDomain(String CID) {
 		return new WorkplaceGroup(
 				CID, 
-				WKPGRPID, 
 				new WorkplaceGroupCode(wkpGrCD), 
 				new WorkplaceGroupName(wkpGrName), 
 				EnumAdaptor.valueOf(wkpGrType, WorkplaceGroupType.class));

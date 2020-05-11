@@ -64,7 +64,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			throw new BusinessException("Msg_3");
 		
 		// 3: 職場グループを作成する([mapping]): 職場グループ
-		WorkplaceGroup group = cmd.toDomain(CID, cmd.getWkpGrID());
+		WorkplaceGroup group = cmd.toDomain(CID);
 		
 		AddWplOfWorkGrpService.Require addRequire = new AddWplOfWorkGrpRequireImpl(affRepo);
 		List<WorkplaceReplaceResult> wplResult = new ArrayList<>();
@@ -105,7 +105,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		List<WorkplaceReplaceResult> lstReplaceAdd = new ArrayList<>();
 		wplResult.forEach(x -> {
 			// 8: not 所属対象がある
-			if (x.getWorkplaceReplacement().checkWplReplace() == false) {
+			if (x.getWorkplaceReplacement().checkWplReplace() == true) {
 				lstReplaceAdd.add(x);
 			}
 		});
