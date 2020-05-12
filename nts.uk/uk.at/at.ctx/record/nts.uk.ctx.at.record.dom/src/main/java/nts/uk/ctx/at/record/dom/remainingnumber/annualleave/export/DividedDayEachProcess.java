@@ -20,6 +20,9 @@ public class DividedDayEachProcess {
 	/** 次回年休付与 */
 	@Setter
 	private Optional<NextAnnualLeaveGrant> nextAnnualLeaveGrant;
+	/** 期間終了内 */
+	@Setter
+	private boolean dayBeforePeriodEnd;
 	/** 期間終了後翌日 */
 	@Setter
 	private boolean nextDayAfterPeriodEnd;
@@ -39,6 +42,7 @@ public class DividedDayEachProcess {
 		this.ymd = ymd;
 		
 		this.nextAnnualLeaveGrant = Optional.empty();
+		this.dayBeforePeriodEnd = true;
 		this.nextDayAfterPeriodEnd = false;
 		this.grantAtr = false;
 		this.lapsedAtr = false;
@@ -56,12 +60,14 @@ public class DividedDayEachProcess {
 	public static DividedDayEachProcess of(
 			GeneralDate ymd,
 			Optional<NextAnnualLeaveGrant> nextAnnualLeaveGrant,
+			boolean dayBeforePeriodEnd,
 			boolean nextDayAfterPeriodEnd,
 			boolean grantAtr,
 			boolean lapsedAtr){
 		
 		DividedDayEachProcess domain = new DividedDayEachProcess(ymd);
 		domain.nextAnnualLeaveGrant = nextAnnualLeaveGrant;
+		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;
 		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
 		domain.grantAtr = grantAtr;
 		domain.lapsedAtr = lapsedAtr;

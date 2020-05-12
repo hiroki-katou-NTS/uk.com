@@ -427,6 +427,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 			
+			
+			
+			
 			// 「出勤率計算フラグ」をチェック
 			if (isCalcAttendanceRate){
 				
@@ -773,6 +776,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
 					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
+					false,
 					nowDividedDay.isNextDayAfterPeriodEnd(),
 					nowDividedDay.isGrantAtr(),
 					isAfterGrant,
@@ -780,6 +784,17 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					nowDividedDay.getNextAnnualLeaveGrant());
 			this.aggregatePeriodWorks.add(nowWork);
 		}
+		
+		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
+		int grantNumber = 1;
+		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
+			if ( nowWork.isGrantAtr() ) // 付与のとき
+			{
+				nowWork.setGrantNumber(grantNumber);
+				grantNumber++;
+			}
+		}
+		
 	}
 	
 	/**
