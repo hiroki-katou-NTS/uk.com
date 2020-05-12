@@ -5,6 +5,11 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 休暇使用数
+ * @author masaaki_jinno
+ *
+ */
 @Getter
 @Setter
 public abstract class LeaveUsedNumber{

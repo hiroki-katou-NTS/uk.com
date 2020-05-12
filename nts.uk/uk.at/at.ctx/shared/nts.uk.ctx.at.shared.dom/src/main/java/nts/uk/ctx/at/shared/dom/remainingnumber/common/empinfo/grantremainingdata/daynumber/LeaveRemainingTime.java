@@ -5,6 +5,11 @@ import nts.arc.primitive.constraint.TimeRange;
 
 @TimeRange(min = "-999:59", max="999:59")
 
+/**
+ * 休暇残数（時間）
+ * @author masaaki_jinno
+ *
+ */
 public class LeaveRemainingTime extends TimeDurationPrimitiveValue<LeaveRemainingTime>{
 
 	//private static final long serialVersionUID = -3402887695920983416L;

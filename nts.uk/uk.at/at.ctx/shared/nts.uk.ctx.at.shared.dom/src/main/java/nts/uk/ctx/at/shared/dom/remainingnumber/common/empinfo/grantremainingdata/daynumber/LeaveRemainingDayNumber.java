@@ -3,6 +3,11 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
+/**
+ * 休暇残数（日数）
+ * @author masaaki_jinno
+ *
+ */
 @HalfIntegerRange(min = -999.5 , max = 999.5)
 public class LeaveRemainingDayNumber extends HalfIntegerPrimitiveValue<LeaveRemainingDayNumber>{
 
