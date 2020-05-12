@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
  *
  */
 @Getter
+@AllArgsConstructor
 public class SettingDateTimeColorOfStampScreen implements DomainValue{
 	
 	/** 文字色 */
@@ -20,8 +22,4 @@ public class SettingDateTimeColorOfStampScreen implements DomainValue{
 	
 	
 	// [C-0] 打刻画面の日時の色設定(文字色, 背景色)																							
-	public SettingDateTimeColorOfStampScreen(ColorCode textColor, ColorCode backgroundColor) {
-		this.textColor = textColor;
-		this.backgroundColor = backgroundColor;
-	}
 }

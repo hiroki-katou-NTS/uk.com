@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Getter
+@AllArgsConstructor
 public class DisplaySettingsStampScreen implements DomainValue{
 	
 	/** 打刻画面のサーバー時刻補正間隔	 */
@@ -23,11 +25,4 @@ public class DisplaySettingsStampScreen implements DomainValue{
 	
 	
 	// [C-0] 打刻画面の表示設定(打刻画面のサーバー時刻補正間隔, 打刻画面の日時の色設定, 打刻結果自動閉じる時間)																							
-	public DisplaySettingsStampScreen(CorrectionInterval serverCorrectionInterval, 
-			SettingDateTimeColorOfStampScreen settingDateTimeColor,
-			ResultDisplayTime resultDisplayTime) {
-		this.serverCorrectionInterval = serverCorrectionInterval;
-		this.settingDateTimeColor = settingDateTimeColor;
-		this.resultDisplayTime = resultDisplayTime;
-	}
 }

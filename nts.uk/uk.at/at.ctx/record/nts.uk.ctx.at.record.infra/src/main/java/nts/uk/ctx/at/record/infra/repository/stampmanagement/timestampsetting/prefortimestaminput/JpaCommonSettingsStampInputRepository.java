@@ -53,7 +53,7 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	@Override
 	public Optional<CommonSettingsStampInput> get(String comppanyID) {
 		Optional<KrcmtStampFunction> entityOpt = this.queryProxy().find(comppanyID, KrcmtStampFunction.class);
-		if (entityOpt.isPresent()) {
+		if (!entityOpt.isPresent()) {
 			return Optional.empty();
 		}
 		

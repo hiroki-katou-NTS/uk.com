@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class KrcmtStampFunction extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
-	@EmbeddedId
+	@Id
 	@Column(name = "CID")
 	public String cid;
 
