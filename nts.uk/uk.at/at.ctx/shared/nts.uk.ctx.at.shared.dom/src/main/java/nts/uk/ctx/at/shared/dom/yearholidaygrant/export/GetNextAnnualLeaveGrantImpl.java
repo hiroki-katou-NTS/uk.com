@@ -59,7 +59,7 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
-			Optional<List<LengthServiceTbl>> lengthServiceTbls) {
+			Optional<List<LengthServiceTbl>> lengthServiceTbls, Optional<GeneralDate> closureStartDate) {
 		
 		GetNextAnnualLeaveGrantProc proc = new GetNextAnnualLeaveGrantProc(
 				this.yearHolidayRepo,
@@ -67,6 +67,6 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 				this.grantYearHolidayRepo,
 				this.getNextAnnualLeaveGrantProcMulti);
 		return proc.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
-				grantHdTblSet, lengthServiceTbls);
+				grantHdTblSet, lengthServiceTbls, closureStartDate);
 	}
 }

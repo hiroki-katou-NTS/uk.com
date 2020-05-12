@@ -39,9 +39,11 @@ public interface GetNextAnnualLeaveGrant {
 	 * @param isSingleDay 単一日フラグ
 	 * @param grantHdTblSet 年休付与テーブル設定
 	 * @param lengthServiceTbls 勤続年数テーブルリスト
+	 * @param closureStartDate 締め開始日
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay,
-			Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls);
+			Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls,
+			Optional<GeneralDate> closureStartDate);
 }

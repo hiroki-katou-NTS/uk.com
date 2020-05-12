@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @AllArgsConstructor
 public abstract class LeaveGrantRemainingData extends AggregateRoot {
 
+	protected String annLeavID;
+	
 	protected String cid;
 	/**
 	 * 社員ID

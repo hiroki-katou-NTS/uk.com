@@ -81,6 +81,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		// 「期間」をチェック
 		DatePeriod targetPeriod = null;
 		boolean isSingleDay = false;	// 単一日フラグ=false
+		Optional<GeneralDate> closureStartOpt = Optional.empty();
 		if (period.isPresent()){
 			
 			// 開始日、終了日を１日後にずらした期間
@@ -92,7 +93,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		else {
 			
 			// 社員に対応する締め開始日を取得する
-			val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
+			closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
 			if (!closureStartOpt.isPresent()) return nextAnnualLeaveGrantList;
 			targetPeriod = new DatePeriod(closureStartOpt.get().addDays(1), GeneralDate.max());
 			
@@ -106,7 +107,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		// 次回年休付与を取得する
 		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
-				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthServiceTblsOpt);
+				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthServiceTblsOpt, closureStartOpt);
 		
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;
@@ -166,7 +167,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		// 次回年休付与を取得する
 		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
-				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthSvTblsOpt);
+				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthSvTblsOpt, closureDate);
 		
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;

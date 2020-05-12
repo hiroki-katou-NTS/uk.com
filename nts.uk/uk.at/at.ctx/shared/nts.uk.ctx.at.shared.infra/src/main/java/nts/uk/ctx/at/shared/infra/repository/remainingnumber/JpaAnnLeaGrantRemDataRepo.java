@@ -127,7 +127,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
 		entity.grantDate = data.getGrantDate();
-		AnnualLeaveNumberInfo details = data.getDetails();
+		AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) data.getDetails();
 
 		// grant data
 		entity.grantDays = details.getGrantNumber().getDays().v();
@@ -392,7 +392,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("REGISTER_TYPE_VAL", "" +  c.getRegisterType().value + "");
 			sql = sql.replace("GRANT_DAYS_VAL", "'" + c.getDeadline() + "'");
 			
-			AnnualLeaveNumberInfo details = c.getDetails();
+			AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) c.getDetails();
 			// grant data
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
