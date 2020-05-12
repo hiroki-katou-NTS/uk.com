@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
@@ -12,38 +13,28 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author phongtq
  *
  */
+@AllArgsConstructor
+@Getter
 public class StampSettingPerson implements DomainAggregate {
 	
 	/** 会社ID */
-	@Getter
 	private final String companyId;
 	
 	/** 打刻ボタンを抑制する */
-	@Getter
 	private boolean buttonEmphasisArt;
 	
 	/** 打刻画面の表示設定 */
-	@Getter
 	private StampingScreenSet stampingScreenSet;
 	
 	/** ページレイアウト設定 */
-	@Getter
 	private List<StampPageLayout> lstStampPageLayout;
-
+	
+	/**	打刻履歴表示方法 */
+	private HistoryDisplayMethod historyDisplayMethod;
+	
 	/**
-	 * [C-0] 個人利用の打刻設定(会社ID, 打刻画面の表示設定, ページレイアウト設定, 打刻ボタンを抑制する)
-	 * @param companyId
-	 * @param buttonEmphasisArt
-	 * @param stampingScreenSet
-	 * @param lstStampPageLayout
+	 * [C-0] 個人利用の打刻設定(会社ID, 打刻画面の表示設定, ページレイアウト設定, 打刻ボタンを抑制する,打刻履歴表示方法)
 	 */
-	public StampSettingPerson(String companyId, boolean buttonEmphasisArt, StampingScreenSet stampingScreenSet,
-			List<StampPageLayout> lstStampPageLayout) {
-		this.companyId = companyId;
-		this.buttonEmphasisArt = buttonEmphasisArt;
-		this.stampingScreenSet = stampingScreenSet;
-		this.lstStampPageLayout = lstStampPageLayout;
-	}
 	
 	public StampSettingPerson(String companyId, boolean buttonEmphasisArt, StampingScreenSet stampingScreenSet) {
 		this.companyId = companyId;
@@ -57,10 +48,10 @@ public class StampSettingPerson implements DomainAggregate {
 	 * @param buttonPositionNo (ボタン位置NO)
 	 * @return Optional<ボタン詳細設定>
 	 */
-	public Optional<ButtonSettings> getButtonSet(int pageNo, int buttonPositionNo){
+	public Optional<ButtonSettings> getButtonSet(StampButton s){
 		
-		// $打刻ページレイアウト = @ページレイアウト設定 : filter $.ページNO = ページNO
-		Optional<StampPageLayout> pageLayout = lstStampPageLayout.stream().filter(x -> x.getPageNo().v() == pageNo).findFirst();
+		// $打刻ページレイアウト = @ページレイアウト設定 : filter $.ページNO = 打刻ボタン.ページNO
+		Optional<StampPageLayout> pageLayout = lstStampPageLayout.stream().filter(x -> x.getPageNo().v() == s.getPageNo().v()).findFirst();
 		
 		// if $打刻ページレイアウト.isEmpty
 		if(!pageLayout.isPresent()){
@@ -68,8 +59,8 @@ public class StampSettingPerson implements DomainAggregate {
 			return Optional.empty();
 		}
 		
-		// $打刻ページレイアウト.ボタン詳細設定リスト : filter $ボタン位置NO = ボタン位置NO 
-		Optional<ButtonSettings> buttonSettings = pageLayout.get().getLstButtonSet().stream().filter(x -> x.getButtonPositionNo().v() == buttonPositionNo).findFirst();
+		// $打刻ページレイアウト.ボタン詳細設定リスト : filter $ボタン位置NO = 打刻ボタン.ボタン位置NO
+		Optional<ButtonSettings> buttonSettings = pageLayout.get().getLstButtonSet().stream().filter(x -> x.getButtonPositionNo().v() == s.getButtonPositionNo().v()).findFirst();
 		
 		// return Optional<ボタン詳細設定>
 		return buttonSettings;
