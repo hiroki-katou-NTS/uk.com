@@ -183,11 +183,11 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             })
             
             // fix break layout on IE
-            window.onresize = function(event) {
-            	if ((navigator.userAgent.match(/msie/i) != null || navigator.userAgent.match(/trident/i) != null) && $("#prev-next-button").width() < 75) {
-            		$("#selected-approver").css("margin-left", 100 - $("#prev-next-button").width() + "px");
-            	}
-            }
+//            window.onresize = function(event) {
+//            	if ((navigator.userAgent.match(/msie/i) != null || navigator.userAgent.match(/trident/i) != null) && $("#prev-next-button").width() < 75) {
+//            		$("#selected-approver").css("margin-left", 100 - $("#prev-next-button").width() + "px");
+//            	}
+//            }
             
         }// end constructor
         
@@ -280,6 +280,19 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.k2_2(getText('CMM018_111'));
                 self.enableListWp(false);
                 if(self.lstJobG().length > 0) return;//データがある
+                var msie = window.navigator.userAgent.indexOf("MSIE ");
+
+                if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+                {
+                   
+                }
+                else  // If another browser, return 0
+                {
+                    $('div#prev-next-button').css('margin-left','20px');
+                    $('div#prev-next-button').css('position','');
+                    $('div#selected-approver').css('margin-left','25px')
+                }
+                
                 if(self.lstJob().length > 0){
                     let lst = _.clone(self.lstJob());
                     self.lstJobG(lst);
