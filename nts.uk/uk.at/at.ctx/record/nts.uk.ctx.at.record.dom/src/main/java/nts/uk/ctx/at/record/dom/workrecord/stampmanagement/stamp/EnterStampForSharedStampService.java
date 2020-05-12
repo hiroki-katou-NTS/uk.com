@@ -2,10 +2,15 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.Optional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS: 共有打刻から打刻を入力する
@@ -37,15 +42,22 @@ public class EnterStampForSharedStampService {
 	 * 
 	 */
 	public static StampDataReflectResult create(Require require ,String conteactCode, String employeeID, StampNumber StampNumber,
-			Relieve relieve,GeneralDateTime stmapDateTime, String stampButton , Optional<RefectActualResult> refActualResults) {
+			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , Optional<RefectActualResult> refActualResults) {
 		
-		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()				
-		// doi
-
-		//$ボタン詳細設定 = $共有打刻の打刻設定.ボタン詳細設定を取得する(打刻ボタン)																
-
+		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
+		Optional<TimeStampSetShareTStamp> setShareTStamp = require.get(AppContexts.user().companyId());
+		if (!setShareTStamp.isPresent()) {
+			throw new BusinessException("Msg_1632");
+		}
+		
+		//$ボタン詳細設定 = $共有打刻の打刻設定.ボタン詳細設定を取得する(打刻ボタン)
+		Optional<ButtonSettings> buttonSetting = setShareTStamp.get().getDetailButtonSettings(stampButton);															
+		if (!buttonSetting.isPresent()) {
+			throw new BusinessException("Msg_1632");
+		}
 		
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, 打刻カード番号, 打刻日時, 打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)
+		//TODO Chungnt: Đợi 社員の打刻データを作成する của anh Sơn
 		return null;
 			
 	}
@@ -56,7 +68,7 @@ public class EnterStampForSharedStampService {
 		 * 
 		 * 	共有打刻の打刻設定Repository.取得する()										
 		 */
-		
+		Optional<TimeStampSetShareTStamp> get(String comppanyID);
 	}
 
 }
