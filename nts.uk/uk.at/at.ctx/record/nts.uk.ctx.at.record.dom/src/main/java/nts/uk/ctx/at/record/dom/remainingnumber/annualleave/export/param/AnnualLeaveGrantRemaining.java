@@ -16,15 +16,26 @@ public class AnnualLeaveGrantRemaining extends AnnualLeaveGrantRemainingData {
 	private boolean dummyAtr = false;
 	
 	public AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData parent){
-		super(parent.getAnnLeavID(),
-				parent.getCid(),
-				parent.getEmployeeId(),
-				parent.getGrantDate(),
-				parent.getDeadline(),
-				parent.getExpirationStatus(),
-				parent.getRegisterType(),
-				parent.getDetails(),
-				parent.getAnnualLeaveConditionInfo());
+//		super(parent.getAnnLeavID(),
+//				parent.getCid(),
+//				parent.getEmployeeId(),
+//				parent.getGrantDate(),
+//				parent.getDeadline(),
+//				parent.getExpirationStatus(),
+//				parent.getRegisterType(),
+//				parent.getDetails());
+		
+		this.annLeavID = parent.getAnnLeavID();
+		this.cid = parent.getCid();
+		this.employeeId = parent.getEmployeeId();
+		this.grantDate = parent.getGrantDate();
+		this.deadline = parent.getDeadline();
+		this.expirationStatus = parent.getExpirationStatus();
+		this.registerType = parent.getRegisterType();
+		this.details = parent.getDetails();
+		
+		this.annualLeaveConditionInfo = parent.getAnnualLeaveConditionInfo();
+		
 		this.dummyAtr = false;
 	}
 }

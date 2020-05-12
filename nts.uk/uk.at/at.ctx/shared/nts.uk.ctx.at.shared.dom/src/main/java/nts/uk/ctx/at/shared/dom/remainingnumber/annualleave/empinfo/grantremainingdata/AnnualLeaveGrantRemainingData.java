@@ -23,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 // domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
-	private String annLeavID;
-	
+//	private String annLeavID;
+//	
 //	private String cid;
 //	/**
 //	 * 社員ID
@@ -60,7 +60,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	/**
 	 * 年休付与条件情報
 	 */
-	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
+	protected Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
 	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String cID, String employeeId,
 			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,
