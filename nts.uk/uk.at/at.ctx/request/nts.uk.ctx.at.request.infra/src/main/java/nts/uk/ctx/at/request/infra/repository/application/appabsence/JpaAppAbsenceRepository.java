@@ -17,8 +17,11 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeave;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeavePK;
+import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppForSpecLeave;
+import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppForSpecLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 //import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
@@ -94,16 +97,25 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appID) {
 		Optional<KrqdtAppForLeave> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppForLeave.class);
 		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
+		Optional<AppForSpecLeave> appforSpecLeave = this.queryProxy().find(new KrqdtAppForSpecLeavePK(companyID, appID), KrqdtAppForSpecLeave.class).map(c->toDomain(c));
 		if(!opKrqdtAppForLeave.isPresent() || !opKafdtApplication.isPresent()){
 			return Optional.ofNullable(null);
 		}
 		KrqdtAppForLeave krqdtAppAbsence = opKrqdtAppForLeave.get();
 		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
 		AppAbsence appAbsence = krqdtAppAbsence.toDomain();
+		if(appforSpecLeave.isPresent()) {
+			appAbsence.setAppForSpecLeave(appforSpecLeave.get());
+		}
 		appAbsence.setApplication(kafdtApplication.toDomain());
 		return Optional.of(appAbsence);
 	}
-
+	private AppForSpecLeave toDomain(KrqdtAppForSpecLeave entity){
+		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
+				entity.isMournerFlg(),
+				entity.getRelationshipCD(),
+				entity.getRelationshipReason());
+	}
 	@Override
 	public void updateAbsence(AppAbsence appAbsence) {
 		this.commandProxy().update(toEntity(appAbsence));

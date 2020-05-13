@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 
 public interface PreActualColorCheck {
 	
@@ -56,7 +57,7 @@ public interface PreActualColorCheck {
 	 * @return
 	 */
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, 
-			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss);
+			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst);
 	
 	/**
 	 * 07-02-2-1_当日判定

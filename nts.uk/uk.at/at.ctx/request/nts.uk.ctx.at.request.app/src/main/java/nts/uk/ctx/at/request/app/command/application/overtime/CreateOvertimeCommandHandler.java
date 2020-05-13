@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
@@ -63,18 +64,18 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY){
 			typicalReason += command.getAppReasonID();
 		}
-		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
 			if(Strings.isNotBlank(typicalReason)){
 				displayReason += System.lineSeparator();
 			}
 			displayReason += command.getApplicationReason();
 		}
 		ApplicationSetting applicationSetting = overtimeSettingData.appCommonSettingOutput.applicationSetting;
-		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-			||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg() == DisplayAtr.DISPLAY
+			||appTypeDiscreteSetting.getDisplayReasonFlg() == AppDisplayAtr.DISPLAY){
 			if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 					&& Strings.isBlank(typicalReason+displayReason)) {
 				throw new BusinessException("Msg_115");

@@ -29,8 +29,10 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertim
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -55,6 +58,9 @@ public class CheckBeforeRegisterOvertime {
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
+	
+	@Inject
+	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
 	public ColorConfirmResult checkBeforeRegisterColor(CreateOvertimeCommand command) {
 		// 会社ID
@@ -118,8 +124,15 @@ public class CheckBeforeRegisterOvertime {
 		}
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
-				ApplicationType.OVER_TIME_APPLICATION, app.getAppDate());
+		// Get setting info
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+				.prelaunchAppCommonSetService(app.getCompanyID(), employeeId, 1, ApplicationType.OVER_TIME_APPLICATION, app.getAppDate());
+		// 時刻計算利用する場合にチェックしたい
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if (null != requestSetting) {
+			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+		}
+		
 		// 事前申請超過チェック
 		Map<AttendanceType, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
 				.collect(groupingBy(OverTimeInput::getAttendanceType));

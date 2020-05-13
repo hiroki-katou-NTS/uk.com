@@ -222,7 +222,7 @@ public class AppAbsenceDto {
 								app.getEndTime2() == null ? null :app.getEndTime2().v(),
 								null,
 								null,
-								null,
+								app.getAppForSpecLeave() == null ? null : new AppForSpecLeaveDto(app.getAppForSpecLeave().getAppID(), app.getAppForSpecLeave().isMournerFlag(), app.getAppForSpecLeave().getRelationshipCD().v(), app.getAppForSpecLeave().getRelationshipReason().v()),
 								null,
 								false,
 								null,

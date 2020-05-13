@@ -708,6 +708,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             } else {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     nts.uk.ui.block.clear();
+                    if (res.messageId === "Msg_197") {
+                        location.reload();
+                    }
                     if (res.messageId === "Msg_198") {
                         shrvm.model.CommonProcess.callCMM045();
                     }

@@ -87,7 +87,7 @@
 							<div data-bind="ntsFormLabel: {required: requiredReason}">#{i18n.getText('KAF002_10')}</div>	
 						</div>
 						<div class="cell cm-column2-kaf002">
-							<span class="cm-combo-box" data-bind="ntsComboBox: {
+							<span class="cm-combo-box" style="width: 390px" data-bind="ntsComboBox: {
 									name: '#[KAF002_10]',
 									options: inputReasons,
 									optionsValue: 'id',
@@ -95,7 +95,7 @@
 									optionsText: 'content',
 									enable: editable,
 									columns: [
-										{ prop: 'content', length: 19 },
+										{ prop: 'content', length: 20 },
 									]}"></span>	
 						</div>
 					</div>
