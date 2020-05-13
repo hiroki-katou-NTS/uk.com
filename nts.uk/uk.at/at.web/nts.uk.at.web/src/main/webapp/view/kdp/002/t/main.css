@@ -1,41 +1,17 @@
+body {
+	overflow-x: hidden;
+}
+#contents-area{
+	overflow: hidden !important;
+}
 #label-title-2{
-	margin-top: 20px;
-    margin-left: 171px;
-}
-
-.btn_2, .btn_3, .btn_4 {
-	margin-top: 18px;
-	width: 165px;
-	height: 130px;
-	margin-left: 35px;
-}
-
-.btn_6, .btn_7 {
-	width: 165px;
-	height: 130px;
-	margin-top: 20px;
-	margin-left: 35px;
-}
-
-.btn_1 {
-	margin-top: 18px;
-	width: 165px;
-	height: 130px;
-	margin-left: 30px;
-}
-
-.btn_5 {
-	width: 165px;
-	height: 130px;
-	margin-left: 30px;
-	margin-top: 20px;
+	margin-top: 15px;
+    margin-left: 275px;
 }
 
 .btn_8{
 	width: 190px;
-	height: 80px;
-	margin-left: 217px;
-	margin-top: 20px;
+	height: 50px;
 	font-size: 1.5rem;
 }
 
@@ -44,11 +20,20 @@
 }
 
 .btn-name {
+	width: 165px;
+	height: 120px;
 	font-size: 15px;
 	border-radius: 10px;
 }
 
 .btn-close {
-	font-size: 13px;
+	font-size: 18px;
 	border-radius: 10px;
+}
+#top-message{
+	font-size: 15px;
+	font-weight: bold;
+}
+#table-grid td {
+	padding: 10px;
 }

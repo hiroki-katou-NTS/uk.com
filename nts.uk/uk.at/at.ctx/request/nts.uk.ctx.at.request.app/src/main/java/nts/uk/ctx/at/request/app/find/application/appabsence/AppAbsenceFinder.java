@@ -14,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.appabsence.AppForSpecLeaveCmd;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
@@ -61,6 +62,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.Appl
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
@@ -117,6 +119,7 @@ public class AppAbsenceFinder {
 	@Inject
 	private IFactoryApplication iFactoryApplication;
 	
+
 	/**
 	 * 1.休暇申請（新規）起動前処理
 	 * @param appDate
@@ -261,7 +264,6 @@ public class AppAbsenceFinder {
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
-				targetDate,
 				ApplicationType.ABSENCE_APPLICATION, 
 				appDispInfoNoDateOutput,
 				appDispInfoWithDateOutput);
@@ -468,18 +470,29 @@ public class AppAbsenceFinder {
 		}
 		return null;
 	}
-	private boolean checkHdType(List<AppEmploymentSetting> appEmploymentSetting, int hdType){
-		Optional<AppEmploymentSetting> setting = appEmploymentSetting.stream().filter(x -> x.getHolidayOrPauseType() == hdType).findFirst();
-		if(setting.isPresent()) {
+	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
+		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
+	}
+	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
+		
+		AppEmploymentSetting appSetting = appEmploymentSetting;
+		if (appSetting == null || CollectionUtil.isEmpty(appSetting.getListWTOAH())) return true;
+		
+		Optional<WorkTypeObjAppHoliday> optionalWorkTypeObjAppHoliday =appSetting.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == hdType : false).findFirst();
+		if(!optionalWorkTypeObjAppHoliday.isPresent()) return true;
+		
+		WorkTypeObjAppHoliday workTypeObjAppHoliday = optionalWorkTypeObjAppHoliday.get();
+		if(!workTypeObjAppHoliday.getHolidayAppType().isPresent()) return false;
+		if(workTypeObjAppHoliday.getHolidayAppType().get().value == hdType ){
 			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
-			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
-			return setting.get().getHolidayTypeUseFlg() ? false : true;
-		}
+			return (workTypeObjAppHoliday.getHolidayTypeUseFlg().isPresent()) ? !workTypeObjAppHoliday.getHolidayTypeUseFlg().get() : true;
+		}		
+		//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
 		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
 		return true;
 	}
 	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HdAppSet> hdAppSet,
-			List<HolidayAppTypeName> holidayAppTypes, List<AppEmploymentSetting> appEmploymentSetting){
+			List<HolidayAppTypeName> holidayAppTypes, AppEmploymentSetting appEmploymentSetting){
 		List<Integer> holidayAppTypeCodes = new ArrayList<>();
 		for(int hdType = 0; hdType <=7; hdType ++){
 			if(hdType == 5 || hdType == 6){

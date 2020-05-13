@@ -109,11 +109,14 @@ public class StampResultConfirmationQuery {
 		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
 		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
 		
+		Optional<ItemValue> attendance = itemValues.stream().filter(i -> i.getItemId() == 31).findFirst();
+		Optional<ItemValue> leave = itemValues.stream().filter(i -> i.getItemId() == 34).findFirst();
+		
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
-		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults);
+		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	
 	@AllArgsConstructor

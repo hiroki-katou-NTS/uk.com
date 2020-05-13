@@ -6,6 +6,7 @@ package nts.uk.ctx.hr.develop.dom.retiredismissalregulation;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import nts.uk.ctx.hr.shared.dom.dateTerm.DateCaculationTerm;
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RetireDismissalRegulation extends AggregateRoot {

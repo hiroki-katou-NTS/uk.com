@@ -23,4 +23,15 @@ public class StampPromptApplication  implements DomainAggregate {
 		this.companyId = companyId;
 		this.lstStampRecordDis = lstStampRecordDis;
 	}
+	
+	/*
+	 * [1] 申請促すエラーリストを取得する
+	 * 
+	 * @return:  申請促すエラーリスト
+	 */
+	
+	public List<StampRecordDis> getErrorListApply() {
+		// List<StampRecordDis> list = this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
+		return null; // this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
+	}
 }

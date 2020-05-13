@@ -1,5 +1,7 @@
 package nts.uk.screen.hr.app.databeforereflecting.command;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -29,8 +31,8 @@ public class UpdateEmpApprovedCommandHandler extends CommandHandler<DataBeforeRe
 	protected void handle(CommandHandlerContext<DataBeforeReflectCommand> context) {
 		
 		DataBeforeReflectCommand command = context.getCommand();
-		RetirementInformation domainObj = convertDataToDomainObj(command);
-		retirementInformationService.updateRetireInformation(domainObj);
+		RetirementInformation domain = convertDataToDomainObj(command);
+		retirementInformationService.updateRetireInformation(Arrays.asList(domain));
 	}
 	
 private RetirementInformation convertDataToDomainObj(DataBeforeReflectCommand command){

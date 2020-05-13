@@ -39,18 +39,18 @@ public class PreBeforeApplicationService extends WebService{
 	
 	@POST
 	@Path("findEmploymentSetByCode")
-	public List<AppEmploymentSettingDto> findEmploymentSetByCode(String employmentCd){		
+	public AppEmploymentSettingDto findEmploymentSetByCode(String employmentCd){		
 		return appEmploymentSetFinder.findEmploymentSetByCode(employmentCd);
 	}
 	
 	@POST
 	@Path("addEmploymentSetting")
-	public void addEmploymentSetting(List<AppEmploymentSetCommand> command){
+	public void addEmploymentSetting(AppEmploymentSetCommand command){
 		addHandler.handle(command);
 	}
 	@POST
 	@Path("updateEmploymentSetting")
-	public void updateEmploymentSetting(List<AppEmploymentSetCommand> command){
+	public void updateEmploymentSetting(AppEmploymentSetCommand command){
 		updateHandler.handle(command);
 	}
 	

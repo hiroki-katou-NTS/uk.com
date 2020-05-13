@@ -145,6 +145,52 @@ public class RegistrationPersonReportFinder {
 		return this.PerReportClassRepo.getAllByCid(AppContexts.user().companyId(), false).stream().map(c -> {
 			return PersonalReportClassificationDto.fromDomain(c);
 		}).sorted(Comparator.comparing(PersonalReportClassificationDto::getReportName)).collect(Collectors.toList());
+	}
+
+	public List<PersonalReportDto> getListReportJhn002(String cid) {
+		
+		String sidInput = AppContexts.user().employeeId();
+		
+		List<PersonalReportDto> result = new ArrayList<PersonalReportDto>();
+
+		// danh sách report
+		List<RegistrationPersonReport> listReport = repo.getListByCidandSid(cid, sidInput);
+
+		// danh sách report bên màn hình JHN011.
+		
+		List<PersonalReportClassificationDto> listReportJhn011 = this.reportClsFinder.getAllReportClsForJHN001(false);
+		
+		if (!listReportJhn011.isEmpty()) {
+			
+			// ドメイン「個別届出種類.代行届出可」=trueの個別届出名と備考を届出一覧に表示する(Hiển thị pesonalReportName và "ghi chú" với  trường hợp domain 「個別届出種類.代行届出可」=true lên list report) 
+			List<PersonalReportClassificationDto> listReportJhn002 = listReportJhn011.stream().filter(item -> item.getAgentReportIsCan() == 1).collect(Collectors.toList());
+			
+			listReportJhn002.stream().forEach(rp -> {
+				PersonalReportDto dto = new PersonalReportDto();
+				Optional<RegistrationPersonReport> report = listReport.stream().filter(rpt -> rpt.getReportLayoutID() == rp.getReportClsId()).findFirst();
+				if (report.isPresent()) {
+					dto.setReportID(report.get().getReportID());
+					dto.setSendBackComment(report.get().getSendBackComment());
+					dto.setRootSateId(report.get().getRootSateId());
+					dto.setRegStatus(report.get().getRegStatus().value);
+					dto.setAprStatus(report.get().getAprStatus().value);
+					rp.setReportName(report.get().getReportName());
+					dto.setClsDto(rp);
+					result.add(dto);
+				} else {
+					dto.setReportID(null);
+					dto.setSendBackComment("");
+					dto.setRegStatus(null);
+					dto.setAprStatus(null);
+					dto.setClsDto(rp);
+					result.add(dto);
+				}
+			});
+			
+			return result;
+		}
+		return new ArrayList<>();
+		
 	};
 	
 	

@@ -69,8 +69,8 @@ module nts.uk.at.view.kdp002.c {
                             self.dayName(dateDisplay);
                             self.timeName(res.stampRecords[0].stampTime);
                             
-                            self.timeName1(res.stampRecords.length > 0 ? res.stampRecords[sizeRecord - 1].stampTime : '');
-                            self.timeName2(res.stampRecords.length > 0 ? res.stampRecords[0].stampTime : '');
+                            self.timeName1(res.attendance ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.attendance)) + " ~ " : null);
+                            self.timeName2(res.leave ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.leave)): null);
                             self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
                             self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');      
 							

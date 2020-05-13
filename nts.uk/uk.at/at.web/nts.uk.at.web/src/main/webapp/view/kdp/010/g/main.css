@@ -19,18 +19,18 @@
 }
 
 #combobox1 {
-	margin-left: -113px;
+	margin-left: -164px;
 	width: 112px;
 }
 
 #correc-text {
 	margin-left: 52px;
-	width: 70px;
+	width: 140px !important;
 }
 
 #comment-text {
 	margin-right: 30px;
-    margin-left: -113px;
+    margin-left: -164px !important;
 }
 
 #right-area {
@@ -43,7 +43,7 @@
 }
 
 #first-color-picker {
-	margin-left: 16px;
+	margin-left: 24px !important;
 }
 
 #item-panel {

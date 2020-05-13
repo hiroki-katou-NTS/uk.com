@@ -81,20 +81,22 @@
 }
 
 .btn-grid-container{
-    width: 480px;
+    width: 68vmin;
+    margin: 0 auto;
 }
 
 .stamp-rec-btn-container{
-    height: 80px;
-    width: 230px;
-    margin: 5px;
+    height: 13vmin;
+    width: 33vmin;
+    margin: 0.5vmin
 }
 
 .stamp-square-btn-container {
-    width: 100px;
-    height: 100px;
-    margin: 5px;
+    width: 15vmin;
+    height: 15vmin;
+    margin: 1vmin;
 }
 .square-container{
-    padding: 25px;
+    width: 68vmin;
+    padding: 4vmin 0vmin 4vmin 0vmin;
 }

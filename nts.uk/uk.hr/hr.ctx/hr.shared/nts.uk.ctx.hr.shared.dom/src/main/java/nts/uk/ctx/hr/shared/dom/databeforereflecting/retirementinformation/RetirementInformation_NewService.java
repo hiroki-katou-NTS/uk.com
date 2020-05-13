@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.shared.dom.databeforereflecting.retirementinformation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public class RetirementInformation_NewService {
 		// information/data trước khi phản ánh thông tin cá nhân")
 
 		List<DataBeforeReflectingPerInfo> dataInfos = this.dataBeforeReflectPerInfoService.getDataBeforeReflectPerInfo(
-				cId, 2, employeeIds, includingReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
+				cId, 2, employeeIds, new ArrayList<>() , includingReflected, Optional.ofNullable("date_01"), Optional.ofNullable("ASC"));
 		// 個人情報反映前データリストを定年退職者情報リストへ変換する(Chuyển đổi list data trước khi phản ánh
 		// thông tin các nhân sang list thông tin người nghỉ hưu)
 

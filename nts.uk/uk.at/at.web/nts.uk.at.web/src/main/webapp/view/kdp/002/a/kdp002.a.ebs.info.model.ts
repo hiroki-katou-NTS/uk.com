@@ -67,7 +67,13 @@ class EmbossGridInfo {
             let idx = 1;
             items.forEach(timeCard => {
                 timeCard.code = ++idx;
-                timeCard.date = moment(timeCard.date).format(DATE_AND_DAY_FORMAT);
+                let formatedCardTime = moment(timeCard.date).format(DATE_AND_DAY_FORMAT);
+                if (moment(timeCard.date).day() ==6){
+                    formatedCardTime = "<span class='color-schedule-saturday' >"+ formatedCardTime + "</span>";
+                } else if (moment(timeCard.date).day() == 0){
+                    formatedCardTime = "<span class='color-schedule-sunday'>"+ formatedCardTime + "</span>";
+                }
+                timeCard.date = formatedCardTime;
                 timeCard.workIn1 = timeCard.workIn1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn1) : null;
                 timeCard.workOut1 =  timeCard.workOut1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut1) : null;
                 timeCard.workIn2 = timeCard.workIn2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn2) : null;
