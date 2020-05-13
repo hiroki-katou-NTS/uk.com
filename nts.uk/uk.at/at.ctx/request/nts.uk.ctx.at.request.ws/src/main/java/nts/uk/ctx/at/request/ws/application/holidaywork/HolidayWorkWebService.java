@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.holidaywork;
+import java.util.ArrayList;
 /*import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;*/
 import java.util.List;
 import java.util.Optional;
@@ -10,28 +11,27 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.web.session.HttpSubSession;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CreateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateHolidayWorkCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamGetHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.RecordWorkParamHoliday;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCalculateOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
@@ -57,24 +57,22 @@ public class HolidayWorkWebService extends WebService{
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
-	@Inject
-	private HttpSubSession session;
-	
 	@POST
 	@Path("getHolidayWorkByUI")
-	public AppHolidayWorkDto getOvertimeByUIType(ParamGetHolidayWork param) {
-		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
+	public AppHdWorkDispInfoDto getOvertimeByUIType(ParamGetHolidayWork param) {
+		/*AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
 		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
-		return appHolidayWorkDto;
+		return appHolidayWorkDto;*/
+		return appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType(),param.getLstEmployee(),param.getPayoutType(),param.getEmployeeID(),new AppHolidayWorkDto());
 	}
 	@POST
 	@Path("findChangeAppDate")
-	public AppHolidayWorkDto findChangeAppDate(ParamChangeAppDate param) {
-		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
+	public AppHdWorkDispInfoDto findChangeAppDate(ParamChangeAppDate param) {
+		/*AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");*/
 		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours(),param.getChangeEmployee(),
-				param.getStartTime(), param.getEndTime(), appHolidayWorkDto);
+				param.getStartTime(), param.getEndTime(), param.getAppHdWorkDispInfoCmd());
 	}
-	@POST
+	/*@POST
 	@Path("calculationresultConfirm")
 	public ColorConfirmResult calculationresultConfirm(ParamCalculationHolidayWork param){
 		return this.appHolidayWorkFinder.calculationresultConfirm(param.getBreakTimes(),
@@ -104,7 +102,7 @@ public class HolidayWorkWebService extends WebService{
 															param.getStartTimeRests(),
 															param.getEndTimeRests(),
 															param.getDailyAttendanceTimeCaculationImport());
-	}
+	}*/
 	
 	@POST
 	@Path("getCalculateValue")
@@ -127,31 +125,32 @@ public class HolidayWorkWebService extends WebService{
 	public ProcessResult createHolidayWork(CreateHolidayWorkCommand command){
 		return createHolidayWorkCommandHandler.handle(command);
 	}
-	@POST
+	/*@POST
 	@Path("beforeRegisterColorConfirm")
 	public ColorConfirmResult beforeRegisterColorConfirm(CreateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeRregisterColor(command);
-	}
+	}*/
 	@POST
 	@Path("checkBeforeRegister")
-	public OvertimeCheckResultDto checkBeforeRegister(CreateHolidayWorkCommand command){
-		return checkBeforeRegisterHolidayWork.CheckBeforeRegister(command);
+	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command){
+		return checkBeforeRegisterHolidayWork.checkBeforeRegister(command);
 	}
 	@POST
 	@Path("findByAppID")
-	public AppHolidayWorkDto findByChangeAppID(String appID) {
-		AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
+	public HolidayWorkDetailDto findByChangeAppID(String appID) {
+		/*AppHolidayWorkDto appHolidayWorkDto = this.appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
 		session.setAttribute("appHolidayWorkDto", appHolidayWorkDto);
-		return appHolidayWorkDto;
+		return appHolidayWorkDto;*/
+		return appHolidayWorkFinder.getAppHolidayWorkByAppID(appID);
 	}
-	@POST
+	/*@POST
 	@Path("beforeUpdateColorConfirm")
 	public ColorConfirmResult beforeUpdateColorConfirm(CreateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeUpdateColor(command);
-	}
+	}*/
 	@POST
 	@Path("checkBeforeUpdate")
-	public OvertimeCheckResultDto checkBeforeUpdate(CreateHolidayWorkCommand command){
+	public HdWorkCheckRegisterDto checkBeforeUpdate(UpdateHolidayWorkCommand command){
 		return checkBeforeRegisterHolidayWork.checkBeforeUpdate(command);
 	}
 	@POST
@@ -162,8 +161,9 @@ public class HolidayWorkWebService extends WebService{
 	@POST
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParamHoliday param) {
-		AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");
-		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), param.getAppID(), appHolidayWorkDto);
+		/*AppHolidayWorkDto appHolidayWorkDto = (AppHolidayWorkDto) session.getAttribute("appHolidayWorkDto");*/
+		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours(), param.getWorkTypeCD(), 
+				param.getAppID(), param.getAppHdWorkDispInfoCmd());
 	}
 	
 	@POST
@@ -179,12 +179,20 @@ public class HolidayWorkWebService extends WebService{
 	public List<String> confirmInconsistency(CreateHolidayWorkCommand command) {
 		String companyID = AppContexts.user().companyId();
 		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		return commonOvertimeHoliday.inconsistencyCheck(
+		List<ConfirmMsgOutput> outputLst = commonOvertimeHoliday.inconsistencyCheck(
 				companyID, 
 				command.getApplicantSID(), 
 				command.getApplicationDate(),
 				ApplicationType.BREAK_TIME_APPLICATION,
 				overTimeSettingOpt.get().getAppDateContradictionAtr());
+		List<String> result = new ArrayList<>();
+		if(!CollectionUtil.isEmpty(outputLst)) {
+			result.add(outputLst.get(0).getMsgID());
+			for(String param : outputLst.get(0).getParamLst()) {
+				result.add(param);
+			}
+		}
+		return result; 
 	}
 	
 }

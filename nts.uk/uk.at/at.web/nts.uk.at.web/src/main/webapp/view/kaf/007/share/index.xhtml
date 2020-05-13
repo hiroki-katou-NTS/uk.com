@@ -142,8 +142,7 @@
 			</div>
 		</div>
 		<!--A7 勤務時間-->
-		<div class="valign-center control-group-kaf007"
-			data-bind="visible: $parent.isWorkChange">
+		<div class="valign-center control-group-kaf007" data-bind="if: $parent.isWorkChange">
 			<div class="table">
 				<div class="cell valign-top">
 					<div class="lblTitle-kaf007"
@@ -354,7 +353,7 @@
 			<!--A11_1 定型理由-->
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required: $parent.requiredReason}">#{i18n.getText('KAF007_25')}</div>
 			<!--A12 申請理由（ラベル）-->
-			<div id="combo-box"
+			<div id="combo-box" style="width: 390px"
 				data-bind="ntsComboBox: {
 								name: '#[KAF007_26]',
 								options: $parent.reasonCombo,
@@ -362,7 +361,7 @@
 								optionsText: 'reasonName',
 								value: $parent.selectedReason,
 								enable: $parent.editable,
-								columns: [{ prop: 'reasonName', length: 10 }]}">
+								columns: [{ prop: 'reasonName', length: 20 }]}">
 			</div>
 		</div>
 		<!--A12 申請理由（ラベル）-->

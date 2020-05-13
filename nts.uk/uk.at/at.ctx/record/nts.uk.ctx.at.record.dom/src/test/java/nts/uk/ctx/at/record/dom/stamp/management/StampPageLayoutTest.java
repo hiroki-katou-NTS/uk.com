@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType;
-import nts.uk.ctx.at.record.dom.stamp.management.PageNo;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageName;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Button;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Comment;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 
 public class StampPageLayoutTest {
 	

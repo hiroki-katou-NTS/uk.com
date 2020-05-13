@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -405,10 +404,8 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			//hoatt 2019.03.22
 			if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(endDate)) {
 				//締め期間．開始年月日.AddYears(1) <= 申請する終了日がtrue
-				//確認メッセージ（Msg_1518）を表示する
-				result.add(new ConfirmMsgOutput(
-						"Msg_1518", 
-						Arrays.asList(periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT))));
+				// エラーメッセージメッセージ（Msg_1518）
+				throw new BusinessException("Msg_1518", periodCurrentMonth.getStartDate().addYears(1).toString(DATE_FORMAT));
 			}
 			
 			// 過去月のチェック

@@ -398,6 +398,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		List<WorkTypeInfor> lstSort = new ArrayList<>();
 		lstSort.addAll(lstOrder);
 		lstSort.addAll(lstNotOrder);
+		Collections.sort(lstSort, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
 		return lstSort;
 	}
 	
@@ -855,6 +856,18 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findListByCid(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class)
 				.setParameter("companyId", companyId)
+				.getList(x -> toDomain(x));
+	}
+
+	private static final String SELECT_ALL_WORKTYPE_BY_LIST_CODE = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId "
+			+ "AND c.kshmtWorkTypeSetPK.workTypeCode IN :workTypeCodes ";
+	
+	@Override
+	public List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes) {
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE_BY_LIST_CODE, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workTypeCodes", workTypeCodes)
 				.getList(x -> toDomain(x));
 	}
 }

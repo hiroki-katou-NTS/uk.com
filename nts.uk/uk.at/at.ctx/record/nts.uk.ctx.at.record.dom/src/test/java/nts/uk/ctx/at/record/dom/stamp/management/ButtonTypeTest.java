@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Stamp;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 
 public class ButtonTypeTest {
 	

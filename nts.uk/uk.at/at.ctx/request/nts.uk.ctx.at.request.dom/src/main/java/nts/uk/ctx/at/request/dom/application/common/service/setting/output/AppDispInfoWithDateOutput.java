@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
@@ -35,7 +36,7 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	private List<AppEmploymentSetting> employmentSet;
+	private AppEmploymentSetting employmentSet;
 	
 	/**
 	 * 就業時間帯の設定
@@ -71,5 +72,10 @@ public class AppDispInfoWithDateOutput {
 	 * 表示する事前申請内容
 	 */
 	private List<AppDetailContent> appDetailContentLst;
+	
+	/**
+	 * 社員所属雇用履歴を取得
+	 */
+	private SEmpHistImport empHistImport;
 	
 }	

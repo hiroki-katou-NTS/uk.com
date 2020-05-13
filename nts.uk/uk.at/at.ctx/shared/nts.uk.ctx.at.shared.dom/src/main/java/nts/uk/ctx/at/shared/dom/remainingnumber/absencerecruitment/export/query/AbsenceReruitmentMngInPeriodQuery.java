@@ -107,5 +107,5 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param date
 	 * @return
 	 */
-	double getAbsRecMngRemain(String employeeID, GeneralDate date);
+	AbsRecRemainMngOfInPeriod getAbsRecMngRemain(String employeeID, GeneralDate date);
 }

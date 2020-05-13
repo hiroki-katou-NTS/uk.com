@@ -6,18 +6,18 @@ import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonType;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -57,7 +57,7 @@ public class RegisterStampDataCommand {
 
 	public ButtonType toButtonType() {
 		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
-				SetPreClockArt.valueOf(setPreClockArt), ChangeClockArt.valueOf(changeClockArt),
+				SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockArt.valueOf(changeClockArt),
 				ChangeCalArt.valueOf(changeCalArt));
 		return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
 	}

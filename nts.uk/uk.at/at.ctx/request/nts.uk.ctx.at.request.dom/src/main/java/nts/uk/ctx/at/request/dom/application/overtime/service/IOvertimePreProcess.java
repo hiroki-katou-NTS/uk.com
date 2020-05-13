@@ -32,6 +32,7 @@ public interface IOvertimePreProcess {
 	public List<OvertimeWorkFrame> getOvertimeHours(int overtimeAtr,String companyID);
 	
 	/**
+	 * 01-03_休出時間枠を取得
 	 * @param companyID
 	 * @return
 	 */
