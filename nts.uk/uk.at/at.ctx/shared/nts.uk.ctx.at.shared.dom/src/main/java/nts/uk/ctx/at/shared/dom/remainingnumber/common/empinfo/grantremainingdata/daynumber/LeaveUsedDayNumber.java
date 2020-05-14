@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
  *
  */
 @HalfIntegerRange(min = 0, max = 999.5)
-public abstract class LeaveUsedDayNumber extends HalfIntegerPrimitiveValue<LeaveGrantDayNumber>{
+public class LeaveUsedDayNumber extends HalfIntegerPrimitiveValue<LeaveGrantDayNumber>{
 
 	//private static final long serialVersionUID = -8576217329914710255L;
 

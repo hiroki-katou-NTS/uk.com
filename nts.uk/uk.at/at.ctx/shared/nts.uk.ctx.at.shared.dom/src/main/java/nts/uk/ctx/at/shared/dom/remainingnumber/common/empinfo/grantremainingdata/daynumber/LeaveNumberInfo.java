@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * 明細
  * @author masaaki_jinno
  *
  */
@@ -34,6 +36,50 @@ public abstract class LeaveNumberInfo {
 	 * 使用率
 	 */
 	protected LeaveUsedPercent usedPercent;
+	
+	/**
+	 * すべて使用する
+	 */
+	public void digestAll()
+	{
+		// 使用数← 付与数
+		
+		// 日数
+		usedNumber.days = new LeaveUsedDayNumber(grantNumber.getDays().v());
+		
+		// 時間
+		if ( grantNumber.getMinutes().isPresent() ){
+			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(grantNumber.getMinutes().get().v())));
+		} else {
+			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(0)));
+		}
+		
+		// 残数 ← ０
+		remainingNumber.setDays(new LeaveRemainingDayNumber(0.0));
+		remainingNumber.setMinutes(Optional.of(new LeaveRemainingTime(0)));
+	}
+	
+	/**
+	 * 残数をセットする
+	 * @param leaveRemainingNumber 休暇残数
+	 */
+	public void setRemainingNumber(LeaveRemainingNumber leaveRemainingNumber){
+		
+		// 残数をセット
+		remainingNumber.setDays(new LeaveRemainingDayNumber(leaveRemainingNumber.getDays().v()));
+		if ( leaveRemainingNumber.getMinutes().isPresent() ){
+			remainingNumber.setMinutes(Optional.of(new LeaveRemainingTime(leaveRemainingNumber.getMinutes().get().v())));
+		} else {
+			remainingNumber.setMinutes(Optional.of(new LeaveRemainingTime(0)));
+		}
+		
+		// 使用数をセット（使用数←付与数-残数）
+		usedNumber.days = new LeaveUsedDayNumber(grantNumber.getDays().v() - remainingNumber.getDays().v());
+		if ( grantNumber.getMinutes().isPresent() && remainingNumber.getMinutes().isPresent() ){
+			int used = grantNumber.getMinutes().get().v() - remainingNumber.getMinutes().get().v();
+			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(used)));
+		}
+	}
 
 	public LeaveNumberInfo(){
 //		this.grantNumber = LeaveGrantNumber.createFromJavaType(0.0, null);

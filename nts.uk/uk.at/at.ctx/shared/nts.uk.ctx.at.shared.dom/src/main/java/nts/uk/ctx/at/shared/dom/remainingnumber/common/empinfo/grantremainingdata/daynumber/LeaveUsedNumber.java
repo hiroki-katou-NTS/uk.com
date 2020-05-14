@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class LeaveUsedNumber{
+public class LeaveUsedNumber{
 
 	/**
 	 * 日数
@@ -28,6 +28,24 @@ public abstract class LeaveUsedNumber{
 	 * 積み崩し日数
 	 */
 	protected Optional<LeaveUsedDayNumber> stowageDays;
+	
+	/**
+	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す
+	 * @return
+	 */
+	public boolean isZero(){
+		if ( days.v() != 0.0 ){
+			return false;
+		}
+		if ( !minutes.isPresent() ){
+			return true;
+		}
+		if ( minutes.get().v() == 0 ){
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 //	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
 //		this.days = new LeaveUsedDayNumber(days);

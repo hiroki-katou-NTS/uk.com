@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 
@@ -14,12 +17,18 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
  * 休暇残数シフトリストWORK
  * @author masaaki_jinno
  */
+@Getter
 public class RemNumShiftListWork {
 
 	/**
 	 * 休暇残数シフトのリスト
 	 */
 	private Optional<List<RemNumShiftWork>> remNumShiftWorkListOpt;
+	
+	/**
+	 * 消化できなかった休暇使用数
+	 */
+	private LeaveUsedNumber unusedNumber;
 	
 	/**
 	 * 休暇付与残数データを追加する
@@ -65,6 +74,101 @@ public class RemNumShiftListWork {
 		return Optional.of(totalLeaveRemainingNumber);
 	}
 	
+	/**
+	 * 休暇使用数を消化できるかチェックする
+	 * @param repositoriesRequiredByRemNum ロードデータ
+	 * @param leaveUsedNumber 休暇使用数
+	 * @param employeeId 社員ID
+	 * @param baseDate 基準日
+	 */
+	public boolean canDigest(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			LeaveUsedNumber leaveUsedNumber,
+			String employeeId,
+			GeneralDate baseDate){
+		
+		//  一時変数「休暇残数合計」の変数を作成し、合計残数を取得してセット
+		Optional<LeaveRemainingNumber> leaveRemainingNumberOpt
+			= this.GetTotalRemNum();
+		
+		// 合計残数が取得できないとき
+		if ( !leaveRemainingNumberOpt.isPresent() ){
+			return false;
+		}
+		
+		// 一時変数「休暇残数合計」に対して、休暇使用数を消化する
+		// 結果をメンバー変数へセット（メンバ変数.消化できなかった休暇使用数← 消化できなかった休暇使用数）
+		unusedNumber
+			= leaveRemainingNumberOpt.get().digestLeaveUsedNumber(
+					repositoriesRequiredByRemNum, leaveUsedNumber, employeeId, baseDate);
+		
+		if ( unusedNumber.isZero() ){ // 消化できなかった休暇使用数が０のとき
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
+	/**
+	 * 休暇使用数を消化する
+	 * @param repositoriesRequiredByRemNum ロードデータ
+	 * @param leaveUsedNumber 休暇使用数
+	 * @param employeeId 社員ID
+	 * @param baseDate 基準日
+	 */
+	public void digest(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			LeaveUsedNumber leaveUsedNumber,
+			String employeeId,
+			GeneralDate baseDate){
+		
+		//  一時変数「休暇残数合計」の変数を作成し、合計残数を取得してセット
+		Optional<LeaveRemainingNumber> leaveRemainingNumberOpt
+			= this.GetTotalRemNum();
+		
+		// 合計残数が取得できないとき
+		if ( !leaveRemainingNumberOpt.isPresent() ){
+			// 終了
+			return;
+		}
+		
+		// 一時変数「休暇残数合計」に対して、休暇使用数を消化する
+		// 結果をメンバー変数へセット（メンバ変数.消化できなかった休暇使用数← 消化できなかった休暇使用数）
+		unusedNumber
+			= leaveRemainingNumberOpt.get().digestLeaveUsedNumber(
+					repositoriesRequiredByRemNum, leaveUsedNumber, employeeId, baseDate);
+		
+		// 休暇残数をすべて消化する
+		digestAll();
+		
+		// リスト最後の「休暇残数シフトWORK」の残数へ、休暇残数合計の内容をセットする
+		int size = remNumShiftWorkListOpt.get().size();
+		RemNumShiftWork remNumShiftWorkLast = remNumShiftWorkListOpt.get().get(size-1);
+		if ( remNumShiftWorkLast.getRefLeaveGrantRemainingData() != null ){
+			remNumShiftWorkLast.getRefLeaveGrantRemainingData().getDetails().setRemainingNumber(
+					leaveRemainingNumberOpt.get());
+		}
+	}
+	
+	/**
+	 * 休暇残数をすべて消化する
+	 */
+	public void digestAll(){
+		if ( !remNumShiftWorkListOpt.isPresent() ){
+			return;			
+		}
+		
+		for( RemNumShiftWork remNumShiftWork: remNumShiftWorkListOpt.get()){
+			LeaveGrantRemainingData leaveGrantRemainingData
+				= remNumShiftWork.getRefLeaveGrantRemainingData();
+			
+			if ( leaveGrantRemainingData == null ){
+				continue;
+			}
+			
+			// 休暇残数をすべて消化する
+			leaveGrantRemainingData.getDetails().digestAll();
+		}
+	}
 	
 }

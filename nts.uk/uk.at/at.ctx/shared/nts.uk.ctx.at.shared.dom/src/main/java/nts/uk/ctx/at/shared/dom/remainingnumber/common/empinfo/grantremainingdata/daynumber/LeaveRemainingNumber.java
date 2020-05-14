@@ -84,19 +84,19 @@ public class LeaveRemainingNumber {
 	
 	/**
 	 * 休暇使用数を消化する
-	 * @param workingConditionItemRepository ロードデータ
+	 * @param repositoriesRequiredByRemNum ロードデータ
 	 * @param leaveUsedNumber 休暇使用数
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 */
-	public LeaveRemainingNumber digestLeaveUsedNumber(
+	public LeaveUsedNumber digestLeaveUsedNumber(
 			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
 			LeaveUsedNumber leaveUsedNumber,
 			String employeeId,
 			GeneralDate baseDate){
 		
 		// 消化できなかった休暇使用数クラスのオブジェクトを作成
-		LeaveRemainingNumber unusedNumber = new LeaveRemainingNumber();
+		LeaveUsedNumber unusedNumber = new LeaveUsedNumber();
 		
 		if ( !leaveUsedNumber.getMinutes().isPresent() ){ // 休暇使用数
 			return unusedNumber;
@@ -202,7 +202,7 @@ public class LeaveRemainingNumber {
 			// ・消化できなかった休暇使用数.時間 ← Input.休暇使用数.時間ーメンバ変数.時間
 			// ・メンバ変数.時間←０
 			if (this_time < input_time){
-				unusedNumber.minutes = Optional.of(new LeaveRemainingTime(input_time-this_time));
+				unusedNumber.minutes = Optional.of(new LeaveUsedTime(input_time-this_time));
 				this.minutes = Optional.of(new LeaveRemainingTime(0));
 			}
 
@@ -216,7 +216,7 @@ public class LeaveRemainingNumber {
 			// ・消化できなかった休暇使用数.日数 ← Input.休暇使用数.日数ーメンバ変数.日数
 			// ・メンバ変数.日数 ←０
 			if (this_day < input_day){
-				unusedNumber.days = new LeaveRemainingDayNumber(input_day - this_day);
+				unusedNumber.days = new LeaveUsedDayNumber(input_day - this_day);
 				this.days = new LeaveRemainingDayNumber(0.0);
 			}
 		}
