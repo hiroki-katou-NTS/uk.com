@@ -38,12 +38,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name="KRCCT_STAMP_LAYOUT_DETAIL")
-public class KrcctStampLayoutDetail extends ContractUkJpaEntity implements Serializable{
+@Table(name="KRCMT_STAMP_LAYOUT_DETAIL")
+public class KrcmtStampLayoutDetail extends ContractUkJpaEntity implements Serializable{
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public KrcctStampLayoutDetailPk pk;
+    public KrcmtStampLayoutDetailPk pk;
 	
 	/**
 	 * 使用区分 0:使用しない 1:使用する
@@ -59,26 +59,26 @@ private static final long serialVersionUID = 1L;
 	 * 予約区分 0:なし 1:予約 2:予約取消
 	 */
 	@Column(name ="RESERVATION_ART")
-	public Integer reservationArt;
+	public int reservationArt;
 	
 	/**
 	 * 時刻変更区分 0:出勤 1:退勤 2:入門 3:退門 4:応援開始 5:応援終了 6:応援出勤 7:外出 8:戻り 9:臨時+応援出勤
 	 * 10:臨時出勤 11:臨時退勤 12:PCログオン 13:PCログオフ
 	 */
 	@Column(name ="CHANGE_CLOCK_ART")
-	public Integer changeClockArt;
+	public int changeClockArt;
 	
 	/**
 	 * 計算区分変更対象 0:なし 1:早出 2:残業 3:休出 4:ﾌﾚｯｸｽ
 	 */
 	@Column(name ="CHANGE_CAL_ART")
-	public Integer changeCalArt;
+	public int changeCalArt;
 	
 	/**
 	 * 所定時刻セット区分 0:なし 1:直行 2:直帰
 	 */
 	@Column(name ="SET_PRE_CLOCK_ART")
-	public Integer setPreClockArt;
+	public int setPreClockArt;
 	
 	/**
 	 * 勤務種類を半休に変更する 0:False 1:True
@@ -111,8 +111,8 @@ private static final long serialVersionUID = 1L;
 		return this.pk;
 	}
 	
-	public KrcctStampLayoutDetail(KrcctStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
-			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
+	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
+			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
 		this.pk = pk;
@@ -135,7 +135,7 @@ private static final long serialVersionUID = 1L;
     	@PrimaryKeyJoinColumn(name = "OPERATION_METHOD", referencedColumnName = "OPERATION_METHOD"),
     	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
     })
-	public KrcctStampPageLayout krcctStampPageLayout;
+	public KrcmtStampPageLayout krcctStampPageLayout;
 	
 	public ButtonSettings toDomain(){
 		return new ButtonSettings(
@@ -151,21 +151,21 @@ private static final long serialVersionUID = 1L;
 								this.changeHalfDay == 0 ? false : true  , 
 								this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
 								EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
-								this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
+								EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
 								EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
 	}
 	
-	public static KrcctStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
-		return new KrcctStampLayoutDetail(
-				new KrcctStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
+	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
+		return new KrcmtStampLayoutDetail(
+				new KrcmtStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
 				settings.getUsrArt().value,
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,
 				settings.getButtonType().getReservationArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
-						: settings.getButtonType().getStampType().get().getChangeClockArt() == null ? null : settings.getButtonType().getStampType().get().getChangeClockArt().value,
+						: settings.getButtonType().getStampType().get().getChangeClockArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getChangeCalArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null

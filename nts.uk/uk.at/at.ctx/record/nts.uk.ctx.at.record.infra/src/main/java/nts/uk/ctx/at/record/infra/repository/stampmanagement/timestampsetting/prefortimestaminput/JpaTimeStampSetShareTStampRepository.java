@@ -23,8 +23,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStampRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampPageLayout;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampCommunal;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -39,7 +39,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaTimeStampSetShareTStampRepository extends JpaRepository implements TimeStampSetShareTStampRepository {
 
-	private static final String SELECT_ALL_PAGE_LAYOUT = "SELECT r FROM KrcctStampPageLayout r WHERE r.pk.companyId = :companyId";
+	private static final String SELECT_ALL_PAGE_LAYOUT = "SELECT r FROM KrcmtStampPageLayout r WHERE r.pk.companyId = :companyId";
 
 	@Override
 	public void insert(TimeStampSetShareTStamp domain) {
@@ -70,7 +70,7 @@ public class JpaTimeStampSetShareTStampRepository extends JpaRepository implemen
 			return Optional.empty();
 		}
 		
-		List<StampPageLayout> lstStampPageLayout = this.queryProxy().query(SELECT_ALL_PAGE_LAYOUT, KrcctStampPageLayout.class)
+		List<StampPageLayout> lstStampPageLayout = this.queryProxy().query(SELECT_ALL_PAGE_LAYOUT, KrcmtStampPageLayout.class)
 
 				.getList()
 				.stream()

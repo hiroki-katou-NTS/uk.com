@@ -17,23 +17,21 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcctStampLayoutDetailPk implements Serializable {
-	
+public class KrcmtStampPageLayoutPk implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-	
-	/** 運用方法 (0: 共有利用, 1: 個人利用) */
-	@Column(name = "OPERATION_METHOD")
-	public int operationMethod;
-	
+
+	/**
+	 * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
+	 */
+	@Column(name = "STAMP_MEANS")
+	public int stampMeans;
+
 	/** ページNO */
 	@Column(name = "PAGE_NO")
 	public int pageNo;
-	
-	/** ボタン位置NO */
-	@Column(name = "BUTTON_POSITION_NO")
-	public int buttonPositionNo;
 }
