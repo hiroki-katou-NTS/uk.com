@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -32,8 +33,8 @@ public class CheckAttdErrorAfterStampService {
 	 * @param buttonDisNo
 	 * @return
 	 */
-	public static List<DailyAttdErrorInfo> get(Require require, String employeeId, int pageNo, int buttonDisNo) {
-		if(!needCheckError(require, pageNo, buttonDisNo)) {
+	public static List<DailyAttdErrorInfo> get(Require require, String employeeId,StampButton c) {
+		if(!needCheckError(require,c)) {
 			return Collections.emptyList();
 		}
 		
@@ -146,7 +147,7 @@ public class CheckAttdErrorAfterStampService {
 	 * @param buttonDisNo
 	 * @return
 	 */
-	private static boolean needCheckError(Require require, int pageNo, int buttonDisNo) {
+	private static boolean needCheckError(Require require, StampButton stampButton) {
 
 		/*
 		 * MutableValue<Boolean> flag = new MutableValue(false);
@@ -158,7 +159,7 @@ public class CheckAttdErrorAfterStampService {
 		 * return flag.get();
 		 */
 		return require.getStampSetPer()
-				.flatMap(c -> c.getButtonSet(pageNo, buttonDisNo))
+				.flatMap(c -> c.getButtonSet(stampButton))
 				.flatMap(c -> c.getButtonType().getStampType())
 				.map(c -> c.getChangeClockArt().checkWorkingOut())
 				.orElse(false);

@@ -80,7 +80,7 @@ private static final long serialVersionUID = 1L;
 	 */
 	@Basic(optional = false)
 	@Column(name = "EMPLOYEE_AUTHC_USE_ART")
-	public boolean employeeAuthcUseArt;
+	public int employeeAuthcUseArt;
 	
 	/**
 	 * 指認証失敗回数
@@ -102,7 +102,7 @@ private static final long serialVersionUID = 1L;
 		this.backGroundColor = domain.getDisplaySetStampScreen().getSettingDateTimeColor().getBackgroundColor().v();
 		this.nameSelectArt = domain.getUseSelectName();
 		this.passwordRequiredArt = domain.getPasswordInputReq();
-//		this.employeeAuthcUseArt = domain.getUseEmpCodeToAuthen() == 1;
+		this.employeeAuthcUseArt = domain.getUseEmpCodeToAuthen().value;
 		this.authcFailCnt = domain.getNumberAuthenfailures().get().v();
 		
 	}

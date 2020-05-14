@@ -42,6 +42,7 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 				KrcmtStampFunction.class);
 
 		if (!entityOpt.isPresent()) {
+			
 			return;
 		}
 		
@@ -54,25 +55,29 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	public Optional<CommonSettingsStampInput> get(String comppanyID) {
 		Optional<KrcmtStampFunction> entityOpt = this.queryProxy().find(comppanyID, KrcmtStampFunction.class);
 		if (!entityOpt.isPresent()) {
+			
 			return Optional.empty();
 		}
 		
 		List<String> roles = this.queryProxy().query(SELECT_ALL_ROLES, KrcmtStampWkpSelectRole.class).getList().stream().map(r-> r.pk.roleId).collect(Collectors.toList());
 		
 		CommonSettingsStampInput domain = toDomain(entityOpt.get(), roles);
+		
 		return Optional.of(domain);
 	}
 
 	public KrcmtStampFunction toEntity(CommonSettingsStampInput domain) {
 		KrcmtStampFunction entity = new KrcmtStampFunction();
+		
 		entity.cid = domain.getCompanyId();
 		entity.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		StampResultDisplay display = new StampResultDisplay(AppContexts.user().companyId(),NotUseAtr.USE);
 		entity.recordDisplayArt = display.getUsrAtr().value;
 		entity.mapAddress = "";
+		
 		return entity;
 	}
-
+	
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity, List<String> roles) {
 		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,entity.mapAddress);
 	}

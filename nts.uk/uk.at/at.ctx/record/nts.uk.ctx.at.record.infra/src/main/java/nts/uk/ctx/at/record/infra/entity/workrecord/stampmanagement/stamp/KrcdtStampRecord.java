@@ -6,10 +6,12 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -28,15 +30,33 @@ public class KrcdtStampRecord extends ContractUkJpaEntity implements Serializabl
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcdtStampRecordPk pk;
+	/**
+	 * 打刻記録ID
+	 */
+	@Id
+	@Column(name = "STAMP_RECORD_ID")
+	public String pk;
 
 	/**
-	 * 会社ID
+	 * 契約コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
+	
+	/**
+	 * 打刻カード番号
+	 */
+	@Basic(optional = false)
+	@Column(name = "CARD_NUMBER")
+	public String cardNumber;
+
+	/**
+	 * 打刻日時
+	 */
+	@Basic(optional = false)
+	@Column(name = "STAMP_DATE_TIME")
+	public GeneralDateTime stampDateTime;
 	
 	/**
 	 * 打刻区分 0:False(通常打刻しない) 1:True(通常打刻する)

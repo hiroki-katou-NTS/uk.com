@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -85,9 +87,12 @@ public class KrcctStampDisplay extends ContractUkJpaEntity{
 						new ColorSetting(
 								new ColorCode(this.textColor), 
 								new ColorCode(this.backGroundColor)), 
-						new ResultDisplayTime(this.resultDisplayTime)));
+						new ResultDisplayTime(this.resultDisplayTime))
+				,Collections.emptyList()
+				,null);
 	}
 	
+	//TODO: Chungnt
 	public StampSettingPerson toDomain(List<StampPageLayout> layouts){
 		return new StampSettingPerson(
 				pk.companyId, 
@@ -99,7 +104,7 @@ public class KrcctStampDisplay extends ContractUkJpaEntity{
 								new ColorCode(this.textColor), 
 								new ColorCode(this.backGroundColor)), 
 						new ResultDisplayTime(this.resultDisplayTime)),
-				layouts);
+				layouts, null);
 	}
 	
 	public static KrcctStampDisplay toEntity(StampSettingPerson person){
