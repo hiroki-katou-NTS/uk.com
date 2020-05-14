@@ -65,12 +65,6 @@ public class RemNumShiftListWork {
 		return Optional.of(totalLeaveRemainingNumber);
 	}
 	
-	public LeaveRemainingTime getContractTime(){
-		
-		// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
-				
-		
-	}
 	
 	
 }
