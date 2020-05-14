@@ -28,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaPortalStampSettingsRepository extends JpaRepository implements PortalStampSettingsRepository {
 
+//	private static final String SELECT_STAMP_LAYOUT_DETAIL = "SELECT r FROM KrcmtStampWkpSelectRole r WHERE r.pk.companyId = :companyId";
+	
 	/**
 	 *  [1]  insert(ポータルの打刻設定)
 	 */
@@ -64,7 +66,6 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 		}
 		
 //		List<ButtonSettings> buttonSettings = 
-		//TODO: Chungnt
 		return null;
 	}
 	

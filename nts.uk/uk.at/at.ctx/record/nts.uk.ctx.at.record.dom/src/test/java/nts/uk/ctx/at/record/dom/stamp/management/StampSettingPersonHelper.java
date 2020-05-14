@@ -42,17 +42,19 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class StampSettingPersonHelper {
 	
+	//TODO: Chungnt
 	public static StampSettingPerson DUMMY = new StampSettingPerson(
 			"000000000000-0001", 
 			true, 
 			StampScreen.DUMMY, 
-			Arrays.asList(Layout.DUMMY));
+			Arrays.asList(Layout.DUMMY), null);
 	
+	//TODO: Chungnt
 	public static StampSettingPerson DUMMY_buttonEmphasisArt_false = new StampSettingPerson(
 			"000000000000-0001", 
 			false, 
 			StampScreen.DUMMY, 
-			Arrays.asList(Layout.DUMMY));
+			Arrays.asList(Layout.DUMMY), null);
 	
 	public static class StampScreen {
 		
@@ -158,7 +160,7 @@ public class StampSettingPersonHelper {
 				"000000000000-0001", 
 				true, 
 				StampScreen.DUMMY,
-				lstStampPage);
+				lstStampPage, null);
 		return settingPerson;
 	}
 	

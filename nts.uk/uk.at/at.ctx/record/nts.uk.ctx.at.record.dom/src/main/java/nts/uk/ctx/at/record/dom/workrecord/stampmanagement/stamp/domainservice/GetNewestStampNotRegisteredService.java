@@ -19,35 +19,38 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 public class GetNewestStampNotRegisteredService {
 
 	/**
-	 * 	[1] 取得する
+	 * [1] 取得する
+	 * 
 	 * @param require
 	 * @param period
-	 * @return List<StampInfoDisp>
-	 * List<表示する打刻情報>
+	 * @return List<StampInfoDisp> List<表示する打刻情報>
 	 */
-	
-	public List<StampInfoDisp> get(Require require,  DatePeriod period){
-		
-		//	$打刻情報リスト = 打刻カード未登録の打刻データを取得する#取得する(require, 期間)		
+
+	public List<StampInfoDisp> get(Require require, DatePeriod period) {
+
+		// $打刻情報リスト = 打刻カード未登録の打刻データを取得する#取得する(require, 期間)
 		List<StampInfoDisp> list = RetrieveNoStampCardRegisteredService.get(require, period);
-		
+
 		if (list.isEmpty()) {
 			return new ArrayList<StampInfoDisp>();
 		}
-		
-	 Map<StampNumber, List<StampInfoDisp>> result =	list.stream().collect(Collectors.groupingBy(StampInfoDisp::getStampNumber, Collectors.toList()));
 
-		return result.values().stream()
-				.map(m -> m.stream()
-							.sorted((x, y) -> y.getStampDatetime().compareTo(x.getStampDatetime()))
-							.findFirst()
-							.orElse(null))
-				.filter(m -> m != null)
-				.collect(Collectors.toList());
+		// Map<打刻カード番号, List<表示する打刻情報>> 打刻データ = 打刻情報リスト：map groupingBy $.打刻カード番号
+		Map<StampNumber, List<StampInfoDisp>> result = list.stream()
+				
+				.collect(Collectors.groupingBy(StampInfoDisp::getStampNumber, Collectors.toList()));
+
+		return result.values().stream().map(m -> m.stream()
+				
+				.sorted((x, y) -> y.getStampDatetime().compareTo(x.getStampDatetime()))
+				
+				.findFirst().orElse(null))
+				
+				.filter(m -> m != null).collect(Collectors.toList());
 	}
-	
-	public static interface Require extends RetrieveNoStampCardRegisteredService.Require  {
-	
+
+	public static interface Require extends RetrieveNoStampCardRegisteredService.Require {
+
 	}
-	
+
 }

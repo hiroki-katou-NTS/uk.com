@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@AllArgsConstructor
 public class TimeStampSetShareTStamp implements DomainAggregate {
 
 	// 会社ID
@@ -42,17 +44,6 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 	private Optional<NumberAuthenfailures> numberAuthenfailures;
 
 	//[C-0] 共有打刻の打刻設定(会社ID, 打刻画面の表示設定, ページレイアウト設定,氏名選択利用する,パスワード入力が必須か,社員コード認証利用するか,指認証失敗回数)
-	public TimeStampSetShareTStamp(String cid, DisplaySettingsStampScreen displaySetStampScreen,
-			List<StampPageLayout> lstStampPageLayout, Boolean useSelectName, Boolean passwordInputReq,
-			NotUseAtr useEmpCodeToAuthen, Optional<NumberAuthenfailures> numberAuthenfailures) {
-		this.cid = cid;
-		this.displaySetStampScreen = displaySetStampScreen;
-		this.lstStampPageLayout = lstStampPageLayout;
-		this.useSelectName = useSelectName;
-		this.passwordInputReq = passwordInputReq;
-		this.useEmpCodeToAuthen = useEmpCodeToAuthen;
-		this.numberAuthenfailures = numberAuthenfailures;
-	}
 	
 	// [1] ボタン詳細設定を取得する
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
