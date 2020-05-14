@@ -15,15 +15,18 @@ public class NRHelper {
 	public static GeneralDate createGeneralDate(String date) {
 		int yy = GeneralDate.today().year() / 100;
 		int ymdTemp = Integer.parseInt(String.valueOf(yy) + date);
-		GeneralDate result = GeneralDate.ymd(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100, ymdTemp % 100);
+		GeneralDate result = GeneralDate.ymd(ymdTemp / 10000, (ymdTemp - (ymdTemp / 10000) * 10000) / 100, ymdTemp % 100);
 		return result;
 	}
 
 	public static GeneralDateTime getDateTime(String ymd, String time) {
 		int yy = GeneralDate.today().year() / 100;
 		int ymdTemp = Integer.parseInt(String.valueOf(yy) + ymd);
-		return GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100, ymdTemp % 100,
-				Integer.parseInt(time) / 100, Integer.parseInt(time) % 100, 0);
+		
+		int timeNumber = Integer.parseInt(time);
+		
+		return GeneralDateTime.ymdhms(ymdTemp / 10000, (ymdTemp - (ymdTemp / 10000) * 10000) / 100, ymdTemp % 100,
+				timeNumber / 10000, (timeNumber - (timeNumber / 10000) * 10000) / 100, timeNumber % 100);
 	}
 
 	public static Integer toMinute(String time) {
