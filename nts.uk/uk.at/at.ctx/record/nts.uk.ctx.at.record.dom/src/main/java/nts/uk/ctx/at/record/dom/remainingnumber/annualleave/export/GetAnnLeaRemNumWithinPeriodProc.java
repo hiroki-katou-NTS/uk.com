@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -346,6 +347,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		this.isOverWriteOpt = isOverWriteOpt;
 		this.forOverWriteListOpt = forOverWriteListOpt;
 		this.prevAnnualLeaveOpt = prevAnnualLeaveOpt;
+		
+		// データベースからデータを取得してキャッシュするオブジェクトを作成
+		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum = new RepositoriesRequiredByRemNum();
 		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;

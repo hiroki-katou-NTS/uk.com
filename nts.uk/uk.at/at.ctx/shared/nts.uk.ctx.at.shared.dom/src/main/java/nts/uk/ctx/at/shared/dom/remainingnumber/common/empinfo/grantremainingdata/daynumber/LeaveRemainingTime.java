@@ -27,4 +27,14 @@ public class LeaveRemainingTime extends TimeDurationPrimitiveValue<LeaveRemainin
 		if (rawValue < -(999 * 60 + 59)) rawValue = -(999 * 60 + 59);
 		return super.reviseRawValue(rawValue);
 	}
+	
+	/**
+	 * 休暇残数（時間）を加算
+	 * @param aLeaveRemainingTime
+	 */
+	public LeaveRemainingTime add(LeaveRemainingTime aLeaveRemainingTime){
+		
+		// 日付加算
+		return new LeaveRemainingTime( v() + aLeaveRemainingTime.v() );
+	}
 }

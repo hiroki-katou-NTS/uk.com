@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
+import java.util.Optional;
+
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
@@ -25,5 +27,15 @@ public class LeaveRemainingDayNumber extends HalfIntegerPrimitiveValue<LeaveRema
 		if (rawValue > 999.5) rawValue = 999.5;
 		if (rawValue < -999.5) rawValue = -999.5;
 		return super.reviseRawValue(rawValue);
+	}
+
+	/**
+	 * 休暇残数（日数）を加算
+	 * @param aLeaveRemainingDayNumber
+	 */
+	public LeaveRemainingDayNumber add(LeaveRemainingDayNumber aLeaveRemainingDayNumber){
+		
+		// 日付加算
+		return new LeaveRemainingDayNumber( v() + aLeaveRemainingDayNumber.v() );
 	}
 }
