@@ -24,6 +24,7 @@ public class StampRecord implements DomainAggregate {
 	 * 	契約コード
 	 */
 	private final ContractCode contractCode;
+	
 	/**
 	 * 打刻カード番号
 	 */

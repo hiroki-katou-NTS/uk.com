@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
@@ -57,7 +58,9 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		Optional<KrcdtStampRecord> entity = this.queryProxy().find(
 				null,
 				KrcdtStampRecord.class);
+		
 		if(!entity.isPresent()) return;
+		
 		this.commandProxy().update(entity.get().toUpdateEntity(stampRecord));
 	}
 
@@ -65,11 +68,13 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	@Override
 	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers	, GeneralDate stampDateTime) {
 		Set<String> lstCard = stampNumbers.stream().map(x -> x.v()).collect(Collectors.toSet());
+		
 		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				0, 0, 0);
 
 		GeneralDateTime end = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
 				23, 59, 59);
+		
 		return this.queryProxy().query(GET_STAMP_RECORD, KrcdtStampRecord.class)
 				.setParameter("cardNumbers", lstCard)
 				.setParameter("contract_cd", contractCode)
@@ -102,7 +107,8 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
-		return new StampRecord(new StampNumber(entity.cardNumber), entity.stampDateTime, entity.stampArt,
+		
+		return new StampRecord(new ContractCode(AppContexts.user().contractCode()),new StampNumber(entity.cardNumber), entity.stampDateTime, entity.stampArt,
 				ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
 						entity.workTerminalInfoCd == null ? null : new EmpInfoTerminalCode(entity.workTerminalInfoCd)));
 	}
