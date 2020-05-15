@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -64,7 +66,7 @@ public class ButtonSettingsCommand {
 		StampType stampType = new StampType(x.getButtonType().getStampType().isChangeHalfDay(), goOutArt, setPreClockArt,
 				changeClockArt, changeCalArt);
 		
-		ButtonType buttonType = new ButtonType(reservationArt, stampType);
+		ButtonType buttonType = new ButtonType(reservationArt, Optional.of(stampType));
 
 		NotUseAtr usrArts = EnumAdaptor.valueOf(x.getUsrArt(), NotUseAtr.class);
 

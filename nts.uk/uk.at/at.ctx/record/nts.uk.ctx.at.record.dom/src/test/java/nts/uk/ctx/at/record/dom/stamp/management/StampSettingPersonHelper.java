@@ -3,10 +3,12 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
+import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Stamp;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
@@ -104,7 +106,7 @@ public class StampSettingPersonHelper {
 		public static class Type {
 			public static ButtonType DUMMY = new ButtonType(
 					EnumAdaptor.valueOf(0, ReservationArt.class), 
-					Stamp.DUMMY);
+					Optional.of(Stamp.DUMMY));
 		}
 		
 		public static class Stamp {

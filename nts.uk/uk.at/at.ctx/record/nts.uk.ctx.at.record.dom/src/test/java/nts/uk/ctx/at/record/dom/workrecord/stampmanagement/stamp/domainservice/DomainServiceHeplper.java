@@ -119,7 +119,7 @@ public class DomainServiceHeplper {
 	}
 	
 	public static ButtonType getButtonTypeDefault() {
-		return new ButtonType(ReservationArt.valueOf(0), StampHelper.getStampTypeDefault());
+		return new ButtonType(ReservationArt.valueOf(0), Optional.of(StampHelper.getStampTypeDefault()));
 		
 	}
 	public static ButtonType getButtonTypeHaveStampTypeNull() {
