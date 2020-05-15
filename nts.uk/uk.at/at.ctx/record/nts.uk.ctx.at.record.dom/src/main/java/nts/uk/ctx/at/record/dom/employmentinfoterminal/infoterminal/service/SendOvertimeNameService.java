@@ -45,12 +45,12 @@ public class SendOvertimeNameService {
 		List<SendOvertimeDetail> overtimes = lstOvertime.stream().map(x -> {
 			return new SendOvertimeName.SendOvertimeDetail(String.valueOf(x.getOvertimeWorkFrNo().v()),
 					x.getOvertimeWorkFrName().v());
-		}).sorted((x, y) -> x.getSendOvertimeNo().compareTo(y.getSendOvertimeNo())).collect(Collectors.toList());
+		}).sorted((x, y) -> Integer.parseInt(x.getSendOvertimeNo()) - Integer.parseInt((y.getSendOvertimeNo()))).collect(Collectors.toList());
 
 		List<SendOvertimeDetail> vacations = lstWorkDay.stream().map(x -> {
 			return new SendOvertimeName.SendOvertimeDetail(String.valueOf(x.getWorkdayoffFrNo().v()),
 					x.getWorkdayoffFrName().v());
-		}).sorted((x, y) -> x.getSendOvertimeNo().compareTo(y.getSendOvertimeNo())).collect(Collectors.toList());
+		}).sorted((x, y) ->  Integer.parseInt(x.getSendOvertimeNo()) -  Integer.parseInt(y.getSendOvertimeNo())).collect(Collectors.toList());
 
 		return new SendOvertimeName(overtimes, vacations);
 	}
