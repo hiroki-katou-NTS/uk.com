@@ -29,22 +29,4 @@ public enum CanEngravingUsed {
 
 	public final String name;
 
-	/** The Constant values. */
-	private final static CanEngravingUsed[] values = CanEngravingUsed.values();
-
-	public static CanEngravingUsed valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (CanEngravingUsed val : CanEngravingUsed.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-		// Not found.
-		return null;
-	}
 }
