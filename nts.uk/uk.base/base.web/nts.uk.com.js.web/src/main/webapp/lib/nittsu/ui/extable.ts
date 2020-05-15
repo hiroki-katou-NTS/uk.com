@@ -60,6 +60,7 @@ module nts.uk.ui.exTable {
         areaResize: boolean;
         remainSizes: boolean;
         heightSetter: any;
+        optionsCloned: boolean;
         // dynamic or fixed
         bodyHeightSetMode: string = DYNAMIC;
         windowXOccupation: number = 0;
@@ -73,6 +74,7 @@ module nts.uk.ui.exTable {
         overflowTooltipOn: boolean = false;
         determination: any;
         modifications: any;
+        errorMessagePopup: boolean;
         
         constructor($container: JQuery, options: any) {
             this.$container = $container[0];
@@ -90,6 +92,7 @@ module nts.uk.ui.exTable {
             this.bodyHeightSetMode = options.bodyHeightMode;
             this.windowXOccupation = options.windowXOccupation;
             this.windowYOccupation = options.windowYOccupation;
+            this.optionsCloned = options.cloned;
             if (options.updateMode) { 
                 this.updateMode = options.updateMode; 
             }
@@ -101,6 +104,7 @@ module nts.uk.ui.exTable {
             this.overflowTooltipOn = !util.isNullOrUndefined(options.showTooltipIfOverflow)
                                             ? options.showTooltipIfOverflow : false;
             this.determination = options.determination;
+            this.errorMessagePopup = options.errorMessagePopup;
             this.features = options.features;
             $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
             $.data(this.$container, internal.Y_OCCUPY, this.windowYOccupation);
@@ -115,12 +119,12 @@ module nts.uk.ui.exTable {
             this.detailContent.viewMode = mode;
         }
         LeftmostHeader(leftmostHeader: any) {
-            this.leftmostHeader = _.cloneDeep(leftmostHeader);
+            this.leftmostHeader = this.optionsCloned ? _.cloneDeep(leftmostHeader) : leftmostHeader;
             this.setHeaderClass(this.leftmostHeader, LEFTMOST);
             return this;
         }
         LeftmostContent(leftmostContent: any) {
-            this.leftmostContent = _.cloneDeep(leftmostContent);
+            this.leftmostContent = this.optionsCloned ? _.cloneDeep(leftmostContent) : leftmostContent;
             this.setBodyClass(this.leftmostContent, LEFTMOST);
             this.leftmostContent.updateMode = this.updateMode;
             if (feature.isEnable(this.features, feature.UPDATING)) {
@@ -130,55 +134,55 @@ module nts.uk.ui.exTable {
             return this;
         }
         MiddleHeader(middleHeader: any) {
-            this.middleHeader = _.cloneDeep(middleHeader);
+            this.middleHeader = this.optionsCloned ? _.cloneDeep(middleHeader) : middleHeader;
             this.setHeaderClass(this.middleHeader, MIDDLE);
             this.middleHeader.updateMode = this.updateMode;
             return this;
         }
         MiddleContent(middleContent: any) {
-            this.middleContent = _.cloneDeep(middleContent);
+            this.middleContent = this.optionsCloned ? _.cloneDeep(middleContent) : middleContent;
             this.setBodyClass(this.middleContent, MIDDLE);
             return this;
         }
         DetailHeader(detailHeader: any) {
-            this.detailHeader = _.cloneDeep(detailHeader);
+            this.detailHeader = this.optionsCloned ? _.cloneDeep(detailHeader) : detailHeader;
             this.setHeaderClass(this.detailHeader, DETAIL);
             return this;
         }
         DetailContent(detailContent: any) {
-            this.detailContent = _.cloneDeep(detailContent);
+            this.detailContent = this.optionsCloned ? _.cloneDeep(detailContent) : detailContent;
             this.setBodyClass(this.detailContent, DETAIL);
             this.detailContent.updateMode = this.updateMode;
             this.detailContent.viewMode = this.viewMode;
             return this;
         }
         VerticalSumHeader(verticalSumHeader: any) {
-            this.verticalSumHeader = _.cloneDeep(verticalSumHeader);
+            this.verticalSumHeader = this.optionsCloned ? _.cloneDeep(verticalSumHeader) : verticalSumHeader;
             this.setHeaderClass(this.verticalSumHeader, VERTICAL_SUM);
             return this;
         }
         VerticalSumContent(verticalSumContent: any) {
-            this.verticalSumContent = _.cloneDeep(verticalSumContent);
+            this.verticalSumContent = this.optionsCloned ? _.cloneDeep(verticalSumContent) : verticalSumContent;
             this.setBodyClass(this.verticalSumContent, VERTICAL_SUM);
             return this;
         }
         LeftHorzSumHeader(leftHorzSumHeader: any) {
-            this.leftHorzSumHeader = _.cloneDeep(leftHorzSumHeader);
+            this.leftHorzSumHeader = this.optionsCloned ? _.cloneDeep(leftHorzSumHeader) : leftHorzSumHeader;
             this.setHeaderClass(this.leftHorzSumHeader, LEFT_HORZ_SUM);
             return this;
         }
         LeftHorzSumContent(leftHorzSumContent: any) {
-            this.leftHorzSumContent = _.cloneDeep(leftHorzSumContent);
+            this.leftHorzSumContent = this.optionsCloned ? _.cloneDeep(leftHorzSumContent) : leftHorzSumContent;
             this.setBodyClass(this.leftHorzSumContent, LEFT_HORZ_SUM);
             return this;
         }
         HorizontalSumHeader(horizontalSumHeader: any) {
-            this.horizontalSumHeader = _.cloneDeep(horizontalSumHeader);
+            this.horizontalSumHeader = this.optionsCloned ? _.cloneDeep(horizontalSumHeader) : horizontalSumHeader;
             this.setHeaderClass(this.horizontalSumHeader, HORIZONTAL_SUM);
             return this;
         }
         HorizontalSumContent(horizontalSumContent: any) {
-            this.horizontalSumContent = _.cloneDeep(horizontalSumContent);
+            this.horizontalSumContent = this.optionsCloned ? _.cloneDeep(horizontalSumContent) : horizontalSumContent;
             this.setBodyClass(this.horizontalSumContent, HORIZONTAL_SUM);
             return this;
         }
@@ -225,6 +229,7 @@ module nts.uk.ui.exTable {
             });
             
             self.$container.classList.add(NAMESPACE);
+            self.$container.tabIndex = -1;
             $.data(self.$container, NAMESPACE, self);
             let pTable = $.data(self.$container, NAMESPACE); 
             pTable.owner = { headers: [], bodies: [], 
@@ -237,11 +242,13 @@ module nts.uk.ui.exTable {
             
             let scrollWidth = helper.getScrollWidth();
             let headerWrappers = [], bodyWrappers = [];
+            let $frag = document.createDocumentFragment(), $detailHeader, $detailBody;
             for (let i = 0; i < self.headers.length; i++) {
                 if (!util.isNullOrUndefined(self.headers[i])) {
                     self.headers[i].overflow = "hidden";
                     self.headers[i].height = self.headerHeight;
                     self.headers[i].isHeader = true;
+                    self.headers[i].determination = self.determination;
                     self.setWrapperWidth(self.headers[i], widthParts);
                     let $headerWrapper = render.createWrapper("0px", left, self.headers[i]);
                     if (!util.isNullOrUndefined($headerWrapper.style.maxWidth)
@@ -250,13 +257,17 @@ module nts.uk.ui.exTable {
                     }
                     pTable.owner.headers.push($headerWrapper); 
                     $headerWrapper.classList.add(HEADER);
-                    self.$container.appendChild($headerWrapper);
-                    render.process($headerWrapper, self.headers[i]);
+                    $frag.appendChild($headerWrapper);
+                    render.process($headerWrapper, self.headers[i], false, self.$container);
                     left = (parseInt(left) + parseInt(self.headers[i].width) + DISTANCE) + "px";
                     top = (parseInt(self.headers[i].height) + DISTANCE) + "px";
                     headerWrappers.push($headerWrapper);
+                    if (self.headers[i].containerClass === HEADER_PRF + DETAIL) {
+                        $detailHeader = $headerWrapper;
+                    }
                 }
             }
+            
             left = "0px";
             for (let i = 0; i < self.bodies.length; i++) {
                 let $bodyWrapper: HTMLElement;
@@ -264,10 +275,12 @@ module nts.uk.ui.exTable {
                     self.bodies[i].rowHeight = self.bodyRowHeight;
                     self.bodies[i].height = gridHeight ? (parseFloat(gridHeight) + "px") : self.bodyHeight;
                     self.bodies[i].width = self.headers[i].width;
+                    self.bodies[i].determination = self.determination;
+                    self.bodies[i].errorMessagePopup = self.errorMessagePopup;
                     self.setWrapperWidth(self.bodies[i], widthParts);
                     $bodyWrapper = render.createWrapper(top, left, self.bodies[i]);
                     pTable.owner.bodies.push($bodyWrapper);
-                    self.$container.appendChild($bodyWrapper);
+                    $frag.appendChild($bodyWrapper);
                     if (i === self.bodies.length - 1 && !util.isNullOrUndefined($bodyWrapper)) {
                         self.bodies[i].overflow = "scroll";
                         self.bodies[i].width = (parseFloat($bodyWrapper.style.width) + scrollWidth) + "px";
@@ -285,11 +298,14 @@ module nts.uk.ui.exTable {
                     } else {
                         scroll.bindVertWheel($bodyWrapper);
                     }
-                    render.process($bodyWrapper, self.bodies[i]);
+                    render.process($bodyWrapper, self.bodies[i], false, self.$container);
                     left = (parseInt(left) + parseInt(self.bodies[i].width) + DISTANCE) + "px";
                     if (self.bodies[i].containerClass !== BODY_PRF + DETAIL) {
                         scroll.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
+                    } else {
+                        $detailBody = $bodyWrapper;
                     }
+                    
                     bodyWrappers.push($bodyWrapper);
                     if (feature.isEnable(self.headers[i].features, feature.COLUMN_RESIZE)) {
                         new resize.ColumnAdjuster(headerWrappers[i].find("table"), $bodyWrapper.find("table")).handle();
@@ -297,18 +313,19 @@ module nts.uk.ui.exTable {
                 }
             }
             
-            self.createHorzSums(pTable);
+            self.createHorzSums(pTable, $detailHeader, $detailBody, $frag);
             self.setupCrudArea();
+            self.$container.appendChild($frag);
             self.generalSettings(headerWrappers, bodyWrappers);
         }
         
         /**
          * Create horizontal sums.
          */
-        createHorzSums(table: any) {
+        createHorzSums(table: any, $detailHeader: any, $detailContent: any, $frag: any) {
             let self = this;
-            let $detailHeader = self.$container.querySelector("." + HEADER_PRF + DETAIL);
-            let $detailContent = self.$container.querySelector("." + BODY_PRF + DETAIL);
+//            let $detailHeader = self.$container.querySelector("." + HEADER_PRF + DETAIL);
+//            let $detailContent = self.$container.querySelector("." + BODY_PRF + DETAIL);
             let headerTop = parseFloat($detailHeader.style.height) + parseFloat($detailContent.style.height) + DISTANCE + helper.getScrollWidth() + SPACE;
             let bodyTop = headerTop + parseFloat(self.horzSumHeaderHeight) + DISTANCE + "px";
             let sumPosLeft = $detailHeader.style.left;
@@ -323,8 +340,8 @@ module nts.uk.ui.exTable {
                 $leftSumHeaderWrapper = render.createWrapper(headerTop + "px", "0xp", self.leftHorzSumHeader);
                 table.owner.headers.push($leftSumHeaderWrapper);
                 $leftSumHeaderWrapper.classList.add(HEADER);
-                self.$container.appendChild($leftSumHeaderWrapper);
-                render.process($leftSumHeaderWrapper, self.leftHorzSumHeader);
+                $frag.appendChild($leftSumHeaderWrapper);
+                render.process($leftSumHeaderWrapper, self.leftHorzSumHeader, false, self.$container);
             }
             if (self.leftHorzSumContent) {
                 self.leftHorzSumContent.rowHeight = self.horzSumBodyRowHeight;
@@ -334,8 +351,8 @@ module nts.uk.ui.exTable {
                 table.owner.bodies.push($leftSumContentWrapper);
                 self.leftHorzSumContent.overflowX = "scroll";
                 self.leftHorzSumContent.overflowY = "hidden";
-                self.$container.appendChild($leftSumContentWrapper);
-                render.process($leftSumContentWrapper, self.leftHorzSumContent);
+                $frag.appendChild($leftSumContentWrapper);
+                render.process($leftSumContentWrapper, self.leftHorzSumContent, false, self.$container);
                 scroll.bindVertWheel($leftSumContentWrapper);
             }
             
@@ -348,8 +365,8 @@ module nts.uk.ui.exTable {
                 $sumHeaderWrapper = render.createWrapper(headerTop + "px", sumPosLeft, self.horizontalSumHeader);
                 table.owner.headers.push($sumHeaderWrapper);
                 $sumHeaderWrapper.classList.add(HEADER);
-                self.$container.appendChild($sumHeaderWrapper);
-                render.process($sumHeaderWrapper, self.horizontalSumHeader);
+                $frag.appendChild($sumHeaderWrapper);
+                render.process($sumHeaderWrapper, self.horizontalSumHeader, false, self.$container);
             }
             if (self.horizontalSumContent) {
                 self.horizontalSumContent.rowHeight = self.horzSumBodyRowHeight;
@@ -362,8 +379,8 @@ module nts.uk.ui.exTable {
                 $sumContentWrapper = render.createWrapper(bodyTop, sumPosLeft, self.horizontalSumContent);
                 table.owner.bodies.push($sumContentWrapper);
                 self.horizontalSumContent.overflow = "scroll";
-                self.$container.appendChild($sumContentWrapper);
-                render.process($sumContentWrapper, self.horizontalSumContent);
+                $frag.appendChild($sumContentWrapper);
+                render.process($sumContentWrapper, self.horizontalSumContent, false, self.$container);
                 scroll.syncHorizontalScroll($leftSumHeaderWrapper, $leftSumContentWrapper);
                 scroll.syncDoubDirVerticalScrolls([ $leftSumContentWrapper, $sumContentWrapper ]);
                 scroll.bindVertWheel($sumContentWrapper, true);
@@ -453,9 +470,16 @@ module nts.uk.ui.exTable {
                 window.addXEventListener(events.RESIZE, resize.fitWindowHeight.bind(self, self.$container, bodyWrappers, horzSumExists));
             } else {
                 let cHeight = 0;
-                let stream = self.$container.querySelectorAll("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+//                let stream = self.$container.querySelectorAll("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                let stream = [];
+                _.forEach(headerWrappers, hw => {
+                    if (hw.className.split(' ').some(c => /.*-detail/.test(c) || /.*-left-horz-sum/.test(c))) {
+                        stream.push(hw);
+                    }
+                });
+                
                 Array.prototype.slice.call(stream).forEach(function(e) {
-                    cHeight += e.style.height;
+                    cHeight += parseInt(e.style.height);
                 });
                 if (stream.length === 4) {
                     cHeight += (SPACE + DISTANCE);
@@ -532,6 +556,12 @@ module nts.uk.ui.exTable {
             if (self.$commander) {
                 events.trigger(self.$container, events.COMPLETED);
             }
+            
+            if (self.errorMessagePopup) {
+                let errPopup = document.createElement("div");
+                errPopup.className = errors.ERR_MSG_CLS;
+                $.data(self.$container, internal.ERR_POPUP, errPopup);
+            }
         }
 
         /**
@@ -558,6 +588,7 @@ module nts.uk.ui.exTable {
     }
     
     module render {
+        export let CELL_CLS: string = "xcell";
         export let HIGHLIGHT_CLS: string = "highlight";
         export let CHILD_CELL_CLS: string = "child-cell";
         export let COL_ICON_CLS: string = "column-icon";
@@ -566,7 +597,7 @@ module nts.uk.ui.exTable {
         /**
          * Process.
          */
-        export function process($container: HTMLElement, options: any, isUpdate?: boolean) {
+        export function process($container: HTMLElement, options: any, isUpdate?: boolean, $exTable?: HTMLElement) {
             let levelStruct = synthesizeHeaders(options);
             options.levelStruct = levelStruct;
             if (isUpdate && !util.isNullOrUndefined($container.style.maxWidth) && !_.isEmpty($container.style.maxWidth)) {
@@ -577,6 +608,7 @@ module nts.uk.ui.exTable {
                     $container.style.maxWidth = maxWidth + "px";
                 }
             }
+            
             if (options.isHeader) {
                 if (Object.keys(levelStruct).length > 1) {
                     groupHeader($container, options, isUpdate);
@@ -585,7 +617,9 @@ module nts.uk.ui.exTable {
             } else {
                 options.float = options.float === false ? false : true;
             }
-            table($container, options, isUpdate);
+            
+            table($container, options, isUpdate, $exTable);
+            feature.activate($container, options);
         }
         
         /**
@@ -632,7 +666,7 @@ module nts.uk.ui.exTable {
         /**
          * Table.
          */
-        export function table($container: HTMLElement, options: any, isUpdate: boolean) {
+        export function table($container: HTMLElement, options: any, isUpdate: boolean, $exTable: HTMLElement) {
             let $table = document.createElement("table");
             $table.innerHTML = "<tbody></tbody>";
             $table.className = options.tableClass;
@@ -666,32 +700,32 @@ module nts.uk.ui.exTable {
                 });
                 dataSource = [item]; 
             }
-            begin($container, dataSource, options);
+            begin($container, dataSource, options, $exTable);
         }
         
         /**
          * Begin.
          */
-        export function begin($container: HTMLElement, dataSource: Array<any>, options: any) {
+        export function begin($container: HTMLElement, dataSource: Array<any>, options: any, $exTable: HTMLElement) {
             if (options.float) {
-                let cloud: intan.Cloud = new intan.Cloud($container, dataSource, options);
+                let cloud: intan.Cloud = new intan.Cloud($container, dataSource, options, $exTable);
                 $.data($container, internal.TANGI, cloud);
                 cloud.renderRows(true);   
                 return;
             }
-            normal($container, dataSource, options);
+            normal($container, dataSource, options, $exTable);
         }
         
         /**
          * Normal.
          */
-        export function normal($container: HTMLElement, dataSource: Array<any>, options: any) {
+        export function normal($container: HTMLElement, dataSource: Array<any>, options: any, $exTable: HTMLElement) {
             let rowConfig = { css: { height: options.rowHeight }};
             let headerRowHeightFt;
             if (options.isHeader) {
                 headerRowHeightFt = feature.find(options.features, feature.HEADER_ROW_HEIGHT);
             }
-            let painter: Painter = new Painter($container, options);
+            let painter: Painter = new Painter($container, options, $exTable);
             $.data($container, internal.CANON, { _origDs: _.cloneDeep(dataSource), dataSource: dataSource, primaryKey: options.primaryKey, painter: painter });
             let $tbody = $container.querySelector("tbody");
             _.forEach(dataSource, function(item: any, index: number) {
@@ -766,15 +800,24 @@ module nts.uk.ui.exTable {
         
         export class Painter extends Conditional {
             $container: HTMLElement;
+            $exTable: HTMLElement;
             multilineCountInCell: number = 2;
-            constructor($container: HTMLElement, options: any) {
+            preRow: HTMLElement;
+            preCell: HTMLElement;
+            preDiv: HTMLElement;
+            constructor($container: HTMLElement, options: any, $exTable: HTMLElement) {
                 super(options);
                 this.$container = $container;
+                this.$exTable = $exTable;
                 if (!util.isNullOrUndefined(options.levelStruct)) {
                     this.columnsMap = helper.columnsMapFromStruct(options.levelStruct);
                 } else {
                     this.columnsMap = _.groupBy(options.columns, "key");
                 }
+                
+                this.preRow = document.createElement("tr");
+                this.preCell = document.createElement("td");
+                this.preDiv = document.createElement("div");
             }
             
             styleInnerCell(idx: number, innerCount: number) {
@@ -803,7 +846,7 @@ module nts.uk.ui.exTable {
                 
                 divStyle += `; position: absolute; 
                     left: ${(idx - incellRowIdx * incellCountInRow) * (100 / incellCountInRow)}%;  
-                    line-height: ${incellHeight - 1}px; 
+                    line-height: ${incellRowIdx === 0 ? (incellHeight - 1) : (incellHeight - 2)}px; 
                     width: calc(${100 / incellCountInRow}% - 2px); text-align: center;`;
                 return divStyle;
             }
@@ -816,7 +859,8 @@ module nts.uk.ui.exTable {
                 let column: any = self.columnsMap[key];
                 if (util.isNullOrUndefined(column)) return;
                 let ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
-                let td = document.createElement("td");
+                let td = self.preCell.cloneNode(true);
+                td.classList.add(CELL_CLS);
                  
                 if (cData && _.isObject(cData) && _.every(Object.keys(cData), k => cData[k] === null)) {
                     td.classList.add(EMPTY_CLS); 
@@ -830,12 +874,13 @@ module nts.uk.ui.exTable {
                 tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
                             + ws + ";";//"; position: relative;";
                 self.highlight(td);
+                self.highlightAround(td);
                 
                 if (!self.visibleColumnsMap[key]) tdStyle += "; display: none;"; //td.style.display = "none";
                 if (!util.isNullOrUndefined(data) && data.constructor === Array) {
                    _.forEach(data, function(item: any, idx: number) {
                        let divStyle = "";
-                       let div: HTMLDivElement = document.createElement("div");
+                       let div: HTMLDivElement = self.preDiv.cloneNode(true);
                        div.classList.add(CHILD_CELL_CLS);
                        div.innerText = util.isNullOrUndefined(item) ? "" : item;
                        divStyle = self.styleInnerCell(idx, data.length);
@@ -854,7 +899,7 @@ module nts.uk.ui.exTable {
 //                       cellHandler.rClick(div, column, helper.call(column.rightClick, rData, rowIdx, key));
 //                       spread.bindSticker(div, rowIdx, key, self.options);
                    });
-                   style.detCell(self.$container, td, rowIdx, key);
+                   style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                    tdStyle += "; position: relative; padding: 0px;";
                    td.style.cssText += tdStyle;
                     
@@ -901,7 +946,7 @@ module nts.uk.ui.exTable {
 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
                 } 
 //                spread.bindSticker(td, rowIdx , key, self.options);
-                style.detCell(self.$container, td, rowIdx, key);
+                style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                 td.style.cssText += tdStyle;
                 
                 if (self.options.overflowTooltipOn) widget.textOverflow(td);
@@ -910,7 +955,7 @@ module nts.uk.ui.exTable {
             
             row(data: any, config: any, rowIdx: number): HTMLElement {
                 let self = this;
-                let tr: any = document.createElement("tr");
+                let tr: any = self.preRow.cloneNode(true);
                 tr.style.height = parseInt(config.css.height) + "px";
                 let headerCellStyleFt, headerPopupFt, bodyCellStyleFt;
                 if (self.options.isHeader) {
@@ -926,7 +971,7 @@ module nts.uk.ui.exTable {
                     controls.tick(checked, $grid, self.options.isHeader, rowIndex);
                 };
                 if (!data[controls.CHECKED_KEY] && self.options.columns[0].key === controls.CHECKED_KEY) {
-                    let td = document.createElement("td");
+                    let td = self.preCell.cloneNode(true);
                     $.data(td, internal.VIEW, rowIdx + "-" + controls.CHECKED_KEY);
                     td.style.padding = "1px 1px";
                     td.style.textAlign = "center";
@@ -936,7 +981,7 @@ module nts.uk.ui.exTable {
                 _.forEach(Object.keys(data), function(key: any, index: number) {
                     if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key]) return;
                     if (key === controls.CHECKED_KEY) {
-                        let td = document.createElement("td");
+                        let td = self.preCell.cloneNode(true);
                         td.style.padding = "1px 1px";
                         td.style.textAlign = "center";
                         td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked }));
@@ -985,7 +1030,7 @@ module nts.uk.ui.exTable {
                     }
                 });
                 widget.bind(tr, rowIdx, headerPopupFt);
-                style.detColumn(self.$container, tr, rowIdx);
+                style.detColumn(self.$container, tr, rowIdx, self.options.determination, self.$exTable);
                 
                 spread.bindRowSticker(tr, rowIdx, self.options);
                 if (!self.options.isHeader) {
@@ -1001,13 +1046,21 @@ module nts.uk.ui.exTable {
                 let self = this;
                 if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL || self.options.highlight === false) return;
                 let $targetContainer = self.$container;
-                let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
-                let extable = helper.getExTableFromGrid($targetContainer);
-                let horzSumHeader, horzSumContent; 
+//                let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                let extable;
+                let horzSumHeader, horzSumContent,
+                    gen = $.data(self.$container, internal.TANGI) || $.data(self.$container, internal.CANON); 
                 td.addXEventListener(events.MOUSE_OVER, function() {
+                    if (_.isNil(extable)) {
+                        extable = helper.getExTableFromGrid($targetContainer);
+                    }
+                    
+                    let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
                     let colIndex = helper.indexInParent(td);
                     let tr = helper.closest(td, "tr"); 
                     let rowIndex = helper.indexInParent(tr);
+                    gen.highlightRowIndex = gen.startIndex + rowIndex;
+                    gen.highlightColumnIndex = colIndex;
                     helper.addClass1n(tr.children, HIGHLIGHT_CLS);
                     if (!horzSumHeader || !horzSumContent) {
                         horzSumHeader = extable.owner.find(HEADER_PRF + HORIZONTAL_SUM, "headers");
@@ -1052,6 +1105,11 @@ module nts.uk.ui.exTable {
                 });
                 
                 td.addXEventListener(events.MOUSE_OUT, function() {
+                    if (_.isNil(extable)) {
+                        extable = helper.getExTableFromGrid($targetContainer);
+                    }
+                    
+                    let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
                     helper.removeClass1n(td, HIGHLIGHT_CLS);
                     let colIndex = helper.indexInParent(td);
                     let tr = helper.closest(td, "tr"); 
@@ -1098,6 +1156,136 @@ module nts.uk.ui.exTable {
                     $.data(self.$container, internal.COLUMN_IN, -1);
                     events.trigger(helper.closest(self.$container, "." + NAMESPACE), events.MOUSEOUT_COLUMN, colIndex);
                 });
+            }
+            
+            /**
+             * Highlight around.
+             */            
+            highlightAround(td: HTMLElement) {
+                let self = this;
+                if (self.options.isHeader || self.options.highlight === false) return;
+                if (self.options.containerClass === BODY_PRF + MIDDLE) {
+                    td.addXEventListener(events.MOUSE_OVER, () => {
+                        helper.addClass1n(td, HIGHLIGHT_CLS);
+                    });
+                    
+                    td.addXEventListener(events.MOUSE_OUT, () => {
+                        helper.removeClass1n(td, HIGHLIGHT_CLS);
+                    });
+                }
+                
+                if (self.options.containerClass === BODY_PRF + HORIZONTAL_SUM) {
+                    let extable, detailHeader, detailBody;
+                    td.addXEventListener(events.MOUSE_OVER, () => {
+                        let $targetContainer = self.$container;
+                        if (_.isNil(extable)) {
+                            extable = helper.getExTableFromGrid($targetContainer);
+                        }
+                        
+                        let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                        let colIndex = helper.indexInParent(td);
+                        let tr = helper.closest(td, "tr"); 
+                        let rowIndex = helper.indexInParent(tr);\
+                        helper.addClass1n(tr.children, HIGHLIGHT_CLS);
+                        helper.consumeSiblings(tr, (elm) => { 
+                            let tds = elm.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                                helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS); 
+                        });
+                        
+                        let bodies = extable.owner.bodies,
+                            leftHorzSumBody = bodies.filter(b => helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM))[0];
+                        if (leftHorzSumBody) {
+                            let rowElm = leftHorzSumBody.querySelector(`tr:nth-of-type(${rowIndex + 1})`);   
+                            if (rowElm) {
+                                helper.addClass1n(rowElm.children, HIGHLIGHT_CLS);
+                            }
+                        }
+                        
+                        _.forEach(targetHeader.getElementsByTagName("tr"), function(t) {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                        
+                        if (!detailHeader) {
+                            detailHeader = extable.owner.find(HEADER_PRF + DETAIL, "headers");
+                            if (detailHeader) detailHeader = detailHeader[0];
+                        }
+                        
+                        if (!detailBody) {
+                            detailBody = extable.owner.find(BODY_PRF + DETAIL, "bodies");
+                            if (detailBody) detailBody = detailBody[0];
+                        }
+                        
+                        _.forEach(detailHeader.getElementsByTagName("tr"), t => {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                        
+                        _.forEach(detailBody.getElementsByTagName("tr"), t => {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.addClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                    });
+                    
+                    td.addXEventListener(events.MOUSE_OUT, () => {
+                        let $targetContainer = self.$container;
+                        if (_.isNil(extable)) {
+                            extable = helper.getExTableFromGrid($targetContainer);
+                        }
+                        
+                        let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                        let colIndex = helper.indexInParent(td);
+                        let tr = helper.closest(td, "tr"); 
+                        let rowIndex = helper.indexInParent(tr);\
+                        helper.removeClass1n(tr.children, HIGHLIGHT_CLS);
+                        helper.consumeSiblings(tr, (elm) => { 
+                            let tds = elm.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                                helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS); 
+                        });
+                        
+                        let bodies = extable.owner.bodies,
+                            leftHorzSumBody = bodies.filter(b => helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM))[0];
+                        if (leftHorzSumBody) {
+                            let rowElm = leftHorzSumBody.querySelector(`tr:nth-of-type(${rowIndex + 1})`);   
+                            if (rowElm) {
+                                helper.removeClass1n(rowElm.children, HIGHLIGHT_CLS);
+                            }
+                        }
+                        
+                        _.forEach(targetHeader.getElementsByTagName("tr"), function(t) {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                        
+                        if (!detailHeader) {
+                            detailHeader = extable.owner.find(HEADER_PRF + DETAIL, "headers");
+                            if (detailHeader) detailHeader = detailHeader[0];
+                        }
+                        
+                        if (!detailBody) {
+                            detailBody = extable.owner.find(BODY_PRF + DETAIL, "bodies");
+                            if (detailBody) detailBody = detailBody[0];
+                        }
+                        
+                        _.forEach(detailHeader.getElementsByTagName("tr"), t => {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                        
+                        _.forEach(detailBody.getElementsByTagName("tr"), t => {
+                            let tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0) return;
+                            helper.removeClass1n(tds[colIndex], HIGHLIGHT_CLS);
+                        });
+                    });
+                }
             }
         }
         
@@ -1579,8 +1767,9 @@ module nts.uk.ui.exTable {
             startIndex: number;
             endIndex: number;
             painter: render.Painter;
+            rowElements: Array<any> = []; 
             
-            constructor($container: HTMLElement, dataSource: Array<any>, options: any) {
+            constructor($container: HTMLElement, dataSource: Array<any>, options: any, $exTable: HTMLElement) {
                 this.$container = $container;
                 this.options = options;
                 this.primaryKey = options.primaryKey;
@@ -1591,7 +1780,7 @@ module nts.uk.ui.exTable {
                 this.clusterHeight = this.blockHeight * this.blocksOfCluster;
                 this.dataSource = dataSource;
                 this._origDs = _.cloneDeep(dataSource);
-                this.painter = new render.Painter($container, options);
+                this.painter = new render.Painter($container, options, $exTable);
                 this.setCellsStyle();
                 this.onScroll();
             }
@@ -1637,27 +1826,77 @@ module nts.uk.ui.exTable {
                 tbody.appendChild(render.extra(TOP_SPACE, self.topOffset));
                 for (let i = startRowIdx; i < endRowIdx; i++) {
                     if (util.isNullOrUndefined(this.dataSource[i])) continue;
-                    tbody.appendChild(self.painter.row(this.dataSource[i], rowConfig, i));
+                    let rElm = self.rowElements[i];
+                    if (rElm) {
+                        tbody.appendChild(rElm);
+                        continue;
+                    }
+                       
+                    let newRowElm = self.painter.row(this.dataSource[i], rowConfig, i);
+                    tbody.appendChild(newRowElm);
+                    self.rowElements[i] = newRowElm;
                 } 
+                
                 tbody.appendChild(render.extra(BOTTOM_SPACE, self.bottomOffset));
                 containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]); 
                 
                 if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
-                    self.selectCellsIn();
-                    self.dirtyCellsIn();
-                    self.errorCellsIn();
+//                    self.selectCellsIn();
+//                    self.dirtyCellsIn();
+//                    self.errorCellsIn();
                     self.detCellsIn();
-                    self.editCellIn();
+//                    self.editCellIn();
                     self.madeUpCellsIn();
                 } else if (self.$container.classList.contains(BODY_PRF + LEFTMOST)) {
                     self.selectedRowsIn();
-                    self.dirtyCellsIn();
-                    self.errorCellsIn();
-                    self.editCellIn();
+//                    self.dirtyCellsIn();
+//                    self.errorCellsIn();
+//                    self.editCellIn();
                 }
                 setTimeout(function() {
                     events.trigger(self.$container, events.RENDERED);
                 }, 0);
+            }
+            
+            /**
+             * Clear highlight.
+             */
+            clearHighlight(clusterNo: any) {
+                let self = this;
+                if (!_.isNil(self.highlightRowIndex) && !_.isNil(self.highlightColumnIndex)) {
+                    let rowsOfCluster = self.blocksOfCluster * self.rowsOfBlock;
+                    let startRowIdx = self.startIndex = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
+                    let endRowIdx = self.endIndex = startRowIdx + rowsOfCluster;
+                    for (let i = startRowIdx; i < endRowIdx; i++) {
+                        let rElm = self.rowElements[i];
+                        if (i === self.highlightRowIndex && rElm) {
+                            helper.removeClass1n(rElm.children, render.HIGHLIGHT_CLS);
+                            let extable = $.data(self.painter.$exTable, NAMESPACE), bodies = extable.owner.bodies;
+                            for (let j = 0; j < bodies.length; j++) {
+                                if (!helper.hasClass(bodies[j], BODY_PRF + LEFT_HORZ_SUM)
+                                    && !helper.hasClass(bodies[j], BODY_PRF + HORIZONTAL_SUM)) {
+                                    let gem = $.data(bodies[j], internal.TANGI) || $.data(bodies[j], internal.CANON);
+                                    let rowElm = gem.rowElements[self.highlightRowIndex];
+                                    if (rowElm) {
+                                        helper.removeClass1n(rowElm.children, render.HIGHLIGHT_CLS);
+                                    }
+                                }
+                            }
+                            
+                            continue;
+                        }
+                        
+                        if (rElm) {
+                            let td = rElm.querySelector(`td:nth-of-type(${self.highlightColumnIndex + 1})`);
+                            if (td) {
+                                helper.removeClass1n(td, render.HIGHLIGHT_CLS);
+                            }
+                        }
+                    }
+                    
+                    self.highlightRowIndex = null;
+                    self.highlightColumnIndex = null;
+                }
             }
             
             /**
@@ -1667,8 +1906,9 @@ module nts.uk.ui.exTable {
                 let self = this;
                 self.$container.removeXEventListener(events.SCROLL_EVT + ".detail");
                 self.$container.addXEventListener(events.SCROLL_EVT + ".detail", function() {
-                    let inClusterNo = self.getClusterNo();
+                    let inClusterNo = self.getClusterNo(), prevCluster;
                     if (self.currentCluster !== inClusterNo) {
+                        prevCluster = self.currentCluster;
                         self.currentCluster = inClusterNo;
                         if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
                             let colIn = $.data(self.$container, internal.COLUMN_IN);
@@ -1683,7 +1923,9 @@ module nts.uk.ui.exTable {
                                 events.trigger(helper.closest(self.$container, "." + NAMESPACE), events.MOUSEOUT_COLUMN, colIn);
                             }
                         }
+                        
                         self.renderRows();
+                        self.clearHighlight(prevCluster);
                     }
                 });
             }
@@ -1867,7 +2109,10 @@ module nts.uk.ui.exTable {
                 let self = this;
                 let det = $.data(self.$container, internal.DET);
                 if (!det) return;
-                self.eachKey(det, obj => obj.columnKey, $cell => helper.markCellWith(style.DET_CLS, $cell));
+                self.eachKey(det, obj => obj.columnKey, obj => !obj.uiReflected, ($cell, obj) => {
+                    helper.markCellWith(style.DET_CLS, $cell)
+                    obj.uiReflected = true;
+                });
             }
             
             /**
@@ -1877,7 +2122,7 @@ module nts.uk.ui.exTable {
                 let self = this;
                 let dCellsStyle = $.data(self.$container, internal.D_CELLS_STYLE);
                 if (!dCellsStyle) return;
-                self.eachKey(dCellsStyle, obj => obj.columnKey, ($cell, obj) => {
+                self.eachKey(dCellsStyle, obj => obj.columnKey, obj => !obj.uiReflected, ($cell, obj) => {
                     let makeup = obj.makeup;
                     if (makeup && makeup.length > 0) {
                         makeup = makeup[makeup.length - 1];
@@ -1893,6 +2138,8 @@ module nts.uk.ui.exTable {
                         } else {
                             $cell.classList.add(makeup.class);
                         }
+                        
+                        obj.uiReflected = true;
                     }
                 });
             }
@@ -1900,11 +2147,12 @@ module nts.uk.ui.exTable {
             /**
              * Each key.
              */
-            eachKey(obj: any, key: any, cb: any) {
+            eachKey(obj: any, key: any, filter: any, cb: any) {
                 let self = this;
                 _.forEach(Object.keys(obj), function(rIdx: any) {
                     if (rIdx >= self.startIndex && rIdx <= self.endIndex) {
                         _.forEach(obj[rIdx], function(valObj: any) {
+                            if (!filter(valObj)) return;
                             let $cell = selection.cellAt(self.$container, rIdx, key(valObj));
                             if ($cell === intan.NULL || !$cell) return;
                             cb($cell, valObj);
@@ -1977,8 +2225,29 @@ module nts.uk.ui.exTable {
                     let selectedCoord = helper.getCellCoord($cell);
                     selectedCoord.innerIdx = selector.index($cell);
                     $.data($detailContent, internal.INPUT_SELECTING, selectedCoord);
+                    if (options.errorMessagePopup) {
+                        let errPopup = $.data($exTable, internal.ERR_POPUP),
+                            errMsg = $.data($cell, internal.ERR_MSG);
+                        if (errPopup) {
+                            helper.remove(errPopup);
+                            helper.close(errPopup);
+                        }
+                        
+                        if (errPopup && !_.isNil(errMsg)) {
+                            document.body.appendChild(errPopup);
+                            errPopup.innerHTML = errMsg;
+                            let offset = selector.offset($cell);
+                            let bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
+                            let offsetHeight = !_.isNil($cell.style.height) ? parseFloat($cell.style.height)
+                                : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
+                            errPopup.style.top = `${offset.top + offsetHeight + 2}px`;
+                            errPopup.style.left = `${offset.left}px`;
+                        }
+                    }
+                    
                     return;
                 }
+                
                 if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                 update.edit($exTable, $cell, options.containerClass);
             });
@@ -2139,7 +2408,12 @@ module nts.uk.ui.exTable {
                 
                 $editor = document.createElement("div");
                 $editor.className = EDITOR_CLS;
-                $editor.style.height = "calc(100% - 1px)";
+                if (selector.is($cell, `.${render.CELL_CLS}`)) {
+                    $editor.style.height = `${parseFloat(exTable.bodyRowHeight) - 3}px`;
+                } else {
+                    $editor.style.height = "calc(100% - 1px)";
+                }
+            
                 $editor.style.width = "calc(100% - 1px)";
                 $editor.style.backgroundColor = "#FFF";
                 $editor.style.border = "1px solid #AAB7B8";
@@ -2185,7 +2459,7 @@ module nts.uk.ui.exTable {
                     editor.innerIdx = innerIdx;
                     editor.value = inputVal;
                     $.data($exTable, EDITOR, new Editor($editor, land, coord.rowIdx, coord.columnKey, innerIdx, inputVal));
-                    helper.addClass($cell, EDIT_CELL_CLS)
+                    helper.addClass($cell, EDIT_CELL_CLS);
                     $cell.innerHTML = "";
                     $cell.appendChild($editor);
                     editing($exTable, $editor, land);
@@ -2348,6 +2622,11 @@ module nts.uk.ui.exTable {
                 helper.removeClass($parent, update.EDIT_CELL_CLS);
                 $parent.textContent = content;
                 $.data($exTable, update.EDITOR, null);
+                let errPopup = $.data($exTable, internal.ERR_POPUP);
+                if (errPopup) {
+                    helper.remove(errPopup);
+                    helper.close(errPopup);
+                }
             }
             
             events.trigger($exTable, events.STOP_EDIT, 
@@ -2421,6 +2700,12 @@ module nts.uk.ui.exTable {
          */
         export function outsideClick($exTable: HTMLElement, $target: HTMLElement, immediate?: boolean) {
             if (immediate || !selector.is($target, "." + update.EDITABLE_CLS)) {
+                let errPopup = $.data($exTable, internal.ERR_POPUP);
+                if (errPopup) {
+                    helper.remove(errPopup);
+                    helper.close(errPopup);
+                }
+                
                 if ($.data($exTable, "blockUI.isBlocked") === 1 /*|| errors.occurred($exTable)*/) return;
                 let editor = $.data($exTable, update.EDITOR);
                 if (util.isNullOrUndefined(editor)) return;
@@ -2431,7 +2716,7 @@ module nts.uk.ui.exTable {
                     let innerIdx = -1;
                     let $parent = helper.closest(editor.$editor, "." + update.EDITABLE_CLS);
                     helper.removeClass($parent, update.EDIT_CELL_CLS);
-                    let $g = helper.closest($parent, "table").parentElement;
+                    let $g = $grid;
                     if (!$parent || !$g) return; 
                     if (selector.is($parent, "div")) innerIdx = selector.index($parent);
                     $parent.textContent = content;
@@ -2445,6 +2730,7 @@ module nts.uk.ui.exTable {
                     if (inputSelecting) {
                         selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                     }
+                    
                     $.data($grid, internal.INPUT_SELECTING, null);
                 };
                 let $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
@@ -3034,8 +3320,10 @@ module nts.uk.ui.exTable {
             $grid: HTMLElement;
             options: any;
             mode: Mode;
+            token: string;
             constructor(options?: any) {
                 this.options = options;
+                this.token = uk.util.randomId();
             }
             
             /**
@@ -3087,6 +3375,8 @@ module nts.uk.ui.exTable {
 //                    self.cut();   
                 } else if (evt.ctrlKey && helper.isUndoKey(evt)) {
                     self.undo();
+                } else if (evt.ctrlKey && helper.isRedoKey(evt)) {
+                    self.redo();
                 }
             }
             
@@ -3096,7 +3386,7 @@ module nts.uk.ui.exTable {
             copy(cut?: boolean) {
                 let self = this;
                 let selectedCells: Array<any> = selection.getSelectedCells(this.$grid);
-                let copiedData;
+                let copiedData = `${self.token}`;
                 if (selectedCells.length === 1) {
                     let cell = selectedCells[0];
                     let ds = internal.getDataSource(self.$grid);
@@ -3104,10 +3394,10 @@ module nts.uk.ui.exTable {
                     if (helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
                         || helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
                     this.mode = Mode.SINGLE;
-                    copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
+                    copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
                 } else {
                     this.mode = Mode.MULTIPLE;
-                    copiedData = this.converseStructure(selectedCells, cut);
+                    copiedData += this.converseStructure(selectedCells, cut);
                 }
                 let $copyHelper = document.querySelector("#copyHelper");
                 $copyHelper.value = copiedData;
@@ -3179,7 +3469,19 @@ module nts.uk.ui.exTable {
                     }
                     update.gridCell(self.$grid, cell.rowIndex, cell.columnKey, -1, value);
                 });
-            } 
+            }
+            
+            /**
+             * Get contents.
+             */
+            getContents(raw: string): string {
+                if (_.isNil(raw)) return null;
+                let self = this,
+                    length = self.token.length; 
+                let token = raw.substr(0, length);
+                if (token !== self.token) return null;
+                return raw.substr(length);
+            }
                 
             /**
              * Paste.
@@ -3190,6 +3492,8 @@ module nts.uk.ui.exTable {
                 } else {
                     this.pasteRange(evt);
                 }
+                
+                $.data(this.$grid, internal.REDO_STACK, []);
             }
             
             /**
@@ -3198,6 +3502,8 @@ module nts.uk.ui.exTable {
             pasteSingleCell(evt: any) {
                 let self = this;
                 let cbData = this.getClipboardContent(evt);
+                cbData = self.getContents(cbData);
+                if (_.isNil(cbData)) return;
                 cbData = helper.getCellData(cbData);
                 let selectedCells = selection.getSelectedCells(this.$grid);
                 let txId = util.randomId();
@@ -3211,6 +3517,8 @@ module nts.uk.ui.exTable {
              */
             pasteRange(evt: any) {
                 var cbData = this.getClipboardContent(evt);
+                cbData = this.getContents(cbData);
+                if (_.isNil(cbData)) return;
                 cbData = this.process(cbData);
                 this.updateWith(cbData);
             }
@@ -3276,9 +3584,40 @@ module nts.uk.ui.exTable {
                 let histories = $.data(self.$grid, internal.COPY_HISTORY);
                 if (!histories || histories.length === 0) return;
                 let tx = histories.pop();
+                let redoStack = $.data(self.$grid, internal.REDO_STACK),
+                    ds = internal.getDataSource(self.$grid),
+                    currentItems = [];
+                
                 _.forEach(tx.items, function(item: any) {
+                    let currentItem = { rowIndex: item.rowIndex, columnKey: item.columnKey, innerIdx: -1 },
+                        data = ds[item.rowIndex];
+                    if (!data) return;
+                    currentItem.value = data[item.columnKey];
+                    currentItems.push(currentItem);
+                    
                     update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
                     internal.removeChange(self.$grid, item);
+                });
+                
+                let redoTx = { txId: tx.txId, items: currentItems };
+                if (!redoStack) {
+                    redoStack = [ redoTx ];
+                    $.data(self.$grid, internal.REDO_STACK, redoStack);
+                } else {
+                    redoStack.push(redoTx);
+                }
+            }
+            
+            /**
+             * Redo.
+             */
+            redo() {
+                let self = this,
+                    redoStack = $.data(self.$grid, internal.REDO_STACK);
+                if (!redoStack || redoStack.length === 0) return;
+                let tx = redoStack.pop();
+                _.forEach(tx.items, function(item: any) {
+                    update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
                 });
             }
             
@@ -3392,6 +3731,7 @@ module nts.uk.ui.exTable {
                 let coord = helper.getCellCoord($cell);
                 let key = coord.columnKey;
                 let colIndex = helper.indexOf(key, visibleColumns);
+                $.data($grid, internal.STICK_REDO_STACK, []);
                 if (sticker.mode === SINGLE) {
                     let result;
                     if ((result = sticker.validate(rowIdx, key, sticker.data)) !== true) {
@@ -3462,18 +3802,30 @@ module nts.uk.ui.exTable {
                     });
                 }
                 
-                let isValid;
+                let isValid, message;
                 if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                     isValid = false;
+                    message = uk.resource.getMessage('MsgB_1', [ "時間" ]);
                 } else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                     if (vtor.actValid === internal.TIME) {
                         isValid = isTimeClock(value);
+                        message = uk.resource.getMessage("MsgB_16", [ "時刻", "0:00", "23:59" ]);
                         formatValue = formatTime(value); 
                     } else if (vtor.actValid === internal.DURATION) {
                         isValid = isTimeDuration(value, vtor.max, vtor.min);
+                        if (_.isNil(vtor.max)) {
+                            vtor.max = `${DEF_HOUR_MAX}:00`;
+                        }
+                        
+                        if (_.isNil(vtor.min)) {
+                            vtor.min = "0:00";
+                        }
+                        
+                        message = uk.resource.getMessage("MsgB_15", [ "時間", vtor.min, vtor.max ]);
                         formatValue = formatTime(value);
                     } else if (vtor.actValid === internal.NUMBER) {
                         isValid = isNumber(value, vtor.max, vtor.min);
+                        message = "MESSAGE_DEFINE_NEED";
                         formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
                     } else {
                         isValid = true;
@@ -3488,10 +3840,20 @@ module nts.uk.ui.exTable {
                     errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
     //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
 //                    update.setText($cell, innerIdx, value);
+                    if (gen.options.errorMessagePopup) {
+                        $.data($cell, internal.ERR_MSG, message);
+                    }
+                    
                     return Result.fail();
+                } else {
+                    if (gen.options.errorMessagePopup) {
+                        $.data($cell, internal.ERR_MSG, null);
+                    }
                 }
+                
                 if (errors.any($cell, innerIdx)) errors.remove($tbl, $cell, rowIdx, columnKey, innerIdx);
             }
+            
             return Result.ok(formatValue);
         }
         
@@ -3568,8 +3930,8 @@ module nts.uk.ui.exTable {
                 minute = totalTime % 100;
                 hour = Math.floor(totalTime / 100);
             }
-            if (((hour !== NaN && hour >= 0 && hour <= HOUR_MAX) || hour === NaN) 
-                && minute !== NaN && minute >= 0 && minute <= MINUTE_MAX) return true;
+            if (((!isNaN(hour) && hour >= 0 && hour <= HOUR_MAX) || isNaN(hour)) 
+                && !isNaN(minute) && minute >= 0 && minute <= MINUTE_MAX) return true;
             return false;   
         }
         
@@ -3594,7 +3956,7 @@ module nts.uk.ui.exTable {
                 hour = Math.floor(totalTime / 100);
                 negative = time.charAt(0) === '-';
             }
-            if (((util.isNullOrUndefined(hour) || hour === NaN) && (util.isNullOrUndefined(minute) || minute === NaN))
+            if (((util.isNullOrUndefined(hour) || isNaN(hour)) && (util.isNullOrUndefined(minute) || isNaN(minute)))
                 || minute > MINUTE_MAX) return false;
             let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
             if (!targetTime) return false;
@@ -3678,15 +4040,18 @@ module nts.uk.ui.exTable {
                 minute = totalTime % 100;
                 hour = Math.floor(totalTime / 100);
             }
-            if (!util.isNullOrUndefined(hour) && hour !== NaN 
-                && !util.isNullOrUndefined(minute) && minute !== NaN) {
+            
+            if (!util.isNullOrUndefined(hour) && !isNaN(hour) 
+                && !util.isNullOrUndefined(minute) && !isNaN(minute)) {
                 if (minute < 10) minute = "0" + minute;
                 return (time.charAt(0) === '-' ? "-" : "") + hour + TIME_SPLIT + minute;
             }
-            if (!util.isNullOrUndefined(hour) && hour === NaN 
-                && !util.isNullOrUndefined(minute) && minute !== NaN) {
+            
+            if (!util.isNullOrUndefined(hour) && isNaN(hour) 
+                && !util.isNullOrUndefined(minute) && !isNaN(minute)) {
                 return (time.charAt(0) === '-' ? "-" : "") + minute;
             }
+            
             return time;
         }
     }
@@ -3694,6 +4059,7 @@ module nts.uk.ui.exTable {
     module errors {
         export let ERROR_CLS = "x-error"; 
         export let ERRORS = "errors";
+        export let ERR_MSG_CLS = "x-error-message";
         
         /**
          * Add.
@@ -3958,7 +4324,11 @@ module nts.uk.ui.exTable {
             if (!rowExists($grid, rowIdx)) return;
             let $cell = cellAt($grid, rowIdx, columnKey);
             let childCells = $cell.querySelectorAll(`.${render.CHILD_CELL_CLS}`);
-            if (_.isNil(childCells)) return;
+            if (_.isNil(childCells) || childCells.length === 0) {
+                helper.removeClass($cell, CELL_SELECTED_CLS);    
+                return;
+            }
+            
             helper.removeClass(childCells[innerIdx], CELL_SELECTED_CLS);
         }
         
@@ -3982,8 +4352,11 @@ module nts.uk.ui.exTable {
                 if (!rows || rows.length <= idx) return intan.NULL;
                 return rows[idx];
             }
-            if (virt.startIndex > rowIdx || virt.endIndex < rowIdx)
+            if (virt.startIndex > rowIdx || virt.endIndex < rowIdx) {
+                if (virt.rowElements) return virt.rowElements[rowIdx];
                 return intan.NULL;
+            }
+            
             idx = (parseInt(rowIdx) - virt.startIndex + 1);
             return rows[idx];
         }
@@ -4016,8 +4389,11 @@ module nts.uk.ui.exTable {
          */
         export function rowExists($grid: HTMLElement, rowIdx: any) {
             let virt = $.data($grid, internal.TANGI);
-            if (virt && (virt.startIndex > rowIdx || virt.endIndex < rowIdx))
+            if (virt && (virt.startIndex > rowIdx || virt.endIndex < rowIdx)) {
+                if (virt.rowElements && virt.rowElements[rowIdx]) return true;   
                 return false;
+            }
+            
             return true;
         }
         
@@ -4232,6 +4608,12 @@ module nts.uk.ui.exTable {
         export let RESIZE_AREA = "resize-area";
         export let AREA_LINE = "ex-area-line";
         export let STAY_CLS = "x-stay";
+               
+        export enum MiddleAdjust {
+            SHOW = 0,
+            HIDE = 1
+        }
+        
         export class ColumnAdjuster {
             $headerTable: HTMLElement;
             $contentTable: HTMLElement;
@@ -4524,6 +4906,7 @@ module nts.uk.ui.exTable {
                     leftWidth = self.actionDetails.widths.left + distance;
                     rightWidth = self.actionDetails.widths.right - distance;
                 }
+                
                 if (!self.isResizePermit(leftWidth, rightWidth)) return;
                 self.actionDetails.changedWidths.left = leftWidth;
                 self.actionDetails.changedWidths.right = rightWidth;
@@ -4536,19 +4919,22 @@ module nts.uk.ui.exTable {
                         self.setWidth($bodyLeftArea, leftWidth);
                     }
                 }
+                
                 let newPosLeft;
                 if (self.actionDetails.$rightArea) {
                     self.setWidth(self.actionDetails.$rightArea, rightWidth);
                     newPosLeft = (parseInt(self.actionDetails.rightAreaPosLeft) + distance) + "px";
                     self.actionDetails.$rightArea.style.left = newPosLeft;
                     $bodyRightArea = self.bodyWrappers[self.actionDetails.gripIndex + 1];
-                    if (self.actionDetails.gripIndex === self.bodyWrappers.length - 2) {
+                    if (self.actionDetails.gripIndex === self.bodyWrappers.length - 2
+                        || $bodyRightArea.style.overflowY === "scroll") {
                         self.setWidth($bodyRightArea, rightWidth + helper.getScrollWidth());    
                     } else {
                         self.setWidth($bodyRightArea, rightWidth);
                     }
                     $bodyRightArea.style.left = newPosLeft;
                 }
+                
                 self.reflectSumTblsSize(distance, leftWidth, rightWidth, newPosLeft);
                 events.trigger(self.$container, events.AREA_RESIZE, [ self.actionDetails.$leftArea, self.actionDetails.$rightArea, leftWidth, rightWidth ]);
             }
@@ -4648,11 +5034,13 @@ module nts.uk.ui.exTable {
             syncLines() {
                 let self = this;
                 self.$areaAgency.style.width = self.$container.style.width;
+                let agencies = self.$areaAgency.querySelectorAll("div");
                 
                 _.forEach(self.headerWrappers, function($wrapper: HTMLElement, index: number) {
+                    if ($wrapper.style.display === "none") return;
                     let height = parseFloat($wrapper.style.height) + parseFloat(self.bodyWrappers[index].style.height); 
                     let left = $wrapper.offsetWidth + (selector.offset($wrapper).left - selector.offset(self.$areaAgency).left);
-                    let div = self.$areaAgency.querySelectorAll("div")[index];
+                    let div = agencies[index];
                     if (!div) return false;
                     div.style.left = left + "px";
                     div.style.height = height + "px";
@@ -4716,42 +5104,85 @@ module nts.uk.ui.exTable {
             }
             $container.style.height = (cHeight + SPACE) + "px";
             events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
-        }
+        }   
         
         /**
          * Fit window width.
          */
-        export function fitWindowWidth($container: HTMLElement) {
+        export function fitWindowWidth($container: HTMLElement, adjustMiddle?: boolean) {
             let table = $.data($container, NAMESPACE);
             if (table.$commander) return;
             let $vertSumHeader = $container.querySelector("." + HEADER_PRF + VERTICAL_SUM);
             let $vertSumContent = $container.querySelector("." + BODY_PRF + VERTICAL_SUM);
             let $detailHeader = $container.querySelector("." + HEADER_PRF + DETAIL);
             let $detailBody = $container.querySelector("." + BODY_PRF + DETAIL);
-            let width = window.innerWidth - selector.offset($detailHeader).left;
+            let $middleHeader = $container.querySelector(`.${HEADER_PRF + MIDDLE}`);
+            let $middleBody = $container.querySelector(`.${BODY_PRF + MIDDLE}`);
+            let $horzSumHeader = $container.querySelector(`.${HEADER_PRF + HORIZONTAL_SUM}`);
+            let $horzSumContent = $container.querySelector(`.${BODY_PRF + HORIZONTAL_SUM}`);
+            let detailOffsetLeft =  parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
+                width = window.innerWidth - detailOffsetLeft;
             let scrollWidth = helper.getScrollWidth();
             let $sup = table.$follower;
+            
+            if (adjustMiddle === true && $middleHeader) {
+                let $leftHorzSumHeader = $container.querySelector(`.${HEADER_PRF + LEFT_HORZ_SUM}`);
+                let $leftHorzSumBody = $container.querySelector(`.${BODY_PRF + LEFT_HORZ_SUM}`);
+                let leftHorzSumWidth, horzSumLeft, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
+                if ($middleHeader.style.display !== "none") {
+                    width -= middleWidth;
+                    let newDetailLeft = detailOffsetLeft + middleWidth;
+                    $detailHeader.style.left = `${newDetailLeft}px`;
+                    $detailBody.style.left = `${newDetailLeft}px`;
+                    if ($leftHorzSumHeader) {
+                        leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) + middleWidth;
+                        horzSumLeft = parseFloat($horzSumHeader.style.left) + middleWidth;
+                    }
+                } else {
+                    width += middleWidth;
+                    let newDetailLeft = detailOffsetLeft - middleWidth;
+                    $detailHeader.style.left = `${newDetailLeft}px`;
+                    $detailBody.style.left = `${newDetailLeft}px`;
+                    if ($leftHorzSumHeader) {                       
+                        leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) - middleWidth;
+                        horzSumLeft = parseFloat($horzSumHeader.style.left) - middleWidth;
+                    }
+                }
+                
+                if ($leftHorzSumHeader) {
+                    $leftHorzSumHeader.style.width = `${leftHorzSumWidth}px`;
+                    $leftHorzSumBody.style.width = `${leftHorzSumWidth}px`;
+                    $horzSumHeader.style.left = `${horzSumLeft}px`;
+                    $horzSumContent.style.left = `${horzSumLeft}px`;
+                }
+            }
+                
             if ($vertSumHeader && $vertSumHeader.style.display !== "none") {
                 width = width - parseFloat($.data($container, internal.X_OCCUPY)) - parseFloat($vertSumContent.style.width);
                 if (!util.isNullOrUndefined($detailHeader.style.maxWidth)
                     && width >= parseFloat($detailHeader.style.maxWidth)) {
                     width = parseFloat($detailHeader.style.maxWidth);
                 }
-                $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
+                
+                if (adjustMiddle instanceof Event) {
+                    $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
+                }
+                
                 $detailHeader.style.width = width + "px";
                 $detailBody.style.width = width + "px";
                 
                 if (storage.area.getPartWidths($container).isPresent()) {
                     storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
                 }
-                let $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                
                 if ($horzSumHeader) {
                     $horzSumHeader.style.width = width + "px";
                 }
-                let $horzSumContent = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                
                 if ($horzSumContent) {
                     $horzSumContent.style.width = (width + helper.getScrollWidth()) + "px";
                 }
+                
                 repositionVertSum($container, $vertSumHeader, $vertSumContent);
                 syncDetailAreaLine($container, $detailHeader, $detailBody);
                 if ($sup) {
@@ -4761,19 +5192,22 @@ module nts.uk.ui.exTable {
                         $sup.querySelector("." + BODY_PRF + DETAIL).style.width = (width + scrollWidth) + "px";  
                     }
                 }
+                
                 return;
             }
             
-            let $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
-            let $horzSumContent = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
             width = width - parseFloat($.data($container, internal.X_OCCUPY));
             if (!util.isNullOrUndefined($detailHeader.style.maxWidth) 
                 && width >= parseFloat($detailHeader.style.maxWidth) + scrollWidth) {
                 width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
             }
+            
             $detailHeader.style.width = (width - scrollWidth) + "px";
-            $container.style.width = (parseFloat($container.style.width) 
-                    + (width - parseFloat($detailBody.style.width))) + "px";
+            if (adjustMiddle instanceof Event) {
+                $container.style.width = (parseFloat($container.style.width) 
+                        + (width - parseFloat($detailBody.style.width))) + "px";
+            }
+            
             $detailBody.style.width = width + "px";
             if (storage.area.getPartWidths($container).isPresent()) {
                 storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
@@ -4782,6 +5216,9 @@ module nts.uk.ui.exTable {
                 $horzSumHeader.style.width = (width - scrollWidth) + "px";
                 $horzSumContent.style.width = width + "px";
             }
+            
+            syncDetailAreaLine($container, $detailHeader, $detailBody);
+            
             if ($sup) {
                 let $supHeader = $sup.querySelector("." + HEADER_PRF + DETAIL);
                 if ($supHeader) {
@@ -4799,16 +5236,47 @@ module nts.uk.ui.exTable {
             if (!$agency) return;
             let height = parseFloat($detailHeader.style.height) + parseFloat($detailBody.style.height); 
             let left = $detailHeader.offsetWidth + (selector.offset($detailHeader).left - selector.offset($agency).left);
-            let index;
+            let index, middleIndex, middleHidden, vertSumIndex, vertSumHidden;
             selector.queryAll($container, "div[class*='" + HEADER_PRF + "']").forEach(function(e: HTMLElement, idx: number) {
+                if (e.classList.contains(HEADER_PRF + MIDDLE)) {
+                    middleIndex = idx;
+                    if (e.style.display === "none") {
+                        middleHidden = true;
+                    }
+                    
+                    return;
+                }
+                
                 if (e.classList.contains(HEADER_PRF + DETAIL)) {
                     index = idx;
-                    return false;
+                    return;
+                }
+                
+                if (e.classList.contains(HEADER_PRF + VERTICAL_SUM)) {
+                    vertSumIndex = idx;
+                    if (e.style.display === "none") {
+                        vertSumHidden = true;
+                    }
                 }
             });
-            let div = $agency.querySelectorAll("div")[index];
+            
+            let agencies = $agency.querySelectorAll("div");
+            let middleAgency = agencies[middleIndex];
+            if (middleHidden) {
+                helper.addClass(middleAgency, STAY_CLS);
+            } else {
+                helper.removeClass(middleAgency, STAY_CLS);
+            }
+            
+            let div = agencies[index];
             div.style.left = left + "px";
             div.style.height = height + "px";
+            
+            if (vertSumHidden) {
+                helper.addClass(div, STAY_CLS);
+            } else {
+                helper.removeClass(div, STAY_CLS);
+            }
         }
         
         /**
@@ -5525,6 +5993,9 @@ module nts.uk.ui.exTable {
         export let BODY_CELL_STYLE = "BodyCellStyle";
         export let COLUMN_RESIZE = "ColumnResize";
         export let TIME_RANGE = "TimeRange"
+        export let RIGHT_CLICK = "RightClick";
+        export let CLICK = "Click";
+        export let HOVER = "Hover";
         
         /**
          * Is enable.
@@ -5542,6 +6013,156 @@ module nts.uk.ui.exTable {
             return _.find(features, function(feature: any) {
                 return feature.name === name;
             });
+        }
+        
+        /**
+         * Activate.
+         */
+        export function activate($container: HTMLElement, options: any) {
+            let rightClickFt = find(options.features, RIGHT_CLICK);
+            if (rightClickFt) {
+                $container.addXEventListener(events.CM, () => {
+                    let target = event.target;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                        target = helper.closest(target, `.${render.CELL_CLS}`); 
+                    }
+                    
+                    if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                    let cm: widget.ContextMenu, 
+                        ui = helper.getCellCoord(target);
+                    ui.target = target;
+                    ui.contextMenu = items => {
+                        if (_.isNil(cm)) {
+                            cm = new widget.ContextMenu();
+                            cm.$table = $container.querySelector(`.${options.tableClass}`);
+                        }
+                        
+                        if (items === "show") {
+                            cm.click(event);
+                            return;
+                        }
+                        
+                        if (!_.isNil(items)) {
+                            cm.newItems(items);
+                        }
+                    };
+                    
+                    rightClickFt.handler(ui);
+                });
+            }
+            
+            let hoverFt = find(options.features, HOVER);
+            if (hoverFt) {
+                if (hoverFt.enter) {
+                    $container.addXEventListener(events.MOUSE_OVER, () => {
+                        let target = event.target;
+                        event.stopPropagation(); 
+                        if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                            target = helper.closest(target, `.${render.CELL_CLS}`);
+                        }
+                        
+                        if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                        let ui = helper.getCellCoord(target),
+                            $table = $container.querySelector(`.${options.tableClass}`);
+                        ui.target = target;
+                        ui.tooltip = (tooltipOpt, sources) => {
+                            let $t2 = $.data($table, internal.TOOLTIP);
+                            if (!$t2) {
+                                if (_.isObject(tooltipOpt) && _.isNil(tooltipOpt.showRight)) {
+                                    tooltipOpt.showRight = true;
+                                }
+                                 
+                                $t2 = $("<div/>").addClass(widget.cssClass(_.isString(tooltipOpt) ? { showRight: true } : tooltipOpt));
+                                $t2.appendTo("body");
+                                $.data($table, internal.TOOLTIP, $t2);
+                            }
+                            
+                            if (tooltipOpt === "show") {
+                                $t2.empty().append(sources).css({ visibility: "visible" })
+                                    .position({ my: "left top", at: "left+" + helper.visibleWidth($container, target) + " top+5", of: target });
+                            }
+                        };
+                        
+                        hoverFt.enter(ui);
+                    });
+                }
+                
+                if (hoverFt.exit) {
+                    $container.addXEventListener(events.MOUSE_OUT, () => {
+                        let target = event.target;
+                        event.stopPropagation(); 
+                        if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                            target = helper.closest(target, `.${render.CELL_CLS}`);
+                        }
+                        
+                        if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                        let ui = helper.getCellCoord(target),
+                            $table = $container.querySelector(`.${options.tableClass}`);
+                        ui.target = target;
+                        ui.tooltip = (tooltipOpt) => {
+                            if (tooltipOpt === "hide") {
+                                let $t2 = $.data($table, internal.TOOLTIP);
+                                if (!$t2 || $t2.css("display") === "none") return;
+                                $t2.css({ visibility: "hidden" });
+                            }
+                        };
+                        
+                        hoverFt.exit(ui);
+                    }); 
+                }
+            }
+            
+            let clickFt = find(options.features, CLICK);
+            if (clickFt) {
+                $container.addXEventListener(events.MOUSE_DOWN, () => {
+                    let target = event.target;
+                    event.stopPropagation();
+                    if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                        target = helper.closest(target, `.${render.CELL_CLS}`);
+                    }
+                    
+                    if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                    let ui = helper.getCellCoord(target),
+                        $table = $container.querySelector(`.${options.tableClass}`);
+                    ui.target = target;
+                    ui.popupPanel = (popupOpt, $panel, position) => {
+                        let $pu = $.data($table, internal.POPUP);
+                        if (!$pu && _.isObject(popupOpt)) {
+                            if (popupOpt.wrap) {
+                                if (!popupOpt.cssClass) popupOpt.cssClass = {};
+                                $.extend(popupOpt.cssClass, { showRight: true });
+                                $pu = $("<div/>").addClass(widget.cssClass(popupOpt.cssClass));
+                                $pu.appendTo("body");
+                                $pu.data("wrap", popupOpt.wrap);
+                            } else {
+                                if (_.isNil(popupOpt.panel)) return;
+                                $pu = popupOpt.panel.addClass(widget.POPUP_CLS).hide();
+                            }
+                            
+                            $.data($table, internal.POPUP, $pu);
+                            widget.hideIfOutside($pu);
+                        }
+                        
+                        if (_.isNil($pu) || _.isObject(popupOpt)) return;
+                        if (popupOpt === "show") {
+                            if ($pu.data("wrap")) {
+                                if (_.isNil($panel)) return;
+                                $pu.empty().append($panel).show()
+                                    .position({ my: "left top", at: "left+" + helper.visibleWidth($container, target) + " top+5", of: target });
+                            } else {
+                                let pos = widget.eventPageOffset(event, false);
+                                $pu.show().css(widget.getPosition($pu, pos, position || "top left"));
+                            }
+                        } else {
+                            $pu.hide();
+                        }
+                    };
+                    
+                    clickFt.handler(ui);
+                });
+            }
         }
     }
     
@@ -5576,9 +6197,9 @@ module nts.uk.ui.exTable {
             }
         }
         
-        export function detColumn($grid: HTMLElement, row: HTMLElement, rowIdx: any) {
-            let $tbl = helper.closest($grid, "." + NAMESPACE);
-            let detOpt = $.data($tbl, NAMESPACE).determination;
+        export function detColumn($grid: HTMLElement, row: HTMLElement, rowIdx: any, detOpt: any, $tbl: HTMLElement) {
+//            let $tbl = helper.closest($grid, "." + NAMESPACE);
+//            let detOpt = $.data($tbl, NAMESPACE).determination;
             if (!detOpt || !$grid.classList.contains(HEADER_PRF + DETAIL)) return;
             _.forEach(detOpt.rows, function(i: any) {
                 if (i === rowIdx) {
@@ -5665,9 +6286,9 @@ module nts.uk.ui.exTable {
             });
         }
         
-        export function detCell($grid: HTMLElement, $cell: HTMLElement, rowIdx: any, columnKey: any) {
-            let $tbl = helper.closest($grid, "." + NAMESPACE);
-            let detOpt = $.data($tbl, NAMESPACE).determination;
+        export function detCell($grid: HTMLElement, $cell: HTMLElement, rowIdx: any, columnKey: any, detOpt: any, $tbl: HTMLElement) {
+//            let $tbl = helper.closest($grid, "." + NAMESPACE);
+//            let detOpt = $.data($tbl, NAMESPACE).determination;
             if (!detOpt) return;
             if ($grid.classList.contains(BODY_PRF + LEFTMOST)) {
                 _.forEach(detOpt.columns, function(key: any) {
@@ -5816,6 +6437,12 @@ module nts.uk.ui.exTable {
                 case "showVerticalSummary":
                     showVertSum(self);
                     break;
+                case "hideMiddle":
+                    hideMiddle(self);
+                    break;
+                case "showMiddle":
+                    showMiddle(self);
+                    break;
                 case "updateTable": 
                     updateTable(self, params[0], params[1], params[2], params[3], params[4]);
                     break;
@@ -5846,6 +6473,9 @@ module nts.uk.ui.exTable {
                     break;
                 case "stickUndo":
                     undoStick(self);
+                    break;
+                case "stickRedo":
+                    redoStick(self);
                     break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
@@ -5889,7 +6519,7 @@ module nts.uk.ui.exTable {
                     saveScroll(self);
                     break;
                 case "scrollBack":
-                    scrollBack(self, params[0]);
+                    scrollBack(self, params[0], params[1]);
                     break;
             }
         };
@@ -5940,9 +6570,17 @@ module nts.uk.ui.exTable {
          * Hide vertSum.
          */
         function hideVertSum($container: JQuery) {
-            $container.find("." + HEADER_PRF + VERTICAL_SUM).hide();
+            let $vertSumHeader = $container.find("." + HEADER_PRF + VERTICAL_SUM);
+            if ($vertSumHeader.css("display") === "none") return;
+            $vertSumHeader.hide();
             $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
+            let $detailBody = $container.find(`.${BODY_PRF + DETAIL}`); 
+            if (!helper.hasScrollBar($detailBody[0], true)) {
+                $container.css("width", parseFloat($container.css("width")) - parseFloat($vertSumHeader.css("width")));
+            }
+            
             resize.fitWindowWidth($container[0]);
+            $detailBody.css("max-width", `${parseFloat($detailBody.css("max-width")) + helper.getScrollWidth()}px`);
             scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
         }
         
@@ -5952,12 +6590,54 @@ module nts.uk.ui.exTable {
         function showVertSum($container: JQuery) {
             let $vertSumBody = $container.find("." + BODY_PRF + VERTICAL_SUM);
             let $detailBody = $container.find("." + BODY_PRF + DETAIL);
-            $container.find("." + HEADER_PRF + VERTICAL_SUM).show();
+            let $vertSumHeader = $container.find("." + HEADER_PRF + VERTICAL_SUM);
+            if ($vertSumHeader.css("display") !== "none") return;
+            $vertSumHeader.show();
             $vertSumBody.show();
             resize.fitWindowWidth($container[0]);
+            $detailBody.css("max-width", `${parseFloat($detailBody.css("max-width")) - helper.getScrollWidth()}px`);
             scroll.bindVertWheel($detailBody[0]);
             $vertSumBody.scrollTop($detailBody.scrollTop());
+            
+            if (!helper.hasScrollBar($detailBody[0], true)) {
+                $container.css("width", parseFloat($container.css("width")) + parseFloat($vertSumHeader.css("width")));
+            }
         }
+        
+        /**
+         * Hide middle.
+         */
+        function hideMiddle($container: JQuery) {
+            let $middleHeader = $container.find(`.${HEADER_PRF + MIDDLE}`);
+            if ($middleHeader.length === 0) return;
+            let $middleBody = $container.find(`.${BODY_PRF + MIDDLE}`);
+            $middleHeader.hide();
+            $middleBody.hide();
+            let $detailBody = $container.find(`.${BODY_PRF + DETAIL}`);
+            if (!helper.hasScrollBar($detailBody[0], true)) {
+                $container.css("width", parseFloat($container.css("width")) - parseFloat($middleHeader.css("width")));
+            }
+            
+            resize.fitWindowWidth($container[0], true);
+        }
+        
+        /**
+         * Show middle.
+         */
+        function showMiddle($container: JQuery) {
+            let $middleHeader = $container.find(`.${HEADER_PRF + MIDDLE}`);
+            if ($middleHeader.length === 0) return;
+            let $middleBody = $container.find(`.${BODY_PRF + MIDDLE}`),
+                $detailBody = $container.find(`.${BODY_PRF + DETAIL}`);
+            $middleHeader.show();
+            $middleBody.show();
+            resize.fitWindowWidth($container[0], true);
+            $middleBody.scrollTop($detailBody.scrollTop());
+            
+            if (!helper.hasScrollBar($detailBody[0], true)) {
+                $container.css("width", parseFloat($container.css("width")) + parseFloat($middleHeader.css("width")));
+            }
+        }   
         
         /**
          * Update table.
@@ -6413,13 +7093,58 @@ module nts.uk.ui.exTable {
             if (!exTable || exTable.updateMode !== STICK) return;
             let $grid = $container.find("." + BODY_PRF + DETAIL);
             let histories = $grid.data(internal.STICK_HISTORY);
-            if (!histories) return;
+            if (!histories || histories.length === 0) return;
             let items = histories.pop();
+            let ds = internal.getDataSource($grid[0]),
+                currentItems = [], itemsByKey = {};
             _.forEach(items, function(i: any) {
                 let innerIdx = _.isNil(i.innerIdx) ? -1 : i.innerIdx; 
+                let data = ds[i.rowIndex];
+                if (data) {
+                    let value = itemsByKey[i.columnKey];
+                    if (_.isNil(value)) {
+                        value = data[i.columnKey];
+                        itemsByKey[i.columnKey] = value;
+                    }
+                    
+                    currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value });    
+                }
+                
                 update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
                 internal.removeChange($grid[0], i);
             });
+            
+            let redoStack = $grid.data(internal.STICK_REDO_STACK);
+            if (!redoStack) {
+                $grid.data(internal.STICK_REDO_STACK, [ currentItems ]);
+            } else {
+                redoStack.push(currentItems);
+            }
+        }
+        
+        /**
+         * Redo stick.
+         */
+        function redoStick($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== STICK) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let redoStack = $grid.data(internal.STICK_REDO_STACK);
+            if (!redoStack || redoStack.length === 0) return;
+            let sticker = $grid.data(internal.STICKER),
+                items = redoStack.pop();
+            if (!items || items.length === 0) return;
+            if (items.length == 1) {
+                let item = items[0];
+                update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker);
+            } else {
+                let data = {};
+                _.forEach(items, item => {
+                    data[item.columnKey] = item.value;
+                });
+                 
+                update.stickGridRowOw($grid[0], items[0].rowIndex, data, sticker.styleMaker);
+            }
         }
         
         /**
@@ -6754,12 +7479,17 @@ module nts.uk.ui.exTable {
         /**
          * Scroll back.
          */
-        function scrollBack($container: JQuery, where: number) {
-            let key = request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
-            let item = uk.localStorage.getItem(key);
-            if (!item.isPresent()) return; 
-            let $tbl = $container.find("." + BODY_PRF + DETAIL);
-            let scroll = JSON.parse(item.get());
+        function scrollBack($container: JQuery, where: number, scrollLength: { h: number, v: number }) {
+            let scroll, $tbl = $container.find("." + BODY_PRF + DETAIL);
+            if (_.isNil(scrollLength)) {
+                let key = request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+                let item = uk.localStorage.getItem(key);
+                if (!item.isPresent()) return; 
+                scroll = JSON.parse(item.get());
+            } else {
+                scroll = scrollLength;
+            }
+            
             switch (where) {
                 case 0:
                     $tbl.scrollLeft(scroll.h);
@@ -6792,10 +7522,12 @@ module nts.uk.ui.exTable {
         export let LAST_SELECTED: string = "last-selected";
         export let SELECTED_ROWS: string = "selected-rows";
         export let COPY_HISTORY: string = "copy-history";
+        export let REDO_STACK: string = "redo-stack";
         export let EDIT_HISTORY: string = "edit-history";
         export let TARGET_EDIT_HISTORY: string = "target-edit-history";
         export let OTHER_EDIT_HISTORY: string = "other-edit-history";
         export let STICK_HISTORY: string = "stick-history";
+        export let STICK_REDO_STACK: string = "stick-redo-stack";
         export let TOOLTIP: string = "tooltip";
         export let CONTEXT_MENU: string = "context-menu";
         export let POPUP: string = "popup";
@@ -6806,6 +7538,8 @@ module nts.uk.ui.exTable {
         export let DT_SEPARATOR: string = "/";
         export let COLUMN_IN: string = "column-in";
         export let INPUT_SELECTING: string = "input-selecting";
+        export let ERR_MSG: string = "error-msg";
+        export let ERR_POPUP: string = "error-popup";
         
         /**
          * Get gem.
@@ -6981,30 +7715,59 @@ module nts.uk.ui.exTable {
             }
             
             css(style: any) {
-                this.elements.forEach(function(e) {
-                    Object.keys(style).forEach(function(k) {;
-                        if (k === "maxWidth") {
-                            e.style.setProperty("max-width", style[k]);
-                            return;
-                        } else if (k === "paddingRight") {
-                            e.style.setProperty("padding-right", style[k]);
-                            return;
-                        } else if (k === "borderTop") {
-                            e.style.setProperty("border-top", style[k]);
-                            return;
-                        } else if (k === "borderBottom") {
-                            e.style.setProperty("border-bottom", style[k]);
-                            return;
-                        } else if (k === "borderRight") {
-                            e.style.setProperty("border-right", style[k]);
-                            return;
-                        } else if (k === "borderLeft") {
-                            e.style.setProperty("border-left", style[k]);
-                            return;
-                        }
-                        e.style.setProperty(k, style[k]);
-                    });
+//                this.elements.forEach(function(e) {
+//                    Object.keys(style).forEach(function(k) {;
+//                        if (k === "maxWidth") {
+//                            e.style.setProperty("max-width", style[k]);
+//                            return;
+//                        } else if (k === "paddingRight") {
+//                            e.style.setProperty("padding-right", style[k]);
+//                            return;
+//                        } else if (k === "borderTop") {
+//                            e.style.setProperty("border-top", style[k]);
+//                            return;
+//                        } else if (k === "borderBottom") {
+//                            e.style.setProperty("border-bottom", style[k]);
+//                            return;
+//                        } else if (k === "borderRight") {
+//                            e.style.setProperty("border-right", style[k]);
+//                            return;
+//                        } else if (k === "borderLeft") {
+//                            e.style.setProperty("border-left", style[k]);
+//                            return;
+//                        }
+//                        e.style.setProperty(k, style[k]);
+//                    });
+//                });
+                
+                let text = "; ";
+                Object.keys(style).forEach(function(k) {
+                    if (k === "maxWidth") {
+                        text += ("max-width: " + style[k] + "; ");
+                        return;
+                    } else if (k === "paddingRight") {
+                        text += ("padding-right: " + style[k] + "; ");
+                        return;
+                    } else if (k === "borderTop") {
+                        text += ("border-top: " + style[k] + "; ");
+                        return;
+                    } else if (k === "borderBottom") {
+                        text += ("border-bottom: " + style[k] + "; ");
+                        return;
+                    } else if (k === "borderRight") {
+                        text += ("border-right: " + style[k] + "; ");
+                        return;
+                    } else if (k === "borderLeft") {
+                        text += ("border-left: " + style[k] + "; ");
+                        return;
+                    }
+                    text += k + ": " + style[k] + "; ";
                 });
+                
+                this.elements.forEach(function(e) {
+                    e.style.cssText = text;
+                });
+                
                 return this;
             }
             
@@ -7053,6 +7816,14 @@ module nts.uk.ui.exTable {
             $outer.parentNode.removeChild($outer);
             _scrollWidth = 100 - widthWithScroll;
             return _scrollWidth;
+        }
+        
+        /**
+         * Has scrollbar.
+         */
+        export function hasScrollBar(element: HTMLElement, horzDir: boolean) {
+            if (horzDir) return element.scrollWidth > element.clientWidth;
+            return element.scrollHeight > element.clientHeight;
         }
         
         /**
@@ -7240,6 +8011,13 @@ module nts.uk.ui.exTable {
          */
         export function isUndoKey(evt: any) {
             return evt.keyCode === 90;
+        }
+        
+        /**
+         * Is redo key.
+         */
+        export function isRedoKey(evt: any) {
+            return evt.keyCode === 89;
         }
         
         /**
@@ -7754,6 +8532,37 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Remove node.
+         */
+        export function remove(node) {
+            if (isIE()) {
+                if (node && node.parentNode) node.parentNode.removeChild(node);
+                return;
+            }
+            
+            node.remove();
+        }
+        
+        /**
+         * Width.
+         */
+        export function width(el: HTMLElement) {
+            return parseFloat(getComputedStyle(el, null).width.replace("px", ""));
+        }
+        
+        /**
+         * Visible width.
+         */
+        export function visibleWidth(outer: HTMLElement, inner: HTMLElement) {
+            return Math.min(outer.offsetWidth + outer.scrollLeft - inner.offsetLeft, inner.offsetWidth);
+        }
+        
+        export function close(container: HTMLElement) {
+            container.style.top = "-99999px";
+            container.style.left = "-99999px";
+        }
+        
+        /**
          * Add class.
          */
         export function addClass1n(node, clazz) {
@@ -7873,7 +8682,7 @@ module nts.uk.ui.exTable {
             /**
              * Initialize. 
              */
-            abstract initialize();
+            abstract initialize(event?: any);
             
             /**
              * Get table.
@@ -7933,17 +8742,18 @@ module nts.uk.ui.exTable {
          */
         abstract class Popup extends XWidget {
             position: any;
-            constructor($selector: HTMLElement) {
+            constructor($selector: HTMLElement, event?: any) {
                 super($selector);
-                this.initialize();
+                this.initialize(event);
             }
             
             /**
              * Initialize.
              */
-            initialize() {
+            initialize(event?: any) {
                 let self = this;
-                self.$selector.addXEventListener(events.MOUSE_DOWN, function(evt: any) {
+                if (_.isNil(self.$selector)) return;
+                self.$selector.addXEventListener(event ? event : events.MOUSE_DOWN, function(evt: any) {
                     self.getTable();
                     if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination) return;
                     self.click(evt);
@@ -7961,8 +8771,8 @@ module nts.uk.ui.exTable {
          */
         export class ContextMenu extends Popup {
             items: Array<MenuItem>;
-            constructor($selector: HTMLElement, items: Array<MenuItem>) {
-                super($selector);
+            constructor($selector?: HTMLElement, items?: Array<MenuItem>, event?: any) {
+                super($selector, event);
                 this.items = items;         
             }
             
@@ -7991,6 +8801,23 @@ module nts.uk.ui.exTable {
                 update.outsideClick(helper.closest(self.$table, "." + NAMESPACE), self.$selector);
                 evt.stopPropagation();
                 hideIfOutside($menu); 
+            }
+            
+            /**
+             * New items.
+             */
+            newItems(items: Array<any>) {
+                let self = this, $menu = $.data(self.$table, internal.CONTEXT_MENU);
+                self.items = items;
+                if (!$menu) {
+                    $menu = $("<ul/>").addClass(MENU_CLS).appendTo("body").hide();
+                    $.data(self.$table, internal.CONTEXT_MENU, $menu);
+                }
+                
+                $menu.empty();
+                _.forEach(self.items, function(item: MenuItem) {
+                    self.createItem($menu, item);
+                });
             }
             
             /**
@@ -8063,7 +8890,7 @@ module nts.uk.ui.exTable {
                 }
                 if ($pu.css("display") === "none") {
                     let pos = eventPageOffset(evt, false);
-                    $pu.show().css(self.getPosition($pu, pos, self.position || "top left"));
+                    $pu.show().css(getPosition($pu, pos, self.position || "top left"));
                     events.trigger(self.$table, events.POPUP_SHOWN, $(evt.target));
                     self.addListener($pu, $(evt.target));
                 } else {
@@ -8096,20 +8923,20 @@ module nts.uk.ui.exTable {
                     }
                 });
             }
-            
-            /**
-             * Get position.
-             */
-            getPosition($pu: JQuery, pos: any, my: any) {
-                if (my === "top left") {
-                    return { top: pos.pageY - $pu.outerHeight() - 49, left: pos.pageX - $pu.outerWidth() };
-                } else if (my === "bottom left") {
-                    return { top: pos.pageY - 49, left: pos.pageX - $pu.outerWidth() };
-                } else if (my === "top right") {
-                    return { top: pos.pageY - $pu.outerHeight() - 49, left: pos.pageX };
-                } else if (my === "bottom right") {
-                    return { top: pos.pageY - 49, left: pos.pageX };
-                }
+        }
+        
+        /**
+         * Get position.
+         */
+        export function getPosition($pu: JQuery, pos: any, my: any) {
+            if (my === "top left") {
+                return { top: pos.pageY - $pu.outerHeight() /*- 49*/, left: pos.pageX - $pu.outerWidth() };
+            } else if (my === "bottom left") {
+                return { top: pos.pageY - 49, left: pos.pageX - $pu.outerWidth() };
+            } else if (my === "top right") {
+                return { top: pos.pageY - $pu.outerHeight() - 49, left: pos.pageX };
+            } else if (my === "bottom right") {
+                return { top: pos.pageY - 49, left: pos.pageX };
             }
         }
         
@@ -8188,7 +9015,7 @@ module nts.uk.ui.exTable {
         /**
          * Hide.
          */
-        function hideIfOutside($w: JQuery) {
+        export function hideIfOutside($w: JQuery) {
             $(document).on(events.MOUSE_DOWN, function(evt) {
                 if (outsideOf($w, evt.target)) {
                     $w.hide();
@@ -8203,7 +9030,7 @@ module nts.uk.ui.exTable {
         /**
          * Offset.
          */
-        function eventPageOffset(evt, isFixed) {
+        export function eventPageOffset(evt, isFixed) {
             var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             let $contentsArea = $("#contents-area");
@@ -8216,10 +9043,10 @@ module nts.uk.ui.exTable {
         /**
          * Class.
          */
-        function cssClass(options) {
-            var css = options.showBelow ? 'bottom' : 'top';
+        export function cssClass(options) {
+            var css = _.isObject(options) && options.showBelow ? 'bottom' : 'top';
             css += '-';
-            css += (options.showRight ? 'right' : 'left');
+            css += (_.isObject(options) && options.showRight ? 'right' : 'left');
             css += '-tooltip';
             return css;
         }

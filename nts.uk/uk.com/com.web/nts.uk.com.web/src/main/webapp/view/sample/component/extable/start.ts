@@ -171,6 +171,8 @@ __viewContext.ready(function () {
         // Add both child cells to mark them respectively
         detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
         detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
+        detailContentDeco.push(new CellColor("_3", "3", "black-corner-mark", 2));
+        detailContentDeco.push(new CellColor("_3", "4", "red-corner-mark", 3));
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
@@ -188,7 +190,22 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
+        
+            key: "__25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "__31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_1", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
             key: "_2", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
@@ -305,6 +322,32 @@ __viewContext.ready(function () {
         features: [{
             name: "BodyCellStyle",
             decorator: middleContentDeco   
+        }, {
+            name: "Click",
+            handler: function(ui) {
+                if (ui.columnKey !== "over1") return;
+                ui.popupPanel({ wrap: true });
+                ui.popupPanel("show", $("<div/>").css({ width: "100px", height: "70px" })
+                    .html(`認定看護師
+                                                        保健師
+                                                        助産師`));
+                
+//                Unwrapped popup
+//                let panel;
+//                if ($("#tooltip-panel").length === 0) {
+//                    panel = $("<div id='tooltip-panel'/>").css({ width: "100px", height: "70px" })
+//                    .html(`認定看護師
+//                                                        保健師
+//                                                        助産師`).appendTo("body");
+//                } else {
+//                    panel = $("#tooltip-panel");
+//                }
+//                
+//                ui.popupPanel({ panel: panel });
+//                ui.popupPanel("show");
+                
+                setTimeout(() => ui.popupPanel("close"), 3000);
+            }
         }]
     };
     let detailHeader = {
@@ -330,9 +373,24 @@ __viewContext.ready(function () {
                     { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
                 ]
             },
-            popup: {
-                rows: [1],
-                provider: function() { return $("#popup"); }
+//            popup: {
+//                rows: [1],
+//                provider: function() { return $("#popup"); }
+//            }
+        }, {
+            name: "Hover",
+            enter: function(ui) {
+                if (ui.rowIdx === 1) {
+                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: "50px" }).html(`${ui.rowIdx}-${ui.columnKey}`));
+                }
+            },
+            exit: function(ui) {
+                ui.tooltip("hide");
+            }   
+        }, {
+            name: "Click",
+            handler: function(ui) {
+                alert(`${ui.rowIdx}-${ui.columnKey}`);
             }
         }]
     };
@@ -347,6 +405,18 @@ __viewContext.ready(function () {
         }, {
             name: "TimeRange",
             ranges: timeRanges
+        }, {
+            name: "RightClick",
+            handler: function(ui) {
+                let items = [
+                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                    { id: "partition" },
+                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                ];
+                
+                ui.contextMenu(items);
+                ui.contextMenu("show");
+            }
         }],
         view: function(mode) {
             switch (mode) {
@@ -359,7 +429,7 @@ __viewContext.ready(function () {
             }
         },
         fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
-        banEmptyInput: [ "time" ]
+//        banEmptyInput: [ "time" ]
     };
     
     let leftHorzColumns = [
@@ -421,13 +491,14 @@ __viewContext.ready(function () {
         dataSource: vertSumContentDs,
         primaryKey: "empId"
     };
+    let start = performance.now();
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
             horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowXOccupation: 170,
+            windowXOccupation: 320,
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
@@ -436,7 +507,8 @@ __viewContext.ready(function () {
             stickOverWrite: true,
             viewMode: "time",
             showTooltipIfOverflow: true,
-            secondaryTable: $("#subtable"),
+            errorMessagePopup: true,
+//            secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
                 columns: ["empName"]
@@ -454,6 +526,9 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
+    
+    $("#extable").exTable("scrollBack", 0, { h: 1050 });
+    console.log(performance.now() - start);
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },
@@ -504,18 +579,18 @@ __viewContext.ready(function () {
         highlight: false,
         primaryKey: "itemId"
     };
-    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
-        headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
-        horizontalSumBodyRowHeight: "20px",
-        areaResize: false, 
-        bodyHeightMode: "fixed",
-        updateMode: "edit",
-        windowXOccupation: 120,
-        windowYOccupation: 600,
-        primaryTable: $("#extable") 
-        })
-    .LeftmostHeader(leftHorzSumHeader2).LeftmostContent(leftHorzSumContent2)
-    .DetailHeader(horizontalSumHeader2).DetailContent(horizontalSumContent2).create();
+//    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
+//        headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
+//        horizontalSumBodyRowHeight: "20px",
+//        areaResize: false, 
+//        bodyHeightMode: "fixed",
+//        updateMode: "edit",
+//        windowXOccupation: 120,
+//        windowYOccupation: 600,
+//        primaryTable: $("#extable") 
+//        })
+//    .LeftmostHeader(leftHorzSumHeader2).LeftmostContent(leftHorzSumContent2)
+//    .DetailHeader(horizontalSumHeader2).DetailContent(horizontalSumContent2).create();
     
         $("#extable").on("extablecellupdated", function() {
         });
@@ -627,8 +702,9 @@ __viewContext.ready(function () {
             columns: newDetailColumns
         };
         $("#show-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent, true);
-            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
+//            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent, true);
+//            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
+            $("#extable").exTable("scrollBack", 0, { h: 0 });
         });
         $("#hide-last-week").click(function() {
             $("#extable").exTable("updateTable", "detail", { columns: detailColumns }, { columns: detailColumns }, true);
@@ -638,7 +714,7 @@ __viewContext.ready(function () {
             return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
+            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
             $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null));
@@ -657,6 +733,11 @@ __viewContext.ready(function () {
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");
         });
+        
+        $("#stick-redo").click(function() {
+            $("#extable").exTable("stickRedo");
+        });
+    
         $("#set-sticker-valid").click(function() {
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) { 
                 if (rowIdx > 6) {
