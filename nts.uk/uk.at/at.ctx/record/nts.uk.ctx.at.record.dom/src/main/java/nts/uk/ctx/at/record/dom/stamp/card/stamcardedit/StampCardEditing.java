@@ -48,12 +48,6 @@ public class StampCardEditing extends AggregateRoot {
 	 * @param 編集方法
 	 *            method
 	 */
-	public StampCardEditing(String companyId, int digitsNumber, int method) {
-		super();
-		this.companyId = companyId;
-		this.digitsNumber = new StampCardDigitNumber(digitsNumber);
-		this.method = EnumAdaptor.valueOf(method, StampCardEditMethod.class);
-	}
 	
 	/**
 	 * [1] 打刻カードを作成する

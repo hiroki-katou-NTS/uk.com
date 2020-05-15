@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 
 /**
  * 
@@ -13,23 +15,21 @@ import lombok.Getter;
  *
  */
 @AllArgsConstructor
+@Getter
 public class ErrorInformationApplication {
 
 	/**
 	 * エラー種類
 	 */
-	@Getter
 	private final CheckErrorType checkErrorType;
 
 	/**
 	 * エラーコードリスト
 	 */
-	@Getter
-	private final List<String> errorAlarmCode;
+	private final List<ErrorAlarmWorkRecordCode> errorAlarmCode;
 	/**
 	 * 促すメッセージ
 	 */
-	@Getter
-	private final PromptingMessage promptingMessage;
+	private final Optional<PromptingMessage> promptingMessage;
 
 }

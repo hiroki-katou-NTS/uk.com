@@ -92,11 +92,11 @@ public class DomainServiceHeplper {
 		return new StampPromptApplication("000000000000-0001",
 				Arrays.asList(
 						new StampRecordDis(NotUseAtr.valueOf(1), CheckErrorType.valueOf(1),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))),
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))),
 						new StampRecordDis(NotUseAtr.valueOf(0), CheckErrorType.valueOf(1),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))),
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))),
 						new StampRecordDis(NotUseAtr.valueOf(1), CheckErrorType.valueOf(0),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))))
 						));
 	}
 

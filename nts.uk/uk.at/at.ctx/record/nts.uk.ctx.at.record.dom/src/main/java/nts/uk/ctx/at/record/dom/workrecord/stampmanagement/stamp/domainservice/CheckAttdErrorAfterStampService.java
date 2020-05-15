@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
@@ -118,7 +119,7 @@ public class CheckAttdErrorAfterStampService {
 	 */
 	private static Optional<DailyAttdErrorInfo> createDailyErrorInfo(Require require, StampRecordDis stampRecordDis,
 			List<EmployeeDailyPerError> listEmployeeDailyPerError) {
-		List<String> listError = stampRecordDis.getCheckErrorType().getErrorAlarm();
+		List<ErrorAlarmWorkRecordCode> listError = stampRecordDis.getCheckErrorType().getErrorAlarm();
 		
 		List<EmployeeDailyPerError> listDataError = new ArrayList<>();
 		
@@ -135,7 +136,7 @@ public class CheckAttdErrorAfterStampService {
 		Optional<ErAlApplication> erAlApplication =  require.getAllErAlAppByEralCode(employeeDailyPerError.get().getErrorAlarmWorkRecordCode().v());
 			
 		return Optional.of(new DailyAttdErrorInfo(stampRecordDis.getCheckErrorType(),
-				stampRecordDis.getPromptingMssage(), employeeDailyPerError.get().getDate(),
+				stampRecordDis.getPromptingMssage().get(), employeeDailyPerError.get().getDate(),
 				erAlApplication.isPresent() ? erAlApplication.get().getAppType() : new ArrayList<>()));
 	}
 

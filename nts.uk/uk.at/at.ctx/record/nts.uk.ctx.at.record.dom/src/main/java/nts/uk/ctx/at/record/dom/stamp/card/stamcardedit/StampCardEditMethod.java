@@ -2,6 +2,12 @@ package nts.uk.ctx.at.record.dom.stamp.card.stamcardedit;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 打刻カード編集方法
+ * @author chungnt
+ *
+ */
+
 @AllArgsConstructor
 public enum StampCardEditMethod {
 
