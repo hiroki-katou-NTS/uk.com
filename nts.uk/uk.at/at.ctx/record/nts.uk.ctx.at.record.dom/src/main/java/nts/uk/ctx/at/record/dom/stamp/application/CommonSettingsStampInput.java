@@ -25,7 +25,7 @@ public class CommonSettingsStampInput {
 	 * 	職場選択を利用できる権限
 	 */
 	@Getter
-	private List<String> permission;
+	private List<String> roles;
 	
 	/**
 	 * 	GoogleMap利用するか

@@ -51,11 +51,14 @@ public class AutoCreateStampCardNumberService {
 			require.add(stampCard.get());
 		}));
 		
-		return Optional.ofNullable(new StampCardCreateResult(stampCard.get().getStampNumber().v(), atomTask.get()));
+		return Optional.ofNullable(new StampCardCreateResult(stampCard.get().getStampNumber().v(), atomTask));
 	}
 	
 	/**
 	 * [prv-1] 打刻カードを作成する
+	 * @param require
+	 * @param employeeID
+	 * @return
 	 */
 	private Optional<StampCard> createStampCard(Require require, String employeeID) {
 		//	$社員データ管理情報 = require.社員情報を取得する(社員ID)	
