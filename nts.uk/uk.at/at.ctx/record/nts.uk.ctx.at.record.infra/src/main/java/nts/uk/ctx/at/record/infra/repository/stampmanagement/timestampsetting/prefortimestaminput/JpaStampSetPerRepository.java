@@ -161,12 +161,12 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 								optional2.get().getButtonDisSet().getBackGroundColor()), 
 						new ButtonType(
 								optional2.get().getButtonType().getReservationArt(), 
-								new StampType(
+								Optional.of(new StampType(
 										optional2.get().getButtonType().getStampType().get().isChangeHalfDay(), 
 										optional2.get().getButtonType().getStampType().get().getGoOutArt().get(), 
 										optional2.get().getButtonType().getStampType().get().getSetPreClockArt(), 
 										optional2.get().getButtonType().getStampType().get().getChangeClockArt(), 
-										optional2.get().getButtonType().getStampType().get().getChangeCalArt())), 
+										optional2.get().getButtonType().getStampType().get().getChangeCalArt()))), 
 						optional2.get().getUsrArt(), 
 						optional2.get().getAudioType());
 				commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));

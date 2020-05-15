@@ -2,21 +2,37 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.p
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonNameSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtSrampPortal;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampLayoutDetail;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -28,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaPortalStampSettingsRepository extends JpaRepository implements PortalStampSettingsRepository {
 
-//	private static final String SELECT_STAMP_LAYOUT_DETAIL = "SELECT r FROM KrcmtStampWkpSelectRole r WHERE r.pk.companyId = :companyId";
+	private static final String SELECT_STAMP_LAYOUT_DETAIL = "SELECT r FROM KrcmtStampLayoutDetail r WHERE r.pk.companyId = :companyId";
 	
 	/**
 	 *  [1]  insert(ポータルの打刻設定)
@@ -65,8 +81,24 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 			return Optional.empty();
 		}
 		
-//		List<ButtonSettings> buttonSettings = 
-		return null;
+		List<ButtonSettings> buttonSettings = this.queryProxy().query(SELECT_STAMP_LAYOUT_DETAIL,KrcmtStampLayoutDetail.class).getList()
+				
+				.stream().map(m -> new ButtonSettings(new ButtonPositionNo(m.pk.buttonPositionNo),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode(m.textColor), new ButtonName(m.buttonName)), new ColorCode(m.backGroundColor)),
+				new ButtonType(EnumAdaptor.valueOf(m.reservationArt, ReservationArt.class),
+						Optional.of(new StampType( m.changeHalfDay ==  0 ? false : true , Optional.of(EnumAdaptor.valueOf(m.goOutArt, GoingOutReason.class)),
+								EnumAdaptor.valueOf(m.setPreClockArt, SetPreClockArt.class),
+								EnumAdaptor.valueOf(m.changeClockArt, ChangeClockArt.class),
+								EnumAdaptor.valueOf(m.changeCalArt, ChangeCalArt.class)))),
+				
+				EnumAdaptor.valueOf(m.useArt, NotUseAtr.class),
+				EnumAdaptor.valueOf(m.aidioType, AudioType.class)))
+				
+				.collect(Collectors.toList());
+		
+		PortalStampSettings domain = this.toDomain(entityOpt.get(), buttonSettings);
+			
+		return Optional.of(domain);
 	}
 	
 	public KrcmtSrampPortal toEntity(PortalStampSettings domain) {

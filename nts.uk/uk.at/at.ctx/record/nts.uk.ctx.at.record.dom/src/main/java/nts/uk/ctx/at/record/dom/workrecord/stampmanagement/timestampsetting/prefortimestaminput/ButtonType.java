@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pre
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author phongtq
  *
  */
+@AllArgsConstructor
 public class ButtonType implements DomainValue{
 	
 	/** 予約区分 */
@@ -25,10 +27,6 @@ public class ButtonType implements DomainValue{
 	 * @param textColor
 	 * @param stampType
 	 */
-	public ButtonType(ReservationArt reservationArt, StampType stampType) {
-		this.reservationArt = reservationArt;
-		this.stampType = Optional.ofNullable(stampType);
-	}
 	
 	/**
 	 * 打刻区分を取得する
