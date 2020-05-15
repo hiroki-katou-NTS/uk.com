@@ -11,19 +11,21 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ErrorNRCom;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPgAlTrRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.ErrorNRComRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordStampService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -54,9 +56,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Inject
-	private ErrorNRComRepository errorNRComRepository;
-
-	@Inject
 	private StampDakokuRepository stampDakokuRepository;
 
 	@Inject
@@ -68,13 +67,19 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	@Inject
 	private StampCardRepository stampCardRepository;
 
+	@Inject
+	private EmployeeManageRCAdapter employeeManageRCAdapter;
+
+	@Inject
+	private TopPgAlTrRepository executionLog;
+
 	@Override
 	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(Integer empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
-				errorNRComRepository, stampDakokuRepository, createDailyResultDomainSv, stampRecordRepository,
-				stampCardRepository);
+				stampDakokuRepository, createDailyResultDomainSv, stampRecordRepository, stampCardRepository,
+				employeeManageRCAdapter, executionLog);
 
 		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
@@ -99,8 +104,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 		private final TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
-		private final ErrorNRComRepository errorNRComRepository;
-
 		private final StampDakokuRepository stampDakokuRepository;
 
 		private final CreateDailyResultDomainService createDailyResultDomainSv;
@@ -108,6 +111,10 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private final StampRecordRepository stampRecordRepository;
 
 		private final StampCardRepository stampCardRepository;
+
+		private final EmployeeManageRCAdapter employeeManageRCAdapter;
+
+		private final TopPgAlTrRepository executionLog;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -122,15 +129,10 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		}
 
 		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+				ContractCode contractCode) {
 
 			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-		}
-
-		@Override
-		public void insert(ErrorNRCom errorNR) {
-
-			errorNRComRepository.insert(errorNR);
 		}
 
 		@Override
@@ -156,6 +158,17 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 				String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
 			return createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
 					companyId, empCalAndSumExecLogID, executionLog);
+		}
+
+		@Override
+		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+			return employeeManageRCAdapter.getListEmpID(companyID, referenceDate);
+		}
+
+		@Override
+		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo) {
+			executionLog.insertLogAll(alEmpInfo);
+
 		}
 
 	}
