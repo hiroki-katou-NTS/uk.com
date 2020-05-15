@@ -111,7 +111,7 @@ public class BreakTimeOfDailyService {
 															.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
-		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
+		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if (directToDB) {

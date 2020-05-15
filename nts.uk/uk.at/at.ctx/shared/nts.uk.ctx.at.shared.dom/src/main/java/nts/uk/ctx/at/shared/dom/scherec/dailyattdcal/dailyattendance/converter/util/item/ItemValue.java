@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 //import java.time.format.DateTimeFormatterBuilder;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 //@AllArgsConstructor
@@ -19,14 +20,19 @@ public class ItemValue implements Cloneable {
 
 	private static final String DATE_FORMAT = "yyyyMMdd";
 
+	@Getter
 	private String value;
 
+	@Getter
 	private ValueType valueType;
 
+	@Getter
 	private String layoutCode;
-	
+
+	@Getter
 	private int itemId;
-	
+
+	@Getter
 	private String pathLink;
 	
 	private boolean isFixed;
@@ -36,15 +42,15 @@ public class ItemValue implements Cloneable {
 		this.pathLink = path;
 	}
 	
-	private ItemValue() {
+	public ItemValue() {
 	}
 	
-	private ItemValue(Object value, ValueType valueType, String layoutCode, int itemId){
-		this(valueType, layoutCode, itemId, value);
-	}
-	
-	private ItemValue(ValueType valueType, String layoutCode, int itemId, Object value){
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId){
 		this(value, valueType, layoutCode, itemId, "", false);
+	}
+	
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String path){
+		this(value, valueType, layoutCode, itemId, path, false);
 	}
 	
 	private ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){

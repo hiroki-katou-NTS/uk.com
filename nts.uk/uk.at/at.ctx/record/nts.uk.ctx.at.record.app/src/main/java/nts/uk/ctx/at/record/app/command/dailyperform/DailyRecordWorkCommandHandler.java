@@ -627,7 +627,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private <T extends DailyWorkCommonCommand> void handleEditStates(boolean isUpdate, DailyRecordWorkCommand command) {
 		CommandFacade<T> handler = (CommandFacade<T>) getHandler(DAILY_EDIT_STATE_NAME, isUpdate);
 //		List<ItemValue> itemValues = command.itemValues();
-		List<Integer> itemIds = command.itemValues().stream().map(x -> x.getItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = command.itemValues().stream().map(x -> x.itemId()).collect(Collectors.toList());
 //		List<EditStateOfDailyPerformance> data = command.getEditState().getData().stream().filter(x -> itemIds.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 //		command.getEditState().getData().clear();
 //		command.getEditState().updateDatas(data);
@@ -684,7 +684,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private String getGroup(ItemValue c) {
 		if (StringUtil.isNullOrEmpty(c.path(), false)) {
-			c.withPath(AttendanceItemIdContainer.getPath(c.getItemId(), AttendanceItemType.DAILY_ITEM));
+			c.withPath(AttendanceItemIdContainer.getPath(c.itemId(), AttendanceItemType.DAILY_ITEM));
 		}
 		String[] paths = c.path().split(SEPERATE_PATTERN);
 		return paths[0];

@@ -174,9 +174,9 @@ public class TimeLeavingOfDailyService {
 		working.setAttendanceLeave(Optional.ofNullable(correctedTlo == null?null:correctedTlo.getAttendance()));
 
 		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(working.getEmployeeId(), working.getYmd(),correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
-		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.getItemId()).collect(Collectors.toList());
-		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.getItemId()));
-		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.itemId()).collect(Collectors.toList());
+		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.itemId()));
+		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if(directToDB){

@@ -90,7 +90,7 @@ public class DailyModifyCommandFacade {
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
 		return query.getItemValues().stream().map(x -> {
-			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.getItemId(), query.getBaseDate(),
+			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.itemId(), query.getBaseDate(),
 					sid.equals(query.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
 							: EditStateSetting.HAND_CORRECTION_OTHER);
 		}).collect(Collectors.toList());

@@ -125,7 +125,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	private void loadMergeGroup() {
 		if (clearMergeGroups || this.mergeGroups.isEmpty()) {
-			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::getItemId, isMonthly());
+			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::itemId, isMonthly());
 		}
 	}
 
@@ -204,7 +204,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 				needConvert.addAll(es.getValue());
 			} else {
 				es.getValue().forEach(id -> {
-					Optional<ItemValue> ca = cached.stream().filter(c -> c.getItemId() == id).findFirst();
+					Optional<ItemValue> ca = cached.stream().filter(c -> c.itemId() == id).findFirst();
 					if (ca.isPresent()) {
 						converted.add(ca.get());
 					} else {
