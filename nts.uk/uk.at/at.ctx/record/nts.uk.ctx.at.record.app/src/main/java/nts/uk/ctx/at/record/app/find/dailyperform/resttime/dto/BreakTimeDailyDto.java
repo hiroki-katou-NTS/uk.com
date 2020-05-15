@@ -167,6 +167,6 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if (!path.equals(FAKED)) {
 			return PropType.OBJECT;
 		}
-		return PropType.ENUM_LIST;
+		return PropType.ENUM_HAVE_IDX;
 	}
 }

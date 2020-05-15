@@ -71,4 +71,53 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, Attendan
 	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? 0 : domain.valueAsMinutes();
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case LATE_NIGHT:
+			return new ExcessOfStatutoryMidNightTimeDto();
+		case OVERTIME:
+			return new OverTimeWorkDailyPerformDto();
+		case HOLIDAY_WORK:
+			return new WorkHolidayTimeDailyPerformDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case LATE_NIGHT:
+			return Optional.ofNullable(excessOfStatutoryMidNightTime);
+		case OVERTIME:
+			return Optional.ofNullable(overTimeWork);
+		case HOLIDAY_WORK:
+			return Optional.ofNullable(workHolidayTime);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case LATE_NIGHT:
+			excessOfStatutoryMidNightTime = (ExcessOfStatutoryMidNightTimeDto) value;
+			break;
+		case OVERTIME:
+			overTimeWork = (OverTimeWorkDailyPerformDto) value;
+			break;
+		case HOLIDAY_WORK:
+			workHolidayTime = (WorkHolidayTimeDailyPerformDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	
 }

@@ -49,6 +49,6 @@ public interface AttendanceItemDataGate {
 	public default boolean isContainer() { return false; }
 	
 	public static enum PropType {
-		OBJECT, VALUE, IDX_LIST, ENUM_LIST, IDX_ENUM_LIST; 
+		OBJECT, VALUE, IDX_LIST, ENUM_LIST, IDX_ENUM_LIST, ENUM_HAVE_IDX, IDX_IN_ENUM; 
 	}
 }

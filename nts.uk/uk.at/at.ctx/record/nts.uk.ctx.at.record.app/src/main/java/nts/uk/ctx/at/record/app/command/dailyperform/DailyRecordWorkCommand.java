@@ -130,41 +130,41 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Getter
 	private final RemarkOfDailyCommand remarks = new RemarkOfDailyCommand();
 
-	public DailyWorkCommonCommand getCommand(String layout) {
-		switch (layout) {
-		case DAILY_WORK_INFO_CODE:
+	public DailyWorkCommonCommand getCommand(String domain) {
+		switch (domain) {
+		case DAILY_WORK_INFO_NAME:
 			return this.workInfo;
-		case DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_NAME:
 			return this.calcAttr;
-		case DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_NAME:
 			return this.affiliationInfo;
-		case DAILY_BUSINESS_TYPE_CODE:
+		case DAILY_BUSINESS_TYPE_NAME:
 			return this.businessType;
-		case DAILY_OUTING_TIME_CODE:
+		case DAILY_OUTING_TIME_NAME:
 			return this.outingTime;
-		case DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_NAME:
 			return this.breakTime;
-		case DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_NAME:
 			return this.attendanceTime;
-		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
 			return this.attendanceTimeByWork;
-		case DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_NAME:
 			return this.timeLeaving;
-		case DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_NAME:
 			return this.shortWorkTime;
-		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
 			return this.specificDateAttr;
-		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
 			return this.attendanceLeavingGate;
-		case DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_NAME:
 			return this.optionalItem;
-		case DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_NAME:
 			return this.editState;
-		case DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_NAME:
 			return this.temporaryTime;
-		case DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_NAME:
 			return this.pcLogInfo;
-		case DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_NAME:
 			return this.remarks;
 		default:
 			return null;
@@ -172,11 +172,11 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	}
 	
 	public List<String> getAvailableLayout(){
-		return Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_CALCULATION_ATTR_CODE, DAILY_AFFILIATION_INFO_CODE,
-				DAILY_BUSINESS_TYPE_CODE, DAILY_OUTING_TIME_CODE, DAILY_BREAK_TIME_CODE, DAILY_ATTENDANCE_TIME_CODE,
-				DAILY_ATTENDANCE_TIME_BY_WORK_CODE, DAILY_ATTENDACE_LEAVE_CODE, DAILY_SHORT_TIME_CODE,
-				DAILY_SPECIFIC_DATE_ATTR_CODE, DAILY_ATTENDANCE_LEAVE_GATE_CODE, DAILY_OPTIONAL_ITEM_CODE,
-				DAILY_EDIT_STATE_CODE, DAILY_TEMPORARY_TIME_CODE, DAILY_PC_LOG_INFO_CODE, DAILY_REMARKS_CODE);
+		return Arrays.asList(DAILY_WORK_INFO_NAME, DAILY_CALCULATION_ATTR_NAME, DAILY_AFFILIATION_INFO_NAME,
+				DAILY_BUSINESS_TYPE_NAME, DAILY_OUTING_TIME_NAME, DAILY_BREAK_TIME_NAME, DAILY_ATTENDANCE_TIME_NAME,
+				DAILY_ATTENDANCE_TIME_BY_WORK_NAME, DAILY_ATTENDACE_LEAVE_NAME, DAILY_SHORT_TIME_NAME,
+				DAILY_SPECIFIC_DATE_ATTR_NAME, DAILY_ATTENDANCE_LEAVE_GATE_NAME, DAILY_OPTIONAL_ITEM_NAME,
+				DAILY_EDIT_STATE_NAME, DAILY_TEMPORARY_TIME_NAME, DAILY_PC_LOG_INFO_NAME, DAILY_REMARKS_NAME);
 	}
 
 	@Override

@@ -111,7 +111,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
 
-		return AttendanceItemUtilRes.merge(attendanceItems, itemValues);
+		return AttendanceItemUtilRes.merge(attendanceItems, itemValues, type);
 //		if (CollectionUtil.isEmpty(itemValues)) {
 //			return attendanceItems;
 //		}

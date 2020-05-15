@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.attendanceitem.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
@@ -109,7 +107,8 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (this.mergeGroups.containsKey(type)) {
 			List<ItemValue> values = this.mergeGroups.get(type);
 			
-			dto = AttendanceItemUtilRes.merge(dto, values);
+			dto = AttendanceItemUtilRes.merge(dto, values, 
+					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
 			
 			this.mergeGroups.remove(type);
 			this.needMergeItems.removeAll(values);

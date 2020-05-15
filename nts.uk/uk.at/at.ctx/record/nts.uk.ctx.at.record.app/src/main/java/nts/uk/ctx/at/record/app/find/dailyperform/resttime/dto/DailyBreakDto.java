@@ -88,6 +88,14 @@ public class DailyBreakDto implements ItemConst, AttendanceItemDataGate {
 		default:
 		}
 	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_IN_ENUM;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
 	
 //	@Override
 //	public boolean enumNeedSet() {

@@ -177,9 +177,9 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
 		case ACTUAL:
-			return Optional.of(this.actualWorkInfo);
+			return Optional.ofNullable(this.actualWorkInfo);
 		case PLAN:
-			return Optional.of(this.planWorkInfo);
+			return Optional.ofNullable(this.planWorkInfo);
 		default:
 			return Optional.empty();
 		}

@@ -160,11 +160,11 @@ public class AggregateGoOutDto implements ItemConst, AttendanceItemDataGate {
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
 		case TOTAL:
-			return Optional.of(totalTime);
+			return Optional.ofNullable(totalTime);
 		case ILLEGAL:
-			return Optional.of(illegalTime);
+			return Optional.ofNullable(illegalTime);
 		case LEGAL:
-			return Optional.of(legalTime);
+			return Optional.ofNullable(legalTime);
 		default:
 			return Optional.empty();
 		}
