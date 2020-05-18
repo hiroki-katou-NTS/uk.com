@@ -349,7 +349,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		this.prevAnnualLeaveOpt = prevAnnualLeaveOpt;
 		
 		// データベースからデータを取得してキャッシュするオブジェクトを作成
-		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum = new RepositoriesRequiredByRemNum();
+		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum 
+			= new RepositoriesRequiredByRemNum();
 		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
@@ -427,12 +428,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		{
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
-					companyId, employeeId, Optional.of(this.aggrPeriod),
+					repositoriesRequiredByRemNum, companyId, employeeId, Optional.of(this.aggrPeriod),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
-			
-			
-			
 			
 			// 「出勤率計算フラグ」をチェック
 			if (isCalcAttendanceRate){
@@ -504,7 +502,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		for (val aggregatePeriodWork : this.aggregatePeriodWorks){
 
 			// 年休の消滅・付与・消化
-			aggrResult = annualLeaveInfo.lapsedGrantDigest(companyId, employeeId, aggregatePeriodWork,
+			aggrResult = annualLeaveInfo.lapsedGrantDigest(
+					repositoriesRequiredByRemNum,
+					companyId, employeeId, aggregatePeriodWork,
 					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
 		}
 		

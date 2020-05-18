@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -18,15 +19,19 @@ public interface CalcNextAnnualLeaveGrantDate {
 
 	/**
 	 * 次回年休付与を計算
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュデータ
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @return 次回年休付与リスト
 	 */
-	List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period);
+	List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, String employeeId, Optional<DatePeriod> period);
 
 	/**
 	 * 次回年休付与を計算
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュデータ
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
@@ -36,13 +41,16 @@ public interface CalcNextAnnualLeaveGrantDate {
 	 * @param lengthServiceTbls 勤続年数テーブルリスト
 	 * @return 次回年休付与リスト
 	 */
-	List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period,
+	List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employee,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo,
 			Optional<GrantHdTblSet> grantHdTblSet,
 			Optional<List<LengthServiceTbl>> lengthServiceTbls);
 	/**
 	 * 次回年休付与を計算
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュデータ
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
@@ -52,7 +60,9 @@ public interface CalcNextAnnualLeaveGrantDate {
 	 * @param lengthServiceTbls 勤続年数テーブルリスト
 	 * @return 次回年休付与リスト
 	 */
-	List<NextAnnualLeaveGrant> calNextHdGrantV2(String companyId, String employeeId, Optional<DatePeriod> period,
+	List<NextAnnualLeaveGrant> calNextHdGrantV2(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employee,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo,
 			Optional<GrantHdTblSet> grantHdTblSet,

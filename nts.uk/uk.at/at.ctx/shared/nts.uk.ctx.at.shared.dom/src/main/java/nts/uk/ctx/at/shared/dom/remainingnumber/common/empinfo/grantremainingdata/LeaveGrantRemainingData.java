@@ -32,6 +32,7 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 	protected String annLeavID;
 	
 	protected String cid;
+	
 	/**
 	 * 社員ID
 	 */

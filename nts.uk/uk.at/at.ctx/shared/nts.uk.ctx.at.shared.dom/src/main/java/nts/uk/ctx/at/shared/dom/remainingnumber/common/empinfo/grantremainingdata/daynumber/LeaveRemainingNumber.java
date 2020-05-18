@@ -84,7 +84,7 @@ public class LeaveRemainingNumber {
 	
 	/**
 	 * 休暇使用数を消化する
-	 * @param repositoriesRequiredByRemNum ロードデータ
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
 	 * @param leaveUsedNumber 休暇使用数
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日

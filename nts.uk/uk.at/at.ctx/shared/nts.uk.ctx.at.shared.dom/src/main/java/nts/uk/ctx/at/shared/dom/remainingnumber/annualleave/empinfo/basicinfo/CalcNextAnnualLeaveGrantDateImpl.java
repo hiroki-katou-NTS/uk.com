@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
@@ -51,7 +52,9 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	/** 次回年休付与を計算 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period,
+	public List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
 			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
 		

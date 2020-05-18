@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
@@ -61,6 +62,7 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @return 次回年休付与リスト
 	 */
 	public List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
 			String companyId,
 			String grantTableCode,
 			GeneralDate entryDate,
@@ -68,12 +70,15 @@ public class GetNextAnnualLeaveGrantProc {
 			DatePeriod period,
 			boolean isSingleDay){
 
-		return this.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
+		return this.algorithm(
+				repositoriesRequiredByRemNum, companyId, grantTableCode, 
+				entryDate, criteriaDate, period, isSingleDay,
 				Optional.empty(), Optional.empty(), Optional.empty());
 	}
 	
 	/**
 	 * 次回年休付与を取得する （※付与年月日、期限日をセットするだけに変更）
+	 * @param repositoriesRequiredByRemNum ロードデータ（キャッシュ用）
 	 * @param companyId 会社ID
 	 * @param grantTableCode 年休付与テーブル設定コード
 	 * @param entryDate 入社年月日
@@ -87,6 +92,7 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @return 次回年休付与リスト
 	 */
 	public List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
 			String companyId,
 			String grantTableCode,
 			GeneralDate entryDate,
@@ -187,30 +193,23 @@ public class GetNextAnnualLeaveGrantProc {
 			}
 		}
 		
-		// 期限日をセットする
-		
-		// 付与日から期限日を計算
-		
 		// 年休設定
-		AnnualPaidLeaveSetting annualPaidLeaveSet = null;
-		
-		// ooooo 年休設定を取得する　Require
+		AnnualPaidLeaveSetting annualPaidLeaveSet
+			= repositoriesRequiredByRemNum.getAnnualPaidLeaveSet();
 		
 		for (val nextAnnualLeaveGrant : this.nextAnnualLeaveGrantList){
-			val deadline = annualPaidLeaveSet.calcDeadline(
+			
+			// 付与日から期限日を計算
+			val deadLine = annualPaidLeaveSet.calcDeadline(
 					nextAnnualLeaveGrant.getGrantDate());
 			
-			// ooooo 期限日をセットする
-			// nextAnnualLeaveGrant.
+			// 期限日をセットする
+			nextAnnualLeaveGrant.setDeadLine(deadLine);
 		}
 		
 //		val annualLeaveGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
 //		val grantDate = annualLeaveGrant.getGrantDate();
 //		val deadline = this.annualPaidLeaveSet.calcDeadline(grantDate);
-//		
-		
-	
-		
 		
 		// 次回年休付与を返す
 		return this.nextAnnualLeaveGrantList;

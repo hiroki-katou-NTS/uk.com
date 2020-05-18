@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 /**
@@ -17,7 +18,15 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 @Getter
 public class RepositoriesRequiredByRemNum {
 
+	/**
+	 * 労働条件
+	 */
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
+	/**
+	 * 年休設定
+	 */
+	@Inject
+	private AnnualPaidLeaveSetting annualPaidLeaveSet;
 }

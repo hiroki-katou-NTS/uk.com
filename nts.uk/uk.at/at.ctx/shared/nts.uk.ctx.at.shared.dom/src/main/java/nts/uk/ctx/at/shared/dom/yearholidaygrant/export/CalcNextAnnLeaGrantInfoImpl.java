@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -23,7 +24,9 @@ public class CalcNextAnnLeaGrantInfoImpl implements CalcNextAnnLeaGrantInfo {
 	
 	/** 締め開始日と年休付与テーブルから次回年休付与を計算する */
 	@Override
-	public Optional<NextAnnualLeaveGrant> algorithm(String companyId, GeneralDate closureStart, GeneralDate entryDate,
+	public Optional<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, GeneralDate closureStart, GeneralDate entryDate,
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime) {
 		
 		// 「入社年月日」と「締め開始日」を比較　→　次回年休付与計算開始日
@@ -34,7 +37,9 @@ public class CalcNextAnnLeaGrantInfoImpl implements CalcNextAnnLeaGrantInfo {
 		if (nextGrant.before(GeneralDate.max())) nextGrant = nextGrant.addDays(1);
 		
 		// 次回年休付与を取得する
-		val results = this.getNextAnnualLeaveGrant.algorithm(companyId, grantTableCode, entryDate, criteriaDate,
+		val results = this.getNextAnnualLeaveGrant.algorithm(
+				repositoriesRequiredByRemNum,
+				companyId, grantTableCode, entryDate, criteriaDate,
 				new DatePeriod(nextGrant, GeneralDate.max()), true);
 		
 		// 次回年休付与を返す

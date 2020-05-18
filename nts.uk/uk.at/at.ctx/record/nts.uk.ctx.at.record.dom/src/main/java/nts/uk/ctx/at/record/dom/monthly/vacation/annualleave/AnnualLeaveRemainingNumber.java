@@ -82,6 +82,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
 		this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(0.0);
+		this.totalRemainingTime = Optional.of( new RemainingMinutes(0));
 		
 		// 「年休付与残数データ」を取得
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
@@ -107,6 +108,12 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			// 合計残日数　←　「明細．日数」の合計
 			this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(
 					this.totalRemainingDays.v() + remainingNumber.getDays().v());
+			
+			// 合計残時間　←　「明細．時間」の合計
+			if ( remainingNumber.getMinutes().isPresent() ){
+				this.totalRemainingTime = Optional.of( new RemainingMinutes(
+					this.totalRemainingTime.get().v() + remainingNumber.getMinutes().get().v()));
+			}
 		}
 	}
 	
