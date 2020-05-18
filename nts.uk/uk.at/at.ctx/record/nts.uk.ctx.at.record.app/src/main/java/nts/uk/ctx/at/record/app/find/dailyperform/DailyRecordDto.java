@@ -496,7 +496,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		case DAILY_REMARKS_NAME:
 			return Optional.ofNullable(this.remarks);
 		default:
-			return null;
+			return Optional.empty();
 		}
 	}
 

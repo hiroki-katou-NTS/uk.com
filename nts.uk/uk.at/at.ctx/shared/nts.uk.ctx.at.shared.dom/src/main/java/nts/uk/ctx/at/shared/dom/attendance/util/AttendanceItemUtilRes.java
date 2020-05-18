@@ -407,38 +407,39 @@ public final class AttendanceItemUtilRes {
 //	    return stringSplit;
 //	}
 	
-	private static String getCurrentPath(int layout, String longString) {
-		String x = getAfter(longString, ItemConst.DEFAULT_SEPERATOR, layout);
-		int idx = getIdx(x);
+	private static String getCurrentPath(int layout, String path) {
+		String prop = getAfter(path, ItemConst.DEFAULT_SEPERATOR, layout);
+		prop = getAfter(prop, ItemConst.DEFAULT_ENUM_SEPERATOR, 0);
+		int idx = getIdx(prop);
 		if (idx > 0) {
-			return getEnum(x, idx);
+			return getEnum(prop, idx);
 		}
-		return x;
+		return prop;
 	}
 	
 	// chua lay duoc dung layout?
-	private static String getAfter(String longString, String sepe, int layout) {
+	private static String getAfter(String path, String sepe, int layout) {
 	    int pos = 0, count = 0, end;
 	    if (layout < 0) {
-	    	return "";
+	    	return path;
 	    }
 	    if (layout == 0) {
-	    	if ((end = longString.indexOf(sepe, pos)) >= 0) {
-		    	return longString.substring(pos, end); 
+	    	if ((end = path.indexOf(sepe, pos)) >= 0) {
+		    	return path.substring(pos, end); 
 	    	}
-	    	return "";
+	    	return path;
 	    }
-	    while ((end = longString.indexOf(sepe, pos)) >= 0) {
+	    while ((end = path.indexOf(sepe, pos)) >= 0) {
 	        if (count == layout) {
-	        	return longString.substring(pos, end); 
+	        	return path.substring(pos, end); 
 	        }
 	        count++;
 	        pos = end + 1;
 	    }
 	    if (count == layout) {
-        	return longString.substring(pos); 
+        	return path.substring(pos); 
         }
-	    return "";
+	    return path;
 	}
 
 	private static String getEnum(String key, Integer idx) {
