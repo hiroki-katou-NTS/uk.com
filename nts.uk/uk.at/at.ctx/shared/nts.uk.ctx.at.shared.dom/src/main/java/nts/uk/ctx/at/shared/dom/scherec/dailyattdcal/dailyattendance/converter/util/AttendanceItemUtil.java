@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -87,11 +88,19 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			Collection<Integer> itemIds, AttendanceItemType type) {
 
-		if (attendanceItems.size() < 10) {
-			return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+		Map<T, List<ItemValue>> result = new HashMap<>();
+		
+		for (T at : attendanceItems) {
+			result.put(at,  AttendanceItemUtilRes.collect(at, itemIds, type));
 		}
 		
-		return attendanceItems.parallelStream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+		return result;
+		
+//		if (attendanceItems.size() < 10) {
+//			return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+//		}
+//		
+//		return attendanceItems.parallelStream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
 //		if (CollectionUtil.isEmpty(attendanceItems)) {
 //			return new HashMap<>();
 //		}

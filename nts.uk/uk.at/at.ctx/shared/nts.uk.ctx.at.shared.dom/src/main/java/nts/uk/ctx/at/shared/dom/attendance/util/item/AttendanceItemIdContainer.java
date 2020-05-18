@@ -45,13 +45,14 @@ public class AttendanceItemIdContainer implements ItemConst {
 		ENUM_CONTAINER.put(E_OFF_CARE, 3);
 		ENUM_CONTAINER.put(E_OFF_INJURY, 4);
 	}
+	
 	public static <V> Map<String, List<V>> groupItemByDomain(Collection<V> itemIds, Function<V, 
 			Integer> getId, boolean monthly) {
 		Map<String, List<V>> groups = new HashMap<>();
 		
 		Map<Integer, ItemValue> container = monthly ? getMonthlyItems() : getDailyItems();
 		
-		itemIds.stream().forEach(i -> {
+		for(V i : itemIds) {
 			String itemPath = container.get(getId.apply(i)).path();
 			if (itemPath != null) {
 				String[] group = itemPath.split(Pattern.quote(DEFAULT_SEPERATOR));
@@ -63,7 +64,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 					groups.get(group[0]).add(i);
 				}
 			}
-		});
+		}
 		
 		return groups;
 	}
@@ -119,59 +120,32 @@ public class AttendanceItemIdContainer implements ItemConst {
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
-	public static boolean isHaveOptionalItems(Collection<ItemValue> items) {
-		return getOptionalStream(items).findFirst().isPresent();
+	public static Map<Integer, Integer> mapOptionalItemIdsToNos() {
+		return optionalItemIdsToNos(getDailyItems(), DailyDomainGroup.OPTIONAL_ITEM.name);
 	}
 	
-	public static List<ItemValue> filterOptionalItems(Collection<ItemValue> items) {
-		return getOptionalStream(items).collect(Collectors.toList());
+	public static Map<Integer, Integer> mapOptionalItemIdsToNos(AttendanceItemType type) {
+		if(type == AttendanceItemType.MONTHLY_ITEM){
+			return optionalItemIdsToNos(getMonthlyItems(), MonthlyDomainGroup.OPTIONAL_ITEM.name);
+		}
+		return optionalItemIdsToNos(getDailyItems(), DailyDomainGroup.OPTIONAL_ITEM.name);
 	}
 	
-	public static Map<ItemValue, Integer> mapOptionalItemsToNos(Collection<ItemValue> items) {
-		return getOptionalStream(items).collect(Collectors.toMap(i -> i, i -> {
-			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
-		}));
+	private static Map<Integer, Integer> optionalItemIdsToNos(Map<Integer, ItemValue> source, String pattern) {
+		return source.entrySet().stream()
+				.filter(en -> en.getValue().path().indexOf(pattern) == 0)
+				.collect(Collectors.toMap(i -> i.getKey(), 
+											i -> AttendanceItemUtilRes.getIdx(i.getValue().path())));
 	}
 	
-	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {
+	private static Map<Integer, Integer> mapOptionalItemIdsToNos(Stream<ItemValue> items) {
 		return getOptionalStream(items).collect(Collectors.toMap(i -> i.itemId(), i -> {
 			return AttendanceItemUtilRes.getIdx(i.path());
 		}));
 	}
 	
-	public static Map<Integer, Integer> mapOptionalItemIdsToNos() {
-		return mapDailyOptionalItemIdsToNos();
-	}
-	
-	public static Map<Integer, Integer> mapOptionalItemIdsToNos(AttendanceItemType type) {
-		if(type == AttendanceItemType.MONTHLY_ITEM){
-			return mapMonthlyOptionalItemIdsToNos();
-		}
-		return mapDailyOptionalItemIdsToNos();
-	}
-	
-	private static Map<Integer, Integer> mapDailyOptionalItemIdsToNos() {
-		return getDailyItems().entrySet().stream()
-				.filter(en -> en.getValue().path().indexOf(DailyDomainGroup.OPTIONAL_ITEM.name) == 0)
-				.collect(Collectors.toMap(i -> i.getKey(), i -> {
-			return AttendanceItemUtilRes.getIdx(i.getValue().path());
-		}));
-	}
-	
-	private static Map<Integer, Integer> mapMonthlyOptionalItemIdsToNos() {
-		return getMonthlyItems().entrySet().stream()
-				.filter(en -> en.getValue().path().indexOf(MonthlyDomainGroup.OPTIONAL_ITEM.name) == 0)
-				.collect(Collectors.toMap(i -> i.getKey(), i -> {
-			return AttendanceItemUtilRes.getIdx(i.getValue().path());
-		}));
-	}
-	
-	public static Map<ItemValue, Integer> mapOptionalItemsFromIdToNos(Collection<Integer> items, AttendanceItemType type) {
-		return mapOptionalItemsToNos(getIds(items, type));
-	}
-	
 	public static Map<Integer, Integer> optionalItemIdsToNos(Collection<Integer> items, AttendanceItemType type) {
-		return mapOptionalItemIdsToNos(getIds(items, type));
+		return mapOptionalItemIdsToNos(getIdMapStream(items, type));
 	}
 	
 	public static String getPath(int key, AttendanceItemType type) {
@@ -210,8 +184,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return getDailyItems().entrySet().stream().map(c -> c.getValue().clone().itemId(c.getKey()));
 	}
 
-	private static Stream<ItemValue> getOptionalStream(Collection<ItemValue> items) {
-		return items.stream().filter(i -> isOptionalItem(i));
+	private static Stream<ItemValue> getOptionalStream(Stream<ItemValue> items) {
+		return items.filter(i -> isOptionalItem(i));
 	}
 
 	public static boolean isOptionalItem(ItemValue i) {
