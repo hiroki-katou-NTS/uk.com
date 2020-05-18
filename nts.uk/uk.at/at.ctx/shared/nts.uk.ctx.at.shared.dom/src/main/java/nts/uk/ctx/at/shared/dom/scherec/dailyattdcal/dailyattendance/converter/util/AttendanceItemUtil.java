@@ -87,8 +87,11 @@ public class AttendanceItemUtil implements ItemConst {
 	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems,
 			Collection<Integer> itemIds, AttendanceItemType type) {
 
+		if (attendanceItems.size() < 10) {
+			return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+		}
 		
-		return attendanceItems.stream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
+		return attendanceItems.parallelStream().collect(Collectors.toMap(c -> c, c -> AttendanceItemUtilRes.collect(c, itemIds, type)));
 //		if (CollectionUtil.isEmpty(attendanceItems)) {
 //			return new HashMap<>();
 //		}
