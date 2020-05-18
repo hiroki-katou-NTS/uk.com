@@ -10,13 +10,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
-public final class AttendanceItemUtilRes implements ItemConst {
+public final class AttendanceItemUtilRes {
 	
 	private AttendanceItemUtilRes () {}
 	
@@ -29,11 +31,10 @@ public final class AttendanceItemUtilRes implements ItemConst {
 		
 		List<ItemValue> result = new ArrayList<>();
 		
-		int layout = sources.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+		int layout = sources.isContainer() ? ItemConst.DEFAULT_IDX : ItemConst.DEFAULT_NEXT_IDX;
 		
 		Map<String, List<ItemValue>> items = AttendanceItemIdContainer.getIdMapStream(itemIds, type)
-				.collect(Collectors.groupingBy(c -> 
-									AttendanceItemUtil.getCurrentPath(layout, c.path(), false)));
+				.collect(Collectors.groupingBy(c -> getCurrentPath(layout, c.path())));
 		
 		collect(result, sources, items, layout, Optional.empty(), Optional.empty());
 		
@@ -47,13 +48,13 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			return sources;
 		}
 		
-		int layout = sources.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
+		int layout = sources.isContainer() ? ItemConst.DEFAULT_IDX : ItemConst.DEFAULT_NEXT_IDX;
 		
 		Map<String, List<ItemValue>> items = itemIds.stream().collect(Collectors.groupingBy(c -> {
 											if (StringUtil.isNullOrEmpty(c.path(), false)) {
 												c.withPath(AttendanceItemIdContainer.getPath(c.itemId(), type));
 											}
-											return AttendanceItemUtil.getCurrentPath(layout, c.path(), false);
+											return getCurrentPath(layout, c.path());
 										}));
 		
 		merge(sources, items, layout, Optional.empty(), Optional.empty());
@@ -65,10 +66,10 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			Map<String, List<ItemValue>> items, int layout, 
 			Optional<String> enumPlus, Optional<Integer> idxPlus) {
 		
-		items.entrySet().forEach(i -> onePropMerge(result, source, layout, enumPlus, idxPlus, i));
+		items.entrySet().forEach(i -> collectOneProp(result, source, layout, enumPlus, idxPlus, i));
 	}
 
-	private static void onePropMerge(List<ItemValue> result, AttendanceItemDataGate source, int layout,
+	private static void collectOneProp(List<ItemValue> result, AttendanceItemDataGate source, int layout,
 			Optional<String> enumPlus, Optional<Integer> idxPlus, Entry<String, List<ItemValue>> i) {
 		String prop = i.getKey();
 		PropType ct = source.typeOf(i.getKey());
@@ -87,7 +88,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 				AttendanceItemDataGate current = source.get(prop).orElse(null);
 
 				if (current == null) {
-					current = source.newInstanceOf(prop);
+//					current = source.newInstanceOf(prop);
+					result.addAll(i.getValue());
+					return;
 				} 
 
 				collect(result, current, 
@@ -95,8 +98,10 @@ public final class AttendanceItemUtilRes implements ItemConst {
 						nextLayout, enumPlus, idxPlus);
 			} else {
 				List<AttendanceItemDataGate> listV = source.gets(prop);
-				if (listV == null) {
-					listV = new ArrayList<>();
+				if (CollectionUtil.isEmpty(listV)) {
+//					listV = new ArrayList<>();
+					result.addAll(i.getValue());
+					return;
 				}
 				Supplier<AttendanceItemDataGate> defaultGetter = () -> source.newInstanceOf(prop);
 				switch (ct) {
@@ -223,9 +228,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx),
@@ -237,9 +242,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx), 
@@ -251,15 +256,15 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout, Supplier<AttendanceItemDataGate> defaultGetter) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalProcess(result, listV, layout, g.getValue(), 
 					Optional.of(enumT), Optional.of(idx),
 					l -> l.isNo(idx), defaultGetter);
 		});
-	} 
+	}
 
 	private static void internalProcess(List<ItemValue> result, List<AttendanceItemDataGate> listV, 
 			int layout, List<ItemValue> groupItems, 
@@ -269,7 +274,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 		AttendanceItemDataGate current = listV.stream().filter(checker).findFirst().orElse(null);
 		
 		if (current == null) { 
-			current = defaultGetter.get();
+//			current = defaultGetter.get();
+			result.addAll(groupItems);
+			return;
 		} 
 		collect(result, current, groupNext(layout, groupItems), layout, enumT, idx);
 	} 
@@ -303,9 +310,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalMergeList(defaultGetter, layout, listV, g.getValue(), 
 								Optional.of(enumT), Optional.of(idx), 
@@ -317,9 +324,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalMergeList(defaultGetter, layout, listV, g.getValue(), 
 								Optional.of(enumT), Optional.of(idx), 
@@ -331,9 +338,9 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			List<ItemValue> items, int layout) {
 		
 		groupEnum(items).entrySet().forEach(g -> {
-			
-			String enumT = g.getKey().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING);
+
 			int idx = getIdx(g.getKey());
+			String enumT = getEnum(g.getKey(), idx);
 			
 			internalMergeList(defaultGetter, layout, listV, g.getValue(), 
 								Optional.of(enumT), Optional.of(idx), 
@@ -359,16 +366,10 @@ public final class AttendanceItemUtilRes implements ItemConst {
 			listV.sort((v1, v2) -> v1.getNo() - v2.getNo());
 		}
 	}
-	
-	private static String buildPath(String path, Optional<String> enumPlus, Optional<Integer> idxPlus) {
-		
-		return path + enumPlus.map(c -> DEFAULT_ENUM_SEPERATOR + c).orElse("") 
-				+ idxPlus.map(c -> c.toString()).orElse("");
-	}
 
 	private static Map<String, List<ItemValue>> groupNext(int layout, List<ItemValue> items) {
 		return items.stream().collect(Collectors.groupingBy(c -> 
-							AttendanceItemUtil.getCurrentPath(layout, c.path(), false), 
+							getCurrentPath(layout, c.path()), 
 							Collectors.toList()));
 	}
 	
@@ -377,9 +378,11 @@ public final class AttendanceItemUtilRes implements ItemConst {
 	}
 
 	public static int getIdx(String text) {
+		if (StringUtil.isNullOrEmpty(text, false)) return -1;
+		
 		char char1 = text.charAt(text.length() - 1);
-		char char2 = text.charAt(text.length() - 2);
-		char char3 = text.charAt(text.length() - 3);
+		char char2 = text.length() < 2 ? 'a' : text.charAt(text.length() - 2);
+		char char3 = text.length() < 3 ? 'a' : text.charAt(text.length() - 3);
 		
 		if (char3 >= '0' && char3 <= '9') {
 			return Character.getNumericValue(char3) * 100 
@@ -397,8 +400,66 @@ public final class AttendanceItemUtilRes implements ItemConst {
 	
 	private static Map<String, List<ItemValue>> groupEnum(List<ItemValue> items) {
 		return items.stream().collect(Collectors.groupingBy(c -> {
-			String[] part = c.path().split(DEFAULT_ENUM_SEPERATOR);
+			String[] part = c.path().split(ItemConst.DEFAULT_ENUM_SEPERATOR);
 			return part[part.length - 1];
 		}));
 	}
+	
+//	private static List<String> splitRes(String longString, String sepe) {
+//		List<String> stringSplit = new ArrayList<>();
+//	    int pos = 0, end;
+//	    while ((end = longString.indexOf(sepe, pos)) >= 0) {
+//	        stringSplit.add(longString.substring(pos, end));
+//	        pos = end + 1;
+//	    }
+//	    stringSplit.add(longString.substring(pos));
+//	    return stringSplit;
+//	}
+	
+	private static String getCurrentPath(int layout, String longString) {
+		String x = getAfter(longString, ItemConst.DEFAULT_SEPERATOR, layout);
+		int idx = getIdx(x);
+		if (idx > 0) {
+			return getEnum(x, idx);
+		}
+		return x;
+	}
+	
+	// chua lay duoc dung layout?
+	private static String getAfter(String longString, String sepe, int layout) {
+	    int pos = 0, count = 0, end;
+	    if (layout < 0) {
+	    	return "";
+	    }
+	    if (layout == 0) {
+	    	if ((end = longString.indexOf(sepe, pos)) >= 0) {
+		    	return longString.substring(pos, end); 
+	    	}
+	    	return "";
+	    }
+	    while ((end = longString.indexOf(sepe, pos)) >= 0) {
+	        if (count == layout) {
+	        	return longString.substring(pos, end); 
+	        }
+	        count++;
+	        pos = end + 1;
+	    }
+	    if (count == layout) {
+        	return longString.substring(pos); 
+        }
+	    return "";
+	}
+
+	private static String getEnum(String key, Integer idx) {
+		if (idx < 10) {
+			return key.substring(0, key.length() - 1);
+		} else if (idx < 100) {
+			return key.substring(0, key.length() - 2);
+		} else if (idx < 1000) {
+			return key.substring(0, key.length() - 3);
+		} else {
+			return key.replaceAll(ItemConst.DEFAULT_NUMBER_REGEX, ItemConst.EMPTY_STRING);
+		} 
+//		return key.replaceAll(ItemConst.DEFAULT_NUMBER_REGEX, ItemConst.EMPTY_STRING);
+	} 
 }

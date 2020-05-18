@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,7 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
@@ -96,8 +94,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class DailyRecordWorkCommandHandler extends RecordHandler {
-
-	private static final String SEPERATE_PATTERN = Pattern.quote(ItemConst.DEFAULT_SEPERATOR);
+	
 	/** 勤務情報： 日別実績の勤務情報 */
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_WORK_INFO_CODE, jpPropertyName = DAILY_WORK_INFO_NAME, index = 1)
@@ -680,14 +677,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		default:
 			return null;
 		}
-	}
-
-	private String getGroup(ItemValue c) {
-		if (StringUtil.isNullOrEmpty(c.path(), false)) {
-			c.withPath(AttendanceItemIdContainer.getPath(c.itemId(), AttendanceItemType.DAILY_ITEM));
-		}
-		String[] paths = c.path().split(SEPERATE_PATTERN);
-		return paths[0];
 	}
 
 	private Map<String, List<GeneralDate>> toMapParam(List<DailyRecordWorkCommand> commands) {

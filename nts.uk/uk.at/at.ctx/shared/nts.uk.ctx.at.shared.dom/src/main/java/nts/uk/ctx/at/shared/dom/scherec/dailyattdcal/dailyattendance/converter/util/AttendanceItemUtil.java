@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 
 public class AttendanceItemUtil implements ItemConst {
 
+	private static final String SEPERATE_QUOTE = Pattern.quote(DEFAULT_SEPERATOR);
 	private static final AttendanceItemUtilCacheHolder CACHE_HOLDER = AttendanceItemUtilCacheHolder.cacheNow();
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
@@ -883,7 +884,7 @@ public class AttendanceItemUtil implements ItemConst {
 			return cacheForGetCurrentPath.get(cacheKey);
 		}
 
-		String[] layouts = text.split(Pattern.quote(DEFAULT_SEPERATOR));
+		String[] layouts = text.split(SEPERATE_QUOTE);
 		String result;
 
 		if (layouts.length <= layoutIdx) {

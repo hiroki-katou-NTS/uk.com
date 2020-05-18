@@ -15,7 +15,7 @@ public class ItemValue implements Cloneable {
 	
 	@Override
 	public ItemValue clone() {
-		return new ItemValue(value, valueType, layoutCode, itemId, pathLink, isFixed);
+		return new ItemValue(value, valueType, layoutCode, itemId, pathLink, false);
 	}
 
 	private static final String DATE_FORMAT = "yyyyMMdd";
@@ -62,8 +62,9 @@ public class ItemValue implements Cloneable {
 		value(value);
 	}
 	
-	public void beFixedItem() {
+	public ItemValue beFixedItem() {
 		this.isFixed = true;
+		return this;
 	}
 	
 	public ValueType type() {
