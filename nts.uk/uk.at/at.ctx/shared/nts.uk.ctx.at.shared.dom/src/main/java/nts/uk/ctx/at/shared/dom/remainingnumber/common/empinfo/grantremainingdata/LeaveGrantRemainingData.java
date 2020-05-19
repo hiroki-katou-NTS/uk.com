@@ -67,7 +67,7 @@ public abstract class LeaveGrantRemainingData extends AggregateRoot {
 	/**
 	 * 休暇残数を指定使用数消化する
 	 * @param targetRemainingDatas 付与残数
-	 * @param repositoriesRequiredByRemNum ロードデータ
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
 	 * @param remNumShiftListWork 複数の付与残数の消化処理を行う一時変数
 	 * @param leaveUsedNumber 休暇使用数
 	 * @param employeeId 社員ID

@@ -44,8 +44,11 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	/** 次回年休付与を計算 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period){
-		return this.algorithm(companyId, employeeId, period,
+	public List<NextAnnualLeaveGrant> algorithm(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			String companyId, String employeeId, Optional<DatePeriod> period){
+		return this.algorithm(repositoriesRequiredByRemNum, 
+				companyId, employeeId, period,
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 	}
 	
@@ -109,6 +112,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		
 		// 次回年休付与を取得する
 		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
+				repositoriesRequiredByRemNum,
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
 				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthServiceTblsOpt, closureStartOpt);
 		
@@ -117,7 +121,9 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	}
 
 	@Override
-	public List<NextAnnualLeaveGrant> calNextHdGrantV2(String companyId, String employeeId, Optional<DatePeriod> period,
+	public List<NextAnnualLeaveGrant> calNextHdGrantV2(
+			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> empOp, Optional<AnnualLeaveEmpBasicInfo> annLeaEmpInfoOp,
 			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthSvTblsOpt,
 			Optional<GeneralDate> closureDate) {
@@ -169,6 +175,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		
 		// 次回年休付与を取得する
 		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
+				repositoriesRequiredByRemNum,
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
 				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthSvTblsOpt, closureDate);
 		

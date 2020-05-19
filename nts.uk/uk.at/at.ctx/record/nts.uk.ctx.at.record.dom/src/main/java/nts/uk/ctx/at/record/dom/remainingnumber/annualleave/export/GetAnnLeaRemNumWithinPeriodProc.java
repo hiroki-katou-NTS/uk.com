@@ -405,7 +405,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			this.grantRemainingDatas = monthlyCalcDailys.get().getGrantRemainingDatas();
 		}
 		else {
-			this.grantRemainingDatas =
+			this.grantRemainingDatas = 
 					this.annLeaGrantRemDataRepo.findNotExp(employeeId).stream()
 							.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		}

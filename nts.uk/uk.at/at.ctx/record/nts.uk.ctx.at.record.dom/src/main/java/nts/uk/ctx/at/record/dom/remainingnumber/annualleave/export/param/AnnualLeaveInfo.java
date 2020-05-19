@@ -577,7 +577,7 @@ public class AnnualLeaveInfo implements Cloneable {
 //				
 //				// 年休情報残数を更新
 //				this.updateRemainingNumber();
-//			}
+			}
 		}
 		
 		// 残数不足エラーをチェックする
@@ -602,3 +602,5 @@ public class AnnualLeaveInfo implements Cloneable {
 		return aggrResult;
 	}
 }
+
+
