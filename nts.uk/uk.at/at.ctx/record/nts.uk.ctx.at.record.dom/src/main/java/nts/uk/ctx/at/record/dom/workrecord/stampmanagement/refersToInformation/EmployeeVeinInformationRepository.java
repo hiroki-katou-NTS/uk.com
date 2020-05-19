@@ -47,5 +47,5 @@ public interface EmployeeVeinInformationRepository {
 	 * 			List<employeeId>
 	 * @return 	Optional<社員の静脈情報>
 	 */
-	public Optional<EmployeeVeinInformation> get(List<String> employeeIds);
+	public List<EmployeeVeinInformation> get(List<String> employeeIds);
 }
