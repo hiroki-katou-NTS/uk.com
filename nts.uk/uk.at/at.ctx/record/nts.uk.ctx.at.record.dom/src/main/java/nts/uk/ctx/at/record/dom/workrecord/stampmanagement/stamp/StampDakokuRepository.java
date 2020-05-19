@@ -30,18 +30,24 @@ public interface StampDakokuRepository {
 
 	/**
 	 * [4] 取得する
+	 * 
+	 * @param 契約コード
+	 *            contractCode
 	 * @param stampNumbers
 	 * @param stampDateTime
 	 * @return
 	 */
-	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
+	public List<Stamp> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 * [5] 打刻カード未登録の打刻データを取得する
+	 * 
+	 * @param 契約コード
+	 *            contractCode
 	 * @param period
 	 * @return
 	 */
-	public List<Stamp> getStempRcNotResgistNumber(DatePeriod period);
+	public List<Stamp> getStempRcNotResgistNumber(String contractCode, DatePeriod period);
 	
 	public List<Stamp> getByListCard(List<String> stampNumbers);
 	

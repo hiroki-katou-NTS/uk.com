@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
+import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampFunction;
@@ -73,13 +74,13 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		entity.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		StampResultDisplay display = new StampResultDisplay(AppContexts.user().companyId(),NotUseAtr.USE);
 		entity.recordDisplayArt = display.getUsrAtr().value;
-		entity.mapAddress = "";
+		entity.mapAddress = domain.getMapAddres().v();
 		
 		return entity;
 	}
 	
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity, List<String> roles) {
-		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,entity.mapAddress);
+		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,new MapAddress(entity.mapAddress));
 	}
 
 }
