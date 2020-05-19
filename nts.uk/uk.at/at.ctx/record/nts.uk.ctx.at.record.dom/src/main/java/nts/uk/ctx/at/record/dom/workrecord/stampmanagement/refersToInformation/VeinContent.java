@@ -17,8 +17,5 @@ public class VeinContent extends StringPrimitiveValue<VeinContent> {
 	public VeinContent(String rawValue) {
 		super(rawValue);
 	}
-	
-	public String[] getSubString() {
-		return this.v().split(".{4000}");
-	}
+
 }

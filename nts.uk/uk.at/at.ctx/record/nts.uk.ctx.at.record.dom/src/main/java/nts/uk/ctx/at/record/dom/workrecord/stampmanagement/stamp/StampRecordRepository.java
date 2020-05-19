@@ -34,13 +34,13 @@ public interface StampRecordRepository {
 	 * @param stampDateTime
 	 * @return
 	 */
-	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
+	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 *  [5] 打刻カード未登録の打刻記録データを取得する
 	 * @param period
 	 * @return
 	 */
-	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period);
+	public List<StampRecord> getStempRcNotResgistNumber(String contractCode, DatePeriod period);
 
 }

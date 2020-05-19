@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.sta
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
-
 /**
  * 
  * @author sonnlb
@@ -18,7 +16,7 @@ public interface StampUsageRepository {
 	 * @param 打刻機能の利用設定
 	 *            domain
 	 */
-	public void insert(SettingsUsingEmbossing domain);
+	public void insert(Object domain);
 
 	/**
 	 * [2] update(打刻機能の利用設定)
@@ -26,7 +24,7 @@ public interface StampUsageRepository {
 	 * @param 打刻機能の利用設定
 	 *            domain
 	 */
-	public void update(SettingsUsingEmbossing domain);
+	public void update(Object domain);
 
 	/**
 	 * [3] get
@@ -37,5 +35,5 @@ public interface StampUsageRepository {
 	 * 
 	 *         打刻機能の利用設定を取得する
 	 */
-	public Optional<SettingsUsingEmbossing> get(String comppanyID);
+	public Optional<Object> get();
 }
