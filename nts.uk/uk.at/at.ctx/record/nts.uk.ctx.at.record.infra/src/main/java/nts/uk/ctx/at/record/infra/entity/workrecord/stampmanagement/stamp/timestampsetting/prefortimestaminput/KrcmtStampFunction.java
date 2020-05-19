@@ -61,6 +61,6 @@ public class KrcmtStampFunction extends UkJpaEntity implements Serializable {
 
 	public void update(CommonSettingsStampInput domain) {
 		this.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
-		this.mapAddress = domain.getMapAddres().v();
+		this.mapAddress = domain.getMapAddres();
 	}
 }

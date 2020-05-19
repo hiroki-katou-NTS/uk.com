@@ -5,66 +5,27 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.KrcmtStampUsage;
 
 @Stateless
 public class JpaStampUsageRepository extends JpaRepository implements StampUsageRepository {
 
 	@Override
-	public void insert(SettingsUsingEmbossing domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void insert(Object domain) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void update(SettingsUsingEmbossing domain) {
-		Optional<KrcmtStampUsage> entityOpt = this.queryProxy().find(domain.getCompanyId(),
-				KrcmtStampUsage.class);
+	public void update(Object domain) {
+		// TODO Auto-generated method stub
 
-		if (!entityOpt.isPresent()) {
-			
-			return;
-		}
-		
-		KrcmtStampUsage entity =  entityOpt.get();
-		entity.update(domain);
-		this.commandProxy().update(entity);
 	}
 
 	@Override
-	public Optional<SettingsUsingEmbossing> get(String comppanyID) {
-		Optional<KrcmtStampUsage> entityOpt = this.queryProxy().find(comppanyID, KrcmtStampUsage.class);
-		if (!entityOpt.isPresent()) {
-			
-			return Optional.empty();
-		}
-		
-		SettingsUsingEmbossing domain = toDoamin(entityOpt.get());
-
-		return Optional.of(domain);
-	}
-
-	public KrcmtStampUsage toEntity(SettingsUsingEmbossing domain) {
-		KrcmtStampUsage entity = new KrcmtStampUsage();
-		
-		entity.companyId = domain.getCompanyId();
-		entity.nameSelection = domain.isName_selection() ? 1 : 0;
-		entity.fingerAuthentication = domain.isFinger_authc() ? 1 : 0;
-		entity.ICCardStamp = domain.isIc_card() ? 1 : 0;
-		entity.personStamp = domain.isIndivition() ? 1 : 0;
-		entity.portalStamp = domain.isPortal() ? 1 : 0;
-		entity.smartPhoneStamp = domain.isSmart_phone() ? 1 : 0;
-		
-		return entity;
-	}
-	
-	public SettingsUsingEmbossing toDoamin(KrcmtStampUsage entity) {
-		return new SettingsUsingEmbossing(entity.companyId,
-				entity.nameSelection == 1 ? true : false,
-				entity.fingerAuthentication == 1 ? true : false, entity.ICCardStamp == 1 ? true : false,
-				entity.personStamp == 1 ? true : false, entity.portalStamp == 1 ? true : false,
-				entity.smartPhoneStamp == 1 ? true : false);
+	public Optional<Object> get() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

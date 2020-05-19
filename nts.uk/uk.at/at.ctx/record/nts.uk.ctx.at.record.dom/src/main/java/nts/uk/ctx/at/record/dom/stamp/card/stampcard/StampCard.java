@@ -4,24 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 
-/**
- * 打刻カード
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻カード.打刻カード
- * 
- * @author sonnlb
- *
- */
 @Getter
 @Setter
 public class StampCard extends AggregateRoot {
-	
+
+	// domain name: 打刻カード
+
 	/**
 	 * 打刻カードID
 	 */
 	private String stampCardId;
-
 
 	/**
 	 * 社員ID
@@ -31,50 +24,28 @@ public class StampCard extends AggregateRoot {
 	/**
 	 * 番号
 	 */
-	private final StampNumber stampNumber;
+	private StampNumber stampNumber;
 
 	/**
 	 * 登録日付
 	 */
 	private GeneralDate registerDate;
-
+	
+	
 	/** 契約コード */
-	private final ContractCode contractCd;
+	private ContractCode contractCd;
 
 	public static StampCard createFromJavaType(String stampCardId, String employeeId, String stampNumber,
-			GeneralDate registerDate, String contractCd) {
-		return new StampCard(stampCardId, new ContractCode(contractCd), new StampNumber(stampNumber), employeeId,
-				registerDate);
+			GeneralDate registerDate , String contractCd) {
+		return new StampCard(stampCardId, employeeId, new StampNumber(stampNumber), registerDate , new ContractCode(contractCd));
 	}
 
-	
-	public StampCard(String stampCardId, ContractCode contractCd, StampNumber stampNumber, String employeeId,
-			GeneralDate registerDate) {
+	public StampCard(String stampCardId, String employeeId, StampNumber stampNumber, GeneralDate registerDate, ContractCode contractCd) {
 		super();
 		this.stampCardId = stampCardId;
-		this.contractCd = contractCd;
+		this.employeeId = employeeId;
 		this.stampNumber = stampNumber;
-		this.employeeId = employeeId;
 		this.registerDate = registerDate;
-
-	}
-	
-	/**
-	 * [C-1] 作成する
-	 * 
-	 * @param 契約コード
-	 *            contractCd
-	 * @param 番号
-	 *            stampNumber
-	 * @param 社員ID
-	 *            employeeId
-	 */
-	public StampCard(String contractCd, String stampNumber, String employeeId) {
-		super();
-		this.stampCardId = IdentifierUtil.randomUniqueId();
-		this.contractCd = new ContractCode(contractCd);
-		this.stampNumber = new StampNumber(stampNumber);
-		this.employeeId = employeeId;
-		this.registerDate = GeneralDate.today();
+		this.contractCd = contractCd;
 	}
 }
