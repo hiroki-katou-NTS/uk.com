@@ -1,36 +1,45 @@
 package nts.uk.ctx.at.function.ws.nrl;
 
-import javax.inject.Inject;
+import java.io.InputStream;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordReservationAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ReservReceptDataImport;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
+import nts.uk.ctx.at.function.app.nrl.Command;
+import nts.uk.ctx.at.function.app.nrl.data.RequestData;
+import nts.uk.ctx.at.function.app.nrl.request.RequestDispatcher;
+import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
+import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 
-@Path("at/function/nrl")
-@Produces(MediaType.APPLICATION_JSON)
-public class NRLWebService extends WebService {
-
-	@Inject
-	private ConvertTimeRecordReservationAdapter timeRecordReserv;
-
-	@Inject
-	private ConvertTimeRecordStampAdapter convertTimeRecordStampAdapter;
-
-	@Inject
-	private SendNRDataAdapter sendNRDataAdapter;
-
-	@Path("create/reserv")
+@Path("/nr/old")
+@Produces("application/xml; charset=shift_jis")
+public class NRLWebService extends RequestDispatcher {
+	
 	@POST
-	public void createReserv() {
-		 ReservReceptDataImport data = new ReservReceptDataImport("106954", "A", "201112",
-		 "131459", "5");
-		 timeRecordReserv.convertData(1111, "000000000000", data);
+	@Path("dataCollect.aspx")
+	@RequestData({ Command.TEST, Command.POLLING, Command.SESSION, Command.ALL_IO_TIME })
+	public Frame requestTimeInOut(InputStream is) {
+//		NRLResponse response = ignite(is);
+		NRLResponse response = NRLResponse.mute();
+		return response.getEntity(Frame.class);
 	}
-
+	
+	@POST
+	@Path("sinseiCollect.aspx")
+	public void requestApplications() {
+		
+	}
+	
+	@POST
+	@Path("yoyakuCollect.aspx")
+	public void requestReservations() {
+		
+	}
+	
+	@POST
+	@Path("masterCollect.aspx")
+	public void requestMasterDatas() {
+		
+	}
 }
