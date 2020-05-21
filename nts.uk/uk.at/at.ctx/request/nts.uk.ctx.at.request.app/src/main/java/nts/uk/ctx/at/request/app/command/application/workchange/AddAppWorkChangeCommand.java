@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
+import java.util.List;
+
 import lombok.Value;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 
@@ -15,12 +17,15 @@ public class AddAppWorkChangeCommand {
 	 */
 	CreateApplicationCommand application;
 	
+	AppWorkChangeDispInfoCmd appWorkChangeDispInfoCmd;
+    
+    public List<String> holidayDateLst;
 	
-	
-	String employeeID;
+	/*String employeeID;
 	
 	Integer user;
     Integer reflectPerState;
 
-    boolean checkOver1Year;
+    boolean checkOver1Year;*/
+    
 }

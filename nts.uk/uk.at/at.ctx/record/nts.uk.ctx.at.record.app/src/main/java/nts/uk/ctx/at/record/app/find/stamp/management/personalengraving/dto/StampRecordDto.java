@@ -4,17 +4,17 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ContentsStampType;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 
 /**

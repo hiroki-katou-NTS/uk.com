@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -59,15 +60,29 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 			HolidayAppType holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
 		List<WorkType> result = new ArrayList<>();
 		//ドメインモデル「休暇申請対象勤務種類」を取得する
-		List<String> lstWorkTypeCodes = new ArrayList<>();
-		if(appEmploymentWorkType!=null){
-			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getLstWorkType())){
-				for(AppEmployWorkType appEmployWorkType : appEmploymentWorkType.getLstWorkType()){
-					if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
-						lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
+		List<String> lstWorkTypeCodes = new ArrayList<>();	
+		if(appEmploymentWorkType != null){
+			
+			if(!CollectionUtil.isEmpty(appEmploymentWorkType.getListWTOAH())) {
+				Optional<WorkTypeObjAppHoliday> itemOptional = appEmploymentWorkType.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == holidayType.value : false).findFirst();
+				
+				if(itemOptional.isPresent()) {
+					WorkTypeObjAppHoliday item = itemOptional.get();
+					List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(item.getWorkTypeList()) ? null :
+							item.getWorkTypeList().stream().map(x -> new AppEmployWorkType(companyID, appEmploymentWorkType.getEmploymentCode(), appEmploymentWorkType.getListWTOAH().get(0).getAppType(),
+									appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentWorkType.getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentWorkType.getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentWorkType.getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+							.collect(Collectors.toList());
+					if(!CollectionUtil.isEmpty(lstEmploymentWorkType)){
+						for(AppEmployWorkType appEmployWorkType : lstEmploymentWorkType){
+							if(appEmployWorkType.getWorkTypeCode() != null && !appEmployWorkType.getWorkTypeCode().equals("")){
+								lstWorkTypeCodes.add(appEmployWorkType.getWorkTypeCode());
+							}
+						}
 					}
 				}
+				
 			}
+			
 		}
 		if(CollectionUtil.isEmpty(lstWorkTypeCodes)){
 			// ドメインモデル「勤務種類」を取得(lấy dữ liệu domain 「勤務種類」)

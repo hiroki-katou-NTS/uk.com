@@ -88,7 +88,7 @@ public class DisplayRemainingHolidayNumber {
 	public SubstVacationDto getSubsitutionVacationSetting(String companyId, String employeeId, GeneralDate date) {
 		LeaveSetOutput output = absenceProc.getSetForLeave(companyId, employeeId, date);
 		if (output.isSubManageFlag()) {
-			double remain = absRecQuery.getAbsRecMngRemain(employeeId, date);
+			double remain = absRecQuery.getAbsRecMngRemain(employeeId, date).getRemainDays();
 			return new SubstVacationDto(output.isSubManageFlag(), remain);
 		}
 		return new SubstVacationDto(false, null);
