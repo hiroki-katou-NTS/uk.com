@@ -1,25 +1,40 @@
 package nts.uk.ctx.at.function.app.nrl.request;
 
-import javax.enterprise.context.RequestScoped;
+import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.data.ExchangeStruct;
+import nts.uk.ctx.at.function.app.nrl.data.ExchangeStruct.Record;
 import nts.uk.ctx.at.function.app.nrl.data.FieldName;
 import nts.uk.ctx.at.function.app.nrl.data.checker.FormatPattern;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFieldDataException;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampDataReflectResultImport;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampReceptionDataImport;
 
 /**
  * Time IO request.
  * 
  * @author manhnd
+ * 
+ *         データタイムレコードを打刻に変換する
  */
 @RequestScoped
 @Named(value=Command.ALL_IO_TIME, decrypt=true)
 public class TimeIORequest extends NRLRequest<Frame> {
+	
+	@Inject
+	private ConvertTimeRecordStampAdapter convertTRStampAdapter;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
@@ -55,8 +70,26 @@ public class TimeIORequest extends NRLRequest<Frame> {
 				continue;
 			}
 		}
-		
-		// TODO: Insert 打刻データ into DB
+
+		//Insert 打刻データ into DB
+		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
+		//TODO: default ContractCode "000000000000"
+		for (int i = 0; i < q; i++) {
+			Record record = exchange.getRecord(i);
+			
+			StampReceptionDataImport stamData = new StampReceptionDataImport.StampDataImportBuilder(
+					record.get(FieldName.IDNO), record.get(FieldName.IO_CARDDV), record.get(FieldName.IO_SHIFT),
+					record.get(FieldName.IO_DV), record.get(FieldName.YMD), record.get(FieldName.IO_SUPPORT_CD))
+							.time(record.get(FieldName.HM)).overTimeHours(record.get(FieldName.IO_OTTIME))
+							.midnightTime(record.get(FieldName.IO_MIDNIGHTOT)).build();
+			
+			Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> result = convertTRStampAdapter
+					.convertData(Integer.parseInt(nrlNo.trim()), "000000000000", stamData);
+			if (result.getLeft().isPresent())
+				result.getLeft().get().run();
+			if (result.getRight().isPresent())
+				result.getRight().get().getAtomTask().run();
+		}
 		
 		context.responseAccept();
 	}

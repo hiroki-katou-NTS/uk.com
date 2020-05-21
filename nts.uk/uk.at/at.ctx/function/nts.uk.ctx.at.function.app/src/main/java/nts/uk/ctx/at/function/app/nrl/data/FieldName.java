@@ -45,4 +45,12 @@ public class FieldName {
 	public static final String PE_EARLY_LATE_REASON = "遅刻早退理由";
 	public static final String PE_OFF_TYPE = "年休種類";
 	public static final String PE_OFF_TIME = "年休時間";
+	
+	public static final String RSV_MENU = "メニュー";
+	public static final String RSV_IDNO = "ID番号";
+	public static final String RSV_YMD = "年月日";
+	public static final String RSV_HMS = "時分秒";
+	public static final String RSV_QUAN = " 数量";
+	public static final String RSV_PRELIMINARY = "予備";
+	
 }

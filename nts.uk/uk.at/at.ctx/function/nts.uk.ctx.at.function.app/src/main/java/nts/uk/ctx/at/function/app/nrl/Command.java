@@ -15,9 +15,18 @@ public enum Command {
 	POLLING("Polling", "13", "03"),
 	SESSION("Session", "17", "01"),
 	TEST("Test", "14", "04"),
+	
 	ALL_IO_TIME("IOTime", "15", "01"),
 	ALL_PETITIONS("AllPetitions", "19", "01"),
-	PERSONAL_INFO("PersonalInfo", "3B", "07");
+	ALL_RESERVATION("AllReservation", "18", "01"),
+	
+	PERSONAL_INFO("PersonalInfo", "1B", "07"),
+	WORKTYPE_INFO("WorkTypeInfo", "1C", "08"),
+	WORKTIME_INFO("WorkTimeInfo", "1D", "09"),
+	OVERTIME_INFO("OverTimeInfo", "1E", "0A"),
+	RESERVATION_INFO("ReservationInfo", "1F", "0B"),
+	APPLICATION_INFO("ApplicationInfo", "20", "0C"),
+	TIMESET_INFO("TimeSetInfo", "16", "05");
 
 	/**
 	 * Name

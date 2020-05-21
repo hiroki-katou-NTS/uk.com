@@ -15,37 +15,31 @@ import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendPerInfoNameImport;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendReservationMenuImport;
 
 /**
- * Personal info request.
- * 
- * @author manhnd
+ * @author ThanhNX
+ *
  */
 @RequestScoped
-@Named(Command.PERSONAL_INFO)
-public class PersonalInfoRequest extends NRLRequest<Frame> {
+@Named(Command.RESERVATION_INFO)
+public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
-	 */
+
 	@Override
 	public void sketch(ResourceContext<Frame> context) {
+		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
-		items.add(new MapItem(Element.HDR, Command.PERSONAL_INFO.Response));
-		// TODO: Get personal info from DB, count records
+		items.add(new MapItem(Element.HDR, Command.RESERVATION_INFO.Response));
+		// Get work time info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
-		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(Integer.parseInt(nrlNo.trim()), "000000000000");
-		StringBuilder builder = new StringBuilder();
-		for(SendPerInfoNameImport infoName : lstPerInfo) {
-			builder.append(toStringObject(infoName));
-		}
-		String payload = builder.toString();
+		// TODO: default ContractCode "000000000000"
+		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(Integer.parseInt(nrlNo.trim()),
+				"000000000000");
+		String payload = toStringObject(lstInfo);
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 32;
 		items.add(new MapItem(Element.LENGTH, Integer.toHexString(length)));
@@ -55,27 +49,25 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
 		items.add(FrameItemArranger.ZeroPadding());
-		//Number of records
-		items.add(new MapItem(Element.NUMBER, String.valueOf(lstPerInfo.size())));
+		// Number of records
 		context.collectEncrypt(items, payload);
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#responseLength()
-	 */
 	@Override
 	public String responseLength() {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private String toStringObject(SendPerInfoNameImport data) {
-		StringBuilder builder = new StringBuilder(); 
-		builder.append(StringUtils.rightPad(data.getIdNumber(), 20));
-		//half payload16
-		builder.append(StringUtils.rightPad(data.getPerName(), 20));
-		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
-		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
-		builder.append(StringUtils.rightPad(data.getReservation(), 4));
+
+	private String toStringObject(List<SendReservationMenuImport> lstInfo) {
+		StringBuilder builder = new StringBuilder();
+		for(SendReservationMenuImport data : lstInfo) {
+			//half
+			builder.append(StringUtils.rightPad(data.getBentoMenu(), 16));
+			builder.append(StringUtils.rightPad(data.getUnit(), 2));
+		}
+		
 		return builder.toString();
 	}
 

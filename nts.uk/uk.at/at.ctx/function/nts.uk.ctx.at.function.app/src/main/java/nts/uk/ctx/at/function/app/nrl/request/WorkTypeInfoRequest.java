@@ -15,34 +15,31 @@ import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendNRDataAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendPerInfoNameImport;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.SendWorkTypeNameImport;
 
 /**
- * Personal info request.
- * 
- * @author manhnd
+ * @author ThanhNX
+ *
  */
 @RequestScoped
-@Named(Command.PERSONAL_INFO)
-public class PersonalInfoRequest extends NRLRequest<Frame> {
+@Named(Command.WORKTYPE_INFO)
+public class WorkTypeInfoRequest extends NRLRequest<Frame>{
 
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
-	 */
 	@Override
 	public void sketch(ResourceContext<Frame> context) {
+		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
-		items.add(new MapItem(Element.HDR, Command.PERSONAL_INFO.Response));
-		// TODO: Get personal info from DB, count records
+		items.add(new MapItem(Element.HDR, Command.WORKTYPE_INFO.Response));
+		//Get worktype info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		//TODO: default ContractCode "000000000000"
-		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(Integer.parseInt(nrlNo.trim()), "000000000000");
+		List<SendWorkTypeNameImport> lstWTInfo = sendNRDataAdapter.sendWorkType(Integer.parseInt(nrlNo.trim()), "000000000000");
 		StringBuilder builder = new StringBuilder();
-		for(SendPerInfoNameImport infoName : lstPerInfo) {
+		for(SendWorkTypeNameImport infoName : lstWTInfo) {
 			builder.append(toStringObject(infoName));
 		}
 		String payload = builder.toString();
@@ -56,27 +53,22 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
 		items.add(FrameItemArranger.ZeroPadding());
 		//Number of records
-		items.add(new MapItem(Element.NUMBER, String.valueOf(lstPerInfo.size())));
+		items.add(new MapItem(Element.NUMBER, String.valueOf(lstWTInfo.size())));
 		context.collectEncrypt(items, payload);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#responseLength()
-	 */
+	private String toStringObject(SendWorkTypeNameImport data) {
+		StringBuilder builder = new StringBuilder(); 
+		builder.append(StringUtils.rightPad(data.getWorkTypeNumber(), 3));
+		builder.append(StringUtils.rightPad(data.getMorningClassifiNum(), 2));
+		//half payload16
+		builder.append(StringUtils.rightPad(data.getWorkName(), 6));
+		return builder.toString();
+	}
+	
 	@Override
 	public String responseLength() {
 		return null;
-	}
-	
-	private String toStringObject(SendPerInfoNameImport data) {
-		StringBuilder builder = new StringBuilder(); 
-		builder.append(StringUtils.rightPad(data.getIdNumber(), 20));
-		//half payload16
-		builder.append(StringUtils.rightPad(data.getPerName(), 20));
-		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
-		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
-		builder.append(StringUtils.rightPad(data.getReservation(), 4));
-		return builder.toString();
 	}
 
 }

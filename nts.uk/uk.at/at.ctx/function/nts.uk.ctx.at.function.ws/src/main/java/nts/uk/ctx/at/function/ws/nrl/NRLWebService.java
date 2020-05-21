@@ -15,31 +15,36 @@ import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 @Path("/nr/old")
 @Produces("application/xml; charset=shift_jis")
 public class NRLWebService extends RequestDispatcher {
-	
+
 	@POST
 	@Path("dataCollect.aspx")
 	@RequestData({ Command.TEST, Command.POLLING, Command.SESSION, Command.ALL_IO_TIME })
 	public Frame requestTimeInOut(InputStream is) {
-//		NRLResponse response = ignite(is);
-		NRLResponse response = NRLResponse.mute();
+		NRLResponse response = ignite(is);
+		// NRLResponse response = NRLResponse.mute();
 		return response.getEntity(Frame.class);
 	}
-	
+
 	@POST
 	@Path("sinseiCollect.aspx")
 	public void requestApplications() {
-		
+
 	}
-	
+
 	@POST
 	@Path("yoyakuCollect.aspx")
-	public void requestReservations() {
-		
+	@RequestData({ Command.ALL_RESERVATION })
+	public Frame requestReservations(InputStream is) {
+		NRLResponse response = ignite(is);
+		return response.getEntity(Frame.class);
 	}
-	
+
 	@POST
 	@Path("masterCollect.aspx")
-	public void requestMasterDatas() {
-		
+	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, Command.TIMESET_INFO,
+			Command.WORKTIME_INFO, Command.WORKTYPE_INFO })
+	public Frame requestMasterDatas(InputStream is) {
+		NRLResponse response = ignite(is);
+		return response.getEntity(Frame.class);
 	}
 }

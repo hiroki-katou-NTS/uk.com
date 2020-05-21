@@ -72,6 +72,19 @@ public class SendTimeRecordSettingImport {
 		this.request10 = builder.request10;
 		this.request11 = builder.request11;
 	}
+	
+	public SendTimeRecordSettingImport() {
+		this.request1 = false;
+		this.request2 = false;
+		this.request3 = false;
+		this.request4 = false;
+		this.request6 = false;
+		this.request7 = false;
+		this.request8 = false;
+		this.request9 = false;
+		this.request10 = false;
+		this.request11 = false;
+	}
 
 	public static class SettingImportBuilder {
 

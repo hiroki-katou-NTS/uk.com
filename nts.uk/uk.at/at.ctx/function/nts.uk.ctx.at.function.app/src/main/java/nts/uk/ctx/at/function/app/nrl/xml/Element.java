@@ -47,6 +47,14 @@ public class Element {
 	public static final String NUMBER = "Number";
 	public static final String BCC = "BCC";
 	
+	public static final String YEAR = "Year";
+	public static final String MONTH = "Month";
+	public static final String DAY = "Day";
+	public static final String HOUR = "Hour";
+	public static final String MINITE = "Minite";
+	public static final String SECOND = "Second";
+	public static final String WEEK = "Week";
+	
 	public static class Value {
 		public static final String SERVICE_TYPE = "20";
 		public static final String STATUS_NORMAL_RES = "00";

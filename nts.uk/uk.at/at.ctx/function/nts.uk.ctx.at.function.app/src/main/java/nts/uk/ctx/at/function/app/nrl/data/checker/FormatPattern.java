@@ -25,6 +25,11 @@ public class FormatPattern {
 	public static final String HALPHANUM_S = "^[A-Za-z0-9 ]+$";
 	
 	/**
+	 * NUMBER
+	 */
+	public static final String NUMBER = "^[0-9]+$";
+	
+	/**
 	 * isHwUAlpha.
 	 * @param text
 	 * @return
@@ -49,6 +54,15 @@ public class FormatPattern {
 	 */
 	public static boolean isHwAlphanumericS(String text) {
 		return Pattern.matches(HALPHANUM_S, text);
+	}
+	
+	/**
+	 * isNumber
+	 * @param text
+	 * @return
+	 */
+	public static boolean isNumeric(String text) {
+		return Pattern.matches(NUMBER, text);
 	}
 	
 	/**
@@ -78,6 +92,22 @@ public class FormatPattern {
 		if (hh < 0 || hh > 23) return false;
 		int mm = Integer.parseInt(text.substring(2));
 		if (mm < 0 || mm > 59) return false;
+		return true;
+	}
+	
+	/**
+	 * isHHmmss
+	 * @param text
+	 * @return
+	 */
+	public static boolean isHHmmss(String text) {
+		if (text.length() != 6) return false;
+		int hh = Integer.parseInt(text.substring(0, 2));
+		if (hh < 0 || hh > 23) return false;
+		int mm = Integer.parseInt(text.substring(2, 4));
+		if (mm < 0 || mm > 59) return false;
+		int ss = Integer.parseInt(text.substring(4));
+		if (ss < 0 || ss > 59) return false;
 		return true;
 	}
 }
