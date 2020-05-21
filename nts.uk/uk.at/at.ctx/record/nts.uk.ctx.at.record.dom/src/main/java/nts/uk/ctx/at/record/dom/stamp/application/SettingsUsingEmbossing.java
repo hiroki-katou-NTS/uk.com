@@ -64,7 +64,7 @@ public class SettingsUsingEmbossing implements DomainAggregate {
 			return this.name_selection;
 		case PORTAL:
 			return this.portal;
-		case TIME_CLOCK:
+		case SMART_PHONE:
 			return this.smart_phone;
 		default:
 			return true;
