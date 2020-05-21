@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.refersToInformation;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.referstoinformation;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,5 +47,5 @@ public interface EmployeeVeinInformationRepository {
 	 * 			List<employeeId>
 	 * @return 	Optional<社員の静脈情報>
 	 */
-	public Optional<EmployeeVeinInformation> get(List<String> employeeIds);
+	public List<EmployeeVeinInformation> get(List<String> employeeIds);
 }

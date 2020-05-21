@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.refersToInformation;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.referstoinformation;
 
 import lombok.AllArgsConstructor;
 
@@ -24,4 +24,22 @@ public enum FingerType {
 	public final int value;
 
 	public final String name;
+	
+	private final static FingerType[] values = FingerType.values();
+
+	public static FingerType valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (FingerType val : FingerType.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
+	}
 }

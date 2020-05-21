@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.refersToInformation;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.referstoinformation;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

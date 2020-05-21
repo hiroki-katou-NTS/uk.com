@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.refersToInformation;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.referstoinformation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
