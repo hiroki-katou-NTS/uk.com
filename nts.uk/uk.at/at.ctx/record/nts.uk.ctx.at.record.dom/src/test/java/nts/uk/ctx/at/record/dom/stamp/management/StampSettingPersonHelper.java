@@ -8,7 +8,6 @@ import java.util.Optional;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Stamp;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
@@ -44,14 +43,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class StampSettingPersonHelper {
 	
-	//TODO: Chungnt
 	public static StampSettingPerson DUMMY = new StampSettingPerson(
 			"000000000000-0001", 
 			true, 
 			StampScreen.DUMMY, 
 			Arrays.asList(Layout.DUMMY), null);
 	
-	//TODO: Chungnt
 	public static StampSettingPerson DUMMY_buttonEmphasisArt_false = new StampSettingPerson(
 			"000000000000-0001", 
 			false, 

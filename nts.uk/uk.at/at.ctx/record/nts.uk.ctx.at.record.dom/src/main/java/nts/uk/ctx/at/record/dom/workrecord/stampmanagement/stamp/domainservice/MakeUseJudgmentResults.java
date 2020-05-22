@@ -24,6 +24,6 @@ public class MakeUseJudgmentResults {
 
 	// [C-1] 利用できる
 	public static MakeUseJudgmentResults get() {
-		return new MakeUseJudgmentResults(CanEngravingUsed.AVAILABLE, null);
+		return new MakeUseJudgmentResults(CanEngravingUsed.AVAILABLE, Optional.empty());
 	}
 }

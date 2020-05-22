@@ -35,7 +35,7 @@ public class StampFunctionAvailableService {
 		Optional<SettingsUsingEmbossing> cardCreate = require.get();
 		// $利用設定.打刻利用できるか(打刻手段)
 		if (!cardCreate.isPresent() || cardCreate.get().canUsedStamping(stampMeans)) {
-			return new MakeUseJudgmentResults(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, null);
+			return new MakeUseJudgmentResults(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, Optional.empty());
 		}
 
 		if (!(stampMeans == StampMeans.INDIVITION || stampMeans == StampMeans.PORTAL

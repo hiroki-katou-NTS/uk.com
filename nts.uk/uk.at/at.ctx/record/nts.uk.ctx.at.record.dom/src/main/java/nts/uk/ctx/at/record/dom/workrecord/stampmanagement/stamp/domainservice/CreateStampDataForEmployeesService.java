@@ -99,7 +99,7 @@ public class CreateStampDataForEmployeesService {
 			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
 		}
 		
-		return new Stamp(
+		return new Stamp(new ContractCode(AppContexts.user().contractCode()),
 				stampNumber, 
 				datetime, 
 				relieve, 

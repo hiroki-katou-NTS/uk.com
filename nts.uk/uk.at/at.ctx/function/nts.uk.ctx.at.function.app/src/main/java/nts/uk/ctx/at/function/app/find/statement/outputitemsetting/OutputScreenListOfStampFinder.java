@@ -318,11 +318,11 @@ public class OutputScreenListOfStampFinder {
 		}
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate stampDate) {
-			return stampRecordRepository.get(AppContexts.user().contractCode(),stampNumbers, stampDate);
+			return stampRecordRepository.get(stampNumbers, stampDate);
 		}
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
-			return stampDakokuRepository.get(stampNumbers, stampDateTime);
+			return stampDakokuRepository.get(AppContexts.user().contractCode(),stampNumbers, stampDateTime);
 		}
 		
 		
@@ -337,13 +337,13 @@ public class OutputScreenListOfStampFinder {
 		@Override
 		public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {	
 			
-			return stampRecordRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(),period);
+			return stampRecordRepo.getStempRcNotResgistNumber(period);
 			
 		}
 
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period) {	
-			return stampDakokuRepo.getStempRcNotResgistNumber(period);
+			return stampDakokuRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(),period);
 		}	
 	}
 	

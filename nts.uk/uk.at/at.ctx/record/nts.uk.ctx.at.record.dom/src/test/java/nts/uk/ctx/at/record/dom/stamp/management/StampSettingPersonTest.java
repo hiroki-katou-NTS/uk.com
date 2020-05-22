@@ -4,18 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import mockit.Expectations;
+import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Button;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Comment;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
@@ -29,6 +36,8 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.StampS
 @RunWith(JMockit.class)
 public class StampSettingPersonTest {
 
+	
+	//TODO:Chungnt example ut insert update
 
 //	@Test
 //	public void testGetButtonSet_false() {
@@ -51,7 +60,21 @@ public class StampSettingPersonTest {
 //		assertThat(settingPerson.getButtonSet(1, 0)).isNotPresent();
 //	}
 
-
+	/**
+	 * Optional<StampPageLayout> pageLayout = lstStampPageLayout.stream().filter(x -> x.getPageNo().v() == stambutton.getPageNo().v()).findFirst(){
+		if(!pageLayout.isPresent()){
+			return Optional.empty();
+		}
+	 */
+//	@Test void testStampSettingPerson() {
+//		StampSettingPerson settingPerson = StampSettingPersonHelper.settingPerson();
+//		Optional<StampPageLayout> pageLayout = Optional.empty();
+//		
+//		Optional<ButtonSettings> data = settingPerson.getButtonSet(new StampButton(new PageNo(1), new ButtonPositionNo(1)));
+//		assertThat(data).isEqualTo(Optional.empty());
+//		
+//	}
+	
 	@Test
 	public void insert() {
 
