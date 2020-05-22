@@ -54,6 +54,7 @@ public class EnterStampFromICCardService {
 		
 //		$打刻入力結果 = 共有打刻から打刻を入力する#作成する(require, 契約コード, $打刻カード.社員ID, 打刻カード番号, 	
 //				$打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容)
+		
 		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require,
 				contractCode.v(),
 				AppContexts.user().employeeId(),
