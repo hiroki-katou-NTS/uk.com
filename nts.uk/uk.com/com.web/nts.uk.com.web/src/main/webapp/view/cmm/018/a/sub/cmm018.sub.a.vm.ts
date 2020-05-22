@@ -220,6 +220,20 @@ module nts.uk.com.view.cmm018.a.sub {
                 let width = uk.localStorage.getItem("AppName_CMM018");
                 if (width.isPresent()) {
                     $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
+                }else {
+                    // calculate width's appName that equals character number of text , 1 character = 15 px
+                    let numberText = 0;
+                    _.forEach(self.lstData(), (item, index) => {
+                        if(item.appTypeName) {
+                            numberText = item.appTypeName.length >= numberText ? (index == 0 ? item.appTypeName.length + 1 : item.appTypeName.length) : numberText;
+                        }
+                        
+                    })
+                    if(numberText == 0) {
+                        $(self.gridName).igGridResizing("resize", "appName", 130);
+                    }else if(numberText <= 20) {
+                        $(self.gridName).igGridResizing("resize", "appName", 15*numberText);
+                    }
                 }
                 
                 _.forEach(["grid_matome", "grid_matomeA", "grid_matomeB", "grid_matomeC", "grid_matomeD", "grid_matomeE", "grid_matomeF"], gridName => { 
