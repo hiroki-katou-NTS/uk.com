@@ -181,12 +181,12 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepo.get(stampNumbers, date);
+			return stampRecordRepo.get(AppContexts.user().contractCode(),stampNumbers, date);
 		}
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampDakokuRepo.get(AppContexts.user().contractCode(),stampNumbers, date);
+			return stampDakokuRepo.get(stampNumbers, date);
 		}
 
 	}

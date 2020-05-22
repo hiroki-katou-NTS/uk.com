@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.referstoinformation.EmployeeVeinInformation;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.refersToInformation.EmployeeVeinInformation;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -25,8 +25,27 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KrmctFingerVeinInfo extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@EmbeddedId
-	public KrmctFingerVeinInfoPk pk;
+	/**
+	 * 社員ID
+	 */
+	@Id
+	@Basic(optional = false)
+	@Column(name = "SID")
+	public String employeeId;
+
+	/**
+	 * 指種類
+	 */
+	@Basic(optional = false)
+	@Column(name = "FINGER_TYPE")
+	public int fingerType;
+	
+	/**
+	 * 静脈NO
+	 */
+	@Basic(optional = false)
+	@Column(name = "VEIN_NO")
+	public int veinNo;
 	
 	/**
 	 * 静脈内容
@@ -38,22 +57,14 @@ public class KrmctFingerVeinInfo extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.employeeId;
 	}
 	
 	public void update(EmployeeVeinInformation domain) {
-//		this.employeeId = domain.getSid();
-//		this.fingerType = domain.getVeininformations().get(0).getFingerType().value;
+		this.employeeId = domain.getSid();
+		this.fingerType = domain.getVeininformations().get(0).getFingerType().value;
 //		this.veinNo = domain.getVeininformations().get(0).get
 		this.veinDetail = domain.getVeininformations().get(0).getVeinInformation().v();
 	}
-	
-	
-	public int getFingerType() {
-		return this.pk.fingerType;
-	}
-	
-	public int getVeinNo() {
-		return this.pk.veinNo;
-	}
+
 }

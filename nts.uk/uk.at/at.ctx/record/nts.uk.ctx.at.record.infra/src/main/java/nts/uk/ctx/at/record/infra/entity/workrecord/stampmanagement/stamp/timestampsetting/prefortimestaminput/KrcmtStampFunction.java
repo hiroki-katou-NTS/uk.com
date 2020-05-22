@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
-import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -61,8 +59,7 @@ public class KrcmtStampFunction extends UkJpaEntity implements Serializable {
 		return this.cid;
 	}
 
-	public void update(CommonSettingsStampInput domain, Optional<StampResultDisplay> display) {
-		this.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
+	public void update(CommonSettingsStampInput domain) {
 		this.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		this.mapAddress = domain.getMapAddres().v();
 	}

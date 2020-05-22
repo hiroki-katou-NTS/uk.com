@@ -6,11 +6,9 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -33,9 +31,7 @@ public class StampTest {
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
 		StampLocationInfor locationInfor = StampHelper.getStampLocationInforDefault();
 		boolean reflectedCategory = false;
-		ContractCode contactCode = new ContractCode("aaaa");
-		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults,
-				reflectedCategory, locationInfor);
+		Stamp stamp = new Stamp(cardNumber, stampDateTime, relieve, type, refActualResults,reflectedCategory, locationInfor);
 		NtsAssert.invokeGetters(stamp);
 	}
 	
@@ -47,8 +43,7 @@ public class StampTest {
 		StampType type = StampHelper.getStampTypeDefault();
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
 		StampLocationInfor locationInfor = StampHelper.getStampLocationInforDefault();
-		ContractCode contactCode = new ContractCode(AppContexts.user().companyCode());
-		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, locationInfor);
+		Stamp stamp = new Stamp(cardNumber, stampDateTime, relieve, type, refActualResults, locationInfor);
 		assertThat(stamp.isReflectedCategory()).isFalse();
 		NtsAssert.invokeGetters(stamp);
 	}

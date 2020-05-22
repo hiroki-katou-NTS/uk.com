@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
@@ -29,7 +29,7 @@ public class EnterStampForSharedStampService {
 	 *            社員ID
 	 * @param stampCardNo
 	 *            Optional<打刻カード番号>	
-	 * @param Relieve
+	 * @param stampMethod
 	 *            打刻する方法
 	 * @param stampDatetime
 	 *            打刻日時
@@ -39,11 +39,9 @@ public class EnterStampForSharedStampService {
 	 * 
 	 * @return stampInputResutl 打刻入力結果
 	 * 
-	 * 	ページNOとボタン位置NOから作成する打刻種類を判断する
-	 * 
 	 */
-	public static TimeStampInputResult create(Require require ,String conteactCode, String employeeID, Optional<StampNumber> StampNumber,
-			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , RefectActualResult refActualResult) {
+	public static StampDataReflectResult create(Require require ,String conteactCode, String employeeID, Optional<StampNumber> StampNumber,
+			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , Optional<RefectActualResult> refActualResult) {
 		
 		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
 		Optional<TimeStampSetShareTStamp> setShareTStamp = require.get(AppContexts.user().companyId());
