@@ -8,7 +8,6 @@ import java.util.Optional;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Stamp;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
@@ -44,14 +43,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class StampSettingPersonHelper {
 	
-	//TODO: Chungnt
 	public static StampSettingPerson DUMMY = new StampSettingPerson(
 			"000000000000-0001", 
 			true, 
 			StampScreen.DUMMY, 
 			Arrays.asList(Layout.DUMMY), null);
 	
-	//TODO: Chungnt
 	public static StampSettingPerson DUMMY_buttonEmphasisArt_false = new StampSettingPerson(
 			"000000000000-0001", 
 			false, 
@@ -166,6 +163,40 @@ public class StampSettingPersonHelper {
 		return settingPerson;
 	}
 	
+	public static StampSettingPerson settingPersonNull() {
+		return new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				new ArrayList<StampPageLayout>(), null);
+	}
+	
+	public static StampSettingPerson settingPerson1() {
+		
+		List<StampPageLayout> lst = new ArrayList<>();
+		
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+		
+		lst.add(new StampPageLayout(new PageNo(1),
+				new StampPageName("DUMMY"),
+				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")),
+				ButtonLayoutType.SMALL_8,
+				lstButtonSet));
+		
+		return new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lst, null);
+	}
+	
 	public static StampPageLayout crePageLayout(int buttonPositionNo,int pageNo){
 		List<ButtonSettings> lstButtonSetAdd = new ArrayList<>();
 		lstButtonSetAdd.add(new ButtonSettings(
@@ -183,6 +214,24 @@ public class StampSettingPersonHelper {
 				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
 				lstButtonSetAdd);
 		return pageLayout;
+	}
+	
+	public static List<ButtonSettings> getButtonSettings() {
+		List<ButtonSettings> lstBS = new ArrayList<>();
+		
+		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
+				new ButtonType(ReservationArt.RESERVATION, null),
+				NotUseAtr.USE,
+				AudioType.GOOD_MORNING));
+		
+		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
+				new ButtonType(ReservationArt.RESERVATION, null),
+				NotUseAtr.USE,
+				AudioType.GOOD_MORNING));
+		
+		return lstBS;
 	}
  
 
