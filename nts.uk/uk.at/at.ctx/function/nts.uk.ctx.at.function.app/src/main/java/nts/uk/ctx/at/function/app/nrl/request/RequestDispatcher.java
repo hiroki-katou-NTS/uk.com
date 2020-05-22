@@ -39,7 +39,14 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.POLLING.Request, StatusPollingRequest.class);
 		RequestMapper.put(Command.SESSION.Request, SessionRequest.class);
 		RequestMapper.put(Command.ALL_IO_TIME.Request, TimeIORequest.class);
+		RequestMapper.put(Command.ALL_RESERVATION.Request, AllReservationRequest.class);
+		RequestMapper.put(Command.ALL_PETITIONS.Request, AllPetitionsRequest.class);
 		RequestMapper.put(Command.PERSONAL_INFO.Request, PersonalInfoRequest.class);
+		RequestMapper.put(Command.OVERTIME_INFO.Request, OverTimeInfoRequest.class);
+		RequestMapper.put(Command.RESERVATION_INFO.Request, ReservationMenuInfoRequest.class);
+		RequestMapper.put(Command.TIMESET_INFO.Request, TimeSettingInfoRequest.class);
+		RequestMapper.put(Command.WORKTIME_INFO.Request, WorkTimeInfoRequest.class);
+		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
 	}
 	
 	/**
