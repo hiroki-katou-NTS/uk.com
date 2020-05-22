@@ -76,6 +76,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));
+		builder.append(StringUtils.rightPad("", 6, "a"));
 		return builder.toString();
 	}
 

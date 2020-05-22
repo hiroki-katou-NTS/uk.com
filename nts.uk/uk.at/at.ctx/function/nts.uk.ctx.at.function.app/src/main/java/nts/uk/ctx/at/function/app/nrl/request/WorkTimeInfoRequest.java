@@ -63,6 +63,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		//half payload16
 		builder.append(StringUtils.rightPad(data.getWorkTimeName(), 6));
 		builder.append(StringUtils.rightPad(data.getTime(), 9));
+		builder.append(StringUtils.rightPad("", 14, "a"));
 		return builder.toString();
 	}
 	

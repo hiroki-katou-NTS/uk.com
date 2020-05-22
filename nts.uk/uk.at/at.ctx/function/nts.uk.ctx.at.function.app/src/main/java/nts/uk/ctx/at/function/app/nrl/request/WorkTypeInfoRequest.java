@@ -63,6 +63,7 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame>{
 		builder.append(StringUtils.rightPad(data.getMorningClassifiNum(), 2));
 		//half payload16
 		builder.append(StringUtils.rightPad(data.getWorkName(), 6));
+		builder.append(StringUtils.rightPad("", 6, "a"));
 		return builder.toString();
 	}
 	

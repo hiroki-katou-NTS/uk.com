@@ -67,7 +67,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 			builder.append(StringUtils.rightPad(data.getBentoMenu(), 16));
 			builder.append(StringUtils.rightPad(data.getUnit(), 2));
 		}
-		
+		builder.append(StringUtils.rightPad("", 8, "a"));
 		return builder.toString();
 	}
 

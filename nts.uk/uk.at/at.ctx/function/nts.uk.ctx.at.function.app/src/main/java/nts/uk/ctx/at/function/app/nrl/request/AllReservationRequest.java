@@ -50,13 +50,13 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 				.addField(FieldName.RSV_IDNO, 20, t -> FormatPattern.isHwAlphanumericS(t))
 				.addField(FieldName.RSV_YMD, 6, t -> FormatPattern.isYymmdd(t))
 				.addField(FieldName.RSV_HMS, 6, t -> FormatPattern.isHHmmss(t))
-				.addField(FieldName.RSV_QUAN, 6, t -> FormatPattern.isNumeric(t))
-				.addField(FieldName.RSV_PRELIMINARY, 12, t -> DefaultValue.PRELIMINARY.equals(t));
+				.addField(FieldName.RSV_QUAN, 2, t -> FormatPattern.isNumeric(t))
+				.addField(FieldName.RSV_PRELIMINARY, 13, t -> DefaultValue.PRELIMINARY.equals(t));
 		
 		for (int i = 0; i < q; i++) {
-			int rLen = i * DefaultValue.SINGLE_FRAME_LEN;
+			int rLen = i * DefaultValue.SINGLE_FRAME_LEN_48;
 			try {
-				exchange.parseAppend(payload.substring(rLen, rLen + DefaultValue.SINGLE_FRAME_LEN));
+				exchange.parseAppend(payload.substring(rLen, rLen + DefaultValue.SINGLE_FRAME_LEN_48));
 			} catch (InvalidFieldDataException ex) {
 				continue;
 			}

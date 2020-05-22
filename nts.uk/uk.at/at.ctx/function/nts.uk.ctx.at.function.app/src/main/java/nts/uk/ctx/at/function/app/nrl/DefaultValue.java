@@ -29,6 +29,9 @@ public class DefaultValue {
 	public static final int ALL_PETITIONS_PLS = 949;
 	public static final int ALL_PETITIONS_PKT_LEN_XPL = 32;
 	public static final int SINGLE_FRAME_LEN = 64;
+	public static final int SINGLE_FRAME_LEN_32 = 32;
+	public static final int SINGLE_FRAME_LEN_48 = 48;
+	public static final int SINGLE_FRAME_LEN_80 = 80;
 	
 	public static final String HEAD_TYPE = "head";
 	public static final String DATA_TYPE = "data";
