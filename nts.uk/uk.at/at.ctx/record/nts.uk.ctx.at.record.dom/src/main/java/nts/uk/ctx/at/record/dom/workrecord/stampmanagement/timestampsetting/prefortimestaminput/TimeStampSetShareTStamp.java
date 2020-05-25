@@ -42,8 +42,6 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 	
 	// 指認証失敗回数
 	private Optional<NumberAuthenfailures> numberAuthenfailures;
-
-	//[C-0] 共有打刻の打刻設定(会社ID, 打刻画面の表示設定, ページレイアウト設定,氏名選択利用する,パスワード入力が必須か,社員コード認証利用するか,指認証失敗回数)
 	
 	// [1] ボタン詳細設定を取得する
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
@@ -86,7 +84,6 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 
 	// [4] ページを削除する
 	public void deletePage(PageNo pageNo) {
-
 		// $打刻ページリスト = @ページレイアウト設定 : filter not $.ページNO == ページNO						
 		List<StampPageLayout> pageList = this.lstStampPageLayout.stream()
 				.filter(it -> !it.getPageNo().equals(pageNo)).collect(Collectors.toList());
@@ -94,5 +91,4 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 		// @ページレイアウト設定 = $打刻ページリスト
 		this.lstStampPageLayout = pageList;
 	}
-
 }
