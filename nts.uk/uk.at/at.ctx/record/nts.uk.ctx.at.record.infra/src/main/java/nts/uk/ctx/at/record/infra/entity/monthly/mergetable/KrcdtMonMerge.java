@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeCurrentMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -1555,6 +1556,30 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 控除前のフレックス不足時間 */
 	@Column(name = "SHORT_TIME_BFR_DEDUCT")
 	public int shotTimeBeforeDeduct;
+	
+	/** 当月精算フレックス時間 */
+	@Column(name = "FLEX_SETTLE_TIME")
+	public int flexSettleTime;
+	
+	/** フレックス時間：当月フレックス時間：フレックス時間 */
+	@Column(name = "FLEX_TIME_CUR")
+	public int flexTimeCurrent;
+	/** フレックス時間：当月フレックス時間：基準時間 */
+	@Column(name = "STD_TIME_CUR")
+	public int standardTimeCurrent;
+	/** フレックス時間：当月フレックス時間：週平均超過時間 */
+	@Column(name = "EXC_WA_TIME_CUR")
+	public int excessWeekAveTimeCurrent;
+	
+	/** 時間外超過：当月フレックス時間：フレックス時間 */
+	@Column(name = "FLEX_TIME_CUR_OT")
+	public int flexTimeCurrentOT;
+	/** 時間外超過：当月フレックス時間：基準時間 */
+	@Column(name = "STD_TIME_CUR_OT")
+	public int standardTimeCurrentOT;
+	/** 時間外超過：当月フレックス時間：週平均超過時間 */
+	@Column(name = "EXC_WA_TIME_CUR_OT")
+	public int excessWeekAveTimeCurrentOT;
 
 	/* KRCDT_MON_HDWK_TIME */
 
@@ -3450,6 +3475,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.annualLeaveDeductDays = 0;
 		this.absenceDeductTime = 0;
 		this.shotTimeBeforeDeduct = 0;
+		this.flexSettleTime = 0;
+		this.flexTimeCurrent = 0;
+		this.standardTimeCurrent = 0;
+		this.excessWeekAveTimeCurrent = 0;
+		this.flexTimeCurrentOT = 0;
+		this.standardTimeCurrentOT = 0;
+		this.excessWeekAveTimeCurrentOT = 0;
 		
 		/** 法定労働時間 */
 		this.statutoryWorkingTime = 0;
@@ -3719,6 +3751,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.annualLeaveDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays().v();
 		this.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
 		this.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
+		this.flexSettleTime = domain.getFlexSettleTime().v();
+		this.flexTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.standardTimeCurrent = flexTime.getFlexTimeCurrentMonth().getStandardTime().v();
+		this.excessWeekAveTimeCurrent = flexTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
+		this.flexTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.standardTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getStandardTime().v();
+		this.excessWeekAveTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
 	}
 
 	/* KRCDT_MON_HDWK_TIME 集計時間：休出・代休：集計休出時間*/
@@ -5715,21 +5754,30 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 								new AttendanceTimeMonthWithMinus(this.calcFlexTime)),
 						new AttendanceTimeMonth(this.beforeFlexTime),
 						new AttendanceTimeMonthWithMinus(this.legalFlexTime),
-						new AttendanceTimeMonthWithMinus(this.illegalFlexTime)),
+						new AttendanceTimeMonthWithMinus(this.illegalFlexTime),
+						FlexTimeCurrentMonth.of(
+								new AttendanceTimeMonthWithMinus(this.flexTimeCurrent),
+								new AttendanceTimeMonth(this.standardTimeCurrent),
+								new AttendanceTimeMonth(this.excessWeekAveTimeCurrent))),
 				new AttendanceTimeMonth(this.flexExcessTime),
 				new AttendanceTimeMonth(this.flexShortageTime),
 				FlexCarryforwardTime.of(
-						new AttendanceTimeMonth(this.flexCarryforwardTime),
+						new AttendanceTimeMonthWithMinus(this.flexCarryforwardTime),
 						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(this.flexCarryforwardShortageTime)),
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(this.excessFlexAtr, ExcessFlexAtr.class),
 						new AttendanceTimeMonth(this.principleTime),
-						new AttendanceTimeMonth(this.forConvenienceTime)),
+						new AttendanceTimeMonth(this.forConvenienceTime),
+						FlexTimeCurrentMonth.of(
+								new AttendanceTimeMonthWithMinus(this.flexTimeCurrentOT),
+								new AttendanceTimeMonth(this.standardTimeCurrentOT),
+								new AttendanceTimeMonth(this.excessWeekAveTimeCurrentOT))),
 				FlexShortDeductTime.of(
 						new AttendanceDaysMonth(this.annualLeaveDeductDays),
 						new AttendanceTimeMonth(this.absenceDeductTime),
-						new AttendanceTimeMonth(this.shotTimeBeforeDeduct)));
+						new AttendanceTimeMonth(this.shotTimeBeforeDeduct)),
+				new AttendanceTimeMonthWithMinus(this.flexSettleTime));
 	}
 	
 	/** KRCDT_MON_HDWK_TIME **/

@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -350,7 +349,6 @@ public class OverTimeOfMonthly implements Cloneable {
 							legalOverTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							overTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					break;
 						
 				case TRANSFER:
@@ -382,7 +380,6 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameTime.getOverTimeWork());
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					if (timeAfterCalc.lessThanOrEqualTo(overTimeFrameTime.getOverTimeWork().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -410,13 +407,17 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInOverTime(overTimeFrameTime.getOverTimeWork());
-					timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 					break;
 				case TRANSFER:
 					timeSeriesWork.addTransferTimeInOverTime(overTimeFrameTime.getTransferTime());
 					break;
 				}
 				break;
+			}
+			
+			// 取得した残業枠時間の「事前申請時間」を入れる
+			if (overTimeAndTransferAtr == OverTimeAndTransferAtr.OVER_TIME){
+				timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
 			}
 		}
 	
@@ -451,21 +452,29 @@ public class OverTimeOfMonthly implements Cloneable {
 		for (val overTimeFrameSrc : overTimeFrameTimeSrcs){
 			val overTimeFrameNo = overTimeFrameSrc.getOverWorkFrameNo(); 
 			
+			// 対象の時系列ワークを確認する
+			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
+			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
+			
 			// 「設定．残業を含める」を確認する
-			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
+			if (flexAggrSet.getIncludeOverTime() == true){
+				
+				// 取得した残業枠時間を「集計残業時間」に入れる　（法定内残業時間）
+				timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameSrc.getOverTimeWork());
+				timeSeriesWork.addTransferTimeInLegalOverTime(overTimeFrameSrc.getTransferTime());
 
 				// 取得した残業枠時間を「フレックス時間」に入れる
 				flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
-				
-				// 取得した残業枠時間を「集計残業時間」に入れる　（法定内残業時間）　（Redmine#106235）
-				val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-				targetAggregateOverTime.addLegalOverAndTransInTimeSeriesWork(ymd, overTimeFrameSrc);
-				continue;
 			}
+			else{
 				
-			// 取得した残業枠時間を「集計残業時間」に入れる
-			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-			targetAggregateOverTime.addOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
+				// 取得した残業枠時間を「集計残業時間」に入れる
+				timeSeriesWork.addOverTimeInOverTime(overTimeFrameSrc.getOverTimeWork());
+				timeSeriesWork.addTransferTimeInOverTime(overTimeFrameSrc.getTransferTime());
+			}
+			
+			// 取得した残業枠時間の「事前申請時間」を入れる
+			timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameSrc.getBeforeApplicationTime());
 		}
 		
 		return flexTime;

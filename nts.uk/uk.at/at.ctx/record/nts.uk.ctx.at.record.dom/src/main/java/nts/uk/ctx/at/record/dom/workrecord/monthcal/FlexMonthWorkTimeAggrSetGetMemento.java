@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Interface FlexMonthWorkTimeAggrSetGetMemento.
@@ -40,6 +39,12 @@ public interface FlexMonthWorkTimeAggrSetGetMemento {
 	 *
 	 * @return the include over time
 	 */
-	NotUseAtr getIncludeOverTime();
+	Boolean getIncludeOverTime();
 
+	/**
+	 * Gets the include illegal holiday work.
+	 *
+	 * @return the include illegal holiday work
+	 */
+	Boolean getIncludeIllegalHdwk();
 }

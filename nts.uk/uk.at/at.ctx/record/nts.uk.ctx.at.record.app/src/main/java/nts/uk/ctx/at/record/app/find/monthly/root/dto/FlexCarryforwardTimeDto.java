@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 @Data
 /** フレックス繰越時間 */
@@ -33,7 +34,7 @@ public class FlexCarryforwardTimeDto implements ItemConst {
 
 	public FlexCarryforwardTime toDomain() {
 		return FlexCarryforwardTime.of(
-						new AttendanceTimeMonth(flexCarryforwardTime),
+						new AttendanceTimeMonthWithMinus(flexCarryforwardTime),
 						new AttendanceTimeMonth(flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(flexCarryforwardShortageTime));
 	}
@@ -49,6 +50,10 @@ public class FlexCarryforwardTimeDto implements ItemConst {
 	}
 
 	private static Integer from(AttendanceTimeMonth domain) {
+		return domain == null ? 0 : domain.valueAsMinutes();
+	}
+
+	private static Integer from(AttendanceTimeMonthWithMinus domain) {
 		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

@@ -434,7 +434,8 @@ public class AggregateMonthlyRecordServiceProc {
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
 			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+					monthPeriod, Optional.empty(), Optional.empty(), Optional.empty(),
+					this.companySets, this.employeeSets,
 					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
 			if (agreementTimeOpt.isPresent()){
 				val agreementTime = agreementTimeOpt.get();
@@ -465,7 +466,8 @@ public class AggregateMonthlyRecordServiceProc {
 					MonthlyCalculation prevCalculationForAgreement = new MonthlyCalculation();
 					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTime(
 							this.companyId, this.employeeId, prevYM, this.closureId, this.closureDate,
-							prevPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+							prevPeriod, Optional.empty(), Optional.empty(), Optional.empty(),
+							this.companySets, this.employeeSets,
 							this.monthlyCalculatingDailys, prevOldDatas, Optional.empty(), this.repositories);
 					if (prevAgreTimeOpt.isPresent()){
 						val prevAgreTime = prevAgreTimeOpt.get();
@@ -704,7 +706,7 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 月の計算
 		monthlyCalculation.aggregate(datePeriod, MonthlyAggregateAtr.MONTHLY,
-				Optional.empty(), Optional.empty(), this.repositories);
+				Optional.empty(), Optional.empty(), Optional.empty(), this.repositories);
 		
 		ConcurrentStopwatches.stop("12220:月の計算：");
 		ConcurrentStopwatches.start("12230:縦計：");

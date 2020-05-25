@@ -82,7 +82,7 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 			return returnValue;
 		}
 		monthlyCalculation.aggregate(period, MonthlyAggregateAtr.MONTHLY,
-				Optional.of(annualLeaveDeductDays), Optional.of(absenceDeductTime), this.repositories);
+				Optional.of(annualLeaveDeductDays), Optional.of(absenceDeductTime), Optional.empty(), this.repositories);
 		returnValue.getErrorInfos().addAll(monthlyCalculation.getErrorInfos());
 		
 		// 「月別実績の月の計算」を返す

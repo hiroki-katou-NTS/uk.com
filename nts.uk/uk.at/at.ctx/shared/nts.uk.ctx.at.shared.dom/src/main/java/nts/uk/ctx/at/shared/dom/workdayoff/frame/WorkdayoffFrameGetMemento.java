@@ -44,4 +44,11 @@ public interface WorkdayoffFrameGetMemento {
 	 * @return the workdayoff frame name
 	 */
 	WorkdayoffFrameName getWorkdayoffFrameName();
+	
+	/**
+	 * Gets the role.
+	 * 
+	 * @return the role
+	 */
+	WorkdayoffFrameRole getRole();
 }
