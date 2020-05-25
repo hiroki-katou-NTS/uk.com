@@ -194,7 +194,22 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){
                 if(data.errorFlag==0){
                     if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
-                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
+                        
+                        // sort list approval
+                        if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
+                            data.listApprovalPhaseStateDto.forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                  el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                               }
+                                        });
+                                }
+                            });  
+                        }
+                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                        console.log('list approver');
+                        console.log(self.approvalRootState());      
                     }
                 }
                 let msgID = "";
@@ -236,14 +251,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
                 index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
-            switch(index) {
-                case 1: return nts.uk.resource.getText("KAF000_9"); 
-                case 2: return nts.uk.resource.getText("KAF000_10"); 
-                case 3: return nts.uk.resource.getText("KAF000_11"); 
-                case 4: return nts.uk.resource.getText("KAF000_12"); 
-                case 5: return nts.uk.resource.getText("KAF000_13");    
-                default: return "";
-            }     
+            if(index <= 10){
+                return nts.uk.resource.getText("KAF000_9",[index+'']);    
+            }
+            return "";   
         }
     }
     

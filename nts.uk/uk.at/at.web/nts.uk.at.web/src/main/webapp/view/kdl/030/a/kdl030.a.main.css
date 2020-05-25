@@ -79,6 +79,7 @@
 }
 .name-app{
 	width: 250px !important;
+	
 }
 .status-app{
 	width: 70px !important;
@@ -95,4 +96,10 @@
 }
 .isMail-app{
 	width: 170px !important;
+}
+.nameApprover {
+	width: 270px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

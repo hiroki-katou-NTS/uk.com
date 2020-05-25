@@ -290,8 +290,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.recWk().wkTimeCD(applicationForWorkingDay.selectionWorkTime || null);
                 self.recWk().wkTimeName(self.getWorkTimeName(self.recWk().wkTimeCD(), appDispInfoWithDateOutput.workTimeLst));
                 self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
-                self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => return {
-                    workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName })  || null);
+                self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => {return {
+                    workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName} })  || null);
             }
         }
         
