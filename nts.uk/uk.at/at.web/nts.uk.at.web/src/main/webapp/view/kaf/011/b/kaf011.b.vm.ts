@@ -302,6 +302,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                                                el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
                                            }
                                     });
+                                    if(el.listApprovalFrame.length > 1) {
+                                        el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+                                        
+                                        el.listApprovalFrame.forEach((el1, index) =>{
+                                            el1.frameOrder = index +1;
+                                        });
+                                    }
                             }
                         });  
                     }
