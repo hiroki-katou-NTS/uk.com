@@ -110,8 +110,11 @@ module nts.uk.at.view.kaf007.b {
                                     });
                                     if(el.listApprovalFrame.length > 1) {
                                         let arrayTemp = [];
-                                        if(el.listApprovalFrame[0].listApprover.length == 0) {
-                                            el.listApprovalFrame = _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length - 1), ['listApprover[0].approverName'], ['asc']);
+                                        arrayTemp.push(el.listApprovalFrame[0]);
+                                        if(el.listApprovalFrame[0].listApprover.length == 0) {   
+                                            _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+                                            .forEach(i => arrayTemp.push(i));      
+                                            el.listApprovalFrame = arrayTemp;
                                         }else {
                                             el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
                                             
