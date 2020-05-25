@@ -30,4 +30,14 @@ public class PortalStampSettingsHelper {
 						new ResultDisplayTime(1)),
 				lstBS, true, true);
 	}
+	
+	public static Optional<ButtonSettings> getOptButtonSettings(){
+		ButtonSettings buttonSettings = new ButtonSettings(new ButtonPositionNo(1),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")),
+						new ColorCode("DUMMY")),
+				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()), NotUseAtr.NOT_USE,
+				AudioType.GOOD_JOB);
+		
+		return Optional.of(buttonSettings);
+	}
 }

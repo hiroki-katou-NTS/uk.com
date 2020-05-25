@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 public class PortalStampSettingsTest {
 
@@ -22,7 +23,8 @@ public class PortalStampSettingsTest {
 		
 		Optional<ButtonSettings> optButtonSettings = stampSettings.getDetailButtonSettings(new ButtonPositionNo(1));
 		
-		assertThat(optButtonSettings.get().getUsrArt().value).isEqualTo(1);
+		assertThat(optButtonSettings.get().getUsrArt().value).isEqualTo(NotUseAtr.NOT_USE.value);
+		assertThat(optButtonSettings.get().getButtonType().getReservationArt().value).isEqualTo(ReservationArt.CANCEL_RESERVATION.value);
 	}
 
 }
