@@ -78,8 +78,10 @@ module nts.uk.at.view.kdp010.g {
                         self.setColor("#999", ".btn-name");
                         self.getInfoButton(null, self.selectedLayout());
                         self.isDel(false);
+                        if (self.checkLayout() == false){
                         self.pageName("");
                         self.commentDaily("");
+                    }
                         self.letterColors("#000000");
                         self.dataShare = [];
                     }
