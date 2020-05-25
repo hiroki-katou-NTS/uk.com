@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 
 /**
  * フレックス不足時の繰越設定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public enum CarryforwardSetInShortageFlex {
 	/** 当月積算 */

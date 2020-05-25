@@ -41,12 +41,13 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -352,18 +353,18 @@ public class MonthlyCalculation {
 		}
 		
 		// 休出枠の役割
-		for (val roleHolidayWorkFrame : companySets.getRoleHolidayWorkFrameList()){
+		for (val holidayWorkFrame : companySets.getWorkDayoffFrameList()){
 			this.settingsByReg.getRoleHolidayWorkFrameMap().putIfAbsent(
-					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+					holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
 			this.settingsByDefo.getRoleHolidayWorkFrameMap().putIfAbsent(
-					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+					holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
 			this.settingsByFlex.getRoleHolidayWorkFrameMap().putIfAbsent(
-					roleHolidayWorkFrame.getBreakoutFrNo().v(), roleHolidayWorkFrame);
+					holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
 			
 			// 自動的に除く休出枠
-			if (roleHolidayWorkFrame.getRoleOfOpenPeriodEnum() != RoleOfOpenPeriodEnum.MIX_WITHIN_OUTSIDE_STATUTORY) continue;
-			this.settingsByReg.getAutoExceptHolidayWorkFrames().add(roleHolidayWorkFrame);
-			this.settingsByDefo.getAutoExceptHolidayWorkFrames().add(roleHolidayWorkFrame);
+			if (holidayWorkFrame.getRole() != WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY) continue;
+			this.settingsByReg.getAutoExceptHolidayWorkFrames().add(holidayWorkFrame.getWorkdayoffFrNo().v().intValue());
+			this.settingsByDefo.getAutoExceptHolidayWorkFrames().add(holidayWorkFrame.getWorkdayoffFrNo().v().intValue());
 		}
 		
 		// 休暇加算時間設定
@@ -400,9 +401,11 @@ public class MonthlyCalculation {
 					companyId, this.employmentCd, employeeId, procPeriod.end(), statYearMonth);
 			int statMinutes = flexMonAndWeekStatTime.getStatutorySetting().v();
 			int predMinutes = flexMonAndWeekStatTime.getSpecifiedSetting().v();
+			int weekAveMinutes = flexMonAndWeekStatTime.getWeekAveSetting().v();
 			this.statutoryWorkingTime = new AttendanceTimeMonth(statMinutes);
 			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(statMinutes));
 			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(predMinutes));
+			this.settingsByFlex.setWeekAverageTime(new AttendanceTimeMonth(weekAveMinutes));
 			
 			// 退職日が当月の期間内の時、翌月繰越可能時間 = 0
 			if (this.isRetireMonth) break;
@@ -508,11 +511,13 @@ public class MonthlyCalculation {
 	 * @param aggrAtr 集計区分
 	 * @param annualLeaveDeductDays 年休控除日数
 	 * @param absenceDeductTime 欠勤控除時間
+	 * @param flexSettleTime フレックス清算時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
 			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
+			Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果　初期化
@@ -586,9 +591,9 @@ public class MonthlyCalculation {
 			
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, flexAggrMethod, this.workingConditionItem,
+					this.yearMonth, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem,
 					this.workplaceId, this.employmentCd,
-					this.settingsByFlex, this.aggregateTime,
+					this.employeeSets, this.settingsByFlex, this.aggregateTime,
 					repositories);
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
@@ -764,6 +769,7 @@ public class MonthlyCalculation {
 	 * @param isRetireMonth 退職月度かどうか
 	 * @param annualLeaveDeductDays 年休控除日数
 	 * @param absenceDeductTime 欠勤控除時間
+	 * @param flexSettleTime 当月清算フレックス時間
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
@@ -777,6 +783,7 @@ public class MonthlyCalculation {
 			DatePeriod procPeriod,
 			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
 			Optional<AttendanceTimeMonth> absenceDeductTime,
+			Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalcDailys,
@@ -865,7 +872,7 @@ public class MonthlyCalculation {
 				
 				// 履歴ごとに月別実績を集計する
 				calcWork.aggregate(period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
-						annualLeaveDeductDays, absenceDeductTime, repositories);
+						annualLeaveDeductDays, absenceDeductTime, flexSettleTime, repositories);
 			}
 			
 			// データを合算する
@@ -1119,7 +1126,8 @@ public class MonthlyCalculation {
 		
 		// フレックス法定外時間
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
-			val flexIllegalMinutes = this.flexTime.getFlexTime().getIllegalFlexTime().v();
+			int flexIllegalMinutes = this.flexTime.getFlexTime().getIllegalFlexTime().v();
+			flexIllegalMinutes += this.flexTime.getFlexSettleTime().v();	// 当月精算フレックス時間を加算
 			if (isExcessOutside){
 				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 			}

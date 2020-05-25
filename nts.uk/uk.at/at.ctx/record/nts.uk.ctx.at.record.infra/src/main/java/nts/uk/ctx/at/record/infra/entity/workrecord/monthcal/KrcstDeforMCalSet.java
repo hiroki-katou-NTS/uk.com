@@ -34,6 +34,10 @@ public abstract class KrcstDeforMCalSet extends UkJpaEntity {
 	@Column(name = "INCLUDE_EXTRA_OT")
 	private int includeExtraOt;
 
+	/** The include except legal ot. */
+	@Column(name = "INCLUDE_EXC_LEGAL_OT")
+	private int includeExcLegalOt;
+	
 	/** The include legal aggr. */
 	@Column(name = "INCLUDE_LEGAL_AGGR")
 	private int includeLegalAggr;

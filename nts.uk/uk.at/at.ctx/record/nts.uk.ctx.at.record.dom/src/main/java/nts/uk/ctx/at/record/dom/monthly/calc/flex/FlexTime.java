@@ -36,6 +36,9 @@ public class FlexTime {
 	/** 法定外フレックス時間 */
 	@Setter
 	private AttendanceTimeMonthWithMinus illegalFlexTime;
+	/** 当月フレックス時間 */
+	@Setter
+	private FlexTimeCurrentMonth flexTimeCurrentMonth;
 	
 	/** 時系列ワーク */
 	private Map<GeneralDate, FlexTimeOfTimeSeries> timeSeriesWorks;
@@ -49,6 +52,7 @@ public class FlexTime {
 		this.beforeFlexTime = new AttendanceTimeMonth(0);
 		this.legalFlexTime = new AttendanceTimeMonthWithMinus(0);
 		this.illegalFlexTime = new AttendanceTimeMonthWithMinus(0);
+		this.flexTimeCurrentMonth = new FlexTimeCurrentMonth();
 		this.timeSeriesWorks = new HashMap<>();
 	}
 
@@ -58,19 +62,22 @@ public class FlexTime {
 	 * @param beforeFlexTime 事前フレックス時間
 	 * @param legalFlexTime 法定内フレックス時間
 	 * @param illegalFlexTime 法定外フレックス時間
+	 * @param flexTimeCurrentMonth 当月フレックス時間
 	 * @return フレックス時間
 	 */
 	public static FlexTime of(
 			TimeMonthWithCalculationAndMinus flexTime,
 			AttendanceTimeMonth beforeFlexTime,
 			AttendanceTimeMonthWithMinus legalFlexTime,
-			AttendanceTimeMonthWithMinus illegalFlexTime){
+			AttendanceTimeMonthWithMinus illegalFlexTime,
+			FlexTimeCurrentMonth flexTimeCurrentMonth){
 
 		val domain = new FlexTime();
 		domain.flexTime = flexTime;
 		domain.beforeFlexTime = beforeFlexTime;
 		domain.legalFlexTime = legalFlexTime;
 		domain.illegalFlexTime = illegalFlexTime;
+		domain.flexTimeCurrentMonth = flexTimeCurrentMonth;
 		return domain;
 	}
 	

@@ -48,9 +48,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
@@ -91,9 +91,9 @@ public class MonAggrCompanySettings {
 	/** 残業枠の役割 */
 	@Getter
 	private CopyOnWriteArrayList<RoleOvertimeWork> roleOverTimeFrameList;
-	/** 休出枠の役割 */
+	/** 休出枠 */
 	@Getter
-	private CopyOnWriteArrayList<RoleOfOpenPeriod> roleHolidayWorkFrameList;
+	private CopyOnWriteArrayList<WorkdayoffFrame> workDayoffFrameList;
 	/** 休暇時間加算設定 */
 	@Getter
 	private ConcurrentMap<String, AggregateRoot> holidayAdditionMap;
@@ -215,7 +215,7 @@ public class MonAggrCompanySettings {
 		this.closureMap = new ConcurrentHashMap<>();
 		this.currentMonthPeriodMap = new ConcurrentHashMap<>();
 		this.roleOverTimeFrameList = new CopyOnWriteArrayList<>();
-		this.roleHolidayWorkFrameList = new CopyOnWriteArrayList<>();
+		this.workDayoffFrameList = new CopyOnWriteArrayList<>();
 		this.holidayAdditionMap = new ConcurrentHashMap<>();
 		this.empRegLaborTimeMap = new ConcurrentHashMap<>();
 		this.empIrgLaborTimeMap = new ConcurrentHashMap<>();
@@ -412,7 +412,7 @@ public class MonAggrCompanySettings {
 		this.roleOverTimeFrameList.addAll(repositories.getRoleOverTimeFrame().findByCID(companyId));
 
 		// 休出枠の役割
-		this.roleHolidayWorkFrameList.addAll(repositories.getRoleHolidayWorkFrame().findByCID(companyId));
+		this.workDayoffFrameList.addAll(repositories.getWorkdayoffFrame().getAllWorkdayoffFrame(companyId));
 		
 		// 休暇時間加算設定
 		for (val holidayAddition : repositories.getHolidayAddition().findByCompanyId(companyId).entrySet()){

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 /**
  * フレックス繰越時間
@@ -14,7 +15,7 @@ public class FlexCarryforwardTime {
 
 	/** フレックス繰越時間 */
 	@Setter
-	private AttendanceTimeMonth flexCarryforwardTime;
+	private AttendanceTimeMonthWithMinus flexCarryforwardTime;
 	/** フレックス繰越勤務時間 */
 	@Setter
 	private AttendanceTimeMonth flexCarryforwardWorkTime;
@@ -27,7 +28,7 @@ public class FlexCarryforwardTime {
 	 */
 	public FlexCarryforwardTime(){
 		
-		this.flexCarryforwardTime = new AttendanceTimeMonth(0);
+		this.flexCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.flexCarryforwardWorkTime = new AttendanceTimeMonth(0);
 		this.flexCarryforwardShortageTime = new AttendanceTimeMonth(0);
 	}
@@ -40,7 +41,7 @@ public class FlexCarryforwardTime {
 	 * @return
 	 */
 	public static FlexCarryforwardTime of(
-			AttendanceTimeMonth flexCarryforwardTime,
+			AttendanceTimeMonthWithMinus flexCarryforwardTime,
 			AttendanceTimeMonth flexCarryforwardWorkTime,
 			AttendanceTimeMonth flexCarryforwardShortageTime){
 

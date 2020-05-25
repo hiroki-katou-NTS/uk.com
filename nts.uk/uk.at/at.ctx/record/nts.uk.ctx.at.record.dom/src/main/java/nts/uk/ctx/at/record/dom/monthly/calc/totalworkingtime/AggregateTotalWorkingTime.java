@@ -29,9 +29,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -173,10 +173,10 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		// 労働制を元に、該当する設定を取得する
 		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
 		Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap = new HashMap<>();
-		Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap = new HashMap<>();
+		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
 		List<RoleOvertimeWork> autoExceptOverTimeFrames = new ArrayList<>();
-		List<RoleOfOpenPeriod> autoExceptHolidayWorkFrames = new ArrayList<>();
-		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false);
+		List<Integer> autoExceptHolidayWorkFrames = new ArrayList<>();
+		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false, false);
 		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 			// 変形労働の時
 			legalTransferOrderSet = settingsByDefo.getLegalTransferOrderSet();
@@ -231,14 +231,20 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
+	 * @param workInfo 勤務情報
 	 * @param settingsByFlex フレックス勤務が必要とする設定
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return フレックス時間　（当日分のみ）
 	 */
 	public FlexTime aggregateDailyForFlex(
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
-			SettingRequiredByFlex settingsByFlex){
+			WorkInformation workInfo,
+			SettingRequiredByFlex settingsByFlex,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		FlexTime flexTime = new FlexTime();
 		
@@ -248,7 +254,7 @@ public class AggregateTotalWorkingTime implements Cloneable {
 		
 		// 休出時間を集計する　（フレックス時間勤務用）
 		flexTime = this.holidayWorkTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
-				flexTime, settingsByFlex);
+				flexTime, settingsByFlex, workInfo, companySets, repositories);
 		
 		return flexTime;
 	}

@@ -9,7 +9,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class AggrSettingMonthlyOfFlxNew.
@@ -31,8 +30,12 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 	private AggregateTimeSetting legalAggrSet;
 
 	/** The include over time. */
-	// 残業時間を含める
-	private NotUseAtr includeOverTime;
+	// 残業時間をフレックス時間に含める
+	private Boolean includeOverTime;
+	
+	/** The include illegal holiday work. */
+	// 法定外休出時間をフレックス時間に含める
+	private Boolean includeIllegalHdwk;
 
 	/**
 	 * Instantiates a new aggr setting monthly of flx new.
@@ -45,6 +48,7 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 		this.insufficSet = memento.getInsufficSet();
 		this.legalAggrSet = memento.getLegalAggrSet();
 		this.includeOverTime = memento.getIncludeOverTime();
+		this.includeIllegalHdwk = memento.getIncludeIllegalHdwk();
 	}
 
 	/**
@@ -58,6 +62,7 @@ public class FlexMonthWorkTimeAggrSet extends DomainObject {
 		memento.setIncludeOverTime(this.includeOverTime);
 		memento.setInsufficSet(this.insufficSet);
 		memento.setLegalAggrSet(this.legalAggrSet);
+		memento.setIncludeIllegalHdwk(this.includeIllegalHdwk);
 	}
 
 }

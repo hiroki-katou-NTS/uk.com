@@ -230,7 +230,7 @@ public class GetAgreementTimeProc {
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
-				Optional.empty(), Optional.empty(), this.companySets, employeeSets,
+				Optional.empty(), Optional.empty(), Optional.empty(), this.companySets, employeeSets,
 				monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
 			val agreementTime = agreementTimeOpt.get();

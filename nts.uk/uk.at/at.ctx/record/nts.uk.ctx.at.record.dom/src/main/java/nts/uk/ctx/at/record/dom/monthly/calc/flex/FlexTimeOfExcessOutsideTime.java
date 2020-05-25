@@ -20,6 +20,9 @@ public class FlexTimeOfExcessOutsideTime {
 	/** 便宜上時間 */
 	@Setter
 	private AttendanceTimeMonth forConvenienceTime;
+	/** 当月フレックス時間 */
+	@Setter
+	private FlexTimeCurrentMonth flexTimeCurrentMonth;
 
 	/**
 	 * コンストラクタ
@@ -29,6 +32,7 @@ public class FlexTimeOfExcessOutsideTime {
 		this.excessFlexAtr = ExcessFlexAtr.PRINCIPLE;
 		this.principleTime = new AttendanceTimeMonth(0);
 		this.forConvenienceTime = new AttendanceTimeMonth(0);
+		this.flexTimeCurrentMonth = new FlexTimeCurrentMonth();
 	}
 	
 	/**
@@ -36,17 +40,20 @@ public class FlexTimeOfExcessOutsideTime {
 	 * @param excessFlexAtr 超過フレ区分
 	 * @param principleTime 原則時間
 	 * @param forConvenienceTime 便宜上時間
+	 * @param flexTimeCurrentMonth 当月フレックス時間
 	 * @return 時間外超過のフレックス時間
 	 */
 	public static FlexTimeOfExcessOutsideTime of(
 			ExcessFlexAtr excessFlexAtr,
 			AttendanceTimeMonth principleTime,
-			AttendanceTimeMonth forConvenienceTime){
+			AttendanceTimeMonth forConvenienceTime,
+			FlexTimeCurrentMonth flexTimeCurrentMonth){
 
 		val domain = new FlexTimeOfExcessOutsideTime();
 		domain.excessFlexAtr = excessFlexAtr;
 		domain.principleTime = principleTime;
 		domain.forConvenienceTime = forConvenienceTime;
+		domain.flexTimeCurrentMonth = flexTimeCurrentMonth;
 		return domain;
 	}
 	
