@@ -444,9 +444,9 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 計算に必要なデータを準備する
-		this.monthlyCalculatingDailys = MonthlyCalculatingDailys.loadData(require, employeeId, loadPeriod,
-				dailyWorksOpt, this.repositories);
-
+		this.monthlyCalculatingDailys = MonthlyCalculatingDailys.loadData(require, 
+				employeeId, loadPeriod, dailyWorksOpt, this.repositories, employeeSets);
+		
 		// 集計前の月別実績データを確認する
 		this.monthlyOldDatas = MonthlyOldDatas.loadDataRequire(require, employeeId, yearMonth, closureId, closureDate,
 				monthlyWorkOpt, this.repositories);

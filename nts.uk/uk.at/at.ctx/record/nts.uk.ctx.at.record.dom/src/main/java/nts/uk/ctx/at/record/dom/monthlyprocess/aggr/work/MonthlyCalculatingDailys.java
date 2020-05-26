@@ -71,6 +71,8 @@ public class MonthlyCalculatingDailys {
 	/** 日別実績の勤務種別 */
 	private Map<GeneralDate, WorkTypeOfDailyPerformance> workTypeOfDailyMap;
 	
+	private Map<GeneralDate, WorkingConditionItem> workConditions;
+	
 	public MonthlyCalculatingDailys(){
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		this.workInfoOfDailyMap = new HashMap<>();
@@ -83,6 +85,7 @@ public class MonthlyCalculatingDailys {
 		this.grantRemainingDatas = new ArrayList<>();
 		this.rsvGrantRemainingDatas = new ArrayList<>();
 		this.workTypeOfDailyMap = new HashMap<>();
+		this.workConditions = new HashMap<>();
 	}
 	
 	/**
@@ -95,16 +98,19 @@ public class MonthlyCalculatingDailys {
 	public static MonthlyCalculatingDailys loadData(
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
-		return loadDataRequire(createRequireImpl(repositories), employeeId, period, repositories);
+		return loadDataRequire(createRequireImpl(repositories), employeeId, period, repositories, settings);
 	}
 	
 	public static MonthlyCalculatingDailys loadDataRequire(
 			Require require, 
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
+		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
@@ -118,9 +124,12 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 共通処理
-		result.loadDataCommon(require, employeeId, period, repositories);
-
-		return correctExamDayTimeRequire(require, result, repositories);
+//		result.loadDataCommon(require, employeeId, period, repositories);
+//
+//		return correctExamDayTimeRequire(require, result, repositories);
+		result.loadDataCommon(require, employeeId, period, repositories, settings);
+		
+		return correctExamDayTime(result, repositories, settings);
 	}
 	
 	/**
@@ -135,10 +144,11 @@ public class MonthlyCalculatingDailys {
 			String employeeId,
 			DatePeriod period,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
-		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories);
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories, settings);
 		
 		// 日別実績の勤怠時間リストの指定がない時、終了
 		if (attendanceTimeOfDailys.size() <= 0) return result;
@@ -149,7 +159,7 @@ public class MonthlyCalculatingDailys {
 			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
 		}
 		
-		return correctExamDayTime(result, repositories);
+		return correctExamDayTime(result, repositories, settings);
 	}
 	
 	/**
@@ -165,10 +175,11 @@ public class MonthlyCalculatingDailys {
 			String employeeId,
 			DatePeriod period,
 			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
-		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories);
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories, settings);
 
 		// 日別実績(WORK)指定がない時、終了
 		if (!dailyWorksOpt.isPresent()) return result;
@@ -247,6 +258,7 @@ public class MonthlyCalculatingDailys {
 			}
 		}
 		
+//<<<<<<< HEAD
 		return correctExamDayTimeRequire(require, result, repositories);
 
 	}
@@ -267,10 +279,14 @@ public class MonthlyCalculatingDailys {
 				});
 			}
 		}
-		return correctExamDayTime(result, repositories);
+		return calcDaily;
+//=======
+//		return correctExamDayTime(result, repositories, settings);
+//>>>>>>> 8988ec62963... update for response 試験日対応
 	}
 	
-	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, RepositoriesRequiredByMonthlyAggr repositories){
+	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, 
+			RepositoriesRequiredByMonthlyAggr repositories, MonAggrEmployeeSettings settings){
 		
 		
 		for (Entry<GeneralDate, AttendanceTimeOfDailyPerformance> dailyAttenTime : calcDaily.attendanceTimeOfDailyMap.entrySet()) {
@@ -280,10 +296,15 @@ public class MonthlyCalculatingDailys {
 			if (calcDaily.workInfoOfDailyMap.containsKey(currentDate)) {
 				WorkInfoOfDailyPerformance wi = calcDaily.workInfoOfDailyMap.get(currentDate);
 				
-				val workCondition = repositories.getWorkingConditionItem().getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
-				
-				workCondition.ifPresent(wc -> {
-					if (wc.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
+//				val workCondition = repositories.getWorkingConditionItem().getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
+				settings.getWorkingConditions().entrySet().stream()
+				.filter(wc -> wc.getValue().contains(wi.getYmd()))
+				.findFirst().flatMap(wc -> settings.getWorkingConditionItems().stream()
+														.filter(wci -> wci.getHistoryId().equals(wc))
+														.map(wci -> wci.getLaborSystem())
+														.findFirst())
+				.ifPresent(laborSystem -> {
+					if (laborSystem == WorkingSystem.FLEX_TIME_WORK) {
 						calcDaily.attendanceTimeOfDailyMap.put(currentDate, examDayTimeCorrect(dailyAttenTime.getValue(), wi));
 					}
 				});
@@ -292,61 +313,6 @@ public class MonthlyCalculatingDailys {
 		
 		return calcDaily;
 	}
-	
-	/**
-	 * 大塚カスタマイズ（試験日対応）
-	 */
-	private static AttendanceTimeOfDailyPerformance examDayTimeCorrect(AttendanceTimeOfDailyPerformance atTime, WorkInfoOfDailyPerformance workInfo) {
-		
-		if (workInfo.getRecordInfo().isExamWorkTime()) {
-			
-			WorkScheduleTimeOfDaily correctedSche = new WorkScheduleTimeOfDaily(atTime.getWorkScheduleTimeOfDaily().getWorkScheduleTime(),
-																				new AttendanceTime(0), 
-																				atTime.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime());
-			
-			ActualWorkingTimeOfDaily beforeActualWork = atTime.getActualWorkingTimeOfDaily();
-			ActualWorkingTimeOfDaily correctedActualWork = ActualWorkingTimeOfDaily.of(
-										beforeActualWork.getConstraintDifferenceTime(), 
-										beforeActualWork.getConstraintTime(), 
-										beforeActualWork.getTimeDifferenceWorkingHours(), 
-										new TotalWorkingTime(beforeActualWork.getTotalWorkingTime().getTotalTime(), 
-												beforeActualWork.getTotalWorkingTime().getTotalCalcTime(), 
-												beforeActualWork.getTotalWorkingTime().getActualTime(),
-												WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-														new AttendanceTime(0), 
-														new AttendanceTime(0), 
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime(), 
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime(), 
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getVacationAddTime()), 
-												beforeActualWork.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily(), 
-												beforeActualWork.getTotalWorkingTime().getLateTimeOfDaily(),
-												beforeActualWork.getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),
-												beforeActualWork.getTotalWorkingTime().getBreakTimeOfDaily(), 
-												beforeActualWork.getTotalWorkingTime().getOutingTimeOfDailyPerformance(),
-												beforeActualWork.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor(),
-												beforeActualWork.getTotalWorkingTime().getWorkTimes(),
-												beforeActualWork.getTotalWorkingTime().getTemporaryTime(),
-												beforeActualWork.getTotalWorkingTime().getShotrTimeOfDaily(),
-												new HolidayOfDaily(
-														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAbsence(), 
-														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getTimeDigest(), 
-														new YearlyReservedOfDaily(new AttendanceTime(0)), 
-														new SubstituteHolidayOfDaily(new AttendanceTime(0), 
-																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSubstitute().getDigestionUseTime()), 
-														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getOverSalary(), 
-														new SpecialHolidayOfDaily(new AttendanceTime(0), 
-																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSpecialHoliday().getDigestionUseTime()), 
-														new AnnualOfDaily(new AttendanceTime(0), 
-																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime()))),
-										beforeActualWork.getDivTime(),
-										beforeActualWork.getPremiumTimeOfDailyPerformance());
-			
-			return new AttendanceTimeOfDailyPerformance(atTime.getEmployeeId(), atTime.getYmd(), correctedSche, correctedActualWork, 
-														atTime.getStayingTime(), atTime.getBudgetTimeVariance(), atTime.getUnEmployedTime()); 
-		}
-		
-		return atTime;
-	} 
 	
 	/**
 	 * 大塚カスタマイズ（試験日対応）
@@ -413,13 +379,15 @@ public class MonthlyCalculatingDailys {
 			Require require,
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		
 		// データ取得共通処理　（36協定時間用）
-		this.loadDataCommonForAgreementRequire(require, employeeId, period, repositories);
+//		this.loadDataCommonForAgreementRequire(require, employeeId, period, repositories);
+		this.loadDataCommonForAgreement(employeeId, period, repositories, settings);
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
@@ -490,7 +458,8 @@ public class MonthlyCalculatingDailys {
 	public static MonthlyCalculatingDailys loadDataForAgreement(
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
@@ -505,9 +474,9 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(employeeId, period, repositories);
+		result.loadDataCommonForAgreement(employeeId, period, repositories, settings);
 		
-		return correctExamDayTime(result, repositories);
+		return correctExamDayTime(result, repositories, settings);
 	}
 	
 	/**
@@ -522,7 +491,8 @@ public class MonthlyCalculatingDailys {
 			String employeeId,
 			DatePeriod period,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
@@ -542,9 +512,9 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(employeeId, period, repositories);
+		result.loadDataCommonForAgreement(employeeId, period, repositories, settings);
 		
-		return correctExamDayTime(result, repositories);
+		return correctExamDayTime(result, repositories, settings);
 	}
 	
 	/**
@@ -556,15 +526,17 @@ public class MonthlyCalculatingDailys {
 	public void loadDataCommonForAgreement(
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
-		loadDataCommonForAgreementRequire(createRequireImpl(repositories), employeeId, period, repositories);
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
+		loadDataCommonForAgreementRequire(createRequireImpl(repositories), employeeId, period, repositories, settings);
 	}
 	
 	private void loadDataCommonForAgreementRequire(
 			Require require,
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories,
+			MonAggrEmployeeSettings settings){
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
@@ -574,6 +546,12 @@ public class MonthlyCalculatingDailys {
 		for (val workInfoOfDaily : workInfoOfDailyList){
 			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
 		}
+		
+//		val workConditions =
+//				repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(employeeId, findPeriod);
+//		for (val conditionItem : workConditions){
+//			this.workConditions.putIfAbsent(conditionItem.get, conditionItem);
+//		}
 	}
 	
 	/**
