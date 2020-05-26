@@ -204,12 +204,26 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                                                   el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
                                                }
                                         });
+                                        if(el.listApprovalFrame.length > 1) {
+                                            let arrayTemp = [];
+                                            arrayTemp.push(el.listApprovalFrame[0]);
+                                            if(el.listApprovalFrame[0].listApprover.length == 0) {   
+                                                _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+                                                .forEach(i => arrayTemp.push(i));      
+                                                el.listApprovalFrame = arrayTemp;
+                                            }else {
+                                                el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+                                                
+                                            }
+                                            
+                                            el.listApprovalFrame.forEach((el1, index) =>{            
+                                                el1.frameOrder = index +1;
+                                            });
+                                        }
                                 }
                             });  
                         }
-                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
-                        console.log('list approver');
-                        console.log(self.approvalRootState());      
+                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());    
                     }
                 }
                 let msgID = "";

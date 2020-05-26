@@ -75,7 +75,8 @@
 	width: 70px !important;
 }
 .order-app{
-	width: 100px !important;
+	/* */
+	width: 78px !important;
 }
 .name-app{
 	width: 250px !important;
@@ -89,7 +90,7 @@
 }
 /* list applicant */
 .applicant{
-	width: 173px !important;
+	width: 150px !important;
 }
 .name-emp{
 	width: 323px !important;
