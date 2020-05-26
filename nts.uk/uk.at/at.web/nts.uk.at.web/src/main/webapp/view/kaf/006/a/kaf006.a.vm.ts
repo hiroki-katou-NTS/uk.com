@@ -557,26 +557,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 return;
             }
             let dfd = $.Deferred();
-            if (value == 0) {
-                
-                        service.findWorkTimeCode(
-                           [self.workTimeCode()]
-                        ).done(data => {
-                            if(nts.uk.util.isNullOrEmpty(data)){
-                                
-                            } else {
-                                if(nts.uk.util.isNullOrUndefined(data[0])){
-                                       
-                                } else {
-                                    self.timeStart1(data[0].firstStartTime == null ? null : data[0].firstStartTime);
-                                    self.timeEnd1(data[0].firstEndTime == null ? null : data[0].firstEndTime);        
-                                }
-                            }
-                        }).fail(() => {
-                            
-                        });
-                    
-           }
+            
 
             service.findChangeAllDayHalfDay({
                 startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
@@ -710,6 +691,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         self.timeEnd1(result.workTimeLst[0].endTime)
                     }
                     
+                }else {
+                    self.timeStart1(null);
+                    self.timeEnd1(null)
                 }
                 dfd.resolve(result);
             }).fail((res) => {
@@ -957,8 +941,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             }
                         ).done(data => {
                             if(nts.uk.util.isNullOrEmpty(data)){
-                                self.timeStart1(childData.first.start);    
-                                self.timeEnd1(childData.first.end);
+                                self.timeStart1(null);    
+                                self.timeEnd1(null);
                             } else {
                                 if(nts.uk.util.isNullOrUndefined(data[0])){
                                     self.timeStart1(childData.first.start);    
