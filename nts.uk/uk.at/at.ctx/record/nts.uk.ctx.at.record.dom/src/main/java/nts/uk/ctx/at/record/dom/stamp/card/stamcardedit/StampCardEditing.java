@@ -39,17 +39,6 @@ public class StampCardEditing extends AggregateRoot {
 	}
 	
 	/**
-	 * [C-0] 打刻カード編集(会社ID, 桁数, 編集方法)
-	 * 
-	 * @param 会社ID
-	 *            companyId
-	 * @param 桁数
-	 *            digitsNumber
-	 * @param 編集方法
-	 *            method
-	 */
-	
-	/**
 	 * [1] 打刻カードを作成する
 	 * 
 	 * @param 会社コード
