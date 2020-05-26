@@ -1185,7 +1185,7 @@ module nts.uk.ui.exTable {
                         let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
                         let colIndex = helper.indexInParent(td);
                         let tr = helper.closest(td, "tr"); 
-                        let rowIndex = helper.indexInParent(tr);\
+                        let rowIndex = helper.indexInParent(tr);
                         helper.addClass1n(tr.children, HIGHLIGHT_CLS);
                         helper.consumeSiblings(tr, (elm) => { 
                             let tds = elm.getElementsByTagName("td");
@@ -1240,7 +1240,7 @@ module nts.uk.ui.exTable {
                         let targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
                         let colIndex = helper.indexInParent(td);
                         let tr = helper.closest(td, "tr"); 
-                        let rowIndex = helper.indexInParent(tr);\
+                        let rowIndex = helper.indexInParent(tr);
                         helper.removeClass1n(tr.children, HIGHLIGHT_CLS);
                         helper.consumeSiblings(tr, (elm) => { 
                             let tds = elm.getElementsByTagName("td");
@@ -1865,8 +1865,8 @@ module nts.uk.ui.exTable {
                 let self = this;
                 if (!_.isNil(self.highlightRowIndex) && !_.isNil(self.highlightColumnIndex)) {
                     let rowsOfCluster = self.blocksOfCluster * self.rowsOfBlock;
-                    let startRowIdx = self.startIndex = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
-                    let endRowIdx = self.endIndex = startRowIdx + rowsOfCluster;
+                    let startRowIdx = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
+                    let endRowIdx = startRowIdx + rowsOfCluster;
                     for (let i = startRowIdx; i < endRowIdx; i++) {
                         let rElm = self.rowElements[i];
                         if (i === self.highlightRowIndex && rElm) {
@@ -5669,13 +5669,22 @@ module nts.uk.ui.exTable {
          */
         export function checkHeader(td: HTMLElement, column: any, data: any, action: any) {
             if (column.headerControl) {
+                if (helper.isHtml(data)) {
+                    td.innerHTML = data;
+                    return;
+                }
+                
                 switch (column.headerControl) {
                     case LINK_BUTTON: 
                         let a = document.createElement("a");
                         a.classList.add(LINK_CLS);
+                        let ui = helper.getCellCoord(td);
                         a.addXEventListener(events.CLICK_EVT, function(evt) {
-                            action();
-                        });    
+                            if (action(ui) === false) {
+                                evt.stopPropagation();
+                            }
+                        });  
+                          
                         a.innerHTML = data;
                         td.appendChild(a);
                         break;
@@ -6058,15 +6067,16 @@ module nts.uk.ui.exTable {
                 if (hoverFt.enter) {
                     $container.addXEventListener(events.MOUSE_OVER, () => {
                         let target = event.target;
+                        if (!_.isNil(hoverFt.selector) && !selector.is(target, hoverFt.selector)) return;
                         event.stopPropagation(); 
-                        if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                        if (!selector.is(target, `.${render.CELL_CLS}`)) {
                             target = helper.closest(target, `.${render.CELL_CLS}`);
                         }
                         
-                        if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                        if (_.isNil(target)) return;
                         let ui = helper.getCellCoord(target),
                             $table = $container.querySelector(`.${options.tableClass}`);
-                        ui.target = target;
+                        ui.target = event.target;
                         ui.tooltip = (tooltipOpt, sources) => {
                             let $t2 = $.data($table, internal.TOOLTIP);
                             if (!$t2) {
@@ -6092,15 +6102,16 @@ module nts.uk.ui.exTable {
                 if (hoverFt.exit) {
                     $container.addXEventListener(events.MOUSE_OUT, () => {
                         let target = event.target;
+                        if (!_.isNil(hoverFt.selector) && !selector.is(target, hoverFt.selector)) return;
                         event.stopPropagation(); 
-                        if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                        if (!selector.is(target, `.${render.CELL_CLS}`)) {
                             target = helper.closest(target, `.${render.CELL_CLS}`);
                         }
                         
-                        if (!selector.is(target, `.${render.CELL_CLS}`)) return;
+                        if (_.isNil(target)) return;
                         let ui = helper.getCellCoord(target),
                             $table = $container.querySelector(`.${options.tableClass}`);
-                        ui.target = target;
+                        ui.target = event.target;
                         ui.tooltip = (tooltipOpt) => {
                             if (tooltipOpt === "hide") {
                                 let $t2 = $.data($table, internal.TOOLTIP);
@@ -8018,6 +8029,13 @@ module nts.uk.ui.exTable {
          */
         export function isRedoKey(evt: any) {
             return evt.keyCode === 89;
+        }
+        
+        /**
+         * Is Html.
+         */
+        export function isHtml(str: any) {
+            return /^(<([^>]+)>).*$/i.test(str);
         }
         
         /**

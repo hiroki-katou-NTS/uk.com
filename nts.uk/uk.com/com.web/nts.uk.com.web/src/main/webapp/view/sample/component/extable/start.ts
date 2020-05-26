@@ -104,7 +104,7 @@ __viewContext.ready(function () {
     let detailHeaderDs = [];
     detailHeaderDs.push(new ExItem(undefined, true));
     detailHeaderDs.push({ empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
-        _1: "セール", _2: "", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
+        _1: "セール", _2: "<div class='header-image'></div>", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
          _11: "", _12: "", _13: "", _14: "", _15: "", _16: "Oouch", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "",
           _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "", });
     
@@ -268,6 +268,15 @@ __viewContext.ready(function () {
             key: "_31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }];
     
+    detailColumns.forEach(col => {
+        if (col.visible === false) return;
+        col.headerControl = "link";
+        col.headerHandler = (ui) => {
+            alert(ui.columnKey);
+            return false;
+        };
+    });
+    
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact per-icon", width: "35px" }, 
         css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }, 
         headerControl: "link", headerHandler: function() { alert("Link!"); } }];
@@ -364,23 +373,24 @@ __viewContext.ready(function () {
         }, {
             name: "ColumnResizes"
         }, {
-            name: "HeaderPopups",
-            menu: {
-                rows: [0],
-                items: [
-                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                    { id: "partition" },
-                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                ]
-            },
+//            name: "HeaderPopups",
+//            menu: {
+//                rows: [0],
+//                items: [
+//                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+//                    { id: "partition" },
+//                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+//                ]
+//            },
 //            popup: {
 //                rows: [1],
 //                provider: function() { return $("#popup"); }
 //            }
         }, {
             name: "Hover",
+            selector: ".header-image",
             enter: function(ui) {
-                if (ui.rowIdx === 1) {
+                if (ui.rowIdx === 1 && $(ui.target).is(".header-image")) {
                     ui.tooltip("show", $("<div/>").css({ width: "60px", height: "50px" }).html(`${ui.rowIdx}-${ui.columnKey}`));
                 }
             },
