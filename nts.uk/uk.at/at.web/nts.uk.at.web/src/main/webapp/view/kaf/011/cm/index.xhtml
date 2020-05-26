@@ -4,9 +4,29 @@
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
 			</div>
-			<div class="div_line_col_2">
-				<label data-bind="text:employeeName,visible:!screenModeNew()==true"
-					class="text_line"></label>
+			<div class="div_line_col_2" data-bind="if:!screenModeNew()==true">
+				<label data-bind="text:employeeName" class="text_line"></label>
+				<div style="display: inline-block; margin-left: 300px;" class="nts-fixed-body-container ui-iggrid">
+					<table class="fixed-table">
+						<colgroup>
+							<col width="100px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div data-bind="if: remainDays" style="text-align: center">
+										<span data-bind="text:remainDays() +'日'"></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="div_line_col_2" data-bind="if:screenModeNew()==true">
 				<label data-bind="text:employeeName,visible:!employeeList().length"
