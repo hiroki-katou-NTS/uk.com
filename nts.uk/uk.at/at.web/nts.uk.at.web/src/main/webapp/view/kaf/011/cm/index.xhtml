@@ -70,7 +70,7 @@
 			</div>
 
 		</div>
-		<div class="div_line" data-bind="if:screenModeNew()==true">
+		<div class="div_line" data-bind="if:screenModeNew()==true &amp;&amp; drawalReqSet().simulAppliReq() == 0">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
