@@ -38,7 +38,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 	public void sketch(ResourceContext<Frame> context) {
 		String payload = context.getEntity().pickItem(Element.PAYLOAD);
 		int length = payload.length();
-		int q = length / DefaultValue.SINGLE_FRAME_LEN;
+		int q = length / DefaultValue.SINGLE_FRAME_LEN_48;
 		//
 		if (length % DefaultValue.SINGLE_FRAME_LEN != 0 || q <= 0 || q > 100) {
 			context.responseNoAccept(ErrorCode.PARAM);

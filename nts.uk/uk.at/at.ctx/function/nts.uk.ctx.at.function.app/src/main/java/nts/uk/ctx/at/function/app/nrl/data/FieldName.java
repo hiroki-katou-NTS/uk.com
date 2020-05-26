@@ -50,7 +50,7 @@ public class FieldName {
 	public static final String RSV_IDNO = "ID番号";
 	public static final String RSV_YMD = "年月日";
 	public static final String RSV_HMS = "時分秒";
-	public static final String RSV_QUAN = " 数量";
+	public static final String RSV_QUAN = "数量";
 	public static final String RSV_PRELIMINARY = "予備";
 	
 }
