@@ -259,7 +259,7 @@ module nts.uk.at.view.kaf007.b {
             getWorkTimeName(code, workTimeLst) {
                 let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
                 if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
-                    return text("KAF007_79");
+                    return '';
                 } else {
                     return currentWorkTime.workTimeDisplayName.workTimeName;     
                 }      
