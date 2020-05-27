@@ -54,8 +54,8 @@ public class DailyAttendanceItemWebService extends WebService {
     @Path("getlistattendcomparison")
     public List<AttdItemDto> getDailyAttendance() {
 		List<DailyAttendanceAtr> dailyAttendanceAtrs = new ArrayList<>();
-		dailyAttendanceAtrs.add(DailyAttendanceAtr.ReferToMaster);
 		dailyAttendanceAtrs.add(DailyAttendanceAtr.NumberOfTime);
+		dailyAttendanceAtrs.add(DailyAttendanceAtr.AmountOfMoney);
 		dailyAttendanceAtrs.add(DailyAttendanceAtr.Time);
 		dailyAttendanceAtrs.add(DailyAttendanceAtr.TimeOfDay);
 		
