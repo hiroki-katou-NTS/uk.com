@@ -343,6 +343,7 @@ public class HolidayShipmentScreenBFinder {
 			Optional<AbsenceLeaveAppDto> absAppRefactor = this.getAbsAppRefactor(applicationID, companyID);
 			if(absAppRefactor.isPresent()) {
 				result.setAbsApp(absAppRefactor.get());
+				this.setWkTimeZoneDisplayInfo(companyID, result.absApp.getWorkTimeCD(), result.absApp);
 			}
 		} else {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(applicationID);
