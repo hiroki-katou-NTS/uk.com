@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
@@ -15,7 +16,11 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSe
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
@@ -47,32 +52,48 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
 	
-	/** 取得 */
-	@Override
-	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd,
-			String employeeId, GeneralDate criteriaDate) {
-		
-		// 利用単位　確認
-		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
-		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
-		
-		// 社員別設定　確認
-		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
-		
-		// 会社別設定　確認
-		val comSetOpt = this.comSetRepo.find(companyId);
-		
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
-				usageUnitSet, shaSetOpt, comSetOpt);
-	}
+//	/** 取得 */
+//	@Override
+//	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd,
+//			String employeeId, GeneralDate criteriaDate) {
+//		
+//		// 利用単位　確認
+//		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+//		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
+//		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
+//		
+//		// 社員別設定　確認
+//		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
+//		
+//		// 会社別設定　確認
+//		val comSetOpt = this.comSetRepo.find(companyId);
+//		
+//		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+//				usageUnitSet, shaSetOpt, comSetOpt);
+//	}
 	
 	/** 取得 */
 	@Override
 	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd, String employeeId,
 			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
-		
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+		val require = new GetFlexAggrSetImpl.Require() {
+			@Override
+			public Optional<WkpFlexMonthActCalSet> findWkpFlexMonthActCalSet(String cid, String wkpId) {
+				return wkpSetRepo.find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpFlexMonthActCalSet> findEmpFlexMonthActCalSet(String cid, String empCode) {
+				return empSetRepo.find(cid, empCode);
+			}
+		};
+		val cacheCarrier = new CacheCarrier();
+		return this.getRequire(require, cacheCarrier, companyId, employmentCd, employeeId, criteriaDate, companySets, employeeSets);
+	}
+	/** 取得 */
+	@Override
+	public Optional<FlexMonthWorkTimeAggrSet> getRequire(Require require, CacheCarrier cacheCarrier,String companyId, String employmentCd, String employeeId,
+			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		return this.getCommon(require, cacheCarrier, companyId, employmentCd, employeeId, criteriaDate,
 				companySets.getUsageUnitSet(), employeeSets.getShaFlexSetOpt(), companySets.getComFlexSetOpt());
 	}
 
@@ -88,6 +109,7 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 	 * @return フレックスの法定内集計設定
 	 */
 	private Optional<FlexMonthWorkTimeAggrSet> getCommon(
+			Require require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaFlexMonthActCalSet> shaFlexSetOpt,
 			Optional<ComFlexMonthActCalSet> comFlexSetOpt){
@@ -101,18 +123,18 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 		if (usageUnitSet.isWorkPlace()){
 			
 			// 所属職場を含む上位階層の職場IDを取得
-			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
-					companyId, employeeId, criteriaDate);
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(
+					cacheCarrier, companyId, employeeId, criteriaDate);
 			
 			for (val workplaceId : workplaceIds){
-				val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
+				val wkpSetOpt = require.findWkpFlexMonthActCalSet(companyId, workplaceId);
 				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
 			}
 		}
 		
 		// 雇用別設定　確認
 		if (usageUnitSet.isEmployment()){
-			val empSetOpt = this.empSetRepo.find(companyId, employmentCd);
+			val empSetOpt = require.findEmpFlexMonthActCalSet(companyId, employmentCd);
 			if (empSetOpt.isPresent()) return Optional.of(empSetOpt.get().getAggrSetting());
 		}
 		
@@ -120,5 +142,12 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 		if (comFlexSetOpt.isPresent()) return Optional.of(comFlexSetOpt.get().getAggrSetting());
 		
 		return Optional.empty();
+	}
+	
+	public static interface Require{
+		//wkpSetRepo.find(companyId, workplaceId);
+		Optional<WkpFlexMonthActCalSet> findWkpFlexMonthActCalSet(String cid, String wkpId);
+//		empSetRepo.find(companyId, employmentCd);
+		Optional<EmpFlexMonthActCalSet> findEmpFlexMonthActCalSet(String cid, String empCode);
 	}
 }

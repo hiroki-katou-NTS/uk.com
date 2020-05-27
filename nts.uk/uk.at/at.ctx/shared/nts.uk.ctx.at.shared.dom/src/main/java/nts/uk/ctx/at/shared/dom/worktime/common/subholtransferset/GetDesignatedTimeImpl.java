@@ -7,10 +7,22 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSetImpl;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 //import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 
 /**
  * 実装：指定時間を取得
@@ -25,15 +37,59 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 	/** 会社別代休時間設定 */
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	/*require用*/
+	@Inject
+	public WorkTimeSettingRepository workTimeSet;
+	@Inject
+	public FixedWorkSettingRepository fixedWorkSet;
+	@Inject
+	public FlowWorkSettingRepository flowWorkSet;
+	@Inject
+	public DiffTimeWorkSettingRepository diffWorkSet;
+	@Inject
+	public FlexWorkSettingRepository flexWorkSet;
+	/*require用*/
 	
-	/** 代休振替設定を取得 */
+	
 	@Override
 	public Optional<SubHolTransferSet> get(String companyId, String workTimeCode) {
+		val require = new GetDesignatedTimeImpl.Require() {
+			
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return workTimeSet.findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return flowWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return flexWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return fixedWorkSet.findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return diffWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public CompensatoryLeaveComSetting find(String companyId) {
+				return compensLeaveComSetRepository.find(companyId);
+			}
+		};
+		return getRequire(require, companyId, workTimeCode);
+	}
+	
+	@Override
+	public Optional<SubHolTransferSet> getRequire(Require require, String companyId, String workTimeCode) {
 		
 		// 共通設定の取得
-		val workTimezoneCommonSetOpt = this.getCommonSet.get(companyId, workTimeCode);
+		val workTimezoneCommonSetOpt = this.getCommonSet.getRequire(require, companyId, workTimeCode);
 		if (!workTimezoneCommonSetOpt.isPresent()){
-			return Optional.ofNullable(this.getCompanySet(companyId));
+			return Optional.ofNullable(this.getCompanySet(require, companyId));
 		}
 		
 		// 代休振替設定を取得
@@ -48,7 +104,7 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 			return Optional.ofNullable(subHolTransferSet);
 		}
 		
-		return Optional.ofNullable(this.getCompanySet(companyId));
+		return Optional.ofNullable(this.getCompanySet(require, companyId));
 	}
 	
 	/**
@@ -56,9 +112,9 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 	 * @param companyId 会社ID
 	 * @return 指定時間
 	 */
-	private SubHolTransferSet getCompanySet(String companyId){
+	private SubHolTransferSet getCompanySet(Require requirey, String companyId){
 		
-		val cmpLeaComSet = this.compensLeaveComSetRepository.find(companyId);
+		val cmpLeaComSet = requirey.find(companyId);
 		if (cmpLeaComSet == null) return null;
 		for (val cmpOccSet : cmpLeaComSet.getCompensatoryOccurrenceSetting()){
 			
@@ -74,5 +130,10 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 			return cmpOccSet.getTransferSetting();
 		}
 		return null;
+	}
+	
+	public static interface Require extends GetCommonSetImpl.Require{
+//		this.compensLeaveComSetRepository.find(companyId);
+		CompensatoryLeaveComSetting find(String companyId);
 	}
 }

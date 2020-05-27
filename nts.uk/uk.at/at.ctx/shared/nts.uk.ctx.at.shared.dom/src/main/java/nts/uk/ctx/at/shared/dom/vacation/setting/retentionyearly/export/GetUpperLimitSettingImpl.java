@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -44,9 +45,27 @@ public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 	public UpperLimitSetting algorithm(String companyId, String employeeId, GeneralDate criteriaDate,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
+		val require = new GetUpperLimitSettingImpl.Require() {
+			@Override
+			public Optional<RetentionYearlySetting> findRetentionYearlySettingByCompanyId(String companyId) {
+				return retentionYearlySetRepo.findByCompanyId(companyId);
+			}
+			@Override
+			public Optional<EmptYearlyRetentionSetting> findEmptYearlyRetentionSetting(String companyId, String employmentCode) {
+				return employmentSetRepo.find(companyId, employmentCode);
+			}
+		};
+		
+		val cacheCarrier = new CacheCarrier();
+		return algorithmRequire(require, cacheCarrier, companyId, employeeId, criteriaDate, retentionYearlySet, emptYearlyRetentionSetMap);
+	}
+	@Override
+	public UpperLimitSetting algorithmRequire(Require require, CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate criteriaDate,
+			Optional<RetentionYearlySetting> retentionYearlySet,
+			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
 		
 		// 「所属雇用履歴」を取得する
-		val empHisImportOpt = this.sysEmploymentHisAdapter.findSEmpHistBySid(companyId, employeeId, criteriaDate);
+		val empHisImportOpt = this.sysEmploymentHisAdapter.findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, criteriaDate);
 		if (empHisImportOpt.isPresent()){
 			val employmentCode = empHisImportOpt.get().getEmploymentCode();
 			
@@ -58,7 +77,7 @@ public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 				}
 			}
 			else {
-				emptYearlyRetentionSetOpt = this.employmentSetRepo.find(companyId, employmentCode);
+				emptYearlyRetentionSetOpt = require.findEmptYearlyRetentionSetting(companyId, employmentCode);
 			}
 			if (emptYearlyRetentionSetOpt.isPresent()){
 				val emptYearlyRetentionSet = emptYearlyRetentionSetOpt.get();
@@ -77,7 +96,7 @@ public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 			retentionYearlySetOpt = retentionYearlySet;
 		}
 		else {
-			retentionYearlySetOpt = this.retentionYearlySetRepo.findByCompanyId(companyId);
+			retentionYearlySetOpt = require.findRetentionYearlySettingByCompanyId(companyId);
 		}
 		if (retentionYearlySetOpt.isPresent()){
 			
@@ -88,5 +107,12 @@ public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 			return retentionYearlySetOpt.get().getUpperLimitSetting();
 		}
 		return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
+	}
+	
+	public static interface Require{
+//		this.employmentSetRepo.find(companyId, employmentCode);
+		Optional<EmptYearlyRetentionSetting> findEmptYearlyRetentionSetting(String companyId, String employmentCode);
+//		this.retentionYearlySetRepo.findByCompanyId(companyId);
+		Optional<RetentionYearlySetting> findRetentionYearlySettingByCompanyId(String companyId);
 	}
 }

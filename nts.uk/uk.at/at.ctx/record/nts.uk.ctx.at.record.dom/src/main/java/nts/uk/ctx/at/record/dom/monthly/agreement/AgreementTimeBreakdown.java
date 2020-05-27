@@ -99,8 +99,7 @@ public class AgreementTimeBreakdown {
 	 */
 	public void getTargetItemOfAgreement(
 			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonthlyCalculation monthlyCalculation){
 		
 		// 集計結果　初期化
 		this.overTime = new AttendanceTimeMonth(0);

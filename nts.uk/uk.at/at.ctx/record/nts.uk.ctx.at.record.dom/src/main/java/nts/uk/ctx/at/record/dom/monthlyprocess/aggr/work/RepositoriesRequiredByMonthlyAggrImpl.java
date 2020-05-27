@@ -48,9 +48,15 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCal
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetFlexAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetRegularAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -61,26 +67,54 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimitReposi
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -91,8 +125,14 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkT
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
@@ -393,4 +433,86 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 所定労働日数を取得する */
 	@Inject
 	private GetPredWorkingDaysAdaptor predWorkingDaysAdaptor;
+	
+	/*Require用*/
+	@Inject
+	private WkpRegulaMonthActCalSetRepository wkpRegulaMonthActCalSetRepository;
+	@Inject
+	private EmpRegulaMonthActCalSetRepository empRegulaMonthActCalSetRepository;
+	@Inject
+	private WkpDeforLaborMonthActCalSetRepository wkpDeforLaborMonthActCalSetRepository;
+	@Inject
+	private EmpDeforLaborMonthActCalSetRepository empDeforLaborMonthActCalSetRepository;
+	@Inject
+	private WkpFlexMonthActCalSetRepository wkpFlexMonthActCalSetRepository;
+	@Inject
+	private EmpFlexMonthActCalSetRepository empFlexMonthActCalSetRepository;
+	@Inject
+	private ComNormalSettingRepository comNormalSettingRepository;
+	@Inject
+	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
+	@Inject
+	private EmpNormalSettingRepository empNormalSettingRepository;
+	@Inject
+	private EmpDeforLaborSettingRepository empDeforLaborSettingRepository;
+	@Inject
+	private WkpNormalSettingRepository wkpNormalSettingRepository;
+	@Inject
+	private WkpDeforLaborSettingRepository wkpDeforLaborSettingRepository;
+	@Inject
+	private ShainNormalSettingRepository shainNormalSettingRepository;
+	@Inject
+	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
+	@Inject
+	private ShainFlexSettingRepository shainFlexSettingRepository;
+	@Inject
+	private WkpFlexSettingRepository wkpFlexSettingRepository;
+	@Inject
+	private EmpFlexSettingRepository empFlexSettingRepository;
+	@Inject
+	private ComFlexSettingRepository comFlexSettingRepository;
+	@Inject
+	public WorkTimeSettingRepository workTimeSetRepository;
+	@Inject
+	public FixedWorkSettingRepository fixedWorkSetRepository;
+	@Inject
+	public FlowWorkSettingRepository flowWorkSetRepository;
+	@Inject
+	public DiffTimeWorkSettingRepository diffWorkSetRepository;
+	@Inject
+	public FlexWorkSettingRepository flexWorkSetRepository;
+	@Inject
+	private InterimRemainRepository interimRemainRepository;
+	@Inject
+	private InterimRecAbasMngRepository interimRecAbasMngRepository;
+	@Inject
+	private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
+	@Inject
+	private EmpSubstVacationRepository empSubstVacationRepository;
+	@Inject
+	private PayoutManagementDataRepository payoutManagementDataRepository;
+	@Inject
+	private AnnLeaMaxDataRepository annLeaMaxDataRepository;
+	@Inject
+	private GrantYearHolidayRepository grantYearHolidayRepository;
+	@Inject
+	private TmpResereLeaveMngRepository tmpResereLeaveMngRepository;
+	@Inject
+	private SpecialLeaveGrantRepository specialLeaveGrantRepository;
+	@Inject
+	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepository;
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
+	@Inject
+	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepository;
+	@Inject
+	private GrantDateTblRepository grantDateTblRepository;
+	@Inject
+	private LeaveManaDataRepository leaveManaDataRepository;
+	@Inject
+	private ComDayOffManaDataRepository comDayOffManaDataRepository;
+	@Inject
+	private InterimBreakDayOffMngRepository interimBreakDayOffMngRepository;
 }

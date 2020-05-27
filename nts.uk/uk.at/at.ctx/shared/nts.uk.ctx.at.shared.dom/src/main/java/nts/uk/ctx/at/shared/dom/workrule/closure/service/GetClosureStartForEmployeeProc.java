@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.shr.com.context.AppContexts;
@@ -57,7 +60,7 @@ public class GetClosureStartForEmployeeProc {
 	 * @param employeeId 社員ID
 	 * @return 締め開始日
 	 */
-	public Optional<GeneralDate> algorithm(String employeeId){
+	public Optional<GeneralDate> algorithm(Require require, CacheCarrier cacheCarrier, String employeeId){
 		
 		this.employeeId = employeeId;
 		
@@ -66,10 +69,10 @@ public class GetClosureStartForEmployeeProc {
 		String companyId = loginUserContext.companyId();
 		
 		// 全締めの当月と期間を取得する
-		this.closureInfos = this.closureService.getAllClosureInfo();
+		this.closureInfos = this.closureService.getAllClosureInfoRequire(require);
 		
 		// チェック開始日・終了日を計算
-		this.calcCheckStartAndEnd();
+		this.calcCheckStartAndEnd(cacheCarrier);
 		if (this.checkStart == null || this.checkEnd == null) return Optional.empty();
 
 		// 社員IDからチェック開始日以後の期間が含まれる雇用履歴を取得
@@ -77,7 +80,7 @@ public class GetClosureStartForEmployeeProc {
 		employeeIds.add(employeeId);
 		DatePeriod empPeriod = new DatePeriod(this.checkStart, GeneralDate.max());	// チェック開始日～最大年月日
 		List<SharedSidPeriodDateEmploymentImport> employmentList =
-				this.shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeIds, empPeriod);
+				this.shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, employeeIds, empPeriod);
 		if (employmentList == null) return Optional.empty();
 		if (employmentList.size() == 0) return Optional.empty();
 		List<AffPeriodEmpCodeImport> empCodeList = employmentList.get(0).getAffPeriodEmpCodeExports();
@@ -106,7 +109,7 @@ public class GetClosureStartForEmployeeProc {
 			
 			// 雇用に紐づく締めを取得する
 			Integer closureId = 1;
-			val closureEmploymentOpt = this.closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+			val closureEmploymentOpt = require.findByEmploymentCD(companyId, employmentCd);
 			if (closureEmploymentOpt.isPresent()){
 				val closureEmployment = closureEmploymentOpt.get();
 				closureId = closureEmployment.getClosureId();
@@ -149,7 +152,7 @@ public class GetClosureStartForEmployeeProc {
 	/**
 	 * チェック開始日・終了日を計算
 	 */
-	private void calcCheckStartAndEnd(){
+	private void calcCheckStartAndEnd(CacheCarrier cacheCarrier){
 
 		this.checkStart = null;
 		this.checkEnd = null;
@@ -174,11 +177,16 @@ public class GetClosureStartForEmployeeProc {
 		}
 		
 		// 「社員」を取得する
-		val employee = this.empEmployee.findByEmpId(this.employeeId);
+		val employee = empEmployee.findByEmpIdRequire(cacheCarrier, this.employeeId);
 		if (employee != null){
 			
 			// 「チェック開始日」と「入社年月日」を比較
 			if (this.checkStart.before(employee.getEntryDate())) this.checkStart = employee.getEntryDate();
 		}
+	}
+	
+	public static interface Require extends DefaultClosureServiceImpl.Require{
+//		this.closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+		Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD);
 	}
 }

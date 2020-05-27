@@ -573,7 +573,8 @@ public class MonthlyDetail {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
-	public AttendanceTimeMonthWithMinus assignMonthlyPremiumTimeByDayUnit(
+	public AttendanceTimeMonthWithMinus assignMonthlyPremiumTimeByDayUnitRequire(
+			Require require,
 			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign,
 			AddSet addSet,
@@ -590,12 +591,12 @@ public class MonthlyDetail {
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
 		// 休出時間を限度として割り当てる（月割）
-		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(require, procDate, monthlyPTAfterAssign,
 				workInformationOfDailyMap, repositories);
 		
 		// 残業時間を限度として割り当てる（月割）
 		if (monthlyPTAfterAssign.greaterThan(0)){
-			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(require, procDate, monthlyPTAfterAssign,
 					workInformationOfDailyMap, repositories);
 		}
 		
@@ -634,6 +635,7 @@ public class MonthlyDetail {
 	 * @return 逆時系列割り当て用の月割増時間　（割り当て後）
 	 */
 	private AttendanceTimeMonthWithMinus assignWithHolidayWorkTimeAsLimitForMonth(
+			Require require,
 			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign,
 			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
@@ -650,7 +652,7 @@ public class MonthlyDetail {
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMapRequire(require, workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -760,6 +762,7 @@ public class MonthlyDetail {
 	 * @return 逆時系列割り当て用の月割増時間　（割り当て後）
 	 */
 	private AttendanceTimeMonthWithMinus assignWithOverTimeAsLimitForMonth(
+			Require require, 
 			GeneralDate procDate,
 			AttendanceTimeMonthWithMinus monthlyPTForAssign,
 			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
@@ -776,7 +779,7 @@ public class MonthlyDetail {
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMapRequire(require, workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -1046,5 +1049,9 @@ public class MonthlyDetail {
 		monthlyPTAfterAssign = monthlyPTAfterAssign.minusMinutes(assignMinutes);
 
 		return monthlyPTAfterAssign;
+	}
+	
+	public static interface Require extends MonAggrCompanySettings.Require{
+
 	}
 }

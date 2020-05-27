@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
@@ -27,12 +29,22 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の残業時間
@@ -148,11 +160,28 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		val require = createRequireImpl(repositories);
+		aggregateForRegAndIrregRequire(require, attendanceTimeOfDaily, companyId, workplaceId, 
+				employmentCd, workingSystem, workInfo, legalOverTimeTransferOrder, excessOutsideTimeSet, 
+				roleOverTimeFrameMap, autoExceptOverTimeFrames, companySets, employeeSets, repositories);
+	}
+
+	public void aggregateForRegAndIrregRequire(Require require, AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
+			WorkInformation workInfo,
+			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
+			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
+			List<RoleOvertimeWork> autoExceptOverTimeFrames,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		if (roleOverTimeFrameMap.values().size() > 0) {
 			
 			// 自動計算して残業時間を集計する
-			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
+			this.aggregateByAutoCalc(require, attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
 					workInfo, legalOverTimeTransferOrder, excessOutsideTimeSet, roleOverTimeFrameMap,
 					companySets, employeeSets, repositories);
 			
@@ -181,7 +210,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private void aggregateByAutoCalc(Require require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
@@ -192,7 +222,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 法定内残業にできる時間を計算する
-		AttendanceTime canLegalOverTime = this.calcLegalOverTime(attendanceTimeOfDaily,
+		AttendanceTime canLegalOverTime = this.calcLegalOverTime(require, attendanceTimeOfDaily,
 				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「残業枠時間」を取得する
@@ -237,7 +267,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private AttendanceTime calcLegalOverTime(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private AttendanceTime calcLegalOverTime(Require require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -245,7 +276,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 	
 		// 日の法定労働時間を取得する
 		DailyUnit dailyUnit = DailyUnit.zero();
-		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+		val workTimeSetOpt = companySets.getWorkingTimeSettingRequire(
+				require, employmentCd,
 				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
 				workingSystem, employeeSets, repositories);
 		if (workTimeSetOpt.isPresent()){
@@ -673,5 +705,57 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			val frameNo = targetAggrOverTime.getOverTimeFrameNo();
 			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
 		}
+	}
+	
+	public static interface Require extends MonAggrCompanySettings.Require{
+
+	}
+	private Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
+		return new OverTimeOfMonthly.Require() {
+			@Override
+			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+				return repositories.getWkpTransLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
+				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+				return repositories.getEmpTransWorkTime().find(cid, emplId);
+			}
+			@Override
+			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
+				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return repositories.getWorkType().findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
+			}
+		}; 
 	}
 }

@@ -12,8 +12,11 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonthDayHolder.Difference;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -41,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPer
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveOfEmployeeSevice{
 	@Inject
@@ -61,15 +63,46 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode,
 			DatePeriod complileDate,SpecialHoliday specialHoliday) {
+		
+		val require = new InforSpecialLeaveOfEmployeeSeviceImpl.Require() {
+			@Override
+			public Optional<SpecialLeaveBasicInfo> getBySidLeaveCdUser(String sid, int spLeaveCD, UseAtr use) {
+				return leaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+			}
+			@Override
+			public Optional<AnnualLeaveEmpBasicInfo> get(String employeeId) {
+				return annLeaEmpBasicInfoRepository.get(employeeId);
+			}
+			@Override
+			public List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode) {
+				return grantTableRepos.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
+			}
+			@Override
+			public Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD) {
+				return holidayRepo.findBySingleCD(cid, specialHolidayCD);
+			}
+			@Override
+			public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {
+				return grantTableRepos.findByCodeAndIsSpecified(companyId, specialHolidayCode);
+			}
+		};
+		val cacheCarrier = new CacheCarrier();
+		return getInforSpecialLeaveOfEmployeeRequire(require, cacheCarrier, cid, sid, specialLeaveCode, complileDate, specialHoliday);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployeeRequire(Require require, CacheCarrier cacheCarrier,
+			String cid, String sid, int specialLeaveCode,DatePeriod complileDate,SpecialHoliday specialHoliday) {
+		
 		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
 		//ドメインモデル「特別休暇基本情報」を取得する
-		Optional<SpecialLeaveBasicInfo> optBasicInfor = leaveBasicInfoRepo.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
+		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
 		if(!optBasicInfor.isPresent()) {
 			return outputData;
 		}
 		if(specialHoliday == null) {
 			//ドメインモデル「特別休暇」を取得する
-			Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
+			Optional<SpecialHoliday> optSpecialHoliday = require.findBySingleCD(cid, specialLeaveCode);
 			if(!optSpecialHoliday.isPresent()) {
 				return outputData;
 			}
@@ -78,7 +111,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			
 		SpecialLeaveBasicInfo leaverBasicInfo = optBasicInfor.get();
 		//付与日数情報を取得する
-		GrantDaysInforByDates grantDayInfors = this.getGrantDays(cid, sid, complileDate, specialHoliday, leaverBasicInfo);
+		GrantDaysInforByDates grantDayInfors = this.getGrantDays(require, cacheCarrier, cid, sid, complileDate, specialHoliday, leaverBasicInfo);
 		//「付与日数一覧」の件数をチェックする
 		Optional<Integer> upLimiDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays() == null 
 				|| specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v() == null ? Optional.empty() 
@@ -96,7 +129,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		}
 	}
 	@Override
-	public GrantDaysInforByDates getGrantDays(String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday,
+	public GrantDaysInforByDates getGrantDays(Require require, CacheCarrier cacheCarrier,String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday,
 			SpecialLeaveBasicInfo leaveBasicInfo) {
 		GeneralDate grantDate = GeneralDate.today();
 		//取得しているドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
@@ -104,7 +137,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			//社員ID（List）と指定期間から所属会社履歴項目を取得
 			List<String> lstEmp = new ArrayList<>();
 			lstEmp.add(employeeId);
-			List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee = sysCompanyAdapter.getAffCompanyHistByEmployee(lstEmp, period);
+			List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee = sysCompanyAdapter.getAffCompanyHistByEmployee(cacheCarrier, lstEmp, period);
 			for (AffCompanyHistSharedImport affCompanyHistSharedImport : getAffCompanyHistByEmployee) {
 				List<AffComHistItemShareImport> lstAffComHistItem = affCompanyHistSharedImport.getLstAffComHistItem();
 				for (AffComHistItemShareImport affComHistItemShareImport : lstAffComHistItem) {
@@ -114,7 +147,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			}
 		} else if (speHoliday.getGrantRegular().getGrantDate() == GrantDate.GRANT_BASE_HOLIDAY){
 			//ドメインモデル「年休社員基本情報」を取得する
-			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = require.get(employeeId);
 			if(!annualLeaveEmpBasicInfo.isPresent()) {
 				return new GrantDaysInforByDates(grantDate, Collections.emptyList());
 			}
@@ -128,14 +161,14 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
 		if(speHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_START_DATE_SPECIFY) {
 			//固定の付与日一覧を求める
-			return this.askGrantDays(cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
+			return this.askGrantDays(cacheCarrier, cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
 		} else {
 			//テーブルに基づいた付与日数一覧を求める
-			return this.askGrantdaysFromtable(cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
+			return this.askGrantdaysFromtable(require, cacheCarrier,cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
 		}
 	}
 	@Override
-	public GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday, 
+	public GrantDaysInforByDates askGrantDays(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday, 
 			SpecialLeaveBasicInfo leaveBasicInfo) {
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
@@ -166,7 +199,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			if(period.start().beforeOrEquals(loopDate)
 					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
 				//利用条件をチェックする
-				ErrorFlg checkUser = this.checkUse(cid, sid, loopDate, speHoliday);
+				ErrorFlg checkUser = checkUse(cacheCarrier, cid, sid, loopDate, speHoliday);
 				if(checkUser.isAgeError()
 						|| checkUser.isClassError()
 						|| checkUser.isEmploymentError()
@@ -186,11 +219,11 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		return outputData;
 	}
 	@Override
-	public ErrorFlg checkUse(String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday) {
+	public ErrorFlg checkUse(CacheCarrier cacheCarrier, String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday) {
 		ErrorFlg outData = new ErrorFlg(false, false, false, false);
 		SpecialLeaveRestriction specialLeaveRestric = speHoliday.getSpecialLeaveRestriction();
 		//Imported(就業)「社員」を取得する
-		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(sid);
+		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(cacheCarrier, sid);
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
 		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//性別が一致するかチェックする
@@ -202,7 +235,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
 		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//アルゴリズム「社員所属雇用履歴を取得」を実行する
-			Optional<BsEmploymentHistoryImport> findEmploymentHistory = sysEmploymentHist.findEmploymentHistory(cid, sid, baseDate);
+			Optional<BsEmploymentHistoryImport> findEmploymentHistory = sysEmploymentHist.findEmploymentHistoryRequire(cacheCarrier, cid, sid, baseDate);
 			if(!findEmploymentHistory.isPresent()) {
 				outData.setEmploymentError(true);
 			} else {
@@ -225,7 +258,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			//アルゴリズム「社員所属分類履歴を取得」を実行する
 			List<String> lstSids = new ArrayList<>();
 			lstSids.add(sid);
-			List<SClsHistImport> lstClass = sysCompanyAdapter.lstClassByEmployeeId(cid, lstSids, new DatePeriod(baseDate, baseDate));			
+			List<SClsHistImport> lstClass = sysCompanyAdapter.lstClassByEmployeeId(cacheCarrier, cid, lstSids, new DatePeriod(baseDate, baseDate));			
 			if(lstClass.isEmpty()) {
 				outData.setClassError(true);
 			}
@@ -275,7 +308,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		return outData;
 	}
 	@Override
-	public GrantDaysInforByDates askGrantdaysFromtable(String cid, String sid, DatePeriod period, GeneralDate granDate,
+	public GrantDaysInforByDates askGrantdaysFromtable(Require require, CacheCarrier cacheCarrier,
+			String cid, String sid, DatePeriod period, GeneralDate granDate,
 			SpecialLeaveBasicInfo basicInfor, SpecialHoliday speHoliday) {
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		Optional<GrantDateTbl> optGranDateTbl = Optional.empty();
@@ -285,16 +319,16 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
 		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
 				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
-			elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),
+			elapseYear = require.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),
 					basicInfor.getGrantSetting().getGrantTable().get().v());
 		}
 		//◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
 		//規定のテーブルとする＝TRUE
 		else {
-			optGranDateTbl = grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
+			optGranDateTbl = require.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
 			
 			if(optGranDateTbl.isPresent()) {				
-				elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, basicInfor.getSpecialLeaveCode().v(), optGranDateTbl.get().getGrantDateCode().v());
+				elapseYear = require.findElapseByGrantDateCd(cid, basicInfor.getSpecialLeaveCode().v(), optGranDateTbl.get().getGrantDateCode().v());
 			}
 		}
 		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
@@ -313,7 +347,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			if(period.start().beforeOrEquals(granDateTmp)
 					&& period.end().afterOrEquals(granDateTmp)) {
 				//利用条件をチェックする
-				ErrorFlg errorFlg = this.checkUse(cid, sid, granDateTmp, speHoliday);
+				ErrorFlg errorFlg = this.checkUse(cacheCarrier, cid, sid, granDateTmp, speHoliday);
 				if(errorFlg.isAgeError()
 						|| errorFlg.isClassError()
 						|| errorFlg.isEmploymentError()
@@ -338,7 +372,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 				if(period.start().beforeOrEquals(loopDate)
 						&& loopDate.beforeOrEquals(period.end())) {
 					//利用条件をチェックする
-					ErrorFlg errorFlg = this.checkUse(cid, sid, loopDate, speHoliday);
+					ErrorFlg errorFlg = this.checkUse(cacheCarrier, cid, sid, loopDate, speHoliday);
 					if(errorFlg.isAgeError()
 							|| errorFlg.isClassError()
 							|| errorFlg.isEmploymentError()
@@ -476,4 +510,18 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		});
 		return result;
 	}
+	
+	public static interface Require{
+//		leaveBasicInfoRepo.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
+		Optional<SpecialLeaveBasicInfo> getBySidLeaveCdUser(String sid, int spLeaveCD, UseAtr use);
+//		holidayRepo.findBySingleCD(cid, specialLeaveCode);
+		Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD);
+//		annLeaEmpBasicInfoRepository.get(employeeId);
+		Optional<AnnualLeaveEmpBasicInfo> get(String employeeId);
+//		grantTableRepos.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),basicInfor.getGrantSetting().getGrantTable().get().v());
+		List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode);
+//		grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
+		Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode);
+	}
+
 }

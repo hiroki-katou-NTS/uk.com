@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -55,9 +56,23 @@ public class WorkTimeIsFluidWorkImpl implements WorkTimeIsFluidWork{
 	}
 	@Override
 	public Integer getTimeByWorkTimeTypeCode(String workTimeCode, String workTypeCode) {
+		val require = new WorkTimeIsFluidWorkImpl.Require() {
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkType> findByDeprecated(String companyId, String workTypeCd) {
+				return workTypeRespo.findByDeprecated(companyId, workTypeCode);
+			}
+		};
+		return getTimeByWorkTimeTypeCodeRequire(require, workTimeCode, workTypeCode);
+	}
+	@Override
+	public Integer getTimeByWorkTimeTypeCodeRequire(Require require, String workTimeCode, String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<PredetemineTimeSetting> pred = this.predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
-		Optional<WorkType> workTypeInfor = workTypeRespo.findByDeprecated(companyId, workTypeCode);
+		Optional<PredetemineTimeSetting> pred = require.findByWorkTimeCode(companyId, workTimeCode);
+		Optional<WorkType> workTypeInfor = require.findByDeprecated(companyId, workTypeCode);
 		if(pred.isPresent() 
 				&& workTypeInfor.isPresent()) {
 			PredetemineTimeSetting timeSetting = pred.get();
@@ -73,6 +88,14 @@ public class WorkTimeIsFluidWorkImpl implements WorkTimeIsFluidWork{
 			}
 		}
 		return 0;
+	}
+	
+	public static interface Require{
+//		predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
+		Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
+//		workTypeRespo.findByDeprecated(companyId, workTypeCode);
+		Optional<WorkType> findByDeprecated(String companyId, String workTypeCd);
+
 	}
 
 }

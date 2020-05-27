@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -64,6 +65,8 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList65
 	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	List<String> findWpkIdsBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate date);
+	
 	
 	Map<GeneralDate, Map<String, List<String>>> findWpkIdsBySids(String companyId, List<String> employeeId, DatePeriod date);
 

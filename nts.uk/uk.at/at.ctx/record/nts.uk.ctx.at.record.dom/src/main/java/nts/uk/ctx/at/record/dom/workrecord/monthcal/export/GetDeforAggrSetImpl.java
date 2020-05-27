@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
@@ -15,8 +16,12 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
@@ -47,32 +52,53 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
 	
-	/** 取得 */
-	@Override
-	public Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd,
-			String employeeId, GeneralDate criteriaDate) {
-
-		// 利用単位　確認
-		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
-		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
-		
-		// 社員別設定　確認
-		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
-		
-		// 会社別設定　確認
-		val comSetOpt = this.comSetRepo.find(companyId);
-		
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
-				usageUnitSet, shaSetOpt, comSetOpt);
-	}
+//	/** 取得 */
+//	@Override
+//	public Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd,
+//			String employeeId, GeneralDate criteriaDate) {
+//
+//		// 利用単位　確認
+//		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+//		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
+//		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
+//		
+//		// 社員別設定　確認
+//		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
+//		
+//		// 会社別設定　確認
+//		val comSetOpt = this.comSetRepo.find(companyId);
+//		
+//		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+//				usageUnitSet, shaSetOpt, comSetOpt);
+//	}
 
 	/** 取得 */
 	@Override
 	public Optional<DeforWorkTimeAggrSet> get(String companyId, String employmentCd, String employeeId,
 			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		val require = new Require() {
+			@Override
+			public Optional<WkpDeforLaborMonthActCalSet> findWkpDeforLaborMonthActCalSet(String cid, String wkpId) {
+				return wkpSetRepo.find(companyId, wkpId);
+			}
+			@Override
+			public Optional<EmpDeforLaborMonthActCalSet> findEmpDeforLaborMonthActCalSet(String cid, String empCode) {
+				return empSetRepo.find(companyId, employmentCd);
+			}
+		};
+		
+		val cacheCarrier = new CacheCarrier();
+		
+		return this.getRequire(require, cacheCarrier, companyId, employmentCd, employeeId, criteriaDate, companySets, employeeSets);
+	}
+	
+	/** 取得 */
+	@Override
+	public Optional<DeforWorkTimeAggrSet> getRequire(Require require, CacheCarrier cacheCarrier, 
+			String companyId, String employmentCd, String employeeId,
+			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+		return this.getCommon(require, cacheCarrier, companyId, employmentCd, employeeId, criteriaDate,
 				companySets.getUsageUnitSet(), employeeSets.getShaIrgSetOpt(), companySets.getComIrgSetOpt());
 	}
 	
@@ -88,6 +114,7 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 	 * @return 変形労働の法定内集計設定
 	 */
 	private Optional<DeforWorkTimeAggrSet> getCommon(
+			Require require, CacheCarrier cachecarrier, 
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaDeforLaborMonthActCalSet> shaIrgSetOpt,
 			Optional<ComDeforLaborMonthActCalSet> comIrgSetOpt){
@@ -101,18 +128,18 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 		if (usageUnitSet.isWorkPlace()){
 			
 			// 所属職場を含む上位階層の職場IDを取得
-			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
-					companyId, employeeId, criteriaDate);
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(
+					cachecarrier, companyId, employeeId, criteriaDate);
 			
 			for (val workplaceId : workplaceIds){
-				val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
+				val wkpSetOpt = require.findWkpDeforLaborMonthActCalSet(companyId, workplaceId);
 				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getAggrSetting());
 			}
 		}
 		
 		// 雇用別設定　確認
 		if (usageUnitSet.isEmployment()){
-			val empSetOpt = this.empSetRepo.find(companyId, employmentCd);
+			val empSetOpt = require.findEmpDeforLaborMonthActCalSet(companyId, employmentCd);
 			if (empSetOpt.isPresent()) return Optional.of(empSetOpt.get().getAggrSetting());
 		}
 		
@@ -120,5 +147,12 @@ public class GetDeforAggrSetImpl implements GetDeforAggrSet {
 		if (comIrgSetOpt.isPresent()) return Optional.of(comIrgSetOpt.get().getAggrSetting());
 		
 		return Optional.empty();
+	}
+	
+	public static interface Require{
+		//wkpSetRepo.find(companyId, workplaceId);
+		Optional<WkpDeforLaborMonthActCalSet> findWkpDeforLaborMonthActCalSet(String cid, String wkpId);
+//		empSetRepo.find(companyId, employmentCd);
+		Optional<EmpDeforLaborMonthActCalSet> findEmpDeforLaborMonthActCalSet(String cid, String empCode);
 	}
 }

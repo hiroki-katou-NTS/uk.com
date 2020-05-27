@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.service;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriodImpl.Require;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 
 public interface UseDateDeadlineFromDatePeriod {
@@ -9,4 +10,6 @@ public interface UseDateDeadlineFromDatePeriod {
 	 * @return
 	 */
 	GeneralDate useDateDeadline(String employmentCd, ExpirationTime expirationDate, GeneralDate baseDate);
+
+	GeneralDate useDateDeadlineRequire(Require require, String employmentCd, ExpirationTime expirationDate,GeneralDate baseDate);
 }

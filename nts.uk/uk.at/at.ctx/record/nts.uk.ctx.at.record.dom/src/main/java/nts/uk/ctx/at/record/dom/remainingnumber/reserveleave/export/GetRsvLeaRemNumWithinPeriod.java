@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export;
 
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodImpl.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 
 /**
@@ -30,4 +32,11 @@ public interface GetRsvLeaRemNumWithinPeriod {
 			GetRsvLeaRemNumWithinPeriodParam param,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+	Optional<AggrResultOfReserveLeave> algorithmRequire(
+			Require require, 
+			CacheCarrier cacheCarrier,
+			GetRsvLeaRemNumWithinPeriodParam param,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+
 }

@@ -3,11 +3,13 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementServiceImpl.Require;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
  * @author do_dt
@@ -19,6 +21,7 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param);
+	InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeaveRequire(Require require, CacheCarrier cacheCarrier, ComplileInPeriodOfSpecialLeaveParam param);
 	/**
 	 * 管理データを取得する
 	 * @param cid
@@ -27,9 +30,7 @@ public interface SpecialLeaveManagementService {
 	 * @param complileDate ・集計開始日 ・集計終了日
 	 * @return 特別休暇付与残数データ
 	 */
-	ManagaData getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate, Optional<InPeriodOfSpecialLeaveResultInfor> beforeResult);
-
-	
+	ManagaData getMngData(Require require, CacheCarrier cacheCarrier, String cid, String sid, int specialLeaveCode,DatePeriod complileDate, Optional<InPeriodOfSpecialLeaveResultInfor> beforeResult);
 	/**
 	 * 特別休暇暫定データを取得する
 	 * @param cid
@@ -38,7 +39,7 @@ public interface SpecialLeaveManagementService {
 	 * @param mode
 	 * @return
 	 */
-	SpecialHolidayInterimMngData specialHolidayData(SpecialHolidayDataParam param);
+	SpecialHolidayInterimMngData specialHolidayData(Require require, SpecialHolidayDataParam param);
 	
 	/**
 	 * 特休の使用数を求める
@@ -63,9 +64,10 @@ public interface SpecialLeaveManagementService {
 	 * @param accumulationMaxDays ・蓄積上限日数
 	 * @return
 	 */
-	InPeriodOfSpecialLeave getOffsetDay1004(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
-			SpecialLeaveGrantRemainingDataTotal lstGrantData, SpecialHolidayInterimMngData interimDataMng, 
-			double accumulationMaxDays,RemainDaysOfSpecialHoliday useInfor, boolean isMode);
+	InPeriodOfSpecialLeave getOffsetDay1004(Require require, String cid, String sid, DatePeriod dateData,
+			GeneralDate baseDate, int specialCode, SpecialLeaveGrantRemainingDataTotal lstGrantData,
+			SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays,
+			RemainDaysOfSpecialHoliday useInfor, boolean isMode);
 	/**
 	 * 使用数を管理データから引く
 	 * @param lstGrantData 特別休暇付与残数データ一覧
@@ -82,6 +84,7 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	DataMngOfDeleteExpired adjustCarryForward1005(List<SpecialLeaveGrantRemainingData> lstGrantData, double accumulationMaxDays);
+	DataMngOfDeleteExpired adjustCarryForward1005Require(Require require,List<SpecialLeaveGrantRemainingData> lstGrantData, double accumulationMaxDays);
 	/**
 	 * 付与前の残数情報をまとめる
 	 * @param lstSpeLeaveGrantDetails
@@ -108,5 +111,8 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, InPeriodOfSpecialLeave getOffsetDay);
+
+
+
 	
 }

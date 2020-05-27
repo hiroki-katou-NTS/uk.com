@@ -16,8 +16,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.app.workrule.ClosureCache;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -72,11 +76,20 @@ public class ShClosurePubImpl implements ShClosurePub {
 				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
 				.build());
 	}
-
+	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<PresentClosingPeriodExport> find(String cId, int closureId, GeneralDate date) {
-		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
+		val cacheCarrier = new CacheCarrier();
+		return findRequire(cacheCarrier, cId, closureId, date);
+	}
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public Optional<PresentClosingPeriodExport> findRequire(CacheCarrier cacheCarrier, String cId, int closureId, GeneralDate date) {
+		
+		val require = new RequireImpl(cacheCarrier);
+		
+		Optional<Closure> optClosure = require.findById(closureId);
 
 		// Check exist and active
 		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
@@ -95,7 +108,6 @@ public class ShClosurePubImpl implements ShClosurePub {
 			return Optional.empty();
 		}
 	}
-
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Map<Integer, DatePeriod> findAllPeriod(String cId, List<Integer> closureId, GeneralDate date) {
@@ -119,4 +131,20 @@ public class ShClosurePubImpl implements ShClosurePub {
 		return resultExport;
 
 	}
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements ShClosurePubImpl.Require{
+		private final CacheCarrier cacheCarrier;
+		@Override
+		public Optional<Closure> findById(int closureId) {
+			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
+			return cache.get(closureId);
+		}
+		
+	}
+	public static interface Require{
+//		closureRepo.findById(cId, closureId);
+		Optional<Closure> findById(int closureId);
+	}
+	
 }

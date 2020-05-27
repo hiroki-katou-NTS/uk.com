@@ -25,8 +25,18 @@ public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 
 	@Override
 	public List<AffCompanyHistImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-		List<AffCompanyHistImport> importList = this.syCompanyPub.GetAffCompanyHistByEmployee(sids, datePeriod).stream()
+		List<AffCompanyHistImport> importList = this.syCompanyPub.GetAffCompanyHistByEmployee(sids, datePeriod)
+				.stream()
 				.map(x -> convert(x)).collect(Collectors.toList());
+		return importList;
+	}
+	
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<AffCompanyHistImport> getAffCompanyHistByEmployeeRequire(CacheCarrier cacheCarrier, List<String> sids, DatePeriod datePeriod) {
+		List<AffCompanyHistImport> importList = this.syCompanyPub.GetAffCompanyHistByEmployeeRequire(cacheCarrier, sids, datePeriod)
+				.stream()
+				.map(x -> convert(x)).collect(Collectors.toList());					.map(x -> convert(x)).collect(Collectors.toList());
 		return importList;
 	}
 

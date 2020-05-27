@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffDateCreateDataImpl.Require;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
@@ -22,7 +23,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param detailData
 	 * @return
 	 */
-	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData
+	public DailyInterimRemainMngData createData(Require require, String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse, InterimRemainCreateInfor detailData
 			, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting);
 	/**
 	 * 残数作成元情報を作成する
@@ -33,12 +34,16 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	public InforFormerRemainData createInforFormerRemainData(String cid, String sid, GeneralDate baseDate, InterimRemainCreateInfor detailData, 
 			boolean dayOffTimeIsUse, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting);
+	public InforFormerRemainData createInforFormerRemainDataRequire(Require require, String cid, String sid,
+			GeneralDate baseDate, InterimRemainCreateInfor detailData, boolean dayOffTimeIsUse,
+			CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting);
 	/**
 	 * 実績から残数作成元情報を設定する
 	 * @param recordData
 	 * @return
 	 */
 	public InforFormerRemainData createInterimDataFromecord(String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData);
+	public InforFormerRemainData createInterimDataFromecordRequire(Require require, String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData);
 	/**
 	 * 勤務種類別残数情報を作成する
 	 * @param cid
@@ -47,6 +52,8 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public List<WorkTypeRemainInfor> createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode);
+	public List<WorkTypeRemainInfor> createWorkTypeRemainInforRequire(Require require, String cid, CreateAtr createAtr, String workTypeCode);
+	
 	/**
 	 * 残数発生使用明細を作成する
 	 * @param workType
@@ -54,6 +61,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public void createWithOneDayWorkType(String cid, WorkType workType, WorkTypeRemainInfor dataOutput);
+	public void createWithOneDayWorkTypeRequire(Require require, String cid, WorkType workType, WorkTypeRemainInfor dataOutput);
 	/**
 	 * 午前と午後勤務時の残数発生使用明細を作成する
 	 * @param workType
@@ -61,6 +69,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public WorkTypeRemainInfor createWithHaftDayWorkType(WorkType workType, WorkTypeRemainInfor dataOutput);
+	
 	/**
 	 * 実績から代休振替情報を作成する
 	 * @param recordData
@@ -68,12 +77,13 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public DayoffTranferInfor createDayOffTranferFromRecord(String cid, CreateAtr createAtr, RecordRemainCreateInfor recordData, boolean dayOffTimeIsUse);
+	public DayoffTranferInfor createDayOffTranferFromRecordRequire(Require require, String cid, CreateAtr createAtr,RecordRemainCreateInfor recordData, boolean dayOffTimeIsUse);
 	/**
 	 * 残数作成元情報から暫定残数管理データを作成する
 	 * @param inforData
 	 * @return
 	 */
-	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData);
+	public DailyInterimRemainMngData createDataInterimRemain(Require require, InforFormerRemainData inforData);
 
 	/**
 	 * 予定から残数作成元情報を設定する
@@ -83,6 +93,9 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	InforFormerRemainData createInterimDataFromSche(String cid, ScheRemainCreateInfor scheData, InforFormerRemainData outputData,
 			boolean dayOffTimeIsUse);
+	InforFormerRemainData createInterimDataFromScheRequire(Require require, String cid, ScheRemainCreateInfor scheData,
+			InforFormerRemainData outputData, boolean dayOffTimeIsUse);
+	
 	/**
 	 * 就業時間帯から代休振替情報を作成する
 	 * @param remainInfor
@@ -94,6 +107,10 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	List<DayoffTranferInfor> createDayoffFromWorkTime(String cid, List<WorkTypeRemainInfor> remainInfor, String workTimeCode,
 			Integer timeSetting, CreateAtr createAtr, Integer timeOverSetting, boolean dayOffTimeIsUse);
+	List<DayoffTranferInfor> createDayoffFromWorkTimeRequire(Require require, String cid,
+			List<WorkTypeRemainInfor> remainInfor, String workTimeCode, Integer timeSetting, CreateAtr createAtr,
+			Integer timeOverSetting, boolean dayOffTimeIsUse);
+	
 	/**
 	 * 代休振替時間を算出する
 	 * @param workTimeCode
@@ -102,6 +119,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	Optional<TranferTimeInfor> calDayoffTranferTime(String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
+	Optional<TranferTimeInfor> calDayoffTranferTimeRequire(Require require, String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
 	/**
 	 * 最新の勤務種類変更を伴う申請から残数作成元情報を設定する
 	 * @param appInfor
@@ -111,6 +129,8 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	InforFormerRemainData createInterimDataFromApp(String cid, InterimRemainCreateInfor createInfo, AppRemainCreateInfor appInfor, 
 			InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr);
+	
+
 	/**
 	 * 休日出勤申請から代休振替情報を作成する
 	 * @param dayOffTimeIsUse
@@ -128,5 +148,8 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	List<DayoffTranferInfor> transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			InterimRemainCreateInfor createInfo, List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr);
+
+
+
 
 }

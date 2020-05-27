@@ -2,13 +2,15 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 
 import java.util.List;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQueryImpl.Require;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentMngInPeriodQuery {
 	/**
@@ -16,12 +18,13 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput);
+	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriodRequire(Require require, CacheCarrier cacheCarrier,AbsRecMngInPeriodParamInput paramInput);
 	/**
 	 * 1.未相殺の振休(確定)を取得する
 	 * @param sid
 	 * @return
 	 */
-	List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid, GeneralDate ymd);
+	List<AbsRecDetailPara> getAbsOfUnOffset(Require require, String cid, String sid, GeneralDate ymd);
 	/**
 	 * 1-1.確定振休から未相殺の振休を取得する
 	 * @param sid
@@ -39,7 +42,7 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd);
+	List<AbsRecDetailPara> getUnUseDaysConfirmRec(Require require, String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd);
 	/**
 	 * 繰越数を計算する
 	 * @param startDate 集計開始日
@@ -65,13 +68,14 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	AbsRecDetailPara getNotTypeRec(InterimAbsMng lstAbsMng, InterimRemain remainData);
+	AbsRecDetailPara getNotTypeRecRequire(Require require, InterimAbsMng absMng, InterimRemain remainData);
 	/**
 	 * 4-1.振休と紐付けをしない振出を取得する
 	 * @param interimRecMng
 	 * @param remainData
 	 * @return
 	 */
-	AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData, LeaveSetOutput getSetForLeave,
+	AbsRecDetailPara getUnUseDayOfRecInterim(Require require, CacheCarrier cacheCarrier, InterimRecMng interimRecMng, InterimRemain remainData, LeaveSetOutput getSetForLeave,
 			GeneralDate startDate, GeneralDate baseDate, String cid, String sid);
 	/**
 	 * 5.時系列順で相殺する
@@ -99,7 +103,7 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param paramInput
 	 * @return
 	 */
-	List<AbsRecDetailPara> lstInterimInfor(AbsRecMngInPeriodParamInput paramInput, List<AbsRecDetailPara> lstAbsRec);
+	List<AbsRecDetailPara> lstInterimInfor(Require require, CacheCarrier cacheCarrier,AbsRecMngInPeriodParamInput paramInput, List<AbsRecDetailPara> lstAbsRec);
 	
 	/**
 	 * [No.506]振休残数を取得する

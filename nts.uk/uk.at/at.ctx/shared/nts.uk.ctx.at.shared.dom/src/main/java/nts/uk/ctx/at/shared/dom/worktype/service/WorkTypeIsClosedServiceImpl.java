@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -87,10 +88,20 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 	}
 	@Override
 	public boolean checkHoliday(String workTypeCode) {
+		val require = new WorkTypeIsClosedServiceImpl.Require() {
+			@Override
+			public Optional<WorkType> findWorkTypeByPK(String companyId, String workTypeCd) {
+				return null;
+			}
+		};
+		return checkHolidayRequire(require, workTypeCode);
+	}
+	@Override
+	public boolean checkHolidayRequire(Require require, String workTypeCode) {
 		boolean isHoliday = false;
 		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「日別実績の勤務情報」を取得する
-		Optional<WorkType> optWorkTypeInfor = workTypeRepo.findByPK(companyId, workTypeCode);
+		Optional<WorkType> optWorkTypeInfor = require.findWorkTypeByPK(companyId, workTypeCode);
 		if(!optWorkTypeInfor.isPresent()) {
 			return isHoliday;
 		}
@@ -105,5 +116,9 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 			}
 		}
 		return isHoliday;
+	}
+	public static interface Require{
+//		workTypeRepo.findByPK(companyId, workTypeCode);
+		Optional<WorkType> findWorkTypeByPK(String companyId, String workTypeCd);
 	}
 }

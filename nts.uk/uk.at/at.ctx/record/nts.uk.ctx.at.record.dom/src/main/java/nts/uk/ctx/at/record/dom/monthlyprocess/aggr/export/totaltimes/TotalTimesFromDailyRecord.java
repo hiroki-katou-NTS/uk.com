@@ -171,11 +171,11 @@ public class TotalTimesFromDailyRecord {
 	 * @param workTypeCode 勤務種類コード
 	 * @return 勤務種類
 	 */
-	private WorkType getWorkType(String workTypeCode){
+	private WorkType getWorkType(Require require, String workTypeCode){
 		
 		if (this.workTypeMap.containsKey(workTypeCode)) return this.workTypeMap.get(workTypeCode);
 		
-		val workTypeOpt = this.workTypeRepo.findByPK(this.companyId, workTypeCode);
+		val workTypeOpt = require.findByPK(this.companyId, workTypeCode);
 		if (workTypeOpt.isPresent()){
 			this.workTypeMap.put(workTypeCode, workTypeOpt.get());
 		}
@@ -185,6 +185,11 @@ public class TotalTimesFromDailyRecord {
 		return this.workTypeMap.get(workTypeCode);
 	}
 	
+	public static interface Require {
+		
+		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+	}
+	
 	/**
 	 * 回数集計結果情報を取得する
 	 * @param totalTimesList 回数集計
@@ -192,17 +197,17 @@ public class TotalTimesFromDailyRecord {
 	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報
 	 */
-	public Optional<TotalTimesResult> getResult(TotalTimes totalTimes, DatePeriod period,
-			AttendanceItemConvertFactory attendanceItemConverter) {
-		
-		List<TotalTimes> totalTimesList = new ArrayList<>();
-		totalTimesList.add(totalTimes);
-		
-		val results = this.getResults(totalTimesList, period, attendanceItemConverter);
-		val totalCountNo = totalTimes.getTotalCountNo();
-		if (!results.containsKey(totalCountNo)) return Optional.empty();
-		return Optional.of(results.get(totalCountNo));
-	}
+//	public Optional<TotalTimesResult> getResult(TotalTimes totalTimes, DatePeriod period,
+//			AttendanceItemConvertFactory attendanceItemConverter) {
+//		
+//		List<TotalTimes> totalTimesList = new ArrayList<>();
+//		totalTimesList.add(totalTimes);
+//		
+//		val results = this.getResults(totalTimesList, period, attendanceItemConverter);
+//		val totalCountNo = totalTimes.getTotalCountNo();
+//		if (!results.containsKey(totalCountNo)) return Optional.empty();
+//		return Optional.of(results.get(totalCountNo));
+//	}
 	
 	/**
 	 * 回数集計結果情報を取得する
@@ -211,7 +216,7 @@ public class TotalTimesFromDailyRecord {
 	 * @param attendanceItemConverter 勤怠項目値変換
 	 * @return 回数集計結果情報マップ（回数集計NO別）
 	 */
-	public Map<Integer, TotalTimesResult> getResults(List<TotalTimes> totalTimesList, DatePeriod period,
+	public Map<Integer, TotalTimesResult> getResults(Require require, List<TotalTimes> totalTimesList, DatePeriod period,
 			AttendanceItemConvertFactory attendanceItemConverter) {
 		
 		Map<Integer, TotalTimesResult> results = new HashMap<>();
@@ -237,7 +242,7 @@ public class TotalTimesFromDailyRecord {
 			// 勤務種類が取得できない日は、集計しない
 			if (workInfo.getWorkTypeCode() == null) continue;
 			String workTypeCd = workInfo.getWorkTypeCode().v();
-			val workType = this.getWorkType(workTypeCd);
+			val workType = this.getWorkType(require, workTypeCd);
 			if (workType == null) continue;
 
 			// 就業時間帯を確認する

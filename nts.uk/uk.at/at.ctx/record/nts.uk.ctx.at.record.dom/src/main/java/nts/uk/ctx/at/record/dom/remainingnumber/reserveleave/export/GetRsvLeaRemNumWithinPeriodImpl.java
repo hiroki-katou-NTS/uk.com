@@ -14,7 +14,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
@@ -34,21 +36,31 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.CalcDeadlineForGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSettingImpl;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployeeImpl;
 
 /**
  * 実装：期間中の積立年休残数を取得する
@@ -94,6 +106,16 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	@Inject
 	private ShareEmploymentAdapter employmentAdapter;
 	
+	/*require用*/
+	@Inject
+	private EmploymentSettingRepository employmentSetRepo;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ClosureRepository closureRepository;	
+	@Inject
+	private RetentionYearlySettingRepository retentionYearlySetRepo;
+	
 	/** 期間中の積立年休残数を取得する */
 	@Override
 	public Optional<AggrResultOfReserveLeave> algorithm(GetRsvLeaRemNumWithinPeriodParam param) {
@@ -107,6 +129,19 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 
+		val require = createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+		return  algorithmRequire(require, cacheCarrier, param, companySets, monthlyCalcDailys);
+	}
+	
+	@Override
+	public Optional<AggrResultOfReserveLeave> algorithmRequire(
+			Require require, 
+			CacheCarrier cacheCarrier,
+			GetRsvLeaRemNumWithinPeriodParam param,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
+		
 		String companyId = param.getCompanyId();
 		String employeeId = param.getEmployeeId();
 		
@@ -123,13 +158,13 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			}
 		}
 		else {
-			annualLeaveSet = this.annualPaidLeaveSet.findByCompanyId(companyId);
+			annualLeaveSet = require.findAnnualPaidLeaveSettingByCompanyId(companyId);
 		}
 		if (annualLeaveSet != null) isManageAnnualLeave = annualLeaveSet.isManaged();
 		if (!isManageAnnualLeave) return Optional.empty();
 		
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		EmployeeImport employee = this.empEmployee.findByEmpId(employeeId);
+		EmployeeImport employee = this.empEmployee.findByEmpIdRequire(cacheCarrier, employeeId);
 		if (employee == null) return Optional.empty();
 		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
 		if (aggrPeriod == null) return Optional.empty();
@@ -144,16 +179,18 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		}
 		else {
 			rsvGrantRemainingDatas =
-					this.rsvLeaGrantRemDataRepo.findNotExp(employeeId, null).stream()
+					require.findNotExp(employeeId, null).stream()
 							.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 		}
 		
 		// 集計開始日時点の積立年休情報を作成
 		ReserveLeaveInfo reserveLeaveInfo = this.createInfoAsOfPeriodStart(
+				require, cacheCarrier,
 				param, companySets, monthlyCalcDailys, rsvGrantRemainingDatas);
 		
 		// 上限設定の期間を計算
 		List<MaxSettingPeriodWork> maxSetPeriods = this.calcMaxSettingPeriod(
+				require, cacheCarrier,
 				param, retentionYearlySet, emptYearlyRetentionSetMap);
 		
 		// 積立年休付与を計算
@@ -164,12 +201,12 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				param.getAggrPeriod(), calcGrant, maxSetPeriods, rsvGrantRemainingDatas);
 		
 		// 暫定積立年休管理データを取得する
-		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = this.getTmpReserveLeaveMngs(param);
+		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = this.getTmpReserveLeaveMngs(require, param);
 		
 		for (val aggrPeriodWork : aggrPeriodWorks){
 			
 			// 積立年休の消滅・付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(companyId, employeeId, aggrPeriodWork,
+			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
 					tmpReserveLeaveMngs, param.isGetNextMonthData(), aggrResult,
 					this.getUpperLimitSetting, this.calcDeadlineForGrantDate,
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
@@ -202,6 +239,8 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	 * @return 積立年休情報
 	 */
 	private ReserveLeaveInfo createInfoAsOfPeriodStart(
+			Require require,
+			CacheCarrier cacheCarrier,
 			GetRsvLeaRemNumWithinPeriodParam param,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
@@ -242,7 +281,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			GeneralDate closureStart = null;	// 締め開始日
 			{
 				// 最新の締め終了日翌日を取得する
-				Optional<ClosureStatusManagement> sttMng = this.closureSttMngRepo.getLatestByEmpId(param.getEmployeeId());
+				Optional<ClosureStatusManagement> sttMng = require.getLatestByEmpId(param.getEmployeeId());
 				if (sttMng.isPresent()){
 					closureStart = sttMng.get().getPeriod().end().addDays(1);
 					closureStartOpt = Optional.of(closureStart);
@@ -250,7 +289,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				else {
 					
 					//　社員に対応する締め開始日を取得する
-					closureStartOpt = this.getClosureStartForEmployee.algorithm(param.getEmployeeId());
+					closureStartOpt = this.getClosureStartForEmployee.algorithmRequire(require, cacheCarrier, param.getEmployeeId());
 					if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
 				}
 			}
@@ -347,6 +386,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	 * @return 積立年休上限設定期間WORKリスト
 	 */
 	private List<MaxSettingPeriodWork> calcMaxSettingPeriod(
+			Require require, CacheCarrier cacheCarrier,
 			GetRsvLeaRemNumWithinPeriodParam param,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
@@ -361,13 +401,13 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		while (checkYmd.beforeOrEquals(checkEnd)){
 			
 			// 「所属雇用履歴」を取得
-			val employmentOpt = this.employmentAdapter.findEmploymentHistory(
+			val employmentOpt = this.employmentAdapter.findEmploymentHistoryRequire(cacheCarrier
 					param.getCompanyId(), param.getEmployeeId(), checkYmd);
 			if (!employmentOpt.isPresent()) break;
 			val employment = employmentOpt.get();
 			
 			// 積立年休の上限設定を取得
-			val upperLimitSet = this.getUpperLimitSetting.algorithm(param.getCompanyId(), param.getEmployeeId(),
+			val upperLimitSet = this.getUpperLimitSetting.algorithmRequire(require, cacheCarrier, param.getCompanyId(), param.getEmployeeId(),
 					checkYmd, retentionYearlySet, emptYearlyRetentionSetMap);
 			
 			// 積立年休上限設定WORKの期間を設定
@@ -570,7 +610,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	 * @param param パラメータ
 	 * @return 暫定積立年休管理データWORKリスト
 	 */
-	private List<TmpReserveLeaveMngWork> getTmpReserveLeaveMngs(GetRsvLeaRemNumWithinPeriodParam param){
+	private List<TmpReserveLeaveMngWork> getTmpReserveLeaveMngs(Require require, GetRsvLeaRemNumWithinPeriodParam param){
 		
 		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
 		
@@ -595,10 +635,10 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			// その他モード
 			
 			// 「暫定積立年休管理データ」を取得する
-			val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
+			val interimRemains = require.getRemainBySidPriod(
 					param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
 			for (val interimRemain : interimRemains){
-				val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
+				val tmpReserveLeaveMngOpt = require.getById(interimRemain.getRemainManaID());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
 				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
@@ -628,5 +668,64 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		
 		results.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		return results;
+	}
+	
+	public static interface Require extends GetUpperLimitSettingImpl.Require,ReserveLeaveInfo.Require,GetClosureStartForEmployeeImpl.Require{
+//		this.annualPaidLeaveSet.findByCompanyId(companyId);
+		AnnualPaidLeaveSetting findAnnualPaidLeaveSettingByCompanyId(String companyId);
+//		this.rsvLeaGrantRemDataRepo.findNotExp(employeeId, null);
+		List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId);
+//		this.closureSttMngRepo.getLatestByEmpId(param.getEmployeeId());
+		Optional<ClosureStatusManagement> getLatestByEmpId(String employeeId);
+//		this.interimRemainRepo.getRemainBySidPriod(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
+		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
+//		this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
+		Optional<TmpResereLeaveMng> getById(String resereMngId);
+	}
+
+	private Require createRequireImpl() {
+		return new GetRsvLeaRemNumWithinPeriodImpl.Require() {
+			@Override
+			public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
+				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+			}
+			@Override
+			public Optional<ClosureStatusManagement> getLatestByEmpId(String employeeId) {
+				return closureSttMngRepo.getLatestByEmpId(employeeId);
+			}
+			@Override
+			public Optional<TmpResereLeaveMng> getById(String resereMngId) {
+				return tmpReserveLeaveMng.getById(resereMngId);
+			}
+			@Override
+			public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId) {
+				return rsvLeaGrantRemDataRepo.findNotExp(employeeId, null);
+			}
+			@Override
+			public AnnualPaidLeaveSetting findAnnualPaidLeaveSettingByCompanyId(String companyId) {
+				return annualPaidLeaveSet.findByCompanyId(companyId);
+			}
+			@Override
+			public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+			@Override
+			public List<Closure> findAllUse(String companyId) {
+				return closureRepository.findAllUse(companyId);
+			}
+			@Override
+			public Optional<RetentionYearlySetting> findRetentionYearlySettingByCompanyId(String companyId) {
+				return retentionYearlySetRepo.findByCompanyId(companyId);
+			}
+			@Override
+			public Optional<EmptYearlyRetentionSetting> findEmptYearlyRetentionSetting(String companyId, String employmentCode) {
+				return employmentSetRepo.find(companyId, employmentCode);
+			}
+			@Override
+			public Optional<Closure> findClosureById(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+		};
+
 	}
 }

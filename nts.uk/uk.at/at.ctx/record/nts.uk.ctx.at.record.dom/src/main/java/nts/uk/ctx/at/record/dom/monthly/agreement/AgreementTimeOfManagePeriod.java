@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
@@ -22,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 管理期間の36協定時間
@@ -113,8 +117,29 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 			GeneralDate criteriaDate,
 			MonthlyAggregateAtr aggregateAtr,
 			MonthlyCalculation monthlyCalculation,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			RepositoriesRequiredByMonthlyAggr repositories) {
 		
+		val require = new AgreementTimeOfManagePeriod.Require() {
+			@Override
+			public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+					WorkingSystem workingSystem) {
+				return repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate, workingSystem);
+			}
+			@Override
+			public Optional<AgreementMonthSetting> findByKey(String employeeId, YearMonth yearMonth) {
+				return repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
+			}
+		};
+		aggregateRequire(require, criteriaDate, aggregateAtr, monthlyCalculation, repositories);
+	}
+	
+	public void aggregateRequire(
+			Require require,
+			GeneralDate criteriaDate,
+			MonthlyAggregateAtr aggregateAtr,
+			MonthlyCalculation monthlyCalculation,
+			RepositoriesRequiredByMonthlyAggr repositories) {
+
 		this.year = monthlyCalculation.getYear();
 		
 		// 36協定時間の作成
@@ -122,6 +147,10 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		// 36協定上限時間の作成
 		this.agreementMaxTime.aggregate(criteriaDate, aggregateAtr, monthlyCalculation, repositories);
+	}
+	
+	public static interface Require extends AgreementTimeOfMonthly.Require{
+
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 //import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -113,16 +115,24 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 	// 10.2
 	public SubstitutionHolidayOutput getSettingForSubstituteHoliday(String companyID, String employeeID,
 			GeneralDate baseDate) {
+		val require = createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+		return getSettingForSubstituteHolidayRequire(require, cacheCarrier, companyID, employeeID, baseDate);
+	}
+	@Override
+	// 10.2
+	public SubstitutionHolidayOutput getSettingForSubstituteHolidayRequire(Require require, CacheCarrier cacheCarrier,String companyID, String employeeID,
+			GeneralDate baseDate) {
 		SubstitutionHolidayOutput result = new SubstitutionHolidayOutput();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
-		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyID, employeeID, baseDate);
+		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistoryRequire(cacheCarrier, companyID, employeeID, baseDate);
 		if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
 			return null;
 		}
 		int isManageByTime = 0;
 		int digestiveUnit = 0;
 		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = this.compensLeaveEmSetRepository.find(companyID, empHistImport.get().getEmploymentCode());
+		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.findCompensatoryLeaveEmSetting(companyID, empHistImport.get().getEmploymentCode());
 		if(compensatoryLeaveEmSet != null){
 			if (compensatoryLeaveEmSet.getIsManaged() != null) {
 				// １件以上取得できた(lấy được 1 data trở lên)
@@ -142,7 +152,7 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 			}
 		}else{
 			// ０件(0 data), ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
-			CompensatoryLeaveComSetting compensatoryLeaveComSet = this.compensLeaveComSetRepository.find(companyID);
+			CompensatoryLeaveComSetting compensatoryLeaveComSet = require.findCompensatoryLeaveComSetting(companyID);
 			if(compensatoryLeaveComSet != null){
 				if (compensatoryLeaveComSet.isManaged()) {
 					// ドメインモデル「代休管理設定」．管理区分 = 管理する
@@ -181,13 +191,18 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 	 */
 	@Override
 	public LeaveSetOutput getSetForLeave(String companyID, String employeeID, GeneralDate baseDate) {
+		val require = createRequireImpl();
+		return getSetForLeaveRequire(require, companyID, employeeID, baseDate);
+	}
+	@Override
+	public LeaveSetOutput getSetForLeaveRequire(Require require, String companyID, String employeeID, GeneralDate baseDate) {
 		boolean subManageFlag = false;
 		int expirationOfLeave = 0;
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyID, employeeID, baseDate);
 		if(empHistImport.isPresent()){
 			//ドメインモデル「雇用振休管理設定」を取得する(láy dữ liệu domain 「雇用振休管理設定」)
-			Optional<EmpSubstVacation> optEmpSubData = empSubsRepos.findById(companyID, empHistImport.get().getEmploymentCode());
+			Optional<EmpSubstVacation> optEmpSubData = require.findEmpSubstVacationById(companyID, empHistImport.get().getEmploymentCode());
 			if(optEmpSubData.isPresent()){//１件以上取得できた(1data trở lên)
 				//ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
 				EmpSubstVacation empSubData = optEmpSubData.get();
@@ -198,7 +213,7 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 				}
 			}else{//０件(0 data)
 				//ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
-				Optional<ComSubstVacation>  comSub = repoComSubVaca.findById(companyID);
+				Optional<ComSubstVacation>  comSub = require.findComSubstVacationById(companyID);
 				if(comSub.isPresent()){
 					ComSubstVacation comSubSet = comSub.get();
 					if(comSubSet.isManaged()){
@@ -240,5 +255,36 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 			}
 		}
 		return false;
+	}
+	public static interface Require{
+//		empSubsRepos.findById(companyID, empHistImport.get().getEmploymentCode());
+		Optional<EmpSubstVacation> findEmpSubstVacationById(String companyId, String contractTypeCode);
+//		repoComSubVaca.findById(companyID);
+		Optional<ComSubstVacation> findComSubstVacationById(String companyId);
+//		this.compensLeaveEmSetRepository.find(companyID, empHistImport.get().getEmploymentCode());
+		CompensatoryLeaveEmSetting findCompensatoryLeaveEmSetting(String companyId, String employmentCode);
+//		this.compensLeaveComSetRepository.find(companyID);
+		CompensatoryLeaveComSetting findCompensatoryLeaveComSetting(String companyId);
+	}
+	
+	private Require createRequireImpl() {
+		return new AbsenceTenProcessImpl.Require() {
+			@Override
+			public Optional<ComSubstVacation> findComSubstVacationById(String companyId) {
+				return repoComSubVaca.findById(companyId);
+			}
+			@Override
+			public Optional<EmpSubstVacation> findEmpSubstVacationById(String companyId, String contractTypeCode) {
+				return empSubsRepos.findById(companyId, contractTypeCode);
+			}
+			@Override
+			public CompensatoryLeaveEmSetting findCompensatoryLeaveEmSetting(String companyId, String employmentCode) {
+				return compensLeaveEmSetRepository.find(companyId, employmentCode);
+			}
+			@Override
+			public CompensatoryLeaveComSetting findCompensatoryLeaveComSetting(String companyId) {
+				return compensLeaveComSetRepository.find(companyId);
+			}
+		};
 	}
 }

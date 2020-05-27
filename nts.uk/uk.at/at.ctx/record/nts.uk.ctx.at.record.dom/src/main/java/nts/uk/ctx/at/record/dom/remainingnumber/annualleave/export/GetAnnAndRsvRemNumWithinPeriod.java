@@ -3,10 +3,12 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriodImpl.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
@@ -85,6 +87,22 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 	
+	AggrResultOfAnnAndRsvLeave algorithmRequire(
+			Require require,
+			CacheCarrier cacheCarrier,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
+			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
+			Optional<Boolean> isOverWrite,
+			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
+			Optional<Boolean> isOutputForShortage,
+			Optional<Boolean> noCheckStartDate,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
+			Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+	
 	public AggrResultOfAnnAndRsvLeave getRemainAnnRscByPeriod(String cID, String sID, DatePeriod aggrPeriod,
 			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate, 
 			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
@@ -93,4 +111,5 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			Optional<AggrResultOfReserveLeave> prevReserveLeave, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
 			Optional<ClosureStatusManagement> sttMng, Optional<GeneralDate> clsStrOpt);
+
 }

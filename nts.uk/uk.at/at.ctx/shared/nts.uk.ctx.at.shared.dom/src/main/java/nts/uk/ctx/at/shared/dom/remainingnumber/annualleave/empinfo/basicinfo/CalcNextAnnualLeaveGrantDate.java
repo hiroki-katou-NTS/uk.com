@@ -3,8 +3,10 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDateImpl.Require;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -41,6 +43,10 @@ public interface CalcNextAnnualLeaveGrantDate {
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo,
 			Optional<GrantHdTblSet> grantHdTblSet,
 			Optional<List<LengthServiceTbl>> lengthServiceTbls);
+	List<NextAnnualLeaveGrant> algorithmRequire(Require require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, Optional<DatePeriod> period,
+			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt);
 	/**
 	 * 次回年休付与を計算
 	 * @param companyId 会社ID

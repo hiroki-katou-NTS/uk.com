@@ -2,15 +2,27 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の休暇使用時間
@@ -94,6 +106,19 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
+		val require = createRequireImpl(repositories);
+
+		confirmRequire(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets, repositories);
+	}
+	
+	public void confirmRequire(
+			Require require,
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
 		// 年休使用時間を確認する
 		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
 
@@ -104,7 +129,7 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+		this.compensatoryLeave.confirmRequire(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
 				companySets, repositories);
 	}
 	
@@ -137,5 +162,58 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 		this.retentionYearly.addMinuteToUseTime(target.retentionYearly.getUseTime().v());
 		this.specialHoliday.addMinuteToUseTime(target.specialHoliday.getUseTime().v());
 		this.compensatoryLeave.addMinuteToUseTime(target.compensatoryLeave.getUseTime().v());
+	}
+	
+	public static interface Require extends CompensatoryLeaveUseTimeOfMonthly.Require{
+
+	}
+
+	private Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
+		return new VacationUseTimeOfMonthly.Require() {
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return repositories.getWorkType().findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
+				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
+				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
+			}
+			@Override
+			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+				return repositories.getWkpTransLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+				return repositories.getEmpTransWorkTime().find(cid, emplId);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
+			}
+		};
 	}
 }

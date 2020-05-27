@@ -3,10 +3,12 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant.export;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantImpl.Require;
 
 /**
  * 次回年休付与を取得する
@@ -44,4 +46,8 @@ public interface GetNextAnnualLeaveGrant {
 	List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay,
 			Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls);
+	
+	List<NextAnnualLeaveGrant> algorithmRequire(Require require, CacheCarrier cacheCarrier, String companyId, String grantTableCode, GeneralDate entryDate,
+			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
+			Optional<List<LengthServiceTbl>> lengthServiceTbls);
 }

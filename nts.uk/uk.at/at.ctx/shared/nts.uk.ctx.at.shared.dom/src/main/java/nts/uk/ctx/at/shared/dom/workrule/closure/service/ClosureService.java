@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.DefaultClosureServiceImpl.Require;
 
 /**
  * The Interface ClosureService.
@@ -50,6 +51,7 @@ public interface ClosureService {
 	 */
 	// 2018.4.4 add shuichi_ishida
 	public List<ClosureInfo> getAllClosureInfo();
+	public List<ClosureInfo> getAllClosureInfoRequire(Require require);
 	/**
 	 * 社員に対応する処理締めを取得する
 	 * @param employeeId
@@ -57,6 +59,7 @@ public interface ClosureService {
 	 * @return
 	 */
 	public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
+	public Closure getClosureDataByEmployeeRequire(Require require, CacheCarrier cacheCarrier,String employeeId, GeneralDate baseDate);
 	/**
 	 * 社員に対応する締め期間を取得する
 	 * @param employeeId
@@ -69,7 +72,7 @@ public interface ClosureService {
 	 * @param employmentCd 雇用コード
 	 * @return
 	 */
-	public Closure getClosurByEmployment(String employmentCd);
+	public Closure getClosurByEmployment(Require require, String employmentCd);
 	
 	// 当月の期間を算する
 	public DatePeriod getClosurePeriod(Closure closure, YearMonth processingYm);
@@ -90,4 +93,5 @@ public interface ClosureService {
 	 * @return True: 含まれている　を返す, False: 含まれていない　を返す
 	 */
 	boolean includeDate(GeneralDate baseDate, Closure closure);
+
 }

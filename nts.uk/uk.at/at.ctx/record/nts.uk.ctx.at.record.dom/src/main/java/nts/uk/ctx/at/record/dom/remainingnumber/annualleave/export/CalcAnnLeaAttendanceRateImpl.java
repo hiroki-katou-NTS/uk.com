@@ -9,26 +9,53 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRateImpl;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AttendanceRateCalPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.StandardCalculation;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 年休出勤率を計算する
@@ -62,6 +89,33 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 	@Inject
 	private OperationStartSetDailyPerformRepository operationStartSetRepo;
 	
+	/*require*/
+	@Inject
+	private WkpTransLaborTimeRepository wkpTransLaborTime;
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularLaborTime;
+	@Inject
+	private EmpTransWorkTimeRepository empTransWorkTime;
+	@Inject
+	private EmpRegularWorkTimeRepository empRegularWorkTime;
+	@Inject
+	private WorkTypeRepository workType;
+	@Inject
+	private PredetemineTimeSettingRepository predetermineTimeSet;
+	@Inject
+	public WorkTimeSettingRepository workTimeSet;
+	@Inject
+	public FixedWorkSettingRepository fixedWorkSet;
+	@Inject
+	public FlowWorkSettingRepository flowWorkSet;
+	@Inject
+	public DiffTimeWorkSettingRepository diffWorkSet;
+	@Inject
+	public FlexWorkSettingRepository flexWorkSet;
+	@Inject
+	private WorkInformationRepository workInformationOfDailyRepo;
+	/*require*/
+	
 	/** 年休出勤率を計算する */
 	@Override
 	public Optional<CalYearOffWorkAttendRate> algorithm(String companyId, String employeeId,
@@ -86,6 +140,25 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			Optional<GrantHdTblSet> grantHdTblSetParam,
 			Optional<List<LengthServiceTbl>> lengthServiceTblsParam,
 			Optional<OperationStartSetDailyPerform> operationStartSetParam) {
+		
+		val require = createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+		return algorithmRequire(require, cacheCarrier, companyId, employeeId, 
+				grantDate, grantNum, annualLeaveSetOpt, employeeOpt, 
+				annualLeaveEmpBasicInfoParam, grantHdTblSetParam, lengthServiceTblsParam, operationStartSetParam);
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Optional<CalYearOffWorkAttendRate> algorithmRequire(
+			Require require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, GeneralDate grantDate, Optional<Integer> grantNum,
+			Optional<AnnualPaidLeaveSetting> annualLeaveSetOpt,
+			Optional<EmployeeImport> employeeOpt,
+			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoParam,
+			Optional<GrantHdTblSet> grantHdTblSetParam,
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam,
+			Optional<OperationStartSetDailyPerform> operationStartSetParam) {
 
 		// 年休設定　取得
 		AnnualPaidLeaveSetting annualLeaveSet = null;
@@ -93,7 +166,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			annualLeaveSet = annualLeaveSetOpt.get();
 		}
 		else {
-			annualLeaveSet = this.annualPaidLeaveSet.findByCompanyId(companyId);
+			annualLeaveSet = require.findAnnualPaidLeaveSettingByCompanyId(companyId);
 		}
 		if (annualLeaveSet == null) return Optional.empty();
 		
@@ -103,7 +176,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			employee = employeeOpt.get();
 		}
 		else {
-			employee = this.empEmployeeAdapter.findByEmpId(employeeId);
+			employee = this.empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, employeeId);
 		}
 		if (employee == null) return Optional.empty();
 		
@@ -113,7 +186,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			annualLeaveEmpBasicInfoOpt = annualLeaveEmpBasicInfoParam;
 		}
 		else {
-			annualLeaveEmpBasicInfoOpt = this.annLeaEmpBasicInfoRepo.get(employeeId);
+			annualLeaveEmpBasicInfoOpt = require.get(employeeId);
 		}
 		if (!annualLeaveEmpBasicInfoOpt.isPresent()) return Optional.empty();
 		val empBasicInfo = annualLeaveEmpBasicInfoOpt.get();
@@ -125,7 +198,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			grantHdTblSetOpt = grantHdTblSetParam;
 		}
 		else {
-			grantHdTblSetOpt = this.yearHolidayRepo.findByCode(companyId, grantTableCode);
+			grantHdTblSetOpt = require.findGrantHdTblSetByCode(companyId, grantTableCode);
 		}
 		if (!grantHdTblSetOpt.isPresent()) return Optional.empty();
 		val grantHdTblSet = grantHdTblSetOpt.get();
@@ -136,7 +209,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			lengthServiceTblsOpt = lengthServiceTblsParam;
 		}
 		else {
-			lengthServiceTblsOpt = Optional.ofNullable(this.lengthServiceRepo.findByCode(companyId, grantTableCode));
+			lengthServiceTblsOpt = Optional.ofNullable(require.findLengthServiceTblByCode(companyId, grantTableCode));
 		}
 		if (!lengthServiceTblsOpt.isPresent()) return Optional.empty();
 		val lengthServiceTbls = lengthServiceTblsOpt.get();
@@ -149,7 +222,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 		val calcPeriod = calcPeriodOpt.get();
 
 		// 年休付与計算用の日数を計算する
-		CalYearOffWorkAttendRate results = this.calcDays(companyId, employeeId, calcPeriod,
+		CalYearOffWorkAttendRate results = this.calcDays(require, companyId, employeeId, calcPeriod,
 				annualLeaveSet, empBasicInfo, operationStartSetParam);
 		
 		// 日数から出勤率を計算する
@@ -245,6 +318,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 	 * @return 年休出勤率計算結果
 	 */
 	private CalYearOffWorkAttendRate calcDays(
+			Require require,
 			String companyId,
 			String employeeId,
 			AttendanceRateCalPeriod calcPeriod,
@@ -274,7 +348,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 		}
 		
 		// 「年休月別残数データ」を取得
-		val remainNums = this.annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, afterPeriod);
+		val remainNums = require.findByClosurePeriod(employeeId, afterPeriod);
 		for (val remainNum : remainNums){
 			val attendanceRateDays = remainNum.getAttendanceRateDays();
 			
@@ -282,7 +356,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			if (procDate.before(remainNum.getClosurePeriod().start())){
 				
 				// 足りない期間を日別実績から計算
-				val shortageDays = this.getDaysForCalcAttdRate.algorithm(companyId, employeeId,
+				val shortageDays = this.getDaysForCalcAttdRate.algorithm(require, companyId, employeeId,
 						new DatePeriod(procDate, remainNum.getClosurePeriod().start().addDays(-1)));
 				prescribedDays += shortageDays.getPrescribedDays();
 				workingDays += shortageDays.getWorkingDays();
@@ -309,7 +383,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 		if (!procDate.addDays(-1).equals(afterPeriod.end())){
 			
 			// 足りない期間を日別実績から計算
-			val shortageDays = this.getDaysForCalcAttdRate.algorithm(companyId, employeeId,
+			val shortageDays = this.getDaysForCalcAttdRate.algorithm(require, companyId, employeeId,
 					new DatePeriod(procDate, calcPeriod.getAfterJoinCompany().end()));
 			prescribedDays += shortageDays.getPrescribedDays();
 			workingDays += shortageDays.getWorkingDays();
@@ -367,5 +441,92 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 		
 		// 年休出勤率計算用日数を返す
 		return new CalYearOffWorkAttendRate(0.0, prescribedDays, workingDays, deductedDays);
+	}
+	
+	public static interface Require extends GetDaysForCalcAttdRateImpl.Require{
+//		this.annualPaidLeaveSet.findByCompanyId(companyId);
+		AnnualPaidLeaveSetting findAnnualPaidLeaveSettingByCompanyId(String companyId);
+//		this.annLeaEmpBasicInfoRepo.get(employeeId);
+		Optional<AnnualLeaveEmpBasicInfo> get(String employeeId);
+//		this.yearHolidayRepo.findByCode(companyId, grantTableCode);
+		Optional<GrantHdTblSet> findGrantHdTblSetByCode(String companyId, String yearHolidayCode);
+//		this.lengthServiceRepo.findByCode(companyId, grantTableCode)
+		List<LengthServiceTbl> findLengthServiceTblByCode(String companyId, String yearHolidayCode);
+//		this.annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, afterPeriod);
+		List<AnnLeaRemNumEachMonth> findByClosurePeriod(String employeeId, DatePeriod closurePeriod);
+	}
+
+	private Require createRequireImpl() {
+		return new CalcAnnLeaAttendanceRateImpl.Require() {
+			@Override
+			public Optional<AnnualLeaveEmpBasicInfo> get(String employeeId) {
+				return annLeaEmpBasicInfoRepo.get(employeeId);
+			}
+			@Override
+			public List<LengthServiceTbl> findLengthServiceTblByCode(String companyId, String yearHolidayCode) {
+				return lengthServiceRepo.findByCode(companyId, yearHolidayCode);
+			}
+			@Override
+			public Optional<GrantHdTblSet> findGrantHdTblSetByCode(String companyId, String yearHolidayCode) {
+				return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
+			}
+			@Override
+			public AnnualPaidLeaveSetting findAnnualPaidLeaveSettingByCompanyId(String companyId) {
+				return annualPaidLeaveSet.findByCompanyId(companyId);
+			}
+			@Override
+			public List<AnnLeaRemNumEachMonth> findByClosurePeriod(String employeeId, DatePeriod closurePeriod) {
+				return annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, closurePeriod);
+			}
+			@Override
+			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+				return wkpTransLaborTime.find(cid, wkpId);
+			}
+			@Override
+			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
+				return wkpRegularLaborTime.find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+				return empTransWorkTime.find(cid, emplId);
+			}
+			@Override
+			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
+				return empRegularWorkTime.findById(cid, employmentCode);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return workType.findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return predetermineTimeSet.findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return workTimeSet.findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return flowWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return flexWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return fixedWorkSet.findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return diffWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public List<WorkInfoOfDailyPerformance> findWorkInfoOfDailyPerformanceByPeriodOrderByYmd(String employeeId,
+					DatePeriod datePeriod) {
+				return workInformationOfDailyRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+			}
+		};
 	}
 }

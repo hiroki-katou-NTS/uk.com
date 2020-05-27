@@ -4,6 +4,7 @@ import java.util.Optional;
 
 //import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedTimeImpl.Require;
 
 /**
  * 指定時間を取得
@@ -18,4 +19,6 @@ public interface GetDesignatedTime {
 	 * @return 指定時間設定
 	 */
 	Optional<SubHolTransferSet> get(String companyId, String workTimeCode);
+
+	Optional<SubHolTransferSet> getRequire(Require require, String companyId, String workTimeCode);
 }

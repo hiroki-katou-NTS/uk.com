@@ -3,10 +3,12 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSettingImpl.Require;
 
 /**
  * 社員の保持年数を取得
@@ -33,6 +35,9 @@ public interface GetUpperLimitSetting {
 	 * @return 上限設定
 	 */
 	UpperLimitSetting algorithm(String companyId, String employeeId, GeneralDate criteriaDate,
+			Optional<RetentionYearlySetting> retentionYearlySet,
+			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap);
+	UpperLimitSetting algorithmRequire(Require require, CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate criteriaDate,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap);
 }

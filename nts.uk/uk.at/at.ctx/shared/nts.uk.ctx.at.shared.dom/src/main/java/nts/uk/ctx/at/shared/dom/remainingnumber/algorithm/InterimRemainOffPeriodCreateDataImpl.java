@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -28,7 +31,26 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedServiceImpl;
 @Stateless
 public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData {
 	@Inject
@@ -50,18 +72,51 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
 	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
+	private WorkTypeIsClosedService workTypeIsClosuredService;
+	/*require*/
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	@Inject
+	public WorkTimeSettingRepository workTimeSet;
+	@Inject
+	public FixedWorkSettingRepository fixedWorkSet;
+	@Inject
+	public FlowWorkSettingRepository flowWorkSet;
+	@Inject
+	public DiffTimeWorkSettingRepository diffWorkSet;
+	@Inject
+	public FlexWorkSettingRepository flexWorkSet;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ClosureRepository closureRepository;
+	@Inject
+	private SpecialHolidayRepository holidayRepo;
+	/*require*/
+
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
+			InterimRemainCreateDataInputPara inputParam, CompanyHolidayMngSetting comHolidaySetting) {
+		val require = createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+		return createInterimRemainDataMngRequire(require, cacheCarrier, inputParam, comHolidaySetting);
+	}
+	@Override
+	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMngRequire(
+			Require require, CacheCarrier cacheCarrier,
 			InterimRemainCreateDataInputPara inputParam, CompanyHolidayMngSetting comHolidaySetting) {
 		Map<GeneralDate, DailyInterimRemainMngData> dataOutput = new HashMap<>();
 		//アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する
 		List<String> lstEmployee = new ArrayList<>();
 		lstEmployee.add(inputParam.getSid());
-		List<SharedSidPeriodDateEmploymentImport> emloymentHist = employmentService.getEmpHistBySidAndPeriod(lstEmployee, inputParam.getDateData());
+		List<SharedSidPeriodDateEmploymentImport> emloymentHist = employmentService.getEmpHistBySidAndPeriodRequire(cacheCarrier, lstEmployee, inputParam.getDateData());
 		//所属雇用履歴を設定する
 		List<AffPeriodEmpCodeImport> lstEmployment = !emloymentHist.isEmpty() ? emloymentHist.get(0).getAffPeriodEmpCodeExports() : new ArrayList<>();
-		List<EmploymentHolidayMngSetting> lstEmplSetting = this.lstEmpHolidayMngSetting(inputParam.getCid(), lstEmployment);
+		List<EmploymentHolidayMngSetting> lstEmplSetting = this.lstEmpHolidayMngSetting(require, inputParam.getCid(), lstEmployment);
 		GeneralDate sStartDate = inputParam.getDateData().start();
 		GeneralDate sEndDate = inputParam.getDateData().end();
 		//対象日の雇用別休暇管理設定を抽出する
@@ -101,11 +156,13 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 				}
 			}
 			//対象日のデータを抽出する
-			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(inputParam.getCid(),loopDate, inputParam);
+			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(require, cacheCarrier, inputParam.getCid(),loopDate, inputParam);
 			
 			
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
-			DailyInterimRemainMngData outPutdata = createDataService.createData(inputParam.getCid(), 
+			DailyInterimRemainMngData outPutdata = createDataService.createData(
+					require,
+					inputParam.getCid(), 
 					inputParam.getSid(),
 					loopDate,
 					inputParam.isDayOffTimeIsUse(),
@@ -121,7 +178,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	}
 
 	@Override
-	public InterimRemainCreateInfor extractDataOfDate(String cid,GeneralDate baseDate,
+	public InterimRemainCreateInfor extractDataOfDate(Require require, CacheCarrier cacheCarrier, String cid,GeneralDate baseDate,
 			InterimRemainCreateDataInputPara inputInfor) {
 		InterimRemainCreateInfor detailData = new InterimRemainCreateInfor(Optional.empty(), Optional.empty(), Collections.emptyList());
 		//実績を抽出する
@@ -154,15 +211,15 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		appData = appData.stream().sorted((a,b) -> b.getInputDate().compareTo(a.getInputDate())).collect(Collectors.toList());
 		Integer excludeHolidayAtr = null;
 		if(!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-			excludeHolidayAtr = remainAppData.excludeHolidayAtr(cid, appData.get(0).getAppId());
+			excludeHolidayAtr = remainAppData.excludeHolidayAtr(cacheCarrier, cid, appData.get(0).getAppId());
 		}
 		//申請：　勤務変更申請、休日を除外する		
 		//又は　休暇申請
 		if((excludeHolidayAtr != null && excludeHolidayAtr == 1)
 				|| (!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.ABSENCE_APPLICATION)) {
 			//申請日は休日かチェック、休日なら申請データをセットしない
-			if((detailData.getRecordData().isPresent() && workTypeRepo.checkHoliday(detailData.getRecordData().get().getWorkTypeCode()))
-					|| (detailData.getScheData().isPresent() && workTypeRepo.checkHoliday(detailData.getScheData().get().getWorkTypeCode()))) {
+			if((detailData.getRecordData().isPresent() && workTypeIsClosuredService.checkHolidayRequire(require, detailData.getRecordData().get().getWorkTypeCode()))
+					|| (detailData.getScheData().isPresent() && workTypeIsClosuredService.checkHolidayRequire(require, detailData.getScheData().get().getWorkTypeCode()))) {
 				return detailData;
 			}
 		}
@@ -172,14 +229,14 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	}
 
 	@Override
-	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment) {
+	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(Require require, String cid, List<AffPeriodEmpCodeImport> lstEmployment) {
 		List<EmploymentHolidayMngSetting> lstEmplSetting = new ArrayList<>();
 		//雇用別休暇管理設定(List)を作成する
 		lstEmployment.stream().forEach(emplData -> {
 			//ドメインモデル「雇用振休管理設定」を取得する
-			Optional<EmpSubstVacation> optEmpSubData = empSubsRepos.findById(cid, emplData.getEmploymentCode());
+			Optional<EmpSubstVacation> optEmpSubData = require.findEmpSubstVacationById(cid, emplData.getEmploymentCode());
 			//ドメインモデル「雇用代休管理設定」を取得する
-			CompensatoryLeaveEmSetting empSetting = empLeaveSetRepos.find(cid, emplData.getEmploymentCode());
+			CompensatoryLeaveEmSetting empSetting = require.findCompensatoryLeaveEmSetting(cid, emplData.getEmploymentCode());
 			EmploymentHolidayMngSetting employmentSetting = new EmploymentHolidayMngSetting(emplData.getEmploymentCode(), optEmpSubData, empSetting);
 			lstEmplSetting.add(employmentSetting);
 		});
@@ -218,6 +275,81 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		return this.createInterimRemainDataMng(createDataParam, comHolidaySetting);
 	}
 
+	public static interface Require extends InterimRemainOffDateCreateDataImpl.Require, WorkTypeIsClosedServiceImpl.Require{
+//		empSubsRepos.findById(cid, emplData.getEmploymentCode());
+		Optional<EmpSubstVacation> findEmpSubstVacationById(String companyId, String contractTypeCode);
+//		empLeaveSetRepos.find(cid, emplData.getEmploymentCode());
+		CompensatoryLeaveEmSetting findCompensatoryLeaveEmSetting(String companyId, String employmentCode);
+		
+	}
 	
+	private Require createRequireImpl() {
+		return new InterimRemainOffPeriodCreateDataImpl.Require() {
+			@Override
+			public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return workTimeSet.findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return fixedWorkSet.findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return flowWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return diffWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return flexWorkSet.find(companyId, workTimeCode);
+			}
+			@Override
+			public CompensatoryLeaveComSetting find(String companyId) {
+				return compensLeaveComSetRepository.find(companyId);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkType> findByDeprecated(String companyId, String workTypeCd) {
+				return workTypeRepo.findByDeprecated(companyId, workTypeCd);
+			}
+			@Override
+			public List<Integer> findBySphdSpecLeave(String cid, int sphdSpecLeaveNo) {
+				return holidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo);
+			}
+			@Override
+			public Optional<EmpSubstVacation> findEmpSubstVacationById(String companyId, String contractTypeCode) {
+				return empSubsRepos.findById(companyId, contractTypeCode);
+			}
+			@Override
+			public CompensatoryLeaveEmSetting findCompensatoryLeaveEmSetting(String companyId, String employmentCode) {
+				return empLeaveSetRepos.find(companyId, employmentCode);
+			}
+			@Override
+			public List<Closure> findAllUse(String companyId) {
+				return closureRepository.findAllUse(companyId);
+			}
+			@Override
+			public Optional<WorkType> findWorkTypeByPK(String companyId, String workTypeCd) {
+				return workTypeRepo.findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<Closure> findClosureById(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return workTypeRepo.findByPK(companyId, workTypeCd);
+			}
+		};
+	}
 
 }

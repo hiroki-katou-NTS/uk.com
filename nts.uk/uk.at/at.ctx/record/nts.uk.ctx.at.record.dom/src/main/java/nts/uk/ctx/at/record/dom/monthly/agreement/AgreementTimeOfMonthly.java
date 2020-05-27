@@ -11,6 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
@@ -105,6 +107,7 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void getErrorAlarmValue(
+			Require require,
 			String companyId,
 			String employeeId,
 			GeneralDate criteriaDate,
@@ -119,18 +122,25 @@ public class AgreementTimeOfMonthly implements SerializableWithOptional{
 		this.exceptionLimitAlarmTime = Optional.empty();
 		
 		// 「36協定基本設定」を取得する
-		val basicAgreementSet = repositories.getAgreementDomainService().getBasicSet(
-				companyId, employeeId, criteriaDate, workingSystem).getBasicAgreementSetting();
+		val basicAgreementSet = require.getBasicSet(
+				companyId, employeeId, criteriaDate, workingSystem);
 		this.limitErrorTime = new LimitOneMonth(basicAgreementSet.getErrorOneMonth().v());
 		this.limitAlarmTime = new LimitOneMonth(basicAgreementSet.getAlarmOneMonth().v());
 		
 		// 「36協定年月設定」を取得
-		val agreementMonthSetOpt = repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
+		val agreementMonthSetOpt = require.findByKey(employeeId, yearMonth);
 		if (agreementMonthSetOpt.isPresent()){
 			val agreementMonthSet = agreementMonthSetOpt.get();
 			this.exceptionLimitErrorTime = Optional.of(new LimitOneMonth(agreementMonthSet.getErrorOneMonth().v()));
 			this.exceptionLimitAlarmTime = Optional.of(new LimitOneMonth(agreementMonthSet.getAlarmOneMonth().v()));
 		}
+	}
+	
+	public static interface Require{
+//		repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate, workingSystem);
+		BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,WorkingSystem workingSystem);
+//		repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
+		Optional<AgreementMonthSetting> findByKey(String employeeId, YearMonth yearMonth);
 	}
 	
 	

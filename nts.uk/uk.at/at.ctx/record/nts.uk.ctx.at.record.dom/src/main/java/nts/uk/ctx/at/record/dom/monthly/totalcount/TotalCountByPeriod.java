@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes.TotalTimesFromDailyRecord;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
@@ -15,7 +17,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDaily
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
  * 期間別の回数集計
@@ -32,6 +35,9 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 
 	/** エラー情報 */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
+	
+	/*require用*/
+	private WorkTypeRepository workTypeRepo;
 	
 	/**
 	 * コンストラクタ
@@ -89,6 +95,24 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 			MonAggrCompanySettings companySets,
 			MonthlyCalculatingDailys monthlyCalcDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		val require = new TotalCountByPeriod.Require() {
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return workTypeRepo.findByPK(companyId, workTypeCd);
+			}
+		};
+		totalizeRequire(require, companyId, employeeId, period, companySets, monthlyCalcDailys, repositories);
+	}
+	
+	public void totalizeRequire(
+			Require require,
+			String companyId,
+			String employeeId,
+			DatePeriod period,
+			MonAggrCompanySettings companySets,
+			MonthlyCalculatingDailys monthlyCalcDailys,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 日別実績から回数集計結果を取得する準備をする
 		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
@@ -108,6 +132,7 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 		
 		// 回数集計処理
 		val results = algorithm.getResults(
+				require,
 				totalTimesList,
 				period,
 				repositories.getAttendanceItemConverter());
@@ -139,5 +164,9 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 			val totalCountNo = targetTotalCount.getTotalCountNo();
 			this.totalCountList.putIfAbsent(totalCountNo, targetTotalCount);
 		}
+	}
+	
+	public static interface Require extends TotalTimesFromDailyRecord.Require{
+
 	}
 }

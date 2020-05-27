@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TempRemainCreateEachDataImpl.Require;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
@@ -46,7 +47,7 @@ public interface TempRemainCreateEachData {
 	 * @param mngData
 	 * @return
 	 */
-	DailyInterimRemainMngData createInterimRecData(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+	DailyInterimRemainMngData createInterimRecData(Require require, InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
 			DailyInterimRemainMngData mngData);
 	/**
 	 * 残数作成元情報から暫定休出管理データを作成する
@@ -55,7 +56,7 @@ public interface TempRemainCreateEachData {
 	 * @param mngData
 	 * @return
 	 */
-	DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+	DailyInterimRemainMngData createInterimBreak(Require require, InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
 			DailyInterimRemainMngData mngData);
 	/**
 	 * 残数作成元情報から暫定特別休暇管理データを作成する
@@ -66,4 +67,5 @@ public interface TempRemainCreateEachData {
 	 */
 	DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
 			DailyInterimRemainMngData mngData);
+			
 }

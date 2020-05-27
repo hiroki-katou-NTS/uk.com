@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,10 +12,20 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
@@ -23,7 +34,11 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 月の計算中の日別実績データ
@@ -82,6 +97,14 @@ public class MonthlyCalculatingDailys {
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
+		return loadDataRequire(createRequireImpl(repositories), employeeId, period, repositories);
+	}
+	
+	public static MonthlyCalculatingDailys loadDataRequire(
+			Require require, 
+			String employeeId,
+			DatePeriod period,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
@@ -95,9 +118,10 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 共通処理
-		result.loadDataCommon(employeeId, period, repositories);
-		
-		return result;
+		result.loadDataCommon(require, employeeId, period, repositories);
+
+		return correctExamDayTimeRequire(require, result, repositories);
+
 	}
 	
 	/**
@@ -138,6 +162,7 @@ public class MonthlyCalculatingDailys {
 	 * @return 月の計算中の日別実績データ
 	 */
 	public static MonthlyCalculatingDailys loadData(
+			Require require,
 			String employeeId,
 			DatePeriod period,
 			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
@@ -223,8 +248,83 @@ public class MonthlyCalculatingDailys {
 			}
 		}
 		
-		return result;
+		return correctExamDayTimeRequire(require, result, repositories);
+
 	}
+	
+	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, RepositoriesRequiredByMonthlyAggr repositories){
+		return correctExamDayTimeRequire(createRequireImpl(repositories), calcDaily, repositories);
+	}
+	private static MonthlyCalculatingDailys correctExamDayTimeRequire(Require require, MonthlyCalculatingDailys calcDaily, RepositoriesRequiredByMonthlyAggr repositories){
+		for (Entry<GeneralDate, AttendanceTimeOfDailyPerformance> dailyAttenTime : calcDaily.attendanceTimeOfDailyMap.entrySet()) {
+			GeneralDate currentDate = dailyAttenTime.getKey();
+			if (calcDaily.workInfoOfDailyMap.containsKey(currentDate)) {
+				WorkInfoOfDailyPerformance wi = calcDaily.workInfoOfDailyMap.get(currentDate);
+				val workCondition = require.getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
+				workCondition.ifPresent(wc -> {
+					if (wc.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
+						calcDaily.attendanceTimeOfDailyMap.put(currentDate, examDayTimeCorrect(dailyAttenTime.getValue(), wi));
+					}
+				});
+			}
+		}
+		return calcDaily;
+	}
+	
+	/**
+	 * 大塚カスタマイズ（試験日対応）
+	 */
+	private static AttendanceTimeOfDailyPerformance examDayTimeCorrect(AttendanceTimeOfDailyPerformance atTime, WorkInfoOfDailyPerformance workInfo) {
+		
+		if (workInfo.getRecordInfo().isExamWorkTime()) {
+			
+			WorkScheduleTimeOfDaily correctedSche = new WorkScheduleTimeOfDaily(atTime.getWorkScheduleTimeOfDaily().getWorkScheduleTime(),
+																				new AttendanceTime(0), 
+																				atTime.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime());
+			
+			ActualWorkingTimeOfDaily beforeActualWork = atTime.getActualWorkingTimeOfDaily();
+			ActualWorkingTimeOfDaily correctedActualWork = ActualWorkingTimeOfDaily.of(
+										beforeActualWork.getConstraintDifferenceTime(), 
+										beforeActualWork.getConstraintTime(), 
+										beforeActualWork.getTimeDifferenceWorkingHours(), 
+										new TotalWorkingTime(beforeActualWork.getTotalWorkingTime().getTotalTime(), 
+												beforeActualWork.getTotalWorkingTime().getTotalCalcTime(), 
+												beforeActualWork.getTotalWorkingTime().getActualTime(),
+												WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+														new AttendanceTime(0), 
+														new AttendanceTime(0), 
+														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime(), 
+														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime(), 
+														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getVacationAddTime()), 
+												beforeActualWork.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily(), 
+												beforeActualWork.getTotalWorkingTime().getLateTimeOfDaily(),
+												beforeActualWork.getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),
+												beforeActualWork.getTotalWorkingTime().getBreakTimeOfDaily(), 
+												beforeActualWork.getTotalWorkingTime().getOutingTimeOfDailyPerformance(),
+												beforeActualWork.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor(),
+												beforeActualWork.getTotalWorkingTime().getWorkTimes(),
+												beforeActualWork.getTotalWorkingTime().getTemporaryTime(),
+												beforeActualWork.getTotalWorkingTime().getShotrTimeOfDaily(),
+												new HolidayOfDaily(
+														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAbsence(), 
+														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getTimeDigest(), 
+														new YearlyReservedOfDaily(new AttendanceTime(0)), 
+														new SubstituteHolidayOfDaily(new AttendanceTime(0), 
+																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSubstitute().getDigestionUseTime()), 
+														beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getOverSalary(), 
+														new SpecialHolidayOfDaily(new AttendanceTime(0), 
+																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getSpecialHoliday().getDigestionUseTime()), 
+														new AnnualOfDaily(new AttendanceTime(0), 
+																beforeActualWork.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime()))),
+										beforeActualWork.getDivTime(),
+										beforeActualWork.getPremiumTimeOfDailyPerformance());
+			
+			return new AttendanceTimeOfDailyPerformance(atTime.getEmployeeId(), atTime.getYmd(), correctedSche, correctedActualWork, 
+														atTime.getStayingTime(), atTime.getBudgetTimeVariance(), atTime.getUnEmployedTime()); 
+		}
+		
+		return atTime;
+	} 
 	
 	/**
 	 * データ取得共通処理
@@ -233,6 +333,7 @@ public class MonthlyCalculatingDailys {
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
 	public void loadDataCommon(
+			Require require,
 			String employeeId,
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -241,14 +342,13 @@ public class MonthlyCalculatingDailys {
 		employeeIds.add(employeeId);
 		
 		// データ取得共通処理　（36協定時間用）
-		this.loadDataCommonForAgreement(employeeId, period, repositories);
+		this.loadDataCommonForAgreementRequire(require, employeeId, period, repositories);
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の出退勤
-		val timeLeaveOfDailyList =
-				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
+		val timeLeaveOfDailyList = require.findTimeLeavingbyPeriodOrderByYmd(employeeId, findPeriod);
 		for (val timeLeaveOfDaily : timeLeaveOfDailyList){
 			this.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
 		}
@@ -256,24 +356,21 @@ public class MonthlyCalculatingDailys {
 		// ※　以下は、期間外の配慮不要。
 
 		// 日別実績の臨時出退勤
-		val temporaryTimeOfDailys =
-				repositories.getTemporaryTimeOfDaily().findbyPeriodOrderByYmd(employeeId, period);
+		val temporaryTimeOfDailys = require.findTemporarybyPeriodOrderByYmd(employeeId, period);
 		for (val temporaryTimeOfDaily : temporaryTimeOfDailys){
 			val ymd = temporaryTimeOfDaily.getYmd();
 			this.temporaryTimeOfDailyMap.putIfAbsent(ymd, temporaryTimeOfDaily);
 		}
 		
 		// 日別実績の特定日区分
-		val specificDateAttrOfDailys =
-				repositories.getSpecificDateAttrOfDaily().findByPeriodOrderByYmd(employeeId, period);
+		val specificDateAttrOfDailys = require.findSpecificDateByPeriodOrderByYmd(employeeId, period);
 		for (val specificDateAttrOfDaily : specificDateAttrOfDailys){
 			val ymd = specificDateAttrOfDaily.getYmd();
 			this.specificDateAttrOfDailyMap.putIfAbsent(ymd, specificDateAttrOfDaily);
 		}
 		
 		// 社員の日別実績エラー一覧
-		this.employeeDailyPerErrorList =
-				repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, period);
+		this.employeeDailyPerErrorList = require.findEmployeeDailyPerErrorByPeriodOrderByYmd(employeeId, period);
 		val itrPerError = this.employeeDailyPerErrorList.listIterator();
 		while (itrPerError.hasNext()){
 			val perError = itrPerError.next();
@@ -281,27 +378,25 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 日別実績の任意項目
-		this.anyItemValueOfDailyList = repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
+		this.anyItemValueOfDailyList = require.findsAnyItemValue(employeeIds, period);
 		
 		// PCログオン情報
-		val pcLogonInfos = repositories.getPCLogonInfoOfDaily().finds(employeeIds, period);
+		val pcLogonInfos = require.findsPcLongOnInfo(employeeIds, period);
 		for (val pcLogonInfo : pcLogonInfos){
 			val ymd = pcLogonInfo.getYmd();
 			this.pcLogonInfoMap.putIfAbsent(ymd, pcLogonInfo);
 		}
 		
 		// 年休付与残数データリスト
-		this.grantRemainingDatas =
-				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
+		this.grantRemainingDatas = require.findNotExp(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 積立年休付与残数データリスト
-		this.rsvGrantRemainingDatas =
-				repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null).stream()
+		this.rsvGrantRemainingDatas = require.findNotExp(employeeId, null).stream()
 						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 日別実績の勤務種別
-		val workTypes = repositories.getWorkTypeOfDaily().finds(employeeIds, period);
+		val workTypes = require.finds(employeeIds, period);
 		for (val workType : workTypes){
 			val ymd = workType.getDate();
 			this.workTypeOfDailyMap.putIfAbsent(ymd, workType);
@@ -385,13 +480,20 @@ public class MonthlyCalculatingDailys {
 			String employeeId,
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		loadDataCommonForAgreementRequire(createRequireImpl(repositories), employeeId, period, repositories);
+	}
+	
+	private void loadDataCommonForAgreementRequire(
+			Require require,
+			String employeeId,
+			DatePeriod period,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の勤務情報
-		val workInfoOfDailyList =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		val workInfoOfDailyList = require.findWorkInfoByPeriodOrderByYmd(employeeId, findPeriod);
 		for (val workInfoOfDaily : workInfoOfDailyList){
 			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
 		}
@@ -410,5 +512,86 @@ public class MonthlyCalculatingDailys {
 			return true;
 		}
 		return false;
+	}
+	
+	public static interface Require{
+//		repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		List<AttendanceTimeOfDailyPerformance> findAttendanceTimeByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		List<WorkInfoOfDailyPerformance> findWorkInfoByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getWorkingConditionItem().getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+//		repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
+		List<TimeLeavingOfDailyPerformance> findTimeLeavingbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getTemporaryTimeOfDaily().findbyPeriodOrderByYmd(employeeId, period);
+		List<TemporaryTimeOfDailyPerformance> findTemporarybyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getSpecificDateAttrOfDaily().findByPeriodOrderByYmd(employeeId, period);
+		List<SpecificDateAttrOfDailyPerfor> findSpecificDateByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, period);
+		List<EmployeeDailyPerError> findEmployeeDailyPerErrorByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+//		repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
+		List<AnyItemValueOfDaily> findsAnyItemValue(List<String> employeeId, DatePeriod baseDate);
+//		repositories.getPCLogonInfoOfDaily().finds(employeeIds, period);
+		List<PCLogOnInfoOfDaily> findsPcLongOnInfo(List<String> employeeId, DatePeriod baseDate);
+//		repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
+		List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
+//		repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null)
+		List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId);
+//		repositories.getWorkTypeOfDaily().finds(employeeIds, period);
+		List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate);
+	}
+
+	private static Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
+		return new MonthlyCalculatingDailys.Require() {
+			@Override
+			public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
+				return repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, baseDate);
+			}
+			@Override
+			public List<PCLogOnInfoOfDaily> findsPcLongOnInfo(List<String> employeeIds, DatePeriod baseDate) {
+				return repositories.getPCLogonInfoOfDaily().finds(employeeIds, baseDate);
+			}
+			@Override
+			public List<AnyItemValueOfDaily> findsAnyItemValue(List<String> employeeIds, DatePeriod baseDate) {
+				return repositories.getAnyItemValueOfDaily().finds(employeeIds, baseDate);
+			}
+			@Override
+			public List<WorkTypeOfDailyPerformance> finds(List<String> employeeIds, DatePeriod baseDate) {
+				return repositories.getWorkTypeOfDaily().finds(employeeIds, baseDate);
+			}
+			@Override
+			public List<WorkInfoOfDailyPerformance> findWorkInfoByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+				return repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
+			}
+			@Override
+			public List<TimeLeavingOfDailyPerformance> findTimeLeavingbyPeriodOrderByYmd(String employeeId,
+					DatePeriod datePeriod) {
+				return repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
+			}
+			@Override
+			public List<TemporaryTimeOfDailyPerformance> findTemporarybyPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
+				return repositories.getTemporaryTimeOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
+			}
+			@Override
+			public List<SpecificDateAttrOfDailyPerfor> findSpecificDateByPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
+				return repositories.getSpecificDateAttrOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
+			}
+			@Override
+			public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId) {
+				return repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null);
+			}
+			@Override
+			public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
+				return repositories.getAnnLeaGrantRemData().findNotExp(employeeId);
+			}
+			@Override
+			public List<EmployeeDailyPerError> findEmployeeDailyPerErrorByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+				return repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, datePeriod);
+			}
+			@Override
+			public List<AttendanceTimeOfDailyPerformance> findAttendanceTimeByPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
+				return repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
+			}
+		};
 	}
 }

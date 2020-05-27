@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
@@ -15,7 +16,9 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCal
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
@@ -47,32 +50,50 @@ public class GetRegularAggrSetImpl implements GetRegularAggrSet {
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
 	
-	/** 取得 */
-	@Override
-	public Optional<RegularWorkTimeAggrSet> get(String companyId, String employmentCd,
-			String employeeId, GeneralDate criteriaDate) {
-		
-		// 利用単位　確認
-		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
-		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
-		
-		// 社員別設定　確認
-		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
-		
-		// 会社別設定　確認
-		val comSetOpt = this.comSetRepo.find(companyId);
-		
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
-				usageUnitSet, shaSetOpt, comSetOpt);
-	}
+//	/** 取得 */
+//	@Override
+//	public Optional<RegularWorkTimeAggrSet> get(String companyId, String employmentCd,
+//			String employeeId, GeneralDate criteriaDate) {
+//		
+//		// 利用単位　確認
+//		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+//		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
+//		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
+//		
+//		// 社員別設定　確認
+//		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
+//		
+//		// 会社別設定　確認
+//		val comSetOpt = this.comSetRepo.find(companyId);
+//		
+//		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+//				usageUnitSet, shaSetOpt, comSetOpt);
+//	}
 	
 	/** 取得 */
 	@Override
 	public Optional<RegularWorkTimeAggrSet> get(String companyId, String employmentCd, String employeeId,
 			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		val require = new GetRegularAggrSetImpl.Require() {
+			@Override
+			public Optional<WkpRegulaMonthActCalSet> findWkpRegulaMonthActCalSet(String cid, String wkpId) {
+				return wkpSetRepo.find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpRegulaMonthActCalSet> findEmpRegulaMonthActCalSet(String cid, String empCode) {
+				return empSetRepo.find(cid, empCode);
+			}
+		};
 		
-		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+		val cacheCarrier = new CacheCarrier();
+		
+		return this.getRequire(require, cacheCarrier, companyId, employmentCd, employeeId, criteriaDate, companySets, employeeSets);
+	}
+	@Override
+	public Optional<RegularWorkTimeAggrSet> getRequire(Require require, CacheCarrier cacheCarrier, String companyId, String employmentCd, String employeeId,
+			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		
+		return this.getCommon(require, cacheCarrier ,companyId, employmentCd, employeeId, criteriaDate,
 				companySets.getUsageUnitSet(), employeeSets.getShaRegSetOpt(), companySets.getComRegSetOpt());
 	}
 	
@@ -88,6 +109,7 @@ public class GetRegularAggrSetImpl implements GetRegularAggrSet {
 	 * @return 通常勤務の法定内集計設定
 	 */
 	private Optional<RegularWorkTimeAggrSet> getCommon(
+			Require require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaRegulaMonthActCalSet> shaRegSetOpt,
 			Optional<ComRegulaMonthActCalSet> comRegSetOpt){
@@ -101,18 +123,19 @@ public class GetRegularAggrSetImpl implements GetRegularAggrSet {
 		if (usageUnitSet.isWorkPlace()){
 			
 			// 所属職場を含む上位階層の職場IDを取得
-			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
-					companyId, employeeId, criteriaDate);
+			
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(
+					cacheCarrier, companyId, employeeId, criteriaDate);
 			
 			for (val workplaceId : workplaceIds){
-				val wkpSetOpt = this.wkpSetRepo.find(companyId, workplaceId);
+				val wkpSetOpt = require.findWkpRegulaMonthActCalSet(companyId, workplaceId);
 				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getRegulaAggrSetting());
 			}
 		}
 		
 		// 雇用別設定　確認
 		if (usageUnitSet.isEmployment()){
-			val empSetOpt = this.empSetRepo.find(companyId, employmentCd);
+			val empSetOpt = require.findEmpRegulaMonthActCalSet(companyId, employmentCd);
 			if (empSetOpt.isPresent()) return Optional.of(empSetOpt.get().getRegulaAggrSetting());
 		}
 		
@@ -120,5 +143,12 @@ public class GetRegularAggrSetImpl implements GetRegularAggrSet {
 		if (comRegSetOpt.isPresent()) return Optional.of(comRegSetOpt.get().getRegulaAggrSetting());
 		
 		return Optional.empty();
+	}
+	
+	public static interface Require{
+		//this.wkpSetRepo.find(companyId, workplaceId);
+		Optional<WkpRegulaMonthActCalSet> findWkpRegulaMonthActCalSet(String cid, String wkpId);
+//		this.empSetRepo.find(companyId, employmentCd);
+		Optional<EmpRegulaMonthActCalSet> findEmpRegulaMonthActCalSet(String cid, String empCode);
 	}
 }

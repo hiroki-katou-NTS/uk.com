@@ -16,7 +16,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.app.cache.employee.history.DateHistoryItemCache;
+import nts.uk.ctx.bs.employee.app.cache.employment.EmploymentInfoCache;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -45,7 +51,6 @@ import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmploymentPubImp.
@@ -90,12 +95,20 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
+		val cacheCarrier = new CacheCarrier();
+		return findSEmpHistBySidRequire(cacheCarrier, companyId, employeeId, baseDate);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Optional<SEmpHistExport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
 
+		val require = new RequireImpl(cacheCarrier);
+		
 		// Query
-		Optional<EmploymentInfo> employmentInfo = empHistItemRepo
-				.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
+		Optional<EmploymentInfo> employmentInfo = require
+				.getDetailEmploymentHistoryItem(employeeId, baseDate);
 
-		Optional<DateHistoryItem> optHistoryItem = empHistRepo
+		Optional<DateHistoryItem> optHistoryItem = require
 				.getByEmployeeIdAndStandardDate(employeeId, baseDate);
 
 		// Check exist
@@ -140,7 +153,6 @@ public class EmploymentPubImp implements SyEmploymentPub {
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return new ArrayList<>();
-
 		List<EmploymentHistory> lstEmpHist = empHistRepo.getByListSid(sids, datePeriod);
 
 		if (lstEmpHist.isEmpty())
@@ -184,16 +196,24 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids,
 			DatePeriod datePeriod) {
+		val cacheCarrier = new CacheCarrier();
+		return getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriodRequire(
+			CacheCarrier cacheCarrier, List<String> sids,DatePeriod datePeriod) {
+		
+		val require = new RequireImpl(cacheCarrier);
 
-		List<EmploymentHistory> lstEmpHist = empHistRepo.getByListSid(sids,
-				datePeriod);
+		List<EmploymentHistory> lstEmpHist = require.getByListSid(
+				sids,datePeriod);
 
 		List<String> historyIds = lstEmpHist.stream().map(EmploymentHistory::getHistoryItems)
 				.flatMap(listContainer -> listContainer.stream()).map(DateHistoryItem::identifier)
 				.collect(Collectors.toList());
 
-		List<EmploymentHistoryItem> empHistItems = empHistItemRepo
-				.getByListHistoryId(historyIds);
+		List<EmploymentHistoryItem> empHistItems = require.getByListHistoryId(historyIds);
 		
 		Map<String, String> mapHistIdToEmpCode = empHistItems.stream()
 				.collect(Collectors.toMap(x -> x.getHistoryId(),
@@ -243,6 +263,51 @@ public class EmploymentPubImp implements SyEmploymentPub {
 						.employmentName(emp.getEmploymentName()).period(hist.getPeriod()).build());
 		}
 		return mapResult;
+	}
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements EmploymentPubImp.Require{
+		
+		private final CacheCarrier cacheCarrier;
+
+		@Override
+		public List<EmploymentHistory> getByListSid(List<String> employeeIds, DatePeriod datePeriod) {
+//			EmploymentHistoryCache cache = cacheCarrier.get(EmploymentHistoryCache.DOMAIN_NAME);
+//			return cache.get(employeeIds,datePeriod);
+			return getByListSid(employeeIds, datePeriod);
+		}
+
+		@Override
+		public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
+//			EmploymentHistoryItemCache cache = cacheCarrier.get(EmploymentHistoryItemCache.DOMAIN_NAME);
+//			return cache.get(historyIds);
+			return getByListHistoryId(historyIds);
+		}
+
+		@Override
+		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date) {
+			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
+			return cache.get(sid,date);
+		}
+
+		@Override
+		public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
+			return cache.get(employeeId, standardDate);
+		}
+		
+	}
+	
+	public static interface Require{
+//		empHistRepo.getByListSid(sids,datePeriod);
+		List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
+//		empHistItemRepo.getByListHistoryId(historyIds);
+		List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds);
+//		empHistItemRepo.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
+		Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date);
+//		empHistRepo.getByEmployeeIdAndStandardDate(employeeId, baseDate);
+		Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate);
+		
 	}
 
 	@Override

@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordServiceImpl.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -15,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -73,6 +75,15 @@ public interface AggregateMonthlyRecordService {
 			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
 			Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
+			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
+			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork,
+			Boolean remainingProcAtr);
+	
+	AggregateMonthlyRecordValue aggregateRequire(Require require, CacheCarrier cacheCarrier, String companyId,
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
+			AggrResultOfAnnAndRsvLeave prevAggrResult, Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
 			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
 			Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,

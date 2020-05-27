@@ -223,7 +223,7 @@ public class GetAgreementTimeProc {
 		}
 		
 		// 集計前の月別実績データを確認する
-		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.loadData(
+		MonthlyOldDatas monthlyOldDatas = MonthlyOldDatas.LoadData(
 				employeeId, this.yearMonth, this.closureId, this.closureDate, this.repositories);
 		
 		// 36協定時間の集計

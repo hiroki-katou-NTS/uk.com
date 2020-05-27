@@ -11,6 +11,8 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -35,13 +37,24 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOf
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の通常変形時間
@@ -152,12 +165,42 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			MonthlyCalculatingDailys monthlyCalcDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
+		val require = createRequireImpl(repositories);
+		
+		return aggregateMonthlyRequire(require, companyId, 
+				employeeId, yearMonth, closureId, closureDate, datePeriod, workingSystem, 
+				closureOpt, aggregateAtr, employmentCd, settingsByReg, settingsByDefo, 
+				aggregateTotalWorkingTime, excessOutsideWorkMng, startWeekNo, companySets, 
+				employeeSets, monthlyCalcDailys, repositories);
+	}
+	public AggregateMonthlyValue aggregateMonthlyRequire(
+			Require require,
+			String companyId,
+			String employeeId,
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
+			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
+			Optional<Closure> closureOpt,
+			MonthlyAggregateAtr aggregateAtr,
+			String employmentCd,
+			SettingRequiredByReg settingsByReg,
+			SettingRequiredByDefo settingsByDefo,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			ExcessOutsideWorkMng excessOutsideWorkMng,
+			int startWeekNo,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
 		
 		ConcurrentStopwatches.start("12222.1:週開始の取得：");
 		
 		// 週開始を取得する
-		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+		val workTimeSetOpt = companySets.getWorkingTimeSettingRequire(require, employmentCd,
 				employeeSets.getWorkplacesToRoot(datePeriod.end()), workingSystem, employeeSets, repositories);
 		if (!workTimeSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
@@ -181,7 +224,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		if (weekStart != WeekStart.TighteningStartDate){
 			
 			// 前月の最終週を集計する
-			this.aggregateLastWeekOfPrevMonth(companyId, employeeId, datePeriod, workingSystem,
+			this.aggregateLastWeekOfPrevMonth(require, companyId, employeeId, datePeriod, workingSystem,
 					aggregateAtr, settingsByReg, settingsByDefo,
 					weekStart, startWeekNo, companySets, employeeSets, monthlyCalcDailys, repositories);;
 		}
@@ -224,7 +267,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
-					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
+					aggregateTotalWorkingTime.aggregateDailyForRegAndIrregRequire(require, attendanceTimeOfDaily,
 							companyId, procWorkplaceId, procEmploymentCd, workingSystem, aggregateAtr,
 							workInfo, settingsByReg, settingsByDefo, companySets, employeeSets, repositories);
 				}
@@ -256,7 +299,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 							workingSystem, aggregateAtr,
 							settingsByReg, settingsByDefo, aggregateTotalWorkingTime,
 							weekStart, this.weekPremiumTimeOfPrevMonth,
-							attendanceTimeOfDailyMap, companySets, repositories);
+							attendanceTimeOfDailyMap, companySets);
 					resultWeeks.add(newWeek);
 					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
 
@@ -314,6 +357,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateLastWeekOfPrevMonth(
+			Require require,
 			String companyId,
 			String employeeId,
 			DatePeriod datePeriod,
@@ -334,8 +378,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			if (startWeekNo != 1) return;
 			
 			// 前月の最終日の労働制を確認する
-			val workingConditionItemOpt = repositories.getWorkingConditionItem()
-					 .getBySidAndStandardDate(employeeId, datePeriod.start().addDays(-1));
+			val workingConditionItemOpt = require.getBySidAndStandardDate(employeeId, datePeriod.start().addDays(-1));
 			if (!workingConditionItemOpt.isPresent()) return;
 			val prevWorkingSystem = workingConditionItemOpt.get().getLaborSystem();
 			
@@ -370,7 +413,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		val workInformationOfDailyMap = monthlyCalcDailys.getWorkInfoOfDailyMap();
 		
 		// 共有項目を集計する
-		prevTotalWorkingTime.aggregateSharedItem(lastWeekPeriod, attendanceTimeOfDailyMap,
+		prevTotalWorkingTime.aggregateSharedItemRequire(require, lastWeekPeriod, attendanceTimeOfDailyMap,
 				monthlyCalcDailys.getWorkInfoOfDailyMap(), companySets, repositories);
 
 		GeneralDate procDate = lastWeekPeriod.start();
@@ -460,7 +503,31 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			SettingRequiredByDefo settingsByDefo,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
-
+		
+		val require = createRequireImpl(repositories);
+		aggregateMonthlyHoursRequire(require, companyId, employeeId, 
+				yearMonth, closureId, closureDate, datePeriod, workingSystem, 
+				aggregateAtr, isRetireMonth, workplaceId, employmentCd, 
+				settingsByReg, settingsByDefo, aggregateTotalWorkingTime, repositories);
+	}
+	
+	public void aggregateMonthlyHoursRequire(
+			Require require,
+			String companyId,
+			String employeeId,
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
+			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
+			MonthlyAggregateAtr aggregateAtr,
+			boolean isRetireMonth,
+			String workplaceId,
+			String employmentCd,
+			SettingRequiredByReg settingsByReg,
+			SettingRequiredByDefo settingsByDefo,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		// 通常勤務の時
 		if (workingSystem == WorkingSystem.REGULAR_WORK){
 			
@@ -491,7 +558,8 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			}
 			
 			// 変形労働勤務の月単位の時間を集計する
-			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,
+			this.aggregateTimePerMonthOfIrregular(
+					require, companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, isRetireMonth,
 					settingsByDefo, addSet, aggregateTotalWorkingTime, repositories);
 		}
@@ -558,6 +626,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateTimePerMonthOfIrregular(
+			Require require,
 			String companyId,
 			String employeeId,
 			YearMonth yearMonth,
@@ -586,7 +655,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		// 該当精算期間の開始月～前月の変形期間繰越時間を集計する
 		val pastIrregularPeriodCarryforwardsTime = this.aggregatePastIrregularPeriodCarryforwardsTime(
-				employeeId, yearMonth, closureId, closureDate, setlPeriod, repositories);
+				require, employeeId, yearMonth, closureId, closureDate, setlPeriod, repositories);
 		
 		// 開始月～当月の変形期間繰越時間を求める
 		AttendanceTimeMonthWithMinus totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonthWithMinus(
@@ -623,6 +692,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @return 過去の変形期間繰越時間
 	 */
 	private AttendanceTimeMonth aggregatePastIrregularPeriodCarryforwardsTime(
+			Require require,
 			String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
 			GetSettlementPeriodOfDefor setlPeriod,
@@ -635,7 +705,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		// 開始月～前月までの変形期間繰越時間を集計する
 		for (val pastYearMonth : pastYearMonths){
-			val attendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
+			val attendanceTimeList = require.findByYearMonthOrderByStartYmd(
 					employeeId, pastYearMonth);
 			for (val attendanceTime : attendanceTimeList){
 				val actualWorkingTime = attendanceTime.getMonthlyCalculation().getActualWorkingTime();
@@ -669,5 +739,69 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(target.weeklyTotalPremiumTime.v());
 		this.monthlyTotalPremiumTime = this.monthlyTotalPremiumTime.addMinutes(target.monthlyTotalPremiumTime.v());
 		this.irregularWorkingTime.sum(target.irregularWorkingTime);
+	}
+	
+	public static interface Require extends AggregateTotalWorkingTime.Require, MonAggrCompanySettings.Require{
+//		val workingConditionItemOpt = repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, datePeriod.start().addDays(-1));
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+//		repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, pastYearMonth);
+		List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
+	}
+
+	private Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
+		return new RegularAndIrregularTimeOfMonthly.Require() {
+			@Override
+			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+				return repositories.getWkpTransLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
+				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+				return repositories.getEmpTransWorkTime().find(cid, emplId);
+			}
+			@Override
+			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
+				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return repositories.getWorkType().findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
+				return repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, baseDate);
+			}
+			@Override
+			public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId,YearMonth yearMonth) {
+				return repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
+			}
+		};
 	}
 }

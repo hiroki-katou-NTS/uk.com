@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRateImpl.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -51,4 +53,15 @@ public interface CalcAnnLeaAttendanceRate {
 			Optional<GrantHdTblSet> grantHdTblSetOpt,
 			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt,
 			Optional<OperationStartSetDailyPerform> operationStartSetParam);
+	
+	Optional<CalYearOffWorkAttendRate> algorithmRequire(
+			Require require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, GeneralDate grantDate, Optional<Integer> grantNum,
+			Optional<AnnualPaidLeaveSetting> annualLeaveSetOpt,
+			Optional<EmployeeImport> employeeOpt,
+			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoParam,
+			Optional<GrantHdTblSet> grantHdTblSetParam,
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam,
+			Optional<OperationStartSetDailyPerform> operationStartSetParam);
+	
 }

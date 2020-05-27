@@ -2,9 +2,11 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work.service;
 
 import java.util.List;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateDataImpl.Require;
 
 public interface RemainCreateInforByApplicationData {
 	/**
@@ -28,6 +30,5 @@ public interface RemainCreateInforByApplicationData {
 	 * @param appID
 	 * @return
 	 */
-	Integer excludeHolidayAtr(String cid,String appID); 
-
+	Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 }

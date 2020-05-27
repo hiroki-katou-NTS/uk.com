@@ -2,14 +2,16 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
 import java.util.List;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQueryImpl.Require;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.arc.time.calendar.period.DatePeriod;
 
 public interface BreakDayOffMngInPeriodQuery {
 	/**
@@ -18,12 +20,13 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam);
+	BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriodRequire(Require require, CacheCarrier cacheCarrier,BreakDayOffRemainMngParam inputParam);
 	/**
 	 * 1.未相殺の代休(確定)を取得する
 	 * @param sid
 	 * @return
 	 */
-	List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid, GeneralDate startDate);
+	List<BreakDayOffDetail> getConfirmDayOffDetail(Require require, String cid, String sid, GeneralDate startDate);
 	/**
 	 * 1-1.確定代休から未相殺の代休を取得する
 	 * @param sid
@@ -41,7 +44,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<BreakDayOffDetail> getConfirmBreakDetail(String sid, GeneralDate startDate);
+	List<BreakDayOffDetail> getConfirmBreakDetail(Require require, String sid, GeneralDate startDate);
 	/**
 	 * 2-1.確定休出から未使用の休出を取得する
 	 * @param sid
@@ -61,7 +64,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param lstDetailData
 	 * @return
 	 */
-	CarryForwardDayTimes calcCarryForwardDays(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode);
+	CarryForwardDayTimes calcCarryForwardDays(Require require, CacheCarrier cacheCarrier, GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode);
 	/**
 	 * 6.残数と未消化数を集計する
 	 * @param baseDate
@@ -69,6 +72,8 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	RemainUnDigestedDayTimes getRemainUnDigestedDayTimes(GeneralDate baseDate, List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode);
+	RemainUnDigestedDayTimes getRemainUnDigestedDayTimesRequire(Require require, CacheCarrier cacheCarrier,GeneralDate baseDate,List<BreakDayOffDetail> lstDetailData, String sid, boolean isMode); 
+
 	/**
 	 * 3.未相殺の代休(暫定)を取得する
 	 * @param inputParam
@@ -82,6 +87,8 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain interimData);
+	BreakDayOffDetail getNotTypeBreakRequire(Require require, InterimDayOffMng detailData, InterimRemain interimData);
+
 	/**
 	 * 4.未使用の休出(暫定)を取得する
 	 * @param inputParam
@@ -94,7 +101,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param remainData
 	 * @return
 	 */
-	BreakDayOffDetail getNotTypeDayOff(InterimBreakMng breakMng, InterimRemain remainData, GeneralDate aggStartDate,
+	BreakDayOffDetail getNotTypeDayOff(Require require, CacheCarrier cacheCarrier,InterimBreakMng breakMng, InterimRemain remainData, GeneralDate aggStartDate,
 			GeneralDate baseDate, SubstitutionHolidayOutput subsHolidaySetting, String cid, String sid);
 	/**
 	 * 5.時系列順で相殺する
@@ -122,7 +129,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param lstDetailData
 	 * @return
 	 */
-	List<BreakDayOffDetail> lstInterimData(BreakDayOffRemainMngParam inputParam, List<BreakDayOffDetail> lstDetailData);
+	List<BreakDayOffDetail> lstInterimData(Require require, CacheCarrier cacheCarrier,BreakDayOffRemainMngParam inputParam, List<BreakDayOffDetail> lstDetailData);
 	
 	/**
 	 * [No.505]代休残数を取得する

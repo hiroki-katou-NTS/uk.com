@@ -2,10 +2,12 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal.export;
 
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSetImpl.Require;
 
 /**
  * 集計設定の取得（変形労働）
@@ -13,16 +15,16 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
  */
 public interface GetDeforAggrSet {
 
-	/**
-	 * 集計設定の取得（変形労働）
-	 * @param companyId 会社ID
-	 * @param employmentCd 雇用コード
-	 * @param employeeId 社員ID
-	 * @param criteriaDate 基準日
-	 * @return 変形労働時間勤務の法定内集計設定
-	 */
-	Optional<DeforWorkTimeAggrSet> get(
-			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate);
+//	/**
+//	 * 集計設定の取得（変形労働）
+//	 * @param companyId 会社ID
+//	 * @param employmentCd 雇用コード
+//	 * @param employeeId 社員ID
+//	 * @param criteriaDate 基準日
+//	 * @return 変形労働時間勤務の法定内集計設定
+//	 */
+//	Optional<DeforWorkTimeAggrSet> get(
+//			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate);
 
 	/**
 	 * 集計設定の取得（変形労働）
@@ -35,6 +37,11 @@ public interface GetDeforAggrSet {
 	 * @return 変形労働時間勤務の法定内集計設定
 	 */
 	Optional<DeforWorkTimeAggrSet> get(
+			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
+	
+	Optional<DeforWorkTimeAggrSet> getRequire(
+			Require require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
 }

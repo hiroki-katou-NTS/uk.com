@@ -137,7 +137,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public void aggregateForRegAndIrreg(Require require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr, WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
@@ -152,7 +153,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		if (roleHolidayWorkFrameMap.size() > 0) {
 			
 			// 自動計算して休出時間を集計する
-			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
+			this.aggregateByAutoCalc(require, attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
 					aggregateAtr,  workInfo, legalHolidayWorkTransferOrder, excessOutsideTimeSet,
 					roleHolidayWorkFrameMap, companySets, employeeSets, repositories);
 		}
@@ -181,7 +182,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private void aggregateByAutoCalc(Require require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr,
 			WorkInformation workInfo,
@@ -193,7 +195,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 法定内休出にできる時間を計算する
-		AttendanceTime canLegalHolidayWork = this.calcLegalHolidayWork(attendanceTimeOfDaily,
+		AttendanceTime canLegalHolidayWork = this.calcLegalHolidayWork(require, attendanceTimeOfDaily,
 				companyId, placeId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「休出枠時間」を取得する
@@ -239,7 +241,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private AttendanceTime calcLegalHolidayWork(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	private AttendanceTime calcLegalHolidayWork(Require require,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -247,7 +250,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		
 		// 日の法定労働時間を取得する
 		DailyUnit dailyUnit = DailyUnit.zero();
-		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+		val workTimeSetOpt = companySets.getWorkingTimeSettingRequire(require, employmentCd,
 				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
 				workingSystem, employeeSets, repositories);
 		if (workTimeSetOpt.isPresent()){
@@ -656,4 +659,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			this.aggregateHolidayWorkTimeMap.putIfAbsent(frameNo, targetAggrHolidayWorkTime);
 		}
 	}
+	
+	public static interface Require extends MonAggrCompanySettings.Require{
+
+	}
+
 }

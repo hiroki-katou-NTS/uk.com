@@ -73,6 +73,7 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void timeConversionOfDeductAnnualLeaveDays(
+			Require require,
 			String companyId,
 			String employeeId,
 			DatePeriod period,
@@ -97,8 +98,7 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		val workTimeCd = workTimeCdOpt.get().v();
 		
 		// 「所定時間設定．就業加算時間」を取得する
-		this.predetermineTimeSetOfWeekDay =
-				repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCd);
+		this.predetermineTimeSetOfWeekDay = require.findByWorkTimeCode(companyId, workTimeCd);
 		if (!this.predetermineTimeSetOfWeekDay.isPresent()){
 			
 			// エラー処理
@@ -142,4 +142,10 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		if (applyMinutes > this.absenceDeductTime.v()) applyMinutes = this.absenceDeductTime.v();
 		this.absenceDeductTime = this.absenceDeductTime.minusMinutes(applyMinutes);
 	}
+	
+	public static interface Require{
+//		repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCd);
+		Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
+	}
+
 }

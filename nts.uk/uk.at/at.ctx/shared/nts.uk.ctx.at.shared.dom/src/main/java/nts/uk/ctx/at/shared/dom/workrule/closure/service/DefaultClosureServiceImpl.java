@@ -18,8 +18,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -30,14 +32,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.Day;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class DefaultClosureServiceImpl.
@@ -140,6 +140,14 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ClosureInfo> getAllClosureInfo() {
+		
+		val require = createRequireImpl();
+		return getAllClosureInfoRequire(require);
+	}
+	
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<ClosureInfo> getAllClosureInfoRequire(Require require) {
 
 		List<ClosureInfo> allClosureInfo = new ArrayList<>();
 
@@ -148,13 +156,13 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		String companyId = loginUserContext.companyId();
 
 		// 「締め」をすべて取得する
-		val closures = this.closureRepository.findAllUse(companyId);
+		val closures = require.findAllUse(companyId);
 
 		for (val closure : closures) {
 
 			// 当月の期間を算出する
 			YearMonth currentMonth = closure.getClosureMonth().getProcessingYm();
-			val targetPeriod = this.getClosurePeriod(closure.getClosureId().value, currentMonth);
+			val targetPeriod = this.getClosurePeriod(closure.getClosureId().value, currentMonth, Optional.of(closure));
 			if (targetPeriod == null)
 				continue;
 
@@ -333,21 +341,30 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
+		
+		val require = createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+		return getClosureDataByEmployeeRequire(require, cacheCarrier, employeeId, baseDate);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Closure getClosureDataByEmployeeRequire(Require require, CacheCarrier cacheCarrier,String employeeId, GeneralDate baseDate) {
+		
 		String companyId = AppContexts.user().companyId();
 		//Imported「（就業）所属雇用履歴」を取得する
-		Optional<BsEmploymentHistoryImport>  optBsEmploymentHist = this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
+		Optional<BsEmploymentHistoryImport>  optBsEmploymentHist = this.shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
 		if(!optBsEmploymentHist.isPresent()) {
 			return null;
 		}
 		BsEmploymentHistoryImport bsEmploymentHist = optBsEmploymentHist.get();
 		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
-		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, bsEmploymentHist.getEmploymentCode());
+		Optional<ClosureEmployment> optClosureEmployment= require.findByEmploymentCD(companyId, bsEmploymentHist.getEmploymentCode());
 		if(!optClosureEmployment.isPresent()) {
 			return null;
 		}
 		ClosureEmployment closureEmp = optClosureEmployment.get();
 		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
-		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		Optional<Closure> optClosure = require.findClosureById(companyId, closureEmp.getClosureId());
 		if(!optClosure.isPresent()) {
 			return null;
 		}
@@ -371,15 +388,15 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	}
 
 	@Override
-	public Closure getClosurByEmployment(String employmentCd) {
+	public Closure getClosurByEmployment(Require require, String employmentCd) {
 		String companyId = AppContexts.user().companyId();
-		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+		Optional<ClosureEmployment> optClosureEmployment= require.findByEmploymentCD(companyId, employmentCd);
 		if(!optClosureEmployment.isPresent()) {
 			return null;
 		}
 		ClosureEmployment closureEmp = optClosureEmployment.get();
 		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
-		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		Optional<Closure> optClosure = require.findClosureById(companyId, closureEmp.getClosureId());
 		if(!optClosure.isPresent()) {
 			return null;
 		}
@@ -516,5 +533,32 @@ public class DefaultClosureServiceImpl implements ClosureService {
 			return true;
 		}
 		return false;
+	}
+	
+	public static interface Require{
+//		closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+		Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD);
+//		closureRepository.findById(companyId, closureEmp.getClosureId());
+		Optional<Closure> findClosureById(String companyId, int closureId);
+//		closureRepository.findAllUse(AppContexts.user().companyId())
+		List<Closure> findAllUse(String companyId);
+
+	}
+
+	private Require createRequireImpl() {
+		return new DefaultClosureServiceImpl.Require() {
+			@Override
+			public Optional<Closure> findClosureById(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+			@Override
+			public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+			@Override
+			public List<Closure> findAllUse(String companyId) {
+				return closureRepository.findAllUse(companyId);
+			}
+		};
 	}
 }

@@ -3,15 +3,16 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodImpl.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.arc.time.calendar.period.DatePeriod;
-
 /**
  * 期間中の年休残数を取得
  * @author shuichi_ishida
@@ -122,6 +123,17 @@ public interface GetAnnLeaRemNumWithinPeriod {
 			boolean noCheckStartDate,
 			Optional<Boolean> isOutShortRemain,
 			Optional<Boolean> aggrPastMonthMode, Optional<YearMonth> yearMonth,
+			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets,
+			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+	
+	Optional<AggrResultOfAnnualLeave> algorithmRequire(Require require, CacheCarrier cacheCarrier, 
+			String companyId, String employeeId, DatePeriod aggrPeriod,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -93,6 +95,40 @@ public class GetNextAnnualLeaveGrantProc {
 			boolean isSingleDay,
 			Optional<GrantHdTblSet> grantHdTblSetParam,
 			Optional<List<LengthServiceTbl>> lengthServiceTblsParam){
+		val require = new GetNextAnnualLeaveGrantProc.Require() {
+			@Override
+			public Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
+				return grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantNum);
+			}
+			@Override
+			public Optional<GrantHdTblSet> findGrantHdTblSetByCode(String companyId, String yearHolidayCode) {
+				return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
+			}
+			@Override
+			public List<LengthServiceTbl> findLengthServiceTblByCode(String companyId, String yearHolidayCode) {
+				return lengthServiceRepo.findByCode(companyId, grantTableCode);
+			}
+		};
+		
+		val cacheCarrier = new CacheCarrier();
+		
+		return algorithmRequire(require, cacheCarrier, companyId, grantTableCode, 
+				entryDate, criteriaDate, period, isSingleDay, grantHdTblSetParam, 
+				lengthServiceTblsParam);
+	}
+	
+			
+	public List<NextAnnualLeaveGrant> algorithmRequire(
+			Require require,
+			CacheCarrier cacheCarrier,
+			String companyId,
+			String grantTableCode,
+			GeneralDate entryDate,
+			GeneralDate criteriaDate,
+			DatePeriod period,
+			boolean isSingleDay,
+			Optional<GrantHdTblSet> grantHdTblSetParam,
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam){
 		
 		this.nextAnnualLeaveGrantList = new ArrayList<>();
 		
@@ -102,7 +138,7 @@ public class GetNextAnnualLeaveGrantProc {
 			grantHdTblSetOpt = grantHdTblSetParam;
 		}
 		else {
-			grantHdTblSetOpt = this.yearHolidayRepo.findByCode(companyId, grantTableCode);
+			grantHdTblSetOpt = require.findGrantHdTblSetByCode(companyId, grantTableCode);
 		}
 		if (!grantHdTblSetOpt.isPresent()) return nextAnnualLeaveGrantList;
 		val grantHdTblSet = grantHdTblSetOpt.get();
@@ -118,7 +154,7 @@ public class GetNextAnnualLeaveGrantProc {
 			this.lengthServiceTbls = lengthServiceTblsParam.get();
 		}
 		else {
-			this.lengthServiceTbls = this.lengthServiceRepo.findByCode(companyId, grantTableCode);
+			this.lengthServiceTbls = require.findLengthServiceTblByCode(companyId, grantTableCode);
 		}
 		if (this.lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
 		
@@ -130,7 +166,7 @@ public class GetNextAnnualLeaveGrantProc {
 			
 			// 付与回数をもとに年休付与テーブルを取得
 			val grantTimes = nextAnnualLeaveGrant.getTimes().v();
-			val grantHdTblOpt = this.grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantTimes);
+			val grantHdTblOpt = require.find(companyId, 1, grantTableCode, grantTimes);
 			
 			// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
 			if (!grantHdTblOpt.isPresent()) continue;
@@ -142,5 +178,14 @@ public class GetNextAnnualLeaveGrantProc {
 		
 		// 次回年休付与を返す
 		return this.nextAnnualLeaveGrantList;
+	}
+	
+	public static interface Require{
+//		yearHolidayRepo.findByCode(companyId, yearHolidayCode);
+		Optional<GrantHdTblSet> findGrantHdTblSetByCode(String companyId, String yearHolidayCode);
+//		this.lengthServiceRepo.findByCode(companyId, grantTableCode);
+		List<LengthServiceTbl> findLengthServiceTblByCode(String companyId, String yearHolidayCode);
+//		this.grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantTimes);
+		Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 	}
 }

@@ -4,10 +4,12 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 import java.util.List;
 import java.util.Map;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSeviceImpl.Require;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 
 public interface InforSpecialLeaveOfEmployeeSevice {
 	/**
@@ -19,13 +21,15 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @return
 	 */
 	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode, DatePeriod complileDate, SpecialHoliday specialHoliday);
+	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployeeRequire(Require require, CacheCarrier cacheCarrier,String cid, String sid, int specialLeaveCode,DatePeriod complileDate,SpecialHoliday specialHoliday); 
+
 	/**
 	 * 付与日数情報を取得する
 	 * @param employeeId
 	 * @param period
 	 * @return
 	 */
-	GrantDaysInforByDates getGrantDays(String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday, SpecialLeaveBasicInfo leaveBasicInfo);
+	GrantDaysInforByDates getGrantDays(Require require, CacheCarrier cacheCarrier,String cid, String employeeId, DatePeriod period, SpecialHoliday speHoliday, SpecialLeaveBasicInfo leaveBasicInfo);
 	/**
 	 * 固定の付与日一覧を求める
 	 * @param sid
@@ -33,7 +37,7 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param grantDate
 	 * @return
 	 */
-	GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday,SpecialLeaveBasicInfo leaveBasicInfo);
+	GrantDaysInforByDates askGrantDays(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday,SpecialLeaveBasicInfo leaveBasicInfo);
 	/**
 	 * 利用条件をチェックする
 	 * @param sid
@@ -41,7 +45,7 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param genderRest: 特別休暇利用条件.性別条件
 	 * @return
 	 */
-	ErrorFlg checkUse(String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday);
+	ErrorFlg checkUse(CacheCarrier cacheCarrier, String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday);
 	/**
 	 * テーブルに基づいた付与日数一覧を求める
 	 * @param cid
@@ -51,7 +55,8 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param basicInfor
 	 * @return
 	 */
-	GrantDaysInforByDates askGrantdaysFromtable(String cid, String sid, DatePeriod period, GeneralDate granDate, 
+	GrantDaysInforByDates askGrantdaysFromtable(Require require, CacheCarrier cacheCarrier,
+			String cid, String sid, DatePeriod period, GeneralDate granDate, 
 			SpecialLeaveBasicInfo basicInfor, SpecialHoliday speHoliday);
 	/**
 	 * 期限を取得する

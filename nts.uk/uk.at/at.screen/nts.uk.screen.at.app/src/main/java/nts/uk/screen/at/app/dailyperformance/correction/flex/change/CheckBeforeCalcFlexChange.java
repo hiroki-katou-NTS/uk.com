@@ -14,8 +14,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
@@ -26,7 +30,48 @@ import nts.uk.ctx.at.record.dom.monthly.flex.ConditionCalcResult;
 import nts.uk.ctx.at.record.dom.monthly.flex.MessageFlex;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHoursImpl;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -41,7 +86,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -82,34 +126,87 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 	
 	@Inject
 	private CompanyAdapter companyAdapter;
+	
+	/*require用*/
+	@Inject
+	private ComNormalSettingRepository comNormalSettingRepository;
+	@Inject
+	private ComDeforLaborSettingRepository comDeforLaborSettingRepository;
+	@Inject
+	private EmpNormalSettingRepository empNormalSettingRepository;
+	@Inject
+	private EmpDeforLaborSettingRepository empDeforLaborSettingRepository;
+	@Inject
+	private WkpNormalSettingRepository wkpNormalSettingRepository;
+	@Inject
+	private WkpDeforLaborSettingRepository wkpDeforLaborSettingRepository;
+	@Inject
+	private ShainNormalSettingRepository shainNormalSettingRepository;
+	@Inject
+	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
+	@Inject
+	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
+	@Inject
+	private ShainTransLaborTimeRepository shainTransLaborTimeRepository;
+	@Inject
+	private WkpRegularLaborTimeRepository wkpRegularLaborTimeRepository;
+	@Inject
+	private WkpTransLaborTimeRepository wkpTransLaborTimeRepository;
+	@Inject
+	private EmpRegularWorkTimeRepository empRegularWorkTimeRepository;
+	@Inject
+	private EmpTransWorkTimeRepository empTransWorkTimeRepository;
+	@Inject
+	private ComRegularLaborTimeRepository comRegularLaborTimeRepository;
+	@Inject
+	private ComTransLaborTimeRepository comTransLaborTimeRepository;
+	@Inject
+	private UsageUnitSettingRepository usageUnitSettingRepository;
+	@Inject
+	private EmpFlexSettingRepository empFlexSettingRepository;
+	@Inject
+	private ComFlexSettingRepository comFlexSettingRepository;
+	@Inject
+	private ShainFlexSettingRepository shainFlexSettingRepository;
+
+	/*require用*/
 
 	private static final String TIME_DEFAULT = "0:00";
 
 	// 社員のフレックス繰越上限時間を求める
 	@Override
 	public ConditionCalcResult getConditionCalcFlex(String companyId, CalcFlexChangeDto calc) {
-		return getConditionCalcFlex(companyId, calc, Optional.empty(), Optional.empty());
+		val cacheCarrier = new CacheCarrier();
+		return getConditionCalcFlexRequire(cacheCarrier, companyId, calc);
 	}
 	
+	@Override
+	public ConditionCalcResult getConditionCalcFlexRequire(CacheCarrier cacheCarrier, String companyId, CalcFlexChangeDto calc) {
+		return getConditionCalcFlex(cacheCarrier, companyId, calc, Optional.empty(), Optional.empty());
+	}
+
 	// 社員のフレックス繰越上限時間を求める
-	public ConditionCalcResult getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
+	private ConditionCalcResult getConditionCalcFlex(CacheCarrier cacheCarrier,
+			String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
 			Optional<PresentClosingPeriodExport> periodExportOpt) {
 		
+		val require = new RequireImpl(cacheCarrier);
+		
 		if(!closureEmployment.isPresent()){
-			closureEmployment = this.closureEmploymentRepository
+			closureEmployment = require
 					.findByEmploymentCD(companyId, processor.getEmploymentCode(companyId, calc.getDate(), calc.getEmployeeId()));
 		}
 		if (!closureEmployment.isPresent())
 			return new ConditionCalcResult("", MessageFlex.Normal);
 		// 指定した年月日時点の締め期間を取得する
 		if(!periodExportOpt.isPresent()){
-			periodExportOpt = shClosurePub.find(companyId, closureEmployment.get().getClosureId(), calc.getDate());
+			periodExportOpt = shClosurePub.findRequire(cacheCarrier, companyId, closureEmployment.get().getClosureId(), calc.getDate());
 		}
 		
 		if (periodExportOpt.isPresent() && (calc.getDate().after(periodExportOpt.get().getClosureEndDate())
 				|| calc.getDate().before(periodExportOpt.get().getClosureStartDate()))) {
 			// ドメインモデル「フレックス不足の繰越上限時間」を取得する
-			Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+			Integer valueLimit = require.getLimitFexMonth(companyId);
 			if (valueLimit == null)
 				valueLimit = 0;
 			//102745  ・状態：正常 
@@ -119,7 +216,7 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		// 社員ID（List）と指定期間から所属会社履歴項目を取得
 		DatePeriod datePeriod = new DatePeriod(periodExportOpt.get().getClosureStartDate(), periodExportOpt.get().getClosureEndDate());
 		List<String> sIds = Arrays.asList(calc.getEmployeeId());
-		List<AffCompanyHistImport> affCompanyHis = syCompanyRecordAdapter.getAffCompanyHistByEmployee(sIds, datePeriod);
+		List<AffCompanyHistImport> affCompanyHis = syCompanyRecordAdapter.getAffCompanyHistByEmployeeRequire(cacheCarrier, sIds, datePeriod);
 		if (!affCompanyHis.isEmpty()) {
 			for (AffComHistItemImport his : affCompanyHis.get(0).getLstAffComHistItem()) {
 				// 「所属会社履歴項目．退職日」がパラメータ「当月の期間」に含まれているかチェックする
@@ -159,8 +256,7 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		/** TODO: replace below code with above code after confirm design? */
 		boolean checkFlex = true;
 		for (WorkingConditionItem item : calc.getWCItems()) {
-			Optional<WorkingCondition> workConditionOpt = workingConditionRepository
-					.getByHistoryId(item.getHistoryId());
+			Optional<WorkingCondition> workConditionOpt = require.getByHistoryId(item.getHistoryId());
 			if (workConditionOpt.isPresent() && periodExportOpt.isPresent()) {
 				GeneralDate startDate = periodExportOpt.get().getClosureStartDate();
 				GeneralDate endDate = periodExportOpt.get().getClosureEndDate();
@@ -169,8 +265,7 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 						.filter(x -> x.end().afterOrEquals(startDate) && x.end().beforeOrEquals(endDate)).findFirst();
 				if (dateHist.isPresent()) {
 					dateCheck = dateHist.get().end().nextValue(true);
-					Optional<WorkingConditionItem> workingConditionItemOpt = workingConditionItemRepository
-							.getBySidAndStandardDate(calc.getEmployeeId(), dateCheck);
+					Optional<WorkingConditionItem> workingConditionItemOpt = require.getBySidAndStandardDate(calc.getEmployeeId(), dateCheck);
 					if (!workingConditionItemOpt.isPresent()
 							|| !workingConditionItemOpt.get().getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)) {
 						checkFlex = false;
@@ -185,7 +280,8 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		}
 		// フレックス時間勤務の場合(là フレックス時間勤務)
 		// 指定した年月日時点の締め期間を取得する
-		Optional<PresentClosingPeriodExport> periodExportOptNext = shClosurePub.find(companyId,
+		Optional<PresentClosingPeriodExport> periodExportOptNext = shClosurePub.findRequire(
+				cacheCarrier, companyId,
 				closureEmployment.get().getClosureId(), periodExportOpt.get().getClosureEndDate().addDays(1));
 		// ドメインモデル「月別実績の勤怠時間」を取得する 
 		// #102745 change EAP
@@ -208,16 +304,17 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 //			// timeCarryoverTime = String.format("%d:%02d", time);
 //		} else {
 			// 社員と基準日から雇用履歴項目を取得する
-			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
+			AffEmploymentHistoryDto afEmpDto = require.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
 														periodExportOptNext.get().getClosureStartDate());
 			
 			// bug 107743
 			// 暦上の年月を渡して、年度に沿った年月を取得する
-			YearMonth yearMonthCalen = companyAdapter.getYearMonthFromCalenderYM(companyId, periodExportOptNext.get().getProcessingYm());
+			YearMonth yearMonthCalen = companyAdapter.getYearMonthFromCalenderYM(cacheCarrier, companyId, periodExportOptNext.get().getProcessingYm());
 //			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis
 //					.getAffWrkplaHistItemByEmpIdAndDate(datePeriod.start(), calc.getEmployeeId());
 			// 週、月の法定労働時間を取得(フレックス用)
-			MonthlyFlexStatutoryLaborTime monthFlex = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTime(
+			MonthlyFlexStatutoryLaborTime monthFlex = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTimeRequire(
+					require, cacheCarrier,
 					companyId, afEmpDto.getEmploymentCode(), calc.getEmployeeId(), datePeriod.start(),
 					yearMonthCalen);
 
@@ -229,10 +326,10 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 			// workingConditionItems = workingConditionItems.stream().filter(x
 			// ->
 			// x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
-			List<DateRange> dates = dailyPerformanceScreenRepo.getWorkConditionFlexDatePeriod(calc.getEmployeeId(),
+			List<DateRange> dates = require.getWorkConditionFlexDatePeriod(calc.getEmployeeId(),
 					new DatePeriod(periodExportOptNext.get().getClosureStartDate(),
 							periodExportOptNext.get().getClosureEndDate()));
-			List<Integer> listAttTime = attendanceTime.findAtt(calc.getEmployeeId(),
+			List<Integer> listAttTime = require.findAtt(calc.getEmployeeId(),
 					convertToListDate(dates));
 			// 「法定労働時間」-「所定労働時間」をパラメータ「翌月繰越可能時間」にセットする
 
@@ -245,7 +342,7 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		}
 		
 		// ドメインモデル「フレックス不足の繰越上限管理」を取得する
-		Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+		Integer valueLimit = require.getLimitFexMonth(companyId);
 		if(valueLimit == null) valueLimit = 0;
 		if (valueLimit >= timeSum) {
 			//102745  ・状態：正常
@@ -289,5 +386,136 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 		}
 		;
 		return sum;
+	}
+	
+	public static interface Require extends MonthlyStatutoryWorkingHoursImpl.Require{
+//		closureEmploymentRepository.findByEmploymentCD(companyId, processor.getEmploymentCode(companyId, calc.getDate(), calc.getEmployeeId()));
+		Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD);
+//		dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+		Integer getLimitFexMonth(String companyId);
+//		workingConditionRepository.getByHistoryId(item.getHistoryId());
+		Optional<WorkingCondition> getByHistoryId(String historyId);
+//		workingConditionItemRepository.getBySidAndStandardDate(calc.getEmployeeId(), dateCheck);
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+//		dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),periodExportOptNext.get().getClosureStartDate());
+		AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, GeneralDate dateRange);
+//		dailyPerformanceScreenRepo.getWorkConditionFlexDatePeriod(calc.getEmployeeId(),new DatePeriod(periodExportOptNext.get().getClosureStartDate(),periodExportOptNext.get().getClosureEndDate()));
+		List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
+//		attendanceTime.findAtt(calc.getEmployeeId(),convertToListDate(dates));
+		List<Integer> findAtt(String employeeId, List<GeneralDate> ymd);
+	}
+	@RequiredArgsConstructor
+	class RequireImpl implements CheckBeforeCalcFlexChange.Require{
+
+		private final CacheCarrier cacheCarrier;
+
+		@Override
+		public Optional<ShainNormalSetting> findShainNormalSetting(String cid, String empId, int year) {
+			return shainNormalSettingRepository.find(cid, empId, year);
+		}
+		@Override
+		public Optional<ShainDeforLaborSetting> findShainDeforLaborSetting(String cid, String empId, int year) {
+			return shainDeforLaborSettingRepository.find(cid, empId, year);
+		}
+		@Override
+		public Optional<WkpNormalSetting> findWkpNormalSetting(String cid, String wkpId, int year) {
+			return wkpNormalSettingRepository.find(cid, wkpId, year);
+		}
+		@Override
+		public Optional<WkpDeforLaborSetting> findWkpDeforLaborSetting(String cid, String wkpId, int year) {
+			return wkpDeforLaborSettingRepository.find(cid, wkpId, year);
+		}
+		@Override
+		public Optional<EmpNormalSetting> findEmpNormalSetting(String cid, String emplCode, int year) {
+			return empNormalSettingRepository.find(cid, emplCode, year);
+		}
+		@Override
+		public Optional<EmpDeforLaborSetting> findEmpDeforLaborSetting(String cid, String emplCode, int year) {
+			return empDeforLaborSettingRepository.find(cid, emplCode, year);
+		}
+		@Override
+		public Optional<ComNormalSetting> findComNormalSetting(String companyId, int year) {
+			return comNormalSettingRepository.find(companyId,year);
+		}
+		@Override
+		public Optional<ComDeforLaborSetting> findComDeforLaborSetting(String companyId, int year) {
+			return comDeforLaborSettingRepository.find(companyId,year);
+		}
+		@Override
+		public Optional<UsageUnitSetting> findByCompany(String companyId) {
+			return usageUnitSettingRepository.findByCompany(companyId);
+		}
+		@Override
+		public Optional<ShainFlexSetting> findShainFlexSetting(String cid, String empId, int year) {
+			return shainFlexSettingRepository.find(cid, empId, year);
+		}
+		@Override
+		public Optional<EmpFlexSetting> findEmpFlexSetting(String cid, String emplCode, int year) {
+			return  empFlexSettingRepository.find(cid, emplCode, year);
+		}
+		@Override
+		public Optional<ComFlexSetting> findComFlexSetting(String companyId, int year) {
+			return comFlexSettingRepository.find(companyId, year);
+		}
+		@Override
+		public Optional<EmpRegularLaborTime> findById(String cid, String employmentCode) {
+			return empRegularWorkTimeRepository.findById(cid, employmentCode);
+		}
+		@Override
+		public Optional<ComTransLaborTime> findcomTransLaborTime(String companyId) {
+			return comTransLaborTimeRepository.find(companyId);
+		}
+		@Override
+		public Optional<ComRegularLaborTime> findcomRegularLaborTime(String companyId) {
+			return comRegularLaborTimeRepository.find(companyId);
+		}
+		@Override
+		public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+			return wkpTransLaborTimeRepository.find(cid, wkpId);
+		}
+		@Override
+		public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String empId, String wkpId) {
+			return wkpRegularLaborTimeRepository.find(empId, wkpId);
+		}
+		@Override
+		public Optional<ShainRegularLaborTime> findShainRegularLaborTime(String Cid, String EmpId) {
+			return shainRegularWorkTimeRepository.find(Cid, EmpId);
+		}
+		@Override
+		public Optional<ShainTransLaborTime> findShainTransLaborTime(String cid, String empId) {
+			return shainTransLaborTimeRepository.find(cid, empId);
+		}
+		@Override
+		public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
+			return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		}
+		@Override
+		public Integer getLimitFexMonth(String companyId) {
+			return dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+		}
+		@Override
+		public Optional<WorkingCondition> getByHistoryId(String historyId) {
+			return workingConditionRepository.getByHistoryId(historyId);
+		}
+		@Override
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+		@Override
+		public AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, GeneralDate dateRange) {
+			return dailyPerformanceScreenRepo.getAffEmploymentHistory(comapnyId, employeeId, dateRange);
+		}
+		@Override
+		public List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date) {
+			return dailyPerformanceScreenRepo.getWorkConditionFlexDatePeriod(employeeId,date);
+		}
+		@Override
+		public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
+			return attendanceTime.findAtt(employeeId,ymd);
+		}
+		@Override
+		public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+			return empTransWorkTimeRepository.find(cid, emplId);
+		}
 	}
 }

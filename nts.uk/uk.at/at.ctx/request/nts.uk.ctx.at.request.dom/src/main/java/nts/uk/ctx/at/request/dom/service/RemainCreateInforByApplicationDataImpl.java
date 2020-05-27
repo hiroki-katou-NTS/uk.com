@@ -8,10 +8,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+
 /*import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;*/
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -206,12 +210,34 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		});
 		return lstOutputData;
 	}
+	
 	@Override
-	public Integer excludeHolidayAtr(String cid, String appID) {
-		Optional<AppWorkChange> data = workChangeRepos.getAppworkChangeById(cid, appID);
+	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
+		val require =  new RequireImpl(cacheCarrier);
+		Optional<AppWorkChange> data = require.getAppworkChangeById(cid, appID);
 		if(data.isPresent()) {
 			return data.get().getExcludeHolidayAtr();
 		}
 		return null;
 	}
+	
+	
+	public static interface Require { 
+//		workChangeRepos.getAppworkChangeById(cid, appID);
+		Optional<AppWorkChange> getAppworkChangeById(String cid, String appId);
+	}
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements RemainCreateInforByApplicationDataImpl.Require{
+		
+		private final CacheCarrier cacheCarrier;
+
+		@Override
+		public Optional<AppWorkChange> getAppworkChangeById(String cid, String appId) {
+//			AppWorkChangeCache cache = cacheCarrier.get( AppWorkChangeCache.DOMAIN_NAME);
+//			return cache.get(cid, appId);
+			return workChangeRepos.getAppworkChangeById(cid, appId);
+		}
+	}
+	
 }

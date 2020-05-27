@@ -1,4 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktype.service;
+
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedServiceImpl.Require;
+
 /**
  *
  * @author do_dt
@@ -25,4 +28,5 @@ public interface WorkTypeIsClosedService {
 	 * @return
 	 */
 	public boolean checkHoliday(String workTypeCode);
+	public boolean checkHolidayRequire(Require require, String workTypeCode);
 }

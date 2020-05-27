@@ -135,8 +135,7 @@ public class WeeklyCalculation implements Cloneable {
 			WeekStart weekStart,
 			AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 		
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) return;
 		

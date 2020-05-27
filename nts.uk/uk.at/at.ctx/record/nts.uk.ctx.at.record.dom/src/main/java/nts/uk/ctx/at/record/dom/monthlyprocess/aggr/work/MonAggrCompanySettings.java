@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
@@ -41,7 +42,11 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -54,13 +59,18 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.Rol
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSetImpl;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別集計で必要な会社別設定
@@ -521,13 +531,22 @@ public class MonAggrCompanySettings {
 			String workTypeCode,
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
+		val require = createRequireImpl(repositories);
+		return getWorkTypeMapRequire(require, workTypeCode, repositories);
+	}
+	
+	public WorkType getWorkTypeMapRequire(
+			Require require,
+			String workTypeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
 		if (this.workTypeMap.containsKey(workTypeCode)){
 			val result = this.workTypeMap.get(workTypeCode);
 			if (result == NullObject) return null;
 			return (WorkType)result;
 		}
 		
-		val workTypeOpt = repositories.getWorkType().findByPK(this.companyId, workTypeCode);
+		val workTypeOpt = require.findByPK(this.companyId, workTypeCode);
 		if (!workTypeOpt.isPresent()){
 			this.workTypeMap.put(workTypeCode, NullObject);
 			return null;
@@ -559,6 +578,16 @@ public class MonAggrCompanySettings {
 	public WorkTimezoneCommonSet getWorkTimeCommonSetMap(
 			String workTimeCode,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		val require = createRequireImpl(repositories);
+		return getWorkTimeCommonSetMapRequire(require, workTimeCode, repositories);
+	}
+	
+	public WorkTimezoneCommonSet getWorkTimeCommonSetMapRequire(
+			Require require,
+			String workTimeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+
 	
 		if (this.workTimeCommonSetMap.containsKey(workTimeCode)){
 			val result = this.workTimeCommonSetMap.get(workTimeCode);
@@ -566,7 +595,7 @@ public class MonAggrCompanySettings {
 			return (WorkTimezoneCommonSet)result;
 		}
 		
-		val workTimeCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCode);
+		val workTimeCommonSetOpt = repositories.getCommonSet().getRequire(require, this.companyId, workTimeCode);
 		if (!workTimeCommonSetOpt.isPresent()){
 			this.workTimeCommonSetMap.put(workTimeCode, NullObject);
 			return null;
@@ -585,13 +614,23 @@ public class MonAggrCompanySettings {
 			String workTimeCode,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
+		val require = createRequireImpl(repositories);
+		return getPredetemineTimeSetMapRequire(require, workTimeCode, repositories);
+	}
+	
+	public PredetemineTimeSetting getPredetemineTimeSetMapRequire(
+			Require require,
+			String workTimeCode,
+			RepositoriesRequiredByMonthlyAggr repositories){
+
+		
 		if (this.predetermineTimeSetMap.containsKey(workTimeCode)){
 			val result = this.predetermineTimeSetMap.get(workTimeCode);
 			if (result == NullObject) return null;
 			return (PredetemineTimeSetting)result;
 		}
 		
-		val predetermineTimeSetOpt = repositories.getPredetermineTimeSet().findByWorkTimeCode(this.companyId, workTimeCode);
+		val predetermineTimeSetOpt = require.findByWorkTimeCode(this.companyId, workTimeCode);
 		if (!predetermineTimeSetOpt.isPresent()){
 			this.predetermineTimeSetMap.put(workTimeCode, NullObject);
 			return null;
@@ -642,7 +681,8 @@ public class MonAggrCompanySettings {
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 労働時間
 	 */
-	public Optional<WorkingTimeSetting> getWorkingTimeSetting(
+	public Optional<WorkingTimeSetting> getWorkingTimeSettingRequire(
+			Require require,
 			String employmentCd,
 			List<String> workplaceIds,
 			WorkingSystem workingSystem,
@@ -664,7 +704,7 @@ public class MonAggrCompanySettings {
 						}
 					}
 					else {
-						val wkpLaborTimeOpt = repositories.getWkpRegularLaborTime().find(this.companyId, workplaceId);
+						val wkpLaborTimeOpt = require.findWkpRegularLaborTime(this.companyId, workplaceId);
 						if (wkpLaborTimeOpt.isPresent()){
 							this.wkpRegLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
 							return Optional.of((WorkingTimeSetting)this.wkpRegLaborTimeMap.get(workplaceId));
@@ -682,7 +722,7 @@ public class MonAggrCompanySettings {
 					}
 				}
 				else {
-					val empLaborTimeOpt = repositories.getEmpRegularWorkTime().findById(this.companyId, employmentCd);
+					val empLaborTimeOpt = require.findEmpRegularLaborTimeById(this.companyId, employmentCd);
 					if (empLaborTimeOpt.isPresent()){
 						this.empRegLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
 						return Optional.of((WorkingTimeSetting)this.empRegLaborTimeMap.get(employmentCd));
@@ -710,7 +750,7 @@ public class MonAggrCompanySettings {
 						}
 					}
 					else {
-						val wkpLaborTimeOpt = repositories.getWkpTransLaborTime().find(this.companyId, workplaceId);
+						val wkpLaborTimeOpt = require.findWkpTransLaborTime(this.companyId, workplaceId);
 						if (wkpLaborTimeOpt.isPresent()){
 							this.wkpIrgLaborTimeMap.put(workplaceId, wkpLaborTimeOpt.get().getWorkingTimeSet());
 							return Optional.of((WorkingTimeSetting)this.wkpIrgLaborTimeMap.get(workplaceId));
@@ -728,7 +768,7 @@ public class MonAggrCompanySettings {
 					}
 				}
 				else {
-					val empLaborTimeOpt = repositories.getEmpTransWorkTime().find(this.companyId, employmentCd);
+					val empLaborTimeOpt = require.findEmpTransLaborTime(this.companyId, employmentCd);
 					if (empLaborTimeOpt.isPresent()){
 						this.empIrgLaborTimeMap.put(employmentCd, empLaborTimeOpt.get().getWorkingTimeSet());
 						return Optional.of((WorkingTimeSetting)this.empIrgLaborTimeMap.get(employmentCd));
@@ -742,5 +782,69 @@ public class MonAggrCompanySettings {
 		}
 		
 		return Optional.empty();
+	}
+	
+	public static interface Require extends GetCommonSetImpl.Require{
+//		repositories.getWorkType().findByPK(this.companyId, workTypeCode);
+		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+//		repositories.getWkpRegularLaborTime().find(this.companyId, workplaceId);
+		Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId);
+//		repositories.getEmpRegularWorkTime().findById(this.companyId, employmentCd);
+		Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode);
+//		repositories.getWkpTransLaborTime().find(this.companyId, workplaceId);
+		Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId);
+//		repositories.getEmpTransWorkTime().find(this.companyId, employmentCd);
+		Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId);
+//		repositories.getPredetermineTimeSet().findByWorkTimeCode(this.companyId, workTimeCode);
+		Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
+	}
+
+	private static Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories){
+		return new MonAggrCompanySettings.Require() {
+			@Override
+			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
+				return repositories.getWkpTransLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
+				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
+			}
+			@Override
+			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
+				return repositories.getEmpTransWorkTime().find(cid, emplId);
+			}
+			@Override
+			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
+				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return repositories.getWorkType().findByPK(companyId, workTypeCd);
+			}
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
+			}
+			@Override
+			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
+			}
+		};
 	}
 }

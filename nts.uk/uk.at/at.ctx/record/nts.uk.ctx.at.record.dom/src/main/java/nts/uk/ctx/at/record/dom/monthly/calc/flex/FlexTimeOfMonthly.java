@@ -15,6 +15,9 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -56,11 +59,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.ReferencePredTimeOfFlex;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 月別実績のフレックス時間
@@ -213,8 +215,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			int startWeekNo,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonthlyCalculatingDailys monthlyCalcDailys){
 		
 		this.flexAggrSet = settingsByFlex.getFlexAggrSet();
 		this.monthlyAggrSetOfFlexOpt = settingsByFlex.getMonthlyAggrSetOfFlexOpt();
@@ -348,7 +349,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 							workingSystem, aggregateAtr,
 							null, null, aggregateTotalWorkingTime,
 							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
-							attendanceTimeOfDailyMap, companySets, repositories);
+							attendanceTimeOfDailyMap, companySets);
 					resultWeeks.add(newWeek);
 					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
 
@@ -376,7 +377,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						procDate, this.flexAggrSet, aggregateTotalWorkingTime, this.flexTime,
 						settingsByFlex.getPrescribedWorkingTimeMonth(),
 						settingsByFlex.getStatutoryWorkingTimeMonth(),
-						addSet, standFlexTime, repositories);
+						addSet, standFlexTime);
 				
 				ConcurrentStopwatches.stop("12222.6:超過時間割り当て：");
 			}
@@ -418,6 +419,32 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			String employmentCd,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
+			SettingRequiredByFlex settingsByFlex,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		val require = new FlexTimeOfMonthly.Require() {
+			@Override
+			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
+			}
+			@Override
+			public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
+				return repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			}
+		};
+
+		aggregateMonthlyHoursRequire(require, companyId, employeeId, 
+				yearMonth, datePeriod, flexAggregateMethod, 
+				workingConditionItem, workplaceId, employmentCd, 
+				settingsByFlex, aggregateTotalWorkingTime, repositories);
+	}
+	public void aggregateMonthlyHoursRequire(Require require,
+			String companyId, String employeeId,
+			YearMonth yearMonth, DatePeriod datePeriod,
+			FlexAggregateMethod flexAggregateMethod,
+			WorkingConditionItem workingConditionItem,
+			String workplaceId, String employmentCd,
 			SettingRequiredByFlex settingsByFlex,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -511,7 +538,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				this.flexShortDeductTime.getAbsenceDeductTime());
 		
 		// 年休控除する
-		this.deductAnnualLeave(companyId, employeeId, datePeriod, flexAggregateMethod,
+		this.deductAnnualLeave(require, companyId, employeeId, datePeriod, flexAggregateMethod,
 				workingConditionItem, repositories);
 		
 		// 欠勤控除する
@@ -527,7 +554,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * @param yearMonth 年月（度）
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void carryforwardFlex(
+	private void carryforwardFlex(Require require,
 			String employeeId,
 			YearMonth yearMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -537,8 +564,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 			// 前月の「月別実績の勤怠時間」を取得する
 			val prevYearMonth = yearMonth.previousMonth();
-			val prevAttendanceTimeList =
-					repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, prevYearMonth);
+			val prevAttendanceTimeList = require.findByYearMonthOrderByStartYmd(employeeId, prevYearMonth);
 			
 			// 前月のフレックス不足時間を取得する　（開始日が最も大きい日のデータ）
 			// 前月のフレックス繰越不可時間を取得する
@@ -2155,7 +2181,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	private void deductAnnualLeave(
+	private void deductAnnualLeave(Require require,
 			String companyId,
 			String employeeId,
 			DatePeriod period,
@@ -2167,7 +2193,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		this.flexShortDeductTime.setFlexShortTimeBeforeDeduct(this.flexShortageTime);
 		
 		// 年休控除日数を時間換算する
-		this.deductDaysAndTime.timeConversionOfDeductAnnualLeaveDays(
+		this.deductDaysAndTime.timeConversionOfDeductAnnualLeaveDays(require,
 				companyId, employeeId, period, workingConditionItem, repositories);
 		if (this.deductDaysAndTime.getErrorInfos().size() > 0){
 			this.errorInfos.addAll(this.deductDaysAndTime.getErrorInfos());
@@ -2377,5 +2403,10 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		this.flexTimeOfExcessOutsideTime.sum(target.flexTimeOfExcessOutsideTime);
 		this.flexShortDeductTime.sum(target.flexShortDeductTime);
 		this.flexSettleTime = this.flexSettleTime.addMinutes(target.flexSettleTime.v());
+	}
+	
+	public static interface Require extends DeductDaysAndTime.Require{
+//		repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, prevYearMonth);
+		List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
 	}
 }

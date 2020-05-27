@@ -62,35 +62,43 @@ public class MonthlyOldDatas {
 	public static MonthlyOldDatas loadData(
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		val require = createRequireImpl(repositories);
+		return loadDataRequire(require, employeeId, yearMonth, closureId, closureDate, repositories);
+	}
+	
+	public static MonthlyOldDatas loadDataRequire(
+			Require require,
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		MonthlyOldDatas result = new MonthlyOldDatas();
 		
 		// 月別実績の勤怠時間
-		result.attendanceTime = repositories.getAttendanceTimeOfMonthly().find(
+		result.attendanceTime = require.find(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 月別実績の任意項目
-		result.anyItemList = repositories.getAnyItemOfMonthly().findByMonthlyAndClosure(
+		result.anyItemList = require.findByMonthlyAndClosure(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 年休月別残数データ
-		result.annualLeaveRemain = repositories.getAnnLeaRemNumEachMonth().find(
+		result.annualLeaveRemain = require.findAnnLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 積立年休月別残数データ
-		result.reserveLeaveRemain = repositories.getRsvLeaRemNumEachMonth().find(
+		result.reserveLeaveRemain = require.findRsvLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 振休月別残数データ
-		result.absenceLeaveRemain = repositories.getAbsenceLeaveRemainData().find(
+		result.absenceLeaveRemain = require.findAbsenceLeaveRemainData(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 代休月別残数データ
-		result.monthlyDayoffRemain = repositories.getMonthlyDayoffRemainData().find(
+		result.monthlyDayoffRemain = require.findMonthDayoffRemainData(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		// 特別休暇月別残数データ
-		result.specialLeaveRemainList = repositories.getSpecialHolidayRemainData().find(
+		result.specialLeaveRemainList = require.findSpecialHolidayRemainData(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		return result;
@@ -109,11 +117,20 @@ public class MonthlyOldDatas {
 	public static MonthlyOldDatas loadData(
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
 			Optional<IntegrationOfMonthly> monthlyWorkOpt,
+			RepositoriesRequiredByMonthlyAggr repositories) {
+		val require = createRequireImpl(repositories);
+		return loadDataRequire(require, employeeId, yearMonth, closureId, closureDate, monthlyWorkOpt, repositories);
+	}
+	
+	public static MonthlyOldDatas loadDataRequire(
+			Require require,
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			Optional<IntegrationOfMonthly> monthlyWorkOpt,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 月別実績(WORK)指定がない時、データ読み込み
 		if (!monthlyWorkOpt.isPresent()){
-			return MonthlyOldDatas.loadData(employeeId, yearMonth, closureId, closureDate, repositories);
+			return MonthlyOldDatas.loadDataRequire(require, employeeId, yearMonth, closureId, closureDate, repositories);
 		}
 		
 		MonthlyOldDatas result = new MonthlyOldDatas();
@@ -141,5 +158,62 @@ public class MonthlyOldDatas {
 		result.specialLeaveRemainList = monthlyWork.getSpecialLeaveRemainList();
 		
 		return result;
+	}
+	
+	public static interface Require{
+		//repositories.getAttendanceTimeOfMonthly().find(employeeId, yearMonth, closureId, closureDate);
+		Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+		//repositories.getAnyItemOfMonthly().findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
+		List<AnyItemOfMonthly> findByMonthlyAndClosure(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+//		repositories.getAnnLeaRemNumEachMonth().find(employeeId, yearMonth, closureId, closureDate);
+		Optional<AnnLeaRemNumEachMonth> findAnnLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+//		repositories. ().find(employeeId, yearMonth, closureId, closureDate);
+		Optional<RsvLeaRemNumEachMonth> findRsvLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+//		repositories.getAbsenceLeaveRemainData().find(employeeId, yearMonth, closureId, closureDate);
+		Optional<AbsenceLeaveRemainData> findAbsenceLeaveRemainData(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+//		repositories.getMonthlyDayoffRemainData().find(employeeId, yearMonth, closureId, closureDate);
+		Optional<MonthlyDayoffRemainData> findMonthDayoffRemainData(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+//		repositories.getSpecialHolidayRemainData().find(employeeId, yearMonth, closureId, closureDate);
+		List<SpecialHolidayRemainData> findSpecialHolidayRemainData(String employeeId, YearMonth yearMonth,ClosureId closureId, ClosureDate closureDate);
+	}
+
+	public static Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
+		return new Require() {
+			@Override
+			public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+					ClosureDate closureDate) {
+				return repositories.getAttendanceTimeOfMonthly().find(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public List<AnyItemOfMonthly> findByMonthlyAndClosure(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getAnyItemOfMonthly().findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public Optional<AnnLeaRemNumEachMonth> findAnnLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getAnnLeaRemNumEachMonth().find(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public Optional<RsvLeaRemNumEachMonth> findRsvLeaRemNumEachMonth(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getRsvLeaRemNumEachMonth().find(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public Optional<AbsenceLeaveRemainData> findAbsenceLeaveRemainData(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getAbsenceLeaveRemainData().find(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public Optional<MonthlyDayoffRemainData> findMonthDayoffRemainData(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getMonthlyDayoffRemainData().find(employeeId, yearMonth, closureId, closureDate);
+			}
+			@Override
+			public List<SpecialHolidayRemainData> findSpecialHolidayRemainData(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				return repositories.getSpecialHolidayRemainData().find(employeeId, yearMonth, closureId, closureDate);
+			}
+		}; 
 	}
 }

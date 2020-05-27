@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -39,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
+import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriodImpl;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
@@ -145,9 +147,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		}
 		return mngData;
 	}
-
+	
 	@Override
-	public DailyInterimRemainMngData createInterimRecData(InforFormerRemainData inforData,
+	public DailyInterimRemainMngData createInterimRecData(
+			Require require, InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		// 残数作成元情報のアルゴリズム「分類を指定して発生使用明細を取得する」を実行する
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
@@ -155,7 +158,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			return mngData;
 		}
 		//アルゴリズム「振休使用期限日の算出」を実行する
-		GeneralDate useDate = this.getUseDays(inforData);
+		GeneralDate useDate = this.getUseDays(require, inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain remainMng = new InterimRemain(mngId,
 				inforData.getSid(),
@@ -182,7 +185,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	 * 振休使用期限日を取得する, 
 	 * @return
 	 */
-	private GeneralDate getUseDays(InforFormerRemainData inforData) {
+	private GeneralDate getUseDays(Require require, InforFormerRemainData inforData) {
 		//雇用別休暇管理設定の振休をチェックする
 		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		SubstVacationSetting subSetting = null;
@@ -198,7 +201,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			return GeneralDate.max();
 		} 
 		
-		return this.commonDate(subSetting.getExpirationDate(), inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+		return this.commonDate(require, subSetting.getExpirationDate(), inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
 	}
 	
 	/**
@@ -206,7 +209,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	 * @param inforData
 	 * @return
 	 */
-	private GeneralDate getDayDaikyu(InforFormerRemainData inforData) {
+	private GeneralDate getDayDaikyu(Require require, InforFormerRemainData inforData) {
 		//雇用別休暇管理設定の振休をチェックする
 		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
@@ -217,10 +220,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
 		}
 		
-		return this.commonDate(expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+		return this.commonDate(require, expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
 	}
 	
-	private GeneralDate commonDate(ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor) {
+	private GeneralDate commonDate(Require require, ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor) {
 		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
 		if(expriTime == ExpirationTime.END_OF_YEAR) {
 			//TODO 
@@ -229,14 +232,19 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		} else {
 			//期限指定のある使用期限日を作成する
 			if(expriTime != null) {
-				return useDateService.useDateDeadline(employmentCode, expriTime, dateInfor);
+				return useDateService.useDateDeadlineRequire(require, employmentCode, expriTime, dateInfor);
 			}
 		}
 		return GeneralDate.max();
 	}
 
+	public static interface Require extends UseDateDeadlineFromDatePeriodImpl.Require{
+		
+	}
+	
 	@Override
-	public DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData,
+	public DailyInterimRemainMngData createInterimBreak(
+			Require require, InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
 		Integer tranferTime = 0;
 		double tranferDay = 0;
@@ -253,7 +261,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			return mngData;
 		}
 		//代休使用期限日を取得する
-		GeneralDate useDate = this.getDayDaikyu(inforData);
+		GeneralDate useDate = this.getDayDaikyu(require, inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain recAbsData = new InterimRemain(mngId,
 				inforData.getSid(),

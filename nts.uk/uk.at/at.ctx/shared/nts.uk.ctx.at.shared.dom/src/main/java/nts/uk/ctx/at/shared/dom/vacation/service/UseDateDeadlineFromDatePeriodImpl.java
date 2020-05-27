@@ -1,26 +1,57 @@
 package nts.uk.ctx.at.shared.dom.vacation.service;
 
+import java.util.List;
 //import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-//import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.DefaultClosureServiceImpl;
 @Stateless
 public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDatePeriod{
 	@Inject
 	private ClosureService closureService;
+	
+	/*require用*/
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ClosureRepository closureRepository;
+	/*require用*/
+	
 	@Override
 	public GeneralDate useDateDeadline(String employmentCd, ExpirationTime expirationDate, GeneralDate baseDate) {
+		val require = new UseDateDeadlineFromDatePeriodImpl.Require() {
+			@Override
+			public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCd);
+			}
+			@Override
+			public List<Closure> findAllUse(String companyId) {
+				return closureRepository.findAllUse(companyId);
+			}
+			@Override
+			public Optional<Closure> findClosureById(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+		};
+		return useDateDeadlineRequire(require, employmentCd, expirationDate, baseDate);
+	}
+	@Override
+	public GeneralDate useDateDeadlineRequire(Require require, String employmentCd, ExpirationTime expirationDate, GeneralDate baseDate) {
 		//締めを取得する
-		Closure closureData = closureService.getClosurByEmployment(employmentCd);
+		Closure closureData = closureService.getClosurByEmployment(require, employmentCd);
 		if(closureData == null) {
 			return null;
 		}
@@ -36,6 +67,11 @@ public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDat
 		
 		return null;
 	}
+	
+	public static interface Require extends DefaultClosureServiceImpl.Require{
+		
+	}
+	
 	/**
 	 * 休暇使用期限年月を算出する
 	 * @param baseDate

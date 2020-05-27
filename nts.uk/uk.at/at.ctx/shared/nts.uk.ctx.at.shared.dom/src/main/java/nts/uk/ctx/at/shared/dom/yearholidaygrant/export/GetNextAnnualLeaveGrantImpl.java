@@ -8,7 +8,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -60,13 +63,40 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 	public List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
 			Optional<List<LengthServiceTbl>> lengthServiceTbls) {
+		val require = new GetNextAnnualLeaveGrantImpl.Require() {
+			@Override
+			public Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
+				return grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantNum);
+			}
+			@Override
+			public Optional<GrantHdTblSet> findGrantHdTblSetByCode(String companyId, String yearHolidayCode) {
+				return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
+			}
+			@Override
+			public List<LengthServiceTbl> findLengthServiceTblByCode(String companyId, String yearHolidayCode) {
+				return lengthServiceRepo.findByCode(companyId, grantTableCode);
+			}
+		};
+		
+		val cacheCarrier = new CacheCarrier();
+		return algorithmRequire(require, cacheCarrier, companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay, grantHdTblSet, lengthServiceTbls);
+	}
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<NextAnnualLeaveGrant> algorithmRequire(Require require, CacheCarrier cacheCarrier, String companyId, String grantTableCode, GeneralDate entryDate,
+			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
+			Optional<List<LengthServiceTbl>> lengthServiceTbls) {
 		
 		GetNextAnnualLeaveGrantProc proc = new GetNextAnnualLeaveGrantProc(
 				this.yearHolidayRepo,
 				this.lengthServiceRepo,
 				this.grantYearHolidayRepo,
 				this.getNextAnnualLeaveGrantProcMulti);
-		return proc.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
-				grantHdTblSet, lengthServiceTbls);
+		return proc.algorithmRequire(require, cacheCarrier, 
+				companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,grantHdTblSet, lengthServiceTbls);
+	}
+	
+	public static interface Require extends GetNextAnnualLeaveGrantProc.Require{
+		
 	}
 }
