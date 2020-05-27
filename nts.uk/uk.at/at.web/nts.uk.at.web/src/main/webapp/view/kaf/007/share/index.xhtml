@@ -113,7 +113,7 @@
 			<!--A5_1 勤務を変更する-->
 			<!-- <div class="check-work-time"
 				data-bind="ntsCheckBox: { checked: $parent.workChangeAtr, text: '#{i18n.getText('KAF007_39')}' }"></div> -->
-			<hr align="left" class="hr-style" />
+			
 			<div class="table">
 				<div class="cell valign-center">
 					<!--A6_1 勤務種類-->
@@ -368,7 +368,7 @@
 		<div class="valign-center control-group-kaf007"
 			data-bind="if: $parent.showReasonText()">
 			<!--A12 申請理由（ラベル）-->
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required: $parent.requiredReason}">#{i18n.getText('KAF007_27')}</div>
+			<div class="lblTitle-kaf007 lblTitle-kaf007_ver28" data-bind="ntsFormLabel: {required: $parent.requiredReason}">#{i18n.getText('KAF007_27')}</div>
 			<!--A12_1 申請理由-->
 			<div id="multiline-kaf007">
 				<textarea id="inpReasonTextarea"
