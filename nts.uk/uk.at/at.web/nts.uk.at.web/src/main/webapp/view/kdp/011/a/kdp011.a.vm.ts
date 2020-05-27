@@ -158,7 +158,7 @@ module nts.uk.at.view.kdp011.a {
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
                     showBaseDate: false,
-                    showClosure: false,
+                    showClosure: true, 
                     showAllClosure: false,
                     showPeriod: true,
                     periodFormatYM: false,
