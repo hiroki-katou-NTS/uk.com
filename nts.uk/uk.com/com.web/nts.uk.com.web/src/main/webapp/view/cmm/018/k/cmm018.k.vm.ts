@@ -279,8 +279,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.k2_1(getText('CMM018_110'));
                 self.k2_2(getText('CMM018_111'));
                 self.enableListWp(false);
-                if(self.lstJobG().length > 0) return;//データがある
-                var msie = window.navigator.userAgent.indexOf("MSIE ");
+                let msie = window.navigator.userAgent.indexOf("MSIE ");
 
                 if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
                 {
@@ -292,7 +291,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     $('div#prev-next-button').css('position','');
                     $('div#selected-approver').css('margin-left','25px')
                 }
-                
+                if(self.lstJobG().length > 0) return;//データがある     
                 if(self.lstJob().length > 0){
                     let lst = _.clone(self.lstJob());
                     self.lstJobG(lst);
