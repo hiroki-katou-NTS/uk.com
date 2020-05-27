@@ -5,7 +5,7 @@
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
 			</div>
 			<div class="div_line_col_2" data-bind="if:!screenModeNew()==true">
-				<label data-bind="text:employeeName" class="text_line"></label>
+				<label data-bind="text:employeeName" class="text_line" style="vertical-align: bottom;"></label>
 				<div style="display: inline-block; margin-left: 300px;" class="nts-fixed-body-container ui-iggrid">
 					<table class="fixed-table">
 						<colgroup>
@@ -149,7 +149,7 @@
 										optionsText: 'name',
 										editable: false,
 										required:true,
-										enable: true ,
+										enable: $parent.screenModeNew() || $parent.editable() ,
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
@@ -264,7 +264,7 @@
 										optionsText: 'name',
 										editable: false,
 										required:true,
-										enable: true,
+										enable: $parent.screenModeNew() || $parent.editable(),
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
