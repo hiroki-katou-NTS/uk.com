@@ -255,7 +255,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             
             self.requiredCheckTime(settingData.setupType == 0 && settingData.appWorkChangeSet.workChangeTimeAtr == 1);
             self.timeRequired(settingData.setupType == 0);
-            
+            self.appChangeSetting(settingData.appWorkChangeSet);
             self.appWorkChange().dataWork().workTypeCodes = _.map(settingData.workTypeLst, o => o.workTypeCode);
             self.appWorkChange().dataWork().workTimeCodes = _.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode);
         }

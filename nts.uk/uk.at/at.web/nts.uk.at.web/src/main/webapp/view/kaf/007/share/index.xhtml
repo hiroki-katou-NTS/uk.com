@@ -129,7 +129,7 @@
 					<!-- <button id="workSelect-kaf007"
 						data-bind=" click: $vm.openKDL003Click.bind($vm)">#{i18n.getText('KAF007_24')}</button> -->
 					<button id="workSelect-kaf007"
-						data-bind=" click: function(){ $parent.openKDL003Click($vm) }">#{i18n.getText('KAF007_24')}</button>
+						data-bind=" click: function(){ $parent.openKDL003Click($vm) }, enable: $parent.editable">#{i18n.getText('KAF007_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<!--A6_2 勤務種類名-->
@@ -380,7 +380,7 @@
 									                   	},
 			                   						required : false, 
 			                   						name: '#[KAF007_29]',
-			                   						enable: $parent.displayAppReasonContentFlg }" />
+			                   						enable: $parent.editable }" />
 			</div>
 		</div>
 	</div>
