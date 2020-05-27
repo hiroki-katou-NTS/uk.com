@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 
+
 public class Stamp implements DomainAggregate {
 
 	/**
@@ -120,5 +121,4 @@ public class Stamp implements DomainAggregate {
 	public String retriveKey() {
 		return this.getCardNumber().v() + this.getStampDateTime().toString();
 	}
-
 }
