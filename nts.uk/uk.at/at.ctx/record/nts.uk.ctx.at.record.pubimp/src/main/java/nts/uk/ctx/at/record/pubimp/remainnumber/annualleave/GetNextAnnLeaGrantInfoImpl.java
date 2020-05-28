@@ -28,6 +28,6 @@ public class GetNextAnnLeaGrantInfoImpl implements GetNextAnnLeaGrantInfo {
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime) {
 		
 		return this.calcNextAnnLeaGrantInfo.algorithm(
-				companyId, closureStart, entryDate, criteriaDate, grantTableCode, contractTime);
+				Optional.empty(), companyId, closureStart, entryDate, criteriaDate, grantTableCode, contractTime);
 	}
 }

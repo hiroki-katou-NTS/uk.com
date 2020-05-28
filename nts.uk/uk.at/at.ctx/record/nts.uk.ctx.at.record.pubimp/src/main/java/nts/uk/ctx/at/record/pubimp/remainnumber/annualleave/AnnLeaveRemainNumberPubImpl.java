@@ -148,7 +148,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// ドメインモデル「年休社員基本情報」を取得   
 //			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
-			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
+			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(
+					Optional.empty(), companyId, employeeId,
 					Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
@@ -226,7 +227,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		// ドメインモデル「年休社員基本情報」を取得
 //		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
+		List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(
+				Optional.empty(), companyId, employeeId,
 				Optional.empty());
 		if (annualLeaveGrant.size() == 0)
 			return null;
@@ -256,7 +258,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		GeneralDate aggrEnd = adjustDate.addYears(1).addDays(-1);
 		// 「次回年休付与日を計算」を実行
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrants = this.calNxAnnLeaGrantDate.algorithm(
-				companyId, employeeID, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
+				Optional.empty(), companyId, employeeID, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
 			GeneralDate prevNextGrant = nextAnnualLeaveGrants.get(0).getGrantDate().addDays(-1);
@@ -454,7 +456,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override
 	public NextHolidayGrantDate getNextHdGrantDateVer2(String companyId, String employeeId, Optional<GeneralDate> closureDate) {
 		NextHolidayGrantDate result = new NextHolidayGrantDate();
-		List<NextAnnualLeaveGrant> annLeaGrant = calNxAnnLeaGrantDate.calNextHdGrantV2(companyId, employeeId, Optional.empty(),
+		List<NextAnnualLeaveGrant> annLeaGrant = calNxAnnLeaGrantDate.calNextHdGrantV2(
+				Optional.empty(), companyId, employeeId, Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), closureDate);
 		if (annLeaGrant.size() == 0)
 			return null;
@@ -589,7 +592,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// ドメインモデル「年休社員基本情報」を取得   
 //			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
-			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(companyId, employeeId,
+			List<NextAnnualLeaveGrant> annualLeaveGrant = calNxAnnLeaGrantDate.algorithm(
+					Optional.empty(), companyId, employeeId,
 					Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());

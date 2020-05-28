@@ -81,7 +81,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		
 		// 「次回年休付与を計算」を実行
 		val nextAnnualLeaveGrants = this.calcNextAnnualLeaveGrantNum.algorithm(
-				companyId, employeeId, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
+				Optional.empty(), companyId, employeeId, Optional.of(new DatePeriod(adjustDate, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
 			GeneralDate prevNextGrant = nextAnnualLeaveGrants.get(0).getGrantDate().addDays(-1);

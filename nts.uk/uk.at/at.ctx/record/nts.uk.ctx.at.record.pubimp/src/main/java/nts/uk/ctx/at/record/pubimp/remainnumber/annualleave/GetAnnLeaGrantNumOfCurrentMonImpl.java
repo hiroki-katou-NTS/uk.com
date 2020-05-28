@@ -53,7 +53,7 @@ public class GetAnnLeaGrantNumOfCurrentMonImpl implements GetAnnLeaGrantNumOfCur
 	
 		// 次回年休付与を計算
 		val nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantNum.algorithm(
-				closure.getCompanyId().v(), employeeId, Optional.of(closurePeriod));
+				Optional.empty(), closure.getCompanyId().v(), employeeId, Optional.of(closurePeriod));
 		
 		// 全ての「次回年休付与．付与日数」を合計する
 		double grantDays = 0.0;

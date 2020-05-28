@@ -24,7 +24,7 @@ public class TestAnnualLeave {
 //		this.expectedValueList = expectedVaue.build();
 		
 		this.caseList = AnnualleaveTestCase.build();
-	}	
+	}
 
 	/*検証method*/
 	@Test

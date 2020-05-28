@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 
 @Getter
 //@AllArgsConstructor
-public class AnnualLeaveNumberInfo extends LeaveNumberInfo {
+public class AnnualLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 
 //	/**
 //	 * 付与数

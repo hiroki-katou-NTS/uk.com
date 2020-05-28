@@ -27,7 +27,7 @@ public class GetNextAnnLeaGrantDateImpl implements GetNextAnnLeaGrantDate {
 		
 		// 次回年休付与を計算
 		val nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantNum.algorithm(
-				companyId, employeeId, Optional.empty());
+				Optional.empty(), companyId, employeeId, Optional.empty());
 		
 		// 次回年休付与．付与年月日を返す
 		if (nextAnnualLeaveGrantList.size() == 0) return Optional.empty();

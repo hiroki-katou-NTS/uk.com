@@ -202,7 +202,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			
 			//○次回年休付与を取得する
 			nextAnnualLeaveGrant = getNextAnnualLeaveGrant
-					.algorithm(companyId, 
+					.algorithm(Optional.empty(), companyId, 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().toString(), 
 							employeeRecordImport.getEntryDate(), 
 							annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), 

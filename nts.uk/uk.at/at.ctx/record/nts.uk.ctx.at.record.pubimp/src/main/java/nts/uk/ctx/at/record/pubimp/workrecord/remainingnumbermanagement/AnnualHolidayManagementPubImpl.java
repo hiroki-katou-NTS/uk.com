@@ -140,7 +140,8 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		}
 		
 		// 次回年休付与を取得する
-		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData = nextAnnualLeaveGrant.algorithm(companyId, grantHdTblSet.get().getYearHolidayCode().v(), 
+		List<NextAnnualLeaveGrantExport> nextAnnualLeaveGrantData 
+			= nextAnnualLeaveGrant.algorithm(Optional.empty(), companyId, grantHdTblSet.get().getYearHolidayCode().v(), 
 				employee.getEntryDate(), annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay)
 				.stream().map(x -> new NextAnnualLeaveGrantExport(
 						x.getGrantDate(), 
@@ -176,7 +177,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 		
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
-				companyId, employeeId, Optional.empty(),
+				Optional.empty(), companyId, employeeId, Optional.empty(),
 				Optional.empty(), basicInfoOpt, Optional.empty(), Optional.empty());
 		
 		// List先頭の次回年休付与を出力用クラスにセット

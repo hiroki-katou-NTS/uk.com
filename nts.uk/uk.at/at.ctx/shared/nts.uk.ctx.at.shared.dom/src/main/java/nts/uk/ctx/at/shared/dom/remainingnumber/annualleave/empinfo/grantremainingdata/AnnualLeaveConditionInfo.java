@@ -1,10 +1,19 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
+import java.io.Serializable;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 
 @Getter
-public class AnnualLeaveConditionInfo {
+@Setter
+public class AnnualLeaveConditionInfo implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 所定日数

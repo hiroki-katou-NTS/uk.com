@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -15,11 +19,12 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
- * @author HungTT - 年休付与残数履歴データ
+ * @author HungTT - 年休付与残数履歴データ テスト用！！！
  *
  */
 @Getter
-public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serializable{
+@Setter
+public class AnnualLeaveRemainingHistoryTest extends AggregateRoot implements Serializable{
 
 
 	/**
@@ -30,26 +35,28 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serial
 	/**
 	 * 社員ID
 	 */
-	private String employeeId;
+	private String employeeId = "社員ID";
 
 	/**
 	 * 付与日
 	 */
-	private GeneralDate grantDate;
+	//@JsonDeserialize(using = GeneralDateDeserializer.class)
+	private GeneralDate grantDate = GeneralDate.ymd(2020, 4, 30);
 	
 	// 年月
-	private YearMonth yearMonth;
+	private YearMonth yearMonth = YearMonth.of(2020, 4);
 
 	// 締めID
-	private ClosureId closureId;
+	private ClosureId closureId = ClosureId.valueOf(20);
 
 	// 締め日
-	private ClosureDate closureDate;
+	private ClosureDate closureDate = new ClosureDate(20, true);
 
 	/**
 	 * 期限日
 	 */
-	private GeneralDate deadline;
+	//@JsonDeserialize(using = GeneralDateDeserializer.class)
+	private GeneralDate deadline;// = GeneralDate.localDate(grantDate);
 
 	/**
 	 * 期限切れ状態
@@ -72,9 +79,9 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serial
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
 
-	public AnnualLeaveRemainingHistory(){}
+	public AnnualLeaveRemainingHistoryTest(){}
 
-	public AnnualLeaveRemainingHistory(String cID, String employeeId, Integer yearMonth,
+	public AnnualLeaveRemainingHistoryTest(String cID, String employeeId, Integer yearMonth,
 			Integer clousureId, Integer closureDay, Boolean isLastDayOfMonth, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
@@ -101,7 +108,7 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serial
 		
 	}
 
-	public AnnualLeaveRemainingHistory(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
+	public AnnualLeaveRemainingHistoryTest(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
 			ClosureDate closureDate) {
 		this.cid = data.getCid();
 		this.employeeId = data.getEmployeeId();

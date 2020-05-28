@@ -475,7 +475,9 @@ public class AnnualLeaveInfo implements Cloneable {
 				ManagementDays remainDaysWork = new ManagementDays(tempAnnualLeaveMng.getUseDays().v());
 				
 				// 年休付与残数を取得
-				List<AnnualLeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
+				List<LeaveGrantRemainingData> targetRemainingDatas 
+					= new ArrayList<LeaveGrantRemainingData>();
+				
 				for (val remainingData : this.grantRemainingList){
 					if (tempAnnualLeaveMng.getYmd().before(remainingData.getGrantDate())) continue;
 					if (tempAnnualLeaveMng.getYmd().after(remainingData.getDeadline())) continue;
@@ -502,13 +504,17 @@ public class AnnualLeaveInfo implements Cloneable {
 				// 「休暇残数シフトリストWORK」一時変数を作成
 				RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 				
+				boolean isForcibly = true; // ooooo
+				
 				// 消化する
 				LeaveGrantRemainingData.digest(
 						targetRemainingDatas,
 						repositoriesRequiredByRemNum,
 						remNumShiftListWork,
-						leaveUsedNumber, employeeId, 
-						aggregatePeriodWork.getPeriod().start(), isForcibly);
+						leaveUsedNumber,
+						employeeId, 
+						aggregatePeriodWork.getPeriod().start(),
+						isForcibly);
 				
 				// 残数不足で一部消化できなかったとき
 				if ( !remNumShiftListWork.getUnusedNumber().isZero() ){
@@ -527,8 +533,8 @@ public class AnnualLeaveInfo implements Cloneable {
 							null, null, null));
 					dummyRemainData.setDummyAtr(true);
 					
-					// 年休を指定日数消化する
-					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
+//					// 年休を指定日数消化する
+//					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
 					
 					// 付与残数データに追加
 					this.grantRemainingList.add(dummyRemainData);
