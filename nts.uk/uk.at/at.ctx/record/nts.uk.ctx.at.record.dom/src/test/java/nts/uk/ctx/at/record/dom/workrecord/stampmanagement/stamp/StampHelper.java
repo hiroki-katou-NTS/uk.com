@@ -43,8 +43,8 @@ public class StampHelper {
 						new WorkLocationCD("workLocationCD"), 
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
-								new AttendanceTime(1),
-								new AttendanceTime(2))), 
+								new AttendanceTime(0),
+								new AttendanceTime(0))), 
 				new StampLocationInfor(
 						false, 
 						getGeoCoordinateDefault()));
@@ -76,21 +76,21 @@ public class StampHelper {
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
 		data.add(getStampDefault());
-		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber1"), GeneralDateTime.now(),
+		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(2))),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new StampLocationInfor(false, getGeoCoordinateDefault())));
-		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now().addDays(1),
+		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(2))),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new StampLocationInfor(false, getGeoCoordinateDefault())));
 		return data;
 	}
