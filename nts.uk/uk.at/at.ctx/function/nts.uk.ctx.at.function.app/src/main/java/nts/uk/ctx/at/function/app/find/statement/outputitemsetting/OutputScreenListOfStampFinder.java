@@ -188,7 +188,7 @@ public class OutputScreenListOfStampFinder {
 					local = "";
 					
 					} else{
-						local = localInfo.getPositionInfor().getLatitude() + " " + localInfo.getPositionInfor().getLongitude();
+						local = String.format("%.6f", localInfo.getPositionInfor().getLatitude()) + " " +  String.format("%.6f", localInfo.getPositionInfor().getLongitude());
 					}
 						
 				}
@@ -301,7 +301,7 @@ public class OutputScreenListOfStampFinder {
 						localInfor = "";
 					}  
 					else {
-						localInfor = positionInfo.getLatitude() + " " + positionInfo.getLongitude();
+						localInfor = String.format("%.6f",  positionInfo.getLatitude()) + " " + String.format("%.6f", positionInfo.getLongitude()) ;
 					}
 			
 				}
