@@ -101,8 +101,10 @@ public class StampRecordDto {
 			if (stamp.getLocationInfor().isPresent()) {
 				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
 				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				this.latitude = stampLocate.getPositionInfor().getLatitude();
-				this.longitude = stampLocate.getPositionInfor().getLongitude();
+				if(stampLocate.getPositionInfor() != null) {
+					this.latitude = stampLocate.getPositionInfor().getLatitude();
+					this.longitude = stampLocate.getPositionInfor().getLongitude();					
+				}
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
