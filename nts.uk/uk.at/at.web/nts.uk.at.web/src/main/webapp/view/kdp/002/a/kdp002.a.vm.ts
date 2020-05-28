@@ -162,6 +162,17 @@ module nts.uk.at.view.kdp002.a {
                     }
                 });
             }
+
+            public reCalGridWidthHeight() {
+                // let stampHeight = $('#stamp-date').height() + 
+                //                 $('#stamp-time').height() + 
+                //                 $('#stamp-desc').height() + 
+                //                 $('#tab-panel').height();
+                let windowHeight = window.innerHeight - 250;
+                // let height = 
+                $('#stamp-history-list').igGrid("option", "height", windowHeight);
+                $('#time-card-list').igGrid("option", "height", windowHeight);
+            }
         
         }
 
