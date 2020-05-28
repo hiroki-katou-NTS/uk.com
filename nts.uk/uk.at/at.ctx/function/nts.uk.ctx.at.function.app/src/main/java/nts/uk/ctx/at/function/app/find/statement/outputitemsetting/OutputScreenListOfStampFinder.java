@@ -15,6 +15,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
+import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -69,12 +73,28 @@ public class OutputScreenListOfStampFinder {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	
+	@Inject
+	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+	
+	@Inject
+	private RoleExportRepoAdapter roleExportRepoAdapter;
+	
+	private static final Integer FUNCTION_NO = 5;
 
 	// 起動する(khởi động)
 	public OutputScreenListOfStampDto initScreen() {
-			String employeeID = AppContexts.user().employeeId();
-			GeneralDate ymd = GeneralDate.today();
-			OutputScreenListOfStampDto result = new OutputScreenListOfStampDto();
+		
+		String employeeID = AppContexts.user().employeeId();
+		GeneralDate ymd = GeneralDate.today();
+		String roleId = AppContexts.user().roles().forAttendance();
+		OutputScreenListOfStampDto result = new OutputScreenListOfStampDto();
+		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {
+			result.setExistAuthEmpl(true);
+		} else {
+			result.setExistAuthEmpl(false);
+		}
+	
+			
 		// [RQ622]会社IDから会社情報を取得する
 		CompanyInfor companyInfo = company.getCurrentCompany().orElseGet(() -> {
 			throw new RuntimeException("System Error: Company Info");
