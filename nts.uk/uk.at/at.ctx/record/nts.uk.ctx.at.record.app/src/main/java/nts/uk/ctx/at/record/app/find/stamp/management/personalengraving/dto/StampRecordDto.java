@@ -114,6 +114,9 @@ public class StampRecordDto {
 	}
 
 	public String getCorectTtimeStampType() {
+		if(this.changeClockArt == null) {
+			return null;
+		}
 
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value
