@@ -148,11 +148,11 @@ private static final long serialVersionUID = 1L;
 				new ButtonType(
 						EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), 
 						new StampType(
-								this.changeHalfDay == 0 ? false : true  , 
+								this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
 								this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
-								EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
+								this.setPreClockArt == null ? null :EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
 								this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
-								EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),
+								this.changeCalArt == null ? null : EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
 	}
@@ -167,11 +167,11 @@ private static final long serialVersionUID = 1L;
 				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getChangeClockArt() == null ? null : settings.getButtonType().getStampType().get().getChangeClockArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
-						: settings.getButtonType().getStampType().get().getChangeCalArt().value,
+						: settings.getButtonType().getStampType().get().getChangeCalArt() == null ? null : settings.getButtonType().getStampType().get().getChangeCalArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
-						: settings.getButtonType().getStampType().get().getSetPreClockArt().value,
+						: settings.getButtonType().getStampType().get().getSetPreClockArt() == null ? null : settings.getButtonType().getStampType().get().getSetPreClockArt().value,
 				!settings.getButtonType().getStampType().isPresent() ? null
-						: settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0,
+						: settings.getButtonType().getStampType().get().getChangeHalfDay() == null ? null : settings.getButtonType().getStampType().get().getChangeHalfDay() ? 1 : 0,
 				!settings.getButtonType().getStampType().isPresent() ? null
 						: settings.getButtonType().getStampType().get().getGoOutArt().isPresent()
 								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,

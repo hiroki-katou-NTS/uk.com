@@ -162,11 +162,11 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 						new ButtonType(
 								optional2.get().getButtonType().getReservationArt(), 
 								new StampType(
-										optional2.get().getButtonType().getStampType().get().isChangeHalfDay(), 
-										optional2.get().getButtonType().getStampType().get().getGoOutArt().get(), 
-										optional2.get().getButtonType().getStampType().get().getSetPreClockArt(), 
-										optional2.get().getButtonType().getStampType().get().getChangeClockArt(), 
-										optional2.get().getButtonType().getStampType().get().getChangeCalArt())), 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null)), 
 						optional2.get().getUsrArt(), 
 						optional2.get().getAudioType());
 				commandProxy().insert(KrcctStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));

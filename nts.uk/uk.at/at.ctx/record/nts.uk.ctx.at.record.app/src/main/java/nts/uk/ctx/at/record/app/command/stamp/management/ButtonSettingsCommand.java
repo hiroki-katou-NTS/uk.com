@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -54,17 +56,21 @@ public class ButtonSettingsCommand {
 		ButtonDisSet buttonDisSets = new ButtonDisSet(buttonNameSet, backGroundColors);
 
 		ReservationArt reservationArt = EnumAdaptor.valueOf(x.getButtonType().getReservationArt(), ReservationArt.class);
-		GoingOutReason goOutArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
-		SetPreClockArt setPreClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
-				SetPreClockArt.class);
-		ChangeClockArt changeClockArt = x.getButtonType().getStampType().getChangeClockArt() != null ? EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
-				ChangeClockArt.class) : null;
-		ChangeCalArt changeCalArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
-				ChangeCalArt.class);
-		StampType stampType = new StampType(x.getButtonType().getStampType().isChangeHalfDay(), goOutArt, setPreClockArt,
-				changeClockArt, changeCalArt);
+		Optional<StampType> stampType = Optional.empty();
 		
-		ButtonType buttonType = new ButtonType(reservationArt, stampType);
+		if(x.getButtonType().getReservationArt() != 1 && x.getButtonType().getReservationArt() != 2) {
+			GoingOutReason goOutArt = x.getButtonType().getStampType().getGoOutArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
+			SetPreClockArt setPreClockArt = x.getButtonType().getStampType().getSetPreClockArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
+					SetPreClockArt.class);
+			ChangeClockArt changeClockArt = x.getButtonType().getStampType().getChangeClockArt() != null ? EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
+					ChangeClockArt.class) : null;
+			ChangeCalArt changeCalArt = x.getButtonType().getStampType().getChangeCalArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
+					ChangeCalArt.class);
+			stampType = Optional.of(new StampType(x.getButtonType().getStampType().getChangeHalfDay() == null ? null : x.getButtonType().getStampType().getChangeHalfDay(), goOutArt, setPreClockArt,
+					changeClockArt, changeCalArt));
+		}
+		
+		ButtonType buttonType = new ButtonType(reservationArt, stampType.isPresent() ? stampType.get() : null);
 
 		NotUseAtr usrArts = EnumAdaptor.valueOf(x.getUsrArt(), NotUseAtr.class);
 
