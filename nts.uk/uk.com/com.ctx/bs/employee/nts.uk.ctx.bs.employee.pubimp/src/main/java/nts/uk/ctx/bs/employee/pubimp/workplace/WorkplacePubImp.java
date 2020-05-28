@@ -346,33 +346,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		// Return
 		return lstWpkIds.stream().distinct().collect(Collectors.toList());
 	}
-	
-	@RequiredArgsConstructor
-	class RequireImpl implements WorkplacePubImp.Require{
-		
-		private final CacheCarrier cacheCarrier;
-		
-		@Override
-		public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate baseDate, String employeeId){
-//			AffWorkplaceHistoryItemCache cache = cacheCarrier.get(AffWorkplaceHistoryItemCache.DOMAIN_NAME);
-//			return cache.get(employeeId, baseDate);
-			return affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
-		}
-		
-		@Override
-		public List<WorkplaceHierarchy> findAllParentByWkpId(GeneralDate baseDate, String workplaceId){
-			ParentsWorkplaceHierarchyCache cache = cacheCarrier.get(ParentsWorkplaceHierarchyCache.DOMAIN_NAME);
-			return cache.get(workplaceId,baseDate);
-		}
-	}
-	
-	public static interface Require{
-//		affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
-		List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId);
-//		wkpConfigInfoRepo.findAllParentByWkpId(companyId, baseDate, item.getWorkplaceId())
-		List<WorkplaceHierarchy> findAllParentByWkpId(GeneralDate baseDate, String wkpId);
-	}
-	
 	@Override
 	public Map<GeneralDate, Map<String, List<String>>> findWpkIdsBySids(String companyId, List<String> employeeId, DatePeriod date) {
 		// Query
@@ -1016,5 +989,31 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return wkpInfors.stream().map(item -> WorkPlaceInfoExport.builder().workplaceId(item.getWorkplaceId())
 				.workPlaceName(item.getWorkplaceName().v()).build()).collect(Collectors.toList());
 	}
-
+	
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements WorkplacePubImp.Require{
+		
+		private final CacheCarrier cacheCarrier;
+		
+		@Override
+		public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate baseDate, String employeeId){
+//			AffWorkplaceHistoryItemCache cache = cacheCarrier.get(AffWorkplaceHistoryItemCache.DOMAIN_NAME);
+//			return cache.get(employeeId, baseDate);
+			return affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
+		}
+		
+		@Override
+		public List<WorkplaceHierarchy> findAllParentByWkpId(GeneralDate baseDate, String workplaceId){
+			ParentsWorkplaceHierarchyCache cache = cacheCarrier.get(ParentsWorkplaceHierarchyCache.DOMAIN_NAME);
+			return cache.get(workplaceId,baseDate);
+		}
+	}
+	
+	public static interface Require{
+//		affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
+		List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId);
+//		wkpConfigInfoRepo.findAllParentByWkpId(companyId, baseDate, item.getWorkplaceId())
+		List<WorkplaceHierarchy> findAllParentByWkpId(GeneralDate baseDate, String wkpId);
+	}
 }

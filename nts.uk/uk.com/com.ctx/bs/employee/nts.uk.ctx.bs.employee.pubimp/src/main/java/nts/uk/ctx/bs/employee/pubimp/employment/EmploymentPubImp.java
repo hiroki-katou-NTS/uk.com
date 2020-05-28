@@ -274,14 +274,14 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		public List<EmploymentHistory> getByListSid(List<String> employeeIds, DatePeriod datePeriod) {
 //			EmploymentHistoryCache cache = cacheCarrier.get(EmploymentHistoryCache.DOMAIN_NAME);
 //			return cache.get(employeeIds,datePeriod);
-			return getByListSid(employeeIds, datePeriod);
+			return empHistRepo.getByListSid(employeeIds, datePeriod);
 		}
 
 		@Override
 		public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
 //			EmploymentHistoryItemCache cache = cacheCarrier.get(EmploymentHistoryItemCache.DOMAIN_NAME);
 //			return cache.get(historyIds);
-			return getByListHistoryId(historyIds);
+			return empHistItemRepo.getByListHistoryId(historyIds);
 		}
 
 		@Override

@@ -133,7 +133,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 				.map(item -> item.getClassificationCode().v()).collect(Collectors.toList());
 
 		// Find emp by empCd
-		List<Classification> lstClassification = require.getClassificationByCodes(clsCds);
+		List<Classification> lstClassification = require.getClassificationByCodes(companyId, clsCds);
 
 		Map<String, String> mapCls = lstClassification.stream()
 				.collect(Collectors.toMap(item -> item.getClassificationCode().v(),
@@ -206,13 +206,13 @@ public class ClassificationPubImp implements SyClassificationPub {
 		public List<AffClassHistItem> getByHistoryIds(List<String> historyIds) {
 //			AffClassHistItemCache cache = cacheCarrier.get( AffClassHistItemCache.DOMAIN_NAME);
 //			return cache.get();
-			return getByHistoryIds(historyIds);
+			return affClassHistItemRepository.getByHistoryIds(historyIds);
 		}
 		@Override
-		public List<Classification> getClassificationByCodes(List<String> codes) {
+		public List<Classification> getClassificationByCodes(String companyId, List<String> codes) {
 //			ClassificationCache cache = cacheCarrier.get(ClassificationCache.DOMAIN_NAME);
 //			return cache.get();
-			return getClassificationByCodes(codes);
+			return classificationRepository.getClassificationByCodes(companyId, codes);
 		}
 	}
 	public static interface Require{
@@ -221,6 +221,6 @@ public class ClassificationPubImp implements SyClassificationPub {
 //		affClassHistItemRepository.getByHistoryIds(histIds);
 		List<AffClassHistItem> getByHistoryIds(List<String> historyIds);
 //		classificationRepository.getClassificationByCodes(companyId, clsCds);
-		List<Classification> getClassificationByCodes(List<String> codes);
+		List<Classification> getClassificationByCodes(String companyId, List<String> codes);
 	}
 }
