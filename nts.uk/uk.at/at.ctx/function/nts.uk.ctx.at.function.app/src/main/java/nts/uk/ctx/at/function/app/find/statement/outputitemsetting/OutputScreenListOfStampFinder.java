@@ -172,10 +172,14 @@ public class OutputScreenListOfStampFinder {
 				
 				String local = "";
 				String optSupportCard = "";
+				String workLocationName = "";
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+				if(stamp.getRefActualResults().getWorkLocationCD().isPresent()){
 				val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				 workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				}
+				
 				
 				// Local Infor
 				if(stamp.getLocationInfor().isPresent()){
