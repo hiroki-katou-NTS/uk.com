@@ -45,9 +45,11 @@ class EmbossGridInfo {
                 stampData.code = ++idx;
                 let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
                 if (moment(stampData.stampDate).day() ==6){
-                    formatedStamp = "<span class='color-schedule-saturday' >"+ formatedStamp + "</span>";
+                    formatedStamp = "<span class='color-schedule-saturday'> "+ formatedStamp + "</span>";
                 } else if (moment(stampData.stampDate).day() == 0){
-                    formatedStamp = "<span class='color-schedule-sunday'>"+ formatedStamp + "</span>";
+                    formatedStamp = "<span class='color-schedule-sunday'> "+ formatedStamp + "</span>";
+                } else {
+                    formatedStamp = "<span class=''> "+ formatedStamp + "</span>";
                 }
                 stampData.stampDate = formatedStamp;
 
@@ -72,6 +74,8 @@ class EmbossGridInfo {
                     formatedCardTime = "<span class='color-schedule-saturday' >"+ formatedCardTime + "</span>";
                 } else if (moment(timeCard.date).day() == 0){
                     formatedCardTime = "<span class='color-schedule-sunday'>"+ formatedCardTime + "</span>";
+                } else {
+                    formatedCardTime = "<span class=''>"+ formatedCardTime + "</span>";
                 }
                 timeCard.date = formatedCardTime;
                 timeCard.workIn1 = timeCard.workIn1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn1) : null;
