@@ -41,7 +41,7 @@ public class AppCommonSettingOutputDto {
 		appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
 				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
-		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType.toDomainOptional();
+		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType == null ? Optional.empty() : appEmploymentWorkType.toDomainOptional();
 		return appCommonSettingOutput;
 	}
 
