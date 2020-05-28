@@ -94,7 +94,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = "KDP011_" + TextResource.localize("KDP011_1") + "_" + dateTime + ".xlsx";
+			String fileName = TextResource.localize("KDP011_1") + "_" + dateTime + ".xlsx";
 			OutputStream outputStream = this.createNewFile(fileGeneratorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 			WorkingFile workingFile = fileGeneratorContext.getWorkingFiles().get(0);
