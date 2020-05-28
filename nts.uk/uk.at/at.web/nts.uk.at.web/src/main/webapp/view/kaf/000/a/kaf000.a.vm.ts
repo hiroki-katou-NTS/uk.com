@@ -269,7 +269,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let self = this,
                 index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
             // case group approver
-            if(_.size(loopFrame.listApprover()) >= 1 && loopPhase.listApprovalFrame().length == 1 ) {
+            if(_.size(loopFrame.listApprover()) > 1) {
                 index++;
             }
             if(index <= 10){
