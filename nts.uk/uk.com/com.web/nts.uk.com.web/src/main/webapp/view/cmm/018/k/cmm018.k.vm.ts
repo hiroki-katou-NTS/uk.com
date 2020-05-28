@@ -385,7 +385,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     }
                     return;
                 }
-                lstApprover = self.lstSpec2();
+                _.each(self.lstSpec2(), function(item, index){
+                    lstApprover.push({code: item.code, name: item.name, dispOrder: index + 1});
+                });
                 approvalForm = self.selectFormSetS();
                 specWkpId = self.treeGrid.selectedId() || '';
             }else{//GROUP
