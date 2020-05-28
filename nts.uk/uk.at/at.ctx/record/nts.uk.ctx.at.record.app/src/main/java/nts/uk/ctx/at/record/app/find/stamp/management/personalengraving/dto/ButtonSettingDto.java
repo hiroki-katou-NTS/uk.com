@@ -21,7 +21,7 @@ public class ButtonSettingDto {
 	private String btnBackGroundColor;
 	
 	private Integer btnReservationArt;
-	private boolean changeHalfDay;
+	private Boolean changeHalfDay;
 	private Integer goOutArt;
 	private Integer setPreClockArt;
 	private Integer changeClockArt;
