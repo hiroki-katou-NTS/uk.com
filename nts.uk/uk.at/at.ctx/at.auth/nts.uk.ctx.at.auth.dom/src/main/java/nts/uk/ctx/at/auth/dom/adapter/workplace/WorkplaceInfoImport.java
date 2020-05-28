@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.auth.dom.adapter;
+package nts.uk.ctx.at.auth.dom.adapter.workplace;
 
 import java.util.List;
 

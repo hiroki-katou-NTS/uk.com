@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.auth.dom.adapter;
+package nts.uk.ctx.at.auth.dom.adapter.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
