@@ -15,6 +15,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
+import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -36,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 /**
  * 
  * @author HieuLT
@@ -68,12 +73,28 @@ public class OutputScreenListOfStampFinder {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	
+	@Inject
+	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
+	
+	@Inject
+	private RoleExportRepoAdapter roleExportRepoAdapter;
+	
+	private static final Integer FUNCTION_NO = 5;
 
 	// 起動する(khởi động)
 	public OutputScreenListOfStampDto initScreen() {
-			String employeeID = AppContexts.user().employeeId();
-			GeneralDate ymd = GeneralDate.today();
-			OutputScreenListOfStampDto result = new OutputScreenListOfStampDto();
+		
+		String employeeID = AppContexts.user().employeeId();
+		GeneralDate ymd = GeneralDate.today();
+		String roleId = AppContexts.user().roles().forAttendance();
+		OutputScreenListOfStampDto result = new OutputScreenListOfStampDto();
+		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {
+			result.setExistAuthEmpl(true);
+		} else {
+			result.setExistAuthEmpl(false);
+		}
+	
+			
 		// [RQ622]会社IDから会社情報を取得する
 		CompanyInfor companyInfo = company.getCurrentCompany().orElseGet(() -> {
 			throw new RuntimeException("System Error: Company Info");
@@ -150,16 +171,18 @@ public class OutputScreenListOfStampFinder {
 				val stamp = stampInfoDisp.getStamp().get();
 				
 				String local = "";
+				String optSupportCard = "";
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
 				val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
 				
 				// Local Infor
 				if(stamp.getLocationInfor().isPresent()){
 					val localInfo = stamp.getLocationInfor().get();
 					if(localInfo.getPositionInfor() == null){
-					local = " ";
+					local = "";
+					
 					} else{
 						local = localInfo.getPositionInfor().getLatitude() + " " + localInfo.getPositionInfor().getLongitude();
 					}
@@ -167,12 +190,13 @@ public class OutputScreenListOfStampFinder {
 				}
 				
 				// Support Card
-				val optSupportCard = stamp.getRefActualResults().getCardNumberSupport();
-				
+				if(stamp.getRefActualResults().getCardNumberSupport().isPresent()){
+				 optSupportCard = stamp.getRefActualResults().getCardNumberSupport().get();
+				}
 				// WorkTime Name
 				val optWorkTimeCode = stamp.getRefActualResults().getWorkTimeCode();
 				val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
-				val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+				val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : optWorkTimeCode.get().v() +" "+ TextResource.localize("KDP011_50");
 				
 				// Overtime Hour & Late Night Time
 				val optOvertimeDeclaration = stamp.getRefActualResults().getOvertimeDeclaration();			
@@ -191,7 +215,7 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setInstallPlace(workLocationName);
 				employeEngravingInfor.setLocalInfor(local);
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
-				employeEngravingInfor.setSupportCard(optSupportCard.orElse(""));
+				employeEngravingInfor.setSupportCard(optSupportCard);
 				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
 				if(optOvertimeDeclaration.isPresent()){
 				employeEngravingInfor.setOvertimeHours(getTimeString(optOvertimeDeclaration.get().getOverTime().v()));
@@ -249,34 +273,43 @@ public class OutputScreenListOfStampFinder {
 			String overtimeHours = "";
 			String lateNightTime = "";
 			String workLocationName = "";
+			//String latitude = "";
+			// longitude = "";
 
 			if (stampInfoDisp.getStamp().isPresent()) {
-			
+
 				stampMeans = stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name;
 				authcMethod = stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name;
-				
+
 				val refActualResults = stampInfoDisp.getStamp().get().getRefActualResults();
 				val workLocationCD = refActualResults.getWorkLocationCD();
-				
+
 				if (workLocationCD.isPresent()) {
-					val optWorkLocation = listWorkLocation.stream().filter(c ->c.getWorkLocationCD().v().equals(workLocationCD.get().v())).findFirst();
-					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+					val optWorkLocation = listWorkLocation.stream()
+							.filter(c -> c.getWorkLocationCD().v().equals(workLocationCD.get().v())).findFirst();
+					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCD.get().v() +" "+TextResource.localize("KDP011_50");
 				}
-				
+
 				val locationInfo = stampInfoDisp.getStamp().get().getLocationInfor();
-				if (locationInfo.isPresent()) {			
+				if (locationInfo.isPresent()) {
 					val positionInfo = locationInfo.get().getPositionInfor();
-					localInfor = positionInfo.getLatitude() + " " + positionInfo.getLongitude();
+					if (positionInfo == null) {
+						localInfor = "";
+					}  
+					else {
+						localInfor = positionInfo.getLatitude() + " " + positionInfo.getLongitude();
+					}
+			
 				}
-				
+				if(refActualResults.getCardNumberSupport().isPresent()){
 				supportCard = refActualResults.getCardNumberSupport().get();
-				
+				}
 				val workTimeCode = refActualResults.getWorkTimeCode();
 				if (workTimeCode.isPresent()) {
 					val workTimeDisplayNameCheck = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
 														 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst();
 					if(workTimeDisplayNameCheck.isPresent()){
-						workTimeDisplayName = workTimeDisplayNameCheck.get();
+						workTimeDisplayName = workTimeDisplayNameCheck.isPresent() ?  workTimeDisplayNameCheck.get() : workTimeCode.get().v() + " " +TextResource.localize("KDP011_50");
 					}
 					
 
