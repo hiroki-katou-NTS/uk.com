@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.RepositoriesRequiredByRemNum;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -44,6 +45,9 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 	}
 	@Override
 	public Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd) {
+		Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt
+			= Optional.of(new RepositoriesRequiredByRemNum()); // ooooo
+		
 		//ドメインモデル「年休社員基本情報」を取得する
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt = annLeaEmpBasicInfoRepository.get(sid);
 		if(!annualLeaveEmpBasicInfoOpt.isPresent()) {
@@ -51,12 +55,15 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		}
 		EmployeeImport employeeInfor = empEmployee.findByEmpId(sid);
 		//次回年休付与を計算
-		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = calcNextAnnGrantDate.algorithm(cid, sid, Optional.empty());
+		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = calcNextAnnGrantDate.algorithm(
+				repositoriesRequiredByRemNumOpt, cid, sid, Optional.empty());
 		List<NextAnnualLeaveGrant> lstAnnGrantDate = new ArrayList<>();
 		if(!lstAnnGrantNotDate.isEmpty()) {
 			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate().addYears(1));
 			//入社年月日～次回年休付与日までの年休付与日を全て取得
-			lstAnnGrantDate = calcNextAnnGrantDate.algorithm(cid, 
+			lstAnnGrantDate = calcNextAnnGrantDate.algorithm(
+					repositoriesRequiredByRemNumOpt, 
+					cid, 
 					sid, 
 					Optional.of(period));
 		}

@@ -45,7 +45,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNum,
 			String companyId, String employeeId, Optional<DatePeriod> period){
 		return this.algorithm(repositoriesRequiredByRemNum, 
 				companyId, employeeId, period,
@@ -56,7 +56,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNum, 
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
 			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
@@ -122,7 +122,7 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 
 	@Override
 	public List<NextAnnualLeaveGrant> calNextHdGrantV2(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNum, 
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> empOp, Optional<AnnualLeaveEmpBasicInfo> annLeaEmpInfoOp,
 			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthSvTblsOpt,

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
 import lombok.Getter;
+import java.io.Serializable;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -12,8 +13,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
  * @author shuichi_ishida
  */
 @Getter
-public class TmpAnnualLeaveMngWork {
+public class TmpAnnualLeaveMngWork implements Serializable {
 
+	/**
+     * シリアルバージョンUID
+     */
+    private static final long serialVersionUID = 1L;
+    
 	/** 残数管理データID */
 	private String manageId;
 	/** 対象日 */

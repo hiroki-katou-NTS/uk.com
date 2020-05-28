@@ -26,7 +26,7 @@ public interface CalcNextAnnualLeaveGrantDate {
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, String employeeId, Optional<DatePeriod> period);
 
 	/**
@@ -42,7 +42,7 @@ public interface CalcNextAnnualLeaveGrantDate {
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employee,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo,
@@ -61,7 +61,7 @@ public interface CalcNextAnnualLeaveGrantDate {
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> calNextHdGrantV2(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, String employeeId, Optional<DatePeriod> period,
 			Optional<EmployeeImport> employee,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo,

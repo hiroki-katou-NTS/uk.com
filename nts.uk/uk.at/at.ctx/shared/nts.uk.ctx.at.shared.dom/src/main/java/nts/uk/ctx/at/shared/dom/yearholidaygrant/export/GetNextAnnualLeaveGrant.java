@@ -28,7 +28,7 @@ public interface GetNextAnnualLeaveGrant {
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt,
 			String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay);
 
@@ -48,7 +48,7 @@ public interface GetNextAnnualLeaveGrant {
 	 * @return 次回年休付与リスト
 	 */
 	List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, String grantTableCode, GeneralDate entryDate,
 			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay,
 			Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls,

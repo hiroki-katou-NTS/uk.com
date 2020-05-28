@@ -24,7 +24,7 @@ public interface CalcNextAnnLeaGrantInfo {
 	 * @return 次回年休付与
 	 */
 	Optional<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, GeneralDate closureStart, GeneralDate entryDate,
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime);
 }

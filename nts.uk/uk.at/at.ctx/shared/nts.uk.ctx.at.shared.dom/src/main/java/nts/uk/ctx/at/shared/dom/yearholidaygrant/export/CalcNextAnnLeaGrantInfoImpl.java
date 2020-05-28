@@ -25,7 +25,7 @@ public class CalcNextAnnLeaGrantInfoImpl implements CalcNextAnnLeaGrantInfo {
 	/** 締め開始日と年休付与テーブルから次回年休付与を計算する */
 	@Override
 	public Optional<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, GeneralDate closureStart, GeneralDate entryDate,
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime) {
 		
@@ -38,7 +38,7 @@ public class CalcNextAnnLeaGrantInfoImpl implements CalcNextAnnLeaGrantInfo {
 		
 		// 次回年休付与を取得する
 		val results = this.getNextAnnualLeaveGrant.algorithm(
-				repositoriesRequiredByRemNum,
+				repositoriesRequiredByRemNumOpt,
 				companyId, grantTableCode, entryDate, criteriaDate,
 				new DatePeriod(nextGrant, GeneralDate.max()), true);
 		

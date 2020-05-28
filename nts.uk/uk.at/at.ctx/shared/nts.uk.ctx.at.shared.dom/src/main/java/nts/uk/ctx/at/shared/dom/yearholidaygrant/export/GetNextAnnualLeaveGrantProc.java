@@ -62,7 +62,7 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @return 次回年休付与リスト
 	 */
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt,
 			String companyId,
 			String grantTableCode,
 			GeneralDate entryDate,
@@ -71,7 +71,7 @@ public class GetNextAnnualLeaveGrantProc {
 			boolean isSingleDay){
 
 		return this.algorithm(
-				repositoriesRequiredByRemNum, companyId, grantTableCode, 
+				repositoriesRequiredByRemNumOpt, companyId, grantTableCode, 
 				entryDate, criteriaDate, period, isSingleDay,
 				Optional.empty(), Optional.empty(), Optional.empty());
 	}
@@ -92,7 +92,7 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @return 次回年休付与リスト
 	 */
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt,
 			String companyId,
 			String grantTableCode,
 			GeneralDate entryDate,
@@ -194,8 +194,11 @@ public class GetNextAnnualLeaveGrantProc {
 		}
 		
 		// 年休設定
-		AnnualPaidLeaveSetting annualPaidLeaveSet
-			= repositoriesRequiredByRemNum.getAnnualPaidLeaveSet();
+		AnnualPaidLeaveSetting annualPaidLeaveSet;
+		if ( !repositoriesRequiredByRemNumOpt.isPresent() ){
+			repositoriesRequiredByRemNumOpt = Optional.of(new RepositoriesRequiredByRemNum());
+		}
+		annualPaidLeaveSet = repositoriesRequiredByRemNumOpt.get().getAnnualPaidLeaveSet();
 		
 		for (val nextAnnualLeaveGrant : this.nextAnnualLeaveGrantList){
 			

@@ -40,7 +40,7 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 	/** 次回年休付与を取得する */
 	@Override
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum,
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt,
 			String companyId,
 			String grantTableCode,
 			GeneralDate entryDate,
@@ -53,16 +53,18 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 				this.lengthServiceRepo,
 				this.grantYearHolidayRepo,
 				this.getNextAnnualLeaveGrantProcMulti);
-		return proc.algorithm(repositoriesRequiredByRemNum, companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay);
+		return proc.algorithm(
+				repositoriesRequiredByRemNumOpt, companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay);
 	}
 	
 	/** 次回年休付与を取得する */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrant> algorithm(
-			RepositoriesRequiredByRemNum repositoriesRequiredByRemNum, 
+			Optional<RepositoriesRequiredByRemNum> repositoriesRequiredByRemNumOpt, 
 			String companyId, String grantTableCode, GeneralDate entryDate,
-			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
+			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay,
+			Optional<GrantHdTblSet> grantHdTblSet,
 			Optional<List<LengthServiceTbl>> lengthServiceTbls, Optional<GeneralDate> closureStartDate) {
 		
 		GetNextAnnualLeaveGrantProc proc = new GetNextAnnualLeaveGrantProc(
@@ -70,7 +72,7 @@ public class GetNextAnnualLeaveGrantImpl implements GetNextAnnualLeaveGrant {
 				this.lengthServiceRepo,
 				this.grantYearHolidayRepo,
 				this.getNextAnnualLeaveGrantProcMulti);
-		return proc.algorithm(repositoriesRequiredByRemNum, companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
+		return proc.algorithm(repositoriesRequiredByRemNumOpt, companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
 				grantHdTblSet, lengthServiceTbls, closureStartDate);
 	}
 }

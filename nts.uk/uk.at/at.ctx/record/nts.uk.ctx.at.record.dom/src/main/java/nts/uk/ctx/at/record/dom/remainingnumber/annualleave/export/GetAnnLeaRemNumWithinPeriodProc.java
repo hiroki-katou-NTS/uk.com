@@ -428,7 +428,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		{
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
-					repositoriesRequiredByRemNum, companyId, employeeId, Optional.of(this.aggrPeriod),
+					Optional.of(repositoriesRequiredByRemNum),
+					companyId, employeeId, Optional.of(this.aggrPeriod),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 			
