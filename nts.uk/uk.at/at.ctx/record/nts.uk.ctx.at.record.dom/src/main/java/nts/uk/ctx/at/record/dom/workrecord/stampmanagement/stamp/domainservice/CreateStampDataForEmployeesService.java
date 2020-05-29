@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationIn
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * DS : 社員の打刻データを作成する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.社員の打刻データを作成する
@@ -97,7 +96,6 @@ public class CreateStampDataForEmployeesService {
 			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
 		}
 		return new Stamp(
-				AppContexts.user().contractCode(),
 				stampNumber, 
 				datetime, 
 				relieve, 

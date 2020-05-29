@@ -18,13 +18,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 public class Stamp implements DomainAggregate {
 	
-	
-	/**
-	 * 契約コード
-	 */
-	@Getter
-	private final String contractCode; 
-	
 	/**
 	 * 打刻カード番号
 	 * カード番号(old)
@@ -74,33 +67,11 @@ public class Stamp implements DomainAggregate {
 	//tạo tạm để lưu biến TimeWithDayAttr
 	@Getter
 	private Optional<AttendanceTime> attendanceTime = Optional.empty();
-
-	/**
-	 * [C-1] 初回打刻データを作成する
-	 * 
-	 * @param contractCode
-	 *            契約コード
-	 * @param cardNumber
-	 *            打刻カード番号
-	 * @param stampDateTime
-	 *            打刻日時
-	 * @param relieve
-	 *            打刻する方法
-	 * @param type
-	 *            打刻種類
-	 * @param refActualResults
-	 *            実績への反映内容
-	 * @param reflectedCategory
-	 *            反映済み区分
-	 * @param locationInfor
-	 *            打刻場所情報
-	 */
 	
-	public Stamp(String contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, boolean reflectedCategory,
+	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
+			RefectActualResult refActualResults, boolean reflectedCategory,
 			StampLocationInfor locationInfor) {
 		super();
-		this.contractCode = contractCode;
 		this.cardNumber = cardNumber;
 		this.stampDateTime = stampDateTime;
 		this.relieve = relieve;
@@ -110,10 +81,9 @@ public class Stamp implements DomainAggregate {
 		this.locationInfor = Optional.ofNullable(locationInfor);
 	}
 	
-	public Stamp(String contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, StampLocationInfor locationInfor) {
+	public Stamp(StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve, StampType type,
+			RefectActualResult refActualResults,StampLocationInfor locationInfor) {
 		super();
-		this.contractCode = contractCode;
 		this.cardNumber = cardNumber;
 		this.stampDateTime = stampDateTime;
 		this.relieve = relieve;

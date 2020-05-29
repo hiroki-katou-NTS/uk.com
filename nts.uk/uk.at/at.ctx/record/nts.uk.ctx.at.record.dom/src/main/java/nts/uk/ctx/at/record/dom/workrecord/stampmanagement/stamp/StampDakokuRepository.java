@@ -20,7 +20,7 @@ public interface StampDakokuRepository {
 	 * @param stampNumber
 	 * @param stampDateTime
 	 */
-	public void delete(String contractCd ,String stampNumber, GeneralDateTime stampDateTime);
+	public void delete(String stampNumber, GeneralDateTime stampDateTime);
 
 	/**
 	 * [3] update(打刻)
