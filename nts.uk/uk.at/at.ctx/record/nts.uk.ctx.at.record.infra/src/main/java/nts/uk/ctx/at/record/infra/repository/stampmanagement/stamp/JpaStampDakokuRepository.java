@@ -85,14 +85,14 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	// [2] delete(打刻)
 	@Override
-	public void delete(String stampNumber, GeneralDateTime stampDateTime) {
-		this.commandProxy().remove(KrcdtStamp.class, new KrcdtStampPk(stampNumber, stampDateTime));
+	public void delete(String contractCd ,String stampNumber, GeneralDateTime stampDateTime) {
+		this.commandProxy().remove(KrcdtStamp.class, new KrcdtStampPk(contractCd,stampNumber, stampDateTime));
 	}
 
 	// [3] update(打刻)
 	@Override
 	public void update(Stamp stamp) {
-		Optional<KrcdtStamp> entity = this.queryProxy().find(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), KrcdtStamp.class);
+		Optional<KrcdtStamp> entity = this.queryProxy().find(new KrcdtStampPk(stamp.getContractCode(),stamp.getCardNumber().v(), stamp.getStampDateTime()), KrcdtStamp.class);
 		if(!entity.isPresent()) {
 			return;
 		}
@@ -128,7 +128,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	private KrcdtStamp toEntity(Stamp stamp) {
 		String cid = AppContexts.user().companyId();
-		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
+		return new KrcdtStamp(new KrcdtStampPk(stamp.getContractCode(),stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
 				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
@@ -172,7 +172,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 								new AttendanceTime(entity.lateNightOverTime)));
 		val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
-		return new Stamp(stampNumber, entity.pk.stampDateTime,
+		return new Stamp("",stampNumber, entity.pk.stampDateTime,
 				relieve, stampType, refectActualResult,
 				entity.reflectedAtr, locationInfor
 		);
@@ -181,7 +181,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 private Stamp toDomainVer2(Object[] object) {
 	String workLocationName = (String) object[0];
 	KrcdtStamp entity = (KrcdtStamp) object[1];
-	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+	Stamp stamp =  new Stamp(entity.pk.contractCd,new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
@@ -204,7 +204,7 @@ private Stamp toDomainVer3(Object[] object) {
 	String personId = (String) object[0];
 	String workLocationName = (String) object[1];
 	KrcdtStamp entity = (KrcdtStamp) object[2];
-	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+	Stamp stamp =  new Stamp(entity.pk.contractCd,new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -27,6 +28,7 @@ public class StampHelper {
 
 	public static Stamp getStampDefault() {
 		return new Stamp(
+				AppContexts.user().contractCode(),
 				new StampNumber("stampNumber"),
 				GeneralDateTime.now(), 
 				new Relieve(
@@ -52,6 +54,7 @@ public class StampHelper {
 	}
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
 		return new Stamp(
+				AppContexts.user().contractCode(),
 				new StampNumber(stampNumber),
 				GeneralDateTime.now(), 
 				new Relieve(
@@ -78,7 +81,7 @@ public class StampHelper {
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
 		data.add(getStampDefault());
-		data.add(new Stamp(new StampNumber("stampNumber1"), GeneralDateTime.now(),
+		data.add(new Stamp(AppContexts.user().contractCode(),new StampNumber("stampNumber1"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
@@ -86,7 +89,7 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(2))),
 				false, new StampLocationInfor(false, getGeoCoordinateDefault())));
-		data.add(new Stamp(new StampNumber("stampNumber"), GeneralDateTime.now().addDays(1),
+		data.add(new Stamp(AppContexts.user().contractCode(),new StampNumber("stampNumber"), GeneralDateTime.now().addDays(1),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
