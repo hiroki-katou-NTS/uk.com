@@ -81,8 +81,8 @@ module nts.uk.at.view.kdp010.g {
                         if (self.checkLayout() == false){
                         self.pageName("");
                         self.commentDaily("");
-                    }
                         self.letterColors("#000000");
+                    }
                         self.dataShare = [];
                     }
 

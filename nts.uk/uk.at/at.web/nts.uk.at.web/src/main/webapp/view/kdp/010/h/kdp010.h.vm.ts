@@ -46,6 +46,8 @@ module nts.uk.at.view.kdp010.h {
                 let self = this;
                 self.selectedDay.subscribe((newValue) => {
                     self.getDataFromContents(newValue);
+                    var name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == newValue; });
+                    self.simpleValue(name.name);
                 })
 
                 self.simpleValue.subscribe(function(codeChanged: string) {
