@@ -25,7 +25,7 @@ public class KrcdtStampRecordPk implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * 打刻カード番号
 	 */

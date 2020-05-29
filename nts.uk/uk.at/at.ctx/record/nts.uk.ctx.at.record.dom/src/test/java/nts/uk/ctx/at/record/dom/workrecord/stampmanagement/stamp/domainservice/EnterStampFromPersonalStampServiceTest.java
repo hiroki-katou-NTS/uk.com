@@ -11,13 +11,13 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPersonalStampService.Require;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 
 /**
  * 
@@ -40,21 +40,21 @@ public class EnterStampFromPersonalStampServiceTest {
 	@Test
 	public void testEnterStampFromPersonalStampService_1() {
 		String employeeId = "employeeId";// dummy
+		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
-		int pageNo = 1;//dummy
-		int buttonPosNo = 1;//dummy
-		Relieve relieve = StampHelper.getRelieveDefault();// dummy
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
+//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
 				require.getStampSet();
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId,
+				stmapDateTime, stampButton, refActualResults));
 
 	}
 
@@ -66,13 +66,13 @@ public class EnterStampFromPersonalStampServiceTest {
 	@Test
 	public void testEnterStampFromPersonalStampService_2() {
 		String employeeId = "employeeId";// dummy
+		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
-		int pageNo = 10;
-		int buttonPosNo = 1;// dummy
-		Relieve relieve = StampHelper.getRelieveDefault();// dummy
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
+//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -80,8 +80,9 @@ public class EnterStampFromPersonalStampServiceTest {
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId,
+				stmapDateTime, stampButton, refActualResults));
+
 
 	}
 
@@ -94,13 +95,13 @@ public class EnterStampFromPersonalStampServiceTest {
 	@Test
 	public void testEnterStampFromPersonalStampService_3() {
 		String employeeId = "employeeId";// dummy
+		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
-		int pageNo = 1;
-		int buttonPosNo = 10;
-		Relieve relieve = StampHelper.getRelieveDefault();// dummy
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(10));
+//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
+//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -108,8 +109,8 @@ public class EnterStampFromPersonalStampServiceTest {
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 			}
 		};
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId,
+				stmapDateTime, stampButton, refActualResults));
 
 	}
 
@@ -123,13 +124,13 @@ public class EnterStampFromPersonalStampServiceTest {
 	@Test
 	public void testEnterStampFromPersonalStampService_4() {
 		String employeeId = "employeeId";// dummy
+		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
-		int pageNo = 1;
-		int buttonPosNo = 1;
-		Relieve relieve = StampHelper.getRelieveDefault();// dummy
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
+//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
+//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -140,9 +141,8 @@ public class EnterStampFromPersonalStampServiceTest {
 				result = new ArrayList<>();
 			}
 		};
-		NtsAssert.businessException("Msg_433", () -> EnterStampFromPersonalStampService.create(require, employeeId,
-				stmapDateTime, pageNo, buttonPosNo, relieve, refActualResults, positionInfo, empInfoTerCode));
-
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId,
+				stmapDateTime, stampButton, refActualResults));
 	}
 
 }

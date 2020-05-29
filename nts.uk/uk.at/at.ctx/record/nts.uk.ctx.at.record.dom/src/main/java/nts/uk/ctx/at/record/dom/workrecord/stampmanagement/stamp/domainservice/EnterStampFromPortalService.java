@@ -2,14 +2,17 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -38,33 +41,36 @@ public class EnterStampFromPortalService {
 	 * 
 	 *         ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	public StampDataReflectResult create(Require require, ContractCode contractCode, String employeeID,
+	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
 			GeneralDateTime datetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
-		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
 
-		val settingStampPotal = Optional.ofNullable(null);
+		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
+		Optional<PortalStampSettings> settingStampPotal = require.get(AppContexts.user().companyId());
+
 		if (!settingStampPotal.isPresent()) {
 			throw new BusinessException("Msg_1632");
 		}
+
 		// $ボタン詳細設定 = $ポータルの打刻設定.ボタン詳細設定を取得する(ボタン位置NO)
-		val settingButton = Optional.ofNullable(null);
+		Optional<ButtonSettings> settingButton = settingStampPotal.get().getDetailButtonSettings(buttonPositionNo);
 
 		if (!settingButton.isPresent()) {
 			throw new BusinessException("Msg_1632");
 		}
 
 		// $打刻する方法 = 打刻する方法#打刻する方法(ID認証, ポータル打刻)
-		Relieve relieve = new Relieve(null, null);
-		// gọi đến service của chung
+		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.PORTAL);
 
+		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, NULLL, 打刻日時, $打刻する方法,
+		// $ボタン詳細設定.ボタン種類, 実績への反映内容, NULL)
+		//TODO: Chungnt Gọi đến DS của anh Sơn :D
 		return null;
 	}
 
 	public static interface Require {
 
 		// [R-1] ポータルの打刻設定を取得する
-		// gọi đến aggr của anh lai chưa viêt
-		Optional<PortalStampSettings> getByCardNoAndContractCode(String cardNo, String contractCd);
+		Optional<PortalStampSettings> get(String comppanyID);
 	}
 
 }

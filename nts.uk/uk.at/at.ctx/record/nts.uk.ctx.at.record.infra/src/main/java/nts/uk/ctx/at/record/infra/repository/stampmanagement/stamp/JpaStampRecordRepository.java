@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
@@ -29,12 +30,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " where s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+			+ " and s.pk.cardNumber in  :cardNumbers " 
+			+ " and s.pk.stampDateTime >= :startStampDate " 
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
-			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+			+ " where k.cardNo is NULL " 
+			+ " and s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	// [1] insert(打刻記録)
 	@Override
@@ -92,8 +97,8 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
-		return new StampRecord(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime, entity.stampArt,
-				ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
+		return new StampRecord(new ContractCode(""), new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+				entity.stampArt, ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
 						entity.workTerminalInfoCd == null ? null : new EmpInfoTerminalCode(entity.workTerminalInfoCd)));
 	}
 

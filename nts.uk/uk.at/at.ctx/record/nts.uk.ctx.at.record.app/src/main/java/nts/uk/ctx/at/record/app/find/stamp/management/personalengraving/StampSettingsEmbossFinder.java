@@ -14,8 +14,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
+import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -80,11 +84,12 @@ public class StampSettingsEmbossFinder {
 		
 		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampCardRepo);
 		
-		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
+		//TODO: Chungnt
+//		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
 		
-		if(!isAvailable) {
-			throw new BusinessException("Msg_1619");
-		}
+//		if(!isAvailable) {
+//			throw new BusinessException("Msg_1619");
+//		}
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
@@ -181,7 +186,7 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampDakokuRepo.get(stampNumbers, date);
+			return stampDakokuRepo.get(AppContexts.user().contractCode(),stampNumbers, date);
 		}
 
 	}
@@ -234,6 +239,36 @@ public class StampSettingsEmbossFinder {
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
 			return stampCardRepo.getListStampCard(sid);
+		}
+
+		@Override
+		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid) {
+			return null;
+		}
+
+		@Override
+		public Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid) {
+			return null;
+		}
+
+		@Override
+		public Optional<StampCardEditing> get(String companyId) {
+			return null;
+		}
+
+		@Override
+		public Optional<Stamp> get(String contractCode, String stampNumber) {
+			return null;
+		}
+
+		@Override
+		public void add(StampCard domain) {
+			
+		}
+
+		@Override
+		public Optional<SettingsUsingEmbossing> get() {
+			return null;
 		}
 		
 	}

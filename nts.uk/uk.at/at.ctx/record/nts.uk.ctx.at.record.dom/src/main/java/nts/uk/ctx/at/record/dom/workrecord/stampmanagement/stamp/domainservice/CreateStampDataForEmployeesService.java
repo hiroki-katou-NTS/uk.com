@@ -8,6 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationIn
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * DS : 社員の打刻データを作成する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.社員の打刻データを作成する
@@ -50,7 +52,7 @@ public class CreateStampDataForEmployeesService {
 		StampNumber stampNumber = getCardNumber(require, employeeId);
 		boolean stampAtr = buttonType.checkStampType();
 		
-		StampRecord stampRecord = new StampRecord(stampNumber, datetime, stampAtr, buttonType.getReservationArt(), empInfoTerCode); 
+		StampRecord stampRecord = new StampRecord(new ContractCode(AppContexts.user().contractCode()),stampNumber, datetime, stampAtr, buttonType.getReservationArt(), empInfoTerCode); 
 		if(!stampAtr) {
 			return StampDataReflectProcessService.reflect(require, Optional.of(employeeId), stampRecord, Optional.empty());
 		}
@@ -74,6 +76,7 @@ public class CreateStampDataForEmployeesService {
 		}
 		listStampCard = listStampCard.stream().sorted((x, y) -> y.getRegisterDate().compareTo(x.getRegisterDate()))
 				.collect(Collectors.toList());
+		
 		return listStampCard.get(0).getStampNumber();
 	}
 
@@ -95,7 +98,8 @@ public class CreateStampDataForEmployeesService {
 		if(positionInfo.isPresent()) {
 			stampLocationInfor = new StampLocationInfor(true, positionInfo.get()) ;
 		}
-		return new Stamp(
+		
+		return new Stamp(new ContractCode(AppContexts.user().contractCode()),
 				stampNumber, 
 				datetime, 
 				relieve, 

@@ -6,9 +6,12 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 
 /**
@@ -22,18 +25,17 @@ public class EnterStampFromPersonalStampService {
 	// [1] 作成する
 	/**
 	 * @param require 	@Require
+	 * @param contractCode  契約コード
 	 * @param employeeId 社員ID	
-	 * @param stmapDateTime 打刻日時		
-	 * @param pageNo ページNO	
-	 * @param buttonPosNo ボタン位置NO
-	 * @param relieve 打刻する方法	
-	 * @param refActualResults 実績への反映内容	
-	 * @param positionInfo 打刻位置情報	
-	 * @param empInfoTerCode 就業情報端末コード
+	 * @param stmapDateTime 打刻日時
+	 * @param stampButton 打刻ボタン
+	 * @param refActualResults 実績への反映内容
+	 * 
+	 * @return 打刻入力結果
 	 */
-	public static StampDataReflectResult create(Require require, String employeeId, GeneralDateTime stmapDateTime, int pageNo, int buttonPosNo,
-			Relieve relieve, RefectActualResult refActualResults, Optional<GeoCoordinate> positionInfo,
-			Optional<EmpInfoTerminalCode> empInfoTerCode) {
+	
+	public static TimeStampInputResult create(Require require, String contractCode, String employeeId, GeneralDateTime stmapDateTime, StampButton stampButton,
+			RefectActualResult refActualResults) {
 
 		// $個人利用の打刻設定 = require.個人利用の打刻設定を取得する()
 		Optional<StampSettingPerson> stampSettingPerOpt = require.getStampSet();
@@ -42,13 +44,17 @@ public class EnterStampFromPersonalStampService {
 		}
 
 		// $ボタン詳細設定 = $個人利用の打刻設定.ボタン詳細設定を取得する(ページNO, ボタン位置NO)
-		Optional<ButtonSettings> buttonSet = stampSettingPerOpt.get().getButtonSet(pageNo, buttonPosNo);
+		Optional<ButtonSettings> buttonSet = stampSettingPerOpt.get().getButtonSet(stampButton);
 		if (!buttonSet.isPresent()) {
 			throw new BusinessException("Msg_1632");
 		}
-		// return 社員の打刻データを作成する.作成する(require, 社員ID, 打刻日時, $ボタン詳細設定.ボタン種類, 実績への反映内容, 打刻位置情報, 就業情報端末コード)
-		return CreateStampDataForEmployeesService.create(require, employeeId, stmapDateTime, relieve, buttonSet.get().getButtonType(), Optional.of(refActualResults), positionInfo, empInfoTerCode);
 		
+		//$打刻する方法 = 打刻する方法#打刻する方法(ID認証, 個人打刻)
+		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
+		
+		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, empty, 打刻日時, $打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)	
+		// TODO: Chungnt Gọi đến DS của anh Sơn
+		return null;
 	}
 
 	public static interface Require extends CreateStampDataForEmployeesService.Require {

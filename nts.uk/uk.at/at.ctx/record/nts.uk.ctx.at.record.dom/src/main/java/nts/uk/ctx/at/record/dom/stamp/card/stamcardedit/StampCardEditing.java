@@ -39,23 +39,6 @@ public class StampCardEditing extends AggregateRoot {
 	}
 	
 	/**
-	 * [C-0] 打刻カード編集(会社ID, 桁数, 編集方法)
-	 * 
-	 * @param 会社ID
-	 *            companyId
-	 * @param 桁数
-	 *            digitsNumber
-	 * @param 編集方法
-	 *            method
-	 */
-	public StampCardEditing(String companyId, int digitsNumber, int method) {
-		super();
-		this.companyId = companyId;
-		this.digitsNumber = new StampCardDigitNumber(digitsNumber);
-		this.method = EnumAdaptor.valueOf(method, StampCardEditMethod.class);
-	}
-	
-	/**
 	 * [1] 打刻カードを作成する
 	 * 
 	 * @param 会社コード

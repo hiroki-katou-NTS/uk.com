@@ -1,6 +1,14 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stamcardedit;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
+
+/**
+ * 打刻カード編集方法
+ * @author danvd
+ *
+ */
 
 @AllArgsConstructor
 public enum StampCardEditMethod {
@@ -27,6 +35,7 @@ public enum StampCardEditMethod {
 	 * @param 編集前番号
 	 *            beforeEditNumber
 	 * 
+	 * 
 	 * @return 編集後番号 result
 	 */
 	public String editCardNumber(String number, String beforeEditNumber) {
@@ -35,12 +44,14 @@ public enum StampCardEditMethod {
 
 		// if this == 前ゼロ
 		if (this == StampCardEditMethod.PreviousZero) {
-			result = "%0" + number + "s";
+			
+			return StringUtils.leftPad(beforeEditNumber,Integer.valueOf(number),"0");
 		}
 		// if this == 後ゼロ
 
 		if (this == StampCardEditMethod.AfterZero) {
-			result = "%-0" + number + "s";
+			
+			return StringUtils.rightPad(beforeEditNumber,Integer.valueOf(number),"0");
 		}
 
 		// if this == 前スペース

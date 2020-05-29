@@ -18,6 +18,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -53,7 +56,8 @@ public class GetOmissionContentsFinder {
 		String employeeId = AppContexts.user().employeeId();
 		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl(stamPromptAppRepo,
 				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
-		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo), appDisplayAdapter.getAppDisplay());
+		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
+		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, stampButton), appDisplayAdapter.getAppDisplay());
 	}
 	// アルゴリズム「申請種類を取得する」を実行する
 //	private getApplicationType() {

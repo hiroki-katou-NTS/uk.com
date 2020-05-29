@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting;
+package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
 
@@ -9,19 +9,27 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * 
- * @author sonnlb
- * 
- *         打刻機能の利用設定PK
+ * 職場選択を利用できる権限Pk
+ * @author chungnt
  *
  */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtStampUsagePk implements Serializable {
+public class KrcmtStampWkpSelectRolePk implements Serializable {
+	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
+	
+	/** ロールID*/
+	@Column(name = "ROLE_ID")
+	public String roleId;
+	
 }
