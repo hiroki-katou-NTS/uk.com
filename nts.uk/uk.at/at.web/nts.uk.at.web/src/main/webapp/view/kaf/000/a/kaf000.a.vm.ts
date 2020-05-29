@@ -139,7 +139,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             if(_.size(loopFrame.listApprover()) > 1) {
                 return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
             }
-            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);    
+            return loopFrame.frameOrder(); 
         }
         
         frameCount(listFrame) {
@@ -215,9 +215,12 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                                                 el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
                                                 
                                             }
-                                            
-                                            el.listApprovalFrame.forEach((el1, index) =>{            
-                                                el1.frameOrder = index +1;
+                                            let frameOrderTemp = 0;
+                                            el.listApprovalFrame.forEach((el1, index) =>{
+                                                if(el1.listApprover.length != 0) {
+                                                    frameOrderTemp++;
+                                                }
+                                                el1.frameOrder = frameOrderTemp;
                                             });
                                         }
                                 }
@@ -264,7 +267,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
-                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
+                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
+            // case group approver
+            if(_.size(loopFrame.listApprover()) > 1) {
+                index++;
+            }
             if(index <= 10){
                 return nts.uk.resource.getText("KAF000_9",[index+'']);    
             }

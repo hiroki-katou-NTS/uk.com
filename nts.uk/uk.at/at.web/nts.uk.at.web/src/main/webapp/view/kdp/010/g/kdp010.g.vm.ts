@@ -78,9 +78,11 @@ module nts.uk.at.view.kdp010.g {
                         self.setColor("#999", ".btn-name");
                         self.getInfoButton(null, self.selectedLayout());
                         self.isDel(false);
+                        if (self.checkLayout() == false){
                         self.pageName("");
                         self.commentDaily("");
                         self.letterColors("#000000");
+                    }
                         self.dataShare = [];
                     }
 
@@ -153,7 +155,7 @@ module nts.uk.at.view.kdp010.g {
                 }
                 // Data from Screen 
                 let lstButton = new Array<model.ButtonSettingsCommand>();
-
+                let stampTypes = new model.StampTypeCommand({});
                 if (self.dataKdpH.buttonPositionNo != undefined) {
                     let lstButtonSet = new Array<>();
                     _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
@@ -168,12 +170,12 @@ module nts.uk.at.view.kdp010.g {
                             }),
                             buttonType: new model.ButtonTypeCommand({
                                 reservationArt: item.buttonType.reservationArt,
-                                stampType: new model.StampTypeCommand({
-                                    changeHalfDay: item.buttonType.stampType.changeHalfDay ==0 ?false:true,
-                                    goOutArt: item.buttonType.stampType.goOutArt,
-                                    setPreClockArt: item.buttonType.stampType.setPreClockArt,
-                                    changeClockArt: item.buttonType.stampType.changeClockArt,
-                                    changeCalArt: item.buttonType.stampType.changeCalArt
+                                stampType: (item.buttonType.reservationArt == 1 || item.buttonType.reservationArt == 2) ? stampTypes : new model.StampTypeCommand({
+                                    changeHalfDay: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeHalfDay ==0 ?false:true,
+                                    goOutArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.goOutArt,
+                                    setPreClockArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.setPreClockArt,
+                                    changeClockArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeClockArt,
+                                    changeCalArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeCalArt
                                 })
                             }),
                             usrArt: item.usrArt,
