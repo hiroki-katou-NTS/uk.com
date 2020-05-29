@@ -237,11 +237,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 let subVacaTypeUseFlg = false;
                 let subHdTypeUseFlg = false;
                 let numberRemain = data.remainVacationInfo;
-                if(appEmpSet.holidayOrPauseType == 7){//振休
-                    subVacaTypeUseFlg = appEmpSet.holidayTypeUseFlg;
-                }
-                if(appEmpSet.holidayOrPauseType == 1){//代休
-                    subHdTypeUseFlg = appEmpSet.holidayTypeUseFlg;
+                if(!nts.uk.util.isNullOrUndefined(appEmpSet)) {
+                    if(appEmpSet.holidayOrPauseType == 7){//振休
+                        subVacaTypeUseFlg = appEmpSet.holidayTypeUseFlg;
+                    }   
+                    if(appEmpSet.holidayOrPauseType == 1){//代休
+                        subHdTypeUseFlg = appEmpSet.holidayTypeUseFlg;
+                    } 
                 }
                 self.settingNo65(
                     new common.SettingNo65(
