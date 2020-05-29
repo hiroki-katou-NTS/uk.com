@@ -29,6 +29,8 @@ module nts.uk.at.view.kdp002.a {
                         stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
+                        // add correction interval
+                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
