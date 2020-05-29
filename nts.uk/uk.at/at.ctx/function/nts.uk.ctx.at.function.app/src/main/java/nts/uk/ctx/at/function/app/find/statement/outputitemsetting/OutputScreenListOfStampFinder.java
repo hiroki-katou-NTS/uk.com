@@ -172,10 +172,14 @@ public class OutputScreenListOfStampFinder {
 				
 				String local = "";
 				String optSupportCard = "";
+				String workLocationName = "";
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+				if(stamp.getRefActualResults().getWorkLocationCD().isPresent()){
 				val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-				val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				 workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				}
+				
 				
 				// Local Infor
 				if(stamp.getLocationInfor().isPresent()){
@@ -184,7 +188,7 @@ public class OutputScreenListOfStampFinder {
 					local = "";
 					
 					} else{
-						local = localInfo.getPositionInfor().getLatitude() + " " + localInfo.getPositionInfor().getLongitude();
+						local = String.format("%.6f", localInfo.getPositionInfor().getLatitude()) + " " +  String.format("%.6f", localInfo.getPositionInfor().getLongitude());
 					}
 						
 				}
@@ -297,7 +301,7 @@ public class OutputScreenListOfStampFinder {
 						localInfor = "";
 					}  
 					else {
-						localInfor = positionInfo.getLatitude() + " " + positionInfo.getLongitude();
+						localInfor = String.format("%.6f",  positionInfo.getLatitude()) + " " + String.format("%.6f", positionInfo.getLongitude()) ;
 					}
 			
 				}

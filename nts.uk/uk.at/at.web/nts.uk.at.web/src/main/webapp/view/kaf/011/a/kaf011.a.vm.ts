@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         kdl003BtnEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeSwitchEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
-            return true;
+            return this.drawalReqSet().permissionDivision() == 1;
         });
         absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
                 return this.absWk().changeWorkHoursType();
