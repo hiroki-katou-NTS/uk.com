@@ -280,10 +280,14 @@ public class ExcessOutsideWorkMng {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
-					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
-					this.workingConditionItem, this.workplaceId, this.employmentCd,
+			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.closureId,
+					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
+					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
 					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), repositories);
+			
+			// 時間外超過のフレックス時間を反映する
+			this.monthlyCalculation.getFlexTime().setFlexTimeOfExcessOutsideTime(
+					flexTime.getFlexTimeOfExcessOutsideTime());
 		}
 		
 		if (aggrValue != null){
@@ -362,10 +366,14 @@ public class ExcessOutsideWorkMng {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.procPeriod,
-					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
-					this.workingConditionItem, this.workplaceId, this.employmentCd,
+			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.closureId,
+					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
+					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
 					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), repositories);
+			
+			// 時間外超過のフレックス時間を反映する
+			this.monthlyCalculation.getFlexTime().setFlexTimeOfExcessOutsideTime(
+					flexTime.getFlexTimeOfExcessOutsideTime());
 			
 			// 月次明細に計算結果をコピーする
 			this.monthlyDetail.setFromAggregateTotalWorkingTime(aggrValue.getAggregateTotalWorkingTime());

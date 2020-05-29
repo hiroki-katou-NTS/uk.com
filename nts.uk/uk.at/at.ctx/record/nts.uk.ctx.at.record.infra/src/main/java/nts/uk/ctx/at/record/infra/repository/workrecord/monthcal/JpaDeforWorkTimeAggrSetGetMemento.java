@@ -61,7 +61,7 @@ public class JpaDeforWorkTimeAggrSetGetMemento<T extends KrcstDeforMCalSet>
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalOt()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayOt()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()),
-				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExcLegalOt()));
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getExceptLegalHdwkOt()));
 	}
 
 	/*

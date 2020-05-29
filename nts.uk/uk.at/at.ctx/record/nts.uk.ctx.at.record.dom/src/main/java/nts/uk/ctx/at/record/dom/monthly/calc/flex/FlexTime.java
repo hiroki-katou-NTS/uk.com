@@ -202,5 +202,6 @@ public class FlexTime {
 		this.beforeFlexTime = this.beforeFlexTime.addMinutes(target.beforeFlexTime.v());
 		this.legalFlexTime = this.legalFlexTime.addMinutes(target.legalFlexTime.v());
 		this.illegalFlexTime = this.illegalFlexTime.addMinutes(target.illegalFlexTime.v());
+		this.flexTimeCurrentMonth.sum(target.flexTimeCurrentMonth);
 	}
 }

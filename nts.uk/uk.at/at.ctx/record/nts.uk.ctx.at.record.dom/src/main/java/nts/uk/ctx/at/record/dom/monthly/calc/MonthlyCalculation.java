@@ -591,9 +591,9 @@ public class MonthlyCalculation {
 			
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(this.companyId, this.employeeId,
-					this.yearMonth, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem,
+					this.yearMonth, this.closureId, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem,
 					this.workplaceId, this.employmentCd,
-					this.employeeSets, this.settingsByFlex, this.aggregateTime,
+					this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime,
 					repositories);
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");

@@ -36,7 +36,8 @@ public class FlexCarryforwardTimeDto implements ItemConst {
 		return FlexCarryforwardTime.of(
 						new AttendanceTimeMonthWithMinus(flexCarryforwardTime),
 						new AttendanceTimeMonth(flexCarryforwardWorkTime),
-						new AttendanceTimeMonth(flexCarryforwardShortageTime));
+						new AttendanceTimeMonth(flexCarryforwardShortageTime),
+						new AttendanceTimeMonth(0));
 	}
 	
 	public static FlexCarryforwardTimeDto from(FlexCarryforwardTime domain) {

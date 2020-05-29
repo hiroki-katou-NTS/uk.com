@@ -86,6 +86,10 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	@Column(name = "FLEX_CRYFWD_SHT_TIME")
 	public int flexCarryforwardShortageTime; 
 	
+	/** フレックス繰越不可時間 */
+	@Column(name = "FLEX_NOT_CRYFWD_TIME")
+	public int flexNotCarryforwardTime; 
+	
 	/** 超過フレ区分 */
 	@Column(name = "EXCESS_FLEX_ATR")
 	public int excessFlexAtr; 
@@ -176,7 +180,8 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 				FlexCarryforwardTime.of(
 						new AttendanceTimeMonthWithMinus(this.flexCarryforwardTime),
 						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
-						new AttendanceTimeMonth(this.flexCarryforwardShortageTime)),
+						new AttendanceTimeMonth(this.flexCarryforwardShortageTime),
+						new AttendanceTimeMonth(this.flexNotCarryforwardTime)),
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(this.excessFlexAtr, ExcessFlexAtr.class),
 						new AttendanceTimeMonth(this.principleTime),
@@ -229,6 +234,7 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 		this.flexCarryforwardTime = flexCarryForwardTime.getFlexCarryforwardTime().v();
 		this.flexCarryforwardWorkTime = flexCarryForwardTime.getFlexCarryforwardWorkTime().v();
 		this.flexCarryforwardShortageTime = flexCarryForwardTime.getFlexCarryforwardShortageTime().v();
+		this.flexNotCarryforwardTime = flexCarryForwardTime.getFlexNotCarryforwardTime().v();
 		this.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		this.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		this.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
