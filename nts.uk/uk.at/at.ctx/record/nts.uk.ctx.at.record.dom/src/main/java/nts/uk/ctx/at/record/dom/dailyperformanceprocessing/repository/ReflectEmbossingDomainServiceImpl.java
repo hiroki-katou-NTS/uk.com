@@ -2523,7 +2523,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			stampOrActualStamp = new WorkStamp();
 		}
 		// 組み合わせ区分 != 直行 or != 直帰
-		if (x.getType().getChangeCalArt().value != 0 && x.getType().isChangeHalfDay()
+		if (x.getType().getChangeCalArt().value != 0 && x.getType().getChangeHalfDay()
 				&& x.getType().getSetPreClockArt().value != 1 && x.getType().getSetPreClockArt().value != 2) {
 
 			// 1* // Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻
