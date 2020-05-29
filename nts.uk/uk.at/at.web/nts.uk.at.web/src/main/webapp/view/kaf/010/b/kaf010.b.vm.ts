@@ -249,6 +249,34 @@ module nts.uk.at.view.kaf010.b {
                 self.version = applicationDto.version;
                 self.dataApplication(applicationDto);
                 self.appType(applicationDto.applicationType);
+                // sort list approval
+                    if(appDetailScreenInfo.approvalLst != undefined && appDetailScreenInfo.approvalLst.length != 0) {
+                        appDetailScreenInfo.approvalLst.forEach((el) => {
+                            if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                    el.listApprovalFrame.forEach((el1) =>{
+                                           if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                               el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                           }
+                                    });
+                                    if(el.listApprovalFrame.length > 1) {
+                                        let arrayTemp = [];
+                                        arrayTemp.push(el.listApprovalFrame[0]);
+                                        if(el.listApprovalFrame[0].listApprover.length == 0) {   
+                                            _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+                                            .forEach(i => arrayTemp.push(i));      
+                                            el.listApprovalFrame = arrayTemp;
+                                        }else {
+                                            el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+                                            
+                                        }
+                                        
+                                        el.listApprovalFrame.forEach((el1, index) =>{            
+                                            el1.frameOrder = index +1;
+                                        });
+                                    }
+                            }
+                        });  
+                    }
                 self.approvalRootState(ko.mapping.fromJS(appDetailScreenInfo.approvalLst)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
                 if (self.displayReturnReasonPanel()) {
@@ -283,15 +311,16 @@ module nts.uk.at.view.kaf010.b {
                 self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
                 self.employeeID(appDispInfoNoDateOutput.employeeInfoLst[0].sid);
                 self.inputDate(applicationDto.inputDate);
-                self.siftCD(hdWorkDispInfoWithDateOutput.workTimeCD);
-                self.siftName(hdWorkDispInfoWithDateOutput.workTimeName);
-                self.workTypeCd(hdWorkDispInfoWithDateOutput.workTypeCD);
-                self.workTypeName(hdWorkDispInfoWithDateOutput.workTypeName);
-                
-//                self.siftCD(appHolidayWork.workTime.siftCode);
-//                self.siftName(appHolidayWork.workTime.siftName);
-//                self.workTypeCd(appHolidayWork.workType.workTypeCode);
-//                self.workTypeName(appHolidayWork.workType.workTypeName);
+                self.siftCD(appHolidayWork.workTime.siftCode);
+                let workTimeInfo = _.find(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode == self.siftCD());
+                if(workTimeInfo) {
+                    self.siftName(workTimeInfo.workTimeDisplayName.workTimeName);           
+                }
+                self.workTypeCd(appHolidayWork.workType.workTypeCode);
+                let workTypeInfo = _.find(hdWorkDispInfoWithDateOutput.workTypeLst, o => o.workTypeCode == self.workTypeCd());
+                if(workTypeInfo) {
+                    self.workTypeName(workTypeInfo.name);        
+                }
                 
                 self.workTypecodes(_.map(hdWorkDispInfoWithDateOutput.workTypeLst, o => o.workTypeCode));
                 self.workTimecodes(_.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));

@@ -94,7 +94,8 @@ public interface PreActualColorCheck {
 	 * @param endTime 実績退勤打刻
 	 * @return
 	 */
-	public JudgmentStampResult judgmentStamp(boolean isToday, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, Integer startTime, Integer endTime);
+	public JudgmentStampResult judgmentStamp(boolean isToday, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, Integer startTime, Integer endTime,
+			GeneralDate appDate);
 	
 	/**
 	 * 07-02-2-4-1_退勤打刻補正の判定(実績あり)
