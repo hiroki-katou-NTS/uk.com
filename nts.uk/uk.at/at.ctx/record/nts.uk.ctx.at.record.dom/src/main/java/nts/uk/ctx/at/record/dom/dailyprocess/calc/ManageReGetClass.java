@@ -45,7 +45,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class ManageReGetClass {
 	
 	//1日の範囲
-	private CalculationRangeOfOneDay calculationRangeOfOneDay;
+	private CalculationRangeOfOneDay calculationRangeOfOneDay;//必要
 	
 	//日別実績(WORK)
 	@Setter
@@ -81,7 +81,7 @@ public class ManageReGetClass {
 	
 	//計算処理に入ることができるかフラグ
 	//(造語)
-	private Boolean calculatable;
+	private Boolean calculatable;//必要
 	
 	//休憩回数
 	int breakCount;

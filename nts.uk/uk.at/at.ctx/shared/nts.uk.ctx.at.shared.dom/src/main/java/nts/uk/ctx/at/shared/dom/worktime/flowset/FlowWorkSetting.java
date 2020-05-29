@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * The Class FlowWorkSetting.
@@ -200,10 +201,8 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	 * @return 残業時間帯
 	 */
 	public List<FlowOTTimezone> getHalfDayWorkTimezoneLstOTTimezone() {
-		
 		List<FlowOTTimezone> lstOTTimezone = this.halfDayWorkTimezone.getWorkTimeZone().getLstOTTimezone();
 		lstOTTimezone.sort((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()));
-		
 		return lstOTTimezone;
 	}
 	
@@ -215,5 +214,17 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		return this.offdayWorkTimezone.getLstWorkTimezone().stream()
 				.sorted((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 勤務種類から流動勤務の休憩時間帯を取得する
+	 * @param workType
+	 * @return 流動勤務の休憩時間帯
+	 */
+	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
+		if(workType.getDailyWork().isHolidayWork()) {
+			return this.offdayWorkTimezone.getRestTimeZone();
+		}
+		return this.halfDayWorkTimezone.getRestTimezone();
 	}
 }

@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
@@ -643,125 +644,100 @@ public class OverTimeSheet {
 //		return nextlapsedTime;
 //	}
 	
+	
 	/**
 	 * 流動勤務(平日・就外)
-	 * @param personalInfo 日別計算用の個人情報
-	 * @param flowWorkSetting 流動勤務設定
-	 * @param predetermineTimeSetForCalc 所定時間設定(計算用クラス)
-	 * @param timeSheetOfDeductionItems 控除項目の時間帯
-	 * @param calcRange 残業開始終了時刻
-	 * @param bonuspaySetting 加給設定
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personDailySetting 社員設定管理
+	 * @param todayWorkType 勤務種類
+	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
-	 * @param midNightTimeSheet 深夜時間帯
-	 * @param addSetting 加算設定
-	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
-	 * @param todayWorkType 勤務種類（当日）
-	 * @param withinWorkTimeSheet 就業時間内時間帯
-	 * @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス
-	 * @param vacation 休暇クラス
-	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param predetermineTimeSetForCalc 計算用所定時間設定
+	 * @param timeSheetOfDeductionItems 控除項目の時間帯(List)
+	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
 	 * @return 残業時間帯
 	 */
 	public static OverTimeSheet createAsFlow(
-			DailyCalculationPersonalInformation personalInfo,
-			FlowWorkSetting flowWorkSetting,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting,
+			WorkType todayWorkType,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
-			TimeSpanForDailyCalc calcRange,
-			Optional<BonusPaySetting> bonuspaySetting,
-			IntegrationOfDaily integrationOfDaily,
-			MidNightTimeSheet midNightTimeSheet,
-			AddSetting addSetting,
-			AttendanceTime timeVacationAdditionRemainingTime,
-			WorkType todayWorkType,
-			WithinWorkTimeSheet withinWorkTimeSheet,
-			ManagePerPersonDailySet personCommonSetting,
-			VacationClass vacation,
-			HolidayAddtionSet holidayAddtionSet) {
+			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
 		
-		//残業開始時刻
-		TimeWithDayAttr overTimeStartTime = calcRange.getStart();
+		//計算範囲の取得
+		TimeSpanForDailyCalc calcRange = createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().get();
 		
 		//Listクラスへ変換
 		TimeSheetOfDeductionItemList timeSheetOfDeductionItemList = new TimeSheetOfDeductionItemList(timeSheetOfDeductionItems);
 		//重複している控除項目の時間帯
 		List<TimeSheetOfDeductionItem> overlappingTimeSheets = timeSheetOfDeductionItemList.getOverlappingTimeSheets(calcRange);
 		
-		List<OverTimeFrameTimeSheetForCalc> overTimeframeTimeSheets = new ArrayList<>();
+		List<OverTimeFrameTimeSheetForCalc> overTimeFrameTimeSheets = new ArrayList<>();
 		
-		for(FlowOTTimezone processingFlowOTTimezone : flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone()) {
+		for(FlowOTTimezone processingFlowOTTimezone : integrationOfWorkTime.getFlowWorkSetting().get().getHalfDayWorkTimezoneLstOTTimezone()) {
+			//残業開始時刻
+			TimeWithDayAttr overTimeStartTime = calcRange.getStart();
+			
 			//残業時間帯の開始時刻を計算
-			if(overTimeframeTimeSheets.size() != 0) {
+			if(overTimeFrameTimeSheets.size() != 0) {
 				//枠Noの降順の1件目（前回作成した枠を取得する為）
-				overTimeStartTime = overTimeframeTimeSheets.stream()
+				overTimeStartTime = overTimeFrameTimeSheets.stream()
 						.sorted((f,s) -> s.getOverTimeWorkSheetNo().compareTo(f.getOverTimeWorkSheetNo()))
 						.map(frame -> frame.getTimeSheet().getEnd())
 						.findFirst().get();
 			}
 			//控除時間から残業時間帯を作成
-			overTimeframeTimeSheets.add(OverTimeFrameTimeSheetForCalc.createAsFlow(
-					flowWorkSetting,
+			overTimeFrameTimeSheets.add(OverTimeFrameTimeSheetForCalc.createAsFlow(
+					integrationOfWorkTime.getFlowWorkSetting().get(),
 					processingFlowOTTimezone,
-					flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone(),
 					overlappingTimeSheets,
 					overTimeStartTime,
 					calcRange.getEnd(),
-					bonuspaySetting,
+					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
-					midNightTimeSheet));
+					companyCommonSetting.getMidNightTimeSheet()));
 		}
 		
 		//時間休暇溢れ分の割り当て
 		OverTimeSheet.allocateOverflowTimeVacation(
-				flowWorkSetting,
-				addSetting,
-				timeVacationAdditionRemainingTime,
-				overTimeStartTime,
+				integrationOfWorkTime.getFlowWorkSetting().get(),
+				personDailySetting.getAddSetting(),
+				createdWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
+				calcRange.getStart(),
 				integrationOfDaily.getCalAttr().getOvertimeSetting(),
-				overTimeframeTimeSheets);
+				overTimeFrameTimeSheets);
 		
 		//流動勤務の「流動残業時間帯」を固定勤務の「残業時間の時間帯設定」へ変換
-		List<OverTimeOfTimeZoneSet> overTimeHourSetList = flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone().stream()
+		List<OverTimeOfTimeZoneSet> overTimeHourSetList = integrationOfWorkTime.getFlowWorkSetting().get().getHalfDayWorkTimezoneLstOTTimezone().stream()
 				.map(OTTimezone -> OverTimeOfTimeZoneSet.convertOverTimeOfTimeZoneSet(OTTimezone))
 				.collect(Collectors.toList());
 		
 		//変形基準内残業を分割
 		OverTimeFrameTimeSheetForCalc.dicisionCalcVariableWork(
-				overTimeframeTimeSheets,
+				overTimeFrameTimeSheets,
 				predetermineTimeSetForCalc.getAdditionSet().getPredTime(),
 				integrationOfDaily.getCalAttr().getOvertimeSetting(),
-				personalInfo,
-				true,
+				personDailySetting.getPersonInfo().getLaborSystem(),
+				companyCommonSetting.getDeformLaborOT().isLegalOtCalc(),
 				overTimeHourSetList,//固定勤務の「残業時間の時間帯設定」、流動の「流動残業時間帯」から変換した。
-				personCommonSetting.getDailyUnit(),
-				addSetting.getVacationCalcMethodSet());
+				personDailySetting.getDailyUnit(),
+				personDailySetting.getAddSetting().getVacationCalcMethodSet());
 		
 		//法定内残業分割処理
-		OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
-				flowWorkSetting.getLegalOTSetting(),
-				new DailyTime(personCommonSetting.getDailyUnit().getDailyTime().valueAsMinutes()),
-				overTimeframeTimeSheets,
-				integrationOfDaily.getCalAttr().getOvertimeSetting(),
-				predetermineTimeSetForCalc.getAdditionSet().getPredTime(),
-				overTimeHourSetList,//固定勤務の「残業時間の時間帯設定」、流動の「流動残業時間帯」から変換した。
-				personCommonSetting.getDailyUnit(),//何を渡せばいいのか不明
-				addSetting.getVacationCalcMethodSet(),
-				withinWorkTimeSheet,
-				vacation,
-				timeVacationAdditionRemainingTime, //timevacationUseTimeOfDaily？
+		overTimeFrameTimeSheets = OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
+				companyCommonSetting,
+				personDailySetting,
 				todayWorkType,
+				integrationOfWorkTime,
+				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				Optional.of(flowWorkSetting.getWorkingCode()),
-				integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
-				addSetting,
-				holidayAddtionSet,
-				Optional.of(flowWorkSetting.getCommonSetting()),
-				personCommonSetting.personInfo.get(),
-				Optional.empty(), //predetermineTimeSetByPersonInfo,
-				Optional.empty(), //coreTimeSetting,
-				WorkTimeDailyAtr.REGULAR_WORK);
+				overTimeFrameTimeSheets,
+				createdWithinWorkTimeSheet);
 		
-		return new OverTimeSheet(new RaisingSalaryTime(), overTimeframeTimeSheets, new SubHolOccurrenceInfo());
+		return new OverTimeSheet(new RaisingSalaryTime(), overTimeFrameTimeSheets, new SubHolOccurrenceInfo());
 	}
 	
 	/**

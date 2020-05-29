@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
-import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
@@ -211,7 +211,7 @@ public class OverTimeOfDaily {
 	 * @return 計算結果
 	 */
 	public static OverTimeOfDaily calculationTime(ManageReGetClass recordReGet,
-												  CalcMethodOfNoWorkingDay calcMethod,
+												  CalcMethodOfNoWorkingDayForCalc calcMethod,
 												  WorkType workType,
 												  Optional<SettingOfFlexWork> flexCalcMethod,
 												  VacationClass vacationClass,

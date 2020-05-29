@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
@@ -328,7 +328,7 @@ public class TotalWorkingTime {
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(recordClass,
 				   																      vacationClass,
 				   																      workType,
-				   																      CalcMethodOfNoWorkingDay.isCalculateFlexTime, 
+				   																      CalcMethodOfNoWorkingDayForCalc.isCalculateFlexTime, 
 				   																      flexCalcMethod, 
 				   																      workTimeDailyAtr, 
 				   																      recordWorkTimeCode,
@@ -338,7 +338,7 @@ public class TotalWorkingTime {
 
 		
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(recordClass, 
-																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
+																									CalcMethodOfNoWorkingDayForCalc.isCalculateFlexTime,
 																									workType,flexCalcMethod,
 																									vacationClass,
 																									StatutoryDivision.Nomal,

@@ -11,7 +11,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -35,9 +37,10 @@ public class LeaveEarlyDecisionClock {
 	public static Optional<LeaveEarlyDecisionClock> create(
 			int workNo,
 			PredetermineTimeSetForCalc predetermineTimeSet,
-			GraceTimeSetting leaveEarlyGraceTime,
+			IntegrationOfWorkTime workTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType, List<TimeSheetOfDeductionItem> breakTimeList) {
+			WorkType workType,
+			List<TimeSheetOfDeductionItem> breakTimeList) {
 		
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
@@ -45,14 +48,16 @@ public class LeaveEarlyDecisionClock {
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
-		Optional<TimeSpanForDailyCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,coreTimeSetting,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
+		Optional<TimeSpanForDailyCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,workTime,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
 		if (calｃRange.isPresent()) {
-			if(leaveEarlyGraceTime.isZero()) {
+			GraceTimeSetting graceTimeSetting = workTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet();
+			
+			if(graceTimeSetting.isZero()) {
 				// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
 				decisionClock = calｃRange.get().getEnd();
 			} else {
 				// 猶予時間帯の作成
-				TimeSpanForDailyCalc graceTimeSheet = new TimeSpanForDailyCalc(calｃRange.get().getEnd().backByMinutes(leaveEarlyGraceTime.getGraceTime().valueAsMinutes()),
+				TimeSpanForDailyCalc graceTimeSheet = new TimeSpanForDailyCalc(calｃRange.get().getEnd().backByMinutes(graceTimeSetting.getGraceTime().valueAsMinutes()),
 																	 calｃRange.get().getEnd());
 				// 重複している控除分をずらす(短時間・休憩)
 				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
@@ -84,7 +89,7 @@ public class LeaveEarlyDecisionClock {
 	 */
 	static public Optional<TimeSpanForDailyCalc> getCalcRange(TimezoneUse predetermineTimeSet,
 														 TimeLeavingWork timeLeavingWork,
-														 Optional<CoreTimeSetting> coreTimeSetting,
+														 IntegrationOfWorkTime workTime,
 														 PredetermineTimeSetForCalc predetermineTimeSetForCalc,AttendanceHolidayAttr attr)
 	{
 		//退勤時刻
@@ -102,12 +107,15 @@ public class LeaveEarlyDecisionClock {
 		if(leave!=null) {
 			result = Optional.of(new TimeSpanForDailyCalc(leave, predetermineTimeSet.getEnd()));
 			//フレ勤務かどうか判断
-			if(coreTimeSetting.isPresent()) {
+			if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) {
+				
+				CoreTimeSetting coreTimeSetting = workTime.getFlexWorkSetting().get().getCoreTimeSetting();
+				
 				//コアタイム使用するかどうか
-				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
+				if(coreTimeSetting.getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
+				val coreTime = coreTimeSetting.getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
 				if(leave.lessThanOrEqualTo(coreTime.getStartTime())) {
 					return Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(),coreTime.getEndTime()));
 				}

@@ -98,17 +98,19 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 
 	/**
 	 * 就業時間内時間帯から控除するか判断
-	 * @param deductTime
-	 * @param graceTimeSetting
+	 * @param deductTime 控除時間
+	 * @param graceTimeSetting 猶予時間
+	 * @param 就業時間帯の共通設定
+	 * @param 勤務種類
 	 * @return
 	 */
-	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, Optional<WorkTimezoneCommonSet> commonSetting, WorkType workType) {
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, WorkTimezoneCommonSet commonSetting, WorkType workType) {
 
 		//出勤系ではない場合
 		if(workType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY) || workType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY_WORK)) {
 			return false;
 		}
-		if(isDeductLateLeaveEarly(commonSetting)) {//遅刻早退をマイナスする場合に処理に入る
+		if(isDeductLateLeaveEarly(Optional.of(commonSetting))) {//遅刻早退をマイナスする場合に処理に入る
 			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
 				return true;
 			}

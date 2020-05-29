@@ -40,6 +40,23 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Value
 public class VacationClass {
 	private HolidayOfDaily holidayOfDaily;
+	
+	/**
+	 * 全て0で作成する
+	 * 
+	 * @return 休暇クラス
+	 */
+	public static VacationClass createAllZero() {
+		return new VacationClass(
+				new HolidayOfDaily(
+						new AbsenceOfDaily(new AttendanceTime(0)),
+						new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new YearlyReservedOfDaily(new AttendanceTime(0)),
+						new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+	}
 
 	/**
 	 * 休暇使用時間の計算

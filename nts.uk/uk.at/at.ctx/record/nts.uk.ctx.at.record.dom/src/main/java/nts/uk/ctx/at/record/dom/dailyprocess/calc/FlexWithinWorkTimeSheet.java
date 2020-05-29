@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.CalcFlexTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.WorkHour;
@@ -94,7 +94,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param preAppTime 
 	 * @return
 	 */
-	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
+	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDayForCalc calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   										VacationClass vacationClass,AttendanceTime timevacationUseTimeOfDaily,
 			   										StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
 													AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
@@ -303,7 +303,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 									   AddSetting addSetting,
 									   HolidayAddtionSet holidayAddtionSet,
 									   HolidayCalcMethodSet holidayCalcMethodSet,
-									   CalcMethodOfNoWorkingDay calcMethod, 
+									   CalcMethodOfNoWorkingDayForCalc calcMethod, 
 									   AutoCalAtrOvertime flexAutoCalcAtr, //フレの上限時間設定
 									   SettingOfFlexWork flexCalcMethod,
 									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
@@ -423,7 +423,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 									   AddSetting addSetting,
 									   HolidayAddtionSet holidayAddtionSet,
 									   HolidayCalcMethodSet holidayCalcMethodSet,
-									   CalcMethodOfNoWorkingDay calcMethod, 
+									   CalcMethodOfNoWorkingDayForCalc calcMethod, 
 									   AutoCalAtrOvertime flexAutoCalcAtr, //フレの上限時間設定
 									   SettingOfFlexWork flexCalcMethod,
 									   AttendanceTime preFlexTime,Optional<CoreTimeSetting> coreTimeSetting,
@@ -455,7 +455,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		//休暇加算のマスタを見る
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, 
 																 new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), addSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-																		 addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday()), //ichioka見直し　固定渡す意味 就業時間の実働でNEWする意味
+																		 addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday()), //ichioka見直し　通常渡す意味 就業時間の実働でNEWする意味
 																 flexAutoCalcAtr, 
 																 workType, 
 																 flexCalcMethod, 

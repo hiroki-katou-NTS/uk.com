@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -562,6 +563,56 @@ public class HolidayWorkTimeSheet{
 					bonuspaySetting,
 					integrationOfDaily.getSpecDateAttr(),
 					midNightTimeSheet,
+					processingTimezone));
+		}
+		return new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo());
+	}
+	
+	/**
+	 * 流動勤務(休日出勤)
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personDailySetting 社員設定管理
+	 * @param todayWorkType 勤務種類
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param timeSheetOfDeductionItems 控除項目の時間帯(List)
+	 * @param holidayStartEnd 休出開始終了
+	 * @param oneDayOfRange 1日の計算範囲
+	 * @return 休日出勤時間帯
+	 */
+	public static HolidayWorkTimeSheet createAsFlow(
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting,
+			WorkType todayWorkType,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
+			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
+			TimeSpanForDailyCalc holidayStartEnd,
+			TimeSpanForDailyCalc oneDayOfRange) {
+		
+		TimeSpanForDailyCalc calcRange = holidayStartEnd.getDuplicatedWith(oneDayOfRange).orElse(holidayStartEnd);
+		
+		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheets = new ArrayList<>();
+		
+		for(FlowWorkHolidayTimeZone processingTimezone : integrationOfWorkTime.getFlowWorkSetting().get().getOffdayWorkTimezoneLstWorkTimezone()) {
+			//休出時間帯の開始時刻を計算
+			TimeWithDayAttr holidayStart = calcRange.getStart();
+			if(holidayWorkFrameTimeSheets.size() != 0) {
+				//枠Noの降順の1件目（前回作成した枠を取得する為）
+				holidayStart = holidayWorkFrameTimeSheets.stream()
+						.sorted((f,s) -> s.getHolidayWorkTimeSheetNo().compareTo(f.getHolidayWorkTimeSheetNo()))
+						.map(frame -> frame.getTimeSheet().getEnd())
+						.findFirst().get();
+			}
+			//控除時間から休出時間帯を作成
+			holidayWorkFrameTimeSheets.add(HolidayWorkFrameTimeSheetForCalc.createAsFlow(
+					todayWorkType,
+					integrationOfWorkTime.getFlowWorkSetting().get(),
+					timeSheetOfDeductionItems,
+					new TimeSpanForDailyCalc(holidayStart, calcRange.getEnd()),
+					personDailySetting.getBonusPaySetting(),
+					integrationOfDaily.getSpecDateAttr(),
+					companyCommonSetting.midNightTimeSheet,
 					processingTimezone));
 		}
 		return new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo());

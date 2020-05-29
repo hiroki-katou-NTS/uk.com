@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.service;
 
 import lombok.AllArgsConstructor;
 /**
- * 流動勤務かどうかの判断処理
+ * 就業時間帯の勤務形態
  * @author do_dt
  *
  */

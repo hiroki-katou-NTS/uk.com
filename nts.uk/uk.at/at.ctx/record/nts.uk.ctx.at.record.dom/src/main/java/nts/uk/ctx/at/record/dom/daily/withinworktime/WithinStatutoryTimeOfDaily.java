@@ -12,10 +12,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerPersonDailySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
@@ -43,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdd
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
@@ -99,7 +103,7 @@ public class WithinStatutoryTimeOfDaily {
 	public static WithinStatutoryTimeOfDaily calcStatutoryTime(ManageReGetClass recordReget,	
 			   												   VacationClass vacationClass,
 			   												   WorkType workType,
-			   												   CalcMethodOfNoWorkingDay calcMethod, 
+			   												   CalcMethodOfNoWorkingDayForCalc calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -188,7 +192,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSetting addSetting,
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
-			   												   CalcMethodOfNoWorkingDay calcMethod, 
+			   												   CalcMethodOfNoWorkingDayForCalc calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr,//就業時間帯からとってきた勤務区分
 			   												   Optional<WorkTimeCode> workTimeCode,
@@ -356,7 +360,7 @@ public class WithinStatutoryTimeOfDaily {
 			   												   AddSetting addSetting,
 			   												   HolidayAddtionSet holidayAddtionSet,
 			   												   HolidayCalcMethodSet holidayCalcMethodSet,
-			   												   CalcMethodOfNoWorkingDay calcMethod, 
+			   												   CalcMethodOfNoWorkingDayForCalc calcMethod, 
 			   												   Optional<SettingOfFlexWork> flexCalcMethod,
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr,//就業時間帯からとってきた勤務区分
 			   												   Optional<WorkTimeCode> workTimeCode,

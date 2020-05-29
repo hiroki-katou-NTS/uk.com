@@ -52,14 +52,14 @@ public class WorkScheduleTimeOfDaily {
 	* 時刻から所定時間を計算する
 	* @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
 	* @param workType 勤務種類
-	* @param personCommonSetting 毎日変更の可能性のあるマスタ管理クラス（予定）
+	* @param personDailySetting 毎日変更の可能性のあるマスタ管理クラス（予定）
 	* @param FlowOTSet 流動残業設定
 	* @return
 	*/
 	public static AttendanceTime calcPredeterminedFromTime(
 			ManageReGetClass manageReGetClassOfSchedule,
 			WorkType workType,
-			ManagePerPersonDailySet personCommonSetting,
+			ManagePerPersonDailySet personDailySetting,
 			FlowOTSet flowOTSet) {
 		
 		//設定を退避する
@@ -77,7 +77,7 @@ public class WorkScheduleTimeOfDaily {
 				HolidayTimesheetCalculationSetting.CalculateAutomatical);
 		
 		//休暇クラス
-		VacationClass vacation = CalcDefaultValue.DEFAULT_VACATION;
+		VacationClass vacation = VacationClass.createAllZero();
 		
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
@@ -88,7 +88,7 @@ public class WorkScheduleTimeOfDaily {
 				Optional.empty(),
 				bonusPayAutoCalcSet,
 				Collections.emptyList(),
-				personCommonSetting.getPersonInfo().get(),
+				personDailySetting.getPersonInfo(),
 				Optional.of(manageReGetClassOfSchedule.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
 				manageReGetClassOfSchedule.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
 				Optional.of(manageReGetClassOfSchedule.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode()));

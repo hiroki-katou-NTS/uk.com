@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
@@ -88,7 +88,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @return
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(ManageReGetClass recordReget,
-																	 CalcMethodOfNoWorkingDay calcMethod,
+																	 CalcMethodOfNoWorkingDayForCalc calcMethod,
 																	 WorkType workType,
 																	 Optional<SettingOfFlexWork> flexCalcMethod,
 			   														 VacationClass vacationClass,
@@ -132,7 +132,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param flexAutoCalSet 
 	 */
 	private static OverTimeOfDaily calculationOverTime(ManageReGetClass oneDay,
-													   CalcMethodOfNoWorkingDay calcMethod,
+													   CalcMethodOfNoWorkingDayForCalc calcMethod,
 													   WorkType workType,
 													   Optional<SettingOfFlexWork> flexCalcMethod,
 													   VacationClass vacationClass,
