@@ -249,7 +249,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
 		boolean subVacaTypeUseFlg = false;
 		boolean subHdTypeUseFlg = false;
-		if(!CollectionUtil.isEmpty(employmentSet.getListWTOAH()) && employmentSet != null) {
+		if(employmentSet != null && !CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
 			WorkTypeObjAppHoliday item = employmentSet.getListWTOAH().get(0);
 			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.RESTTIME.value) {
 				subVacaTypeUseFlg = item.getHolidayTypeUseFlg().get();
