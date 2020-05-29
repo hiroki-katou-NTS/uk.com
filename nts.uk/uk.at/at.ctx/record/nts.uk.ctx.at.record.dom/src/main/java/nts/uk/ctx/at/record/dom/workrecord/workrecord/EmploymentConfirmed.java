@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workrecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -48,6 +48,6 @@ public class EmploymentConfirmed implements DomainAggregate  {
 	/**
 	 * 日時
 	 */
-	private final GeneralDate date;
+	private final GeneralDateTime date;
 	
 }

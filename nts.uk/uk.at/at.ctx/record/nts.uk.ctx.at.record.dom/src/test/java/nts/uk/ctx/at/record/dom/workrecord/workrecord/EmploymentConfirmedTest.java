@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workrecord;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -18,7 +18,7 @@ public class EmploymentConfirmedTest {
 				ClosureId.ClosureFive,
 				new YearMonth(2020),
 				"DUMMY",
-				GeneralDate.today());
+				GeneralDateTime.now());
 		
 		NtsAssert.invokeGetters(confirmed);
 	}

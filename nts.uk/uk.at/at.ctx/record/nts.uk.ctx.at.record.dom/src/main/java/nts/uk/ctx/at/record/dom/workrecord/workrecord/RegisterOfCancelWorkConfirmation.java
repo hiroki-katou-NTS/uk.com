@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workrecord;
 import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -40,7 +40,7 @@ public class RegisterOfCancelWorkConfirmation {
 	 * @return
 	 */
 	public Optional<AtomTask> get(Require require, CompanyId companyId, WorkplaceId workplaceId, ClosureId closureId,
-			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDate> date, Boolean whetherToCancel) {
+			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDateTime> date, Boolean whetherToCancel) {
 
 		if (whetherToCancel) {
 			EmploymentConfirmed employmentConfirmed = new EmploymentConfirmed(companyId, workplaceId, closureId,

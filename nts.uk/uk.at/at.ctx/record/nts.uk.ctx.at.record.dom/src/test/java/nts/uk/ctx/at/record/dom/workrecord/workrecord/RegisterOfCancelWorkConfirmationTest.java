@@ -13,6 +13,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workrecord.RegisterOfCancelWorkConfirmation.Require;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -59,7 +60,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 						ClosureId.ClosureFour,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
-						Optional.of(GeneralDate.today()),
+						Optional.of(GeneralDateTime.now()),
 						true).get(),
 				any -> require.insert(any.get()));
 	}
@@ -86,7 +87,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 				ClosureId.ClosureFour,
 				new YearMonth(2020),
 				Optional.of("DUMMY"),
-				Optional.of(GeneralDate.today()),
+				Optional.of(GeneralDateTime.now()),
 				false);
 		
 		assertThat(atom).isEmpty();
@@ -114,7 +115,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 						ClosureId.ClosureFour,
 						new YearMonth(2020),
 						"DUMMY",
-						GeneralDate.today());
+						GeneralDateTime.now());
 				
 				result = Optional.of(confirmed);
 				
@@ -128,7 +129,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 						ClosureId.ClosureFour,
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
-						Optional.of(GeneralDate.today()),
+						Optional.of(GeneralDateTime.now()),
 						false).get(),
 				any -> require.delete(any.get()));
 		
