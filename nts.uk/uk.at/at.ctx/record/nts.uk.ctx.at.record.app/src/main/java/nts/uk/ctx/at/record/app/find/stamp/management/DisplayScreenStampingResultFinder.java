@@ -77,15 +77,19 @@ public class DisplayScreenStampingResultFinder {
 				listWorkLocationCode);
 
 		for (StampDataOfEmployees stampDataOfEmployees : listStampDataOfEmployees) {
-			val workLocationCode = stampDataOfEmployees.getListStamp().get(0).getRefActualResults().getWorkLocationCD()
-					.get();
-			val optWorkLocation = listWorkLocation.stream()
-					.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-			val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+			String workLocationName = ""; 
+			if(!stampDataOfEmployees.getListStamp().isEmpty()){
+				val workLocationCode = stampDataOfEmployees.getListStamp().get(0).getRefActualResults().getWorkLocationCD()
+						.get();
+				val optWorkLocation = listWorkLocation.stream()
+						.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+				 workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
 
+				
+			}
 			DisplayScreenStampingResultDto data = new DisplayScreenStampingResultDto(workLocationName,
 					new StampDataOfEmployeesDto(stampDataOfEmployees));
-			res.add(data);
+			res.add(data);		
 		}
 		return res;
 	}
