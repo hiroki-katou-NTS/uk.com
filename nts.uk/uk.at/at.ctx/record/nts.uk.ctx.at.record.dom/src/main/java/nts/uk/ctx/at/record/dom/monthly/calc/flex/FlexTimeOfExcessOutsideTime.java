@@ -65,5 +65,6 @@ public class FlexTimeOfExcessOutsideTime {
 
 		this.principleTime = this.principleTime.addMinutes(target.principleTime.v());
 		this.forConvenienceTime = this.forConvenienceTime.addMinutes(target.forConvenienceTime.v());
+		this.flexTimeCurrentMonth.sum(target.flexTimeCurrentMonth);
 	}
 }

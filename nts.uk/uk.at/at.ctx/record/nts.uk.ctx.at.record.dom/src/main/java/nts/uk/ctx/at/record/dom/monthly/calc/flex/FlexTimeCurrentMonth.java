@@ -50,4 +50,15 @@ public class FlexTimeCurrentMonth {
 		domain.excessWeekAveTime = excessWeekAveTime;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexTimeCurrentMonth target){
+		
+		this.flexTime = this.flexTime.addMinutes(target.flexTime.v());
+		this.standardTime = this.standardTime.addMinutes(target.standardTime.v());
+		this.excessWeekAveTime = this.excessWeekAveTime.addMinutes(target.excessWeekAveTime.v());
+	}
 }

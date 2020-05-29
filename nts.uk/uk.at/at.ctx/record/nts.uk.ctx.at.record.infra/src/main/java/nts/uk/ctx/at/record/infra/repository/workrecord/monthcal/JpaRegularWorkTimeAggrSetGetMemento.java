@@ -58,7 +58,7 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet>
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalOt()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayOt()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()),
-				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExcLegalOt()));
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getExceptLegalHdwkOt()));
 	}
 
 }

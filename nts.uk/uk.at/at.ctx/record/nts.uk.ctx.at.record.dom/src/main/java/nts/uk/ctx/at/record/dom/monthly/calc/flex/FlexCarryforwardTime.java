@@ -22,6 +22,9 @@ public class FlexCarryforwardTime {
 	/** フレックス繰越不足時間 */
 	@Setter
 	private AttendanceTimeMonth flexCarryforwardShortageTime;
+	/** フレックス繰越不可時間 */
+	@Setter
+	private AttendanceTimeMonth flexNotCarryforwardTime;
 	
 	/**
 	 * コンストラクタ
@@ -31,6 +34,7 @@ public class FlexCarryforwardTime {
 		this.flexCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.flexCarryforwardWorkTime = new AttendanceTimeMonth(0);
 		this.flexCarryforwardShortageTime = new AttendanceTimeMonth(0);
+		this.flexNotCarryforwardTime = new AttendanceTimeMonth(0);
 	}
 	
 	/**
@@ -38,17 +42,20 @@ public class FlexCarryforwardTime {
 	 * @param flexCarryforwardTime フレックス繰越時間
 	 * @param flexCarryforwardWorkTime フレックス繰越勤務時間
 	 * @param flexCarryforwardShortageTime フレックス繰越不足時間
-	 * @return
+	 * @param flexNotCarryforwardTime フレックス繰越不可時間
+	 * @return フレックス繰越時間
 	 */
 	public static FlexCarryforwardTime of(
 			AttendanceTimeMonthWithMinus flexCarryforwardTime,
 			AttendanceTimeMonth flexCarryforwardWorkTime,
-			AttendanceTimeMonth flexCarryforwardShortageTime){
+			AttendanceTimeMonth flexCarryforwardShortageTime,
+			AttendanceTimeMonth flexNotCarryforwardTime){
 
 		val domain = new FlexCarryforwardTime();
 		domain.flexCarryforwardTime = flexCarryforwardTime;
 		domain.flexCarryforwardWorkTime = flexCarryforwardWorkTime;
 		domain.flexCarryforwardShortageTime = flexCarryforwardShortageTime;
+		domain.flexNotCarryforwardTime = flexNotCarryforwardTime;
 		return domain;
 	}
 	
@@ -63,5 +70,7 @@ public class FlexCarryforwardTime {
 				target.flexCarryforwardWorkTime.v());
 		this.flexCarryforwardShortageTime = this.flexCarryforwardShortageTime.addMinutes(
 				target.flexCarryforwardShortageTime.v());
+		this.flexNotCarryforwardTime = this.flexNotCarryforwardTime.addMinutes(
+				target.flexNotCarryforwardTime.v());
 	}
 }
