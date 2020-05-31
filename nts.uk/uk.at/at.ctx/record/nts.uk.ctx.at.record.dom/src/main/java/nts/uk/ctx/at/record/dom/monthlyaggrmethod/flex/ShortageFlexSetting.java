@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.common.Month;
  * @author shuichi_ishida
  */
 @Getter
-public class ShortageFlexSetting {
+public class ShortageFlexSetting implements Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 繰越設定 */
 	private CarryforwardSetInShortageFlex carryforwardSet;

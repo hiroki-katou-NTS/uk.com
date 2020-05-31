@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -10,7 +12,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
  * @author shuichi_ishida
  */
 @Getter
-public class BudgetTimeVarienceOfMonthly {
+public class BudgetTimeVarienceOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 時間 */
 	private AttendanceTimeMonthWithMinus time;

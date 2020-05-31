@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateHolidayWorkTime implements Cloneable {
+public class AggregateHolidayWorkTime implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 休出枠NO */
 	private final HolidayWorkFrameNo holidayWorkFrameNo;

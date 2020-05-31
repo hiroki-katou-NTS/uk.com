@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateOverTime implements Cloneable {
+public class AggregateOverTime implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 残業枠NO */
 	private final OverTimeFrameNo overTimeFrameNo;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class FlexTime {
+public class FlexTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** フレックス時間 */
 	@Setter

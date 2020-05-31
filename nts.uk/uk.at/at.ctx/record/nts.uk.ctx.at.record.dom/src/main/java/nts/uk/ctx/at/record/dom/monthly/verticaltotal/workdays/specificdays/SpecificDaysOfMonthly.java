@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +15,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の特定日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class SpecificDaysOfMonthly {
+public class SpecificDaysOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 特定日数 */
 	private Map<SpecificDateItemNo, AggregateSpecificDays> specificDays;

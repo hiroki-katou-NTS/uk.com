@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 
 /**
@@ -11,7 +13,10 @@ import lombok.Getter;
  */
 // 割増集計方法
 @Getter
-public class ExcessOutsideTimeSetReg {
+public class ExcessOutsideTimeSetReg implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The legal over time work. */
 	// 法定内残業を含める

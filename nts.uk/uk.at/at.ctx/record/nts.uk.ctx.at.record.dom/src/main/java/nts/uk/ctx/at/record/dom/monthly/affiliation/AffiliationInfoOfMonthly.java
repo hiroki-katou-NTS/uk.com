@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.affiliation;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -12,7 +14,10 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  * @author shuichu_ishida
  */
 @Getter
-public class AffiliationInfoOfMonthly extends AggregateRoot {
+public class AffiliationInfoOfMonthly extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 社員ID */
 	private final String employeeId;
