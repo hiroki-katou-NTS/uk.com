@@ -173,11 +173,18 @@ public class OutputScreenListOfStampFinder {
 				String local = "";
 				String optSupportCard = "";
 				String workLocationName = "";
+				String workTimeName = "";
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
 				if(stamp.getRefActualResults().getWorkLocationCD().isPresent()){
 				val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 				val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-				 workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				
+				 if(optWorkLocation.isPresent() && workLocationCode.v().trim() != ""){
+					 workLocationName =  optWorkLocation.get().getWorkLocationName().v();
+				 }
+				 if(!optWorkLocation.isPresent() &&  !workLocationCode.v().trim().equals("") ) {
+					 workLocationName = workLocationCode.v() +" "+ TextResource.localize("KDP011_50");
+				 }
 				}
 				
 				
@@ -200,7 +207,13 @@ public class OutputScreenListOfStampFinder {
 				// WorkTime Name
 				val optWorkTimeCode = stamp.getRefActualResults().getWorkTimeCode();
 				val optWorkTimeSetting = listWorkTimeSetting.stream().filter(c -> optWorkTimeCode.isPresent() && c.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).findFirst();
-				val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : optWorkTimeCode.get().v() +" "+ TextResource.localize("KDP011_50");
+				//val workTimeName = (optWorkTimeSetting.isPresent()) ? optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : optWorkTimeCode.get().v() +" "+ TextResource.localize("KDP011_50");
+				if(optWorkTimeSetting.isPresent() &&  optWorkTimeCode.get().v().trim() != ""){
+					workTimeName = optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v();
+				}
+				if(!optWorkTimeSetting.isPresent() && !optWorkTimeCode.get().v().trim().equals("") ){
+					workTimeName= optWorkTimeCode.get().v() +" "+ TextResource.localize("KDP011_50");
+				}
 				
 				// Overtime Hour & Late Night Time
 				val optOvertimeDeclaration = stamp.getRefActualResults().getOvertimeDeclaration();			
@@ -291,7 +304,14 @@ public class OutputScreenListOfStampFinder {
 				if (workLocationCD.isPresent()) {
 					val optWorkLocation = listWorkLocation.stream()
 							.filter(c -> c.getWorkLocationCD().v().equals(workLocationCD.get().v())).findFirst();
-					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : workLocationCD.get().v() +" "+TextResource.localize("KDP011_50");
+					if(optWorkLocation.isPresent() && workLocationCD.get().v().trim() != "" ){
+						workLocationName = optWorkLocation.get().getWorkLocationName().v();
+					}
+					if(!optWorkLocation.isPresent() && !workLocationCD.get().v().trim().equals("")){
+						
+						workLocationName = workLocationCD.get().v() +" "+TextResource.localize("KDP011_50");
+					}
+					
 				}
 
 				val locationInfo = stampInfoDisp.getStamp().get().getLocationInfor();
@@ -312,10 +332,12 @@ public class OutputScreenListOfStampFinder {
 				if (workTimeCode.isPresent()) {
 					val workTimeDisplayNameCheck = listWorkTimeSetting.stream().filter(c -> c.getWorktimeCode().v().equals(workTimeCode.get().v()))
 														 .map(c -> c.getWorkTimeDisplayName().getWorkTimeName().v()).findFirst();
-					if(workTimeDisplayNameCheck.isPresent()){
-						workTimeDisplayName = workTimeDisplayNameCheck.isPresent() ?  workTimeDisplayNameCheck.get() : workTimeCode.get().v() + " " +TextResource.localize("KDP011_50");
+					if (workTimeDisplayNameCheck.isPresent() && workTimeCode.get().v().trim() != ""){
+						workTimeDisplayName =  workTimeDisplayNameCheck.get();
 					}
-					
+					if(!workTimeDisplayNameCheck.isPresent() && !workTimeCode.get().v().trim().equals("")){
+						workTimeDisplayName = workTimeCode.get().v() + " " +TextResource.localize("KDP011_50");
+					}
 
 				}
 				

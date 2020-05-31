@@ -165,7 +165,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		}
 		val stampNumber = new StampNumber(entity.pk.cardNumber);
 		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
-		val stampType = new StampType(entity.changeHalfDay,
+		val stampType = StampType.getStampType(entity.changeHalfDay,
 				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 				ChangeCalArt.valueOf(entity.changeCalArt));
@@ -194,7 +194,7 @@ private Stamp toDomainVer2(Object[] object) {
 	KrcdtStamp entity = (KrcdtStamp) object[1];
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
+				StampType.getStampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
@@ -218,7 +218,7 @@ private Stamp toDomainVer3(Object[] object) {
 	KrcdtStamp entity = (KrcdtStamp) object[2];
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
+				StampType.getStampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
