@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.totalcount;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 回数集計
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class TotalCount implements Cloneable {
+public class TotalCount implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 回数集計No */
 	private int totalCountNo;

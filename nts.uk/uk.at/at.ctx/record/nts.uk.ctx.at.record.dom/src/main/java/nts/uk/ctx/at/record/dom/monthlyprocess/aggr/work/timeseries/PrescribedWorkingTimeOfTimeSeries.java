@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -12,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author shuichi_ishida
  */
 @Getter
-public class PrescribedWorkingTimeOfTimeSeries {
+public class PrescribedWorkingTimeOfTimeSeries implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 年月日 */
 	private GeneralDate ymd;

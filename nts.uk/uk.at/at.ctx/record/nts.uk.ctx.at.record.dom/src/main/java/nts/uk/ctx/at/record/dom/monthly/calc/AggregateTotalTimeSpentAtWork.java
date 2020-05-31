@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -9,7 +11,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichi_ishida
  */
 @Getter
-public class AggregateTotalTimeSpentAtWork implements Cloneable {
+public class AggregateTotalTimeSpentAtWork implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 拘束残業時間 */
 	private AttendanceTimeMonth overTimeSpentAtWork;

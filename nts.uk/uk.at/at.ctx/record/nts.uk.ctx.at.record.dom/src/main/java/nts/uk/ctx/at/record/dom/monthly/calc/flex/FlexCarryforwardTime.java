@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -11,7 +13,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
  * @author shuichi_ishida
  */
 @Getter
-public class FlexCarryforwardTime {
+public class FlexCarryforwardTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** フレックス繰越時間 */
 	@Setter

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
@@ -15,7 +17,10 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
  */
 @Getter
 // フレックス時間勤務の月の集計設定
-public class FlexMonthWorkTimeAggrSet extends DomainObject {
+public class FlexMonthWorkTimeAggrSet extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The aggregate method. */
 	// 集計方法

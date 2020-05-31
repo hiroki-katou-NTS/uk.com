@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -19,7 +20,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author shuichi_ishida
  */
 @Getter
-public class AggrPCLogonClock {
+public class AggrPCLogonClock implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 105：プレミアムデー */
 	public static final WorkTypeCode PREMIUM_DAY = new WorkTypeCode("105");

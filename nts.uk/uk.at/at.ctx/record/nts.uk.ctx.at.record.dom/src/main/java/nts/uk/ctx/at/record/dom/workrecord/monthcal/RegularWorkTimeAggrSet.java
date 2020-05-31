@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -12,7 +14,10 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 // 通常勤務の法定内集計設定
-public class RegularWorkTimeAggrSet extends DomainObject {
+public class RegularWorkTimeAggrSet extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The aggregate time set. */
 	// 集計時間設定

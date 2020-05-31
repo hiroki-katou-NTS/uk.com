@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.gul.util.Time;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
@@ -61,7 +64,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class MonthlyCalculation {
+public class MonthlyCalculation implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 実働時間 */
 	private RegularAndIrregularTimeOfMonthly actualWorkingTime;
@@ -142,6 +148,14 @@ public class MonthlyCalculation {
 	private List<WorkingConditionItem> workingConditionItems;
 	/** 労働条件 */
 	private Map<String, DatePeriod> workingConditions;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ

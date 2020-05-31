@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,13 +60,17 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 月別実績のフレックス時間
  * @author shuichi_ishida
  */
 @Getter
-public class FlexTimeOfMonthly {
+public class FlexTimeOfMonthly implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** フレックス時間 */
 	private FlexTime flexTime;
@@ -102,6 +108,14 @@ public class FlexTimeOfMonthly {
 	private List<MonthlyAggregationErrorInfo> errorInfos;
 	/** 社員の月別実績のエラー詳細リスト */
 	private List<Flex> perErrors; 
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ

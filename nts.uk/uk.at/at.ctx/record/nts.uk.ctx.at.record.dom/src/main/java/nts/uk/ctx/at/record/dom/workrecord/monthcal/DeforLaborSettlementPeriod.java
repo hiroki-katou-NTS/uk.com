@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.Month;
 
@@ -12,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.common.Month;
  */
 @Getter
 // 変形労働の精算期間
-public class DeforLaborSettlementPeriod {
+public class DeforLaborSettlementPeriod implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The start month. */
 	private Month startMonth;
