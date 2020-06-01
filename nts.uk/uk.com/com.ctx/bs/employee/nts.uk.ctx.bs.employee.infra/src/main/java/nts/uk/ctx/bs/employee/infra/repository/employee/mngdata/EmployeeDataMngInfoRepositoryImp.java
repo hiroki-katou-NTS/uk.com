@@ -420,7 +420,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
 					+ " from BSYMT_EMP_DTA_MNG_INFO"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
-					+ " and CID = ? and DEL_STATUS_ATR = 0 ORDER BY SCD ASC";
+					+ " and CID = ? ORDER BY SCD ASC";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
