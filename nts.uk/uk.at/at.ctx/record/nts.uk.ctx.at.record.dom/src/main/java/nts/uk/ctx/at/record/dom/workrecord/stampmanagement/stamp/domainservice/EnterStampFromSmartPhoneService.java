@@ -2,14 +2,19 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author sonnlb
@@ -32,50 +37,54 @@ public class EnterStampFromSmartPhoneService {
 	 * @param 打刻ボタン
 	 *            stampButton
 	 * @param 地理座標
-	 *            locationInfor
+	 *            positionInfor
 	 * @param 実績への反映内容
 	 *            refActualResults
 	 * 
 	 *            ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
 
-	public StampDataReflectResult create(Require require, ContractCode contractCode, String employeeID, GeneralDateTime stampDatetime,
-			String stampButton, Optional<StampLocationInfor> locationInfor, RefectActualResult refActualResults) {
+	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
+			RefectActualResult refActualResults) {
 		// $打刻場所情報 = empty
 		StampLocationInfor stampLocalInfo = null;
 
-		if (locationInfor.isPresent()) {
-			stampLocalInfo = locationInfor.get();
+		if (positionInfor.isPresent()) {
+			stampLocalInfo = new StampLocationInfor(positionInfor.get(), false);
 		}
 
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
-		val settingSmartPhoneStampo = Optional.ofNullable(null);
+		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require
+				.getSmartphoneStampSetting(AppContexts.user().companyId());
 
-		if (!settingSmartPhoneStampo.isPresent()) {
+		if (!settingSmartPhoneStampOpt.isPresent()) {
 
 			throw new BusinessException("Msg_1632");
 		}
 
 		// $ボタン詳細設定 = $スマホ打刻の打刻設定.ボタン詳細設定を取得する(打刻ボタン)
-		val settingButton = Optional.ofNullable(null);
+		Optional<ButtonSettings> buttonSettingOpt = settingSmartPhoneStampOpt.get()
+				.getDetailButtonSettings(stampButton);
 
-		if (!settingButton.isPresent()) {
+		if (!buttonSettingOpt.isPresent()) {
 			throw new BusinessException("Msg_1632");
 		}
 
 		// $打刻する方法 = 打刻する方法#打刻する方法(ID認証, スマホ打刻)
 
-		Relieve relieve = new Relieve(null, null);
-		// gọi đến service của chung
-		return null;
+		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.SMART_PHONE);
+
+		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, Optional.ofNullable(null),
+				stampDatetime, relieve, buttonSettingOpt.get().getButtonType(), refActualResults,
+				Optional.ofNullable(stampLocalInfo));
 
 	}
 
-	public static interface Require {
+	public static interface Require extends CreateStampDataForEmployeesService.Require {
 
 		// [R-1] スマホ打刻の打刻設定を取得する
-		// domain này do anh lai làm
-		Optional<StampCard> getByCardNoAndContractCode(String cardNo, String contractCd);
+		Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting(String companyId);
 	}
 
 }
