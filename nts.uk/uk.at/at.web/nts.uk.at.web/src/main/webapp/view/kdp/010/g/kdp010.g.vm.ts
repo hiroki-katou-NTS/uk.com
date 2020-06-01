@@ -155,7 +155,7 @@ module nts.uk.at.view.kdp010.g {
                 }
                 // Data from Screen 
                 let lstButton = new Array<model.ButtonSettingsCommand>();
-                let stampTypes = new model.StampTypeCommand({});
+                let stampTypes = null;
                 if (self.dataKdpH.buttonPositionNo != undefined) {
                     let lstButtonSet = new Array<>();
                     _.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
@@ -170,7 +170,7 @@ module nts.uk.at.view.kdp010.g {
                             }),
                             buttonType: new model.ButtonTypeCommand({
                                 reservationArt: item.buttonType.reservationArt,
-                                stampType: (item.buttonType.reservationArt == 1 || item.buttonType.reservationArt == 2) ? stampTypes : new model.StampTypeCommand({
+                                stampType: (item.buttonType.reservationArt != 0) ? stampTypes : new model.StampTypeCommand({
                                     changeHalfDay: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeHalfDay ==0 ?false:true,
                                     goOutArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.goOutArt,
                                     setPreClockArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.setPreClockArt,

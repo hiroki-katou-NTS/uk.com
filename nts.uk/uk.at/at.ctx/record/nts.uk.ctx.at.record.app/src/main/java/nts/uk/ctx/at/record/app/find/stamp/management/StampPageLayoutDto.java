@@ -53,8 +53,8 @@ public class StampPageLayoutDto {
 					!x.getButtonType().getStampType().isPresent() ? null
 							: x.getButtonType().getStampType().get().getChangeHalfDay() == null ? null 
 									: x.getButtonType().getStampType().get().getChangeHalfDay(),
-					x.getButtonType().getStampType().isPresent() ? null
-							: x.getButtonType().getStampType().get().getGoOutArt().isPresent() ? null
+					!x.getButtonType().getStampType().isPresent() ? null
+							: !x.getButtonType().getStampType().get().getGoOutArt().isPresent() ? null
 									: x.getButtonType().getStampType().get().getGoOutArt().get().value,
 					!x.getButtonType().getStampType().isPresent() ? null
 							: x.getButtonType().getStampType().get().getSetPreClockArt() == null ? null 

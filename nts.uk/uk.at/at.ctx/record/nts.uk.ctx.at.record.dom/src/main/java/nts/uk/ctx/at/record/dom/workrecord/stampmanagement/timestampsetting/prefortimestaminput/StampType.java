@@ -70,12 +70,12 @@ public class StampType implements DomainValue {
 	 */
 	public static StampType getStampType(Boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
-		if(changeClockArt.value == ChangeClockArt.GO_OUT.value && goOutArt == null) {
-			throw new BusinessException("Msg_1704"); 
+		if(changeClockArt != null && changeClockArt.value == ChangeClockArt.GO_OUT.value && goOutArt == null) {
+			throw new RuntimeException("Msg_1704"); 
 		}
 		return new StampType(
 				changeHalfDay, 
-				changeClockArt.value == ChangeClockArt.GOING_TO_WORK.value ? null : goOutArt, 
+				changeClockArt != null ? changeClockArt.value == ChangeClockArt.GOING_TO_WORK.value ? null : goOutArt : null, 
 				setPreClockArt, 
 				changeClockArt, 
 				changeCalArt);
