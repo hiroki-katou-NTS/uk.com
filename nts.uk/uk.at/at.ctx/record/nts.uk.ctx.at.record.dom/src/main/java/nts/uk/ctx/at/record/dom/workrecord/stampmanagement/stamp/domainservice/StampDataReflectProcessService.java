@@ -25,19 +25,22 @@ public class StampDataReflectProcessService {
 	// [1] 反映する
 	public static StampDataReflectResult reflect(Require require, Optional<String> employeeId, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
+		//$反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)		
 		Optional<GeneralDate> reflectDate = reflectDailyResult(require, employeeId, stamp);
-
-		Optional<AtomTask> atomTask = Optional.of(AtomTask.of(() -> {
+		// $AtomTask = AtomTask:
+		AtomTask atomTask = AtomTask.of(() -> {
+			// require.打刻記録を追加する(打刻記録)
 			require.insert(stampRecord);
+			//prv-1] 弁当を自動予約する(打刻)
 			automaticallyBook(stampRecord, stamp);
+			//if not 打刻.isEmpty
 			if (stamp.isPresent()) {
 				require.insert(stamp.get());
-				reflectDailyCreation(require, employeeId, reflectDate, stamp.get());
 			}
 
-		}));
-
-		return new StampDataReflectResult(reflectDate, atomTask.get());
+		});
+		// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
+		return new StampDataReflectResult(reflectDate, atomTask);
 	}
 
 	/**
@@ -59,33 +62,8 @@ public class StampDataReflectProcessService {
 		 * bởi đội khác, để tạm là option 
 		 * return Optional.empty(); }
 		 */
+		
 		return Optional.empty();
-	}
-
-	/**
-	 * [prv-2] 日別作成に反映する
-	 * 
-	 * @param require
-	 * @param employeeId
-	 * @param ymd
-	 * @param stamp
-	 * @return
-	 */
-	private static Optional<AtomTask> reflectDailyCreation(Require require, Optional<String> employeeId,
-			Optional<GeneralDate> ymd, Stamp stamp) {
-
-		/*
-		 * if(!employeeId.isPresent() || !ymd.isPresent() ) { return Optional.empty(); }
-		 * ExecutionAttr executionAttr = ExecutionAttr.MANUAL;
-		 */
-		// TODO : Chờ đối ứng code để sử dụng hàm của anh nam, để tạm là optional
-		return Optional.empty();
-		/*
-		 * return Optional.of(AtomTask.of(() -> {
-		 * require.createDailyResult(asyncContext, emloyeeIds, periodTime,
-		 * executionAttr, companyId, empCalAndSumExecLogID, executionLog) }));
-		 */
-
 	}
 
 	/**
