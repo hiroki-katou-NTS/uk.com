@@ -86,14 +86,14 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	// [2] delete(打刻)
 	@Override
-	public void delete(String stampNumber, GeneralDateTime stampDateTime) {
-		this.commandProxy().remove(KrcdtStamp.class, new KrcdtStampPk(stampNumber, stampDateTime));
+	public void delete(String contractCode, String stampNumber, GeneralDateTime stampDateTime) {
+		this.commandProxy().remove(KrcdtStamp.class, new KrcdtStampPk(contractCode, stampNumber, stampDateTime));
 	}
 
 	// [3] update(打刻)
 	@Override
 	public void update(Stamp stamp) {
-		Optional<KrcdtStamp> entity = this.queryProxy().find(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), KrcdtStamp.class);
+		Optional<KrcdtStamp> entity = this.queryProxy().find(new KrcdtStampPk(stamp.getContractCode().v(),stamp.getCardNumber().v(), stamp.getStampDateTime()), KrcdtStamp.class);
 		if(!entity.isPresent()) {
 			return;
 		}
@@ -131,7 +131,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	private KrcdtStamp toEntity(Stamp stamp) {
 		String cid = AppContexts.user().companyId();
-		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
+		return new KrcdtStamp(new KrcdtStampPk(stamp.getContractCode().v(), stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
 				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
