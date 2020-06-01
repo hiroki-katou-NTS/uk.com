@@ -124,7 +124,7 @@ public class AppDispInfoWithDateDto {
 	public AppDispInfoWithDateOutput toDomain() {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
-		output.setEmploymentSet(employmentSet.toDomain());
+		output.setEmploymentSet(employmentSet == null ? null : employmentSet.toDomain());
 		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
 		output.setApprovalRootState(new ApprovalRootStateImport_New(
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
