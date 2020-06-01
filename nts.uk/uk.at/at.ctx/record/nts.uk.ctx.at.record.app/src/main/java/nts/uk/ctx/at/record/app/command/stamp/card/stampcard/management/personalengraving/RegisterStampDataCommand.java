@@ -69,7 +69,7 @@ public class RegisterStampDataCommand {
 
 	public RefectActualResult toRefectActualResult() {
 		return new RefectActualResult(cardNumberSupport, new WorkLocationCD(workLocationCD),
-				new WorkTimeCode(workTimeCode),
+				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null);
 	}
 	

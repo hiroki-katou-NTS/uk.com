@@ -47,7 +47,6 @@ class StampClock {
         self.displayTime = ko.observable(moment(self.time()).format(TIME_FORMAT));
         setInterval(() => {
             nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                console.log(res);
                 self.displayTime(moment.utc(res).format(TIME_FORMAT));
             });
         }, 2000);
