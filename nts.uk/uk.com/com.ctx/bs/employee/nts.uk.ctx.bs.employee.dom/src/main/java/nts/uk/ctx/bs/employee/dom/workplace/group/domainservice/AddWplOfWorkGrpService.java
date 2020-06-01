@@ -14,6 +14,13 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
  *
  */
 public class AddWplOfWorkGrpService {
+	/**
+	 * 	[1] 追加する
+	 * @param require
+	 * @param group
+	 * @param workplaceId
+	 * @return
+	 */
 	public static WorkplaceReplaceResult addWorkplace(Require require, WorkplaceGroup group, String workplaceId) {
 		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		// require.職場グループ所属情報を取得する( 職場ID )

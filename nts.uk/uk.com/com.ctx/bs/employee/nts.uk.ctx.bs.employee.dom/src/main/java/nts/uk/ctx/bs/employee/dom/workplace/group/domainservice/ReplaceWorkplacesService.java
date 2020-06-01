@@ -16,7 +16,14 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
  * @author phongtq
  *
  */
-public class ReplaceWorkplacesService {
+public class ReplaceWorkplacesService {	
+	/**
+	 * [1] 入れ替える	
+	 * @param require
+	 * @param group
+	 * @param lstWorkplaceId
+	 * @return	
+	 */
 	public static Map<String, WorkplaceReplaceResult> getWorkplace(Require require,WorkplaceGroup group, List<String> lstWorkplaceId){
 		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		// require.職場グループを指定して職場グループ所属情報を取得する( 職場グループ.職場グループID )

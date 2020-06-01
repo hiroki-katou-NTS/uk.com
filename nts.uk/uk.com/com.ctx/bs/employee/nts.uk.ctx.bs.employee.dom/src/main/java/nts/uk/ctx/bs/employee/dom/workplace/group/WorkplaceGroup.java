@@ -14,7 +14,6 @@ import nts.gul.text.IdentifierUtil;
  */
 
 @Getter
-@Setter
 public class WorkplaceGroup implements DomainAggregate {
 										
 	/** 会社ID */
@@ -27,9 +26,11 @@ public class WorkplaceGroup implements DomainAggregate {
 	private final WorkplaceGroupCode WKPGRPCode;
 	
 	/** 職場グループ名称 */
+	@Setter
 	private WorkplaceGroupName WKPGRPName;
 	
 	/** 職場グループ種別 */
+	@Setter
 	private WorkplaceGroupType WKPGRPType;
 	
 	/**

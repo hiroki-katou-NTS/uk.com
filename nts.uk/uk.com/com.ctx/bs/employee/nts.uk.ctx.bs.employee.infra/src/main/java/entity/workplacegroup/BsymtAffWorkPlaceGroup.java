@@ -18,8 +18,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name="BSYMT_AFF_WORKPLACE_GROUP")
 public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity {
 	@EmbeddedId
-    public BsymtAffWorkPlaceGroupPk pk;
 
+	public BsymtAffWorkPlaceGroupPk pk;
 	public BsymtAffWorkPlaceGroup(BsymtAffWorkPlaceGroupPk pk) {
 		super();
 		this.pk = pk;
@@ -27,7 +27,6 @@ public class BsymtAffWorkPlaceGroup  extends ContractUkJpaEntity {
 	
 	public AffWorkplaceGroup toDomain(){
 		return new AffWorkplaceGroup(
-				pk.CID,
 				pk.WKPGRPID,
 				pk.WKPID);
 	}

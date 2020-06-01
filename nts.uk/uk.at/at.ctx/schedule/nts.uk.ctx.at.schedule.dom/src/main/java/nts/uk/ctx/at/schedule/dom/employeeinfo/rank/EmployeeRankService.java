@@ -8,6 +8,13 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 public class EmployeeRankService {
+	/**
+	 * 	[1] 登録する
+	 * @param require
+	 * @param sID
+	 * @param emplRankCode
+	 * @return
+	 */
 	public static AtomTask insert(Require require, String sID, RankCode emplRankCode) {
 		
 		// $社員ランク = 社員ランク(社員ID, ランクコード)
@@ -26,7 +33,7 @@ public class EmployeeRankService {
 		});
 	}
 	
-	public interface Require{
+	public static interface Require{
 		
 		// [R1] 指定の社員ランクが存在するか
 		// 社員ランクRepository.exists(社員ID）				

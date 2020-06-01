@@ -8,7 +8,12 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 public class DeleteWorkplaceGroupService {
-	// [1] Delete
+	/**
+	 * 	[1] 削除する	
+	 * @param require
+	 * @param WKPGRPID
+	 * @return
+	 */
 	public static AtomTask delete(Require require, String WKPGRPID){
 		return AtomTask.of(() -> {
 			// require.職場グループを削除する( 職場グループID )

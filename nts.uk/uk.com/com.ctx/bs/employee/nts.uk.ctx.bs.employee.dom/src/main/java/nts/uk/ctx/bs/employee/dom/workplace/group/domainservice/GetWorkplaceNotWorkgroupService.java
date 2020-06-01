@@ -15,9 +15,14 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
  *
  */
 public class GetWorkplaceNotWorkgroupService {
-
+	/**
+	 * 	[1] 取得する
+	 * @param require
+	 * @param baseDate
+	 * @return
+	 */
 	public static List<WorkplaceInformation> getWorkplace(Require require, GeneralDate baseDate){
-		// require.運用している職場の情報をすべて取得する( 基準日 )																		
+		// require.運用している職場の情報をすべて取得する( 基準日 )
 		List<WorkplaceInformation> lstInfoImports = require.getAllActiveWorkplace(baseDate);
 		
 		// 職場情報リスト.isEmpty
