@@ -8,9 +8,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
@@ -22,6 +24,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplace
  * @author phongtq
  *
  */
+@RunWith(JMockit.class)
 public class ReplaceWorkplacesServiceTest {
 	@Injectable
 	private Require require;
@@ -51,7 +54,6 @@ public class ReplaceWorkplacesServiceTest {
 		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper();
-		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		new Expectations() {
 			{
 				require.getByWKPGRPID("00000000000001");// dummy
@@ -71,7 +73,7 @@ public class ReplaceWorkplacesServiceTest {
 					result = lstFormerAffInfo2;
 				}
 			};
-			dateHistLst.put(wKPID.getWKPID(), replaceResult.add(atomTakss));
+			dateHistLst.put(wKPID.getWKPID(), WorkplaceReplaceResult.add(atomTakss));
 		});
 		Optional<AffWorkplaceGroup> affInfo = lstFormerAffInfo2.stream()
 				.filter(predicate -> predicate.getWKPGRPID().equals("000000000000000000000000000000000013"))
@@ -84,7 +86,6 @@ public class ReplaceWorkplacesServiceTest {
 		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper2();
-		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		new Expectations() {
 			{
 				require.getByWKPGRPID("00000000000001");// dummy
@@ -97,7 +98,7 @@ public class ReplaceWorkplacesServiceTest {
 				lstWorkplaceId);
 		lstDel.forEach(wKPID -> {
 			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
-			dateHistLst.put("000000000000000000000000000000000013", replaceResult.add(atomTakss));
+			dateHistLst.put("000000000000000000000000000000000013", WorkplaceReplaceResult.add(atomTakss));
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())

@@ -54,14 +54,10 @@ public class WorkplaceGroup implements DomainAggregate {
 	 * @param wKPGRPName
 	 * @param wKPGRPType
 	 */
-	public WorkplaceGroup(String cID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
-		super();
-		CID = cID;
-		WKPGRPID = IdentifierUtil.randomUniqueId();
-		WKPGRPCode = wKPGRPCode;
-		WKPGRPName = wKPGRPName;
-		WKPGRPType = wKPGRPType;
+	public static WorkplaceGroup getWpg(String cID, WorkplaceGroupCode wKPGRPCode, WorkplaceGroupName wKPGRPName, WorkplaceGroupType wKPGRPType) {
+		return new WorkplaceGroup(cID, IdentifierUtil.randomUniqueId(), wKPGRPCode, wKPGRPName, wKPGRPType);
 	}
+	
 	/**
 	 * [1] 所属する職場を追加する
 	 * @param WKPID

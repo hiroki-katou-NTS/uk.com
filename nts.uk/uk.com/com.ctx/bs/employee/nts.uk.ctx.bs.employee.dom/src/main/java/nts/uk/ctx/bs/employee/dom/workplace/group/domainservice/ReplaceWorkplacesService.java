@@ -25,7 +25,6 @@ public class ReplaceWorkplacesService {
 	 * @return	
 	 */
 	public static Map<String, WorkplaceReplaceResult> getWorkplace(Require require,WorkplaceGroup group, List<String> lstWorkplaceId){
-		WorkplaceReplaceResult replaceResult = new WorkplaceReplaceResult();
 		// require.職場グループを指定して職場グループ所属情報を取得する( 職場グループ.職場グループID )
 		// 旧所属情報リスト=get*(ログイン会社ID, 職場グループ.職場グループID):List<職場グループ所属情報>
 		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByWKPGRPID(group.getWKPGRPID());
@@ -45,7 +44,7 @@ public class ReplaceWorkplacesService {
 			
 			//職場グループの職場入替処理結果#離脱する( $.value )
 			// fix by QA http://192.168.50.4:3000/issues/110132 (Edit document ver 2)
-			dateHistLst.put(x.getWKPID(),replaceResult.add(atomTaks));
+			dateHistLst.put(x.getWKPID(),WorkplaceReplaceResult.delete(atomTaks));
 		});
 
 		// $追加結果リスト = 職場IDリスト:
