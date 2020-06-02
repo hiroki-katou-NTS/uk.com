@@ -28,6 +28,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplace
 public class ReplaceWorkplacesServiceTest {
 	@Injectable
 	private Require require;
+	
+	AtomTask atomTakss = AtomTask.of(() -> {});
 
 	@Test
 	public void testRep() {
@@ -66,14 +68,8 @@ public class ReplaceWorkplacesServiceTest {
 				lstWorkplaceId);
 		List<AffWorkplaceGroup> lstFormerAffInfo2 = DomainServiceHelper.getHelper2();
 		lstDel.forEach(wKPID -> {
-			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {
-			new Expectations() {
-				{
-					require.deleteByWKPID("000000000000000000000000000000000013");
-				}
-			};
-			}));
-			dateHistLst.put(wKPID.getWKPID(), WorkplaceReplaceResult.delete(atomTakss.get()));
+			require.deleteByWKPID("000000000000000000000000000000000013");
+			dateHistLst.put(wKPID.getWKPID(), WorkplaceReplaceResult.delete(atomTakss));
 		});
 		Optional<AffWorkplaceGroup> affInfo = lstFormerAffInfo2.stream()
 				.filter(predicate -> predicate.getWKPGRPID().equals("000000000000000000000000000000000013"))
@@ -97,8 +93,7 @@ public class ReplaceWorkplacesServiceTest {
 		Map<String, WorkplaceReplaceResult> dateHistLst = ReplaceWorkplacesService.getWorkplace(require, group,
 				lstWorkplaceId);
 		lstDel.forEach(wKPID -> {
-			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
-			dateHistLst.put("000000000000000000000000000000000013", WorkplaceReplaceResult.delete(atomTakss.get()));
+			dateHistLst.put("000000000000000000000000000000000013", WorkplaceReplaceResult.delete(atomTakss));
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())
@@ -123,10 +118,9 @@ public class ReplaceWorkplacesServiceTest {
 		Map<String, WorkplaceReplaceResult> dateHistLst = ReplaceWorkplacesService.getWorkplace(require, group,
 				lstWorkplaceId);
 		lstWorkplaceId.forEach(wKPID -> {
-			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
 			WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require,
 					DomainServiceHelper.Helper.DUMMY, wKPID);
-			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss.get()));
+			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss));
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())

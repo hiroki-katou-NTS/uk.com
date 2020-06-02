@@ -1,4 +1,7 @@
-package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
+package nts.uk.ctx.at.schedule.dom.employee.rank;
+
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 
 public class EmployeeRankHelper {
 	public static class Employee {

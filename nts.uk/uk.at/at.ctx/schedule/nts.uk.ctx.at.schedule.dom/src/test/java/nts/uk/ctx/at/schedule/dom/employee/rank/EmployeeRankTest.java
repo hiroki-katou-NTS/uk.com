@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
+package nts.uk.ctx.at.schedule.dom.employee.rank;
 
 import org.junit.Test;
 

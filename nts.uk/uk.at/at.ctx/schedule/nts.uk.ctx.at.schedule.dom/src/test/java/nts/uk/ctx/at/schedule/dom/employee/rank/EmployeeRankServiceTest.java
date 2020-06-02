@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
+package nts.uk.ctx.at.schedule.dom.employee.rank;
 
 import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankService;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankService.Require;
 /**
  * 
