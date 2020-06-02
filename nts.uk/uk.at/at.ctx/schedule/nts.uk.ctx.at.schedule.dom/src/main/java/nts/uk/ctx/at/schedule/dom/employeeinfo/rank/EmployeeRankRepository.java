@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 
+ * 社員ランクRepository
  * @author phongtq
  *
  */
