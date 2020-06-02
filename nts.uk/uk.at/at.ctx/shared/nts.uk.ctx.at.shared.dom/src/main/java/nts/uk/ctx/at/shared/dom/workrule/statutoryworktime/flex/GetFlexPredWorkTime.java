@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * フレックス勤務所定労働時間取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class GetFlexPredWorkTime extends AggregateRoot {
+public class GetFlexPredWorkTime extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
 	private String companyId;

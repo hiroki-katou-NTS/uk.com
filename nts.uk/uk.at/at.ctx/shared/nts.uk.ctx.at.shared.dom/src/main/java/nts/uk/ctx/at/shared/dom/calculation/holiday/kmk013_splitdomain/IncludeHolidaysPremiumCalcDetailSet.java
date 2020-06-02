@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalculationMethodForNormalWorkAndDeformedLaborOverTime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -19,7 +22,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 // 休暇分を含める割増計算詳細設定
 @NoArgsConstructor
 @Getter
-public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject{
+public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
+	
 	// 加算する
 	private NotUseAtr addition;
 	
@@ -28,6 +35,14 @@ public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject{
 	
 	// フレックスの所定超過時
 	private Optional<CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime> predeterminedExcessTimeOfFlex;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 
 	/**
 	 * Instantiates a new include holidays premium calc detail set.

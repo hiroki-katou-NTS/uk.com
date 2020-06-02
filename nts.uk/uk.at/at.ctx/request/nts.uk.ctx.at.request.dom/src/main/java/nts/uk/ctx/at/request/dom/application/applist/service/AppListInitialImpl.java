@@ -898,7 +898,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 		//07-02_実績取得・状態チェック
 		ActualStatusCheckResult cal = preActualCheck.actualStatusCheck(AppContexts.user().companyId(), sID, date,
-				appType, wkTypeCd, wkTimeCd, overrideSet, calStampMiss);
+				appType, wkTypeCd, wkTimeCd, overrideSet, calStampMiss, Collections.emptyList());
 
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();

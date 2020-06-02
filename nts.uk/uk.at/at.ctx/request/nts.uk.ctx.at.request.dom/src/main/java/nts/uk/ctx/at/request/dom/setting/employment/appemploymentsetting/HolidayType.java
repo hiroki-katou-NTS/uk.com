@@ -41,12 +41,7 @@ public enum HolidayType {
 	/**
 	 * 振休
 	 */
-	RESTTIME(7),
-	
-	/**
-	 * その他
-	 */
-	OTHER(9);
+	RESTTIME(7);
 	
 	public final int value;
 		

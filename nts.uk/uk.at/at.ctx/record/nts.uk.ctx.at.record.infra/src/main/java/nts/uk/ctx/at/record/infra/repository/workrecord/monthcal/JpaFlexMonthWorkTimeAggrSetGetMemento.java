@@ -9,10 +9,12 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriodMonths;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetGetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstFlexMCalSet;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
  * The Class JpaFlexMonthWorkTimeAggrSetGetMemento.
@@ -56,8 +58,11 @@ public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 	 */
 	@Override
 	public ShortageFlexSetting getInsufficSet() {
-		return ShortageFlexSetting.of(EnumAdaptor.valueOf(this.typeValue.getInsufficSet(),
-				CarryforwardSetInShortageFlex.class));
+		return ShortageFlexSetting.of(
+				EnumAdaptor.valueOf(this.typeValue.getInsufficSet(), CarryforwardSetInShortageFlex.class),
+				EnumAdaptor.valueOf(this.typeValue.getSettlePeriod(), SettlePeriod.class),
+				new Month(this.typeValue.getStartMonth()),
+				EnumAdaptor.valueOf(this.typeValue.getSettlePeriodMon(), SettlePeriodMonths.class));
 	}
 
 	/*
@@ -79,8 +84,18 @@ public class JpaFlexMonthWorkTimeAggrSetGetMemento<T extends KrcstFlexMCalSet>
 	 * FlexMonthWorkTimeAggrSetGetMemento#getIncludeOverTime()
 	 */
 	@Override
-	public NotUseAtr getIncludeOverTime() {
-		return NotUseAtr.valueOf(this.typeValue.getIncludeOt());
+	public Boolean getIncludeOverTime() {
+		return (this.typeValue.getIncludeOt() != 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * FlexMonthWorkTimeAggrSetGetMemento#getIncludeIllegalHdwk()
+	 */
+	@Override
+	public Boolean getIncludeIllegalHdwk() {
+		return (this.typeValue.getIncludeHdwk() != 0);
+	}
 }

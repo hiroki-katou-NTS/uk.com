@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.stamp.management.ButtonSettings;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageComment;
-import nts.uk.ctx.at.record.dom.stamp.management.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 
 /**
  * @author anhdt

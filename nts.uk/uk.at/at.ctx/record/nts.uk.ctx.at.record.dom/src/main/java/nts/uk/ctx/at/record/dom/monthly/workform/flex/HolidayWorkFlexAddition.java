@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.workform.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -9,7 +11,10 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
  * @author shuichu_ishida
  */
 @Getter
-public class HolidayWorkFlexAddition {
+public class HolidayWorkFlexAddition implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 枠NO */
 	private HolidayWorkFrameNo frameNo;

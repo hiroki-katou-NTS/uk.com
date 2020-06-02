@@ -16,14 +16,12 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -81,41 +79,36 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	private IOvertimePreProcess iOvertimePreProcess;
 
 	@Override
-	public HolidayWorkInstruction getHolidayInstructionInformation(AppCommonSettingOutput appCommonSettingOutput,
-			String appDate, String employeeID) {
+	public HolidayWorkInstruction getHolidayInstructionInformation(UseAtr instructionUseDivision, GeneralDate date, String employeeID) {
 		HolidayWorkInstruction holidayInstructInformation = new HolidayWorkInstruction();
-		if (appCommonSettingOutput != null) {
-			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
-				if (useAtr == UseAtr.USE.value && appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionAtr().value == InstructionCategory.HOLIDAYWORK.value) {
-					if (appDate != null) {
-						holidayInstructInformation.setDisplayHolidayWorkInstructInforFlg(true);
-						HolidayInstruct overtimeInstruct = holidayInstructRepository
-								.getHolidayWorkInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-						if (overtimeInstruct != null) {
-							TimeWithDayAttr startTime = new TimeWithDayAttr(
-									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
-							TimeWithDayAttr endTime = new TimeWithDayAttr(
-									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
-							holidayInstructInformation
-									.setHolidayWorkInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
-											+ startTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getStartClock().v()) + "~"
-											+ endTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getEndClock().v()) + " "
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
-						} else {
-							holidayInstructInformation.setHolidayWorkInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + MESSAGE);
-						}
-					}
-				} else {
-					holidayInstructInformation.setDisplayHolidayWorkInstructInforFlg(false);
-				}
-			}
+		// 休出指示の利用区分チェック
+		if(instructionUseDivision != UseAtr.USE) {
+			return holidayInstructInformation;
 		}
-		
+		// 申請日付チェック
+		if(date == null) {
+			return holidayInstructInformation;
+		}
+		holidayInstructInformation.setDisplayHolidayWorkInstructInforFlg(true);
+		// ドメインモデル「休出指示」を取得
+		HolidayInstruct overtimeInstruct = holidayInstructRepository
+				.getHolidayWorkInstruct(date, employeeID);
+		if (overtimeInstruct != null) {
+			TimeWithDayAttr startTime = new TimeWithDayAttr(
+					overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+			TimeWithDayAttr endTime = new TimeWithDayAttr(
+					overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
+			holidayInstructInformation
+					.setHolidayWorkInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
+							+ startTime.getDayDivision().description + " "
+							+ convert(overtimeInstruct.getStartClock().v()) + "~"
+							+ endTime.getDayDivision().description + " "
+							+ convert(overtimeInstruct.getEndClock().v()) + " "
+							+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
+							+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+		} else {
+			holidayInstructInformation.setHolidayWorkInstructInfomation(date + MESSAGE);
+		}
 		return holidayInstructInformation;
 	}
 	private String convert(int minute) {

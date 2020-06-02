@@ -1,5 +1,6 @@
 package nts.uk.ctx.hr.shared.ac.employee;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.classification.AffCompanyHistItemExport;
+import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.ctx.bs.employee.pub.department.aff.AffDepartmentPub;
 import nts.uk.ctx.bs.employee.pub.department.aff.RequestList643Export;
 import nts.uk.ctx.bs.employee.pub.department.master.DepartmentInforExport;
@@ -26,6 +29,7 @@ import nts.uk.ctx.hr.shared.dom.adapter.EmploymentImport;
 import nts.uk.ctx.hr.shared.dom.adapter.FacePhotoFileImport;
 import nts.uk.ctx.hr.shared.dom.adapter.PositionImport;
 import nts.uk.ctx.hr.shared.dom.adapter.WorkplaceImport;
+import nts.uk.ctx.hr.shared.dom.employee.AffCompanyHistItemImport;
 import nts.uk.ctx.hr.shared.dom.employee.EmployeeInformationAdaptor;
 import nts.uk.query.pub.classification.ClassificationExport;
 import nts.uk.query.pub.department.DepartmentExport;
@@ -55,6 +59,9 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 	
 	@Inject
 	private SyJobTitlePub syJobTitlePub;
+	
+	@Inject
+	private  SyClassificationPub syClassificationPub;
 
 	@Override
 	public List<EmployeeInformationImport> getEmployeeInfos(Optional<List<String>> pIds, List<String> sIds,
@@ -199,5 +206,27 @@ public class EmployeeInformationAdaptorImpl implements EmployeeInformationAdapto
 			empInfo.inputBussinessName = personInfoExport.getBusinessName();
 		}
 		return empInfo;
+	}
+
+	@Override
+	public List<AffCompanyHistItemImport> getByIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
+		
+		List<AffCompanyHistItemExport> listExport = this.syClassificationPub.getByIDAndBasedate(baseDate, listempID); 
+		
+		if (listExport.isEmpty()) {
+			return new ArrayList<AffCompanyHistItemImport>();
+		}
+		
+		List<AffCompanyHistItemImport> result = listExport.stream().map(item -> {
+			AffCompanyHistItemImport export = AffCompanyHistItemImport.builder()
+					.employeeID(item.getEmployeeID())
+					.historyId(item.getHistoryId())
+					.destinationData(item.isDestinationData())
+					.startDate(item.getStartDate())
+					.endDate(item.getEndDate()).build();
+			return export;
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 }

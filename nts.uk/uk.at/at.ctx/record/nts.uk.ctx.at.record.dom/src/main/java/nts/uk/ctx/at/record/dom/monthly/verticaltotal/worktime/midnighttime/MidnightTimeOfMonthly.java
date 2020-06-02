@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -11,10 +13,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 月別実績の深夜時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class MidnightTimeOfMonthly {
+public class MidnightTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 残業深夜時間 */
 	private TimeMonthWithCalculation overWorkMidnightTime;

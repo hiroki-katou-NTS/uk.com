@@ -6,7 +6,12 @@ package nts.uk.ctx.at.record.dom.stamp;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 
 
 
@@ -61,5 +66,6 @@ public interface StampRepository {
 	 * @return the list
 	 */
 	//da sua thanh k su dung
-	List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate, GeneralDateTime endDate);
+	List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate,
+			GeneralDateTime endDate);
 }

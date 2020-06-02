@@ -3,12 +3,12 @@ package nts.uk.ctx.at.record.app.command.stamp.management;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.stamp.management.ColorSetting;
-import nts.uk.ctx.at.record.dom.stamp.management.CorrectionInterval;
-import nts.uk.ctx.at.record.dom.stamp.management.HistoryDisplayMethod;
-import nts.uk.ctx.at.record.dom.stamp.management.ResultDisplayTime;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.stamp.management.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
 /**

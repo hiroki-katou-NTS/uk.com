@@ -20,10 +20,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -32,6 +28,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -131,7 +131,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
-				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
+				stamp.getType().getSetPreClockArt().value, stamp.getType().getChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()
@@ -159,19 +159,30 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
+		GeoCoordinate geoLocation = null;
+		if (entity.locationLat !=  null && entity.locationLon != null){
+			geoLocation = new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue()); 
+		}
 		val stampNumber = new StampNumber(entity.pk.cardNumber);
 		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
-		val stampType = new StampType(entity.changeHalfDay,
+		val stampType = StampType.getStampType(entity.changeHalfDay,
 				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 				ChangeCalArt.valueOf(entity.changeCalArt));
+		
+		OvertimeDeclaration overtime = entity.overTime == null ? null
+				: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+						new AttendanceTime(entity.lateNightOverTime));
+		
 		val refectActualResult = new RefectActualResult(entity.suportCard,
 				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-				entity.overTime == null ? null
-						: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-								new AttendanceTime(entity.lateNightOverTime)));
-		val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
+				overtime );
+		//val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
+		
+		val locationInfor = new StampLocationInfor(entity.outsideAreaArt == null ? false : entity.outsideAreaArt ,	
+				geoLocation);
+		
 		return new Stamp(stampNumber, entity.pk.stampDateTime,
 				relieve, stampType, refectActualResult,
 				entity.reflectedAtr, locationInfor
@@ -183,7 +194,7 @@ private Stamp toDomainVer2(Object[] object) {
 	KrcdtStamp entity = (KrcdtStamp) object[1];
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
+				StampType.getStampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
@@ -192,6 +203,7 @@ private Stamp toDomainVer2(Object[] object) {
 						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
 						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 						entity.overTime == null ? null
+								
 								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 										new AttendanceTime(entity.lateNightOverTime))),
 
@@ -206,7 +218,7 @@ private Stamp toDomainVer3(Object[] object) {
 	KrcdtStamp entity = (KrcdtStamp) object[2];
 	Stamp stamp =  new Stamp(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
+				StampType.getStampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),

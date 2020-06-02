@@ -29,4 +29,12 @@ public interface EmployeeInformationAdaptor {
 	
 	// chỉ lấy sid,scd, bussinessName
 	EmployeeInfo getInfoEmp(String sid ); 
+	
+	/**
+	 * 社員ID（List）と基準日から所属会社履歴項目を取得する(Lấy AffCompanyHistoryItem từ EmployeeID(List) và BaseDate)
+	 * @param baseDate
+	 * @param listempID
+	 * @return
+	 */
+	List<AffCompanyHistItemImport> getByIDAndBasedate(GeneralDate baseDate , List<String> listempID);
 }

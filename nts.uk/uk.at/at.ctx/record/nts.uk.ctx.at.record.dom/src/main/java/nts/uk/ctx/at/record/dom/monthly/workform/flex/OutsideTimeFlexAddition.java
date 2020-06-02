@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.workform.flex;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,13 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 
 /**
  * 時間外フレックス加算
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class OutsideTimeFlexAddition {
+public class OutsideTimeFlexAddition implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 残業 */
 	private Map<OverTimeFrameNo, OverTimeFlexAddition> overTimeMap;

@@ -35,12 +35,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDesti
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
 import nts.uk.ctx.at.record.dom.goout.OutingManagement;
 import nts.uk.ctx.at.record.dom.goout.repository.OutingManagementRepository;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -2523,7 +2523,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			stampOrActualStamp = new WorkStamp();
 		}
 		// 組み合わせ区分 != 直行 or != 直帰
-		if (x.getType().getChangeCalArt().value != 0 && x.getType().isChangeHalfDay()
+		if (x.getType().getChangeCalArt().value != 0 && x.getType().getChangeHalfDay()
 				&& x.getType().getSetPreClockArt().value != 1 && x.getType().getSetPreClockArt().value != 2) {
 
 			// 1* // Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻

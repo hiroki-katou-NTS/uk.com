@@ -124,7 +124,7 @@ public class CheckConvertPrePost {
 								.actualStatusCheck(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, 
 										result.getWorkType() == null ? null : result.getWorkType().getWorkTypeCode(), 
 										result.getSiftType() ==  null ? null : result.getSiftType().getSiftCode(), 
-										appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty());
+										appOvertimeSetting.getPriorityStampSetAtr(), Optional.empty(), Collections.emptyList());
 						actualStatus = actualStatusCheckResult.actualStatus;
 						actualLst = actualStatusCheckResult.actualLst;
 						result.setOpAppBefore(opAppBefore.map(x -> ApplicationDto_New.fromDomain(x)).orElse(null));

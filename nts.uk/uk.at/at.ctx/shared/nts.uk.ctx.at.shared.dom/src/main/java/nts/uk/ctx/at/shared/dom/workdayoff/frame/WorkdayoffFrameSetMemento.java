@@ -43,4 +43,11 @@ public interface WorkdayoffFrameSetMemento {
 	 * @param workdayoffFrName the new workdayoff frame name
 	 */
 	public void setWorkdayoffFrameName(WorkdayoffFrameName workdayoffFrName);
+	
+	/**
+	 * Sets the role.
+	 * 
+	 * @param role the role
+	 */
+	public void setRole(WorkdayoffFrameRole role);
 }

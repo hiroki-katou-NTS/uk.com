@@ -20,6 +20,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
@@ -83,8 +85,6 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * @author hieult
@@ -457,7 +457,7 @@ public class ToppageStartupProcessMobFinder {
 				// アルゴリズム「19.振休残数表示」を実行する_ THực hiện thuật toán "19.Hiển thị
 				// nghỉ bù ngày lễ không nghỉ"
 				// Xử lý 19
-				Double remainLeft = absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate);
+				Double remainLeft = absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate).getRemainDays();
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {

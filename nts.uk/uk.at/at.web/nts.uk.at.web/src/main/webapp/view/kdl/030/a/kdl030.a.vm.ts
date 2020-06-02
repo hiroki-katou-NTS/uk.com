@@ -54,27 +54,79 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                             //list frame
                             let listFrameDto: Array<ApprovalFrame> = [];
                             _.each(phase.listApprovalFrame, function(frame){//for by frame
+                                
                                 //list approver
                                 let listApproverDto: Array<Approver> = [];
-                                _.each(frame.listApprover, function(approver){//for by approver
-                                //fill approver
-                                    let showButton = approver.approverMail.length >0 ? 1 : 0;
-                                    listApproverDto.push(new Approver(approver.approverID, 
-                                            approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
-                                            approver.approverMail, showButton, sidLogin));
-                                    //check agent
-                                    if(approver.representerID != '' && approver.representerName != ''){
-                                        //fill agent
-                                        let showButton1 = approver.agentMail.length >0 && approver.representerID != result.sIdLogin ? 1 : 0
-                                        listApproverDto.push(new Approver(approver.representerID, 
-                                            approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
-                                            approver.agentMail, showButton1, sidLogin));
-                                    }
-                                });
-                                listFrameDto.push(new ApprovalFrame(frame.phaseOrder, frame.frameOrder, frame.approvalAtrName,listApproverDto));
+                                // list frame > 1
+                                if (phase.listApprovalFrame.length >1 ) {
+                                         _.each(frame.listApprover, function(approver){//for by approver
+                                            //fill approver
+                                            let showButton = approver.approverMail.length >0 ? 1 : 0;
+                                            listApproverDto.push(new Approver(approver.approverID, 
+                                                    approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
+                                                    approver.approverMail, showButton, sidLogin));
+                                            //check agent
+                                            if(approver.representerID != '' && approver.representerName != ''){
+                                                //fill agent
+                                                let showButton1 = approver.agentMail.length >0 && approver.representerID != result.sIdLogin ? 1 : 0
+                                                listApproverDto.push(new Approver(approver.representerID, 
+                                                    approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
+                                                    approver.agentMail, showButton1, sidLogin));
+                                            }
+                                        });
+                                  let af = new ApprovalFrame(frame.phaseOrder, frame.frameOrder, frame.approvalAtrName,listApproverDto);
+                                    // sort by nameApprover;
+                                    af.nameApprover = listApproverDto[0].dispApproverName;
+                                  listFrameDto.push(af);  
+                                    // case  approver group
+                                    // list frame = 1
+                                }else {
+                                        
+                                        _.each(frame.listApprover, (approver, index ) => {
+                                            //fill approver
+                                            let showButton = approver.approverMail.length >0 ? 1 : 0;
+                                            listApproverDto = [];
+                                            listApproverDto.push(new Approver(approver.approverID, 
+                                                    approver.approverMail.length >0 ? approver.approverName + '(@)' : approver.approverName, 
+                                                    approver.approverMail, showButton, sidLogin));
+                                            //check agent
+                                            if(approver.representerID != '' && approver.representerName != ''){
+                                                //fill agent
+                                                let showButton1 = approver.agentMail.length >0 && approver.representerID != result.sIdLogin ? 1 : 0
+                                                listApproverDto.push(new Approver(approver.representerID, 
+                                                    approver.agentMail.length >0 ? approver.representerName + '(@)' : approver.representerName, 
+                                                    approver.agentMail, showButton1, sidLogin));
+                                            }
+                                           let af = new ApprovalFrame(frame.phaseOrder, index +1 , frame.approvalAtrName,listApproverDto);
+                                           af.nameApprover = approver.approverName;
+                                           listFrameDto.push(af);
+                                           
+                                        });
+                                }
+                                
+                               
+                                
+                      
                             });
                             listPhaseDto.push(new ApprovalPhaseState(phase.phaseOrder, listFrameDto));
                         });
+                        // sort list approval
+                        if(listPhaseDto != undefined && listPhaseDto.length != 0) {
+                            listPhaseDto.forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                    //sort by listApprovalFrame
+                                        el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['nameApprover'],['asc']);
+                                    // set again approver 
+                                    _.each(el.listApprovalFrame, (item, index) => {
+                                        if (index+1 != item.frameOrder ) {
+                                            item.frameOrder = index +1;    
+                                        }
+                                    });
+                                    
+                                }
+                            });  
+                        }
+                        
                         self.approvalRootState(listPhaseDto);
                     }
                     dfd.resolve();
@@ -88,6 +140,13 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return dfd.promise();
             }
         }
+        getApproverLabel(index) {
+            if(index <=10){
+                return nts.uk.resource.getText("KAF000_9",[(index)+'']);    
+            }
+            return ""; 
+        }
+        
         // アルゴリズム「メール送信」を実行する
         sendMail() {
             var self = this;
@@ -97,6 +156,19 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 return;
             }
             let listSendMail: Array<String> = [];
+            // sort list approval
+                        if(self.approvalRootState() != undefined && self.approvalRootState().length != 0) {
+                            self.approvalRootState().forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                   el1.listApprover = _.orderBy(el1.listApprover, ['nameApprover'],['asc']);                                   
+                                               }
+                                        });
+                                }
+                            });  
+                        }
+            
             _.forEach(self.approvalRootState(), x => {
                 _.forEach(x.listApprovalFrame, y => {
                     _.forEach(y.listApprover, z => {
@@ -206,6 +278,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         frameOrder: number;
         approvalAtrName: string;
         listApprover: Array<Approver>;
+        nameApprover: string;
         constructor(phaseOrder: number, frameOrder: number, approvalAtrName: string,listApprover: Array<Approver>) {
             this.phaseOrder = phaseOrder;
             this.frameOrder = frameOrder;
