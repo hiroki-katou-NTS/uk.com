@@ -3,7 +3,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.task.tran.AtomTask;
@@ -38,9 +37,9 @@ public class ReplaceWorkplacesService {
 		// $削除結果リスト = $削除対象リスト:					
 		lstDel.forEach(x->{
 			// require.職場を指定して職場グループ所属情報を削除する( $.職場ID )	
-			Optional<AtomTask> atomTaks = Optional.of(AtomTask.of(() -> {
+			AtomTask atomTaks = AtomTask.of(() -> {
 				require.deleteByWKPID(x.getWKPID());
-			}));
+			});
 			
 			//職場グループの職場入替処理結果#離脱する( $.value )
 			// fix by QA http://192.168.50.4:3000/issues/110132 (Edit document ver 2)

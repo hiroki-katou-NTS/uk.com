@@ -66,14 +66,14 @@ public class ReplaceWorkplacesServiceTest {
 				lstWorkplaceId);
 		List<AffWorkplaceGroup> lstFormerAffInfo2 = DomainServiceHelper.getHelper2();
 		lstDel.forEach(wKPID -> {
-			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
+			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {
 			new Expectations() {
 				{
 					require.deleteByWKPID("000000000000000000000000000000000013");
-					result = lstFormerAffInfo2;
 				}
 			};
-			dateHistLst.put(wKPID.getWKPID(), WorkplaceReplaceResult.add(atomTakss));
+			}));
+			dateHistLst.put(wKPID.getWKPID(), WorkplaceReplaceResult.delete(atomTakss.get()));
 		});
 		Optional<AffWorkplaceGroup> affInfo = lstFormerAffInfo2.stream()
 				.filter(predicate -> predicate.getWKPGRPID().equals("000000000000000000000000000000000013"))
@@ -98,7 +98,7 @@ public class ReplaceWorkplacesServiceTest {
 				lstWorkplaceId);
 		lstDel.forEach(wKPID -> {
 			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
-			dateHistLst.put("000000000000000000000000000000000013", WorkplaceReplaceResult.add(atomTakss));
+			dateHistLst.put("000000000000000000000000000000000013", WorkplaceReplaceResult.delete(atomTakss.get()));
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())
@@ -126,7 +126,7 @@ public class ReplaceWorkplacesServiceTest {
 			Optional<AtomTask> atomTakss = Optional.of(AtomTask.of(() -> {}));
 			WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require,
 					DomainServiceHelper.Helper.DUMMY, wKPID);
-			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss));
+			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss.get()));
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())

@@ -35,13 +35,13 @@ public class AddWplOfWorkGrpService {
 				return WorkplaceReplaceResult.belongAnother(formerAffInfo.get().getWKPGRPID());
 			}
 		}
-		Optional<AtomTask> atomTaks = Optional.of(AtomTask.of(() -> {
+		AtomTask atomTaks = AtomTask.of(() -> {
 			// $職場グループ所属情報 = 職場グループ.所属する職場を追加する( 職場ID )																			
 			AffWorkplaceGroup affWorkplaceGroup = group.addAffWorkplaceGroup(workplaceId);
 			
 			// require.職場グループに職場を追加する( $職場グループ所属情報 )																	
 			require.insert(affWorkplaceGroup);
-		}));
+		});
 		// 	return 職場グループの職場入替処理結果#追加する( $AtomTask )																													
 		return WorkplaceReplaceResult.add(atomTaks);
 	}

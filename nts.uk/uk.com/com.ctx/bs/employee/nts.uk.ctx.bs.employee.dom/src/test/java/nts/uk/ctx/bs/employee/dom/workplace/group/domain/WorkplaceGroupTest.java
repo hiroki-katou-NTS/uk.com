@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.workplace.group;
+package nts.uk.ctx.bs.employee.dom.workplace.group.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +7,8 @@ import org.junit.Test;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup.Require;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.DomainServiceHelper;
 
@@ -30,12 +32,14 @@ public class WorkplaceGroupTest {
 	
 	@Test
 	public void getAffWorkplace() {
+		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
 		new Expectations() {
 			{
 				require.getWKPID("0000000000001","01");// dummy
+				result = group;
 			}
 		};
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		
 		assertThat(group.getAffWorkplace(require).isEmpty()).isTrue();
 	}
 }
