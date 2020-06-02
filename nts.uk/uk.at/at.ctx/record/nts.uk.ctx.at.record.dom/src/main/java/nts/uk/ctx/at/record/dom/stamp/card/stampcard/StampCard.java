@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -14,6 +15,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class StampCard extends AggregateRoot {
 	
 	/** 契約コード */

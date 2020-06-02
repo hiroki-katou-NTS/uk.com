@@ -34,10 +34,10 @@ public class StampRecordTest {
 		boolean stampArt = false;
 		ReservationArt revervationAtr = ReservationArt.valueOf(0);
 		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1000)); 
-		StampRecord stampRecord  = new StampRecord(new ContractCode(AppContexts.user().contractCode()),stampNumber, stampDateTime, stampArt, revervationAtr, empInfoTerCode);
+		StampRecord stampRecord  = new StampRecord(new ContractCode(AppContexts.user().contractCode()),stampNumber, stampDateTime, new StampTypeDisplay(""), empInfoTerCode);
 		assertThat(stampRecord.getStampNumber()).isEqualTo(stampNumber);
 		assertThat(stampRecord.getStampDateTime()).isEqualTo(stampDateTime);
-		assertThat(stampRecord.isStampArt()).isEqualTo(stampArt);
+		//assertThat(stampRecord.isStampArt()).isEqualTo(stampArt);
 		assertThat(stampRecord.getEmpInfoTerCode().get()).isEqualTo(empInfoTerCode.get());
 	}
 

@@ -12,8 +12,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddListCommandHandler;
@@ -51,14 +53,14 @@ implements PeregAddListCommandHandler<AddStampCardCommand>{
 					itr.remove();
 				} else {
 					String stampCardId = IdentifierUtil.randomUniqueId();
-					StampCard stampCard = StampCard.createFromJavaType(stampCardId, c.getEmployeeId(),
-							c.getStampNumber(), GeneralDate.today(), contractCode);
+					StampCard stampCard = new StampCard(new ContractCode(AppContexts.user().contractCode()),
+							new StampNumber(c.getStampNumber()), c.getEmployeeId(), GeneralDate.today(), stampCardId);
 					insertLst.add(stampCard);
 				}
 			} else {
 				String stampCardId = IdentifierUtil.randomUniqueId();
-				StampCard stampCard = StampCard.createFromJavaType(stampCardId, c.getEmployeeId(), c.getStampNumber(),
-						GeneralDate.today(), contractCode);
+				StampCard stampCard = new StampCard(new ContractCode(AppContexts.user().contractCode()),
+						new StampNumber(c.getStampNumber()), c.getEmployeeId(), GeneralDate.today(), stampCardId);
 				insertLst.add(stampCard);
 			}
 		}

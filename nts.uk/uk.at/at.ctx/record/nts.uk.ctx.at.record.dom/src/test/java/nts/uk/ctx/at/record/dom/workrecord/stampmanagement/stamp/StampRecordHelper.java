@@ -21,8 +21,7 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				false, 
-				ReservationArt.valueOf(0), 
+				new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1000)));
 	}
 	
@@ -34,16 +33,14 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				false, 
-				ReservationArt.valueOf(0), 
+				new StampTypeDisplay(""),  
 				Optional.of(new EmpInfoTerminalCode(0))));
 		
 		data.add(new StampRecord(
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
-				GeneralDateTime.now(), 
-				false, 
-				ReservationArt.valueOf(0), 
+				GeneralDateTime.now(),
+				new StampTypeDisplay(""), 
 				Optional.of(new EmpInfoTerminalCode(0))));
 		
 		return data;
@@ -52,9 +49,8 @@ public class StampRecordHelper {
 		return new StampRecord(
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
-				GeneralDateTime.now(), 
-				stampArt, 
-				revervationAtr, 
+				GeneralDateTime.now(),
+				new StampTypeDisplay(""), 
 				Optional.of(new EmpInfoTerminalCode(1000)));
 	}
 }

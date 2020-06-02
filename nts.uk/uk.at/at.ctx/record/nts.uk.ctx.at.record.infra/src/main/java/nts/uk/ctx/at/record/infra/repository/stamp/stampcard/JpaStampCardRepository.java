@@ -16,11 +16,12 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -151,7 +152,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	}
 
 	private StampCard toDomain(KwkdtStampCard ent) {
-		return new StampCard(ent.contractCd, ent.cardNo, ent.sid);
+		return new StampCard(new ContractCode(ent.contractCd), new StampNumber(ent.cardNo), ent.sid, ent.registerDate,
+				ent.cardId);
 	}
 
 	private KwkdtStampCard toEntity(StampCard domain) {

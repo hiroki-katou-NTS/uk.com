@@ -44,10 +44,10 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
-								new AttendanceTime(0))), 
+								new AttendanceTime(0))),
+				false,
 				new StampLocationInfor(
-						false, 
-						getGeoCoordinateDefault()));
+						getGeoCoordinateDefault(),false));
 	}
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
 		return new Stamp(new ContractCode("DUMMY"),
@@ -68,10 +68,12 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2))), 
+								new AttendanceTime(2))),
+				false,
 				new StampLocationInfor(
-						false, 
-						getGeoCoordinateDefault()));
+						getGeoCoordinateDefault(),
+						false
+						));
 	}
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
@@ -83,7 +85,8 @@ public class StampHelper {
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				new StampLocationInfor(false, getGeoCoordinateDefault())));
+				false,
+				new StampLocationInfor(getGeoCoordinateDefault(),false)));
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
@@ -91,7 +94,8 @@ public class StampHelper {
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				new StampLocationInfor(false, getGeoCoordinateDefault())));
+				false,
+				new StampLocationInfor(getGeoCoordinateDefault(),false)));
 		return data;
 	}
 	
@@ -126,8 +130,8 @@ public class StampHelper {
 	
 	public static StampLocationInfor getStampLocationInforDefault() {
 		return new StampLocationInfor(
-				false, 
-				getGeoCoordinateDefault());
+				getGeoCoordinateDefault(),
+				false);
 	}
 	public static GeoCoordinate getGeoCoordinateDefault() {
 		return new GeoCoordinate(1, 2);
@@ -135,7 +139,8 @@ public class StampHelper {
 	}
 
 	public static StampCard getStampCardByInput(String stampCardId, String stampNumber, GeneralDate registerDate) {
-		return new StampCard(stampCardId, new ContractCode("contractCd"),new StampNumber(stampNumber), "employeeId", registerDate);
+		return new StampCard(new ContractCode("contractCd"), new StampNumber(stampNumber), "employeeId", registerDate,
+				stampCardId);
 		
 	}
 	

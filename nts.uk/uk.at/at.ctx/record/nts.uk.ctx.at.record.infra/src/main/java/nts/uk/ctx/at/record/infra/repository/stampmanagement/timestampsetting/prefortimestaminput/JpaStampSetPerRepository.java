@@ -152,6 +152,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					optional.get().backGroundColor = x.backGroundColor;
 					optional.get().aidioType = x.aidioType;
 				}else {
+					
 					ButtonSettings settings = new ButtonSettings(
 							optional2.get().getButtonPositionNo(), 
 							new ButtonDisSet(
@@ -160,13 +161,13 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 											optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
 									optional2.get().getButtonDisSet().getBackGroundColor()), 
 							new ButtonType(
-									optional2.get().getButtonType().getReservationArt(), 
-									new StampType(
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
+									optional2.get().getButtonType().getReservationArt(),
+									Optional.ofNullable(new StampType(
+											 null, 
 											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
 											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
 											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null)), 
+											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null))), 
 							optional2.get().getUsrArt(), 
 							optional2.get().getAudioType());
 					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
