@@ -78,9 +78,7 @@ module nts.uk.at.view.ksm007.a {
                     self.checkWorkplaceGroupRegisterResult(res)
                     .done(() => {
                         self.options.reloadData.valueHasMutated();
-                        if(res.replaceResult && res.replaceResult.length > 0 && res.resProcessResult) {
-                            self.options.currentIds(res.replaceResult[0].wkpgrpid);
-                        }
+                        self.options.currentIds(res.wkpgrpid);
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
