@@ -257,6 +257,12 @@ module nts.uk.at.view.ksm007.a {
             //     $('#workplace-list_displayContainer').css("width", panelWidthResize);
             //     $('#workplace-list_headers_v').css("width", panelWidthResize);
             // }
+
+            // Internet Explorer 6-11
+            let isIE = /*@cc_on!@*/false || !!document.documentMode;
+            if(isIE) {
+                $('#workplace-list').igGrid("option", "height", 289);
+            }
 		}
     }
 }
