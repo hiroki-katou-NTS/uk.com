@@ -2,9 +2,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.group;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 
@@ -15,42 +14,41 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class WorkplaceReplaceResult {
 
 	/** 処理結果 */
-	private WorkplaceReplacement workplaceReplacement;
+	private final WorkplaceReplacement workplaceReplacement;
 	
 	/** 所属済み職場グループID */
-	private Optional<String> wKPGRPID;
+	private final Optional<String> wKPGRPID;
 
 	/** 永続化処理 */
-	private Optional<AtomTask> persistenceProcess;
+	private final Optional<AtomTask> persistenceProcess;
 
 	// [C-1] 追加する
-	public WorkplaceReplaceResult add(Optional<AtomTask> persistenceProcess) {
+	public static WorkplaceReplaceResult add(AtomTask persistenceProcess) {
 		return new WorkplaceReplaceResult(
-				EnumAdaptor.valueOf(WorkplaceReplacement.ADD.value, WorkplaceReplacement.class), Optional.empty(), persistenceProcess);
+				EnumAdaptor.valueOf(WorkplaceReplacement.ADD.value, WorkplaceReplacement.class), Optional.empty(), Optional.ofNullable(persistenceProcess));
 	}
 
 	// [C-2] 削除する
-	public WorkplaceReplaceResult delete(Optional<AtomTask> persistenceProcess) {
+	public static WorkplaceReplaceResult delete(AtomTask persistenceProcess) {
 		return new WorkplaceReplaceResult(
-				EnumAdaptor.valueOf(WorkplaceReplacement.DELETE.value, WorkplaceReplacement.class), Optional.empty(), persistenceProcess);
+				EnumAdaptor.valueOf(WorkplaceReplacement.DELETE.value, WorkplaceReplacement.class), Optional.empty(), Optional.ofNullable(persistenceProcess));
 	}
 
 	// [C-3] 所属済み
-	public WorkplaceReplaceResult alreadyBelong(String wKPGRPID) {
+	public static WorkplaceReplaceResult alreadyBelong(String wKPGRPID) {
 		return new WorkplaceReplaceResult(
-				EnumAdaptor.valueOf(WorkplaceReplacement.ALREADY_BELONGED.value, WorkplaceReplacement.class), Optional.of(wKPGRPID) ,
+				EnumAdaptor.valueOf(WorkplaceReplacement.ALREADY_BELONGED.value, WorkplaceReplacement.class), Optional.ofNullable(wKPGRPID) ,
 				Optional.empty());
 	}
 
 	// [C-4] 別職場グループに所属
-	public WorkplaceReplaceResult belongAnother(String wKPGRPID) {
+	public static WorkplaceReplaceResult belongAnother(String wKPGRPID) {
 		return new WorkplaceReplaceResult(
-				EnumAdaptor.valueOf(WorkplaceReplacement.BELONGED_ANOTHER.value, WorkplaceReplacement.class), Optional.of(wKPGRPID) ,
+				EnumAdaptor.valueOf(WorkplaceReplacement.BELONGED_ANOTHER.value, WorkplaceReplacement.class), Optional.ofNullable(wKPGRPID) ,
 				Optional.empty());
 	}
 }

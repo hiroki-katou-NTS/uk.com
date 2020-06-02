@@ -1,8 +1,10 @@
-package nts.uk.ctx.bs.employee.dom.workplace.group;
+package nts.uk.ctx.bs.employee.dom.workplace.group.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
 
 public class WorkplaceReplacementTest {
 	@Test

@@ -25,13 +25,15 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 
 	private static final String SELECT_BY_CID = SELECT + " WHERE c.pk.CID = :CID";
 	
+	private static final String SELECT_BY_CID_ORDER = SELECT + " WHERE c.pk.CID = :CID ORDER BY c.WKPGRPCode ASC";
+	
 	private static final String SELECT_BY_CID_CODE_WID = SELECT_BY_CID + " AND c.pk.WKPGRPID = :WKPGRPID";
 	
-	private static final String SELECT_BY_LIST_ID = SELECT_BY_CID + " AND c.pk.WKPGRPID IN :lstWKPGRPID";
+	private static final String SELECT_BY_LIST_ID = SELECT_BY_CID + " AND c.pk.WKPGRPID IN :lstWKPGRPID ORDER BY c.WKPGRPCode ASC";
 	
 	private static final String SELECT_BY_CID_CODE_WCD = SELECT_BY_CID + " AND c.WKPGRPCode = :WKPGRPCode";
 	
-	private static final String SELECT_BY_LIST_CD = SELECT_BY_CID + " AND c.WKPGRPCode IN :lstWKPGRPCode";
+	private static final String SELECT_BY_LIST_CD = SELECT_BY_CID + " AND c.WKPGRPCode IN :lstWKPGRPCode ORDER BY c.WKPGRPCode ASC";
 	/**
 	 * insert ( 職場グループ )
 	 * @param group
@@ -161,7 +163,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	 */
 	@Override
 	public List<WorkplaceGroup> getAll(String CID) {
-		return this.queryProxy().query(SELECT_BY_CID, BsymtWorkplaceGroup.class)
+		return this.queryProxy().query(SELECT_BY_CID_ORDER, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
 				.getList(c -> c.toDomain());
 	}
