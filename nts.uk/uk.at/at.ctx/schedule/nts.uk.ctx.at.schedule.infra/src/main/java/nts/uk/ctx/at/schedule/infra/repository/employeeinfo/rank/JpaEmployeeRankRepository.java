@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.rank.KscmtSyaRank;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**
- * 
+ * 社員ランクRepository
  * @author phongtq
  *
  */
