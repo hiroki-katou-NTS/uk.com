@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.ws.stamp.management.personalengraving;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,8 +21,10 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSet
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.TimeCardFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.TimeCardDto;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/record/stamp/management/personal")
@@ -46,7 +49,7 @@ public class StampPersonalEngravingWs extends WebService {
 	@POST
 	@Path("startPage")
 	public KDP002AStartPageSettingDto getStampSetting() {
-		return this.stampSettingsEmbossFinder.getSettings();
+		return new KDP002AStartPageSettingDto(this.stampSettingsEmbossFinder.getSettings());
 	}
 	
 	@POST
@@ -64,13 +67,21 @@ public class StampPersonalEngravingWs extends WebService {
 	@POST
 	@Path("stamp/getStampData")
 	public List<StampRecordDto> getStampData(EmployeeStampDataRequest request) {
-		return this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
+		List<EmployeeStampInfo> doms = this.employeeStampDatasFinder.getEmployeeStampData(request.toDatePeriod(), AppContexts.user().employeeId());
+		List<StampRecordDto> results = new ArrayList<>();
+		
+		for(EmployeeStampInfo stampInfo : doms) {
+			StampDataOfEmployeesDto info = new StampDataOfEmployeesDto(stampInfo);
+			results.addAll(info.getStampRecords());
+		}
+		
+		return results;
 	}
 	
 	@POST
 	@Path("stamp/getTimeCard")
 	public TimeCardDto getTimeCard(EmployeeTimeCardRequest request) {
-		return this.timeCardFinder.getTimeCard(AppContexts.user().employeeId(), request.toDatePeriod());
+		return new TimeCardDto(this.timeCardFinder.getTimeCard(AppContexts.user().employeeId(), request.toDatePeriod()));
 	}
 	
 }
