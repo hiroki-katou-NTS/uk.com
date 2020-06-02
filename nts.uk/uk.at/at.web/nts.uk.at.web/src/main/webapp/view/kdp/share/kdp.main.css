@@ -86,15 +86,21 @@
 }
 
 .stamp-rec-btn-container{
-    height: 13vmin;
+    height: 10vmin;
     width: 33vmin;
-    margin: 0.5vmin
+    margin: 0.5vmin;
+    font-size: 3vmin;
+}
+
+.btn-pos-1, .btn-pos-2 {
+    height: 20vmin;
 }
 
 .stamp-square-btn-container {
     width: 15vmin;
     height: 15vmin;
     margin: 1vmin;
+    font-size: 2.5vmin;
 }
 .square-container{
     width: 68vmin;
