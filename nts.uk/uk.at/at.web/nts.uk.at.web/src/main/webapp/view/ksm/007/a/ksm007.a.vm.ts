@@ -78,7 +78,7 @@ module nts.uk.at.view.ksm007.a {
                     self.checkWorkplaceGroupRegisterResult(res)
                     .done(() => {
                         self.options.reloadData.valueHasMutated();
-                        if(res.replaceResult && res.replaceResult.length > 0) {
+                        if(res.replaceResult && res.replaceResult.length > 0 && res.resProcessResult) {
                             self.options.currentIds(res.replaceResult[0].wkpgrpid);
                         }
                     });
@@ -132,9 +132,11 @@ module nts.uk.at.view.ksm007.a {
                    dfd.resolve();
                 });
             } else {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                   dfd.resolve();
-                });
+                if (res.resProcessResult) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                       dfd.resolve();
+                    });
+                }
             }
             
             return dfd.promise();

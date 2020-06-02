@@ -121,7 +121,7 @@ public class UpdateWorkplaceGroupCommandHandler
 				.collect(Collectors.toList());
 		boolean checkProcessResult = false;
 		if (lstReplaceAdd.size() < 1) {
-			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults);
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultData, groupResults, wpgrp.get().getWKPGRPID());
 		}
 
 		// 8: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -144,7 +144,7 @@ public class UpdateWorkplaceGroupCommandHandler
 		});
 
 		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams,
-				resultData, groupResults);
+				resultData, groupResults, wpgrp.get().getWKPGRPID());
 
 		return groupResult;
 	}
