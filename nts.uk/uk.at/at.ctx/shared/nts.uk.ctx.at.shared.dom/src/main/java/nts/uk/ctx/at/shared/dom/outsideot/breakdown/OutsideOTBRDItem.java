@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot.breakdown;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,10 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
  */
 // 時間外超過の内訳項目
 @Getter
-public class OutsideOTBRDItem extends DomainObject{
+public class OutsideOTBRDItem extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The use classification. */
 	// 使用区分

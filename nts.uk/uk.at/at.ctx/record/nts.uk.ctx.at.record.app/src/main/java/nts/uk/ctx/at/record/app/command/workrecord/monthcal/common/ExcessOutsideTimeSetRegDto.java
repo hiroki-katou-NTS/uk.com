@@ -29,4 +29,6 @@ public class ExcessOutsideTimeSetRegDto {
 	/** The surcharge week month. */
 	private Boolean surchargeWeekMonth;
 
+	/** The except legal holidaywork. */
+	private Boolean exceptLegalHdwk;
 }

@@ -9,7 +9,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.monthcal.KrcstFlexMCalSet;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class JpaFlexMonthWorkTimeAggrSetSetMemento.
@@ -45,6 +44,9 @@ public class JpaFlexMonthWorkTimeAggrSetSetMemento<T extends KrcstFlexMCalSet>
 	@Override
 	public void setInsufficSet(ShortageFlexSetting insufficSet) {
 		this.typeValue.setInsufficSet(insufficSet.getCarryforwardSet().value);
+		this.typeValue.setSettlePeriod(insufficSet.getSettlePeriod().value);
+		this.typeValue.setStartMonth(insufficSet.getStartMonth().v());
+		this.typeValue.setSettlePeriodMon(insufficSet.getPeriod().value);
 	}
 
 	/*
@@ -67,8 +69,18 @@ public class JpaFlexMonthWorkTimeAggrSetSetMemento<T extends KrcstFlexMCalSet>
 	 * enumcommon.NotUseAtr)
 	 */
 	@Override
-	public void setIncludeOverTime(NotUseAtr includeOverTime) {
-		this.typeValue.setIncludeOt(includeOverTime.value);
+	public void setIncludeOverTime(Boolean includeOverTime) {
+		this.typeValue.setIncludeOt(includeOverTime ? 1 : 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+	 * FlexMonthWorkTimeAggrSetSetMemento#setIncludeIllegalHdwk(java.lang.Boolean)
+	 */
+	@Override
+	public void setIncludeIllegalHdwk(Boolean includeIllegalHdwk) {
+		this.typeValue.setIncludeHdwk(includeIllegalHdwk ? 1 : 0);
+	}
 }

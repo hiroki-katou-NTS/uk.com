@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
@@ -14,7 +16,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 // 加算する休暇設定
 @Getter
-public class LeaveSetAdded extends DomainObject{
+public class LeaveSetAdded extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The annual holiday. */
 	// 年休

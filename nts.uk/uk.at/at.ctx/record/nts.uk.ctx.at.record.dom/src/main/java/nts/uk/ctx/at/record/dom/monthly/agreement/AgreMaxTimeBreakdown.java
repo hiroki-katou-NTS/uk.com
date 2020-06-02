@@ -102,7 +102,7 @@ public class AgreMaxTimeBreakdown extends AgreementTimeBreakdown {
 		List<Integer> attendanceItemIds = repositories.getOutsideOTSetService().getAllAttendanceItemIdsForLegalBreak(
 				monthlyCalculation.getCompanyId(),
 				Optional.of(companySets.getOutsideOverTimeSet()),
-				Optional.of(companySets.getRoleHolidayWorkFrameList()));
+				Optional.of(companySets.getWorkDayoffFrameList()));
 		for (val attendanceItemId : attendanceItemIds){
 			
 			// 対象項目の時間を取得　と　丸め処理

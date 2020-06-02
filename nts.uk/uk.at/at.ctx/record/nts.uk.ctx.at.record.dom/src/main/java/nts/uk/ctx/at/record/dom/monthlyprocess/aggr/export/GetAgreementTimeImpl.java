@@ -145,7 +145,8 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
 			val agreTimeOfMngPeriodOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
 					companyId, employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(),
-					aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), companySets, employeeSets,
+					aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), Optional.empty(),
+					companySets, employeeSets,
 					monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 			if (agreTimeOfMngPeriodOpt.isPresent()){
 				
@@ -260,7 +261,8 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
 			val agreTimeOfMngPeriodOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
 					companyId, employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(),
-					aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), companySets, employeeSets,
+					aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), Optional.empty(),
+					companySets, employeeSets,
 					monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 			if (agreTimeOfMngPeriodOpt.isPresent()){
 				agreTimeOfMngPeriodList.add(agreTimeOfMngPeriodOpt.get());
@@ -566,7 +568,8 @@ public class GetAgreementTimeImpl implements GetAgreementTime {
 				Optional<AgreementTimeOfManagePeriod> aggrResultOpt =
 						monthlyCalculationForAgreement.aggregateAgreementTime(
 								companyId, employeeId, procYm, closure.getClosureId(), closureHis.getClosureDate(),
-								aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), companySets, employeeSets,
+								aggrPeriod.getPeriod(), Optional.empty(), Optional.empty(), Optional.empty(),
+								companySets, employeeSets,
 								monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 				
 				// 「管理期間の36協定時間」を返す

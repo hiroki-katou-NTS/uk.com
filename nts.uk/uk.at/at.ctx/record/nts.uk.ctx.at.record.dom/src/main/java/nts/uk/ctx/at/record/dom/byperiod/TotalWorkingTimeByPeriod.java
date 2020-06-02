@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -127,10 +127,10 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		this.overTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleOverTimeFrameMap);
 		
 		// 休日出勤の集計
-		Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap = new HashMap<>();
-		for (val roleHolidayWorkFrame : companySets.getRoleHolidayWorkFrameList()){
-			int frameNo = roleHolidayWorkFrame.getBreakoutFrNo().v();
-			roleHolidayWorkFrameMap.putIfAbsent(frameNo, roleHolidayWorkFrame);
+		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
+		for (val workdayoffFrame : companySets.getWorkDayoffFrameList()){
+			int frameNo = workdayoffFrame.getWorkdayoffFrNo().v().intValue();
+			roleHolidayWorkFrameMap.putIfAbsent(frameNo, workdayoffFrame.getRole());
 		}
 		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
 		

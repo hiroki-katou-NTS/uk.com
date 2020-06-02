@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 
 /**
@@ -17,7 +20,10 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.Calc
 // 休暇の就業時間計算方法
 @NoArgsConstructor
 @Getter
-public class WorkTimeHolidayCalcMethod extends DomainObject{
+public class WorkTimeHolidayCalcMethod extends DomainObject implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The calculate actual operation. */
 	// 実働のみで計算する
@@ -26,6 +32,14 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 	/** The advanced set. */
 	// 詳細設定
 	private Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * Instantiates a new work time holiday calc method.

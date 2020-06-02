@@ -34,6 +34,10 @@ public abstract class KrcstRegMCalSet extends UkJpaEntity {
 	@Column(name = "INCLUDE_EXTRA_OT")
 	private int includeExtraOt;
 
+	/** The except legal holidaywork ot. */
+	@Column(name = "EXC_LEGAL_HDWK_OT")
+	private int exceptLegalHdwkOt;
+	
 	/** The include legal aggr. */
 	@Column(name = "INCLUDE_LEGAL_AGGR")
 	private int includeLegalAggr;

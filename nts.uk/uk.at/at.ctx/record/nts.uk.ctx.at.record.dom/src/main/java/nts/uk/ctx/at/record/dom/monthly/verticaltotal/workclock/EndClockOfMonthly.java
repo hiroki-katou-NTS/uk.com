@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
@@ -13,7 +15,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author shuichi_ishida
  */
 @Getter
-public class EndClockOfMonthly {
+public class EndClockOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 回数 */
 	private AttendanceTimesMonth times;

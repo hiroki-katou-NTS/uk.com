@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -26,7 +28,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class AttendanceTimeOfMonthly extends AggregateRoot {
+public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 社員ID */
 	private final String employeeId;

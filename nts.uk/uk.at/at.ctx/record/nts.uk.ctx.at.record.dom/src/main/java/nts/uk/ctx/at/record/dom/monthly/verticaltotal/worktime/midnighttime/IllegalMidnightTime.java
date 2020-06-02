@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 法定外深夜時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class IllegalMidnightTime {
+public class IllegalMidnightTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 時間 */
 	private TimeMonthWithCalculation time;
