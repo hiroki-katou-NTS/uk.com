@@ -116,6 +116,25 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.selectTypeSet.subscribe(function(newValue){
                 if(self.checkEmpty(newValue)) return;
                 self.bindData(newValue);
+                
+                ko.tasks.schedule(() => { 
+//                    console.log($('div#prev-next-button').is(':visible')); 
+                    if (newValue !=1) return;
+                    let msie = window.navigator.userAgent.indexOf("MSIE ");
+
+                    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
+                    {
+                       
+                    }
+                    else  // If another browser, return 0
+                    {
+                        $('div#prev-next-button').css('margin-left','20px');
+                        $('div#prev-next-button').css('position','');
+                        $('div#selected-approver').css('margin-left','25px')
+
+                    }
+                   
+                });
             });
             let specLabel = self.systemAtr == 0 ? resource.getText('CMM018_100') : resource.getText('CMM018_101'); 
             //承認者指定種類
@@ -278,19 +297,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }else{//GROUP
                 self.k2_1(getText('CMM018_110'));
                 self.k2_2(getText('CMM018_111'));
-                self.enableListWp(false);
-                let msie = window.navigator.userAgent.indexOf("MSIE ");
-
-                if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) // If Internet Explorer
-                {
-                   
-                }
-                else  // If another browser, return 0
-                {
-                    $('div#prev-next-button').css('margin-left','20px');
-                    $('div#prev-next-button').css('position','');
-                    $('div#selected-approver').css('margin-left','25px')
-                }
+                self.enableListWp(false);       
                 if(self.lstJobG().length > 0) return;//データがある     
                 if(self.lstJob().length > 0){
                     let lst = _.clone(self.lstJob());
@@ -378,7 +385,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     }
                     return;
                 }
-                lstApprover = self.lstSpec2();
+                _.each(self.lstSpec2(), function(item, index){
+                    lstApprover.push({code: item.code, name: item.name, dispOrder: index + 1});
+                });
                 approvalForm = self.selectFormSetS();
                 specWkpId = self.treeGrid.selectedId() || '';
             }else{//GROUP

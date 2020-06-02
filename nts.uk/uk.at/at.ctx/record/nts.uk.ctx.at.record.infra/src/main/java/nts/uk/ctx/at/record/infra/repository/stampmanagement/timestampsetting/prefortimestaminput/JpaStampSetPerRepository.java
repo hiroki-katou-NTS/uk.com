@@ -19,9 +19,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcctStampDisplay;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampLayoutDetail;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayoutPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampLayoutDetail;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampPageLayout;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampPageLayoutPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -113,7 +113,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void insertPage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId));
+		commandProxy().insert(KrcctStampPageLayout.toEntity(layout, companyId));
 	}
 
 	/**
@@ -123,19 +123,19 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void updatePage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
+		Optional<KrcctStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
 		if(oldData.isPresent()){
-		KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
+		KrcctStampPageLayout newData = KrcctStampPageLayout.toEntity(layout, companyId);
 		oldData.get().pageName = newData.pageName;
 		oldData.get().buttonLayoutType = newData.buttonLayoutType;
 		oldData.get().pageComment = newData.pageComment;
 		oldData.get().commentColor = newData.commentColor;
 
 		newData.lstButtonSet.stream().forEach(x -> {
-			Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
+			Optional<KrcctStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
 					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
@@ -162,14 +162,14 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 						new ButtonType(
 								optional2.get().getButtonType().getReservationArt(), 
 								new StampType(
-										optional2.get().getButtonType().getStampType().get().isChangeHalfDay(), 
-										optional2.get().getButtonType().getStampType().get().getGoOutArt().get(), 
-										optional2.get().getButtonType().getStampType().get().getSetPreClockArt(), 
-										optional2.get().getButtonType().getStampType().get().getChangeClockArt(), 
-										optional2.get().getButtonType().getStampType().get().getChangeCalArt())), 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
+										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null)), 
 						optional2.get().getUsrArt(), 
 						optional2.get().getAudioType());
-				commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
+				commandProxy().insert(KrcctStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
 			}
 			
 		});
@@ -183,7 +183,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo) {
-		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
@@ -195,7 +195,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPageByCid(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcmtStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.getSingle(c -> c.toDomain());
@@ -206,7 +206,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public List<StampPageLayout> getAllStampSetPage(String companyId) {
-		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtStampPageLayout.class)
+		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 		if (data.isEmpty())
 			return Collections.emptyList();
@@ -220,13 +220,13 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void delete(String companyId, int pageNo) {
-		Optional<StampPageLayout> newEntity = this.queryProxy().query(SELECT_BY_CID_PAGENO,KrcmtStampPageLayout.class)
+		Optional<StampPageLayout> newEntity = this.queryProxy().query(SELECT_BY_CID_PAGENO,KrcctStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
 				.getSingle(c -> c.toDomain());
 		if (newEntity.isPresent()) {
-			this.commandProxy().remove(KrcmtStampPageLayout.class, new KrcmtStampPageLayoutPk(companyId,1, pageNo));
+			this.commandProxy().remove(KrcctStampPageLayout.class, new KrcctStampPageLayoutPk(companyId,1, pageNo));
 		}
 
 	}

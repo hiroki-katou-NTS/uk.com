@@ -14,10 +14,11 @@
   min-width: 37vmin;
 }
 #stamp-desc{
-  height: 40px;
-  width: 100%;
+  height: 70px;
+  width: 73vmin;
   word-break: break-word;
-  font-size: 2vmin;
+  font-size: 1.5vmin;
+  padding: 0 0 0 0.5vmin;
 }
 
 #stamp-date {
@@ -63,7 +64,7 @@
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-  width: 14vmin;
+  width: 10.4vmin;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
