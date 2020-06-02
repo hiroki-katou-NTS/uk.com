@@ -12,6 +12,7 @@ module nts.uk.at.view.kdp010.h {
 			// H2_2
 			contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
 			selectedDay: KnockoutObservable<number> = ko.observable(1);
+			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
 
 			// H3_2
 			optionStamping: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.GoingOutReason);
@@ -36,25 +37,27 @@ module nts.uk.at.view.kdp010.h {
 			dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
 			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
 
+
 			lstChangeClock: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeClockArt);
 			lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
 			lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
 			lstDataShare: KnockoutObservableArray<any> = ko.observableArray();
 			lstData: KnockoutObservableArray<StampTypeCommand> = ko.observable(new StampTypeCommand({}));
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
+			isChange: KnockoutObservable<number> = ko.observable(0);
 			constructor() {
 				let self = this;
 				self.selectedDay.subscribe((newValue) => {
 					self.getDataFromContents(newValue);
-					if(_.isNil(newValue) == false){
-					let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == newValue; });
-					self.simpleValue(name.name);
+					if (self.isChange() == 0) {
+						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == newValue; });
+						self.simpleValue(name.name);
 					}
 				})
 
-				self.simpleValue.subscribe(function(codeChanged: string) {
-					self.simpleValue($.trim(self.simpleValue()));
-				});
+				/*	self.simpleValue.subscribe(function(codeChanged: string) {
+						self.simpleValue($.trim(self.simpleValue()));
+					});*/
 
 				self.selectedHighlight.subscribe((newValue) => {
 					if (self.selectedHighlight() == 1)
@@ -68,8 +71,10 @@ module nts.uk.at.view.kdp010.h {
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
+				self.isChange(1);
 				self.getDataStamp();
-				self.getDataFromContents(self.selectedDay());
+				self.isChange(0);
+				//self.getDataFromContents(self.selectedDay());
 				dfd.resolve();
 				return dfd.promise();
 			}
@@ -97,6 +102,12 @@ module nts.uk.at.view.kdp010.h {
 				$(document).ready(function() {
 					$('#highlight-radio').focus();
 				});
+			}
+
+			public getSimpleValue(value: number) {
+				let self = this;
+				let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
+				self.simpleValue(name.name);
 			}
 
             /**
@@ -159,6 +170,7 @@ module nts.uk.at.view.kdp010.h {
 					reservationArt = data.buttonType.reservationArt;
 				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
 				self.selectedDay(typeNumber);
+				self.selectedDayOld(typeNumber);
 			}
 
 
@@ -229,7 +241,7 @@ module nts.uk.at.view.kdp010.h {
 					return 20;
 			}
 
-			public getDataFromContents(number: value): void {
+			public getDataFromContents(value: number): void {
 				let self = this;
 				switch (self.selectedDay()) {
 					case 1:

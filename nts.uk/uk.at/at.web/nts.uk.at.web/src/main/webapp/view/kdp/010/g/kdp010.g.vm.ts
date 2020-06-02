@@ -207,7 +207,7 @@ module nts.uk.at.view.kdp010.g {
                     });
 
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.info({ messageId: res.messageId });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp002.a {
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
-           
+            serverTime: KnockoutObservable<any> = ko.observable('');
             constructor() {
                 let self = this;
             }
@@ -97,25 +97,27 @@ module nts.uk.at.view.kdp002.a {
         
             public clickBtn1(vm, layout) {
                 let button = this;
-                let data = {
-                    datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
-                    authcMethod:0,
-                    stampMeans:3,
-                    reservationArt: button.btnReservationArt,
-                    changeHalfDay: button.changeHalfDay,
-                    goOutArt: button.goOutArt,
-                    setPreClockArt: button.setPreClockArt,
-                    changeClockArt: button.changeClockArt,
-                    changeCalArt: button.changeCalArt
-                };
-                service.stampInput(data).done((res) => {
-                    if(vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9 ) ) {
-                        vm.openScreenC(button, layout);
-                    } else {
-                        vm.openScreenB(button, layout);
-                    }
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
+                    let data = {
+                        datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                        authcMethod:0,
+                        stampMeans:3,
+                        reservationArt: button.btnReservationArt,
+                        changeHalfDay: button.changeHalfDay,
+                        goOutArt: button.goOutArt,
+                        setPreClockArt: button.setPreClockArt,
+                        changeClockArt: button.changeClockArt,
+                        changeCalArt: button.changeCalArt
+                    };
+                    service.stampInput(data).done((res) => {
+                        if(vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9 ) ) {
+                            vm.openScreenC(button, layout);
+                        } else {
+                            vm.openScreenB(button, layout);
+                        }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
                 });
             }
 

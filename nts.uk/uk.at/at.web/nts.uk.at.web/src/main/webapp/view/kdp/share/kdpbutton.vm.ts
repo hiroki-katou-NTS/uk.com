@@ -89,9 +89,13 @@ ko.components.register('stamp-layout-button', {
         
         <div data-bind="visible: buttonLayoutType() != 1">
             <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
-                <div class="stamp-rec-btn-container pull-left">
+                <div class="stamp-rec-btn-container pull-left" data-bind="css: 'btn-pos-' + btnPositionNo">
                         <button class="stamp-rec-btn" id=""
-                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: function(data, event) { onClick($parent.parentVM(), $parent.selectedLayout()) }, visible: btnPositionNo != -1"></button>
+                            data-bind="text: btnName, 
+                            style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, 
+                            click: function(data, event) { onClick($parent.parentVM(), $parent.selectedLayout()) }, 
+                            visible: btnPositionNo != -1
+                            "></button>
                 </div>
             </div>
         </div>
