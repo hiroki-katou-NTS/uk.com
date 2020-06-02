@@ -25,7 +25,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 370,
+                height: 373,
                 selectedMode: 1
             };
 
@@ -264,6 +264,7 @@ module nts.uk.at.view.ksm007.a {
             let isIE = /*@cc_on!@*/false || !!document.documentMode;
             if(isIE) {
                 $('#workplace-list').igGrid("option", "height", 289);
+                // $('#multi-list').igGrid("option", "height", 372);
             }
 		}
     }
