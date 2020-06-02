@@ -586,10 +586,11 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
 			
 		
-		String sql = "SELECT DISTINCT SID FROM BSYMT_AFF_COM_HIST  " 
-				+ " WHERE SID IN ("+NtsStatement.In.createParamsString(subEmployeeIds)+") "
-				+ " AND START_DATE <= ?"
-				+ " AND END_DATE >= ?";
+		String sql = "SELECT DISTINCT a.SID FROM BSYMT_AFF_COM_HIST a "
+				+ " INNER JOIN BSYMT_EMP_DTA_MNG_INFO b ON a.SID = b.SID" 
+				+ " WHERE a.SID IN ("+NtsStatement.In.createParamsString(subEmployeeIds)+") "
+				+ " AND a.START_DATE <= ?"
+				+ " AND a.END_DATE >= ?";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
 				int i = 0;
