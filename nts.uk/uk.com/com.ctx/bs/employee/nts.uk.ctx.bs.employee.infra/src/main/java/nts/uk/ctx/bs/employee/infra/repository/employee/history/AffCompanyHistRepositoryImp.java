@@ -590,7 +590,8 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 				+ " INNER JOIN BSYMT_EMP_DTA_MNG_INFO b ON a.SID = b.SID" 
 				+ " WHERE a.SID IN ("+NtsStatement.In.createParamsString(subEmployeeIds)+") "
 				+ " AND a.START_DATE <= ?"
-				+ " AND a.END_DATE >= ?";
+				+ " AND a.END_DATE >= ?"
+				+ " AND b.DEL_STATUS_ATR = 0 ";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
 				int i = 0;
