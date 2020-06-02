@@ -504,7 +504,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		if (lstWkpId.isEmpty() ||startDate == null  || endDate == null)
 			return new ArrayList<>();
 
-		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(AppContexts.user().companyId());
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.getAllEmpNotDeleteByCid(AppContexts.user().companyId());
 
 		Map<String, String> mapSidPid = listEmpDomain.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));

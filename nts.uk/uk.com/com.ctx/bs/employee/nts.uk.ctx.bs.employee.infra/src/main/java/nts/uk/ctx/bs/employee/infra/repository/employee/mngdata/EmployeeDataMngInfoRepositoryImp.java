@@ -702,7 +702,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 //				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 		List<EmployeeDataMngInfo> data = new ArrayList<>();
 			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO "
-					  + " WHERE CID = ?";
+					  + " WHERE CID = ? AND DEL_STATUS_ATR = 0 ";
 					  
 				try(PreparedStatement statement = this.connection().prepareStatement(sql)){
 					statement.setString(1, companyId);
