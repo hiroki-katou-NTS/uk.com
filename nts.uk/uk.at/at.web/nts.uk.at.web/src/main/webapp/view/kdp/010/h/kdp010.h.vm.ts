@@ -55,9 +55,9 @@ module nts.uk.at.view.kdp010.h {
 					}
 				})
 
-				/*	self.simpleValue.subscribe(function(codeChanged: string) {
+				self.simpleValue.subscribe(function(codeChanged: string) {
 						self.simpleValue($.trim(self.simpleValue()));
-					});*/
+					});
 
 				self.selectedHighlight.subscribe((newValue) => {
 					if (self.selectedHighlight() == 1)
@@ -74,7 +74,7 @@ module nts.uk.at.view.kdp010.h {
 				self.isChange(1);
 				self.getDataStamp();
 				self.isChange(0);
-				//self.getDataFromContents(self.selectedDay());
+				self.getDataFromContents(self.selectedDay());
 				dfd.resolve();
 				return dfd.promise();
 			}
