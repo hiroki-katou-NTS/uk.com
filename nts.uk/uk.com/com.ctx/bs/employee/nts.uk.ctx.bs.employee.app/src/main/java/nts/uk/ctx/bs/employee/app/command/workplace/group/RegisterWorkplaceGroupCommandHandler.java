@@ -77,7 +77,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			// 4.1
 			WorkplaceReplaceResult result = AddWplOfWorkGrpService.addWorkplace(addRequire, group, x);
 			resultProcessData.add(WorkplaceReplaceResultDto.toDtoWithId(result.getWorkplaceReplacement().value, 
-					result.getWKPGRPID().isPresent() ? result.getWKPGRPID().get() : null, 
+					group.getWKPGRPID(), 
 							x, 
 							result.getPersistenceProcess().isPresent() ? result.getPersistenceProcess().get() : null));
 			wplResult.add(result);

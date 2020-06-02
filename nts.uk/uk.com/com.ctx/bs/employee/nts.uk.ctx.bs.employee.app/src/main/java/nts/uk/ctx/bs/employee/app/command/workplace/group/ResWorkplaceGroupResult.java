@@ -26,4 +26,5 @@ public class ResWorkplaceGroupResult {
 	
 	/** List Optional<職場グループコード, 職場グループ名称> */
 	private List<WorkplaceGroupResult> workplaceGroupResult;
+
 }

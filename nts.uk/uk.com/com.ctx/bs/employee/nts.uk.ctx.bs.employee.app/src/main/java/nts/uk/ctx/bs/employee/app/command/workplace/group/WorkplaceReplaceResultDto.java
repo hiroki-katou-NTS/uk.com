@@ -2,9 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.workplace.group;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
