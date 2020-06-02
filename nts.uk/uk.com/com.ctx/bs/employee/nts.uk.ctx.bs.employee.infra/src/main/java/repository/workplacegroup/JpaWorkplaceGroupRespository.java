@@ -23,7 +23,9 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	
 	private static final String SELECT = "SELECT c FROM BsymtWorkplaceGroup c ";
 
-	private static final String SELECT_BY_CID = SELECT + " WHERE c.pk.CID = :CID ORDER BY c.WKPGRPCode ASC";
+	private static final String SELECT_BY_CID = SELECT + " WHERE c.pk.CID = :CID";
+	
+	private static final String SELECT_BY_CID_ORDER = SELECT + " WHERE c.pk.CID = :CID ORDER BY c.WKPGRPCode ASC";
 	
 	private static final String SELECT_BY_CID_CODE_WID = SELECT_BY_CID + " AND c.pk.WKPGRPID = :WKPGRPID";
 	
@@ -161,7 +163,7 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	 */
 	@Override
 	public List<WorkplaceGroup> getAll(String CID) {
-		return this.queryProxy().query(SELECT_BY_CID, BsymtWorkplaceGroup.class)
+		return this.queryProxy().query(SELECT_BY_CID_ORDER, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
 				.getList(c -> c.toDomain());
 	}
