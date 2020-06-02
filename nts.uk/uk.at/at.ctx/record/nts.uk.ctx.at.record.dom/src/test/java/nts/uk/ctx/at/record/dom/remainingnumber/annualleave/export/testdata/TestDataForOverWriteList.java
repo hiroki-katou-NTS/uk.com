@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestData;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata;
 
 import java.util.List;
 import java.nio.file.Path;
@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 
 /**
  * 上書き用の暫定年休管理データ
@@ -23,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
  */
 public class TestDataForOverWriteList {
 	
-	private static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
+	private static String fileDir = TestBinaryFile.fileDir;
 	private static String fileName = "TestDataForOverWriteListBinary.csv";
 	
 	private static Path getFilePath(){
@@ -50,13 +51,30 @@ public class TestDataForOverWriteList {
 	 * テストデータ（リスト）作成
 	 * @return
 	 */
-	public Map<Integer, List<TmpAnnualLeaveMngWork>> createTestDataList(){
+	private Map<Integer, List<TmpAnnualLeaveMngWork>> createTestDataList(){
 		
 		val map = new HashMap<Integer, List<TmpAnnualLeaveMngWork>>();
 		map.put(1, createTestData1());
 		map.put(2, createTestData2());
 		
 		return map;
+	}
+	
+	/**
+	 * リスト
+	 */
+	private Map<Integer, List<TmpAnnualLeaveMngWork>> map = null;
+	
+	/**
+	 * テスト番号をキーにテストデータを取得
+	 * @param testCode
+	 * @return
+	 */
+	public List<TmpAnnualLeaveMngWork> getData(int testCode){
+		if ( map == null ){
+			map = createTestDataList();
+		}
+		return map.get(testCode);
 	}
 
 	/**

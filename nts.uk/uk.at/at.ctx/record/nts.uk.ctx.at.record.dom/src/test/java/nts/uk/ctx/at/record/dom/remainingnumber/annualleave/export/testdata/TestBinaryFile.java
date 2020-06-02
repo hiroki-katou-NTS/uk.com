@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestData;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLea
  */
 public class TestBinaryFile {
 
+	public static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
+	
 	@Test
 	public void test1(){
 		//val aTestDataForOverWriteList = new TestDataForOverWriteList();

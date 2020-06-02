@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestData;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata;
 
 /**
  * 基準日

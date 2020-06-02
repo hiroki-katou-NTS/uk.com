@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestData;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata;
 
 /**
  * 集計開始日を締め開始日とする　（締め開始日を確認しない）
