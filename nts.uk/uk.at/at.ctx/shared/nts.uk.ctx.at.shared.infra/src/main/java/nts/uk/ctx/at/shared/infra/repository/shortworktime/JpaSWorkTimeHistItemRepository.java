@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +25,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
@@ -31,6 +37,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -210,6 +217,40 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	public void updateAll(List<ShortWorkTimeHistoryItem> domains) {
 		List<BshmtWorktimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
 		this.commandProxy().updateAll(entities);
+	}
+
+	@Override
+	public List<ShortWorkTimeHistoryItem> findWithSidDatePeriod(String companyId, List<String> employeeIds,
+			DatePeriod period) {
+
+		List<DateHistoryItem> resultHist = new ArrayList<>();
+
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD = ? AND END_YMD >= ? AND SID IN ("
+					+ NtsStatement.In.createParamsString(subList) + ")";
+
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, companyId);
+				stmt.setDate(2, Date.valueOf(period.end().localDate()));
+				stmt.setDate(3, Date.valueOf(period.start().localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+
+				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					return new DateHistoryItem(rec.getString("HIST_ID"),
+							new DatePeriod(rec.getGeneralDate("STR_YMD"), rec.getGeneralDate("END_YMD")));
+				});
+				resultHist.addAll(lstObj);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		if (resultHist.isEmpty())
+			return Collections.emptyList();
+
+		return findByHistIds(resultHist.stream().map(x -> x.identifier()).distinct().collect(Collectors.toList()));
 	}
 
 }
