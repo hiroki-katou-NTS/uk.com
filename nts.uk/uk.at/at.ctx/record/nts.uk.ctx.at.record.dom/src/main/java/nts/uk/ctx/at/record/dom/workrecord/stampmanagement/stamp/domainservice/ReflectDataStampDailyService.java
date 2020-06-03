@@ -34,7 +34,8 @@ public class ReflectDataStampDailyService {
 	 * @return
 	 */
 	private static boolean reflectTemporarily(Require require,String employeeId,GeneralDate date,Stamp stamp) {
-		//	$日別実績 = require.勤務情報を反映する(社員ID, 年月日, しない, NULL)
+		//	$日別実績 = require.日別実績を作成する(社員ID, 年月日, しない, empty, empty, empty)	
+		
 		
 		//	$打刻反映範囲 = require.打刻反映時間帯を取得する($日別実績.日別実績の勤務情報)
 
@@ -46,7 +47,7 @@ public class ReflectDataStampDailyService {
 	
 	public static interface Require {
 
-		//	[R-1] 勤務情報を反映する
+		//	[R-1] 日別実績を作成する
 		
 		//	[R-2] 打刻反映時間帯を取得する
 		
