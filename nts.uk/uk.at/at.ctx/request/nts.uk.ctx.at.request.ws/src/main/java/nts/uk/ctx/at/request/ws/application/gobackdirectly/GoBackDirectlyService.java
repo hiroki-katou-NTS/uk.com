@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -124,7 +125,7 @@ public class GoBackDirectlyService extends WebService {
 				lstWts);
 		param.getInforGoBackCommonDirectDto().setWorkType(inforGoBackDirectOutput.getWorkType());
 		param.getInforGoBackCommonDirectDto().setWorkTime(inforGoBackDirectOutput.getWorkTime());
-		param.getInforGoBackCommonDirectDto().setLstWorkType(inforGoBackDirectOutput.getLstWorkType());
+		param.getInforGoBackCommonDirectDto().setLstWorkType(inforGoBackDirectOutput.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()));
 		return param.getInforGoBackCommonDirectDto();
 	}
 
