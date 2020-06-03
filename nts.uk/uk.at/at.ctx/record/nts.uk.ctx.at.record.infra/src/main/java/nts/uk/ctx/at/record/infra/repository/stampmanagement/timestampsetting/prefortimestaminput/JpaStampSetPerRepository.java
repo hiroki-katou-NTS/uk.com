@@ -139,6 +139,10 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+			if(!optional.isPresent() && ((oldData.get().lstButtonSet == null ) || 
+					(x.reservationArt == 0 && x.changeCalArt == null && x.changeClockArt == null && x.changeHalfDay == null) || (x.krcctStampPageLayout == null)) ) {
+				return;
+			}
 			if(optional.isPresent()){
 				optional.get().useArt = x.useArt;
 				optional.get().buttonName = x.buttonName;
