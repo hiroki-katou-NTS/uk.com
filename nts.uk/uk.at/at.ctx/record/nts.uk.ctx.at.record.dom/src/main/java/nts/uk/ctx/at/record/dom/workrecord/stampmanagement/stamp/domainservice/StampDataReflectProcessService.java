@@ -32,7 +32,6 @@ public class StampDataReflectProcessService {
 			automaticallyBook(stampRecord, stamp);
 			if (stamp.isPresent()) {
 				require.insert(stamp.get());
-				reflectDailyCreation(require, employeeId, reflectDate, stamp.get());
 			}
 
 		}));
@@ -50,42 +49,14 @@ public class StampDataReflectProcessService {
 	private static Optional<AtomTask> automaticallyBook(StampRecord stampRecord, Optional<Stamp> stamp) {
 		/*
 		 * if(stampRecord.getRevervationAtr() == ReservationArt.NONE ) { //TODO chờ hàm
-		 * gì đó được viết bởi đội khác, để tạm là option 
-		 * return Optional.empty(); }
+		 * gì đó được viết bởi đội khác, để tạm là option return Optional.empty(); }
 		 * 
 		 * if(!stamp.isPresent()) { return Optional.empty(); }
 		 * 
 		 * if(stamp.get().getType().checkBookAuto()) { //TODO chờ hàm gì đó được viết
-		 * bởi đội khác, để tạm là option 
-		 * return Optional.empty(); }
+		 * bởi đội khác, để tạm là option return Optional.empty(); }
 		 */
 		return Optional.empty();
-	}
-
-	/**
-	 * [prv-2] 日別作成に反映する
-	 * 
-	 * @param require
-	 * @param employeeId
-	 * @param ymd
-	 * @param stamp
-	 * @return
-	 */
-	private static Optional<AtomTask> reflectDailyCreation(Require require, Optional<String> employeeId,
-			Optional<GeneralDate> ymd, Stamp stamp) {
-
-		/*
-		 * if(!employeeId.isPresent() || !ymd.isPresent() ) { return Optional.empty(); }
-		 * ExecutionAttr executionAttr = ExecutionAttr.MANUAL;
-		 */
-		// TODO : Chờ đối ứng code để sử dụng hàm của anh nam, để tạm là optional
-		return Optional.empty();
-		/*
-		 * return Optional.of(AtomTask.of(() -> {
-		 * require.createDailyResult(asyncContext, emloyeeIds, periodTime,
-		 * executionAttr, companyId, empCalAndSumExecLogID, executionLog) }));
-		 */
-
 	}
 
 	/**
