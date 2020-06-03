@@ -86,13 +86,16 @@ module nts.uk.at.view.kdp002.t {
             /**
              * Close dialog
              */
-            public jumpScreen(): void {
+            public jumpScreen(data, appType): void {
+                console.log(data);
+                console.log(appType);
                 let self = this;
                 let shareG = {
                     messageContent: self.labelNames(),
                     messageColor: self.labelColor(),
                     errorDate: self.errorDate(),
-                    listRequired: self.dataShare.listRequired
+                    listRequired: self.dataShare.listRequired,
+                    appType: appType
                 };
                 nts.uk.ui.windows.setShared('KDP010_T', shareG);
                 nts.uk.ui.windows.close();

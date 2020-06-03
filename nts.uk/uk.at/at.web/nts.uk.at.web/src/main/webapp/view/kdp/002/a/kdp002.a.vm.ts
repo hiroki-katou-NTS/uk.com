@@ -160,6 +160,13 @@ module nts.uk.at.view.kdp002.a {
                             let returnData =  nts.uk.ui.windows.getShared('KDP010_T');
                             if(!returnData.isClose && returnData.errorDate) {
                                 console.log(returnData);
+                                let appType = returnData.appType;
+                                // T1	打刻結果の取得対象項目の追加
+                                // 残業申請（早出）							
+                                if(appType == 0) {
+                                    
+                                }
+
                                 nts.uk.request.jump("/view/kaf/005/a/index.xhtml?a=0", {appDate: returnData.errorDate});
                             }
                         });
@@ -168,10 +175,6 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public reCalGridWidthHeight() {
-                // let stampHeight = $('#stamp-date').height() + 
-                //                 $('#stamp-time').height() + 
-                //                 $('#stamp-desc').height() + 
-                //                 $('#tab-panel').height();
                 let windowHeight = window.innerHeight - 250;
                 $('#stamp-history-list').igGrid("option", "height", windowHeight);
                 $('#time-card-list').igGrid("option", "height", windowHeight);

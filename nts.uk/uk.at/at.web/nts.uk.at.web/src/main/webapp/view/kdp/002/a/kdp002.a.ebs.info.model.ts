@@ -41,6 +41,7 @@ class EmbossGridInfo {
         let self = this;
         if (self.displayMethod() == self.displayType.DISPLAY) {
             let idx = 1;
+            items = _.orderBy(items, ['stampDate', 'stampTime'], ['desc', 'desc']);
             items.forEach(stampData => {
                 stampData.code = ++idx;
                 let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
