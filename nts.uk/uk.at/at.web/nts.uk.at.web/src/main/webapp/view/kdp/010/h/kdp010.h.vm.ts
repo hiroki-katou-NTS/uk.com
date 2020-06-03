@@ -53,6 +53,10 @@ module nts.uk.at.view.kdp010.h {
 						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == newValue; });
 						self.simpleValue(name.name);
 					}
+					
+					if(!_.isNil(newValue) && newValue == 8){
+						self.selectedStamping(0);
+					}
 				})
 
 				self.simpleValue.subscribe(function(codeChanged: string) {

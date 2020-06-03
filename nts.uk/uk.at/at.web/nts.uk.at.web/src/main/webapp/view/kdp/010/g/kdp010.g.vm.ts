@@ -158,6 +158,14 @@ module nts.uk.at.view.kdp010.g {
 					}
 					self.dataKdpH = data;
 				}
+				
+				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo){
+					let data = {
+						dataShare: self.dataShare,
+						buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
+					}
+					self.dataKdpH = data;
+				}
 				// Data from Screen 
 				let lstButton = new Array<model.ButtonSettingsCommand>();
 				let stampTypes = null;
