@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.dailyfix;
 
 import lombok.AllArgsConstructor;
 /**
- * 実績で使用する申請種類
+ *    実績で使用する申請種類
  * @author yennth
  *
  */
