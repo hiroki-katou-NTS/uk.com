@@ -168,7 +168,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
             let notChange = 2; //2:変更しない
             let change = 3; //3:変更する
-
+            
+            service.getGoBackSettingNew({
+                ApplicantEmployeeID: null, 
+                ApplicantList: null
+            }).done((settingDate) => {
+                
+                
+            });
+            
             //get Common Setting
             service.getGoBackSetting({
                 employeeIDs: self.employeeIDs(),

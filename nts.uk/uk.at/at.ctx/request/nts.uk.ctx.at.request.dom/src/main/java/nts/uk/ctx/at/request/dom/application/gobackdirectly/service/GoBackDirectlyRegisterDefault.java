@@ -17,13 +17,16 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeLateLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeParam;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -92,6 +95,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject
 	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	/**
 	 * 
 	 */
@@ -151,13 +157,28 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		return newAfterRegister.processAfterRegister(application);
 		
 	}
-
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, GoBackDirectly goBackDirectly, ApplicationType at, InforGoBackCommonDirectOutput application, boolean mode ) { 
+//		確認メッセージリスト＝Empty
+		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
+//		mode new
+//		モードチェックする
+		if(mode) {
+//			直行直帰登録前チェック
+			
+			
+		}else {
+//			直行直帰更新前チェック
+//			detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr, appID, postAtr, version, wkTypeCD, wkTimeCd);
+		}
+		return null;
+	}
 	
 	@Override
 	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year) {
 		String companyID = AppContexts.user().companyId();
-		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
 //		確認メッセージリスト＝Empty
+		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
+
 		
 //		モードチェックする(check mode)
 		if(checkOver1Year) {
@@ -170,6 +191,26 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //			processBeforeRegister.processBeforeRegister_New(companyID, employmentRootAtr, agentAtr, application, overTimeAtr, errorFlg, lstDateHd);
 			
 		}
+		
+//		モードチェックする(check mode)
+		
+		// mode new 
+		if(checkOver1Year) {
+//			直行直帰登録前チェック
+			
+//			アルゴリズム「直行直帰申請日の矛盾チェック」を実行する
+			
+			
+//			アルゴリズム「2-1.新規画面登録前の処理」を実行する
+//			lstConfirm = processBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION, checkOver1Year, application, null, , Collections.emptyList());
+			
+			
+		}else {
+//			mode change
+			
+			
+		}
+		
 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する

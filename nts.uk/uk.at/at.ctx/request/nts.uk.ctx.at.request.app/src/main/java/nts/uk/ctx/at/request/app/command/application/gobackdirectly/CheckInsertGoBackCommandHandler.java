@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -54,8 +55,8 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		//直行直帰登録前チェック 
-//		New 共通登録前のエラーチェック処理
-		List<ConfirmMsgOutput> confirmMsgLst = goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp, command.isCheckOver1Year());		
+//		共通登録前のエラーチェック処理
+		List<ConfirmMsgOutput> confirmMsgLst = goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp, command.isCheckOver1Year());	
 	}
 
 }
