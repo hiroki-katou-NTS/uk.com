@@ -376,6 +376,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			}
 			
 			return listResult;
+		}
 	}
 	
 	@SneakyThrows
