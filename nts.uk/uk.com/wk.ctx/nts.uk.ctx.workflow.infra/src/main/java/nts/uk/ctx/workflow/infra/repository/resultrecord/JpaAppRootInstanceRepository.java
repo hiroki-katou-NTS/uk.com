@@ -355,18 +355,22 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@SneakyThrows
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
-		String query = BASIC_SELECT + " WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM ("
-					+ BASIC_SELECT + " WHERE appApprover.APPROVER_CHILD_ID = ?" + " AND appRoot.CID = ?"
-					+ " AND appRoot.ROOT_TYPE = ?" + " AND appRoot.END_DATE >= ?"
-					+ " AND appRoot.START_DATE <= ?) result)";
-				
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			pstatement.setString(1, approverID);
-			pstatement.setString(2, companyID);
-			pstatement.setInt(3, rootType.value);
-			pstatement.setString(4, period.start().toString("yyyy-MM-dd"));
-			pstatement.setString(5, period.end().toString("yyyy-MM-dd"));
+		String query = BASIC_SELECT + 
+				" WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM (" + BASIC_SELECT 
+				+ " WHERE appApprover.APPROVER_CHILD_ID = ?" 
+				+ " AND appRoot.START_DATE <= ?" 
+				+ " AND appRoot.END_DATE >= ?"
+				+ " AND appRoot.CID = ?"
+				+ " AND appRoot.ROOT_TYPE = ?) result)";
+		
+			Query pstatement = this.getEntityManager().createNativeQuery(query);
+			pstatement.setParameter(1, approverID);
+			pstatement.setParameter(2, period.end().toString("yyyy-MM-dd"));
+			pstatement.setParameter(3, period.start().toString("yyyy-MM-dd"));
+			pstatement.setParameter(4, companyID);
+			pstatement.setParameter(5, rootType.value);
 			
+		
 			@SuppressWarnings("unchecked")
 			List<Object[]> rs = pstatement.getResultList();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstanceResponse(rs));
@@ -376,7 +380,6 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			}
 			
 			return listResult;
-		}
 	}
 	
 	@SneakyThrows
