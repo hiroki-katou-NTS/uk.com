@@ -45,21 +45,13 @@ class StampClock {
         moment.locale('ja');
         self.displayDate = ko.observable(moment(self.time()).format(DATE_FORMAT));
         self.displayTime = ko.observable(moment(self.time()).format(TIME_FORMAT));
+        self.time.subscribe((val) => {
+            self.displayDate(moment(val).format(DATE_FORMAT));
+            self.displayTime(moment(val).format(TIME_FORMAT));
+        });
         setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                console.log(res);
-                self.displayTime(moment.utc(res).format(TIME_FORMAT));
-            });
-        }, 2000);
-    }
-
-    public addCorrectionInterval(minute: number) {
-        let self = this;
-        setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayDate(moment.utc(res).format(DATE_FORMAT));
-            });
-        }, minute * 60000);
+            self.time(new Date());
+        }, 1000);
     }
 }
 

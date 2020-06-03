@@ -6,22 +6,19 @@
 /* 勤務就業選択*/
 #workSelect-kaf007 {
 	height: 70px;
-	margin-left: 55px;
+	margin-left: 35px;
 }
 /* 勤務種類*/
 .work-select-margin {
-	margin: 5px 0px 0px 0px;
+	margin: 5px 0px 0px 29px;
 }
 
 .valign-center.control-group-kaf007 {
-	margin: 5px 0px 0px 0px;
+	margin: 5px 0px 0px 00px;
 }
 
 .lblTitle-kaf007 {
 	width: 143px;
-}
-.lblTitle-kaf007_ver28 {
-	float: left;
 }
 
 button.nts-switch-button {
@@ -72,7 +69,6 @@ input.col2.nts-editor.nts-input.reset-element {
 
 #multiline-kaf007 {
 	display: inline-block;
-	margin-left: 5px;
 }
 
 .row-cell-margin {

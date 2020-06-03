@@ -692,7 +692,7 @@ public class AppHolidayWorkFinder {
 			} else {
 				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
 						GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
-						siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()), deductionTimeLst);
+						siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeLst);
 			}
 			
 		}

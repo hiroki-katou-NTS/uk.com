@@ -29,8 +29,6 @@ module nts.uk.at.view.kdp002.a {
                         stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
-                        // add correction interval
-                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -163,17 +161,6 @@ module nts.uk.at.view.kdp002.a {
                         });
                     }
                 });
-            }
-
-            public reCalGridWidthHeight() {
-                // let stampHeight = $('#stamp-date').height() + 
-                //                 $('#stamp-time').height() + 
-                //                 $('#stamp-desc').height() + 
-                //                 $('#tab-panel').height();
-                let windowHeight = window.innerHeight - 250;
-                // let height = 
-                $('#stamp-history-list').igGrid("option", "height", windowHeight);
-                $('#time-card-list').igGrid("option", "height", windowHeight);
             }
         
         }

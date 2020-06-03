@@ -129,50 +129,50 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
 		if(oldData.isPresent()){
 			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
-			oldData.get().pageName = newData.pageName;
-			oldData.get().buttonLayoutType = newData.buttonLayoutType;
-			oldData.get().pageComment = newData.pageComment;
-			oldData.get().commentColor = newData.commentColor;
+		oldData.get().pageName = newData.pageName;
+		oldData.get().buttonLayoutType = newData.buttonLayoutType;
+		oldData.get().pageComment = newData.pageComment;
+		oldData.get().commentColor = newData.commentColor;
 
-			newData.lstButtonSet.stream().forEach(x -> {
-				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
-						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
-				Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
-						.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
-				if(optional.isPresent()){
-					optional.get().useArt = x.useArt;
-					optional.get().buttonName = x.buttonName;
-					optional.get().reservationArt = x.reservationArt;
-					optional.get().changeClockArt = x.changeClockArt;
-					optional.get().changeCalArt = x.changeCalArt;
-					optional.get().setPreClockArt = x.setPreClockArt;
-					optional.get().changeHalfDay = x.changeHalfDay;
-					optional.get().goOutArt = x.goOutArt;
-					optional.get().textColor = x.textColor;
-					optional.get().backGroundColor = x.backGroundColor;
-					optional.get().aidioType = x.aidioType;
-				}else {
-					ButtonSettings settings = new ButtonSettings(
-							optional2.get().getButtonPositionNo(), 
-							new ButtonDisSet(
-									new ButtonNameSet(
-											optional2.get().getButtonDisSet().getButtonNameSet().getTextColor(),
-											optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
-									optional2.get().getButtonDisSet().getBackGroundColor()), 
-							new ButtonType(
-									optional2.get().getButtonType().getReservationArt(), 
-									new StampType(
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null)), 
-							optional2.get().getUsrArt(), 
-							optional2.get().getAudioType());
-					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
-				}
-
-			});
+		newData.lstButtonSet.stream().forEach(x -> {
+			Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
+					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
+			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
+					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+			if(optional.isPresent()){
+				optional.get().useArt = x.useArt;
+				optional.get().buttonName = x.buttonName;
+				optional.get().reservationArt = x.reservationArt;
+				optional.get().changeClockArt = x.changeClockArt;
+				optional.get().changeCalArt = x.changeCalArt;
+				optional.get().setPreClockArt = x.setPreClockArt;
+				optional.get().changeHalfDay = x.changeHalfDay;
+				optional.get().goOutArt = x.goOutArt;
+				optional.get().textColor = x.textColor;
+				optional.get().backGroundColor = x.backGroundColor;
+				optional.get().aidioType = x.aidioType;
+			}else {
+				ButtonSettings settings = new ButtonSettings(
+						optional2.get().getButtonPositionNo(), 
+						new ButtonDisSet(
+								new ButtonNameSet(
+										optional2.get().getButtonDisSet().getButtonNameSet().getTextColor(),
+										optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
+								optional2.get().getButtonDisSet().getBackGroundColor()), 
+						new ButtonType(
+								optional2.get().getButtonType().getReservationArt(), 
+								Optional.of(new StampType(
+										optional2.get().getButtonType().getStampType().get().isChangeHalfDay(), 
+										optional2.get().getButtonType().getStampType().get().getGoOutArt().get(), 
+										optional2.get().getButtonType().getStampType().get().getSetPreClockArt(), 
+										optional2.get().getButtonType().getStampType().get().getChangeClockArt(), 
+										optional2.get().getButtonType().getStampType().get().getChangeCalArt()))), 
+						optional2.get().getUsrArt(), 
+						optional2.get().getAudioType());
+				commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
+			}
+			
+		});
 		}
 		this.commandProxy().update(oldData.get());
 	}

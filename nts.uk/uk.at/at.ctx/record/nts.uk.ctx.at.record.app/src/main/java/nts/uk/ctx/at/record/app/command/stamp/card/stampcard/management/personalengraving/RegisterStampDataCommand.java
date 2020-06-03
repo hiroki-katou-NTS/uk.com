@@ -56,16 +56,10 @@ public class RegisterStampDataCommand {
 	}
 
 	public ButtonType toButtonType() {
-
 		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
 				SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockArt.valueOf(changeClockArt),
 				ChangeCalArt.valueOf(changeCalArt));
-		
-		if(reservationArt != 2 && reservationArt != 1) {
-			return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
-		}
-		return new ButtonType(ReservationArt.valueOf(reservationArt), null);
-
+		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
 	}
 
 	public RefectActualResult toRefectActualResult() {

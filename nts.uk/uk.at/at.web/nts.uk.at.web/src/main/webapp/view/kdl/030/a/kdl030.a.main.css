@@ -75,12 +75,10 @@
 	width: 70px !important;
 }
 .order-app{
-	/* */
-	width: 78px !important;
+	width: 100px !important;
 }
 .name-app{
 	width: 250px !important;
-	
 }
 .status-app{
 	width: 70px !important;
@@ -90,17 +88,11 @@
 }
 /* list applicant */
 .applicant{
-	width: 150px !important;
+	width: 173px !important;
 }
 .name-emp{
-	width: 345px !important;
+	width: 323px !important;
 }
 .isMail-app{
 	width: 170px !important;
-}
-.nameApprover {
-	width: 270px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
 }

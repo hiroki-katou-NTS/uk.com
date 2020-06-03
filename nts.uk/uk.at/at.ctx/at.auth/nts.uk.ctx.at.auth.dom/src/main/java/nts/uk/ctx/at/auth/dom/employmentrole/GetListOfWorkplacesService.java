@@ -65,10 +65,10 @@ public class GetListOfWorkplacesService {
 		// $ユーザID = require.ユーザIDを取得する(社員ID)	
 		Optional<String> userId =  require.getUserID( employeeId );
 		if (!userId.isPresent()) {
-			return new ArrayList<>();
+			return new ArrayList<>();  
 		}
 		
-		//$ロール種類 = 就業
+		//$ロール種類 = 就業 
 		int rollType = RoleType.EMPLOYMENT.value;
 		
 		// $ロール情報 = require.ロールを取得する($ユーザID, $ロール種類, 基準日, 会社ID)	
@@ -86,12 +86,16 @@ public class GetListOfWorkplacesService {
 		// 	if $所属職場権限.isEmpty OR (not $所属職場権限.利用できる／できない権限の設定.利用できる)				
 		//return Optional.empty	
 		
-		if ((!workPlaceAuthority.isPresent()) || (workPlaceAuthority.get().isAvailability() == false)) {
+		if ((!workPlaceAuthority.isPresent())) { 
 			return new ArrayList<>();
 		}
 		
+		if (workPlaceAuthority.get().isAvailability() == false) { 
+			return new ArrayList<>();  
+		} 
+		
 		// 	<社員参照範囲>$社員参照範囲 = 部門・職場（配下含む）
-		int empRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value;
+		int empRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value; 
 		
 		// 	if not $ロール情報.担当ロールか																	
 		//$社員参照範囲 = require.社員参照範囲を取得する($ロール情報.ロールID)
@@ -121,7 +125,7 @@ public class GetListOfWorkplacesService {
 		
 		if (listWorkplaceManager.isEmpty()) {
 			return new ArrayList<String>();
-		}
+		} 
 		
 		List<String> workplaceIds = listWorkplaceManager.stream().distinct().map(i -> i.getWorkplaceId()).collect(Collectors.toList());
 		

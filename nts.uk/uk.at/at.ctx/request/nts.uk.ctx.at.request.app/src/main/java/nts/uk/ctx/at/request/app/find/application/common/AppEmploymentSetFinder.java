@@ -48,6 +48,6 @@ public class AppEmploymentSetFinder {
 		if(appEmploymentList.isPresent()) {
 			return AppEmploymentSettingDto.fromDomain(appEmploymentList);
 		}
-		return null;
+		return new AppEmploymentSettingDto();
 	}
 }

@@ -46,8 +46,6 @@ module nts.uk.at.view.kdp010.h {
                 let self = this;
                 self.selectedDay.subscribe((newValue) => {
                     self.getDataFromContents(newValue);
-                    var name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == newValue; });
-                    self.simpleValue(name.name);
                 })
 
                 self.simpleValue.subscribe(function(codeChanged: string) {
@@ -114,7 +112,7 @@ module nts.uk.at.view.kdp010.h {
                     }),
                     buttonType: ({
                         reservationArt: self.lstData.reservationArt,
-                        stampType: self.selectedDay() == 20 || self.selectedDay() == 19 ? ({}) : ({
+                        stampType: ({
                             changeHalfDay: self.lstData.changeHalfDay,
                             goOutArt: self.selectedStamping(),
                             setPreClockArt: self.lstData.setPreClockArt,
@@ -210,17 +208,17 @@ module nts.uk.at.view.kdp010.h {
                     if (changeClockArt == 6)
                         return 18;
                 }
-                
+
                 if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && changeHalfDay == 0 && reservationArt == 0)
                     return 6;
 
                 if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0)
                     return 7;
 
-                if ((changeClockArt == "" || changeClockArt == null) && (changeCalArt == "" || changeCalArt == null) &&  (setPreClockArt == "" || setPreClockArt == null) && (changeHalfDay == "" || changeHalfDay == null) && reservationArt == 1)
+                if ((changeClockArt == "" || changeClockArt == null) && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 1)
                     return 19;
 
-                if ((changeClockArt == "" || changeClockArt == null) && (changeCalArt == "" || changeCalArt == null) &&  (setPreClockArt == "" || setPreClockArt == null) && (changeHalfDay == "" || changeHalfDay == null) && reservationArt == 2)
+                if ((changeClockArt == "" || changeClockArt == null) && changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 2)
                     return 20;
             }
 
@@ -282,10 +280,10 @@ module nts.uk.at.view.kdp010.h {
                         self.lstData = { changeClockArt: 6, changeCalArt: 3, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 0 };
                         break;
                     case 19:
-                        self.lstData = { changeClockArt: "", changeCalArt: "", setPreClockArt: "", changeHalfDay: "", reservationArt: 1 };
+                        self.lstData = { changeClockArt: "", changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 1 };
                         break;
                     case 20:
-                        self.lstData = { changeClockArt: "", changeCalArt: "", setPreClockArt: "", changeHalfDay: "", reservationArt: 2 };
+                        self.lstData = { changeClockArt: "", changeCalArt: 0, setPreClockArt: 0, changeHalfDay: 0, reservationArt: 2 };
                         break;
                 }
 
