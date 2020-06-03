@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
-        remainDays: KnockoutObservable<number> = ko.observable(null);
+        remainDays: KnockoutObservable<number> = ko.observable('');
         
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         
