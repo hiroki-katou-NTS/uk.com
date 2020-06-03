@@ -29,6 +29,7 @@ module nts.uk.at.view.kdp002.c {
             currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
             permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
+            displayButton: KnockoutObservable<boolean> = ko.observable(true);
 
             constructor() {
                 let self = this;
@@ -88,7 +89,9 @@ module nts.uk.at.view.kdp002.c {
                         }
                     }
                     if(res.confirmResult){
-                        self.permissionCheck(res.confirmResult.permissionCheck == 1?true:false);       
+                        self.permissionCheck(res.confirmResult.permissionCheck == 1 ? true: false);       
+                    } else {
+                        self.displayButton(false);
                     }
                 });
 
