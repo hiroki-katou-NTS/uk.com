@@ -54,9 +54,10 @@ public class StampResultConfirmDto {
 		
 		this.attendance = attendance.isPresent() ? attendance.get().getValue() : null;
 		this.leave = leave.isPresent() ? leave.get().getValue() : null;
-
-		this.confirmResult = new ConfirmResultDto(cfsr.getEmployeeId(), cfsr.getDate().toString(), cfsr.isStatus(),
-				cfsr.getPermissionCheck().value, cfsr.getPermissionRelease().value);
+		if(cfsr != null) {
+			this.confirmResult = new ConfirmResultDto(cfsr.getEmployeeId(), cfsr.getDate().toString(), cfsr.isStatus(),
+					cfsr.getPermissionCheck().value, cfsr.getPermissionRelease().value);			
+		}
 
 	}
 
