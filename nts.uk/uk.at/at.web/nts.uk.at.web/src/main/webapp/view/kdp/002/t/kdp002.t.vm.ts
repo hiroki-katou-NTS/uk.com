@@ -42,9 +42,12 @@ module nts.uk.at.view.kdp002.t {
                         }]
                     }
                 } else {
-                    self.messageContent(self.share.dailyAttdErrorInfos[0].messageContent);
-                    self.messageColor(self.share.dailyAttdErrorInfos[0].messageColor);
-                    self.errorDate(self.share.dailyAttdErrorInfos[0].lastDateError);
+                    let error = self.share.dailyAttdErrorInfos[0];
+                    self.messageContent(error.messageContent);
+                    self.messageColor(error.messageColor);
+                    self.errorDate(error.lastDateError);
+                    let listRequired = error.listRequired;
+
                     self.dataShare = {
                         listRequired: [{
                             buttonName: ko.observable(self.share.appDispNames[0].dispName),
@@ -71,6 +74,12 @@ module nts.uk.at.view.kdp002.t {
 
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            public getDisplayName(errorType: number, appType: number) {
+                if(errorType === 0 || errorType === 1 || errorType === 2) {
+                    
+                }
             }
 
             /**
