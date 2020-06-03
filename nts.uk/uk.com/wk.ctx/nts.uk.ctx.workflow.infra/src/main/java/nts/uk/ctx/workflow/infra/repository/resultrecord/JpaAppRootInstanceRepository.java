@@ -353,15 +353,17 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@SneakyThrows
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
-		String query = BASIC_SELECT + " WHERE appApprover.APPROVER_CHILD_ID = ?" + " AND appRoot.END_DATE >= ?"
-				+ " AND appRoot.START_DATE <= ?" + " AND appRoot.ROOT_TYPE = ?" + " AND appRoot.CID = ?";
+		String query = BASIC_SELECT + " WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM ("
+					+ BASIC_SELECT + " WHERE appApprover.APPROVER_CHILD_ID = ?" + " AND appRoot.CID = ?"
+					+ " AND appRoot.ROOT_TYPE = ?" + " AND appRoot.END_DATE >= ?"
+					+ " AND appRoot.START_DATE <= ?) result)";
 				
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
 			pstatement.setString(1, approverID);
-			pstatement.setString(2, period.start().toString("yyyy-MM-dd"));
-			pstatement.setString(3, period.end().toString("yyyy-MM-dd"));
-			pstatement.setInt(4, rootType.value);
-			pstatement.setString(5, companyID);
+			pstatement.setString(2, companyID);
+			pstatement.setInt(3, rootType.value);
+			pstatement.setString(4, period.start().toString("yyyy-MM-dd"));
+			pstatement.setString(5, period.end().toString("yyyy-MM-dd"));
 		
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
