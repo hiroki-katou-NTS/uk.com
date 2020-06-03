@@ -65,28 +65,38 @@ module nts.uk.at.view.kdp011.a {
                 self.conditionBinding();
                 //Process Select
                 self.listProcessSelect = ko.observableArray( [
-                    new ProcessSelect( 1, nts.uk.resource.getText( 'KDP011_14' ),true ),
-                    new ProcessSelect( 2, nts.uk.resource.getText( 'KDP011_15' ),true )
+                    new ProcessSelect( 1, nts.uk.resource.getText( 'KDP011_14' ) ),
+                    new ProcessSelect( 2, nts.uk.resource.getText( 'KDP011_15' ) )
 
                 ] );
 
-               
-                self.selectedIdProcessSelect = ko.observable( 1 );
-                self.selectedIdProcessSelect.subscribe( function( value ) {
-                    if ( value == 1 ) {
-                        $( "#com-ccg001" ).addClass( "disabled" );
-                        $( ".mark-overlay-employee" ).show();
-                        $( ".mark-overlay" ).show();
+                if ( __viewContext.user.role.attendance != null ) {
+                    self.selectedIdProcessSelect = ko.observable( 1 );
+                    self.selectedIdProcessSelect.subscribe( function( value ) {
+                        if ( value == 1 ) {
+                            $( "#com-ccg001" ).addClass( "disabled" );
+                            $( ".mark-overlay-employee" ).hide();
+                            $( ".mark-overlay" ).show();
 
-                    } else if ( value == 2 ) {
-                        $( "#com-ccg001" ).removeClass( "disabled" );
-                        $( ".mark-overlay-employee" ).hide();
-                        $( ".mark-overlay" ).hide();                        
+                        } else if ( value == 2 && nts.uk.ui.errors.hasError() ) {
+                            $( "#com-ccg001" ).addClass( "disabled" );
+                            $( ".mark-overlay" ).hide();
+                            $( ".mark-overlay-employee" ).show();
 
-                    } 
-                } );
-                self.selectedIdProcessSelect.valueHasMutated();
-                
+                        } else if ( value == 2 && !nts.uk.ui.errors.hasError() ) {
+                            $( "#com-ccg001" ).removeClass( "disabled" );
+                            $( ".mark-overlay-employee" ).hide();
+                            $( ".mark-overlay" ).hide();
+
+                        }
+                    } );
+                    self.selectedIdProcessSelect.valueHasMutated();
+                }
+                // Có quền Attendant
+                else {
+                    self.selectedIdProcessSelect = ko.observable( 2 );
+                    self.listProcessSelect()[0].enable = ko.observable( false );
+                }
             }
 
             /**
@@ -94,21 +104,12 @@ module nts.uk.at.view.kdp011.a {
             */
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
+
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
                 $.when( service.initScreen(), service.restoreCharacteristic( companyId, userId ) )
                     .done(( dataStartPage, dataCharacteristic ) => {
-                            
-                        if (dataStartPage.existAuthEmpl) {
-                            self.selectedIdProcessSelect(1);
-                            self.listProcessSelect()[0].enable = true;
-                        }
-                        else {
-                            self.selectedIdProcessSelect(2);
-                            self.listProcessSelect()[0].enable = false;
-                        }
-                        self.selectedIdProcessSelect.valueHasMutated();
                         // get data from server
                         self.datepickerValue( { startDate: dataStartPage.startDate, endDate: dataStartPage.endDate } );
 
@@ -157,7 +158,7 @@ module nts.uk.at.view.kdp011.a {
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
                     showBaseDate: false,
-                    showClosure: true, 
+                    showClosure: false,
                     showAllClosure: false,
                     showPeriod: true,
                     periodFormatYM: false,
@@ -465,12 +466,10 @@ module nts.uk.at.view.kdp011.a {
         class ProcessSelect {
             idProcessSelect: number;
             nameProcessSelect: string;
-            enable : boolean;
-            constructor( idProcessSelect, nameProcessSelect,enable ) {
+            constructor( idProcessSelect, nameProcessSelect ) {
                 var self = this;
                 self.idProcessSelect = idProcessSelect;
                 self.nameProcessSelect = nameProcessSelect;
-                self.enable = enable;
             }
         }
     }

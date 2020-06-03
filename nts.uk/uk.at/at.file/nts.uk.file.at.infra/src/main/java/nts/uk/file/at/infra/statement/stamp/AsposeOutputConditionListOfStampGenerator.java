@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.HorizontalPageBreakCollection;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -95,7 +94,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = TextResource.localize("KDP011_1") + "_" + dateTime + ".xlsx";
+			String fileName = "KDP011_" + TextResource.localize("KDP011_1") + "_" + dateTime + ".xlsx";
 			OutputStream outputStream = this.createNewFile(fileGeneratorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 			WorkingFile workingFile = fileGeneratorContext.getWorkingFiles().get(0);
@@ -175,7 +174,6 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			if (i == totalPage && stampList.size() < 32) {
 				rows = rows + 32 - stampList.size();
 			}
-			reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows);
 		}
 		return rows;
 	}
@@ -216,7 +214,6 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				if (v.size() < 32) {
 					rows.set(rows.get() + (32 - v.size()));
 				}
-				reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 			} catch (Exception ex) {
 			}
 		});

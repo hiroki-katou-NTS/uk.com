@@ -79,7 +79,7 @@ public class StampRecordDto {
 
 			StampType type = stamp.getType();
 			this.stampArtName = type.createStampTypeDisplay();
-			this.changeHalfDay = type.getChangeHalfDay();
+			this.changeHalfDay = type.isChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
@@ -101,10 +101,8 @@ public class StampRecordDto {
 			if (stamp.getLocationInfor().isPresent()) {
 				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
 				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if(stampLocate.getPositionInfor() != null) {
-					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();					
-				}
+				this.latitude = stampLocate.getPositionInfor().getLatitude();
+				this.longitude = stampLocate.getPositionInfor().getLongitude();
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
@@ -114,9 +112,6 @@ public class StampRecordDto {
 	}
 
 	public String getCorectTtimeStampType() {
-		if(this.changeClockArt == null) {
-			return null;
-		}
 
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value

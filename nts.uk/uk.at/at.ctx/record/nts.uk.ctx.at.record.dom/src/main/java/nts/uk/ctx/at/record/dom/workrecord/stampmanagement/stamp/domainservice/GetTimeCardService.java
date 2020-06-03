@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class GetTimeCardService {
 		List<TimeLeavingOfDailyPerformance> listTimeLeavingOfDailyPer = require.findbyPeriodOrderByYmd(employeeId,
 				datePeriod);
 
-		List<AttendanceOneDay> listAttendanceOneDay = getListAttendanceOneDay(datePeriod,listTimeLeavingOfDailyPer);
+		List<AttendanceOneDay> listAttendanceOneDay = getListAttendanceOneDay(listTimeLeavingOfDailyPer);
 
 		return new TimeCard(employeeId, listAttendanceOneDay);
 	}
@@ -37,23 +36,11 @@ public class GetTimeCardService {
 	}
 
 	// [prv-2] 日々の実績を作成する
-	private static List<AttendanceOneDay> getListAttendanceOneDay(DatePeriod datePeriod,
+	private static List<AttendanceOneDay> getListAttendanceOneDay(
 			List<TimeLeavingOfDailyPerformance> listTimeLeavingOfDailyPer) {
-		List<AttendanceOneDay> datas = new ArrayList<>(); 
-		for(GeneralDate date :datePeriod.datesBetween()) {
-			boolean checkExist = false;
-			for(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance : listTimeLeavingOfDailyPer) {
-				if(timeLeavingOfDailyPerformance.getYmd().equals(date)) {
-					datas.add(createAttendanceOneDay(date, timeLeavingOfDailyPerformance.getTimeLeavingWorks()));
-					checkExist = true;
-					break;
-				}
-			}
-			if(!checkExist) {
-				datas.add(new AttendanceOneDay(date, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
-			}
-		}
-		return datas;
+
+		return listTimeLeavingOfDailyPer.stream().map(c -> createAttendanceOneDay(c.getYmd(),c.getTimeLeavingWorks()))
+				.collect(Collectors.toList());
 	}
 
 	// [prv-3] 1日の出退勤を作成する

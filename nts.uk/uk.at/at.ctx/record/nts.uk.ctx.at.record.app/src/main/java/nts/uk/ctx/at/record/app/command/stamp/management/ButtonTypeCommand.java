@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
-import java.util.Optional;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

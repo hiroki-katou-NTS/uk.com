@@ -343,7 +343,6 @@ public class HolidayShipmentScreenBFinder {
 			Optional<AbsenceLeaveAppDto> absAppRefactor = this.getAbsAppRefactor(applicationID, companyID);
 			if(absAppRefactor.isPresent()) {
 				result.setAbsApp(absAppRefactor.get());
-				this.setWkTimeZoneDisplayInfo(companyID, result.absApp.getWorkTimeCD(), result.absApp);
 			}
 		} else {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(applicationID);
@@ -351,7 +350,6 @@ public class HolidayShipmentScreenBFinder {
 				ApplicationMetaOutput absAppOutput = detailService.getDetailAppCommonSet(companyID, absAppOpt.get().getAppID());
 				result.setAbsApp(AbsenceLeaveAppDto.fromDomain(absAppOpt.get(), absAppOutput.getAppDate()));
 				Optional<RecruitmentAppDto> recAppRefactor = this.getRecAppRefactor(applicationID, companyID);
-				this.setWkTimeZoneDisplayInfo(companyID, result.absApp.getWorkTimeCD(), result.absApp);
 				if(recAppRefactor.isPresent()) {
 					result.setRecApp(recAppRefactor.get());
 					this.setWkTimeZoneDisplayInfo(companyID, result.recApp.getWorkTimeCD(), result.recApp);

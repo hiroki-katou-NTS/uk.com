@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StampTypeCommand {
 	/** 勤務種類を半休に変更する */
-	private Boolean changeHalfDay;
+	private boolean changeHalfDay;
 
 	/** 外出区分 */
 	private Integer goOutArt;
@@ -25,7 +25,7 @@ public class StampTypeCommand {
 	/** 計算区分変更対象 */
 	private Integer changeCalArt;
 
-	public StampTypeCommand(Boolean changeHalfDay, Integer goOutArt, Integer setPreClockArt, Integer changeClockArt,
+	public StampTypeCommand(boolean changeHalfDay, Integer goOutArt, Integer setPreClockArt, Integer changeClockArt,
 			Integer changeCalArt) {
 		this.changeHalfDay = changeHalfDay;
 		this.goOutArt = goOutArt;

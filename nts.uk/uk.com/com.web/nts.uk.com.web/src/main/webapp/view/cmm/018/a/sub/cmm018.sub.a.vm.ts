@@ -13,7 +13,6 @@ module nts.uk.com.view.cmm018.a.sub {
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             lstData: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             intervalDetectResolution: any;
-            gridName: any;
             constructor() {  
             }
             // fix bug 109950
@@ -28,7 +27,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         }
                     }
                 }  
-                $(this.gridName).igGrid("virtualScrollTo", index);
+                $('#grid_matome').igGrid("virtualScrollTo", index);
 
             }
             reloadGridN(lstRoot: Array<vmbase.CompanyAppRootADto>, rootType: vmbase.RootType, mode: vmbase.MODE): JQueryPromise<void>{
@@ -37,12 +36,12 @@ module nts.uk.com.view.cmm018.a.sub {
                 let systemAtr = __viewContext.viewModel.viewmodelA.systemAtr();
                 let width = 950;
                 let height = 530;
-                self.gridName = '#grid_matome';
+                let gridName = '#grid_matome';
                 $('html.sidebar-html').css('overflow','visible');
                 $('div#left-contents').css('margin-top',"0px"); 
                 if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
-                        self.gridName = '#grid_matome';        
+                        gridName = '#grid_matome';        
                         if(systemAtr == 0) {
 //                            width = screen.width - 435 > 950 ? 950 : screen.width - 435;
 //                            width = (screen.width * 1000)/(1920);
@@ -69,7 +68,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
-                        self.gridName = '#grid_matomeB';   
+                        gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = (screen.width * 900)/(1920);
                             height = (screen.height * 450)/(1080 - 40);  
@@ -79,7 +78,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
                     if(mode == vmbase.MODE.MATOME) {
-                        self.gridName = '#grid_matomeC';    
+                        gridName = '#grid_matomeC';    
                         if(systemAtr == 0) {
                            if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -99,7 +98,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
                     } else {
-                        self.gridName = '#grid_matomeD'; 
+                        gridName = '#grid_matomeD'; 
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                         } else {
@@ -108,7 +107,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                 }else{//PERSON
                     if(mode == vmbase.MODE.MATOME) {
-                        self.gridName = '#grid_matomeE';   
+                        gridName = '#grid_matomeE';   
                         if(systemAtr == 0) {
                             
                            if (screen.height == 1080 && screen.width == 1920) {
@@ -138,7 +137,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }     
                     } else {
-                        self.gridName = '#grid_matomeF';     
+                        gridName = '#grid_matomeF';     
                         if(systemAtr == 0) {
                             width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                         } else {
@@ -146,8 +145,8 @@ module nts.uk.com.view.cmm018.a.sub {
                         }   
                     }
                 }
-                if($(self.gridName + '_container').length > 0){
-                    $(self.gridName).ntsGrid("destroy");
+                if($(gridName + '_container').length > 0){
+                    $(gridName).ntsGrid("destroy");
                 }
                 self.items([]);
                 self.lstData(lstRoot);
@@ -160,8 +159,8 @@ module nts.uk.com.view.cmm018.a.sub {
                     heightG = 181;
                 }
                 
-            
-              $(self.gridName).ntsGrid({
+                
+              $(gridName).ntsGrid({
                 width: width,
                 height: heightG,
                 dataSource: self.items(),
@@ -170,9 +169,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 virtualization: true,
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
-                autoFitWindow: false,
                 columns: [
-                    { headerText: 'ID', key: 'typeRoot', dataType: 'string', ntsControl: "Label", width: "0px", hidden: true },
                     { headerText: getText('CMM018_24'), key: 'appName', dataType: 'string', width: '130px'},
                     { headerText: getText('CMM018_28'), 
                         group:[{ headerText: getText('CMM018_30'), key: 'phase1', dataType: 'string', width: '100px' },
@@ -181,28 +178,15 @@ module nts.uk.com.view.cmm018.a.sub {
                                { headerText: '⇐' + getText('CMM018_33'), key: 'phase4', dataType: 'string', width: '100px' },
                                { headerText: '⇐' + getText('CMM018_34'), key: 'phase5', dataType: 'string', width: '100px' }]
                     },
-                    { headerText: getText('CMM018_95'), key: 'deleteRoot', dataType: 'string', width: '75px'}
+                    { headerText: getText('CMM018_95'), key: 'deleteRoot', dataType: 'string', width: '75px'},
+                    { headerText: 'ID', key: 'typeRoot', dataType: 'string', width: '0px', hidden: true }
                 ],
                 features: [
-                    { name: 'Resizing',
-                        columnSettings: [{
-//                            columnKey: 'typeRoot', allowResizing: false, minimumWidth: 0,
-                            columnKey: 'appName', allowResizing: false,
-                            columnKey: 'phase1', allowResizing: false,
-                            columnKey: 'phase2', allowResizing: false,
-                            columnKey: 'phase3', allowResizing: false,
-                            columnKey: 'phase4', allowResizing: false,
-                            columnKey: 'phase5', allowResizing: false,
-                            columnKey: 'deleteRoot', allowResizing: false
-                        }],
-                        columnResized: function(event, ui) {
-                            if (ui.columnKey === "appName") {
-                                uk.localStorage.setItem("AppName_CMM018", ui.newWidth);
-                            }
-                           
-                        }
-                    },
-                    { name: "MultiColumnHeaders" }
+                    { name: "MultiColumnHeaders" },
+                    { name: 'ColumnFixing', fixingDirection: 'left',
+                                            showFixButtons: false,
+                                            //resize column in gridlist
+                                            columnSettings: [{ columnKey: 'appName', allowResizing: false, minimumWidth: 0 } ]},
                 ],
                  ntsFeatures:[
                     {
@@ -215,33 +199,7 @@ module nts.uk.com.view.cmm018.a.sub {
                  ],
                 ntsControls: [{ name: 'Button', controlType: 'Button', enable: true }],
             });
-                
-            setTimeout(() => {
-                let width = uk.localStorage.getItem("AppName_CMM018");
-                if (width.isPresent()) {
-                    $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
-                }else {
-                    // calculate width's appName that equals character number of text , 1 character = 15 px
-                    let numberText = 0;
-                    _.forEach(self.lstData(), (item, index) => {
-                        if(item.appTypeName) {
-                            numberText = item.appTypeName.length >= numberText ? (index == 0 ? item.appTypeName.length + 1 : item.appTypeName.length) : numberText;
-                        }
-                        
-                    })
-                    if(numberText == 0) {
-                        $(self.gridName).igGridResizing("resize", "appName", 130);
-                    }else if(numberText <= 20) {
-                        $(self.gridName).igGridResizing("resize", "appName", 15*numberText);
-                    }
-                }
-                
-                _.forEach(["grid_matome", "grid_matomeA", "grid_matomeB", "grid_matomeC", "grid_matomeD", "grid_matomeE", "grid_matomeF"], gridName => { 
-                    uk.localStorage.removeItem(request.location.current.rawUrl + "/" + gridName );
-                });
-            }, 0);
-                
-            $(self.gridName).on("click", ".button-delete", function(evt, ui) {
+            $(gridName).on("click", ".button-delete", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
@@ -249,28 +207,28 @@ module nts.uk.com.view.cmm018.a.sub {
                 self.deleteRowSub(empRType, appType);
             });
             //Phase1
-            $(self.gridName).on("click", ".openK_Phase1", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase1", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(1, empRType, appType);
             });
-            $(self.gridName).on("click", ".openK_Phase2", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase2", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(2, empRType, appType);
             });
-            $(self.gridName).on("click", ".openK_Phase3", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase3", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
                 let appType = id.split("_")[1];
                 self.openDialogKSub(3, empRType, appType);
             });
-            $(self.gridName).on("click", ".openK_Phase4", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase4", function(evt, ui) {
                     console.log('Phase4');
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
@@ -278,7 +236,7 @@ module nts.uk.com.view.cmm018.a.sub {
                 let appType = id.split("_")[1];
                 self.openDialogKSub(4, empRType, appType);
             });
-            $(self.gridName).on("click", ".openK_Phase5", function(evt, ui) {
+            $(gridName).on("click", ".openK_Phase5", function(evt, ui) {
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
                 let empRType = id.split("_")[0];
@@ -287,14 +245,13 @@ module nts.uk.com.view.cmm018.a.sub {
             });
                 // fix bug  109946
             if (systemAtr == 0) {
-                $(self.gridName).igGrid("option", "width", width);
-                $(self.gridName).igGrid("option", "height", height);
+                $(gridName).igGrid("option", "width", width);
+                $(gridName).igGrid("option", "height", height);
                 
             }
                 
             $(window).resize(function() {
-                  $('html.sidebar-html').css('overflow','visible');
-                    
+                  $('html.sidebar-html').css('overflow','visible')
                  }); 
            clearInterval(this.intervalDetectResolution);      
            this.intervalDetectResolution = (function () {
@@ -312,7 +269,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     let height = 0;
                     if(rootType == vmbase.RootType.COMPANY){
                     if(mode == vmbase.MODE.MATOME) {
-                        self.gridName = '#grid_matome';        
+                        gridName = '#grid_matome';        
                         if(systemAtr == 0) {
                              if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -334,7 +291,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }
                     } else {
-                        self.gridName = '#grid_matomeB';   
+                        gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                         } else {
@@ -343,7 +300,7 @@ module nts.uk.com.view.cmm018.a.sub {
                     }
                     }else if(rootType == vmbase.RootType.WORKPLACE){
                         if(mode == vmbase.MODE.MATOME) {
-                            self.gridName = '#grid_matomeC';    
+                            gridName = '#grid_matomeC';    
                             if(systemAtr == 0) {
                                if (screen.height == 1080 && screen.width == 1920) {
                                         width = 950;
@@ -363,7 +320,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                             }     
                         } else {
-                            self.gridName = '#grid_matomeD'; 
+                            gridName = '#grid_matomeD'; 
                             if(systemAtr == 0) {
                                 width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
                             } else {
@@ -372,7 +329,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         }
                     }else{//PERSON
                         if(mode == vmbase.MODE.MATOME) {
-                            self.gridName = '#grid_matomeE';   
+                            gridName = '#grid_matomeE';   
                             if(systemAtr == 0) {
                                 if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -400,7 +357,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                             }     
                         } else {
-                            self.gridName = '#grid_matomeF';     
+                            gridName = '#grid_matomeF';     
                             if(systemAtr == 0) {
                                 width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                             } else {
@@ -408,12 +365,12 @@ module nts.uk.com.view.cmm018.a.sub {
                             }   
                         }
                     }
-                    if ($(self.gridName).igGrid("option", "width") != width){
-                        $(self.gridName).igGrid("option", "width", width);
+                    if ($(gridName).igGrid("option", "width") != width){
+                        $(gridName).igGrid("option", "width", width);
                     }
                         
-                    if ($(self.gridName).igGrid("option", "height") != height){
-                        $(self.gridName).igGrid("option", "height", height);
+                    if ($(gridName).igGrid("option", "height") != height){
+                        $(gridName).igGrid("option", "height", height);
                     }          
                     }
                 }, 50);

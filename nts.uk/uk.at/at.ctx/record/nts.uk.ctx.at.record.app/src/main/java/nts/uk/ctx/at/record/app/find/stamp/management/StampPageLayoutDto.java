@@ -51,20 +51,17 @@ public class StampPageLayoutDto {
 
 			StampTypeCommand stampType = new StampTypeCommand(
 					!x.getButtonType().getStampType().isPresent() ? null
-							: x.getButtonType().getStampType().get().getChangeHalfDay() == null ? null 
-									: x.getButtonType().getStampType().get().getChangeHalfDay(),
-					x.getButtonType().getStampType().isPresent() ? null
-							: x.getButtonType().getStampType().get().getGoOutArt().isPresent() ? null
+							: x.getButtonType().getStampType().get().isChangeHalfDay(),
+					x.getButtonType().getStampType().get() == null ? null
+							: x.getButtonType().getStampType().get().getGoOutArt() == null ? null
 									: x.getButtonType().getStampType().get().getGoOutArt().get().value,
 					!x.getButtonType().getStampType().isPresent() ? null
-							: x.getButtonType().getStampType().get().getSetPreClockArt() == null ? null 
-									: x.getButtonType().getStampType().get().getSetPreClockArt().value,
+							: x.getButtonType().getStampType().get().getSetPreClockArt().value,
 					!x.getButtonType().getStampType().isPresent() ? null
 							: x.getButtonType().getStampType().get().getChangeClockArt() == null ? null
 									: x.getButtonType().getStampType().get().getChangeClockArt().value,
 					!x.getButtonType().getStampType().isPresent() ? null
-							: x.getButtonType().getStampType().get().getChangeCalArt() == null ? null 
-									: x.getButtonType().getStampType().get().getChangeCalArt().value);
+							: x.getButtonType().getStampType().get().getChangeCalArt().value);
 
 			ButtonTypeCommand buttonType = new ButtonTypeCommand(x.getButtonType().getReservationArt().value,
 					stampType);
