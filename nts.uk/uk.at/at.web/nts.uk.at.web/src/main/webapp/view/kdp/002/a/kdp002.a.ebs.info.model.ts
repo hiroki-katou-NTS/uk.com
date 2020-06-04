@@ -60,7 +60,7 @@ class EmbossGridInfo {
                 } else if (stampData.changeClockArt == 1) {
                     stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.timeStampType + '</div>';
                 } else {
-                    stampData.timeStampType = `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>';
+                    stampData.timeStampType = stampData.timeStampType ? `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>' : '';
                 }
 
             });
