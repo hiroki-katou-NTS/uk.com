@@ -20,7 +20,7 @@ public class StampType implements DomainValue {
 	/** 勤務種類を半休に変更する */
 	//勤務種類を半休に変更する 1 old
 	@Getter
-	private final boolean changeHalfDay;
+	private final Boolean changeHalfDay;
 
 	/** 外出区分 */
 	//外出理由 old
@@ -50,7 +50,7 @@ public class StampType implements DomainValue {
 	 * @param changeClockArt
 	 * @param changeCalArt
 	 */
-	public StampType(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
+	public StampType(Boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		super();
 		this.changeHalfDay = changeHalfDay;

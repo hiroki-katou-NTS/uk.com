@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
