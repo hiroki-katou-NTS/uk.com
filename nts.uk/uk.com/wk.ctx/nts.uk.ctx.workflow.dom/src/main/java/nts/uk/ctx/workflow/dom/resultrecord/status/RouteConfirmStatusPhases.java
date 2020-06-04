@@ -98,8 +98,8 @@ public class RouteConfirmStatusPhases {
 	public boolean canApprove(String approverId, List<String> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
-				.findFirst().map(p -> p.canApprove(approverId, representRequesterIds)).orElse(false);
+				.filter(x -> x.isApprover(approverId))
+				.anyMatch(p -> p.canApprove(approverId, representRequesterIds));
 	}
 	
 	/**
@@ -117,11 +117,11 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedBy(String approverId, List<String> representRequesterIds) {
+	public boolean hasApprovedBy(String approverId) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
-				.findFirst().map(p -> p.hasApprovedBy(approverId) || p.hasApprovedBy(representRequesterIds)).orElse(false);
+				.filter(x -> x.isApprover(approverId))
+				.anyMatch(p -> p.hasApprovedBy(approverId));
 	}
 	
 	/**
