@@ -56,9 +56,9 @@ public class ButtonSettingsCommand {
 		ButtonDisSet buttonDisSets = new ButtonDisSet(buttonNameSet, backGroundColors);
 
 		ReservationArt reservationArt = EnumAdaptor.valueOf(x.getButtonType().getReservationArt(), ReservationArt.class);
-		Optional<StampType> stampType = Optional.empty();
+		StampType stampType = null;
 		
-		if(x.getButtonType().getReservationArt() != 1 && x.getButtonType().getReservationArt() != 2) {
+		if(x.getButtonType().getReservationArt() == 0) {
 			GoingOutReason goOutArt = x.getButtonType().getStampType().getGoOutArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
 			SetPreClockArt setPreClockArt = x.getButtonType().getStampType().getSetPreClockArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
 					SetPreClockArt.class);
@@ -66,11 +66,11 @@ public class ButtonSettingsCommand {
 					ChangeClockArt.class) : null;
 			ChangeCalArt changeCalArt = x.getButtonType().getStampType().getChangeCalArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
 					ChangeCalArt.class);
-			stampType = Optional.of(StampType.getStampType(x.getButtonType().getStampType().getChangeHalfDay() == null ? null : x.getButtonType().getStampType().getChangeHalfDay(), goOutArt, setPreClockArt,
-					changeClockArt, changeCalArt));
+			stampType = StampType.getStampType(x.getButtonType().getStampType().getChangeHalfDay() == null ? null : x.getButtonType().getStampType().getChangeHalfDay(), goOutArt, setPreClockArt,
+					changeClockArt, changeCalArt);
 		}
 		
-		ButtonType buttonType = new ButtonType(reservationArt, stampType.isPresent() ? stampType.get() : null);
+		ButtonType buttonType = new ButtonType(reservationArt, stampType);
 
 		NotUseAtr usrArts = EnumAdaptor.valueOf(x.getUsrArt(), NotUseAtr.class);
 

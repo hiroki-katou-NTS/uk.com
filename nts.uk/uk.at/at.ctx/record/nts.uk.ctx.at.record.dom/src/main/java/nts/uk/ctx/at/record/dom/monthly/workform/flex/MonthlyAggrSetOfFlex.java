@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.record.dom.monthly.workform.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * フレックス勤務の月別集計設定
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class MonthlyAggrSetOfFlex extends AggregateRoot {
+public class MonthlyAggrSetOfFlex extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
 	private String companyId;

@@ -139,6 +139,10 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+//			if(!optional.isPresent() && ((oldData.get().lstButtonSet == null ) || 
+//					(x.reservationArt == 0 && x.changeCalArt == null && x.changeClockArt == null && x.changeHalfDay == null) || (x.krcctStampPageLayout == null)) && !x.buttonName.equals("外出") ) {
+//				return;
+//			}
 			if(optional.isPresent()){
 				optional.get().useArt = x.useArt;
 				optional.get().buttonName = x.buttonName;
@@ -152,6 +156,22 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				optional.get().backGroundColor = x.backGroundColor;
 				optional.get().aidioType = x.aidioType;
 			}else {
+				StampType stampType = null;
+				
+				if(optional2.get().getButtonType().getStampType().isPresent() && !(optional2.get().getButtonType().getStampType().get().getChangeHalfDay() == null 
+						&& (!optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() && optional2.get().getButtonType().getStampType().get().getGoOutArt().get() == null) 
+						&& optional2.get().getButtonType().getStampType().get().getSetPreClockArt() == null
+						&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
+						&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
+					
+					StampType.getStampType(
+							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
+							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
+							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
+							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
+							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null);
+					
+				}
 				ButtonSettings settings = new ButtonSettings(
 						optional2.get().getButtonPositionNo(), 
 						new ButtonDisSet(
@@ -160,13 +180,8 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 										optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
 								optional2.get().getButtonDisSet().getBackGroundColor()), 
 						new ButtonType(
-								optional2.get().getButtonType().getReservationArt(), 
-								StampType.getStampType(
-										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
-										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
-										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
-										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-										optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null)), 
+								optional2.get().getButtonType().getReservationArt(), stampType
+								), 
 						optional2.get().getUsrArt(), 
 						optional2.get().getAudioType());
 				commandProxy().insert(KrcctStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));

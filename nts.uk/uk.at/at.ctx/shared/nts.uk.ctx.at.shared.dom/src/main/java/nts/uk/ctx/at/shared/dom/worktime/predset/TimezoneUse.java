@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -15,7 +17,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 //時間帯(使用区分付き)
 @Getter
 @NoArgsConstructor
-public class TimezoneUse extends TimeZone implements Cloneable{
+public class TimezoneUse extends TimeZone implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The use atr. */
 	// 使用区分

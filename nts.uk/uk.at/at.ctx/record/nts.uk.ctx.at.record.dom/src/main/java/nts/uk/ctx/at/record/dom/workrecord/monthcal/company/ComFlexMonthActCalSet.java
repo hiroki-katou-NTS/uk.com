@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal.company;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthActCalSet;
@@ -15,7 +17,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Getter
 // フレックス会社別月別実績集計設定
-public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet {
+public class ComFlexMonthActCalSet extends AggregateRoot implements FlexMonthActCalSet, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	// 会社ID

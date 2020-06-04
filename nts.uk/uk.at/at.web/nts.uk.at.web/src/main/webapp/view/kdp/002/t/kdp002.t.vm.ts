@@ -42,22 +42,31 @@ module nts.uk.at.view.kdp002.t {
                         }]
                     }
                 } else {
-                    self.messageContent(self.share.dailyAttdErrorInfos[0].messageContent);
-                    self.messageColor(self.share.dailyAttdErrorInfos[0].messageColor);
-                    self.errorDate(self.share.dailyAttdErrorInfos[0].lastDateError);
+                    let error = self.share.dailyAttdErrorInfos[0];
+                    self.messageContent(error.messageContent);
+                    self.messageColor(error.messageColor);
+                    self.errorDate(error.lastDateError);
+                    let listRequired = error.listRequired;
+
                     self.dataShare = {
                         listRequired: [{
-                            buttonName: ko.observable(self.share.appDispNames[0].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[0].dispName),
+                            appType: self.share.appDispNames[0].appType
                         }, {
-                            buttonName: ko.observable(self.share.appDispNames[1].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[1].dispName),
+                            appType: self.share.appDispNames[1].appType
                         }, {
-                            buttonName: ko.observable(self.share.appDispNames[2].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[2].dispName),
+                            appType: self.share.appDispNames[2].appType
                         }, {
-                            buttonName: ko.observable(self.share.appDispNames[3].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[3].dispName),
+                            appType: self.share.appDispNames[3].appType
                         }, {
-                            buttonName: ko.observable(self.share.appDispNames[4].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[4].dispName),
+                            appType: self.share.appDispNames[4].appType
                         }, {
-                            buttonName: ko.observable(self.share.appDispNames[5].dispName)
+                            buttonName: ko.observable(self.share.appDispNames[5].dispName),
+                            appType: self.share.appDispNames[5].appType
                         }]
                     }
 
@@ -65,6 +74,12 @@ module nts.uk.at.view.kdp002.t {
 
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            public getDisplayName(errorType: number, appType: number) {
+                if(errorType === 0 || errorType === 1 || errorType === 2) {
+                    
+                }
             }
 
             /**
@@ -86,13 +101,14 @@ module nts.uk.at.view.kdp002.t {
             /**
              * Close dialog
              */
-            public jumpScreen(): void {
+            public jumpScreen(data): void {
                 let self = this;
                 let shareG = {
                     messageContent: self.labelNames(),
                     messageColor: self.labelColor(),
                     errorDate: self.errorDate(),
-                    listRequired: self.dataShare.listRequired
+                    listRequired: self.dataShare.listRequired,
+                    appType: data.appType
                 };
                 nts.uk.ui.windows.setShared('KDP010_T', shareG);
                 nts.uk.ui.windows.close();

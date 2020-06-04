@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -10,7 +12,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  */
 @Getter
 @Setter
-public class TimeMonthWithCalculation {
+public class TimeMonthWithCalculation implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 時間 */
 	private AttendanceTimeMonth time;

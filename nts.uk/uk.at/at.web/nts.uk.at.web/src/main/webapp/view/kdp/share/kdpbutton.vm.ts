@@ -32,6 +32,9 @@ module nts.uk.at.view.kdp.share {
                 if(btn && !btn.onClick) {
                     btn.onClick = () => {};
                 }
+                if (btn) {
+                    btn.idx = idx;
+                }
                 // A14 時刻に従ってボタンの色が変わる処理
                 let btnBackGroundColor = btn ? btn.btnBackGroundColor : '';
                 if(self.useHighlightFunction().isUse && btn) {
@@ -51,7 +54,7 @@ module nts.uk.at.view.kdp.share {
                     btn.btnBackGroundColor = btnBackGroundColor;
                 }
                 
-                btnList.push(btn && btn.usrArt == 1 ? btn : {btnPositionNo: -1, btnName: '', btnBackGroundColor: '', btnTextColor: '', onClick: () => {}});
+                btnList.push(btn && btn.usrArt == 1 ? btn : {idx: idx, btnPositionNo: -1, btnName: '', btnBackGroundColor: '', btnTextColor: '', onClick: () => {}});
             }
             console.log(btnList);
             self.buttonSettings(btnList);
@@ -89,9 +92,13 @@ ko.components.register('stamp-layout-button', {
         
         <div data-bind="visible: buttonLayoutType() != 1">
             <div class="btn-grid-container cf" data-bind="foreach: buttonSettings">
-                <div class="stamp-rec-btn-container pull-left">
+                <div class="stamp-rec-btn-container pull-left" data-bind="css: 'btn-pos-' + idx">
                         <button class="stamp-rec-btn" id=""
-                            data-bind="text: btnName, style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, click: function(data, event) { onClick($parent.parentVM(), $parent.selectedLayout()) }, visible: btnPositionNo != -1"></button>
+                            data-bind="text: btnName, 
+                            style:{ 'background-color' :  btnBackGroundColor, color :  btnTextColor }, 
+                            click: function(data, event) { onClick($parent.parentVM(), $parent.selectedLayout()) }, 
+                            visible: btnPositionNo != -1
+                            "></button>
                 </div>
             </div>
         </div>

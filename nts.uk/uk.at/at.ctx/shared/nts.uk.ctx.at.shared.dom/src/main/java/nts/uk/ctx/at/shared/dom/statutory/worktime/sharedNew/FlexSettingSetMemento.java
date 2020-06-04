@@ -34,4 +34,10 @@ public interface FlexSettingSetMemento {
 	 */
 	void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting);
 
+	/**
+	 * Sets the week average setting.
+	 * 
+	 * @param weekAveSetting the new week average setting
+	 */
+	void setWeekAveSetting(List<MonthlyUnit> weekAveSetting);
 }

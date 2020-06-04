@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp002.a {
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
-           
+            serverTime: KnockoutObservable<any> = ko.observable('');
             constructor() {
                 let self = this;
             }
@@ -23,7 +23,7 @@ module nts.uk.at.view.kdp002.a {
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res));
                         self.stampGrid().yearMonth.subscribe((val) => {
-                           self.getTimeCardData();
+                            self.getTimeCardData();
                         });
                         let stampToSuppress = res.stampToSuppress;
                         stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
@@ -82,62 +82,64 @@ module nts.uk.at.view.kdp002.a {
 
             public getPageLayout(pageNo: number) {
                 let self = this;
-                let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo }); 
-        
-                if(layout) {
+                let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo });
+
+                if (layout) {
                     let btnSettings = layout.buttonSettings;
                     btnSettings.forEach(btn => {
                         btn.onClick = self.clickBtn1;
                     });
                     layout.buttonSettings = btnSettings;
                 }
-        
+
                 return layout;
             }
-        
+
             public clickBtn1(vm, layout) {
                 let button = this;
-                let data = {
-                    datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
-                    authcMethod:0,
-                    stampMeans:3,
-                    reservationArt: button.btnReservationArt,
-                    changeHalfDay: button.changeHalfDay,
-                    goOutArt: button.goOutArt,
-                    setPreClockArt: button.setPreClockArt,
-                    changeClockArt: button.changeClockArt,
-                    changeCalArt: button.changeCalArt
-                };
-                service.stampInput(data).done((res) => {
-                    if(vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9 ) ) {
-                        vm.openScreenC(button, layout);
-                    } else {
-                        vm.openScreenB(button, layout);
-                    }
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
+                    let data = {
+                        datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                        authcMethod: 0,
+                        stampMeans: 3,
+                        reservationArt: button.btnReservationArt,
+                        changeHalfDay: button.changeHalfDay,
+                        goOutArt: button.goOutArt,
+                        setPreClockArt: button.setPreClockArt,
+                        changeClockArt: button.changeClockArt,
+                        changeCalArt: button.changeCalArt
+                    };
+                    service.stampInput(data).done((res) => {
+                        if (vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+                            vm.openScreenC(button, layout);
+                        } else {
+                            vm.openScreenB(button, layout);
+                        }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
                 });
             }
 
             public openScreenB(button, layout) {
                 let self = this;
-                nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
+                nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-                    if(self.stampGrid().displayMethod() === 1) {
+                    if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
                         self.getTimeCardData();
                     }
-                    
+
                     self.openKDP002T(button, layout);
-                }); 
+                });
             }
 
             public openScreenC(button, layout) {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                    if(self.stampGrid().displayMethod() === 1) {
+                    if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
                         self.getTimeCardData();
@@ -152,13 +154,81 @@ module nts.uk.at.view.kdp002.a {
                     buttonDisNo: button.btnPositionNo
                 }
                 service.getError(data).done((res) => {
-                    if(res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+                    if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
                         nts.uk.ui.windows.setShared('KDP010_2T', res, true);
                         nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                            let returnData =  nts.uk.ui.windows.getShared('KDP010_T');
-                            if(!returnData.isClose && returnData.errorDate) {
+                            let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+                            if (!returnData.isClose && returnData.errorDate) {
                                 console.log(returnData);
-                                nts.uk.request.jump("/view/kaf/005/a/index.xhtml?a=0", {appDate: returnData.errorDate});
+                                let appType = returnData.appType;
+                                // T1	打刻結果の取得対象項目の追加
+                                // 残業申請（早出）
+                                let transfer = { appDate: returnData.errorDate };
+                                switch (appType) {
+                                    case 0:
+                                        nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
+                                        break;
+                                    case 1:
+                                        nts.uk.request.jump("/view/kaf/006/a/index.xhtml", transfer);
+                                        break;
+                                    case 2:
+                                        //KAF007-勤務変更申請
+                                        nts.uk.request.jump("/view/kaf/007/a/index.xhtml", transfer);
+                                        break;
+                                    case 4:
+                                        //KAF009-直行直帰申請
+                                        nts.uk.request.jump("/view/kaf/009/a/index.xhtml", transfer);
+                                        break;
+
+                                    case 6:
+                                        //KAF010-休出時間申請
+                                        transfer.uiType = 0;
+                                        nts.uk.request.jump("/view/kaf/010/a/index.xhtml", transfer);
+                                        break;
+
+                                    case 7:
+                                        //KAF002-打刻申請（外出許可）
+                                        transfer.stampRequestMode = 0;
+                                        transfer.screenMode = 1;
+                                        nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                                        break;
+
+                                    // case 9:
+                                    //     //KAF002-打刻申請（出退勤打刻漏れ）
+                                    //     transfer.stampRequestMode = 1;
+                                    //     transfer.screenMode = 1;
+                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                                    //     break;
+
+                                    // case 10:
+                                    //     //KAF002-打刻申請（打刻取消）
+                                    //     transfer.stampRequestMode = 2;
+                                    //     transfer.screenMode = 1;
+                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                                    //     break;
+
+                                    // case 11:
+                                    //     //KAF002-打刻申請（レコーダイメージ）
+                                    //     transfer.stampRequestMode = 3;
+                                    //     transfer.screenMode = 1;
+                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                                    //     break;
+
+                                    // case 12:
+                                    //     //KAF002-打刻申請（その他）
+                                    //     transfer.stampRequestMode = 4;
+                                    //     transfer.screenMode = 1;
+                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                                    //     break;
+                                    case 10:
+                                        //KAF011-振休振出申請
+                                        nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+
                             }
                         });
                     }
@@ -166,16 +236,12 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public reCalGridWidthHeight() {
-                // let stampHeight = $('#stamp-date').height() + 
-                //                 $('#stamp-time').height() + 
-                //                 $('#stamp-desc').height() + 
-                //                 $('#tab-panel').height();
                 let windowHeight = window.innerHeight - 250;
                 $('#stamp-history-list').igGrid("option", "height", windowHeight);
                 $('#time-card-list').igGrid("option", "height", windowHeight);
                 $('#content-area').css('height', windowHeight + 109);
             }
-        
+
         }
 
     }

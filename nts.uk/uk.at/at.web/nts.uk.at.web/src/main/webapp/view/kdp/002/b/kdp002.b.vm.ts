@@ -82,7 +82,8 @@ module nts.uk.at.view.kdp002.b {
                 let dfd = $.Deferred();
                 service.getAllStampingResult().done(function(data) {
                     _.forEach(data, (a) => {
-                        _.forEach(a.stampDataOfEmployeesDto.stampRecords, (sr) => {
+                        let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampDate', 'stampTime'], ['desc', 'desc']);
+                        _.forEach(items, (sr) => {
                             self.listStampRecord.push(sr);
                         });
                     });

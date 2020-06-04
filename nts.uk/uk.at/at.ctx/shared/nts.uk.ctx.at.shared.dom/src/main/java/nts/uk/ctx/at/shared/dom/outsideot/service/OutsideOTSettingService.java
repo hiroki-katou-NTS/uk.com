@@ -10,9 +10,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
 @Stateless
 public class OutsideOTSettingService {
@@ -20,7 +20,7 @@ public class OutsideOTSettingService {
 	@Inject
 	private OutsideOTSettingRepository outsideOTSettingRepository;
 	@Inject
-	private	RoleOfOpenPeriodRepository roleOfOpenPeriodRepository;
+	private	WorkdayoffFrameRepository workdayoffFrameRepository;
 
 	/**
 	 * 36協定対象項目一覧を取得
@@ -90,14 +90,14 @@ public class OutsideOTSettingService {
 	 * 法定内休出の勤怠項目IDを全て取得
 	 * @param companyId 会社ID
 	 * @param outsideOtSettingOpt 時間外超過設定
-	 * @param roleOfOpenPeriodsOpt 休出枠の役割リスト
+	 * @param workdayoffFramesOpt 休出枠リスト
 	 * @return 勤怠項目IDリスト
 	 */
 	// 2019.2.13 ADD shuichi_ishida
 	public List<Integer> getAllAttendanceItemIdsForLegalBreak(
 			String companyId,
 			Optional<OutsideOTSetting> outsideOtSettingOpt,
-			Optional<List<RoleOfOpenPeriod>> roleOfOpenPeriodsOpt){
+			Optional<List<WorkdayoffFrame>> workdayoffFramesOpt){
 
 		List<Integer> result = new ArrayList<>();
 		
@@ -115,23 +115,23 @@ public class OutsideOTSettingService {
 		if (outsideOTSetting == null) return result;
 		
 		// 「休出枠の役割」を取得
-		List<RoleOfOpenPeriod> roleOfOpenPeriods = new ArrayList<>();
-		if (roleOfOpenPeriodsOpt.isPresent()) {
-			roleOfOpenPeriods.addAll(roleOfOpenPeriodsOpt.get());
+		List<WorkdayoffFrame> workdayoffFrames = new ArrayList<>();
+		if (workdayoffFramesOpt.isPresent()) {
+			workdayoffFrames.addAll(workdayoffFramesOpt.get());
 		}
 		else {
-			roleOfOpenPeriods.addAll(this.roleOfOpenPeriodRepository.findByCID(companyId));
+			workdayoffFrames.addAll(this.workdayoffFrameRepository.getAllWorkdayoffFrame(companyId));
 		}
 		
 		// 内訳項目一覧に設定されている勤怠項目IDを確認する
 		List<Integer> itemIds = outsideOTSetting.getAllAttendanceItemIds();
 		
-		// 「休出枠の役割」から法定内休出のみを取り出す
-		for (val roleOfOpenPeriod : roleOfOpenPeriods) {
-			if (roleOfOpenPeriod.getRoleOfOpenPeriodEnum() != RoleOfOpenPeriodEnum.STATUTORY_HOLIDAYS) continue;
+		// 「休出枠．役割」から法定内休出のみを取り出す
+		for (val workdayoffFrame : workdayoffFrames) {
+			if (workdayoffFrame.getRole() != WorkdayoffFrameRole.STATUTORY_HOLIDAYS) continue;
 			
 			// 取得した枠NOに該当する勤怠項目IDを取得　（内訳項目一覧に存在していない勤怠項目ID）
-			val frNo = roleOfOpenPeriod.getBreakoutFrNo().v();
+			val frNo = workdayoffFrame.getWorkdayoffFrNo().v().intValue();
 			Integer breakTimeItemId = MonthlyItems.BREAKTIME_1.itemId + frNo - 1;
 			if (!itemIds.contains(breakTimeItemId)) result.add(breakTimeItemId);
 			Integer transTimeItemId = MonthlyItems.TRANSTIME_1.itemId + frNo - 1;

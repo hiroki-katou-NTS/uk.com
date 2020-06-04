@@ -70,8 +70,11 @@ public class RegularWorkTimeAggrSetDto {
 		@Override
 		public ExcessOutsideTimeSetReg getAggregateTimeSet() {
 			ExcessOutsideTimeSetRegDto aggregateTimeSet = this.dto.getAggregateTimeSet();
-			return new ExcessOutsideTimeSetReg(aggregateTimeSet.getLegalOverTimeWork(),
-					aggregateTimeSet.getLegalHoliday(), aggregateTimeSet.getSurchargeWeekMonth());
+			return new ExcessOutsideTimeSetReg(
+					aggregateTimeSet.getLegalOverTimeWork(),
+					aggregateTimeSet.getLegalHoliday(),
+					aggregateTimeSet.getSurchargeWeekMonth(),
+					false);
 		}
 
 		/*
@@ -83,9 +86,11 @@ public class RegularWorkTimeAggrSetDto {
 		@Override
 		public ExcessOutsideTimeSetReg getExcessOutsideTimeSet() {
 			ExcessOutsideTimeSetRegDto excessOutsideTimeSet = this.dto.getExcessOutsideTimeSet();
-			return new ExcessOutsideTimeSetReg(excessOutsideTimeSet.getLegalOverTimeWork(),
+			return new ExcessOutsideTimeSetReg(
+					excessOutsideTimeSet.getLegalOverTimeWork(),
 					excessOutsideTimeSet.getLegalHoliday(),
-					excessOutsideTimeSet.getSurchargeWeekMonth());
+					excessOutsideTimeSet.getSurchargeWeekMonth(),
+					excessOutsideTimeSet.getExceptLegalHdwk());
 		}
 
 	}

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +19,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Setter
 @Builder
 // 就業時間の加算設定管理
-public class AddSetManageWorkHour extends AggregateRoot{
+public class AddSetManageWorkHour extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
+	
 	/** 会社ID */
 	private String companyId;
 
