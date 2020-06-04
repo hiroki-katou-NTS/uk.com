@@ -160,75 +160,10 @@ module nts.uk.at.view.kdp002.a {
                             let returnData = nts.uk.ui.windows.getShared('KDP010_T');
                             if (!returnData.isClose && returnData.errorDate) {
                                 console.log(returnData);
-                                let appType = returnData.appType;
                                 // T1	打刻結果の取得対象項目の追加
                                 // 残業申請（早出）
-                                let transfer = { appDate: returnData.errorDate };
-                                switch (appType) {
-                                    case 0:
-                                        nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
-                                        break;
-                                    case 1:
-                                        nts.uk.request.jump("/view/kaf/006/a/index.xhtml", transfer);
-                                        break;
-                                    case 2:
-                                        //KAF007-勤務変更申請
-                                        nts.uk.request.jump("/view/kaf/007/a/index.xhtml", transfer);
-                                        break;
-                                    case 4:
-                                        //KAF009-直行直帰申請
-                                        nts.uk.request.jump("/view/kaf/009/a/index.xhtml", transfer);
-                                        break;
-
-                                    case 6:
-                                        //KAF010-休出時間申請
-                                        transfer.uiType = 0;
-                                        nts.uk.request.jump("/view/kaf/010/a/index.xhtml", transfer);
-                                        break;
-
-                                    case 7:
-                                        //KAF002-打刻申請（外出許可）
-                                        transfer.stampRequestMode = 0;
-                                        transfer.screenMode = 1;
-                                        nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-                                        break;
-
-                                    // case 9:
-                                    //     //KAF002-打刻申請（出退勤打刻漏れ）
-                                    //     transfer.stampRequestMode = 1;
-                                    //     transfer.screenMode = 1;
-                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-                                    //     break;
-
-                                    // case 10:
-                                    //     //KAF002-打刻申請（打刻取消）
-                                    //     transfer.stampRequestMode = 2;
-                                    //     transfer.screenMode = 1;
-                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-                                    //     break;
-
-                                    // case 11:
-                                    //     //KAF002-打刻申請（レコーダイメージ）
-                                    //     transfer.stampRequestMode = 3;
-                                    //     transfer.screenMode = 1;
-                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-                                    //     break;
-
-                                    // case 12:
-                                    //     //KAF002-打刻申請（その他）
-                                    //     transfer.stampRequestMode = 4;
-                                    //     transfer.screenMode = 1;
-                                    //     nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
-                                    //     break;
-                                    case 10:
-                                        //KAF011-振休振出申請
-                                        nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-
+                                let transfer = returnData.btn.transfer;
+                                nts.uk.request.jump(returnData.btn.screen, transfer);
                             }
                         });
                     }
