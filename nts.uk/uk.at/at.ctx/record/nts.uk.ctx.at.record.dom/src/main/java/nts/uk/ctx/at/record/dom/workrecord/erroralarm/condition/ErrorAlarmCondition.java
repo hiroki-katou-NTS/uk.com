@@ -31,9 +31,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 
 /**
  * @author hungnm
- *
+ *勤務実績のエラーアラームチェック
  */
-// 勤務実績のエラーアラームチェック
 @Getter
 public class ErrorAlarmCondition extends AggregateRoot {
 	

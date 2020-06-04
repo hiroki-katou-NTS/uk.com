@@ -178,33 +178,40 @@ public class ExtractAlarmForEmployeeService {
 		List<ValueExtractAlarm> result = (new ArrayList<>());
 
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
+		//社員一覧から社員の職場情報を取得する
 		List<WorkplaceImport> optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
 
 //		List<Runnable> checks = new ArrayList<>();
 //		checks.add(() -> {
+			//アルゴリズム「日次の集計処理」を実行する
 			result.addAll(runDailyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「4週4休の集計処理」を実行する
 			result.addAll(runW4d4CheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「36協定の集計処理」を実行する
 			result.addAll(runAgreementCheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「月次の集計処理」を実行する
 			result.addAll(runMonthlyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//複数月の集計処理(xử lý thông kê của multiple months)
 			result.addAll(runMultiMonthCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+			//アルゴリズム「年休の集計処理」を実行する
 			result.addAll(runHolidayCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 
@@ -303,17 +310,32 @@ public class ExtractAlarmForEmployeeService {
 		}
 		return new ArrayList<>();
 	}
-
+	/**
+	 * アラームリスト　日次
+	 * @param comId　会社ID
+	 * @param checkConList　List＜チェック条件＞
+	 * @param listPeriodByCategory　List＜カテゴリ別期間＞
+	 * @param employees　List＜社員情報＞
+	 * @param employeeIds　List＜社員ID＞
+	 * @param optWorkplaceImports　List＜職場情報＞
+	 * @param eralCate　List＜カテゴリ別アラームチェック条件＞
+	 * @param counter　
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runDailyCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//日次のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> dailyErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.DAILY, checkConList);
 		if(!dailyErAl.isEmpty()){
+			//日次の期間
 			PeriodByAlarmCategory dailyCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.DAILY.value).findFirst().get();
-			
+			//社員と職場をマッピングする
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, dailyCate);
 			/** need internal response */
+			//勤務実績のアラーム抽出
 			return (dailyAggregationProcessService.dailyAggregationProcess(comId, dailyCate, employees, dailyErAl, counter, shouldStop));
 		}
 		
