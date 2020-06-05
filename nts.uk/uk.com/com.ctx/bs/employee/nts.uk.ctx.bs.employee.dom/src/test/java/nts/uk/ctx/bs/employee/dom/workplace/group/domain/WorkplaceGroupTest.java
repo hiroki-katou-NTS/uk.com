@@ -10,9 +10,13 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup.Require;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.DomainServiceHelper;
 
@@ -26,6 +30,15 @@ public class WorkplaceGroupTest {
 	public void getters() {
 		WorkplaceGroup workplaceGroup = DomainServiceHelper.Helper.DUMMY;
 		NtsAssert.invokeGetters(workplaceGroup);
+	}
+	
+	@Test
+	public void getWpg() {
+		
+		WorkplaceGroup workplaceGroup = WorkplaceGroup.getWpg("01",new WorkplaceGroupCode("0000000001"), 
+				new WorkplaceGroupName("00000000000000000011"), 
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));
+		assertThat(workplaceGroup.getCID().equals("01")).isTrue();
 	}
 	
 	@Test
