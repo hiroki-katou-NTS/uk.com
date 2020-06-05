@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,13 @@ import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
 /**
  * 月別実績の休業
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class LeaveOfMonthly {
+public class LeaveOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 固定休業日数 */
 	private Map<CloseAtr, AggregateLeaveDays> fixLeaveDays;

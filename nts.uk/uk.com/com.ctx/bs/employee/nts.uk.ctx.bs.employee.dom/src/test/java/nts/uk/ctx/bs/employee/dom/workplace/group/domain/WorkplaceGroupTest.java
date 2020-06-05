@@ -2,6 +2,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,15 +49,29 @@ public class WorkplaceGroupTest {
 	}
 	
 	@Test
-	public void getAffWorkplace() {
+	public void getAffWorkplace_empty() {
 		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
 		new Expectations() {
 			{
-				require.getWKPID("0000000000001","01");// dummy
-				result = group;
+				require.getWKPID(group.getCID(),group.getWKPGRPID());// dummy
 			}
 		};
 		
 		assertThat(group.getAffWorkplace(require).isEmpty()).isTrue();
+	}
+	
+
+	@Test
+	public void getAffWorkplace() {
+		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		List<String> lstWpgid = DomainServiceHelper.getLstId();
+		new Expectations() {
+			{
+				require.getWKPID(group.getCID(),group.getWKPGRPID());// dummy
+				result = lstWpgid;
+			}
+		};
+		
+		assertThat(group.getAffWorkplace(require).isEmpty()).isFalse();
 	}
 }

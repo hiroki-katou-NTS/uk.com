@@ -19,22 +19,22 @@
 }
 
 #combobox1 {
-	margin-left: -113px;
+	margin-left: -166px !important;
 	width: 112px;
 }
 
 #correc-text {
-	margin-left: 52px;
-	width: 70px;
+	margin-left: 37px !important;
+	width: 140px !important;
 }
 
 #comment-text {
-	margin-right: 30px;
-    margin-left: -113px;
+	width: 235px;
+    margin-left:-152px !important;
 }
 
 #right-area {
-	float: right;
+	margin-left: 135px;
 	margin-top: -60px;
 }
 
@@ -42,13 +42,17 @@
 	width: 90px;
 }
 
+#text-area-comment{
+	margin-left: -13px;
+}
+
 #first-color-picker {
-	margin-left: 16px;
+	margin-left: 8px  !important;
 }
 
 #item-panel {
 	height: 260px;
-	margin-top: 119px;
+	margin-top: 10px;
 }
 
 .btn_2, .btn_3, .btn_4 {
@@ -81,4 +85,15 @@
 
 .sp-container{
 	left: 130px !important;
+}
+
+.basic-items{
+	width: 380px;
+}
+
+.btn-name{
+	font-size: 25px;
+}
+.btn-name-2{
+	font-size: 16px;
 }

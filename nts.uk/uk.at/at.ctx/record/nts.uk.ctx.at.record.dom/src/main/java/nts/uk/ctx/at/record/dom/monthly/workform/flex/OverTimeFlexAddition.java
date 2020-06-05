@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthly.workform.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * 残業フレックス加算
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class OverTimeFlexAddition {
+public class OverTimeFlexAddition implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 枠NO */
 	private OverTimeFrameNo frameNo;

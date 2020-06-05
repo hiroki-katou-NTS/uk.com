@@ -25,4 +25,7 @@ public class AddDocumentReportCommand {
 	 String layoutReportId;
 	 String missingDocName;
 	 SaveReportInputContainer dataLayout;
+	 boolean fromJhn002;
+	 String agentName;
+	 String agentSid;
 }

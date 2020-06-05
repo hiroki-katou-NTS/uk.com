@@ -1056,6 +1056,10 @@ public class ProgramIdConsts {
 	
 	public static final String CMF007 = "CMF007";
 	
+	/**JCM007*/
+	public static final String JCM007A = "JCM007A";
+	public static final String JCM007Z = "JCM007Z";
+	
 	/** JHC002 */
 	public static final String JHC002A = "JHC002A";
 	public static final String JHC002B = "JHC002B";

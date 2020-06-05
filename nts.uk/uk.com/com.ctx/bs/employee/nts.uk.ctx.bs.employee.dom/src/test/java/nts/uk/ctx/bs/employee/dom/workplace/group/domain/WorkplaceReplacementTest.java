@@ -25,12 +25,12 @@ public class WorkplaceReplacementTest {
 	@Test
 	public void testCheckWplReplaceFalse() {
 		WorkplaceReplacement delete = WorkplaceReplacement.DELETE;
-		assertThat(delete.checkWplReplace() == false).isTrue();
+		assertThat(delete.checkWplReplace() == true).isFalse();
 	}
 	
 	@Test
 	public void testCheckWplReplaceFalse2() {
 		WorkplaceReplacement belongedAnother = WorkplaceReplacement.BELONGED_ANOTHER;
-		assertThat(belongedAnother.checkWplReplace() == false).isTrue();
+		assertThat(belongedAnother.checkWplReplace() == true).isFalse();
 	}
 }

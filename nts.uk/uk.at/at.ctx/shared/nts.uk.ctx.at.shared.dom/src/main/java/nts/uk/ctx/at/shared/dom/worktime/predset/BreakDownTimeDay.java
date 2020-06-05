@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,10 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 @NoArgsConstructor
 @Builder
 // １日の時間内訳
-public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable{
+public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The one day. */
 	// 1日

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.hr.develop.dom.interview.service.InterviewSummary;
 import nts.uk.ctx.hr.shared.dom.adapter.EmployeeInformationImport;
 
 @Builder
@@ -13,4 +14,6 @@ public class DataBeforeReflectResultDto {
 	private List<RetiredEmployeeInfoResult> retiredEmployees;
 	// 社員情報のリスト
 	private List<EmployeeInformationImport> employeeImports;
+	
+	private InterviewSummary interviewSummary;
 }

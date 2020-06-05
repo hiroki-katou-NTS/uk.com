@@ -41,23 +41,24 @@
 								<th class="isMail-appr">#{i18n.getText('KDL030_14')}</th>
 							</tr>
 						</thead>
-						<tbody data-bind="foreach: approvalRootState">
+						<tbody data-bind="foreach: {data :approvalRootState, as: 'loopPhase' }">
 							<!-- 1 フェーズ -->
-							<com:ko bind="$data.listApprovalFrame" tag="foreach">
+							<com:ko-foreach bind="{data : $data.listApprovalFrame, as :'loopFrame'}">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td data-bind="attr: {rowspan: $parent.listApprovalFrame.length}, text: '#{i18n.getText('KDL030_15')}'+$parent.phaseOrder" 
 											class="bg-green phase-app"></td>
 									</com:ko>
-									<!-- 承認者 -->
-									<td data-bind="text: '承認者'+$data.frameOrder" class="order-app bg-green" ></td>
-									<!-- 社員名 -->
-									<td class = "name-app" data-bind="foreach: $data.listApprover">
-										<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
-											<div data-bind="text: $data.dispApproverName"></div>
-										</div>
-									</td>
-									<!-- 状況 -->
+									<com:ko bind= "loopPhase.listApprovalFrame.length = 1" tag ="if">
+										<!-- 承認者 -->
+											<td data-bind="text: $vm.getApproverLabel($data.frameOrder)" class="order-app bg-green" ></td>
+										<!-- 社員名 -->
+										<td class = "name-app" data-bind="foreach: $data.listApprover">
+											<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
+												<div class = "nameApprover" data-bind="text: $data.dispApproverName"></div>
+											</div>
+										</td>
+									</com:ko>		<!-- 状況 -->
 									<td class = "status-app" data-bind="text: approvalAtrName" ></td>
  									<!-- メール送信 -->
  									<td class = "isMail-appr" data-bind="foreach: $data.listApprover">
@@ -76,7 +77,7 @@
  													rowPer1: showButton == false }">#{i18n.getText('KDL030_31')}</div>
 									</td>
 								</tr>
-							</com:ko>
+							</com:ko-foreach>
 						</tbody>
 					</table>
 					</div>

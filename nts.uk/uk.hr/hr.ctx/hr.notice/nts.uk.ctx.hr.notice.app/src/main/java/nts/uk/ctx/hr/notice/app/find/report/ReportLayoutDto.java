@@ -43,6 +43,11 @@ public class ReportLayoutDto {
 	
 	private boolean approve;
 	
+	private String appSid;//申請者社員ID
+	private String appBussinessName;//申請者表示氏名
+	
+	
+	
 	public ReportLayoutDto(){
 		
 		this.classificationItems = new ArrayList<>();
@@ -71,7 +76,7 @@ public class ReportLayoutDto {
 			
 			List<ApprovalPhaseStateForAppDto> listApprovalFrame,
 			
-			boolean release, boolean approve) {
+			boolean release, boolean approve , String appSid , String appBussinessName) {
 		
 		ReportLayoutDto dto = new ReportLayoutDto();
 		
@@ -88,6 +93,10 @@ public class ReportLayoutDto {
 		dto.setRelease(release);
 		
 		dto.setApprove(approve);
+		
+		dto.setAppSid(appSid);
+		
+		dto.setAppBussinessName(appBussinessName);
 		
 		if(reportStartSettingOpt.isPresent()) {
 			

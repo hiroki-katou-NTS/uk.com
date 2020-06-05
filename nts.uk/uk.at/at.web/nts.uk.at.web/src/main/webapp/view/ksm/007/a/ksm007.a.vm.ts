@@ -25,7 +25,7 @@ module nts.uk.at.view.ksm007.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 370,
+                height: 373,
                 selectedMode: 1
             };
 
@@ -78,7 +78,7 @@ module nts.uk.at.view.ksm007.a {
                     self.checkWorkplaceGroupRegisterResult(res)
                     .done(() => {
                         self.options.reloadData.valueHasMutated();
-                        self.options.currentIds(res.wkpGrId);
+                        self.options.currentIds(res.wkpgrpid);
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -130,9 +130,11 @@ module nts.uk.at.view.ksm007.a {
                    dfd.resolve();
                 });
             } else {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                   dfd.resolve();
-                });
+                if (res.resProcessResult) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                       dfd.resolve();
+                    });
+                }
             }
             
             return dfd.promise();
@@ -262,6 +264,7 @@ module nts.uk.at.view.ksm007.a {
             let isIE = /*@cc_on!@*/false || !!document.documentMode;
             if(isIE) {
                 $('#workplace-list').igGrid("option", "height", 289);
+                // $('#multi-list').igGrid("option", "height", 372);
             }
 		}
     }

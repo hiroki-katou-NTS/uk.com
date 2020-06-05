@@ -127,4 +127,39 @@ public class JpaComFlexSettingGetMemento implements ComFlexSettingGetMemento {
 		return monthlyUnits;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * FlexSettingGetMemento#getWeekAveSetting()
+	 */
+	@Override
+	public List<MonthlyUnit> getWeekAveSetting() {
+		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JANUARY),
+				new MonthlyEstimateTime(this.entity.getWeekJanTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.FEBRUARY),
+				new MonthlyEstimateTime(this.entity.getWeekFebTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.MARCH),
+				new MonthlyEstimateTime(this.entity.getWeekMarTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.APRIL),
+				new MonthlyEstimateTime(this.entity.getWeekAprTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.MAY),
+				new MonthlyEstimateTime(this.entity.getWeekMayTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JUNE),
+				new MonthlyEstimateTime(this.entity.getWeekJunTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.JULY),
+				new MonthlyEstimateTime(this.entity.getWeekJulTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.AUGUST),
+				new MonthlyEstimateTime(this.entity.getWeekAugTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.SEPTEMBER),
+				new MonthlyEstimateTime(this.entity.getWeekSepTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.OCTOBER),
+				new MonthlyEstimateTime(this.entity.getWeekOctTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.NOVEMBER),
+				new MonthlyEstimateTime(this.entity.getWeekNovTime())));
+		monthlyUnits.add(new MonthlyUnit(new Month(Month.DECEMBER),
+				new MonthlyEstimateTime(this.entity.getWeekDecTime())));
+		return monthlyUnits;
+	}
 }

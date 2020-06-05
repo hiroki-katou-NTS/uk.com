@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -11,7 +13,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  */
 @Getter
 @Setter
-public class FlexShortDeductTime {
+public class FlexShortDeductTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 年休控除日数 */
 	private AttendanceDaysMonth annualLeaveDeductDays;

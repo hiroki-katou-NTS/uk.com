@@ -80,4 +80,19 @@ public class JpaDefaultSettingSetMemento {
 		kshstFlexLarSet.setSpecDecTime(map.get(Month.DECEMBER));
 	}
 	
+	protected void setWeekSettingToFlexSet(KshstFlexSet kshstFlexLarSet, List<MonthlyUnit> weekAveSetting) {
+		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(weekAveSetting);
+		kshstFlexLarSet.setWeekJanTime(map.get(Month.JANUARY));
+		kshstFlexLarSet.setWeekFebTime(map.get(Month.FEBRUARY));
+		kshstFlexLarSet.setWeekMarTime(map.get(Month.MARCH));
+		kshstFlexLarSet.setWeekAprTime(map.get(Month.APRIL));
+		kshstFlexLarSet.setWeekMayTime(map.get(Month.MAY));
+		kshstFlexLarSet.setWeekJunTime(map.get(Month.JUNE));
+		kshstFlexLarSet.setWeekJulTime(map.get(Month.JULY));
+		kshstFlexLarSet.setWeekAugTime(map.get(Month.AUGUST));
+		kshstFlexLarSet.setWeekSepTime(map.get(Month.SEPTEMBER));
+		kshstFlexLarSet.setWeekOctTime(map.get(Month.OCTOBER));
+		kshstFlexLarSet.setWeekNovTime(map.get(Month.NOVEMBER));
+		kshstFlexLarSet.setWeekDecTime(map.get(Month.DECEMBER));
+	}
 }

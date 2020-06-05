@@ -14,10 +14,12 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggregateTimeSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriodMonths;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetGetMemento;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
  * The Class FlexMonthWorkTimeAggrSetDto.
@@ -41,6 +43,18 @@ public class FlexMonthWorkTimeAggrSetDto {
 	/** The include over time. */
 	private Boolean includeOverTime;
 
+	/** The include holiday work. */
+	private Boolean includeHdwk;
+
+	/** The settlement period. */
+	private Integer settlePeriod;
+
+	/** The start month. */
+	private Integer startMonth;
+
+	/** The period. (settlement period months) */
+	private Integer period;
+	
 	/**
 	 * To domain.
 	 *
@@ -88,8 +102,12 @@ public class FlexMonthWorkTimeAggrSetDto {
 		 */
 		@Override
 		public ShortageFlexSetting getInsufficSet() {
-			return ShortageFlexSetting.of(EnumAdaptor.valueOf(this.dto.getInsufficSet(),
-					CarryforwardSetInShortageFlex.class));
+			return ShortageFlexSetting.of(
+					EnumAdaptor.valueOf(this.dto.getInsufficSet(), CarryforwardSetInShortageFlex.class),
+					EnumAdaptor.valueOf(this.dto.getSettlePeriod(), SettlePeriod.class),
+					new Month(this.dto.startMonth),
+					EnumAdaptor.valueOf(this.dto.getPeriod(), SettlePeriodMonths.class)
+					);
 		}
 
 		/*
@@ -111,10 +129,20 @@ public class FlexMonthWorkTimeAggrSetDto {
 		 * FlexMonthWorkTimeAggrSetGetMemento#getIncludeOverTime()
 		 */
 		@Override
-		public NotUseAtr getIncludeOverTime() {
-			return EnumAdaptor.valueOf((this.dto.getIncludeOverTime().booleanValue()) ? 1 : 0, NotUseAtr.class);
+		public Boolean getIncludeOverTime() {
+			return this.dto.getIncludeOverTime();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.
+		 * FlexMonthWorkTimeAggrSetGetMemento#getIncludeIllegalHdwk()
+		 */
+		@Override
+		public Boolean getIncludeIllegalHdwk() {
+			return this.dto.getIncludeHdwk();
+		}
 	}
 
 }

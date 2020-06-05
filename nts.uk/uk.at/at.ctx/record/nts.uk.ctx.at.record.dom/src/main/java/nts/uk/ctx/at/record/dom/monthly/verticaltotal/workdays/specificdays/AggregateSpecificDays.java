@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
 
 /**
  * 集計特定日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class AggregateSpecificDays {
+public class AggregateSpecificDays implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 特定日項目No */
 	private SpecificDateItemNo specificDayItemNo;

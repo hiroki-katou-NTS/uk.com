@@ -18,11 +18,11 @@
 			<com:scriptfile path="kdp002.b.start.js" />
 			<com:scriptfile path="kdp002.b.service.js" />
 			<com:EnumScript>
-				nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType
 			</com:EnumScript>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.stamp.management.StampPageName
-				nts.uk.ctx.at.record.dom.stamp.management.PageComment
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -79,7 +79,7 @@
 							<div id="text-b5-2"
 									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_41')}</div>
 							<!-- B5_2 -->
-							<span id="label-b5-2" data-bind="text: currentStampData().stampNumber"></span>
+							<span id="label-b5-2" data-bind="text: currentStampData().cardNumberSupport"></span>
 							</div>
 							</td>
 						</tr>

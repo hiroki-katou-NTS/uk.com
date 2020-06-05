@@ -122,7 +122,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 		
 		boolean checkProcessResult = false;
 		if(lstReplaceAdd.size() < 1) {
-			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults);
+			return new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults, group.getWKPGRPID());
 		}
 		
 		// 9: 職場グループ所属情報の永続化処理 = 処理結果リスト : filter $.永続化処理.isPresent
@@ -142,7 +142,7 @@ public class RegisterWorkplaceGroupCommandHandler extends CommandHandlerWithResu
 			});
 		});
 		
-		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults);
+		ResWorkplaceGroupResult groupResult = new ResWorkplaceGroupResult(checkProcessResult, workplaceParams, resultProcessData, groupResults, group.getWKPGRPID());
 		
 		return groupResult;
 	}

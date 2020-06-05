@@ -504,7 +504,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		if (lstWkpId.isEmpty() ||startDate == null  || endDate == null)
 			return new ArrayList<>();
 
-		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(AppContexts.user().companyId());
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.getAllEmpNotDeleteByCid(AppContexts.user().companyId());
 
 		Map<String, String> mapSidPid = listEmpDomain.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
@@ -515,25 +515,8 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 			return new ArrayList<>();
 
 		List<AffCompanyHist> listAffCompanyHist = new ArrayList<>();
-
-		// vidu listSid = 25100
-		if (listSid.size() > 1000) {
-			int max = listSid.size() / 1000;
-			for (int i = 0; i <= max; i++) {
-				if (i != max) {
-					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(i * 1000, i * 1000 + 999));
-					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
-					listAffCompanyHist.addAll(lstAffCompanyHist);
-				} else {
-					ArrayList<String> subListSid = new ArrayList<String>(listSid.subList(max * 1000, listSid.size()));
-					List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(subListSid);
-					listAffCompanyHist.addAll(lstAffCompanyHist);
-				}
-			}
-
-		} else {
-			listAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
-		}
+		List<AffCompanyHist> lstAffCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployees(listSid);
+		listAffCompanyHist.addAll(lstAffCompanyHist);
 
 		Map<String, AffCompanyHist> mapPidAndAffCompanyHist = listAffCompanyHist.stream()
 				.collect(Collectors.toMap(x -> x.getPId(), x -> x));
@@ -557,7 +540,6 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 								}
 							});
 						}
-
 					}
 				});
 			}else{

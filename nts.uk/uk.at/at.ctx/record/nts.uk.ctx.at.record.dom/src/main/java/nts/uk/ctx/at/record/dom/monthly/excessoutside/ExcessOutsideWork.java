@@ -1,16 +1,21 @@
 package nts.uk.ctx.at.record.dom.monthly.excessoutside;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 時間外超過
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @NoArgsConstructor
-public class ExcessOutsideWork {
+public class ExcessOutsideWork implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 内訳NO */
 	private int breakdownNo;

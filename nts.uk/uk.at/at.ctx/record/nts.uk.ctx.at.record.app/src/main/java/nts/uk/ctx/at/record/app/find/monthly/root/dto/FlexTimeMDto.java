@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeCurrentMonth;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -41,7 +42,8 @@ public class FlexTimeMDto implements ItemConst {
 		return FlexTime.of(flexTime == null ? new TimeMonthWithCalculationAndMinus() : flexTime.toDomainWithMinus(),
 				new AttendanceTimeMonth(beforeFlexTime),
 				new AttendanceTimeMonthWithMinus(legalFlexTime),
-				new AttendanceTimeMonthWithMinus(illegalFlexTime));
+				new AttendanceTimeMonthWithMinus(illegalFlexTime),
+				new FlexTimeCurrentMonth());
 	}
 	
 	public static FlexTimeMDto from(FlexTime domain) {

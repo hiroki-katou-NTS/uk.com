@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalculationMethodForNormalWorkAndDeformedLaborOverTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -19,7 +22,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 // 休暇分を含める就業計算詳細設定
 @NoArgsConstructor
 @Getter
-public class EmploymentCalcDetailedSetIncludeVacationAmount extends DomainObject{
+public class EmploymentCalcDetailedSetIncludeVacationAmount extends DomainObject implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The addition. */
 	// 加算する
@@ -36,6 +42,14 @@ public class EmploymentCalcDetailedSetIncludeVacationAmount extends DomainObject
 	/** The predetermined deficiency of flex. */
 	// フレックスの所定不足時
 	private Optional<CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork> predeterminedDeficiencyOfFlex;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 
 	/**
 	 * Instantiates a new employment calc detailed set include vacation amount.

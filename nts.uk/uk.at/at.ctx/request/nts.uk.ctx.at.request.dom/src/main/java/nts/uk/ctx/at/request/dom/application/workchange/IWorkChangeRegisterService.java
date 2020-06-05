@@ -11,11 +11,12 @@ public interface IWorkChangeRegisterService {
 	
 	/**
 	 * ドメインモデル「勤務変更申請設定」の新規登録をする
+	 * 勤務変更申請（新規）登録処理
 	 * @param workChange: 勤務変更申請設定
 	 * @param app: 申請
 	 * @return List approval email.
 	 */
-    ProcessResult registerData(AppWorkChange workChange, Application_New app, boolean checkOver1Year, List<GeneralDate> lstDateHd);
+    ProcessResult registerData(AppWorkChange workChange, Application_New app, List<GeneralDate> lstDateHd);
 	/**
 	 * アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
 	 * 就業時間

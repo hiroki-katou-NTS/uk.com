@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp002.a {
             stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
-           
+            serverTime: KnockoutObservable<any> = ko.observable('');
             constructor() {
                 let self = this;
             }
@@ -29,6 +29,8 @@ module nts.uk.at.view.kdp002.a {
                         stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
+                        // add correction interval
+                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -95,25 +97,27 @@ module nts.uk.at.view.kdp002.a {
         
             public clickBtn1(vm, layout) {
                 let button = this;
-                let data = {
-                    datetime: moment().format('YYYY/MM/DD HH:mm:ss'),
-                    authcMethod:0,
-                    stampMeans:3,
-                    reservationArt: button.btnReservationArt,
-                    changeHalfDay: button.changeHalfDay,
-                    goOutArt: button.goOutArt,
-                    setPreClockArt: button.setPreClockArt,
-                    changeClockArt: button.changeClockArt,
-                    changeCalArt: button.changeCalArt
-                };
-                service.stampInput(data).done((res) => {
-                    if(vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-                        vm.openScreenC(button, layout);
-                    } else {
-                        vm.openScreenB(button, layout);
-                    }
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
+                    let data = {
+                        datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                        authcMethod:0,
+                        stampMeans:3,
+                        reservationArt: button.btnReservationArt,
+                        changeHalfDay: button.changeHalfDay,
+                        goOutArt: button.goOutArt,
+                        setPreClockArt: button.setPreClockArt,
+                        changeClockArt: button.changeClockArt,
+                        changeCalArt: button.changeCalArt
+                    };
+                    service.stampInput(data).done((res) => {
+                        if(vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9 ) ) {
+                            vm.openScreenC(button, layout);
+                        } else {
+                            vm.openScreenB(button, layout);
+                        }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
                 });
             }
 
@@ -153,10 +157,25 @@ module nts.uk.at.view.kdp002.a {
                     if(res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
                         nts.uk.ui.windows.setShared('KDP010_2T', res, true);
                         nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                            
+                            let returnData =  nts.uk.ui.windows.getShared('KDP010_T');
+                            if(!returnData.isClose && returnData.errorDate) {
+                                console.log(returnData);
+                                nts.uk.request.jump("/view/kaf/005/a/index.xhtml?a=0", {appDate: returnData.errorDate});
+                            }
                         });
                     }
                 });
+            }
+
+            public reCalGridWidthHeight() {
+                // let stampHeight = $('#stamp-date').height() + 
+                //                 $('#stamp-time').height() + 
+                //                 $('#stamp-desc').height() + 
+                //                 $('#tab-panel').height();
+                let windowHeight = window.innerHeight - 250;
+                $('#stamp-history-list').igGrid("option", "height", windowHeight);
+                $('#time-card-list').igGrid("option", "height", windowHeight);
+                $('#content-area').css('height', windowHeight + 109);
             }
         
         }

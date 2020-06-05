@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class IrregularPeriodCarryforwardsTimeOfCurrent {
+public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 時間 */
 	private AttendanceTimeMonthWithMinus time;

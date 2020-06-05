@@ -26,9 +26,13 @@ public abstract class KrcstFlexMCalSet extends UkJpaEntity {
 	@Column(name = "INSUFFIC_SET")
 	private int insufficSet;
 
-	/** The include ot. */
+	/** The include over time. */
 	@Column(name = "INCLUDE_OT")
 	private int includeOt;
+
+	/** The include holiday work. */
+	@Column(name = "INCLUDE_HDWK")
+	private int includeHdwk;
 
 	/** The aggr method. */
 	@Column(name = "AGGR_METHOD")
@@ -38,4 +42,15 @@ public abstract class KrcstFlexMCalSet extends UkJpaEntity {
 	@Column(name = "LEGAL_AGGR_SET")
 	private int legalAggrSet;
 
+	/** The settlement period. */
+	@Column(name = "SETTLE_PERIOD")
+	private int settlePeriod;
+	
+	/** The start month. */
+	@Column(name = "START_MONTH")
+	private int startMonth;
+	
+	/** The settlement period months. */
+	@Column(name = "SETTLE_PERIOD_MON")
+	private int settlePeriodMon;
 }

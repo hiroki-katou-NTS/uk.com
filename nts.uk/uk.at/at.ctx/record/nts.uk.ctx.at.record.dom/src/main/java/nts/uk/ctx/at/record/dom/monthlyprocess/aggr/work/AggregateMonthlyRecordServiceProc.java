@@ -434,7 +434,8 @@ public class AggregateMonthlyRecordServiceProc {
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
 			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+					monthPeriod, Optional.empty(), Optional.empty(), Optional.empty(),
+					this.companySets, this.employeeSets,
 					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
 			if (agreementTimeOpt.isPresent()){
 				val agreementTime = agreementTimeOpt.get();
@@ -465,7 +466,8 @@ public class AggregateMonthlyRecordServiceProc {
 					MonthlyCalculation prevCalculationForAgreement = new MonthlyCalculation();
 					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTime(
 							this.companyId, this.employeeId, prevYM, this.closureId, this.closureDate,
-							prevPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+							prevPeriod, Optional.empty(), Optional.empty(), Optional.empty(),
+							this.companySets, this.employeeSets,
 							this.monthlyCalculatingDailys, prevOldDatas, Optional.empty(), this.repositories);
 					if (prevAgreTimeOpt.isPresent()){
 						val prevAgreTime = prevAgreTimeOpt.get();
@@ -704,7 +706,7 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 月の計算
 		monthlyCalculation.aggregate(datePeriod, MonthlyAggregateAtr.MONTHLY,
-				Optional.empty(), Optional.empty(), this.repositories);
+				Optional.empty(), Optional.empty(), Optional.empty(), this.repositories);
 		
 		ConcurrentStopwatches.stop("12220:月の計算：");
 		ConcurrentStopwatches.start("12230:縦計：");
@@ -1323,6 +1325,7 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		if (aggrResult.getAnnualLeave().isPresent()){
 			val asOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfPeriodEnd();
+			val asOfStartNextDayOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfStartNextDayOfPeriodEnd();
 			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
 			
 			// 年休月別残数データを更新
@@ -1337,14 +1340,14 @@ public class AggregateMonthlyRecordServiceProc {
 					remainingNumber.getAnnualLeaveWithMinus(),
 					remainingNumber.getHalfDayAnnualLeaveNoMinus(),
 					remainingNumber.getHalfDayAnnualLeaveWithMinus(),
-					asOfPeriodEnd.getGrantInfo(),
+					asOfStartNextDayOfPeriodEnd.getGrantInfo(),
 					remainingNumber.getTimeAnnualLeaveNoMinus(),
 					remainingNumber.getTimeAnnualLeaveWithMinus(),
 					AnnualLeaveAttdRateDays.of(
 							new MonthlyDays(daysForCalcAttdRate.getWorkingDays()),
 							new MonthlyDays(daysForCalcAttdRate.getPrescribedDays()),
 							new MonthlyDays(daysForCalcAttdRate.getDeductedDays())),
-					asOfPeriodEnd.isAfterGrantAtr());
+					asOfStartNextDayOfPeriodEnd.isAfterGrantAtr());
 			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
 			
 			// 年休エラーから月別残数エラー一覧を作成する
@@ -1355,12 +1358,13 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		if (aggrResult.getReserveLeave().isPresent()){
 			val asOfPeriodEnd = aggrResult.getReserveLeave().get().getAsOfPeriodEnd();
+			val asOfStartNextDayOfPeriodEnd = aggrResult.getReserveLeave().get().getAsOfStartNextDayOfPeriodEnd();
 			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
 			
 			// 積立年休月別残数データを更新
 			ReserveLeaveGrant reserveLeaveGrant = null;
-			if (asOfPeriodEnd.getGrantInfo().isPresent()){
-				reserveLeaveGrant = ReserveLeaveGrant.of(asOfPeriodEnd.getGrantInfo().get().getGrantDays());
+			if (asOfStartNextDayOfPeriodEnd.getGrantInfo().isPresent()){
+				reserveLeaveGrant = ReserveLeaveGrant.of(asOfStartNextDayOfPeriodEnd.getGrantInfo().get().getGrantDays());
 			}
 			RsvLeaRemNumEachMonth rsvLeaRemNum = RsvLeaRemNumEachMonth.of(
 					this.employeeId,
@@ -1372,7 +1376,7 @@ public class AggregateMonthlyRecordServiceProc {
 					remainingNumber.getReserveLeaveNoMinus(),
 					remainingNumber.getReserveLeaveWithMinus(),
 					Optional.ofNullable(reserveLeaveGrant),
-					asOfPeriodEnd.isAfterGrantAtr());
+					asOfStartNextDayOfPeriodEnd.isAfterGrantAtr());
 			this.aggregateResult.getRsvLeaRemNumEachMonthList().add(rsvLeaRemNum);
 			
 			// 積立年休エラーから月別残数エラー一覧を作成する
