@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * 打刻の申請促す設定
+ *    打刻の申請促す設定
  * @author phongtq
  *
  */
@@ -34,4 +34,5 @@ public class StampPromptApplication  implements DomainAggregate {
 		// List<StampRecordDis> list = this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
 		return null; // this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
 	}
+	
 }
