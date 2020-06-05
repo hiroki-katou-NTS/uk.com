@@ -102,7 +102,7 @@ public class Stamp implements DomainAggregate {
 	 * @param locationInfor
 	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, Optional<StampLocationInfor> locationInfor) {
+			StampType type, RefectActualResult refActualResults, StampLocationInfor locationInfor) {
 		super();
 		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
@@ -111,7 +111,7 @@ public class Stamp implements DomainAggregate {
 		this.type = type;
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = false;
-		this.locationInfor = locationInfor;
+		this.locationInfor = Optional.ofNullable(locationInfor);
 	}
 
 	public void setAttendanceTime(AttendanceTime attendanceTime) {

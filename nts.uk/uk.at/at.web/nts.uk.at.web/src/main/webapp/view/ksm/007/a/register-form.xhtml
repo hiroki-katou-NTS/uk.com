@@ -1,0 +1,82 @@
+<div id="register-form">
+  <!-- A4 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupCode', required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_6')}
+    </div>
+
+    <input
+      tabindex="5"
+      class="inputRequired"
+      id="requiredCode"
+      data-bind="ntsTextEditor: {	
+name: '#[KSM007_6]',
+constraint: 'WorkplaceGroupCode',
+value: registerForm().workplaceGroupCd,
+option: { width: '120px', textalign: 'left' },
+enable: registerForm().newMode,
+required: true}"
+    />
+  </div>
+  <!-- A5 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: { constraint: 'WorkplaceGroupName', required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_7')}
+    </div>
+    <input
+      tabindex="6"
+      id="requiredName"
+      data-bind="ntsTextEditor: {	
+name: '#[KSM007_7]',
+value: registerForm().workplaceGroupName,
+constraint: 'WorkplaceGroupName',
+option: { width: '222px', textalign: 'left' },
+required: true}"
+    />
+  </div>
+  <!-- A6 -->
+  <div class="valign-center control-group">
+    <div
+      data-bind="ntsFormLabel: {required: true, enable: true}"
+    >
+      #{i18n.getText('KSM007_10')}
+    </div>
+    <div
+      data-bind="ntsRadioBoxGroup: {
+                options: registerForm().workplaceGroupTypes,
+                optionsValue: 'value',
+                optionsText: 'name',
+                value: registerForm().selectedWkpType,
+                enable: registerForm().newMode }"
+    ></div>
+  </div>
+
+  <!-- A7 -->
+  <div class="valign-center control-group">
+    <button class="small" tabindex="8" data-bind="click: openDialogCDL008">
+      #{i18n.getText('KSM007_11')}
+    </button>
+    <button class="small" tabindex="9" data-bind="click: removeWorkplace">
+      #{i18n.getText('KSM007_12')}
+    </button>
+  </div>
+  <!-- A8 -->
+  <div>
+    <table
+      id="workplace-list"
+      data-bind="ntsGridList: {
+                height: 281,
+                width: 650,
+                dataSource: registerForm().workplaces,
+                optionsValue: 'workplaceId',
+                columns: registerForm().gridColumns,
+                multiple: true,
+                value: registerForm().selectedWorkplaces
+            }"
+    ></table>
+  </div>
+</div>

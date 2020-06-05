@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.shr.com.i18n.TextResource;
@@ -58,6 +59,27 @@ public class StampType implements DomainValue {
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
+	}
+	
+	/**
+	 * [C-1] 打刻種類
+	 * @param changeHalfDay
+	 * @param goOutArt
+	 * @param setPreClockArt
+	 * @param changeClockArt
+	 * @param changeCalArt
+	 */
+	public static StampType getStampType(Boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
+			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
+		if(changeClockArt != null && changeClockArt.value == ChangeClockArt.GO_OUT.value && goOutArt == null) {
+			throw new BusinessException("Msg_1704"); 
+		}
+		return new StampType(
+				changeHalfDay, 
+				changeClockArt != null ? changeClockArt.value == ChangeClockArt.GOING_TO_WORK.value ? null : goOutArt : null, 
+				setPreClockArt, 
+				changeClockArt, 
+				changeCalArt);
 	}
 	
 	/**

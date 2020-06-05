@@ -420,7 +420,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
 					+ " from BSYMT_EMP_DTA_MNG_INFO"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
-					+ " and CID = ? ORDER BY SCD ASC";
+					+ " and CID = ? and DEL_STATUS_ATR = 0 ORDER BY SCD ASC";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
@@ -702,7 +702,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 //				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 		List<EmployeeDataMngInfo> data = new ArrayList<>();
 			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO "
-					  + " WHERE CID = ?";
+					  + " WHERE CID = ? AND DEL_STATUS_ATR = 0 ";
 					  
 				try(PreparedStatement statement = this.connection().prepareStatement(sql)){
 					statement.setString(1, companyId);

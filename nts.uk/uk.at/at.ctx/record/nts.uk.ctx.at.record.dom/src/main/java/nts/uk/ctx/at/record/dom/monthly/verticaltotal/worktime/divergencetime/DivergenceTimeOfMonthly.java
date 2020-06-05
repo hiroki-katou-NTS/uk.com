@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,10 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
  * @author shuichi_ishida
  */
 @Getter
-public class DivergenceTimeOfMonthly {
+public class DivergenceTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 乖離時間 */
 	private Map<Integer, AggregateDivergenceTime> divergenceTimeList;

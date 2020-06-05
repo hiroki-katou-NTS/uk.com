@@ -16,7 +16,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ *勤務実績の固定抽出条件 
+ *
+ */
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WK_RECORD_EXTRA_CON")

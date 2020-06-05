@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeCurrentMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
@@ -31,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 月別実績のフレックス時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Entity
 @Table(name = "KRCDT_MON_FLEX_TIME")
@@ -85,6 +86,10 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	@Column(name = "FLEX_CRYFWD_SHT_TIME")
 	public int flexCarryforwardShortageTime; 
 	
+	/** フレックス繰越不可時間 */
+	@Column(name = "FLEX_NOT_CRYFWD_TIME")
+	public int flexNotCarryforwardTime; 
+	
 	/** 超過フレ区分 */
 	@Column(name = "EXCESS_FLEX_ATR")
 	public int excessFlexAtr; 
@@ -108,6 +113,30 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	/** 控除前のフレックス不足時間 */
 	@Column(name = "SHORT_TIME_BFR_DEDUCT")
 	public int shotTimeBeforeDeduct; 
+	
+	/** 当月精算フレックス時間 */
+	@Column(name = "FLEX_SETTLE_TIME")
+	public int flexSettleTime;
+	
+	/** フレックス時間：当月フレックス時間：フレックス時間 */
+	@Column(name = "FLEX_TIME_CUR")
+	public int flexTimeCurrent;
+	/** フレックス時間：当月フレックス時間：基準時間 */
+	@Column(name = "STD_TIME_CUR")
+	public int standardTimeCurrent;
+	/** フレックス時間：当月フレックス時間：週平均超過時間 */
+	@Column(name = "EXC_WA_TIME_CUR")
+	public int excessWeekAveTimeCurrent;
+	
+	/** 時間外超過：当月フレックス時間：フレックス時間 */
+	@Column(name = "FLEX_TIME_CUR_OT")
+	public int flexTimeCurrentOT;
+	/** 時間外超過：当月フレックス時間：基準時間 */
+	@Column(name = "STD_TIME_CUR_OT")
+	public int standardTimeCurrentOT;
+	/** 時間外超過：当月フレックス時間：週平均超過時間 */
+	@Column(name = "EXC_WA_TIME_CUR_OT")
+	public int excessWeekAveTimeCurrentOT;
 	
 	/** マッチング：月別実績の勤怠時間 */
 	@OneToOne
@@ -141,21 +170,31 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 								new AttendanceTimeMonthWithMinus(this.calcFlexTime)),
 						new AttendanceTimeMonth(this.beforeFlexTime),
 						new AttendanceTimeMonthWithMinus(this.legalFlexTime),
-						new AttendanceTimeMonthWithMinus(this.illegalFlexTime)),
+						new AttendanceTimeMonthWithMinus(this.illegalFlexTime),
+						FlexTimeCurrentMonth.of(
+								new AttendanceTimeMonthWithMinus(this.flexTimeCurrent),
+								new AttendanceTimeMonth(this.standardTimeCurrent),
+								new AttendanceTimeMonth(this.excessWeekAveTimeCurrent))),
 				new AttendanceTimeMonth(this.flexExcessTime),
 				new AttendanceTimeMonth(this.flexShortageTime),
 				FlexCarryforwardTime.of(
+						new AttendanceTimeMonthWithMinus(this.flexCarryforwardTime),
 						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
-						new AttendanceTimeMonth(this.flexCarryforwardTime),
-						new AttendanceTimeMonth(this.flexCarryforwardShortageTime)),
+						new AttendanceTimeMonth(this.flexCarryforwardShortageTime),
+						new AttendanceTimeMonth(this.flexNotCarryforwardTime)),
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(this.excessFlexAtr, ExcessFlexAtr.class),
 						new AttendanceTimeMonth(this.principleTime),
-						new AttendanceTimeMonth(this.forConvenienceTime)),
+						new AttendanceTimeMonth(this.forConvenienceTime),
+						FlexTimeCurrentMonth.of(
+								new AttendanceTimeMonthWithMinus(this.flexTimeCurrentOT),
+								new AttendanceTimeMonth(this.standardTimeCurrentOT),
+								new AttendanceTimeMonth(this.excessWeekAveTimeCurrentOT))),
 				FlexShortDeductTime.of(
 						new AttendanceDaysMonth(this.annualLeaveDeductDays),
 						new AttendanceTimeMonth(this.absenceDeductTime),
-						new AttendanceTimeMonth(this.shotTimeBeforeDeduct)));
+						new AttendanceTimeMonth(this.shotTimeBeforeDeduct)),
+				new AttendanceTimeMonthWithMinus(this.flexSettleTime));
 	}
 	
 	/**
@@ -192,14 +231,22 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 		this.illegalFlexTime = flexTime.getIllegalFlexTime().v();
 		this.flexExcessTime = domain.getFlexExcessTime().v();
 		this.flexShortageTime = domain.getFlexShortageTime().v();
-		this.flexCarryforwardWorkTime = flexCarryForwardTime.getFlexCarryforwardWorkTime().v();
 		this.flexCarryforwardTime = flexCarryForwardTime.getFlexCarryforwardTime().v();
+		this.flexCarryforwardWorkTime = flexCarryForwardTime.getFlexCarryforwardWorkTime().v();
 		this.flexCarryforwardShortageTime = flexCarryForwardTime.getFlexCarryforwardShortageTime().v();
+		this.flexNotCarryforwardTime = flexCarryForwardTime.getFlexNotCarryforwardTime().v();
 		this.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		this.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		this.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
 		this.annualLeaveDeductDays = flexShortDeductTime.getAnnualLeaveDeductDays().v();
 		this.absenceDeductTime = flexShortDeductTime.getAbsenceDeductTime().v();
 		this.shotTimeBeforeDeduct = flexShortDeductTime.getFlexShortTimeBeforeDeduct().v();
+		this.flexSettleTime = domain.getFlexSettleTime().v();
+		this.flexTimeCurrent = flexTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.standardTimeCurrent = flexTime.getFlexTimeCurrentMonth().getStandardTime().v();
+		this.excessWeekAveTimeCurrent = flexTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
+		this.flexTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getFlexTime().v();
+		this.standardTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getStandardTime().v();
+		this.excessWeekAveTimeCurrentOT = flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth().getExcessWeekAveTime().v();
 	}
 }

@@ -74,9 +74,9 @@ public class GetListWorkplacesByEmpsService {
 		List<String> listWplId = new ArrayList<>();
 		
 		// 	$基準日 = require.当月期間を取得する(締めID) map $.終了年月日
-		ClosureTime closureTime = require.getCurrentMonthPeriod(closureId);
-		if (closureTime != null) {
-			GeneralDate endDate = closureTime.getEnd();
+		Optional<ClosureTime> closureTime = require.getCurrentMonthPeriod(closureId);
+		if (closureTime.isPresent()) {
+			GeneralDate endDate = closureTime.get().getEnd();
 			listWplId = GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, endDate);
 		}
 		return listWplId;
@@ -92,7 +92,7 @@ public class GetListWorkplacesByEmpsService {
 		/**
 		 * [R-2] 当月期間を取得する
 		 */
-		ClosureTime getCurrentMonthPeriod(Integer closureId);
+		Optional<ClosureTime> getCurrentMonthPeriod(Integer closureId);
 		
 	}
 	

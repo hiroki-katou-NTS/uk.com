@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -22,7 +24,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeH
 @NoArgsConstructor
 @Getter
 // 変形労働勤務の加算設定
-public class WorkDeformedLaborAdditionSet extends AggregateRoot{
+public class WorkDeformedLaborAdditionSet extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
+	
 	/** 会社ID */
 	private String companyId;
 	

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Getter
-public class SpecialHolidayUseTimeOfMonthly implements Cloneable {
+public class SpecialHolidayUseTimeOfMonthly implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;

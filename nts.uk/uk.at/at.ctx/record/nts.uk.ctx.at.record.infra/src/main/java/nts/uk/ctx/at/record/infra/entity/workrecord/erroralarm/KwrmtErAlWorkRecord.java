@@ -80,7 +80,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author hungnm
- *
+ *日別実績のエラーアラーム
  */
 @AllArgsConstructor
 @NoArgsConstructor

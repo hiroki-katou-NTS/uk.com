@@ -21,8 +21,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetEmpStampDataService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataOfEmployees;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -48,23 +49,25 @@ public class DisplayScreenStampingResultFinder {
 	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod) {
 		String employeeId = AppContexts.user().employeeId();
 		List<String> listWorkLocationCode = new ArrayList<>();
-		List<StampDataOfEmployees> listStampDataOfEmployees = new ArrayList<>();
+		List<EmployeeStampInfo> listStampDataOfEmployees = new ArrayList<>();
 		List<DisplayScreenStampingResultDto> res = new ArrayList<>();
 		// DS 社員の打刻データを取得する
 		// 取得する(@Require, 社員ID, 年月日) 社員の打刻データ
-		GetEmpStampDataService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository,
+		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository,
 				stampDakokuRepository);
 		for (GeneralDate date : datePerriod.datesBetween()) {
-			Optional<StampDataOfEmployees> optStampDataOfEmployees = GetEmpStampDataService.get(require, employeeId,
+			Optional<EmployeeStampInfo> optStampDataOfEmployees = GetListStampEmployeeService.get(require, employeeId,
 					date);
 			if (optStampDataOfEmployees.isPresent()) {
 				val stamp = optStampDataOfEmployees.get();
 				listStampDataOfEmployees.add(stamp);
 				//// Get distinct WorkLocationCD
-				val listStamp = stamp.getListStamp();
+				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
-					val workLocationCD = item.getRefActualResults().getWorkLocationCD();
-					listWorkLocationCode.add(workLocationCD.get().v());
+					if(item.getStamp().isPresent()) {
+						val workLocationCD = item.getStamp().get().getRefActualResults().getWorkLocationCD();
+						listWorkLocationCode.add(workLocationCD.get().v());						
+					}
 				}
 
 			}
@@ -76,22 +79,31 @@ public class DisplayScreenStampingResultFinder {
 		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(),
 				listWorkLocationCode);
 
-		for (StampDataOfEmployees stampDataOfEmployees : listStampDataOfEmployees) {
-			val workLocationCode = stampDataOfEmployees.getListStamp().get(0).getRefActualResults().getWorkLocationCD()
-					.get();
-			val optWorkLocation = listWorkLocation.stream()
-					.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-			val workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
-
+		for (EmployeeStampInfo stampDataOfEmployees : listStampDataOfEmployees) {
+			String workLocationName = ""; 
+			if(!stampDataOfEmployees.getListStampInfoDisp().isEmpty()){
+				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp()
+						.get(0);
+				if(info.getStamp().isPresent()) {
+					val workLocationCode = info
+							.getStamp()
+							.get().getRefActualResults().getWorkLocationCD()
+							.get();
+					val optWorkLocation = listWorkLocation.stream()
+							.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+				}
+			}
+			
 			DisplayScreenStampingResultDto data = new DisplayScreenStampingResultDto(workLocationName,
 					new StampDataOfEmployeesDto(stampDataOfEmployees));
-			res.add(data);
+			res.add(data);		
 		}
 		return res;
 	}
 
 	@AllArgsConstructor
-	private static class RequireImpl implements GetEmpStampDataService.Require {
+	private static class RequireImpl implements GetListStampEmployeeService.Require {
 		@Inject
 		private StampCardRepository stampCardRepository;
 		@Inject

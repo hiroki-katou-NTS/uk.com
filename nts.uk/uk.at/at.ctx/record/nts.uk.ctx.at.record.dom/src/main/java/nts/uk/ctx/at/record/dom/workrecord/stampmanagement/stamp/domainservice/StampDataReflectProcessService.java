@@ -53,14 +53,12 @@ public class StampDataReflectProcessService {
 	private static Optional<AtomTask> automaticallyBook(StampRecord stampRecord, Optional<Stamp> stamp) {
 		/*
 		 * if(stampRecord.getRevervationAtr() == ReservationArt.NONE ) { //TODO chờ hàm
-		 * gì đó được viết bởi đội khác, để tạm là option 
-		 * return Optional.empty(); }
+		 * gì đó được viết bởi đội khác, để tạm là option return Optional.empty(); }
 		 * 
 		 * if(!stamp.isPresent()) { return Optional.empty(); }
 		 * 
 		 * if(stamp.get().getType().checkBookAuto()) { //TODO chờ hàm gì đó được viết
-		 * bởi đội khác, để tạm là option 
-		 * return Optional.empty(); }
+		 * bởi đội khác, để tạm là option return Optional.empty(); }
 		 */
 		
 		return Optional.empty();

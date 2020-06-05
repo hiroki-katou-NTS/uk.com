@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.totalcount;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class TotalCountByPeriod implements Cloneable {
+public class TotalCountByPeriod implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 回数集計 */
 	private Map<Integer, TotalCount> totalCountList;

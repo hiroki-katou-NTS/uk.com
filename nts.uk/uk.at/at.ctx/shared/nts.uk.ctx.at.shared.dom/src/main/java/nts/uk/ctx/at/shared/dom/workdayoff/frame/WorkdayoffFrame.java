@@ -36,6 +36,10 @@ public class WorkdayoffFrame extends AggregateRoot{
 	//休出枠名称
 	private WorkdayoffFrameName workdayoffFrName;
 	
+	/** The role */
+	//役割
+	private WorkdayoffFrameRole role;
+	
 	/**
 	 * Instantiates a new workdayoff frame.
 	 *
@@ -47,6 +51,7 @@ public class WorkdayoffFrame extends AggregateRoot{
 		this.useClassification = memento.getUseClassification();
 		this.transferFrName = memento.getTransferFrameName();
 		this.workdayoffFrName = memento.getWorkdayoffFrameName();
+		this.role = memento.getRole();
 	}
 
 	/**
@@ -60,6 +65,7 @@ public class WorkdayoffFrame extends AggregateRoot{
 		memento.setUseClassification(this.useClassification);
 		memento.setTransferFrameName(this.transferFrName);
 		memento.setWorkdayoffFrameName(this.workdayoffFrName);
+		memento.setRole(role);
 	}
 	
 	/*

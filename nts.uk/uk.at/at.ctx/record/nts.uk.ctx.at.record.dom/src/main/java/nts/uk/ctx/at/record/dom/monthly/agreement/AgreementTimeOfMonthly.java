@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -18,7 +21,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
  * @author shuichi_ishida
  */
 @Getter
-public class AgreementTimeOfMonthly {
+public class AgreementTimeOfMonthly implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 36協定時間 */
 	@Setter
@@ -37,6 +43,14 @@ public class AgreementTimeOfMonthly {
 	/** 確定情報用エラーメッセージ */
 	@Setter
 	private String confirmedErrorMessage;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ

@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-
+/**
+ *カテゴリ別期間 
+ *
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

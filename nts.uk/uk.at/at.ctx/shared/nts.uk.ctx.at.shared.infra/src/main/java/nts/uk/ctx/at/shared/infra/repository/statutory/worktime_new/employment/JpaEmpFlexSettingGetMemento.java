@@ -71,4 +71,12 @@ public class JpaEmpFlexSettingGetMemento extends JpaDefaultSettingGetMemento imp
 	public List<MonthlyUnit> getSpecifiedSetting() {
 		return toSpecSettingFromFlexSet();
 	}
+	
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getWeekAveSetting()
+	 */
+	@Override
+	public List<MonthlyUnit> getWeekAveSetting() {
+		return toWeekSettingFromFlexSet();
+	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 
@@ -8,7 +10,10 @@ import lombok.val;
  * @author shuichu_ishida
  */
 @Getter
-public class AggregateTimeSetting {
+public class AggregateTimeSetting implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 集計設定 */
 	private AggregateSetting aggregateSet;
