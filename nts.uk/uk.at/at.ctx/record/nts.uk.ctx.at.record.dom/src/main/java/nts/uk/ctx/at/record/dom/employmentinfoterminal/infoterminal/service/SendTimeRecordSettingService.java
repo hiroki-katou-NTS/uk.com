@@ -35,7 +35,7 @@ public class SendTimeRecordSettingService {
 						.createReq7(!setting.getWorkTypeCodes().isEmpty())
 						.createReq8(!setting.getWorkTimeCodes().isEmpty()).createReq9(setting.isOverTimeHoliday())
 						.createReq10(!setting.getBentoMenuFrameNumbers().isEmpty())
-						.createReq11(!setting.isApplicationReason()).build();
+						.createReq11(setting.isApplicationReason()).build();
 	}
 
 	public static interface Require {

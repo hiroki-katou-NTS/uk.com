@@ -27,5 +27,5 @@ public class CreateStampInfo implements DomainValue {
 	/**
 	 * 勤務場所コード
 	 */
-	private Optional<WorkLocationCD> workLocationCd;
+	private final Optional<WorkLocationCD> workLocationCd;
 }

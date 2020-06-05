@@ -56,7 +56,7 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 
 	@Inject
 	private SendTimeRecordSettingPub sendTimeRecordSettingPub;
-	
+
 	@Inject
 	private SendSystemTimePub sendSystemTimePub;
 
@@ -79,8 +79,8 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	@Override
 	public List<SendPerInfoNameImport> sendPerInfo(Integer empInfoTerCode, String contractCode) {
 		return sendPerInfoNamePub
-				.send(empInfoTerCode, contractCode).stream().map(x -> new SendPerInfoNameImport(x.getIdNumber(), x.getPerName(),
-						x.getDepartmentCode(), x.getCompanyCode(), x.getReservation(), x.getPerCode()))
+				.send(empInfoTerCode, contractCode).stream().map(x -> new SendPerInfoNameImport(x.getIdNumber(),
+						x.getPerName(), x.getDepartmentCode(), x.getCompanyCode(), x.getReservation(), x.getPerCode()))
 				.collect(Collectors.toList());
 	}
 
@@ -118,8 +118,7 @@ public class SendNRDataAdapterImpl implements SendNRDataAdapter {
 	@Override
 	public List<SendWorkTypeNameImport> sendWorkType(Integer empInfoTerCode, String contractCode) {
 		return sendWorkTypeNamePub.send(empInfoTerCode, contractCode).stream()
-				.map(x -> new SendWorkTypeNameImport(x.getWorkTypeNumber(), x.getDaiClassifiNum(),
-						x.getMorningClassifiNum(), x.getAfternoonClassifiNum(), x.getWorkName()))
+				.map(x -> new SendWorkTypeNameImport(x.getWorkTypeNumber(), x.getDaiClassifiNum(), x.getWorkName()))
 				.collect(Collectors.toList());
 	}
 

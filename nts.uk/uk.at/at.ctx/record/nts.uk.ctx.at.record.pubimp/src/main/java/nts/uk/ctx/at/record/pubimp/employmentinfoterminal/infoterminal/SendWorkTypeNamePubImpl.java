@@ -33,8 +33,7 @@ public class SendWorkTypeNamePubImpl implements SendNRDataPub<List<SendWorkTypeN
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, workTypeRepository);
 
 		return SendWorkTypeNameService.send(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).stream()
-				.map(x -> new SendWorkTypeNameExport(x.getWorkTypeNumber(), x.getDaiClassifiNum(),
-						x.getMorningClassifiNum(), x.getAfternoonClassifiNum(), x.getWorkName()))
+				.map(x -> new SendWorkTypeNameExport(x.getWorkTypeNumber(), x.getDaiClassifiNum(), x.getWorkName()))
 				.collect(Collectors.toList());
 	}
 

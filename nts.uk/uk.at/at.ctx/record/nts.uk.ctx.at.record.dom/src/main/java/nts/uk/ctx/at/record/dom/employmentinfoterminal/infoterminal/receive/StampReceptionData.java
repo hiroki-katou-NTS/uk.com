@@ -82,7 +82,7 @@ public class StampReceptionData implements ReceptionData {
 	public GeneralDateTime getDateTime() {
 		int yy = GeneralDate.today().year() / 100;
 		int ymdTemp = Integer.parseInt(String.valueOf(yy) + ymd);
-		return GeneralDateTime.ymdhms(ymdTemp / 1000, (ymdTemp - (ymdTemp / 1000) * 1000) / 100, ymdTemp % 100,
+		return GeneralDateTime.ymdhms(ymdTemp / 10000, (ymdTemp - (ymdTemp / 10000) * 10000) / 100, ymdTemp % 100,
 				Integer.parseInt(time) / 100, Integer.parseInt(time) % 100, 0);
 	}
 
@@ -206,11 +206,11 @@ public class StampReceptionData implements ReceptionData {
 		case TEMPORARY_ENTRANCE:
 			return ChangeClockArt.TEMPORARY_SUPPORT_WORK;
 
-		case RETIRED_TEMPORARY:
-			return ChangeClockArt.TEMPORARY_LEAVING;
+//		case RETIRED_TEMPORARY:
+//			return ChangeClockArt.TEMPORARY_LEAVING;
 
 		default:
-			return ChangeClockArt.GOING_TO_WORK;
+			return ChangeClockArt.TEMPORARY_LEAVING;
 		}
 	}
 

@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
  */
 public class SendWorkTimeNameService {
 
-	public SendWorkTimeNameService() {
+	private SendWorkTimeNameService() {
 	};
 
 	// [1] 各種名称送信に変換

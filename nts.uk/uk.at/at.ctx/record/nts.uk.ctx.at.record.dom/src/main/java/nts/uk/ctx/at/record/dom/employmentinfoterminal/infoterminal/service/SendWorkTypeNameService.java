@@ -7,12 +7,9 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.NRWorkType;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendWorkTypeName;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 /**
  * @author ThanhNX
@@ -44,71 +41,12 @@ public class SendWorkTypeNameService {
 	private static List<SendWorkTypeName> convert(List<WorkType> lstWorkInfo) {
 
 		return lstWorkInfo.stream().map(x -> {
-			String daily = "", morning = "", afternoon = "";
-			if (x.getDailyWork().getWorkTypeUnit().value == WorkTypeUnit.OneDay.value) {
-				daily = convertNRWType(x.getDailyWork().getOneDay());
-			} else {
-				morning = convertNRWType(x.getDailyWork().getMorning());
-				afternoon = convertNRWType(x.getDailyWork().getAfternoon());
-			}
-			return new SendWorkTypeName(x.getWorkTypeCode().v(), daily, morning, afternoon, x.getName().v());
+			String daily = "0";
+			if (x.getDailyWork().isHolidayType()) {
+				daily = "1";
+			} 
+			return new SendWorkTypeName(x.getWorkTypeCode().v(), daily, x.getName().v());
 		}).sorted((x, y) -> x.getWorkTypeNumber().compareTo(y.getWorkTypeNumber())).collect(Collectors.toList());
-	}
-
-	private static String convertNRWType(WorkTypeClassification wt) {
-
-		switch (wt) {
-		case Attendance:
-
-			return NRWorkType.ATTENDANCE.value;
-
-		case Holiday:
-
-			return NRWorkType.HOLIDAY.value;
-
-		case HolidayWork:
-
-			return NRWorkType.HOLIDAY_WORK.value;
-
-		case AnnualHoliday:
-
-			return NRWorkType.ANNUAL_HOLIDAY.value;
-
-		case SpecialHoliday:
-
-			return NRWorkType.SPECIAL_HOLIDAY.value;
-
-		case Absence:
-
-			return NRWorkType.ABSENCE.value;
-
-		case SubstituteHoliday:
-
-			return NRWorkType.SUBSTITUTE_HOLIDAY.value;
-
-		case Shooting:
-
-			return NRWorkType.SHOOTING.value;
-
-		case Pause:
-
-			return NRWorkType.PAUSE.value;
-
-		case ContinuousWork:
-
-			return NRWorkType.CONTINUOUS_WORK.value;
-
-		case Closure:
-
-			return NRWorkType.CLOSURE.value;
-
-		case TimeDigestVacation:
-
-			return NRWorkType.TIMEDIGEST_VACATION.value;
-
-		default:
-			return "";
-		}
 	}
 
 	public static interface Require {

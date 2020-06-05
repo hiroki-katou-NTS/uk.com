@@ -64,12 +64,12 @@ public class ConvertTimeRecordStampService {
 				Optional.of(stampCard.get().getEmployeeId()), stamp.getRight(), Optional.of(stamp.getLeft()));
 
 		// TODO: 処理にエラーがある場合、別の申請受信データの処理を続行
-		if (!strampReflectResult.getReflectDate().isPresent()) {
-			Optional<TopPageAlarmEmpInfoTer> alEmpTer = createLogEmpTer(require, stampCard.get().getEmployeeId(),
-					requestSetting.get().getCompanyId().v(), empInfoTerCode.v(), stampReceptData.getIdNumber(), "");
-			if (alEmpTer.isPresent())
-				require.insertLogAll(alEmpTer.get());
-		}
+//		if (!strampReflectResult.getReflectDate().isPresent()) {
+//			Optional<TopPageAlarmEmpInfoTer> alEmpTer = createLogEmpTer(require, stampCard.get().getEmployeeId(),
+//					requestSetting.get().getCompanyId().v(), empInfoTerCode.v(), stampReceptData.getIdNumber(), "");
+//			if (alEmpTer.isPresent())
+//				require.insertLogAll(alEmpTer.get());
+//		}
 
 		return Pair.of(Optional.empty(), Optional.of(strampReflectResult));
 	}
@@ -84,22 +84,22 @@ public class ConvertTimeRecordStampService {
 	}
 
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
-	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
-			Integer terCode, String cardNumber, String message) {
-		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
-
-		if (lstSidApproval.isEmpty())
-			return Optional.empty();
-
-		List<TopPageAlarmManagerTr> lstManagerTr = lstSidApproval.stream()
-				.map(x -> new TopPageAlarmManagerTr(x, RogerFlag.ALREADY_READ)).collect(Collectors.toList());
-		TopPageAlEmpInfoTerDetail detail = new TopPageAlEmpInfoTerDetail(0, message, new EmployeeId(sid),
-				new StampNumber(cardNumber));
-
-		return Optional.of(new TopPageAlarmEmpInfoTer(companyId, lstManagerTr, new EmpInfoTerminalCode(terCode),
-				Arrays.asList(detail)));
-
-	}
+//	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
+//			Integer terCode, String cardNumber, String message) {
+//		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
+//
+//		if (lstSidApproval.isEmpty())
+//			return Optional.empty();
+//
+//		List<TopPageAlarmManagerTr> lstManagerTr = lstSidApproval.stream()
+//				.map(x -> new TopPageAlarmManagerTr(x, RogerFlag.ALREADY_READ)).collect(Collectors.toList());
+//		TopPageAlEmpInfoTerDetail detail = new TopPageAlEmpInfoTerDetail(0, message, new EmployeeId(sid),
+//				new StampNumber(cardNumber));
+//
+//		return Optional.of(new TopPageAlarmEmpInfoTer(companyId, lstManagerTr, new EmpInfoTerminalCode(terCode),
+//				Arrays.asList(detail)));
+//
+//	}
 
 	public static interface Require extends StampDataReflectProcessService.Require {
 

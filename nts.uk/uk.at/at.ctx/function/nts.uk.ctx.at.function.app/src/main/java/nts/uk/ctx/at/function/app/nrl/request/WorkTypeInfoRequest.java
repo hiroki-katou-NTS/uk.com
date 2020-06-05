@@ -23,23 +23,24 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
  */
 @RequestScoped
 @Named(Command.WORKTYPE_INFO)
-public class WorkTypeInfoRequest extends NRLRequest<Frame>{
+public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
-	
+
 	@Override
 	public void sketch(ResourceContext<Frame> context) {
 		// TODO Auto-generated method stub
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.WORKTYPE_INFO.Response));
-		//Get worktype info from DB, count records
+		// Get worktype info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
-		List<SendWorkTypeNameImport> lstWTInfo = sendNRDataAdapter.sendWorkType(Integer.parseInt(nrlNo.trim()), "000000000000");
+		// TODO: default ContractCode "000000000000"
+		List<SendWorkTypeNameImport> lstWTInfo = sendNRDataAdapter.sendWorkType(Integer.parseInt(nrlNo.trim()),
+				"000000000000");
 		StringBuilder builder = new StringBuilder();
-		for(SendWorkTypeNameImport infoName : lstWTInfo) {
+		for (SendWorkTypeNameImport infoName : lstWTInfo) {
 			builder.append(toStringObject(infoName));
 		}
 		String payload = builder.toString();
@@ -52,21 +53,21 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame>{
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
 		items.add(FrameItemArranger.ZeroPadding());
-		//Number of records
+		// Number of records
 		items.add(new MapItem(Element.NUMBER, String.valueOf(lstWTInfo.size())));
 		context.collectEncrypt(items, payload);
 	}
 
 	private String toStringObject(SendWorkTypeNameImport data) {
-		StringBuilder builder = new StringBuilder(); 
+		StringBuilder builder = new StringBuilder();
 		builder.append(StringUtils.rightPad(data.getWorkTypeNumber(), 3));
-		builder.append(StringUtils.rightPad(data.getMorningClassifiNum(), 2));
-		//half payload16
+		builder.append(StringUtils.rightPad(data.getDaiClassifiNum(), 2));
+		// half payload16
 		builder.append(StringUtils.rightPad(data.getWorkName(), 6));
 		builder.append(StringUtils.rightPad("", 6, "a"));
 		return builder.toString();
 	}
-	
+
 	@Override
 	public String responseLength() {
 		return null;

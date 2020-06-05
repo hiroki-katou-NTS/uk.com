@@ -20,7 +20,7 @@ public class NRHelper {
 
 	public static String toStringNR(Integer startTime, Integer endTime) {
 		return startTime < 0 ? "-" + toStringNR(startTime) + toStringNR(endTime)
-				: toStringNR(startTime) + toStringNR(endTime);
+				:  "+" + toStringNR(startTime) + toStringNR(endTime);
 	}
 
 	private static String toStringNR(Integer time) {

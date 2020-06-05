@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -36,24 +35,5 @@ public class TopPageAlarm {
 		this.existenceError = existenceError;
 		this.isCancelled = isCancelled;
 		this.lstManagerTr = lstManagerTr;
-	}
-
-	public static TopPageAlarm createFromJavaType(String companyId, GeneralDateTime finishDateTime,
-			int executionContent, int existenceError, int isCancelled, List<TopPageAlarmManagerTr> lstManagerTr) {
-		return new TopPageAlarm(companyId, finishDateTime, EnumAdaptor.valueOf(existenceError, ExistenceError.class),
-				EnumAdaptor.valueOf(isCancelled, IsCancelled.class), lstManagerTr);
-	}
-
-	/**
-	 * [C-1] トップページアラームする
-	 * 
-	 * @param companyId
-	 * @param executionLogId
-	 * @param managerId
-	 * @return
-	 */
-	public static TopPageAlarm createFromJavaType(String companyId, List<TopPageAlarmManagerTr> lstManagerTr) {
-		return new TopPageAlarm(companyId, GeneralDateTime.now(), ExistenceError.HAVE_ERROR, IsCancelled.NOT_CANCELLED,
-				lstManagerTr);
 	}
 }

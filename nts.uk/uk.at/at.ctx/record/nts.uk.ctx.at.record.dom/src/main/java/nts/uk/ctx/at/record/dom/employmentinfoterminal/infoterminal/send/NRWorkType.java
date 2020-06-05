@@ -27,7 +27,7 @@ public enum NRWorkType {
 
 	CONTINUOUS_WORK("9", "連続勤務"),
 
-	CLOSURE("10	", "休業"),
+	CLOSURE("10", "休業"),
 
 	TIMEDIGEST_VACATION("11", "時間消化休暇"),
 

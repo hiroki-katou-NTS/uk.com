@@ -128,8 +128,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		/**
 		 * 契約コード
 		 */
-		@Getter
-		private final ContractCode contractCode;
+		private  ContractCode contractCode;
 
 		/**
 		 * 会社ID

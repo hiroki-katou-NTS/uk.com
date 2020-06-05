@@ -62,7 +62,7 @@ public class SendReasonApplicationService {
 
 		case STAMP_APPLICATION:
 
-			return String.format("%02d", "");
+			return String.format("%02d", 0);
 
 		case ANNUAL_HOLIDAY_APPLICATION:
 

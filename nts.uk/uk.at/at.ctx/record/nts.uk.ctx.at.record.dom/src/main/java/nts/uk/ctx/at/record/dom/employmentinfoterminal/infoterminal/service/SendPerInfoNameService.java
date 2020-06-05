@@ -22,10 +22,12 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
  */
 public class SendPerInfoNameService {
 
-	private SendPerInfoNameService() {};
+	private SendPerInfoNameService() {
+	};
 
 	// [1] 各種名称送信に変換
-	public static List<SendPerInfoName> send(Require require, EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
+	public static List<SendPerInfoName> send(Require require, EmpInfoTerminalCode empInfoTerCode,
+			ContractCode contractCode) {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
@@ -52,9 +54,11 @@ public class SendPerInfoNameService {
 				.collect(Collectors.toMap(x -> x.getSid(), x -> x, (x, y) -> x));
 		return stampCards.stream().map(x -> {
 			EmployeeDto emp = mapEmpDto.getOrDefault(x.getEmployeeId(), null);
-			return new SendPerInfoName(x.getStampCardId(), emp == null ? "" : emp.getBussinessName(),
-					mapWplHist.getOrDefault(x.getEmployeeId(), ""), companyCode, "0000",
-					emp == null ? "" : emp.getScd());
+			return new SendPerInfoName(x.getStampCardId(),
+					emp == null ? ""
+							: emp.getBussinessName().length() > 20 ? emp.getBussinessName().substring(0, 20)
+									: emp.getBussinessName(),
+					mapWplHist.getOrDefault(x.getEmployeeId(), ""), "00", "0000", emp == null ? "" : emp.getScd());
 		}).sorted((x, y) -> x.getPerCode().compareTo(y.getPerCode())).limit(1000).collect(Collectors.toList());
 
 	}
@@ -71,7 +75,8 @@ public class SendPerInfoNameService {
 		public List<EmployeeDto> getByListSID(List<String> employeeIds);
 
 		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode);
+		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+				ContractCode contractCode);
 
 	}
 }
