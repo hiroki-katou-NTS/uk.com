@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         
-        remainDays: KnockoutObservable<number> = ko.observable(null);
+        remainDays: KnockoutObservable<number> = ko.observable('');
         
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         
@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         kdl003BtnEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeSwitchEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
-            return true;
+            return this.drawalReqSet().permissionDivision() == 1;
         });
         absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
                 return this.absWk().changeWorkHoursType();
@@ -290,8 +290,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.recWk().wkTimeCD(applicationForWorkingDay.selectionWorkTime || null);
                 self.recWk().wkTimeName(self.getWorkTimeName(self.recWk().wkTimeCD(), appDispInfoWithDateOutput.workTimeLst));
                 self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
-                self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => return {
-                    workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName })  || null);
+                self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => {return {
+                    workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName} })  || null);
             }
         }
         

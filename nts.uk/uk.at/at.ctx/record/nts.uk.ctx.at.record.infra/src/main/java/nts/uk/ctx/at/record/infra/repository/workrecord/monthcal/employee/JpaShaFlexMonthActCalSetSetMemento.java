@@ -57,8 +57,8 @@ public class JpaShaFlexMonthActCalSetSetMemento implements ShaFlexMonthActCalSet
 		this.typeValue.setAggrMethod(aggrSettingMonthlyOfFlxNew.getAggrMethod().value);
 		this.typeValue.setInsufficSet(aggrSettingMonthlyOfFlxNew.getInsufficSet().getCarryforwardSet().value);
 		this.typeValue.setLegalAggrSet(aggrSettingMonthlyOfFlxNew.getLegalAggrSet().getAggregateSet().value);
-		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime().value);
-
+		this.typeValue.setIncludeOt(aggrSettingMonthlyOfFlxNew.getIncludeOverTime() ? 1 : 0);
+		this.typeValue.setIncludeHdwk(aggrSettingMonthlyOfFlxNew.getIncludeIllegalHdwk() ? 1 : 0);
 	}
 
 	/*

@@ -11,11 +11,13 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 public enum DayOfPublicHoliday {
 	
 	/** The designate by year month day. */
-	// 年月日で指定する
+	/**
+	 *  年月日で指定する
+	 */
 	DESIGNATE_BY_YEAR_MONTH_DAY(0, "Enum_DesignateByYearMonthDay"),
 
 	/** The designate by month day. */
-	// 月日で指定する
+	/** 月日で指定する */
 	DESIGNATE_BY_MONTH_DAY(1, "Enum_DesignateByMonthDay");
 
 	/** The value. */

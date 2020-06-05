@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -27,7 +29,12 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -49,6 +56,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private RecruitmentAppRepository recRepo;
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	@Inject
+	private WorkTypeRepository wkTypeRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -168,6 +177,10 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private void updateApp(SaveHolidayShipmentCommand command, String companyID, int comType) {
 		// アルゴリズム「登録前エラーチェック（更新）」を実行する
 		String appReason = errorCheckBeforeRegister(command, companyID, comType);
+		//終日半日矛盾チェック
+		//KAF011_Ver21
+		checkDayConflict(command,comType);
+		
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
@@ -213,6 +226,64 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		return saveHanler.preconditionCheck(command, companyID, appType, comType);
+
+	}
+	
+	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
+		if (saveHanler.isSaveBothApp(comType)) {
+			// アルゴリズム「勤務種類別振休発生数の取得」を実行する takingout
+			BigDecimal absDay = getByWorkType(command.getAbsCmd().getWkTypeCD(), WorkTypeClassification.Pause);
+
+			// アルゴリズム「勤務種類別振休発生数の取得」を実行する holiday
+			BigDecimal recDay = getByWorkType(command.getRecCmd().getWkTypeCD(), WorkTypeClassification.Shooting);
+
+			boolean isBothDayNotZero = !(BigDecimal.valueOf(0).compareTo(absDay) == 0)
+					&& !(BigDecimal.valueOf(0).compareTo(recDay) == 0);
+
+			boolean isTwoDateNotSame = !(absDay.compareTo(recDay) == 0);
+
+			if (isBothDayNotZero && isTwoDateNotSame) {
+
+				throw new BusinessException("Msg_698");
+
+			}
+		}
+
+	}
+	
+	private BigDecimal getByWorkType(String wkTypeCD, WorkTypeClassification wkTypeClass) {
+		String companyID = AppContexts.user().companyId();
+		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
+		BigDecimal result = new BigDecimal(0);
+		if (wkTypeOpt.isPresent()) {
+			WorkType wkType = wkTypeOpt.get();
+			DailyWork dailyWk = wkType.getDailyWork();
+			boolean isTypeUnitIsOneDay = dailyWk.getWorkTypeUnit().equals(WorkTypeUnit.OneDay);
+			if (isTypeUnitIsOneDay) {
+
+				if (dailyWk.getOneDay().equals(wkTypeClass)) {
+					result = BigDecimal.valueOf(1);
+				}
+
+			}
+			boolean isTypeUnitIsMorningAndAfterNoon = wkType.getDailyWork().getWorkTypeUnit()
+					.equals(WorkTypeUnit.MonringAndAfternoon);
+			if (isTypeUnitIsMorningAndAfterNoon) {
+				if (dailyWk.getMorning().equals(wkTypeClass)) {
+					result = result.add(BigDecimal.valueOf(0.5));
+				} else {
+
+				}
+				if (dailyWk.getAfternoon().equals(wkTypeClass)) {
+					result = result.add(BigDecimal.valueOf(0.5));
+				} else {
+
+				}
+
+			}
+
+		}
+		return result;
 
 	}
 

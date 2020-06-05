@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -15,7 +17,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
  * @author shuichi_ishida
  */
 @Getter
-public class AgreMaxTimeOfMonthly {
+public class AgreMaxTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 36協定時間 */
 	@Setter

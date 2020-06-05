@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -22,7 +24,10 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeH
 @Getter
 @NoArgsConstructor
 // フレックス勤務の加算設定
-public class WorkFlexAdditionSet extends AggregateRoot{
+public class WorkFlexAdditionSet extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	/** 会社ID */

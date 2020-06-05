@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 
 /**
  * 月別実績の遅刻早退
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class LateLeaveEarlyOfMonthly {
+public class LateLeaveEarlyOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 早退 */
 	private LeaveEarly leaveEarly;

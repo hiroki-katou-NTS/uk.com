@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の加給時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class BonusPayTimeOfMonthly {
+public class BonusPayTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 加給時間 */
 	private Map<Integer, AggregateBonusPayTime> bonusPayTime;

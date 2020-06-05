@@ -24,4 +24,8 @@ public class FlexSetting extends AggregateRoot {
 	/** The specified setting. */
 	// 所定時間
 	protected List<MonthlyUnit> specifiedSetting;
+	
+	/** The week average setting. */
+	// 週平均時間
+	protected List<MonthlyUnit> weekAveSetting;
 }

@@ -24,6 +24,8 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ExcessOutsideTimeTargetSe
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.LegalAggrSetOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettingOfFlex36AgreementTime;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.SettlePeriodMonths;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.AggregateTimeSet;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.CalcSettingOfIrregular;
@@ -333,7 +335,10 @@ public class JpaAggrSettingMonthlyForCompany extends JpaRepository implements Ag
 				EnumAdaptor.valueOf(entity.setValue.aggregateMethod, FlexAggregateMethod.class),
 				(entity.setValue.includeOverTime != 0),
 				ShortageFlexSetting.of(
-						EnumAdaptor.valueOf(entity.setValue.carryforwardSet, CarryforwardSetInShortageFlex.class)),
+						EnumAdaptor.valueOf(entity.setValue.carryforwardSet, CarryforwardSetInShortageFlex.class),
+						EnumAdaptor.valueOf(entity.setValue.settlePeriod, SettlePeriod.class),
+						new Month(entity.setValue.startMonth),
+						EnumAdaptor.valueOf(entity.setValue.settlePeriodMon, SettlePeriodMonths.class)),
 				LegalAggrSetOfFlx.of(
 						AggregateTimeSetting.of(
 								EnumAdaptor.valueOf(entity.setValue.aggregateSet, AggregateSetting.class)),
@@ -775,6 +780,9 @@ public class JpaAggrSettingMonthlyForCompany extends JpaRepository implements Ag
 		entityFlxAggr.setValue.aggregateMethod = flexWork.getAggregateMethod().value;
 		entityFlxAggr.setValue.includeOverTime = (flexWork.isIncludeOverTime() ? 1 : 0);
 		entityFlxAggr.setValue.carryforwardSet = flxShortageSet.getCarryforwardSet().value;
+		entityFlxAggr.setValue.settlePeriod = flxShortageSet.getSettlePeriod().value;
+		entityFlxAggr.setValue.startMonth = flxShortageSet.getStartMonth().v();
+		entityFlxAggr.setValue.settlePeriodMon = flxShortageSet.getPeriod().value;
 		entityFlxAggr.setValue.aggregateSet = flxAggrTimeSet.getAggregateSet().value;
 		entityFlxAggr.setValue.excessOutsideTimeTargetSet = flxExcessOutsideTimeSet.getExcessOutsideTimeTargetSet().value;
 		entityFlxAggr.setValue.aggregateMethodOf36AgreementTime = flxAggrMethod36Agreement.getAggregateMethod().value;

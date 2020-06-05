@@ -335,7 +335,7 @@ module kcp.share.list {
             self.isShowWorkPlaceName = data.isShowWorkPlaceName;
             self.showOptionalColumn = data.showOptionalColumn ? data.showOptionalColumn : false;
             self.optionalColumnName = data.optionalColumnName;
-            self.optionalColumnDatasource = data.optionalColumnDatasource;
+            self.optionalColumnDatasource = (data.optionalColumnDatasource != null) ? data.optionalColumnDatasource : ko.observableArray([]);
             self.selectedClosureId = ko.observable(null);
             self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? false : data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
@@ -662,6 +662,7 @@ module kcp.share.list {
                 })
             }
             self.itemList(dataList);
+            self.addOptionalContentToItemList();
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];

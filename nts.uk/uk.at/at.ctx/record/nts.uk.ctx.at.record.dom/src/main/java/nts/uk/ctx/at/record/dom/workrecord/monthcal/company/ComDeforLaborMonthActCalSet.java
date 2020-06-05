@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.monthcal.company;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforLaborMonthActCalSet;
@@ -15,7 +17,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Getter
 // 変形労働会社別月別実績集計設定
-public class ComDeforLaborMonthActCalSet extends AggregateRoot implements DeforLaborMonthActCalSet {
+public class ComDeforLaborMonthActCalSet extends AggregateRoot implements DeforLaborMonthActCalSet, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	// 会社ID

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 月別実績の入退門時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class AttendanceLeaveGateTimeOfMonthly {
+public class AttendanceLeaveGateTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 出勤前時間 */
 	private AttendanceTimeMonth timeBeforeAttendance;

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -13,7 +15,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 // １日の時間内訳
 @Getter
-public class BreakdownTimeDay extends DomainObject{
+public class BreakdownTimeDay extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The one day. */
 	// 1日

@@ -94,24 +94,31 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		dataSetter.setData("extracting", false);
 
 		dataSetter.setData("empCount", counter.get());
+		//カテゴリ一覧
 		List<Integer> listCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory())
 				.collect(Collectors.toList());
+		//チェック条件
 		List<CheckCondition> checkConList = alarmPatternSetting.get().getCheckConList().stream()
 				.filter(e -> listCategory.contains(e.getAlarmCategory().value)).collect(Collectors.toList());
-
+		//カテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> eralCate = erAlByCateRepo.findByCategoryAndCode(comId, listCategory,
 				checkConList.stream().map(c -> c.getCheckConditionList()).flatMap(List::stream)
 						.collect(Collectors.toList()));
 		int max = listEmpId.size() * eralCate.size();
-
+		//
 		ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
-				command.getListPeriodByCategory(), eralCate, checkConList, finished -> {
-					counter.set(counter.get() + finished);
-					int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
-					dataSetter.updateData("empCount", completed >= max ? max - 1 : completed);
-				}, () -> {
-					return shouldStop(context, asyncContext);
-				});
+					command.getListPeriodByCategory(),
+					eralCate,
+					checkConList,
+					finished -> {
+						counter.set(counter.get() + finished);
+						int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
+						dataSetter.updateData("empCount", completed >= max ? max - 1 : completed);
+					}, 
+					() -> {
+						return shouldStop(context, asyncContext);
+					}
+				);
 		dataSetter.updateData("extracting", dto.isExtracting());
 		dataSetter.setData("dataWriting", true);
 //		try {

@@ -110,4 +110,20 @@ public class JpaDefaultSettingGetMemento {
 		return monthlyUnits;
 	}
 	
+	protected List<MonthlyUnit> toWeekSettingFromFlexSet() {
+		List<MonthlyUnit> monthlyUnits = new ArrayList<>();
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.JANUARY), new MonthlyEstimateTime(this.kshstFlexSet.getWeekJanTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.FEBRUARY), new MonthlyEstimateTime(this.kshstFlexSet.getWeekFebTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.MARCH), new MonthlyEstimateTime(this.kshstFlexSet.getWeekMarTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.APRIL), new MonthlyEstimateTime(this.kshstFlexSet.getWeekAprTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.MAY), new MonthlyEstimateTime(this.kshstFlexSet.getWeekMayTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.JUNE), new MonthlyEstimateTime(this.kshstFlexSet.getWeekJunTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.JULY), new MonthlyEstimateTime(this.kshstFlexSet.getWeekJulTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.AUGUST), new MonthlyEstimateTime(this.kshstFlexSet.getWeekAugTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.SEPTEMBER), new MonthlyEstimateTime(this.kshstFlexSet.getWeekSepTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.OCTOBER), new MonthlyEstimateTime(this.kshstFlexSet.getWeekOctTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.NOVEMBER), new MonthlyEstimateTime(this.kshstFlexSet.getWeekNovTime())));
+		monthlyUnits.add(new MonthlyUnit( new Month(Month.DECEMBER), new MonthlyEstimateTime(this.kshstFlexSet.getWeekDecTime())));
+		return monthlyUnits;
+	}
 }

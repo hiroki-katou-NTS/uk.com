@@ -8,16 +8,23 @@ import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 @Getter
 public class MonthlyFlexStatutoryLaborTime {
 
+	/** 法定時間 */
     private MonthlyEstimateTime statutorySetting;
-
+	
+    /** 所定時間 */
     private MonthlyEstimateTime specifiedSetting;
     
+    /** 週平均時間 */
+    private MonthlyEstimateTime weekAveSetting;
+    
     /**
-     * 法定労働時間、所定労働時間ともに0を返す
+     * 法定労働時間、所定労働時間、週平均時間すべてに0を返す
      * @return
      */
     public static MonthlyFlexStatutoryLaborTime zeroMonthlyFlexStatutoryLaborTime() {
-    	return new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(0),new MonthlyEstimateTime(0));
+    	return new MonthlyFlexStatutoryLaborTime(
+    			new MonthlyEstimateTime(0),
+    			new MonthlyEstimateTime(0),
+    			new MonthlyEstimateTime(0));
     }
-    
 }

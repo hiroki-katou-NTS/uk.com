@@ -1,3 +1,9 @@
+html{
+  overflow: hidden;
+}
+#content-area {
+  overflow-y: scroll;
+}
 #kdp002a{
   width: 1200px;
   min-width: 150vmin;
@@ -14,10 +20,12 @@
   min-width: 37vmin;
 }
 #stamp-desc{
-  height: 70px;
+  height: 73px;
   width: 73vmin;
-  word-break: break-word;
   font-size: 1.5vmin;
+  padding: 0 0 0 0.5vmin;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 
 #stamp-date {

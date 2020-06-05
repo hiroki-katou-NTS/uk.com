@@ -145,7 +145,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		boolean isToday = judgmentToday(appDate, judgmentWorkTimeResult.getCalcWorkTime());
 		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
 		JudgmentStampResult judgmentStampResult = judgmentStamp(isToday, overrideSet, calStampMiss, 
-				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst());
+				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), appDate);
 		// アルゴリズム「実績状態の判定」を実行する
 		ActualStatus actualStatus = judgmentActualStatus(judgmentStampResult.isMissStamp(), judgmentStampResult.isStampLeaveChange());
 		// アルゴリズム「仮計算実行の判定」を実行する
@@ -299,7 +299,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 
 	@Override
 	public JudgmentStampResult judgmentStamp(boolean isToday, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss,
-			Integer startTime, Integer endTime) {
+			Integer startTime, Integer endTime, GeneralDate appDate) {
 		// 打刻漏れフラグ 
 		boolean missStamp = false;
 		// 退勤打刻補正 
@@ -325,7 +325,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		// 退勤打刻補正をチェックする
 		if(stampLeaveChange){
 			// 計算退勤時刻：システム時刻
-			calcLeaveStamp = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+			int systemTime = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+			int compareDate = GeneralDate.today().compareTo(appDate);
+			if(compareDate > 0) {
+				systemTime = 24 * 60 + systemTime;
+			}
+			calcLeaveStamp = systemTime;
 		} else {
 			// 計算退勤時刻：INPUT.退勤時刻
 			calcLeaveStamp = endTime;

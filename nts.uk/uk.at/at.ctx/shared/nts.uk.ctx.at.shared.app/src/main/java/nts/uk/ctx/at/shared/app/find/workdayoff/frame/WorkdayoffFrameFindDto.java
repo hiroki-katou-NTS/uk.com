@@ -8,6 +8,7 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento;
 
 /**
@@ -27,6 +28,9 @@ public class WorkdayoffFrameFindDto implements WorkdayoffFrameSetMemento {
 	
 	/** The use atr. */
 	private int useAtr;
+	
+	/** The role. */
+	private int role;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
@@ -68,4 +72,11 @@ public class WorkdayoffFrameFindDto implements WorkdayoffFrameSetMemento {
 		this.workdayoffFrName = workdayoffFrName.v();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento#setRole(nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole)
+	 */
+	@Override
+	public void setRole(WorkdayoffFrameRole role){
+		this.role = role.value;
+	}
 }
