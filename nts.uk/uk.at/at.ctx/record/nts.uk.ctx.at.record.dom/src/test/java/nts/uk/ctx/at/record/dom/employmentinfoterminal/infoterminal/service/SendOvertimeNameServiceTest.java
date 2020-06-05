@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
 @RunWith(JMockit.class)
 public class SendOvertimeNameServiceTest {
@@ -141,6 +142,11 @@ public class SendOvertimeNameServiceTest {
 			@Override
 			public String getCompanyId() {
 				return "1";
+			}
+
+			@Override
+			public WorkdayoffFrameRole getRole() {
+				return WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY;
 			}
 		};
 	}
