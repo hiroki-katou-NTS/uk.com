@@ -13,9 +13,13 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplacesService.Require;
 
@@ -33,7 +37,12 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testRep() {
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		WorkplaceGroup group = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // dummy
+				new WorkplaceGroupCode("0000000001"), // dummy
+				new WorkplaceGroupName("00000000000000000011"), // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper();
 		new Expectations() {
@@ -53,7 +62,12 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testDelete() {
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		WorkplaceGroup group = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // dummy
+				new WorkplaceGroupCode("0000000001"), // dummy
+				new WorkplaceGroupName("00000000000000000011"), // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper();
 		new Expectations() {
@@ -79,7 +93,12 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testAdd() {
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		WorkplaceGroup group = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // dummy
+				new WorkplaceGroupCode("0000000001"), // dummy
+				new WorkplaceGroupName("00000000000000000011"), // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper2();
 		new Expectations() {
@@ -105,7 +124,12 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testAddWorkplace() {
-		WorkplaceGroup group = DomainServiceHelper.Helper.DUMMY;
+		WorkplaceGroup group = new WorkplaceGroup(
+				"000000000000000000000000000000000011", // dummy
+				"00000000000001", // dummy
+				new WorkplaceGroupCode("0000000001"), // dummy
+				new WorkplaceGroupName("00000000000000000011"), // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 		List<String> lstWorkplaceId = DomainServiceHelper.getLstId();
 		List<AffWorkplaceGroup> lstFormerAffInfo = DomainServiceHelper.getHelper2();
 		new Expectations() {
@@ -120,7 +144,7 @@ public class ReplaceWorkplacesServiceTest {
 		lstWorkplaceId.forEach(wKPID -> {
 			WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require,
 					DomainServiceHelper.Helper.DUMMY, wKPID);
-			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss));
+			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult);
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())

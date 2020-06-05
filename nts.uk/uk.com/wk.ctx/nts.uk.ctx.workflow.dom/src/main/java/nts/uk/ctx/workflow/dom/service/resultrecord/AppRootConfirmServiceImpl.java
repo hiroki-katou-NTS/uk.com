@@ -94,14 +94,6 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 				// 承認したフラグ=true
 				approvalFlg = ApprovalBehaviorAtr.APPROVED;
 			}
-			// 中間データから承認フェーズインスタンスに変換する
-			ApprovalPhaseState approvalPhaseState = this.convertPhaseInsToPhaseState(appPhaseInstance, appPhaseConfirm);
-			// 指定する承認フェーズの承認が完了したか
-			boolean phaseComplete = approveService.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
-			// ループする順のドメインモデル「承認済フェーズ」を更新する
-			if(phaseComplete){
-				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.APPROVED);
-			}
 			// 承認したフラグをチェックする
 			if(approvalFlg==ApprovalBehaviorAtr.APPROVED){
 				// ループする順の「承認済フェーズ」が存在するかチェックする
@@ -113,6 +105,16 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 					appRootConfirm.getListAppPhase().remove(oldAppPhaseConfirm);
 					appRootConfirm.getListAppPhase().add(appPhaseConfirm);
 				}
+			}
+			// 中間データから承認フェーズインスタンスに変換する
+			ApprovalPhaseState approvalPhaseState = this.convertPhaseInsToPhaseState(appPhaseInstance, appPhaseConfirm);
+			// 指定する承認フェーズの承認が完了したか
+			boolean phaseComplete = approveService.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
+			// ループする順のドメインモデル「承認済フェーズ」を更新する
+			if(phaseComplete){
+				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.APPROVED);
+			} else {
+				break;
 			}
 		}
 		appRootConfirmRepository.update(appRootConfirm);

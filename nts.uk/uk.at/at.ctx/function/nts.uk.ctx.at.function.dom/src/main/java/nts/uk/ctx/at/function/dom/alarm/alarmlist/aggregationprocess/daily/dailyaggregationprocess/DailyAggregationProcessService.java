@@ -116,7 +116,16 @@ public class DailyAggregationProcessService {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
+/**
+ * 勤務実績のアラーム抽出
+ * @param comId
+ * @param periodAlarm
+ * @param employees
+ * @param eralCate
+ * @param counter
+ * @param shouldStop
+ * @return
+ */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> dailyAggregationProcess(String comId, PeriodByAlarmCategory periodAlarm, 
 			List<EmployeeSearchDto> employees, List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
@@ -124,7 +133,7 @@ public class DailyAggregationProcessService {
 		List<ValueExtractAlarm> result = Collections.synchronizedList(new ArrayList<>()); 		
 		DatePeriod datePeriod = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
 		
-
+		//
 		DataHolder holder = new DataHolder(comId, eralCate);
 		String KAL010_1 = TextResource.localize("KAL010_1");
 		
@@ -137,9 +146,13 @@ public class DailyAggregationProcessService {
 			}
 			
 			List<String> employeeIds = emps.stream().map(e -> e.getId()).collect(Collectors.toList());
+			//社員、期間に一致する申請を取得する
 			List<ApplicationImport> apps = applicationAdapter.getApplicationBySID(employeeIds, datePeriod.start(), datePeriod.end());
+			//エラーアラームチェック条件(error alarm)
 			result.addAll(dailyPerformanceService.aggregationProcess(datePeriod, employeeIds, emps, holder, apps));
+			//アラームチェック条件
 			result.addAll(this.extractCheckCondition(datePeriod, emps, comId, employeeIds, holder, KAL010_1));
+			//「システム固定のチェック項目」で実績をチェックする	
 			result.addAll(this.extractFixedConditionV2(comId, holder.dailyAlarmCondition, periodAlarm, emps, employeeIds));
 			
 			synchronized (this) {
@@ -150,11 +163,20 @@ public class DailyAggregationProcessService {
 		return result;
 	}
 	
-	// tab3: チェック条件
+	/**
+	 *  tab3: アラームチェック条件
+	 * @param period 期間
+	 * @param employee　List＜社員情報＞
+	 * @param companyID　会社ID
+	 * @param emIds　List＜社員ID＞
+	 * @param holder　日次の勤怠項目、勤務実績のエラーアラーム設定
+	 * @param KAL010_1
+	 * @return
+	 */
 	private List<ValueExtractAlarm> extractCheckCondition(DatePeriod period, List<EmployeeSearchDto> employee, String companyID, 
 			List<String> emIds, DataHolder holder, String KAL010_1) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
-		
+		//勤務種類でフィルタする	
 		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(holder.eralId, period, emIds);
 		if(listErrorRecord.isEmpty()){
 			return listValueExtractAlarm;
@@ -162,11 +184,18 @@ public class DailyAggregationProcessService {
 		// Get map all name Attd Name
 		Map<Integer,DailyAttendanceItem> mapAttdName = holder.listAttenDanceItem.stream().collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
 		Map<String,EmployeeSearchDto> empMap = employee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x -> x));
-		
-		return listErrorRecord.stream().filter(er -> er.isError()).map(er -> this.checkConditionGenerateValue(empMap.get(er.getEmployeeId()), 
-																												er.getDate(), holder.mapWorkRecordExtraCon.get(er.getErAlId()), 
-																												companyID, getAlarmItem(holder, er), 
-																												mapAttdName, KAL010_1,er.getCheckedValue())).collect(Collectors.toList());
+		//実績をチェックする
+		return listErrorRecord.stream()
+				.filter(er -> er.isError())
+				.map(er -> this.checkConditionGenerateValue(empMap.get(er.getEmployeeId()),
+															er.getDate(),
+															holder.mapWorkRecordExtraCon.get(er.getErAlId()),
+															companyID,
+															getAlarmItem(holder, er),
+															mapAttdName,
+															KAL010_1,
+															er.getCheckedValue())
+						).collect(Collectors.toList());
 	}
 
 	private String getAlarmItem(DataHolder holder, ErrorRecordImport errorRecord) {
@@ -174,7 +203,10 @@ public class DailyAggregationProcessService {
 		
 		return holder.listAlarmItemName.stream().filter(ai -> ai.getCheckItem() == checkItem).findFirst().orElseGet(() -> new AlarmItemName(checkItem, "")).getNameAlarm();
 	}
-	
+	/**
+	 * 日次の勤怠項目、勤務実績のエラーアラーム設定を返す
+	 *
+	 */
 	public class DataHolder {	
 		String comId;
 		List<AlarmCheckConditionByCategory> eralCate;
@@ -188,12 +220,14 @@ public class DailyAggregationProcessService {
 		List<AttendanceItemLinking> attendanceItemAndFrameNos;
 		List<MessageWRExtraConAdapterDto> messageList;
 		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon;
+		/**	抽出条件ID */
 		List<String> eralId;
 		List<AlarmItemName> listAlarmItemName;
 		List<DailyAttendanceItem> listAttenDanceItem;
 		public DataHolder(String comId, List<AlarmCheckConditionByCategory> eralCate){
 			this.comId = comId;
 			this.eralCate = eralCate;
+			//日次のアラームチェック条件コード
 			this.eralCode = eralCate.stream().map(eral -> ((DailyAlarmCondition) eral.getExtractionCondition()).getErrorAlarmCode())
 									.flatMap(List::stream).distinct().collect(Collectors.toList());
 			this.dailyAlarmCondition = eralCate.stream().map(eral -> (DailyAlarmCondition) eral.getExtractionCondition()).collect(Collectors.toList());
@@ -203,16 +237,25 @@ public class DailyAggregationProcessService {
 		}
 		
 		private void getData(){
+			//日次の勤怠項目
 			this.dailyAttendanceItems = getDailyAttendanceItems(this.comId);
 			
 			this.attendanceIds = dailyAttendanceItems.stream().map(da -> da.getAttendanceItemId()).collect(Collectors.toList());
-			
+			//勤怠項目と枠の紐付け
 			this.attendanceItemAndFrameNos = attendanceItemLinkingRepository.getFullDataByListAttdaId(this.attendanceIds);
+			//勤務実績のエラーアラーム
 			this.errorAlarmWorkRecord = errorAlarmWorkRecordAdapter.getListErAlByListCode(this.comId, this.eralCode);
+			//エラー発生時に呼び出す申請一覧
 			this.eralApps = eralAppAdapter.getAllErAlAppByEralCode(this.comId, this.eralCode);
-			this.messageList = workRecordExtraConAdapter.getMessageWRExtraConByListID(this.errorAlarmWorkRecord.stream().map(c -> c.getErrorAlarmCheckID()).distinct().collect(Collectors.toList()));
+			//勤務実績のエラーアラームチェックの表示メッセージ
+			this.messageList = workRecordExtraConAdapter.getMessageWRExtraConByListID(this.errorAlarmWorkRecord.stream()
+					.map(c -> c.getErrorAlarmCheckID())
+					.distinct()
+					.collect(Collectors.toList()));
+			//勤務実績の抽出条件
 			this.mapWorkRecordExtraCon = workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(eralId)
 					.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
+			//勤怠項目に対応する名称を生成する
 			this.listAttenDanceItem  = attendanceNameService.getNameOfDailyAttendanceItem(this.attendanceIds);
 		}
 	}
@@ -243,15 +286,19 @@ public class DailyAggregationProcessService {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		List<String> dailyAlarmIds = dailyAlarmCondition.stream().map(c -> c.getDailyAlarmConID()).distinct().collect(Collectors.toList());
 		//get data by dailyAlarmCondition
+		//勤務実績の固定抽出条件
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmIds)
 																						.stream().filter(c -> c.isUseAtr())
 																						.sorted((x,y) -> x.getFixConWorkRecordNo() - y.getFixConWorkRecordNo())
 																						.collect(Collectors.toList());
 		DatePeriod datePeriod = new DatePeriod(period.getStartDate(),  period.getEndDate());
-		
+		//3: 本人未確認
 		checkFixedNo3(period, employee, listValueExtractAlarm, listFixed, empIds);
+		//4: 管理者未承認　
 		checkFixedNo4(employee, listValueExtractAlarm, listFixed, empIds, datePeriod);
+		//6: 連続休暇チェック 
 		checkFixedNo6(employee, listValueExtractAlarm, listFixed, datePeriod);
+		//1： 勤務種類未登録、2： 就業時間帯未登録、5: データチェック 
 		checkFixedNo1And2AndOther(comId, period, employee, empIds, listValueExtractAlarm, listFixed);
 		
 		return listValueExtractAlarm;
@@ -458,6 +505,7 @@ public class DailyAggregationProcessService {
 			List<EmployeeSearchDto> employee, String companyID, List<String> emIds) {
 		String KAL010_1 = TextResource.localize("KAL010_1");
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
+		//勤務実績の抽出条件,
 		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
 		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), period, emIds);
@@ -612,13 +660,24 @@ public class DailyAggregationProcessService {
 		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.CONTINUOUS_CONDITION,TextResource.localize("KAL010_60")));
 		return listAlarmItemName;
 	}
-	
+	/**
+	 * 実績をチェックする
+	 * @param employee 社員情報
+	 * @param date　日付
+	 * @param workRecordExtraCon　
+	 * @param companyID
+	 * @param alarmItem
+	 * @param mapAtdItemName
+	 * @param KAL010_1
+	 * @param checkedValue
+	 * @return
+	 */
 	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  
 			String companyID,String alarmItem, Map<Integer,DailyAttendanceItem> mapAtdItemName, String KAL010_1,String checkedValue) {
 		String checkedValueNew = checkedValue;
 		String alarmContent = "";
 		TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(workRecordExtraCon.getCheckItem(), TypeCheckWorkRecord.class);
-		
+		//アラームエラー項目の実績をチェック
 		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID, mapAtdItemName);		
 		if(alarmContent.length()>100) {
 			alarmContent = alarmContent.substring(0, 100);
@@ -632,8 +691,18 @@ public class DailyAggregationProcessService {
 		}
 		return new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(), date.toString(ErAlConstant.DATE_FORMAT), KAL010_1, workRecordExtraCon.getNameWKRecord(), alarmContent, workRecordExtraCon.getErrorAlarmCondition().getDisplayMessage(),checkedValueNew);
 	}
-	
-	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID, Map<Integer,DailyAttendanceItem> mapAtdItemName) {
+	/**
+	 * アラームエラー項目の実績をチェック
+	 * @param checkItem
+	 * @param workRecordExtraCon
+	 * @param companyID
+	 * @param mapAtdItemName
+	 * @return
+	 */
+	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,
+			WorkRecordExtraConAdapterDto workRecordExtraCon,
+			String companyID,
+			Map<Integer,DailyAttendanceItem> mapAtdItemName) {
 		
 		if(workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().isEmpty()) return "";			
 		
@@ -641,17 +710,20 @@ public class DailyAggregationProcessService {
 		String wktypeText="";
 		String attendanceText ="";
 		String wktimeText ="";	
-		
+		//勤怠項目に対する条件:勤怠項目の複合エラーアラーム条件
 		ErAlAtdItemConAdapterDto atdItemCon = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().get(0);		
-		
+		//単一値との比較
 		CoupleOperator coupleOperator= findOperator(atdItemCon.getCompareOperator());
 		
 		switch (checkItem) {
+		//時間、回数、時刻、金額の場合
 		case TIME:
 		case TIMES:
 		case AMOUNT_OF_MONEY:
 		case TIME_OF_DAY:	
+			//勤務種類
 			wktypeText = calculateWktypeText(workRecordExtraCon, companyID);
+			//
 			attendanceText =  calculateAttendanceText(atdItemCon, mapAtdItemName);
 					
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
@@ -672,6 +744,7 @@ public class DailyAggregationProcessService {
 				}
 			}
 			break;
+		//連続時間 
 		case CONTINUOUS_TIME:
 			wktypeText = calculateWktypeText( workRecordExtraCon, companyID);
 			attendanceText =  calculateAttendanceText( atdItemCon, mapAtdItemName);
@@ -696,17 +769,20 @@ public class DailyAggregationProcessService {
 				}
 			} 
 			break;
+		//連続勤務 
 		case CONTINUOUS_WORK: 
 			wktypeText = calculateWktypeText( workRecordExtraCon, companyID);
 			
 			alarmContent = TextResource.localize("KAL010_57", wktypeText, workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + ""); 
 			break;
+		//連続時間帯 
 		case CONTINUOUS_TIME_ZONE: 
 			wktypeText = calculateWktypeText(workRecordExtraCon, companyID);
 			wktimeText = calculateWkTimeText(workRecordExtraCon, mapAtdItemName);
 			
 			alarmContent = TextResource.localize("KAL010_59", wktypeText, wktimeText ,  workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + ""); 
 			break;
+		//複合条件 
 		case CONTINUOUS_CONDITION:
 			String alarmGroup1= "";
 			String alarmGroup2 ="";
@@ -770,7 +846,13 @@ public class DailyAggregationProcessService {
 		}
 
 	}
-	
+	/**
+	 * 勤怠項目の複合条件をチェックする
+	 * @param group
+	 * @param checkItem
+	 * @param mapAtdItemName
+	 * @return
+	 */
 	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group, TypeCheckWorkRecord checkItem , Map<Integer,DailyAttendanceItem> mapAtdItemName) {
 		String alarmGroup= "";		
 		
@@ -821,7 +903,12 @@ public class DailyAggregationProcessService {
 
 		return alarmGroup;
 	}
-	
+	/**
+	 * 勤務種類をチェックする
+	 * @param workRecordExtraCon
+	 * @param companyID
+	 * @return
+	 */
 	private String calculateWktypeText( WorkRecordExtraConAdapterDto workRecordExtraCon,String companyID) {
 		
 		List<String> workTypeCodes =  workRecordExtraCon.getErrorAlarmCondition().getWorkTypeCondition().getPlanLstWorkType();
@@ -830,7 +917,12 @@ public class DailyAggregationProcessService {
 		List<String> workTypeNames = workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream().map( x ->x.getName().toString()).collect(Collectors.toList());
 		return workTypeNames.isEmpty()? "":  String.join(",", workTypeNames);
 	}
-	
+	/**
+	 * 勤怠項目をチェックする
+	 * @param atdItemCon
+	 * @param attendanceItemMap
+	 * @return
+	 */
 	private String calculateAttendanceText(ErAlAtdItemConAdapterDto atdItemCon,Map<Integer, DailyAttendanceItem> attendanceItemMap) {
 		String attendanceText = "";		
 		
@@ -916,7 +1008,11 @@ public class DailyAggregationProcessService {
 		return  workTimeNames.isEmpty()? "":  String.join(",", workTimeNames);
 		
 	}
-	
+	/**
+	 * 単一値との比較
+	 * @param compareOperator
+	 * @return
+	 */
 	private CoupleOperator findOperator(int compareOperator) {
 		CompareType compareType = EnumAdaptor.valueOf(compareOperator, CompareType.class);
 		

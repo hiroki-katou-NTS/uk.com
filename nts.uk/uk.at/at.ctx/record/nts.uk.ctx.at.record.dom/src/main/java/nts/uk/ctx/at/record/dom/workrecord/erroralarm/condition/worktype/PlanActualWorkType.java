@@ -16,9 +16,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
- *
+ *勤務種類（予実）
  */
-// 勤務種類（予実）
 @Getter
 public class PlanActualWorkType extends WorkTypeCondition {
 

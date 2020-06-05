@@ -61,7 +61,16 @@ public class ExtractAlarmListService {
 		return new ExtractedAlarmDto(sortedAlarmExtraValue, false, false);		
 
 	}
-
+	/**
+	 * アラームリストを出力する
+	 * @param listEmployee
+	 * @param periodByCategory
+	 * @param eralCate
+	 * @param checkConList
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ExtractedAlarmDto extractAlarmV2(List<EmployeeSearchDto> listEmployee,
 			List<PeriodByAlarmCategory> periodByCategory, List<AlarmCheckConditionByCategory> eralCate,
