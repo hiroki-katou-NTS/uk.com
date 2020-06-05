@@ -47,7 +47,8 @@ module nts.uk.at.view.kdp002.t {
                     self.messageColor(error.messageColor);
                     self.errorDate(error.lastDateError);
                     let listRequired = [];
-                    for (let idx = 0; idx < 6; idx ++) {
+                    let length = error.listRequired.length > 6 ? 6 : error.listRequired.length;
+                    for (let idx = 0; idx < length; idx ++) {
                         listRequired.push(self.getBtn(error.listRequired[idx]));
                     }
                     self.dataShare = {
