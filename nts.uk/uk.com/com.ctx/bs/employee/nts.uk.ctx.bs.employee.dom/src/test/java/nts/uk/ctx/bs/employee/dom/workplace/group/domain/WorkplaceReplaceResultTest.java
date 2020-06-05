@@ -22,24 +22,27 @@ public class WorkplaceReplaceResultTest {
 	public void testAdd() {
 		WorkplaceReplaceResult workplaceReplaceResult = WorkplaceReplaceResult.add(atomTask);
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().name().equals(WorkplaceReplacement.ADD.name())).isTrue();
+		assertThat(workplaceReplaceResult.getPersistenceProcess().get().equals(atomTask)).isTrue();
 	}
-	
 	
 	@Test
 	public void testDelete () {
 		WorkplaceReplaceResult workplaceReplaceResult = WorkplaceReplaceResult.delete(atomTask);
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().name().equals(WorkplaceReplacement.DELETE.name())).isTrue();
+		assertThat(workplaceReplaceResult.getPersistenceProcess().get().equals(atomTask)).isTrue();
 	}
 	
 	@Test
 	public void testAlreadyBelong () {
 		WorkplaceReplaceResult workplaceReplaceResult = WorkplaceReplaceResult.alreadyBelong("01");
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().name().equals(WorkplaceReplacement.ALREADY_BELONGED.name())).isTrue();
+		assertThat(workplaceReplaceResult.getWKPGRPID().get().equals("01")).isTrue();
 	}
 	
 	@Test
 	public void testBelongAnother () {
 		WorkplaceReplaceResult workplaceReplaceResult = WorkplaceReplaceResult.belongAnother("01");
 		assertThat(workplaceReplaceResult.getWorkplaceReplacement().name().equals(WorkplaceReplacement.BELONGED_ANOTHER.name())).isTrue();
+		assertThat(workplaceReplaceResult.getWKPGRPID().get().equals("01")).isTrue();
 	}
 }
