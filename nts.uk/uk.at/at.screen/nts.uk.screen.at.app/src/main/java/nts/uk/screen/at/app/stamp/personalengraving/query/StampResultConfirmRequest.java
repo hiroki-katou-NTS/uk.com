@@ -18,6 +18,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class StampResultConfirmRequest {
 	private String stampDate;
 	private List<Integer> attendanceItems;
+	private String employeeId; // 2020/05/13　EA3769
 	
 	public DatePeriod toStampDatePeriod() {
 		return new DatePeriod(GeneralDate.today(), GeneralDate.today());

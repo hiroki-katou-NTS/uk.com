@@ -123,7 +123,14 @@ module nts.uk.at.view.kdp002.a {
 
             public openScreenB(button, layout) {
                 let self = this;
-                nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
+
+                nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
+                nts.uk.ui.windows.setShared("infoEmpToScreenB", {
+                    employeeId   : __viewContext.user.employeeId,
+                    employeeCode : __viewContext.user.employeeCode,
+                    mode         : Mode.Personal,
+                });               
+
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
@@ -138,6 +145,12 @@ module nts.uk.at.view.kdp002.a {
             public openScreenC(button, layout) {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
+                nts.uk.ui.windows.setShared("infoEmpToScreenC", {
+                    employeeId   : __viewContext.user.employeeId,
+                    employeeCode : __viewContext.user.employeeCode,
+                    mode         : Mode.Personal,
+                });
+                
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
@@ -179,5 +192,9 @@ module nts.uk.at.view.kdp002.a {
 
         }
 
+    }
+    enum Mode {
+        Personal = 1, // 個人
+        Shared = 2  // 共有 
     }
 }

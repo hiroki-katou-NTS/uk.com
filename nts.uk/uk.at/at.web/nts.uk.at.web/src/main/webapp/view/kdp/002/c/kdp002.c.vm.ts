@@ -31,6 +31,10 @@ module nts.uk.at.view.kdp002.c {
             permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
             displayButton: KnockoutObservable<boolean> = ko.observable(true);
 
+            displayButton: KnockoutObservable<boolean> = ko.observable(true);
+            infoEmpFromScreenA: {};
+
+
             constructor() {
                 let self = this;
    
@@ -47,10 +51,14 @@ module nts.uk.at.view.kdp002.c {
                 let self = this,
                     dfd = $.Deferred();
                 let itemIds = nts.uk.ui.windows.getShared("KDP010_2C");
+                self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
+                
                 let data = {
+                    employeeId: self.infoEmpFromScreenA.employeeId,
                     stampDate: moment().format("YYYY/MM/DD"),
                     attendanceItems: itemIds
                 }
+                
                 self.getEmpInfo();
         
                 service.startScreen(data).done((res) => {
@@ -103,7 +111,7 @@ module nts.uk.at.view.kdp002.c {
             getEmpInfo(): JQueryPromise<any> { 
                 let self = this;
                 let dfd = $.Deferred();
-                let employeeId = __viewContext.user.employeeId;
+                let employeeId = self.infoEmpFromScreenA.employeeId;
                 service.getEmpInfo(employeeId).done(function(data) {
                     self.employeeCodeName(data.employeeCode +" "+ data.personalName);
                     dfd.resolve();
