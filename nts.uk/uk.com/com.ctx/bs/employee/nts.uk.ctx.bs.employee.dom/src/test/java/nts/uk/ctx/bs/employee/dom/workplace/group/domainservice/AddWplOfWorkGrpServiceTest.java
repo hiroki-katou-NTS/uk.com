@@ -5,9 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
@@ -23,6 +25,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.AddWplOfWorkGrpS
  * @author phongtq
  *
  */
+@RunWith(JMockit.class)
 public class AddWplOfWorkGrpServiceTest {
 	
 	@Injectable

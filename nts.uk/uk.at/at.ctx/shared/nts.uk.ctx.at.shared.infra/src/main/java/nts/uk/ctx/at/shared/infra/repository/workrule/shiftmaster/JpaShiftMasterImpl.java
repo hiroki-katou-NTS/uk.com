@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.workrule.shiftmaster;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
@@ -76,7 +81,26 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	@Override
 	public boolean checkExists(String companyId, String workTypeCd, String workTimeCd) {
-		return this.getByWorkTypeAndWorkTime(companyId, workTypeCd, workTimeCd).isPresent();
+		String sql = " SELECT count(*) FROM KSHMT_SHIFT_MASTER WHERE  CID = ?  AND WORKTYPE_CD = ? AND WORKTIME_CD ";  
+		sql = workTimeCd.equals("") ? sql + " IS NULL ": sql + "= ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, companyId);
+			stmt.setString(2, workTypeCd);
+			if(!workTimeCd.equals("")) {
+				stmt.setString(3, workTimeCd);				
+			}
+			ResultSet result = stmt.executeQuery();
+			while (result.next()) {
+				if (result.getInt(1) > 0) {
+					// co data
+					return true;
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return false;
 	}
 
 	@Override

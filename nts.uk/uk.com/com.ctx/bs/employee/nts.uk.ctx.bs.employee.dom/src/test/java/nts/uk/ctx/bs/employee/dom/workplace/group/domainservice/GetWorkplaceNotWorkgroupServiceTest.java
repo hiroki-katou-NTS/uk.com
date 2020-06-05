@@ -8,9 +8,11 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.GetWorkplaceNotWorkgroupService.Require;
@@ -21,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
  *
  */
 
+@RunWith(JMockit.class)
 public class GetWorkplaceNotWorkgroupServiceTest {
 	@Injectable
 	private Require require;
