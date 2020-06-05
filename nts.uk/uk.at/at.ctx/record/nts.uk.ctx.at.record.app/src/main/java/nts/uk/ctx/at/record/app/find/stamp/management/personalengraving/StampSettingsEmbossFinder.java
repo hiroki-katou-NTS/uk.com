@@ -9,14 +9,13 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
@@ -28,10 +27,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetEmpStampDataService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetTimeCardService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataOfEmployees;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
@@ -77,7 +76,7 @@ public class StampSettingsEmbossFinder {
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
 	// 
-	public KDP002AStartPageSettingDto getSettings() {
+	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -102,32 +101,31 @@ public class StampSettingsEmbossFinder {
 			throw new BusinessException("Msg_1645","KDP002_1");
 		}
 		
-		List<StampCard> stampCards = stampCardRepo.getListStampCard(employeeId);
-		
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
-		// 3
+		// 3 DS: タイムカードを取得する
 		TimeCard timeCard = getTimeCard(employeeId, GeneralDate.today());
 
-		// 4
+		// 4  DS 社員の打刻一覧を取得する
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
-		List<StampDataOfEmployees> employeeStampDatas = getEmployeeStampDatas(period, employeeId);
+		List<EmployeeStampInfo> employeeStampDatas = getEmployeeStampDatas(period, employeeId);
 
-		// 5
+		// 5 抑制する打刻種類を取得する
 		StampToSuppress stampToSuppress = getStampToSuppress(employeeId);
 
-		return new KDP002AStartPageSettingDto(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress, stampCards);
+		return new KDP002AStartPageOutput(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
 	}
 	
-	public List<StampDataOfEmployees> getEmployeeStampDatas(DatePeriod period, String employeeId) {
-		List<StampDataOfEmployees> employeeStampDatas = new ArrayList<>();
+	public List<EmployeeStampInfo> getEmployeeStampDatas(DatePeriod period, String employeeId) {
+		List<EmployeeStampInfo> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
 				stampDakokuRepo);
 		List<GeneralDate> betweens = period.datesBetween();
 		betweens.sort((d1, d2) -> d2.compareTo(d1));
 		for (GeneralDate date : betweens) {
-			Optional<StampDataOfEmployees> employeeStampData = GetEmpStampDataService.get(empStampDataR, employeeId,
+			// 4  DS 社員の打刻一覧を取得する
+			Optional<EmployeeStampInfo> employeeStampData = GetListStampEmployeeService.get(empStampDataR, employeeId,
 					date);
 			if (employeeStampData.isPresent()) {
 				employeeStampDatas.add(employeeStampData.get());
@@ -163,7 +161,7 @@ public class StampSettingsEmbossFinder {
 	}
 
 	@AllArgsConstructor
-	private class EmpStampDataRequiredImpl implements GetEmpStampDataService.Require {
+	private class EmpStampDataRequiredImpl implements GetListStampEmployeeService.Require {
 
 		@Inject
 		protected StampCardRepository stampCardRepo;

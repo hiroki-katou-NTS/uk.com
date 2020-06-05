@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 @Data
 @NoArgsConstructor
@@ -52,7 +53,8 @@ public class FlexTimeOfMonthlyDto implements ItemConst {
 				new AttendanceTimeMonth(shortageTime),
 				carryforwardTime == null ? new FlexCarryforwardTime() : carryforwardTime.toDomain(),
 				excessOutsideTime == null ? new FlexTimeOfExcessOutsideTime() : excessOutsideTime.toDmain(),
-				shortDeductTime == null ? new FlexShortDeductTime() : shortDeductTime.toDomain());
+				shortDeductTime == null ? new FlexShortDeductTime() : shortDeductTime.toDomain(),
+				new AttendanceTimeMonthWithMinus(0));
 	}
 
 	public static FlexTimeOfMonthlyDto from(FlexTimeOfMonthly domain) {

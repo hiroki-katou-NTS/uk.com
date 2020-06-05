@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -9,7 +11,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichu_ishida
  */
 @Getter
-public class AddedVacationUseTime {
+public class AddedVacationUseTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 月単位の加算時間 */
 	private AttendanceTimeMonth addTimePerMonth;

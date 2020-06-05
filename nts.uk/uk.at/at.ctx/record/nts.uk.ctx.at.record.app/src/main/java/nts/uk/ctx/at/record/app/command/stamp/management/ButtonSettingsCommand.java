@@ -56,15 +56,19 @@ public class ButtonSettingsCommand {
 		ButtonDisSet buttonDisSets = new ButtonDisSet(buttonNameSet, backGroundColors);
 
 		ReservationArt reservationArt = EnumAdaptor.valueOf(x.getButtonType().getReservationArt(), ReservationArt.class);
-		GoingOutReason goOutArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
-		SetPreClockArt setPreClockArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
-				SetPreClockArt.class);
-		ChangeClockArt changeClockArt = x.getButtonType().getStampType().getChangeClockArt() != null ? EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
-				ChangeClockArt.class) : null;
-		ChangeCalArt changeCalArt = EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
-				ChangeCalArt.class);
-		StampType stampType = new StampType(x.getButtonType().getStampType().isChangeHalfDay(), goOutArt, setPreClockArt,
-				changeClockArt, changeCalArt);
+		StampType stampType = null;
+		
+		if(x.getButtonType().getReservationArt() == 0) {
+			GoingOutReason goOutArt = x.getButtonType().getStampType().getGoOutArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getGoOutArt(), GoingOutReason.class);
+			SetPreClockArt setPreClockArt = x.getButtonType().getStampType().getSetPreClockArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getSetPreClockArt(),
+					SetPreClockArt.class);
+			ChangeClockArt changeClockArt = x.getButtonType().getStampType().getChangeClockArt() != null ? EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeClockArt(),
+					ChangeClockArt.class) : null;
+			ChangeCalArt changeCalArt = x.getButtonType().getStampType().getChangeCalArt() == null ? null : EnumAdaptor.valueOf(x.getButtonType().getStampType().getChangeCalArt(),
+					ChangeCalArt.class);
+			stampType = StampType.getStampType(x.getButtonType().getStampType().getChangeHalfDay() == null ? null : x.getButtonType().getStampType().getChangeHalfDay(), goOutArt, setPreClockArt,
+					changeClockArt, changeCalArt);
+		}
 		
 		ButtonType buttonType = new ButtonType(reservationArt, Optional.of(stampType));
 

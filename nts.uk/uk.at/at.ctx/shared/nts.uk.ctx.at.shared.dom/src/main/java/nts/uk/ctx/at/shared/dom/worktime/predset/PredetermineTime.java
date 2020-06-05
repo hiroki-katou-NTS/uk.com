@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -16,7 +18,10 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 @Getter
 @NoArgsConstructor
 // 所定時間
-public class PredetermineTime extends WorkTimeDomainObject implements Cloneable{
+public class PredetermineTime extends WorkTimeDomainObject implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The add time. */
 	// 就業加算時間

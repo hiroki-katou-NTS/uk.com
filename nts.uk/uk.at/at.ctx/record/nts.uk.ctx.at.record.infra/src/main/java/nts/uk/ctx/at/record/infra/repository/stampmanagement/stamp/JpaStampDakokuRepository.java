@@ -134,7 +134,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
-				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
+				stamp.getType().getSetPreClockArt().value, stamp.getType().getChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
 				stamp.getRefActualResults().getCardNumberSupport().isPresent()
@@ -162,69 +162,88 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
+		GeoCoordinate geoLocation = null;
+		if (entity.locationLat !=  null && entity.locationLon != null){
+			geoLocation = new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue()); 
+		}
 		val stampNumber = new StampNumber(entity.pk.cardNumber);
 		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
-		val stampType = new StampType(entity.changeHalfDay,
+		val stampType = StampType.getStampType(entity.changeHalfDay,
 				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 				ChangeCalArt.valueOf(entity.changeCalArt));
+		
+		OvertimeDeclaration overtime = entity.overTime == null ? null
+				: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+						new AttendanceTime(entity.lateNightOverTime));
+						
 		val refectActualResult = new RefectActualResult(entity.suportCard,
 				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-				entity.overTime == null ? null
-						: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-								new AttendanceTime(entity.lateNightOverTime)));
-		val locationInfor = entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()));
-		return new Stamp(new ContractCode(""),stampNumber, entity.pk.stampDateTime,
-				relieve, stampType, refectActualResult,
-				entity.reflectedAtr, locationInfor
-		);
+				overtime );
+		
+		val locationInfor = new StampLocationInfor(entity.outsideAreaArt == null ? false : entity.outsideAreaArt ,	
+				geoLocation);
+		
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		return new Stamp(contractCd, stampNumber, entity.pk.stampDateTime,
+						relieve, stampType, refectActualResult,
+						entity.reflectedAtr, locationInfor);
+
 	}
 	
-private Stamp toDomainVer2(Object[] object) {
-	String workLocationName = (String) object[0];
-	KrcdtStamp entity = (KrcdtStamp) object[1];
-	Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
-				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
-						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
-						ChangeCalArt.valueOf(entity.changeCalArt)),
+	private Stamp toDomainVer2(Object[] object) {
+		String workLocationName = (String) object[0];
+		KrcdtStamp entity = (KrcdtStamp) object[1];
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
+					StampType.getStampType(entity.changeHalfDay,
+							entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
+							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+							ChangeCalArt.valueOf(entity.changeCalArt)),
 
-				new RefectActualResult(entity.suportCard,
-						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
-						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-						entity.overTime == null ? null
-								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-										new AttendanceTime(entity.lateNightOverTime))),
 
-				entity.reflectedAtr,
-				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
-		);
-	return stamp;
+					new RefectActualResult(entity.suportCard,
+							entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+							entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+							entity.overTime == null ? null
+									
+									: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+											new AttendanceTime(entity.lateNightOverTime))),
+
+					entity.reflectedAtr,
+					entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
+			);
+		return stamp;
 	}
-private Stamp toDomainVer3(Object[] object) {
-	String personId = (String) object[0];
-	String workLocationName = (String) object[1];
-	KrcdtStamp entity = (KrcdtStamp) object[2];
-	Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
-				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-				new StampType(entity.changeHalfDay,
-						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
-						ChangeCalArt.valueOf(entity.changeCalArt)),
 
-				new RefectActualResult(entity.suportCard,
-						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
-						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-						entity.overTime == null ? null
-								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-										new AttendanceTime(entity.lateNightOverTime))),
+	private Stamp toDomainVer3(Object[] object) {
+		String personId = (String) object[0];
+		String workLocationName = (String) object[1];
+		KrcdtStamp entity = (KrcdtStamp) object[2];
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
+					StampType.getStampType(entity.changeHalfDay,
+							entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
+							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+							ChangeCalArt.valueOf(entity.changeCalArt)),
 
-				entity.reflectedAtr,
-				entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
-		);
-	return stamp;
+					new RefectActualResult(entity.suportCard,
+							entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+							entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+							entity.overTime == null ? null
+									: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+											new AttendanceTime(entity.lateNightOverTime))),
+
+					entity.reflectedAtr,
+					entity.outsideAreaArt == null ? null : new StampLocationInfor(entity.outsideAreaArt, new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()))
+			);
+		return stamp;
 	}
 
 	@Override

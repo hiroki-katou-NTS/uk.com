@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.excessoutside;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,13 @@ import lombok.val;
 
 /**
  * 時間外超過　（内訳ごと）
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class ExcessOutSideWorkEachBreakdown {
+public class ExcessOutSideWorkEachBreakdown implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 内訳NO */
 	private int breakdownNo;

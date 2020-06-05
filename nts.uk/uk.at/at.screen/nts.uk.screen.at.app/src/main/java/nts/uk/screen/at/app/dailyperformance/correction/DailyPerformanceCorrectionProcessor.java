@@ -33,6 +33,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
@@ -154,7 +156,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcesso
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -486,7 +487,7 @@ public class DailyPerformanceCorrectionProcessor {
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false, lockApproval = false;
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
 				//set disable and lock
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, mode, data.isApproval(), data.isSign());
@@ -497,7 +498,15 @@ public class DailyPerformanceCorrectionProcessor {
 					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
 					lockDaykWpl = lockDay || lockWpl;
-					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,
+					if(dataApproval != null) {
+						if(!dataApproval.isStatusNormal()) {
+							lockApproval = dataApproval.getPermissionCheck() == ReleasedAtr.CAN_IMPLEMENT ? false : true;
+						} else {
+							lockApproval = dataApproval.getPermissionRelease() == ReleasedAtr.CAN_IMPLEMENT ? false : true;
+						}
+					}
+					
+					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, lockApproval, lockHist,
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
 				} else {
 					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, false, lockHist,

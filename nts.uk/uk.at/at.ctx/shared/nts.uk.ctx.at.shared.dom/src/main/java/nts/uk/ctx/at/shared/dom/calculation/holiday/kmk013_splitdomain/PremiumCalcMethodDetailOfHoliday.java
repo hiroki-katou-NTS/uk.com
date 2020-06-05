@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -15,7 +17,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 // 休暇の割増計算方法詳細
 @NoArgsConstructor
 @Getter
-public class PremiumCalcMethodDetailOfHoliday extends DomainObject{
+public class PremiumCalcMethodDetailOfHoliday extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
+	
 	// 休暇分を含める設定
 	private IncludeHolidaysPremiumCalcDetailSet includeVacationSet;
 	

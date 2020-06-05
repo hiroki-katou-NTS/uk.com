@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot.overtime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
@@ -13,7 +15,10 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
  */
 // 超過時間
 @Getter
-public class Overtime extends DomainObject{
+public class Overtime extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The super holiday 60 H occurs. */
 	// 60H超休が発生する

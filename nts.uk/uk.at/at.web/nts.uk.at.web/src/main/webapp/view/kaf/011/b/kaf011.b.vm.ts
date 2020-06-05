@@ -246,6 +246,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 //            service.findById(appParam).done((data) => {
             service.startPageBRefactor(appParam).done((data) => {
                 self.setDataFromStart(data);
+                self.absWk().wkTypeCD.valueHasMutated();  
                 if (isReload) {
                     self.start(data.application.applicationDate, false).done(() => {
                         nts.uk.ui.block.clear();
@@ -293,6 +294,34 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 self.version = applicationDto.version;
                 self.dataApplication(applicationDto);
                 self.appType(applicationDto.applicationType);
+                // sort list approval
+                    if(appDetailScreenInfo.approvalLst != undefined && appDetailScreenInfo.approvalLst.length != 0) {
+                        appDetailScreenInfo.approvalLst.forEach((el) => {
+                            if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                    el.listApprovalFrame.forEach((el1) =>{
+                                           if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                               el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                           }
+                                    });
+                                    if(el.listApprovalFrame.length > 1) {
+                                        let arrayTemp = [];
+                                        arrayTemp.push(el.listApprovalFrame[0]);
+                                        if(el.listApprovalFrame[0].listApprover.length == 0) {   
+                                            _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+                                            .forEach(i => arrayTemp.push(i));      
+                                            el.listApprovalFrame = arrayTemp;
+                                        }else {
+                                            el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+                                            
+                                        }
+                                        
+                                        el.listApprovalFrame.forEach((el1, index) =>{            
+                                            el1.frameOrder = index +1;
+                                        });
+                                    }
+                            }
+                        });  
+                    }
                 self.approvalRootState(ko.mapping.fromJS(appDetailScreenInfo.approvalLst)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(applicationDto.reversionReason));
                 if (self.displayReturnReasonPanel()) {
@@ -436,7 +465,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 if (comType) {
                     self.appComSelectedCode(comType);
                 }
-                control.updateWorkingText();
+                if(control.wkTimeCD() != null){
+                    control.updateWorkingText();
+                }
             }
         }
 

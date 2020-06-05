@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -9,10 +11,13 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 月別実績の勤務日数　（詳細）
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class WorkDaysDetailOfMonthly {
+public class WorkDaysDetailOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 日数 */
 	@Setter

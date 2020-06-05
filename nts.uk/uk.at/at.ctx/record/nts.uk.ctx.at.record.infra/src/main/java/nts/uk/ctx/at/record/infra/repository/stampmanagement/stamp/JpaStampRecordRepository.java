@@ -30,8 +30,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " and s.pk.cardNumber in  :cardNumbers " 
-			+ " and s.pk.stampDateTime >= :startStampDate " 
+			+ " where s.pk.cardNumber in  :cardNumbers " 
+			+ " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
