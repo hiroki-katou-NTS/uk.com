@@ -3,7 +3,9 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplaceResult;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
@@ -12,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
  * @author phongtq
  *
  */
+@RunWith(JMockit.class)
 public class WorkplaceReplaceResultTest {
 	AtomTask atomTask =  AtomTask.of(() -> {});
 	
