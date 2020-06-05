@@ -122,7 +122,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" tabindex="9" id="close-button"
-					data-bind="click: registerDailyIdentify, disable : !permissionCheck()">#{i18n.getText('KDP002_62')}</button>
+					data-bind="click: registerDailyIdentify, disable : !permissionCheck(), visible: displayButton">#{i18n.getText('KDP002_62')}</button>
 
 				<button tabindex="9" id="close-button"
 					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>

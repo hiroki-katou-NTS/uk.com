@@ -101,6 +101,29 @@ public class JpaComFlexSettingSetMemento implements ComFlexSettingSetMemento {
 		this.entity.setSpecDecTime(map.get(Month.DECEMBER));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.
+	 * FlexSettingSetMemento#setWeekAveSetting(java.util.List)
+	 */
+	@Override
+	public void setWeekAveSetting(List<MonthlyUnit> weekAveSetting) {
+		Map<Integer, Integer> map = toMonthlyEstimateTimeMap(weekAveSetting);
+		this.entity.setWeekJanTime(map.get(Month.JANUARY));
+		this.entity.setWeekFebTime(map.get(Month.FEBRUARY));
+		this.entity.setWeekMarTime(map.get(Month.MARCH));
+		this.entity.setWeekAprTime(map.get(Month.APRIL));
+		this.entity.setWeekMayTime(map.get(Month.MAY));
+		this.entity.setWeekJunTime(map.get(Month.JUNE));
+		this.entity.setWeekJulTime(map.get(Month.JULY));
+		this.entity.setWeekAugTime(map.get(Month.AUGUST));
+		this.entity.setWeekSepTime(map.get(Month.SEPTEMBER));
+		this.entity.setWeekOctTime(map.get(Month.OCTOBER));
+		this.entity.setWeekNovTime(map.get(Month.NOVEMBER));
+		this.entity.setWeekDecTime(map.get(Month.DECEMBER));
+	}
+	
 	/**
 	 * To monthly estimate time map.
 	 *

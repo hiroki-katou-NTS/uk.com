@@ -8,6 +8,7 @@ public interface ApplicationPub {
 	
 	/**
 	 * requestList #26
+	 * [No.26]社員、期間に一致する申請を取得する
 	 * getApplicationBySID 
 	 * @param employeeID
 	 * @param startDate

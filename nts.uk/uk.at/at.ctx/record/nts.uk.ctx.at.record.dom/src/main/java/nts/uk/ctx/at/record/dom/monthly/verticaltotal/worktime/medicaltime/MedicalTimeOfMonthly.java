@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 
 /**
  * 月別実績の医療時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class MedicalTimeOfMonthly {
+public class MedicalTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 日勤夜勤区分 */
 	private WorkTimeNightShift dayNightAtr;

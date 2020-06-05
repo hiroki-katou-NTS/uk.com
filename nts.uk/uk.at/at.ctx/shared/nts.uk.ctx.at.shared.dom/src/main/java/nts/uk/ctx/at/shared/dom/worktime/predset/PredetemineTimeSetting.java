@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -23,7 +24,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 // 所定時間設定
 @Getter
 @NoArgsConstructor
-public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	// 会社ID

@@ -66,7 +66,7 @@ public class AppEmploymentSettingDto {
 							);
 		}
 		else {
-			return new AppEmploymentSettingDto();
+			return null;
 		}
 		
 	}
@@ -91,7 +91,7 @@ public class AppEmploymentSettingDto {
 							).collect(Collectors.toList())
 							);
 		}else {
-			return new AppEmploymentSettingDto();
+			return null;
 		}
 		
 	}

@@ -104,15 +104,20 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 		}
 		MonthlyUnit statutorySetting = list.get().getStatutoryList().stream().filter(m -> m.getMonth().v() == yearMonth.month()).findFirst().orElse(null);
 		MonthlyUnit specifiedSetting = list.get().getSpecifiedList().stream().filter(m -> m.getMonth().v() == yearMonth.month()).findFirst().orElse(null);
+		MonthlyUnit weekAveSetting = list.get().getWeekAveList().stream().filter(m -> m.getMonth().v() == yearMonth.month()).findFirst().orElse(null);
 		MonthlyEstimateTime statutorytime = new MonthlyEstimateTime(0);
 		MonthlyEstimateTime specified = new MonthlyEstimateTime(0);
+		MonthlyEstimateTime weekAve = new MonthlyEstimateTime(0);
 		if(statutorySetting!=null) {
 			statutorytime = statutorySetting.getMonthlyTime();
 		}
 		if(specifiedSetting!=null) {
 			specified = specifiedSetting.getMonthlyTime();
 		}
-		return new MonthlyFlexStatutoryLaborTime(statutorytime,specified);
+		if (weekAveSetting != null){
+			weekAve = weekAveSetting.getMonthlyTime();
+		}
+		return new MonthlyFlexStatutoryLaborTime(statutorytime,specified,weekAve);
 	}
 	
 	
@@ -221,7 +226,10 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 			if(usageUnitSetting.get().isEmployee()) {//社員の労働時間を管理する場合
 				val result = shainFlexSettingRepository.find(companyId, employeeId, yearMonth.year());
 				if(result.isPresent()) {
-					return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
+					return Optional.of(new MonthlyFlexStatutoryLaborTimeList(
+							result.get().getSpecifiedSetting(),
+							result.get().getStatutorySetting(),
+							result.get().getWeekAveSetting()));
 				}
 			}
 			if(usageUnitSetting.get().isWorkPlace()) {//職場の労働時間を管理する場合
@@ -230,7 +238,10 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 				for(String workPlaceId:workPlaceIdList) {
 					val result = wkpFlexSettingRepository.find(companyId, workPlaceId, yearMonth.year());
 					if(result.isPresent()) {
-						return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
+						return Optional.of(new MonthlyFlexStatutoryLaborTimeList(
+								result.get().getSpecifiedSetting(),
+								result.get().getStatutorySetting(),
+								result.get().getWeekAveSetting()));
 					}
 				}
 			}
@@ -238,13 +249,19 @@ public class MonthlyStatutoryWorkingHoursImpl implements MonthlyStatutoryWorking
 				//雇用別設定の取得
 				val result = empFlexSettingRepository.find(companyId, employmentCd, yearMonth.year());
 				if(result.isPresent()) {
-					return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
+					return Optional.of(new MonthlyFlexStatutoryLaborTimeList(
+							result.get().getSpecifiedSetting(),
+							result.get().getStatutorySetting(),
+							result.get().getWeekAveSetting()));
 				}
 			}
 			//会社別設定の取得
 			val result = comFlexSettingRepository.find(companyId, yearMonth.year());
 			if(result.isPresent()) {
-				return Optional.of(new MonthlyFlexStatutoryLaborTimeList(result.get().getSpecifiedSetting(),result.get().getStatutorySetting()));
+				return Optional.of(new MonthlyFlexStatutoryLaborTimeList(
+						result.get().getSpecifiedSetting(),
+						result.get().getStatutorySetting(),
+						result.get().getWeekAveSetting()));
 			}
 		}	
 		return Optional.empty();

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 
 /**
  * 集計設定の取得（フレックス）
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetFlexAggrSet {
 

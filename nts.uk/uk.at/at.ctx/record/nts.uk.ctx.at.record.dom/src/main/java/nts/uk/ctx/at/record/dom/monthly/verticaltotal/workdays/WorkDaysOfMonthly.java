@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -30,7 +32,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author shuichi_ishida
  */
 @Getter
-public class WorkDaysOfMonthly {
+public class WorkDaysOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 出勤日数 */
 	private AttendanceDaysOfMonthly attendanceDays;

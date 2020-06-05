@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +17,17 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 控除の日数と時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class DeductDaysAndTime {
+public class DeductDaysAndTime implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 年休控除日数 */
 	private AttendanceDaysMonth annualLeaveDeductDays;
@@ -34,6 +40,14 @@ public class DeductDaysAndTime {
 	private Optional<PredetemineTimeSetting> predetermineTimeSetOfWeekDay;
 	/** エラー情報リスト */
 	private List<MonthlyAggregationErrorInfo> errorInfos;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ

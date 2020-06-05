@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -12,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 @Getter
 @NoArgsConstructor
-public class WorkTypeSet implements Cloneable{
+public class WorkTypeSet implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
     
 	/**
 	 * 会社ID

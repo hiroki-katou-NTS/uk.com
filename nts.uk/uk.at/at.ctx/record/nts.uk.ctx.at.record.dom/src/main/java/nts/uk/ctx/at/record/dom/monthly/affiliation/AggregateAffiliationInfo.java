@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.affiliation;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
@@ -12,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  * @author shuichu_ishida
  */
 @Getter
-public class AggregateAffiliationInfo {
+public class AggregateAffiliationInfo implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 雇用コード */
 	private EmploymentCode employmentCd;

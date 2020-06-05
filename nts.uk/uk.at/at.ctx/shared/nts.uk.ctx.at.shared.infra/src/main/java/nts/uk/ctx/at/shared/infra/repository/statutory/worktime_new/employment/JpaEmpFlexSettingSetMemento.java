@@ -80,4 +80,12 @@ public class JpaEmpFlexSettingSetMemento extends JpaDefaultSettingSetMemento imp
 	public void setSpecifiedSetting(List<MonthlyUnit> specifiedSetting) {
 		setSpecSettingToFlexSet(this.entity, specifiedSetting);
 	}
+	
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingSetMemento#setWeekAveSetting(java.util.List)
+	 */
+	@Override
+	public void setWeekAveSetting(List<MonthlyUnit> weekAveSetting) {
+		setWeekSettingToFlexSet(this.entity, weekAveSetting);
+	}
 }

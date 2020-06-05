@@ -56,15 +56,20 @@ public class RegisterStampDataCommand {
 	}
 
 	public ButtonType toButtonType() {
-		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
-				SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockArt.valueOf(changeClockArt),
-				ChangeCalArt.valueOf(changeCalArt));
-		return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
+		
+			StampType stampType = StampType.getStampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
+					SetPreClockArt.valueOf(setPreClockArt), changeClockArt == null ? null : ChangeClockArt.valueOf(changeClockArt),
+					ChangeCalArt.valueOf(changeCalArt));
+		
+		if(reservationArt != 2 && reservationArt != 1) {
+			return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
+		}
+		return new ButtonType(ReservationArt.valueOf(reservationArt), null);
 	}
 
 	public RefectActualResult toRefectActualResult() {
 		return new RefectActualResult(cardNumberSupport, new WorkLocationCD(workLocationCD),
-				new WorkTimeCode(workTimeCode),
+				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null);
 	}
 	
