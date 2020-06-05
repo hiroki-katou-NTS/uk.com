@@ -120,7 +120,7 @@ public class ReplaceWorkplacesServiceTest {
 		lstWorkplaceId.forEach(wKPID -> {
 			WorkplaceReplaceResult workplaceReplaceResult = AddWplOfWorkGrpService.addWorkplace(require,
 					DomainServiceHelper.Helper.DUMMY, wKPID);
-			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult.add(atomTakss));
+			dateHistLst.put("000000000000000000000000000000000013", workplaceReplaceResult);
 		});
 
 		List<String> resultProcessData = dateHistLst.entrySet().stream().map(x -> (String) x.getKey())
