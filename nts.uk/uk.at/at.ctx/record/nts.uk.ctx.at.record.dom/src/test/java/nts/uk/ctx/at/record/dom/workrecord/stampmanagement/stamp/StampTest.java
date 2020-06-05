@@ -32,9 +32,11 @@ public class StampTest {
 		Relieve relieve = StampHelper.getRelieveDefault();
 		StampType type = StampHelper.getStampTypeDefault();
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
-		StampLocationInfor locationInfor = StampHelper.getStampLocationInforDefault();
+		Optional<StampLocationInfor> locationInfor = Optional.ofNullable(StampHelper.getStampLocationInforDefault()) ;
 		ContractCode contactCode = new ContractCode("aaaa");
-		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, true , locationInfor);
+		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, true , locationInfor,
+				Optional.empty()
+				);
 		NtsAssert.invokeGetters(stamp);
 	}
 	

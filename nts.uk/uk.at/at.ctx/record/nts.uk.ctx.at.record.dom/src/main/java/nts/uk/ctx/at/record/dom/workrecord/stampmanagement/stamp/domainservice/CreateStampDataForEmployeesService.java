@@ -72,8 +72,8 @@ public class CreateStampDataForEmployeesService {
 			
 		}
 		//	$打刻データ = 打刻#初回打刻データを作成する(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, 打刻する方法,ボタン種類.打刻種類, 実績への反映内容, 打刻場所情報)	
-		Stamp stamp = new Stamp(contractCode, new StampNumber(stampResult.getCardNumber()) , stampDateTime, relieve, buttonType.getStampType().get(),
-				refActualResults, stampLocationInfor);
+		Stamp stamp = new Stamp(contractCode, new StampNumber(stampResult.getCardNumber()), stampDateTime, relieve,
+				buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
 		//	$打刻反映結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, $打刻データ)			
 		

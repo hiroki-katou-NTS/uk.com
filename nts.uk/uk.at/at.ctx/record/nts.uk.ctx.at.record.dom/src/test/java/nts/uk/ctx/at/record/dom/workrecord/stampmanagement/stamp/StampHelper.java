@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -45,9 +46,11 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
-				false,
-				new StampLocationInfor(
-						getGeoCoordinateDefault(),false));
+				false,Optional.ofNullable(new StampLocationInfor(
+						getGeoCoordinateDefault(),false))
+				,
+				Optional.empty()
+				);
 	}
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
 		return new Stamp(new ContractCode("DUMMY"),
@@ -69,11 +72,13 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-				false,
+				false,Optional.ofNullable(
 				new StampLocationInfor(
 						getGeoCoordinateDefault(),
 						false
-						));
+						)),
+				Optional.empty()
+				);
 	}
 	public static List<Stamp> getListStampDefault() {
 		List<Stamp> data = new ArrayList<>();
@@ -85,8 +90,10 @@ public class StampHelper {
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,
-				new StampLocationInfor(getGeoCoordinateDefault(),false)));
+				false,Optional.ofNullable(
+				new StampLocationInfor(getGeoCoordinateDefault(),false)),
+				Optional.empty())
+				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
@@ -94,8 +101,10 @@ public class StampHelper {
 				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,
-				new StampLocationInfor(getGeoCoordinateDefault(),false)));
+				false,Optional.ofNullable(
+				new StampLocationInfor(getGeoCoordinateDefault(),false)),
+				Optional.empty())
+				);
 		return data;
 	}
 	

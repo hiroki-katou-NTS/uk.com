@@ -189,32 +189,32 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						entity.reflectedAtr, locationInfor);
+						entity.reflectedAtr, Optional.ofNullable(locationInfor), Optional.empty());
 
 	}
 	
 	private Stamp toDomainVer2(Object[] object) {
 		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
-		
-			Stamp stamp =  new Stamp(
-					new ContractCode(entity.contractCd),
-					new StampNumber(entity.pk.cardNumber), 
-					entity.pk.stampDateTime,
-					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-					new StampType(entity.changeHalfDay,
-					entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-					SetPreClockArt.valueOf(entity.preClockArt), 
-					ChangeClockArt.valueOf(entity.changeClockArt),
-					ChangeCalArt.valueOf(entity.changeCalArt)),
-					new RefectActualResult(entity.suportCard,
-					entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
-					entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-					entity.overTime == null ? null: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-					new AttendanceTime(entity.lateNightOverTime))),
-					entity.reflectedAtr,
-					entity.outsideAreaArt == null ? null : new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)
-					)
+
+		Stamp stamp = new Stamp(new ContractCode(entity.contractCd), new StampNumber(entity.pk.cardNumber),
+				entity.pk.stampDateTime,
+				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
+				new StampType(entity.changeHalfDay,
+						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
+						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
+						ChangeCalArt.valueOf(entity.changeCalArt)),
+				new RefectActualResult(entity.suportCard,
+						entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
+						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
+						entity.overTime == null ? null
+								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
+										new AttendanceTime(entity.lateNightOverTime))),
+				entity.reflectedAtr,
+				Optional.ofNullable(entity.outsideAreaArt == null ? null
+						: new StampLocationInfor(
+								new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue()),
+								entity.outsideAreaArt)), Optional.empty())
 			;
 		return stamp;
 	}
@@ -240,7 +240,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 											new AttendanceTime(entity.lateNightOverTime))),
 
 					entity.reflectedAtr,
-					entity.outsideAreaArt == null ? null : new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)
+					Optional.ofNullable(entity.outsideAreaArt == null ? null : new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)),
+					Optional.empty()
 			);
 		return stamp;
 	}
