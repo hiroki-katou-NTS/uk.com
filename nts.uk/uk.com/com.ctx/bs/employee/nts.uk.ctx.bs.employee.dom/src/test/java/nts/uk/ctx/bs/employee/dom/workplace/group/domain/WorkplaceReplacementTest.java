@@ -3,9 +3,12 @@ package nts.uk.ctx.bs.employee.dom.workplace.group.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceReplacement;
 
+@RunWith(JMockit.class)
 public class WorkplaceReplacementTest {
 	@Test
 	public void testCheckWplReplaceTrue() {
