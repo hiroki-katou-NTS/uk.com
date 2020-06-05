@@ -38,11 +38,17 @@ module nts.uk.at.view.kdp010.g {
 				self.pageName.subscribe(function(codeChanged: string) {
 					self.pageName($.trim(self.pageName()));
 				});
+				
 
 				self.selectedPage.subscribe((newValue) => {
+					nts.uk.ui.block.grayout();
+					//setTimeout(function(){ 
 					self.checkLayout(false);
 					self.startPage();
 					nts.uk.ui.errors.clearAll();
+					nts.uk.ui.block.clear();
+					 //}, 500);
+					
 				})
 			}
             /**
@@ -124,7 +130,6 @@ module nts.uk.at.view.kdp010.g {
 					self.registrationLayout();
 					dfd.resolve();
 				}
-
 				return dfd.promise();
 
 			}
@@ -153,6 +158,14 @@ module nts.uk.at.view.kdp010.g {
 					}
 					self.dataKdpH = data;
 				}
+				
+				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo){
+					let data = {
+						dataShare: self.dataShare,
+						buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
+					}
+					self.dataKdpH = data;
+				}
 				// Data from Screen 
 				let lstButton = new Array<model.ButtonSettingsCommand>();
 				let stampTypes = null;
@@ -161,11 +174,11 @@ module nts.uk.at.view.kdp010.g {
 					_.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
 						if (item.buttonType.reservationArt == 0) {
 							stampTypes = new model.StampTypeCommand({
-								changeHalfDay: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeHalfDay == 0 ? false : true,
-								goOutArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.goOutArt,
-								setPreClockArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.setPreClockArt,
-								changeClockArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeClockArt,
-								changeCalArt: _.isEmpty(item.buttonType.stampType) ? null : item.buttonType.stampType.changeCalArt
+								changeHalfDay: item.buttonType.stampType.changeHalfDay == 0 ? false : true,
+								goOutArt: item.buttonType.stampType.goOutArt,
+								setPreClockArt: item.buttonType.stampType.setPreClockArt,
+								changeClockArt: item.buttonType.stampType.changeClockArt,
+								changeCalArt: item.buttonType.stampType.changeCalArt
 							});
 							
 						} else {

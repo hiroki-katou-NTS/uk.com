@@ -74,7 +74,9 @@ public class RouteConfirmStatus {
 	 */
 	private ApprovalActionByEmp actionFor(String approverId, List<String> representRequesterIds) {
 		if (!phases.canApprove(approverId, representRequesterIds)) {
-			return ApprovalActionByEmp.NOT_APPROVAL;
+			return phases.hasApprovedBy(approverId) 
+					? ApprovalActionByEmp.APPROVALED 
+					: ApprovalActionByEmp.NOT_APPROVAL;
 		}
 		
 		return phases.hasApprovedBy(approverId)

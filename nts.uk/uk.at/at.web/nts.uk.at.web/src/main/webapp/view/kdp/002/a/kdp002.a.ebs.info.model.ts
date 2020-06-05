@@ -41,6 +41,7 @@ class EmbossGridInfo {
         let self = this;
         if (self.displayMethod() == self.displayType.DISPLAY) {
             let idx = 1;
+            items = _.orderBy(items, ['stampDate', 'stampTime'], ['desc', 'desc']);
             items.forEach(stampData => {
                 stampData.code = ++idx;
                 let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
@@ -59,7 +60,7 @@ class EmbossGridInfo {
                 } else if (stampData.changeClockArt == 1) {
                     stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.timeStampType + '</div>';
                 } else {
-                    stampData.timeStampType = `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>';
+                    stampData.timeStampType = stampData.timeStampType ? `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>' : '';
                 }
 
             });

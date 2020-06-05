@@ -47,14 +47,16 @@ public class GetListStampEmployeeService {
 	private static List<StampInfoDisp> createEmpStampInfo(List<StampRecord> listStampRecord,List<Stamp> listStamp) {
 		List<StampInfoDisp> datas = new ArrayList<>();
 		for (StampRecord stampRecord : listStampRecord) {
+			Stamp correctStamp = null;
 			for (Stamp stamp : listStamp) {
 				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
 						&& stampRecord.getStampDateTime().equals(stamp.getStampDateTime())) {
-					datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
-							stampRecord, Optional.of(stamp)));
+					correctStamp = stamp;
 					break;
 				}
 			}
+			datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
+					stampRecord, Optional.ofNullable(correctStamp)));
 		}
 		return datas;
 	}

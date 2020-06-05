@@ -39,13 +39,16 @@ module nts.uk.com.view.cdl008.a {
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultipleSelect = inputCDL008.isMultiple;
-                    let currentDialog = nts.uk.ui.windows.getSelf();
-                    // currentDialog.setSize(400, 500);
-                    if(self.isMultipleSelect) {
-                        currentDialog.setHeight(570);
-                    } else {
-                        currentDialog.setWidth(500);
-                    }
+                    
+                    ko.tasks.schedule(() => { 
+                        let currentDialog = nts.uk.ui.windows.getSelf();
+                        if(self.isMultipleSelect) {
+                            currentDialog.setHeight(570);
+                        } else {
+                            currentDialog.setWidth(500);
+                        }
+                    });
+                    
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
                     } else {
