@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,10 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @Builder
 // 時間休暇加算設定
-public class TimeHolidayAdditionSet extends DomainObject{
+public class TimeHolidayAdditionSet extends DomainObject implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** The adding method. */
 	// 加算方法

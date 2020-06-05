@@ -77,10 +77,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
@@ -240,8 +240,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	GetHolidayWorkAndTransferOrder getHolidayWorkAndTransferOrder();
 	/** 残業枠の役割 */
 	RoleOvertimeWorkRepository getRoleOverTimeFrame();
-	/** 休出枠の役割 */
-	RoleOfOpenPeriodRepository getRoleHolidayWorkFrame();
+	/** 休出枠 */
+	WorkdayoffFrameRepository getWorkdayoffFrame();
 	/** 月次集計の法定内振替順設定の取得 */
 	LegalTransferOrderSetOfAggrMonthlyRepository getLegalTransferOrderSetOfAggrMonthly();
 	/** 休日加算設定 */

@@ -38,6 +38,9 @@ public class FlexSettingDto {
 	/** The specified setting. */
 	protected List<MonthlyUnitDto> specifiedSetting;
 
+	/** The week average setting. */
+	protected List<MonthlyUnitDto> weekAveSetting;
+	
 	public FlexSettingDto() {
 		super();
 	}
@@ -49,7 +52,8 @@ public class FlexSettingDto {
 	 * @return the com flex setting
 	 */
 	public ComFlexSetting toDomain(int year) {
-		return new ComFlexSetting(new ComFlexSettingMemento(year, this.statutorySetting, this.specifiedSetting));
+		return new ComFlexSetting(new ComFlexSettingMemento(year,
+				this.statutorySetting, this.specifiedSetting, this.weekAveSetting));
 	}
 	
 	/**
@@ -60,7 +64,8 @@ public class FlexSettingDto {
 	 * @return the shain flex setting
 	 */
 	public ShainFlexSetting toShainDomain(int year, String employeeId) {
-		return new ShainFlexSetting(new ShainFlexSettingMemento(year, employeeId, this.statutorySetting, this.specifiedSetting));
+		return new ShainFlexSetting(new ShainFlexSettingMemento(year, employeeId,
+				this.statutorySetting, this.specifiedSetting, this.weekAveSetting));
 	}
 	
 	/**
@@ -71,7 +76,8 @@ public class FlexSettingDto {
 	 * @return the emp flex setting
 	 */
 	public EmpFlexSetting toEmpDomain(int year, String employeeId) {
-		return new EmpFlexSetting(new EmpFlexSettingMemento(year, employeeId, this.statutorySetting, this.specifiedSetting));
+		return new EmpFlexSetting(new EmpFlexSettingMemento(year, employeeId,
+				this.statutorySetting, this.specifiedSetting, this.weekAveSetting));
 	}
 	
 	/**
@@ -91,6 +97,9 @@ public class FlexSettingDto {
 		/** The specified setting. */
 		private List<MonthlyUnitDto> specifiedSetting;
 		
+		/** The week average setting. */
+		private List<MonthlyUnitDto> weekAveSetting;
+		
 		/**
 		 * Instantiates a new emp flex setting memento.
 		 *
@@ -98,12 +107,15 @@ public class FlexSettingDto {
 		 * @param emplCode the empl code
 		 * @param statutorySetting the statutory setting
 		 * @param specifiedSetting the specified setting
+		 * @param weekAveSetting the week average setting
 		 */
-		public EmpFlexSettingMemento(int year, String emplCode, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
+		public EmpFlexSettingMemento(int year, String emplCode, List<MonthlyUnitDto> statutorySetting,
+				List<MonthlyUnitDto> specifiedSetting, List<MonthlyUnitDto> weekAveSetting) {
 			this.year = year;
 			this.emplCode = emplCode;
 			this.statutorySetting = statutorySetting;
 			this.specifiedSetting = specifiedSetting;
+			this.weekAveSetting = weekAveSetting;
 		}
 
 		/* 
@@ -130,6 +142,14 @@ public class FlexSettingDto {
 			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
 		}
 
+		/*
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getWeekAveSetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getWeekAveSetting() {
+			return this.weekAveSetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+		
 		/* 
 		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingGetMemento#getCompanyId()
 		 */
@@ -166,6 +186,9 @@ public class FlexSettingDto {
 		
 		/** The specified setting. */
 		private List<MonthlyUnitDto> specifiedSetting;
+		
+		/** The week average setting. */
+		private List<MonthlyUnitDto> weekAveSetting;
 
 		/**
 		 * Instantiates a new com flex setting memento.
@@ -173,11 +196,14 @@ public class FlexSettingDto {
 		 * @param year the year
 		 * @param statutorySetting the statutory setting
 		 * @param specifiedSetting the specified setting
+		 * @param weekAveSetting the week average setting
 		 */
-		public ComFlexSettingMemento(int year, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
+		public ComFlexSettingMemento(int year, List<MonthlyUnitDto> statutorySetting,
+				List<MonthlyUnitDto> specifiedSetting, List<MonthlyUnitDto> weekAveSetting) {
 			this.year = year;
 			this.statutorySetting = statutorySetting;
 			this.specifiedSetting = specifiedSetting;
+			this.weekAveSetting = weekAveSetting;
 		}
 
 		/* 
@@ -204,6 +230,14 @@ public class FlexSettingDto {
 			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
 		}
 
+		/*
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getWeekAveSetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getWeekAveSetting() {
+			return this.weekAveSetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+		
 		/* 
 		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSettingGetMemento#getCompanyId()
 		 */
@@ -236,6 +270,9 @@ public class FlexSettingDto {
 		/** The specified setting. */
 		private List<MonthlyUnitDto> specifiedSetting;
 
+		/** The week average setting. */
+		private List<MonthlyUnitDto> weekAveSetting;
+		
 		/**
 		 * Instantiates a new shain flex setting memento.
 		 *
@@ -243,12 +280,15 @@ public class FlexSettingDto {
 		 * @param employeeId the employee id
 		 * @param statutorySetting the statutory setting
 		 * @param specifiedSetting the specified setting
+		 * @param weekAveSetting the week average setting
 		 */
-		public ShainFlexSettingMemento(int year, String employeeId, List<MonthlyUnitDto> statutorySetting, List<MonthlyUnitDto> specifiedSetting) {
+		public ShainFlexSettingMemento(int year, String employeeId, List<MonthlyUnitDto> statutorySetting,
+				List<MonthlyUnitDto> specifiedSetting, List<MonthlyUnitDto> weekAveSetting) {
 			this.year = year;
 			this.employeeId = employeeId;
 			this.statutorySetting = statutorySetting;
 			this.specifiedSetting = specifiedSetting;
+			this.weekAveSetting = weekAveSetting;
 		}
 
 		/* 
@@ -273,6 +313,14 @@ public class FlexSettingDto {
 		@Override
 		public List<MonthlyUnit> getSpecifiedSetting() {
 			return this.specifiedSetting.stream().map(funcMap).collect(Collectors.toList());
+		}
+		
+		/*
+		 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingGetMemento#getWeekAveSetting()
+		 */
+		@Override
+		public List<MonthlyUnit> getWeekAveSetting() {
+			return this.weekAveSetting.stream().map(funcMap).collect(Collectors.toList());
 		}
 
 		/* 

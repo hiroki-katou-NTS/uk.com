@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -7,10 +9,13 @@ import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
 /**
  * 集計休業日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class AggregateLeaveDays {
+public class AggregateLeaveDays implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 休業区分 */
 	private CloseAtr leaveAtr;

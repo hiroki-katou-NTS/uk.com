@@ -125,4 +125,51 @@ public abstract class KshstFlexSet extends UkJpaEntity {
 	@Column(name = "SPEC_DEC_TIME")
 	private int specDecTime;
 
+    /** The week jan time. */
+    @Column(name = "WEEK_JAN_TIME")
+    private int weekJanTime;
+    
+    /** The week feb time. */
+    @Column(name = "WEEK_FEB_TIME")
+    private int weekFebTime;
+    
+    /** The week mar time. */
+    @Column(name = "WEEK_MAR_TIME")
+    private int weekMarTime;
+    
+    /** The week apr time. */
+    @Column(name = "WEEK_APR_TIME")
+    private int weekAprTime;
+    
+    /** The week may time. */
+    @Column(name = "WEEK_MAY_TIME")
+    private int weekMayTime;
+    
+    /** The week jun time. */
+    @Column(name = "WEEK_JUN_TIME")
+    private int weekJunTime;
+    
+    /** The week jul time. */
+    @Column(name = "WEEK_JUL_TIME")
+    private int weekJulTime;
+    
+    /** The week aug time. */
+    @Column(name = "WEEK_AUG_TIME")
+    private int weekAugTime;
+    
+    /** The week sep time. */
+    @Column(name = "WEEK_SEP_TIME")
+    private int weekSepTime;
+    
+    /** The week oct time. */
+    @Column(name = "WEEK_OCT_TIME")
+    private int weekOctTime;
+    
+    /** The week nov time. */
+    @Column(name = "WEEK_NOV_TIME")
+    private int weekNovTime;
+    
+	/** The week dec time. */
+	@Column(name = "WEEK_DEC_TIME")
+	private int weekDecTime;
 }

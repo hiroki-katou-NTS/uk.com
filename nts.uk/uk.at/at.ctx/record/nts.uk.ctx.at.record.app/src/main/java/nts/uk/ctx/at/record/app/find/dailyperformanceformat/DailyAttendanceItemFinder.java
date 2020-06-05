@@ -119,26 +119,11 @@ public class DailyAttendanceItemFinder {
 		return attdItems;
 	}
 	
-	public List<AttdItemDto> findDailyAttendance(List<DailyAttendanceAtr> checkItem) {
-		// find list optional item by attribute
-		List<Integer> filteredOptionItemBy = new ArrayList<>();
-		checkItem.forEach(x->{
-		List<Integer> filteredOptionItemByAtr = this.optItemRepo
-					.findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(x)).stream()
-					.filter(ii -> ii.isUsed())
-					.map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v).collect(Collectors.toList());
-		filteredOptionItemBy.addAll(filteredOptionItemByAtr);
-		});
-		
-		if (filteredOptionItemBy.isEmpty())
-			return Collections.emptyList();
+	public List<AttdItemDto> findDailyAttendance(List<Integer> checkItem) {
 
-		// > ドメインモデル「勤怠項目と枠の紐付け」を取得する
-		// return list AttendanceItemLinking after filtered by list optional item.
-		int TypeOfAttendanceItemDaily = 1;
-		List<Integer> attdItemLinks = this.frameAdapter.getByAnyItem(TypeOfAttendanceItemDaily).stream()
-				.filter(item -> filteredOptionItemBy.contains(item.getFrameNo()))
-				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+		List<Integer> attdItemLinks = this.dailyRepo.findByAtr(AppContexts.user().companyId(), checkItem).stream()
+				.map(DailyAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
+		
 		if (attdItemLinks.isEmpty())
 			return Collections.emptyList();
 

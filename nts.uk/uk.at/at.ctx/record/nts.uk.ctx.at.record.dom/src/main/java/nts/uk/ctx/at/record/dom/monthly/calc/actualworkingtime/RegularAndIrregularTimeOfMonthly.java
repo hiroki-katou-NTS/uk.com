@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class RegularAndIrregularTimeOfMonthly {
+public class RegularAndIrregularTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** 週割増合計時間 */
 	@Setter

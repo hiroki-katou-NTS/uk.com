@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -12,7 +14,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
  * @author shuichi_ishida
  */
 @Getter
-public class IrregularWorkingTimeOfMonthly {
+public class IrregularWorkingTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 複数月変形途中時間 */
 	@Setter

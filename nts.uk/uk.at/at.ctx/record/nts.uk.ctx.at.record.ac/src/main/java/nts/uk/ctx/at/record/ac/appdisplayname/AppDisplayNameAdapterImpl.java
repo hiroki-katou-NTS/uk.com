@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.ac.appdisplayname;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

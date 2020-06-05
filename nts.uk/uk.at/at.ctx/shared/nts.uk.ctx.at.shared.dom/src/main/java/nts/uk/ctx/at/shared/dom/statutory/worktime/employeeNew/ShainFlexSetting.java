@@ -37,6 +37,7 @@ public class ShainFlexSetting extends FlexSetting implements MonthStatutoryWorki
 		this.year = memento.getYear();
 		this.statutorySetting = memento.getStatutorySetting();
 		this.specifiedSetting = memento.getSpecifiedSetting();
+		this.weekAveSetting = memento.getWeekAveSetting();
 	}
 
 	/**
@@ -51,5 +52,6 @@ public class ShainFlexSetting extends FlexSetting implements MonthStatutoryWorki
 		memento.setYear(this.year);
 		memento.setStatutorySetting(this.statutorySetting);
 		memento.setSpecifiedSetting(this.specifiedSetting);
+		memento.setWeekAveSetting(this.weekAveSetting);
 	}
 }

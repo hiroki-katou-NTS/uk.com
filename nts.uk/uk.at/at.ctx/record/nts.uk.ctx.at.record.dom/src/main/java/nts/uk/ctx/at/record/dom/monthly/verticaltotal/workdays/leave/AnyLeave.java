@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 
 /**
  * 任意休業
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class AnyLeave {
+public class AnyLeave implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 任意休業No */
 	private int anyLeaveNo;

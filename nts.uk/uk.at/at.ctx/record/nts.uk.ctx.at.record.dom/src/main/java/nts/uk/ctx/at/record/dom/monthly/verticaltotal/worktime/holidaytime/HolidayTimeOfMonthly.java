@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 月別実績の休日時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class HolidayTimeOfMonthly {
+public class HolidayTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 法定内休日時間 */
 	private AttendanceTimeMonth legalHolidayTime;

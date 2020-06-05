@@ -41,6 +41,7 @@ class EmbossGridInfo {
         let self = this;
         if (self.displayMethod() == self.displayType.DISPLAY) {
             let idx = 1;
+            items = _.orderBy(items, ['stampDate', 'stampTime'], ['desc', 'desc']);
             items.forEach(stampData => {
                 stampData.code = ++idx;
                 let formatedStamp = nts.uk.time.applyFormat("Short_YMDW", stampData.stampDate);
@@ -59,7 +60,7 @@ class EmbossGridInfo {
                 } else if (stampData.changeClockArt == 1) {
                     stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.timeStampType + '</div>';
                 } else {
-                    stampData.timeStampType = `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>';
+                    stampData.timeStampType = stampData.timeStampType ? `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>' : '';
                 }
 
             });
@@ -83,7 +84,6 @@ class EmbossGridInfo {
                 timeCard.workIn2 = timeCard.workIn2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn2) : null;
                 timeCard.workOut2 = timeCard.workOut2 ?  nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut2) : null;
             });
-            console.log(items);
             self.items(items);
         }
     }

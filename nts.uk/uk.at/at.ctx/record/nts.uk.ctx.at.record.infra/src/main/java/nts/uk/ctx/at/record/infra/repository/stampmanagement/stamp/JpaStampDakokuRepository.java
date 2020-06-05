@@ -168,7 +168,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		}
 		val stampNumber = new StampNumber(entity.pk.cardNumber);
 		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
-		val stampType = new StampType(entity.changeHalfDay,
+		val stampType = StampType.getStampType(entity.changeHalfDay,
 				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 				ChangeCalArt.valueOf(entity.changeCalArt));
@@ -185,7 +185,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		val locationInfor = new StampLocationInfor(entity.outsideAreaArt == null ? false : entity.outsideAreaArt ,	
 				geoLocation);
 		
-		return new Stamp(stampNumber, entity.pk.stampDateTime,
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		return new Stamp(contractCd, stampNumber, entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
 						entity.reflectedAtr, locationInfor);
 
@@ -194,12 +196,15 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	private Stamp toDomainVer2(Object[] object) {
 		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
-		Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-					new StampType(entity.changeHalfDay,
+					StampType.getStampType(entity.changeHalfDay,
 							entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 							ChangeCalArt.valueOf(entity.changeCalArt)),
+
 
 					new RefectActualResult(entity.suportCard,
 							entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace),
@@ -214,13 +219,16 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			);
 		return stamp;
 	}
+
 	private Stamp toDomainVer3(Object[] object) {
 		String personId = (String) object[0];
 		String workLocationName = (String) object[1];
 		KrcdtStamp entity = (KrcdtStamp) object[2];
-		Stamp stamp =  new Stamp(new ContractCode(""),new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
+		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
-					new StampType(entity.changeHalfDay,
+					StampType.getStampType(entity.changeHalfDay,
 							entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
 							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.changeClockArt),
 							ChangeCalArt.valueOf(entity.changeCalArt)),

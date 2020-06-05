@@ -67,19 +67,19 @@ private static final long serialVersionUID = 1L;
 	 * 10:臨時出勤 11:臨時退勤 12:PCログオン 13:PCログオフ
 	 */
 	@Column(name ="CHANGE_CLOCK_ART")
-	public int changeClockArt;
+	public Integer changeClockArt;
 	
 	/**
 	 * 計算区分変更対象 0:なし 1:早出 2:残業 3:休出 4:ﾌﾚｯｸｽ
 	 */
 	@Column(name ="CHANGE_CAL_ART")
-	public int changeCalArt;
+	public Integer changeCalArt;
 	
 	/**
 	 * 所定時刻セット区分 0:なし 1:直行 2:直帰
 	 */
 	@Column(name ="SET_PRE_CLOCK_ART")
-	public int setPreClockArt;
+	public Integer setPreClockArt;
 	
 	/**
 	 * 勤務種類を半休に変更する 0:False 1:True
@@ -139,6 +139,19 @@ private static final long serialVersionUID = 1L;
 	public KrcmtStampPageLayout krcctStampPageLayout;
 	
 	public ButtonSettings toDomain(){
+		StampType stampType = null;
+		if(!(changeHalfDay == null && goOutArt == null && setPreClockArt == null && changeClockArt == null && changeCalArt == null)) {
+			stampType = StampType.getStampType(
+					this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
+					this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
+					this.setPreClockArt == null ? null :EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
+					this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
+					this.changeCalArt == null ? null : EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class));
+		}
+		 
+		
+		ButtonType buttonType = new ButtonType(
+				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.of(stampType));
 		
 		return new ButtonSettings(
 				new ButtonPositionNo(pk.buttonPositionNo), 
@@ -146,15 +159,8 @@ private static final long serialVersionUID = 1L;
 						new ButtonNameSet(
 								new ColorCode(this.textColor), 
 								this.buttonName == null ? null : new ButtonName(this.buttonName)), 
-						new ColorCode(this.backGroundColor)), 
-				new ButtonType(
-						EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), 
-						new StampType(
-								this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
-								this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
-								this.setPreClockArt == null ? null :EnumAdaptor.valueOf(this.setPreClockArt, SetPreClockArt.class), 
-								this.changeClockArt == null ? null : EnumAdaptor.valueOf(this.changeClockArt, ChangeClockArt.class), 
-								this.changeCalArt == null ? null : EnumAdaptor.valueOf(this.changeCalArt, ChangeCalArt.class))),
+						new ColorCode(this.backGroundColor)),buttonType 
+				,
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
 	}
