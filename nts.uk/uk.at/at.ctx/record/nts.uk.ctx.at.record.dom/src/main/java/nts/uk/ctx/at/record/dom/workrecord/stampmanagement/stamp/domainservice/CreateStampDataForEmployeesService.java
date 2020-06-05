@@ -47,6 +47,8 @@ public class CreateStampDataForEmployeesService {
 	 *            打刻位置情報
 	 * @return
 	 */
+	
+	
 	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeId,
 			Optional<StampNumber> stampNumber, GeneralDateTime stampDateTime, Relieve relieve, ButtonType buttonType,
 			RefectActualResult refActualResults, Optional<StampLocationInfor> stampLocationInfor) {
@@ -131,6 +133,8 @@ public class CreateStampDataForEmployeesService {
 		 */
 		List<StampCard> getListStampCard(String sid);
 	}
+
+	
 
 
 }
