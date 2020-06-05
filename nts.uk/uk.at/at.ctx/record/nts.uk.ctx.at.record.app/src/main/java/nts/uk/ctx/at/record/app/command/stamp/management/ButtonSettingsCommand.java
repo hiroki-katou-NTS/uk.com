@@ -70,7 +70,7 @@ public class ButtonSettingsCommand {
 					changeClockArt, changeCalArt);
 		}
 		
-		ButtonType buttonType = new ButtonType(reservationArt, stampType);
+		ButtonType buttonType = new ButtonType(reservationArt, Optional.of(stampType));
 
 		NotUseAtr usrArts = EnumAdaptor.valueOf(x.getUsrArt(), NotUseAtr.class);
 
