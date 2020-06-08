@@ -65,7 +65,7 @@ public class EnterStampFromICCardService {
 				refectActualResult);
 		
 		//return 打刻結果（社員ID込み）#打刻結果（社員ID込み）($打刻入力結果,  $打刻カード.社員ID)
-		return new StampingResultEmployeeId(timeStampInputResult, AppContexts.user().employeeId());
+		return new StampingResultEmployeeId(timeStampInputResult, stampCardOpt.get().getEmployeeId());
 	}
 
 	public static interface Require extends EnterStampForSharedStampService.Require {
