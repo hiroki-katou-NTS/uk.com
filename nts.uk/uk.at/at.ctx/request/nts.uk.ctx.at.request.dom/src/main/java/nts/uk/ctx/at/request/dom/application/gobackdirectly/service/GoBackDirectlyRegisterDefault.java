@@ -17,7 +17,6 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -157,20 +156,44 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		return newAfterRegister.processAfterRegister(application);
 		
 	}
-	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, GoBackDirectly goBackDirectly, ApplicationType at, InforGoBackCommonDirectOutput application, boolean mode ) { 
+	/**
+	 * 	直行直帰登録前チェック
+	 * @param companyId
+	 * @param agenAtr
+	 * @param at
+	 * @param goBackDirectly
+	 * @param inforGoBackCommonDirectOutput
+	 * @return 確認メッセージリスト
+	 */
+	public List<ConfirmMsgOutput> getBeforeRegisterMessageList(String companyId, boolean agenAtr, Application_New application, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+		String employeeID = AppContexts.user().employeeId();
+		this.inconsistencyCheck(companyId, employeeID, GeneralDate.today());
+		return processBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, agenAtr, application, null, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getErrorFlag(), Collections.emptyList());
+	}
+	/**
+	 * 共通登録前のエラーチェック処理
+	 * @param companyId 会社ID
+	 * @param agentAtr 代行申請区分
+	 * @param application 申請
+	 * @param goBackDirectly 直行直帰申請
+	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
+	 * @param mode モード＝　新規
+	 * @return 確認メッセージリスト
+	 */
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode ) { 
 //		確認メッセージリスト＝Empty
 		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
 //		mode new
 //		モードチェックする
 		if(mode) {
 //			直行直帰登録前チェック
-			
+			lstConfirm = this.getBeforeRegisterMessageList(companyId, agentAtr, application, goBackDirectly, inforGoBackCommonDirectOutput);
 			
 		}else {
 //			直行直帰更新前チェック
 //			detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr, appID, postAtr, version, wkTypeCD, wkTimeCd);
 		}
-		return null;
+		return lstConfirm;
 	}
 	
 	@Override
@@ -455,5 +478,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			return false;
 		}
 		return true;
+	}
+	@Override
+	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly goBackDirectly,
+			InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+//		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請共通設定」．勤務の変更をチェックする
+		WorkChangeFlg changeFlg = inforGoBackCommonDirectOutput.getGobackDirectCommon().getWorkChangeFlg();
+		
+		return null;
 	}
 }

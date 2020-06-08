@@ -62,4 +62,24 @@ public interface GoBackDirectlyRegisterService {
 	 * @return
 	 */
 	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 
+	 * @param companyId
+	 * @param agentAtr
+	 * @param application
+	 * @param goBackDirectly
+	 * @param inforGoBackCommonDirectOutput
+	 * @param mode
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode);
+	/**
+	 * 「直行直帰登録」処理を実行する
+	 * @param companyId 会社ID
+	 * @param application_New 申請
+	 * @param goBackDirectly 直行直帰申請
+	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
+	 * @return メール送信の結果
+	 */
+	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
 }
