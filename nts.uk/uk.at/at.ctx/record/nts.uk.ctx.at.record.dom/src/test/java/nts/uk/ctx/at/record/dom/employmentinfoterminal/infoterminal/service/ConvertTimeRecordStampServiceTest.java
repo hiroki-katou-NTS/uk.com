@@ -41,6 +41,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author ThanhNX
+ *
+ *         データタイムレコードを打刻に変換するTest
+ */
 @RunWith(JMockit.class)
 public class ConvertTimeRecordStampServiceTest {
 	private static EmpInfoTerminalCode empInfoTerCode;
@@ -134,7 +139,7 @@ public class ConvertTimeRecordStampServiceTest {
 		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
 
 	}
-	
+
 	@Test
 	public void testNotExistStampCard() {
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "A", "200303", "01").time("0101")
@@ -160,7 +165,6 @@ public class ConvertTimeRecordStampServiceTest {
 		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
 
 	}
-	
 
 	@Test
 	public void testRegistDoneData() {

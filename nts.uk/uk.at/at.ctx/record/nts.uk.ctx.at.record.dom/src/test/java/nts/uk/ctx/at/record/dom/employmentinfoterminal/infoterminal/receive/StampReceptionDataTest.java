@@ -32,6 +32,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author ThanhNX
+ *
+ *         打刻受信データTest
+ */
 public class StampReceptionDataTest {
 
 	@BeforeClass

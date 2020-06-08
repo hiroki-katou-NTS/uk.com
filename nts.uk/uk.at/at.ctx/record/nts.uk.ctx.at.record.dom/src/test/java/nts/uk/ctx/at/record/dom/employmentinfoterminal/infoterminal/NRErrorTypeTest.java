@@ -7,6 +7,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author ThanhNX
+ *
+ *         NR-種類Test
+ */
 public class NRErrorTypeTest {
 
 	@BeforeClass

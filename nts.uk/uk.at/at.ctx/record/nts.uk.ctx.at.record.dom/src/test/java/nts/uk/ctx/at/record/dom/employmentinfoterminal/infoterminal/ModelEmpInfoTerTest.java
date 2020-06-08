@@ -7,6 +7,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author ThanhNX
+ *
+ *         就業情報端末の機種類Test
+ */
 public class ModelEmpInfoTerTest {
 
 	@BeforeClass

@@ -29,6 +29,11 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
+/**
+ * @author ThanhNX
+ *
+ *         個人情報をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendPerInfoNameServiceTest {
 
@@ -94,8 +99,8 @@ public class SendPerInfoNameServiceTest {
 						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
 
 				require.getByListSID((List<String>) any);
-				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"), new EmployeeDto("2", "BBBB", "BBBB"),
-						new EmployeeDto("2", "BBBB", "BBBB"));
+				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
+						new EmployeeDto("2", "BBBB", "BBBB"), new EmployeeDto("2", "BBBB", "BBBB"));
 
 			}
 		};
@@ -135,7 +140,8 @@ public class SendPerInfoNameServiceTest {
 						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
 
 				require.getByListSID((List<String>) any);
-				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"), new EmployeeDto("3", "BBBB", "BBBB"));
+				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
+						new EmployeeDto("3", "BBBB", "BBBB"));
 
 			}
 		};

@@ -24,6 +24,11 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
+/**
+ * @author ThanhNX
+ *
+ *         タイムレコードに設定を送るTest
+ */
 @RunWith(JMockit.class)
 public class SendTimeRecordSettingServiceTest {
 
@@ -47,7 +52,7 @@ public class SendTimeRecordSettingServiceTest {
 	}
 
 	@Test
-	public void testSendEmptyWorkType() {
+	public void testSendTimeRecord() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
@@ -70,7 +75,7 @@ public class SendTimeRecordSettingServiceTest {
 	}
 
 	@Test
-	public void testSendEmptyWorkType2() {
+	public void testSendTimeRecord2() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",

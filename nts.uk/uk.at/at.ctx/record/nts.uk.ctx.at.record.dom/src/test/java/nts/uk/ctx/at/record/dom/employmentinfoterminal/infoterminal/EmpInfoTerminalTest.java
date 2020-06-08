@@ -58,6 +58,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * @author ThanhNX
  *
+ *         就業情報端末Test
  */
 @RunWith(JMockit.class)
 public class EmpInfoTerminalTest {

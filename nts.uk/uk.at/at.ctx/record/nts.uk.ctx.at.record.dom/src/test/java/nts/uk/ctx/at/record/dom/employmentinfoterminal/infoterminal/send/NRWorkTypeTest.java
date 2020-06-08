@@ -7,6 +7,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author ThanhNX
+ *
+ *         勤務区分番号Test
+ */
 public class NRWorkTypeTest {
 
 	@BeforeClass

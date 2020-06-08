@@ -32,6 +32,11 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
+/**
+ * @author ThanhNX
+ *
+ *         勤務種類をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendWorkTypeNameServiceTest {
 
@@ -128,7 +133,7 @@ public class SendWorkTypeNameServiceTest {
 								new WorkTypeAbbreviationName("BB"), new WorkTypeMemo("AAAAAA"),
 								new DailyWork(WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.LeaveOfAbsence,
 										WorkTypeClassification.TimeDigestVacation, WorkTypeClassification.HolidayWork)),
-						
+
 						new WorkType(new WorkTypeCode("9"), new WorkTypeSymbolicName("B"), new WorkTypeName("A"),
 								new WorkTypeAbbreviationName("BB"), new WorkTypeMemo("AAAAAA"),
 								new DailyWork(WorkTypeUnit.OneDay, WorkTypeClassification.YearlyReserved,

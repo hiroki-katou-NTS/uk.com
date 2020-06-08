@@ -34,6 +34,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * @author ThanhNX
+ *
+ *         就業時間帯をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendWorkTimeNameServiceTest {
 
@@ -57,7 +62,7 @@ public class SendWorkTimeNameServiceTest {
 	}
 
 	@Test
-	public void testSendEmptyWorkType() {
+	public void testSendEmptyWorkTime() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
@@ -77,7 +82,7 @@ public class SendWorkTimeNameServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testSend() {
+	public void testSendDone() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",

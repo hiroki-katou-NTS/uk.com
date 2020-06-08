@@ -44,6 +44,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
+/**
+ * @author ThanhNX
+ *
+ *         データタイムレコードを予約に変換するTest
+ */
 @RunWith(JMockit.class)
 public class ConvertTimeRecordReservationServiceTest {
 
@@ -72,11 +77,11 @@ public class ConvertTimeRecordReservationServiceTest {
 		assertThat(resultActual).isEqualTo(Optional.empty());
 
 	}
-	
+
 	@Test
 	public void testEmpInfoTerNoPresentSetting() {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
-		
+
 		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
 				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
 				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
@@ -88,7 +93,7 @@ public class ConvertTimeRecordReservationServiceTest {
 
 			}
 		};
-		
+
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
 				contractCode, receptionData);
 		assertThat(resultActual).isEqualTo(Optional.empty());
@@ -212,14 +217,13 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-
 				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
 //				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 //				result = Optional.empty();
-				
+
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
 				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
 
@@ -233,7 +237,7 @@ public class ConvertTimeRecordReservationServiceTest {
 		NtsAssert.atomTask(() -> resultActual.get());
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testHasErrorEmpSid(@Mocked BentoMenu menu2) {
@@ -255,14 +259,13 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-
 				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
 //				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 //				result = Optional.empty();
-				
+
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
 				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
 

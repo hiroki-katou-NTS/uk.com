@@ -28,6 +28,11 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
+/**
+ * @author ThanhNX
+ *
+ *         予約をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendReservationMenuServiceTest {
 
@@ -71,7 +76,7 @@ public class SendReservationMenuServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() {
+	public void testDone() {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Arrays.asList(1, 2), Collections.emptyList()).overTimeHoliday(true)
@@ -93,7 +98,7 @@ public class SendReservationMenuServiceTest {
 		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode(1),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getBentoMenu(), d -> d.getUnit(), d -> d.getFrameNumber())
-		.containsExactly(Tuple.tuple("A", "1", 1), Tuple.tuple("B", "1", 2));
+				.containsExactly(Tuple.tuple("A", "1", 1), Tuple.tuple("B", "1", 2));
 	}
 
 }

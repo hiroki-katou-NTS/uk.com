@@ -32,6 +32,11 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
+/**
+ * @author ThanhNX
+ *
+ *         残業・休日出勤をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendOvertimeNameServiceTest {
 

@@ -13,6 +13,11 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendTimeInfomation;
 
+/**
+ * @author ThanhNX
+ *
+ *         時刻情報Test
+ */
 @RunWith(JMockit.class)
 public class SendTimeInfomationServiceTest {
 

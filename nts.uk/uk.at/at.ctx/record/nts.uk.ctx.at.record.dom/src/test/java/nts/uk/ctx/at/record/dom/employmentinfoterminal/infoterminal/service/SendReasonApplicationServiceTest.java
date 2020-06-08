@@ -25,6 +25,11 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
+/**
+ * @author ThanhNX
+ *
+ *         申請理由をNRに 送信するデータに変換するTest
+ */
 @RunWith(JMockit.class)
 public class SendReasonApplicationServiceTest {
 
@@ -48,7 +53,7 @@ public class SendReasonApplicationServiceTest {
 	}
 
 	@Test
-	public void testSendEmptyWorkType() {
+	public void testSendEmptyReasonApp() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
@@ -68,7 +73,7 @@ public class SendReasonApplicationServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() {
+	public void testDone() {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Collections.emptyList(), Collections.emptyList()).overTimeHoliday(true)

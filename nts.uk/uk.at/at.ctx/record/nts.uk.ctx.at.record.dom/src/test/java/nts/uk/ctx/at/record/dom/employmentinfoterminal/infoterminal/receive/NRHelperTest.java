@@ -6,6 +6,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author ThanhNX
+ * Test NRHelper
+ */
 public class NRHelperTest {
 
 	@BeforeClass

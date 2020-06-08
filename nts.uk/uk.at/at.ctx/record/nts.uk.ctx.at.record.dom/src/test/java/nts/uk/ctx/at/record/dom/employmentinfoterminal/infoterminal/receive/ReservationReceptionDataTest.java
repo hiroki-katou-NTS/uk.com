@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.NRHelperCommonTest;
 
+/**
+ * @author ThanhNX
+ * 
+ * 予約受信データTest
+ */
 public class ReservationReceptionDataTest {
 
 	@BeforeClass

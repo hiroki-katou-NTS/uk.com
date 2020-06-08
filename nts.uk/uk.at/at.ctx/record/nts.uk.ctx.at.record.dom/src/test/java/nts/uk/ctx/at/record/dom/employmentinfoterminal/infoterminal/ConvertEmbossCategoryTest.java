@@ -7,6 +7,11 @@ import org.junit.Test;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author ThanhNX
+ *
+ *         打刻区分を変換Test
+ */
 public class ConvertEmbossCategoryTest {
 
 	@BeforeClass
