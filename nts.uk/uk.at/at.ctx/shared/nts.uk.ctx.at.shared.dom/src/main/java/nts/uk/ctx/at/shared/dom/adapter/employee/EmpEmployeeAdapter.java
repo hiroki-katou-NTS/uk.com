@@ -30,6 +30,7 @@ public interface EmpEmployeeAdapter {
 	
 	// RequestList61
 	List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(List<String> employeeIds);
+	
 	/**
 	 * 社員ID（List）と指定期間から所属会社履歴項目を取得
 	 * @param sids

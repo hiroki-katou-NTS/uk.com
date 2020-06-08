@@ -10,27 +10,13 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetAnnLeaRemNumWithinPeriodRequireFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * 年休　テストコード
@@ -50,11 +36,10 @@ public class TestAnnualLeave {
 	/** テストケース */
 	private List<AnnualleaveTestCase> caseList;
 	
-	
 	/*検証用のドメイン取得処理*/
 	@Before
 	public void initialize(){
-		
+
 		// 上書き用の暫定年休管理データ 
 		this.testDataForOverWriteListMap = TestDataForOverWriteList.build();
 //		this.inputList = inputObject2.build();
@@ -78,78 +63,67 @@ public class TestAnnualLeave {
 				
 				val testDataForOverWriteList // 上書き用の暫定年休管理データ
 					= testDataForOverWriteListMap.get(caseNo);
-
-				EmpEmployeeAdapter empEmployee;
-				AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-				YearHolidayRepository yearHolidayRepo;
-				LengthServiceRepository lengthServiceRepo;
-				AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
-				AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
-				AnnLeaMaxDataRepository annLeaMaxDataRepo;
-				GetClosureStartForEmployee getClosureStartForEmployee;
-				CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
-				InterimRemainOffMonthProcess interimRemOffMonth;
-				CreateInterimAnnualMngData createInterimAnnual;
-				InterimRemainRepository interimRemainRepo;
-				TmpAnnualHolidayMngRepository tmpAnnualLeaveMng;
-				AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
-				GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod;
-				ClosureStatusManagementRepository closureSttMngRepo;
-				CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
-				GrantYearHolidayRepository grantYearHolidayRepo;
-				OperationStartSetDailyPerformRepository operationStartSetRepo;
-				AnnualLeaveRemainHistRepository annualLeaveRemainHistRepo;
 				
-//				// テストしたい処理を実行	
-//				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-//						empEmployee,
-//						 annLeaEmpBasicInfoRepo,
-//						 yearHolidayRepo,
-//						 lengthServiceRepo,
-//						 annualPaidLeaveSet,
-//						 annLeaGrantRemDataRepo,
-//						 annLeaMaxDataRepo,
-//						 getClosureStartForEmployee,
-//						 calcNextAnnualLeaveGrantDate,
-//						 interimRemOffMonth,
-//						 createInterimAnnual,
-//						 interimRemainRepo,
-//						 tmpAnnualLeaveMng,
-//						 attendanceTimeOfMonthlyRepo,
-//						 getAnnLeaRemNumWithinPeriod,
-//						 closureSttMngRepo,
-//						 calcAnnLeaAttendanceRate,
-//						 grantYearHolidayRepo,
-//						 operationStartSetRepo,
-//						 annualLeaveRemainHistRepo);
+				// Requireクラス
+				GetAnnLeaRemNumWithinPeriodRequire t
+					= TestGetAnnLeaRemNumWithinPeriodRequireFactory.create("1");
 				
-				/*
-				 * 期間中の年休残数を取得
-				 * @param companyId 会社ID
-				 * @param employeeId 社員ID
-				 * @param aggrPeriod 集計期間
-				 * @param mode モード
-				 * @param criteriaDate 基準日
-				 * @param isGetNextMonthData 翌月管理データ取得フラグ
-				 * @param isCalcAttendanceRate 出勤率計算フラグ
-				 * @param isOverWriteOpt 上書きフラグ
-				 * @param forOverWriteListOpt 上書き用の暫定年休管理データ
-				 * @param prevAnnualLeaveOpt 前回の年休の集計結果
-				 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
-				 * @return 年休の集計結果
-				 */
-				
-//				// テストしたい処理を実行		
-//				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave
-//					= proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
-//						isGetNextMonthData, isCalcAttendanceRate,
-//						isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, noCheckStartDate);
+				// テストしたい処理を実行	
+				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
+					t.getEmpEmployee(),
+					t.getAnnLeaEmpBasicInfoRepo(),
+					t.getYearHolidayRepo(),
+					t.getLengthServiceRepo(),
+					t.getAnnualPaidLeaveSet(),
+					t.getAnnLeaGrantRemDataRepo(),
+					t.getAnnLeaMaxDataRepo(),
+					t.getGetClosureStartForEmployee(),
+					t.getCalcNextAnnualLeaveGrantDate(),
+					t.getInterimRemOffMonth(),
+					t.getCreateInterimAnnual(),
+					t.getInterimRemainRepo(),
+					t.getTmpAnnualLeaveMng(),
+					t.getAttendanceTimeOfMonthlyRepo(),
+					t.getGetAnnLeaRemNumWithinPeriod(),
+					t.getClosureSttMngRepo(),
+					t.getCalcAnnLeaAttendanceRate(),
+					t.getGrantYearHolidayRepo(),
+					t.getOperationStartSetRepo(),
+					t.getAnnualLeaveRemainHistRepo());
 				
 				
 				
+				String companyId = "1";
+				String employeeId = annualleaveTestCase.getEmployee();
+				DatePeriod aggrPeriod = null; //annualleaveTestCase.getAggrPeriod();
+				InterimRemainMngMode mode = null; // annualleaveTestCase.getMode();
+				GeneralDate criteriaDate = null; // annualleaveTestCase.getCriteriaDate();
+				boolean isGetNextMonthData = true;
+				boolean isCalcAttendanceRate = false;
+				boolean isOverWriteOpt = false;
+				boolean noCheckStartDate = true;
 				
-				
-				
+//				// テストしたい処理を実行
+				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave
+					= proc.algorithm(
+						companyId,
+						employeeId,
+						aggrPeriod,
+						mode,
+						criteriaDate,
+						isGetNextMonthData,
+						isCalcAttendanceRate,
+						Optional.of(isOverWriteOpt),
+						Optional.empty(),
+						Optional.empty(),
+						noCheckStartDate,
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty(),
+						Optional.empty());
+					
 	//			// 検証			
 	//			assertProcedure(result, exp, case);
 				

@@ -76,7 +76,7 @@ public class AnnualleaveTestCase {
 	private String companyConfig;
 	
 	//private static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
-	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/testcase.csv";
+	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/AnnualleaveTestCase.csv";
 
 //	public static Map<String, AnnualleaveTestCase> build(){
 //		
@@ -98,13 +98,14 @@ public class AnnualleaveTestCase {
 	static Function<TestDataCsvRecord, AnnualleaveTestCase> builder = record ->{
 		AnnualleaveTestCase a = new AnnualleaveTestCase();
 		
-		a.setCaseNo(record.asStr("No"));
+		//a.setCaseNo(record.asStr("No"));
+		a.setCaseNo(record.asStr("テストケース"));
 		a.setEmployee(record.asStr("社員"));
 		a.setAggrPeriod(record.asStr("集計期間"));
 		a.setMode(record.asStr("モード"));
 		a.setCriteriaDate(record.asStr("基準日"));
 		a.setForOverWriteList(record.asStr("上書き暫定"));
-		a.setNoCheckStartDate(record.asStr("締め開始日"));
+		//a.setNoCheckStartDate(record.asStr("締め開始日"));
 		a.setYearMonth(record.asStr("年月"));
 		a.setGrantHdTblSet(record.asStr("付与テーブル設定"));
 		a.setGrantYearHoliday(record.asStr("付与テーブル"));
