@@ -137,7 +137,8 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		}
 		
 		if (this.domainSource.get(type) != null) {
-			return this.domainSource.get(type);
+			convertDomainToDto(type);
+//			return this.domainSource.get(type);
 		}
 		
 		if (this.dtoSource.get(type) != null) {
