@@ -47,7 +47,8 @@ module nts.uk.at.view.kdp002.t {
                     self.messageColor(error.messageColor);
                     self.errorDate(error.lastDateError);
                     let listRequired = [];
-                    for (let idx = 0; idx < error.listRequired.length - 1; idx ++) {
+                    let length = error.listRequired.length > 6 ? 6 : error.listRequired.length;
+                    for (let idx = 0; idx < length; idx ++) {
                         listRequired.push(self.getBtn(error.listRequired[idx]));
                     }
                     self.dataShare = {
@@ -191,12 +192,11 @@ module nts.uk.at.view.kdp002.t {
             /**
              * Close dialog
              */
-            public jumpScreen(data): void {
-                let self = this;
+            public jumpScreen(data, vm): void {
                 let shareG = {
-                    messageContent: self.labelNames(),
-                    messageColor: self.labelColor(),
-                    errorDate: self.errorDate(),
+                    messageContent: vm.labelNames(),
+                    messageColor: vm.labelColor(),
+                    errorDate: vm.errorDate(),
                     btn: data
                 };
                 nts.uk.ui.windows.setShared('KDP010_T', shareG);

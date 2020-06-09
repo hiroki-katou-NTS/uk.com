@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 打刻の申請促す設定
+ *    打刻の申請促す設定
  * @author phongtq
  *
  */
@@ -36,4 +36,5 @@ public class StampPromptApplication  implements DomainAggregate {
 		
 		return list;
 	}
+	
 }

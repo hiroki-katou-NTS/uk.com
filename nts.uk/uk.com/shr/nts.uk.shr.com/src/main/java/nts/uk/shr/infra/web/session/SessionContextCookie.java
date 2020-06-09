@@ -58,10 +58,10 @@ public class SessionContextCookie {
 	}
 
 	public static Optional<String> createNewCookieFromSession() {
-		
 		val session = SingletonBeansSoftCache.get(SessionLowLayer.class);
+		
 		if (!session.isLoggedIn()) {
-			return Optional.empty();
+			return Optional.of(buildSetCookieHeaderValue(0));
 		}
 		
 		return Optional.of(buildSetCookieHeaderValue(session.secondsSessionTimeout()));

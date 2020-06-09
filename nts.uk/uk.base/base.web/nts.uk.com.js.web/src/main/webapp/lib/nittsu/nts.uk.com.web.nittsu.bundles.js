@@ -47378,9 +47378,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-/// <reference path="../generic/lodash/lodash.d.ts" />
-/// <reference path="../generic/knockoutjs/knockout.d.ts" />
-/// <reference path="./nts.uk.com.web.nittsu.bundles.d.ts" />
+/// <reference path="./viewcontext.d.ts" />
 var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
     if (arguments.length === 2) {
         // setter method
@@ -47442,7 +47440,7 @@ function bean() {
 }
 function component(options) {
     return function (ctor) {
-        return $.Deferred().resolve(options.template.endsWith('.html'))
+        return $.Deferred().resolve(options.template.match(/\.html$/))
             .then(function (url) {
             return url ? $.get(options.template) : options.template;
         })
