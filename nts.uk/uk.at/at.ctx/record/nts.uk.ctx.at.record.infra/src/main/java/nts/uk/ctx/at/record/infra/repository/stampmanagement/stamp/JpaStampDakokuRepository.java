@@ -49,11 +49,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampDakokuRepository extends JpaRepository implements StampDakokuRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStamp s "
-			+ " where s.pk.contractCode = :contractCode" + " and s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where s.contractCd = :contractCode" + " and s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
-			+ " where k.cardNo is NULL " +" and s.pk.contractCode = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
+			+ " where k.cardNo is NULL " +" and s.contractCd = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_STAMP_BY_LIST_CARD = "select s from KrcdtStamp s "
