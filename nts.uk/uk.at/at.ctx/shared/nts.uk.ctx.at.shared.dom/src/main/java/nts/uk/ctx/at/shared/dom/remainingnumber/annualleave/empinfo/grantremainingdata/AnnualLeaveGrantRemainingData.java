@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
@@ -212,5 +212,27 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
 			return false;
 		return true;
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param employeeId // 社員ID
+	 * @param grantDate	// 付与日
+	 * @param deadline	// 期限日
+	 * @param expirationStatus //　期限切れ状態
+	 * @param grantRemainRegisterType // 登録種別
+	 * @param annualLeaveNumberInfo //　明細
+	 */
+	public AnnualLeaveGrantRemainingData(
+			String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus,
+			GrantRemainRegisterType grantRemainRegisterType,
+			AnnualLeaveNumberInfo annualLeaveNumberInfo) {
+		this.employeeId = employeeId;
+		this.grantDate = grantDate;
+		this.deadline = deadline;
+		this.expirationStatus = expirationStatus;
+		this.registerType = grantRemainRegisterType;
+		this.details = annualLeaveNumberInfo;
 	}
 }
