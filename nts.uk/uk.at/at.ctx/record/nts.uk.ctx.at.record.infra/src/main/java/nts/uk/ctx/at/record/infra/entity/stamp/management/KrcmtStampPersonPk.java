@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KrcctStampDisplayPk implements Serializable {
+public class KrcmtStampPersonPk implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -27,8 +27,4 @@ public class KrcctStampDisplayPk implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	
-	/** 運用方法 (0: 共有利用, 1: 個人利用) */
-	@Column(name = "OPERATION_METHOD")
-	public int operationMethod;
-
 }
