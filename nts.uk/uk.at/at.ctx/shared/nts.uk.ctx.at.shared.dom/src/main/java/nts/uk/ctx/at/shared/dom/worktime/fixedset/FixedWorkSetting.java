@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
@@ -254,8 +255,19 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	}
 	
 	/**
+	 * 勤務種類から法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return 法定内の残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getLegalOverTimeFrameNoList(WorkType workType) {
+		return this.getOverTimeOfTimeZoneSet(workType).stream()
+				.map(overTimeOfTimeZoneSet -> overTimeOfTimeZoneSet.getLegalOTframeNo())
+				.map(oTframeNo -> new OverTimeFrameNo(oTframeNo.v())) //就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toList());
+	}
+	
+	/**
 	 * 勤務種類から就業時間の時間帯設定を取得する
-	 * 
 	 * @param workType 勤務種類
 	 * @return 就業時間の時間帯設定(List)
 	 */
@@ -267,7 +279,6 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	
 	/**
 	 * 勤務種類から残業時間の時間帯設定を取得する
-	 * 
 	 * @param workType 勤務種類
 	 * @return 残業時間の時間帯設定(List)
 	 */

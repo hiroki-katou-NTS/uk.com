@@ -18,9 +18,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
  */
 @Getter
 public class ManagePerPersonDailySet {
-	//労働条件
+	/** 労働条件 */
 	public WorkingConditionItem personInfo;
-	//法定労働
+	
+	/** 法定労働 */
 	public DailyUnit dailyUnit;
 	
 	/** 加算設定 */
@@ -52,6 +53,4 @@ public class ManagePerPersonDailySet {
 		this.addSetting = addSetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
 	}
-	
-	
 }

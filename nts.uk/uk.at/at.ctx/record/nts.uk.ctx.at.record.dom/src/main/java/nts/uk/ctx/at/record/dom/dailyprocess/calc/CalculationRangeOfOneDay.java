@@ -160,8 +160,40 @@ public class CalculationRangeOfOneDay {
 		this.workInformationOfDaily = workInformationofDaily;
 		this.nonWorkingTimeSheet = nonWorkingTimeSheet;
 	}
-
-
+	
+	
+	public static CalculationRangeOfOneDay createEmpty(IntegrationOfDaily integrationOfDaily) {
+		return new CalculationRangeOfOneDay(
+				Finally.of(
+						new FlexWithinWorkTimeSheet(
+								Arrays.asList(
+										new WithinWorkTimeFrame(
+												new EmTimeFrameNo(5),
+												new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+												new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+												Collections.emptyList(),
+												Collections.emptyList(),
+												Collections.emptyList(),
+												Optional.empty(),
+												Collections.emptyList(),
+												Optional.empty(),
+												Optional.empty()
+										)
+								),
+								Collections.emptyList(),
+								Optional.empty()
+						)
+				),
+				Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())),
+				null,
+				integrationOfDaily.getAttendanceLeave().orElse(null),
+				null,
+				integrationOfDaily.getWorkInformation(),
+				Optional.empty()
+		);
+	}
+	
+	
 	/**
 	 * 就業時間帯の作成
 	 * アルゴリズム：固定勤務の時間帯作成
@@ -838,7 +870,7 @@ public class CalculationRangeOfOneDay {
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param previousAndNextDaily 前日と翌日の勤務
-	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス（予定）
+	 * @param schedulePerformance 予定実績
 	 */
 	public void createFlowWork(
 			ManagePerCompanySet companyCommonSetting,
@@ -847,7 +879,7 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily,
-			Optional<ManageReGetClass> manageReGetClassOfSchedule) {
+			Optional<SchedulePerformance> schedulePerformance) {
 
 		//出退勤を取得
 		List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
@@ -870,11 +902,12 @@ public class CalculationRangeOfOneDay {
 			
 			//所定時間帯、残業開始を補正する
 			this.fluctuationPredeterminedForFlow(
+					companyCommonSetting,
 					personDailySetting,
 					todayWorkType,
 					integrationOfDaily,
 					integrationOfWorkTime.getFlowWorkSetting().get(),
-					manageReGetClassOfSchedule);
+					schedulePerformance);
 			
 			//流動勤務(就内、平日)
 			this.withinWorkingTimeSheet.set(WithinWorkTimeSheet.createAsFlow(
@@ -1297,35 +1330,38 @@ public class CalculationRangeOfOneDay {
 
 	/**
 	 * 流動勤務所定変動
-	 * @param personDailySetting 毎日変更の可能性のあるマスタ管理クラス（予定）
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personDailySetting 社員設定管理
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfDaily 日別実績(Work)（実績）
 	 * @param flowWorkSetting 流動勤務設定
-	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
+	 * @param schedulePerformance 予定実績
 	 */
 	private void fluctuationPredeterminedForFlow(
+			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			WorkType todayWorkType,
 			IntegrationOfDaily integrationOfDaily,
 			FlowWorkSetting flowWorkSetting,
-			Optional<ManageReGetClass> manageReGetClassOfSchedule) {
+			Optional<SchedulePerformance> schedulePerformance) {
 		
 		//変動させるかチェックする
-		if(!isFluctuationPredeterminedForFlow(todayWorkType, integrationOfDaily, flowWorkSetting.getFlowSetting().getOvertimeSetting(), manageReGetClassOfSchedule))
+		if(!isFluctuationPredeterminedForFlow(todayWorkType, integrationOfDaily, flowWorkSetting.getFlowSetting().getOvertimeSetting(), schedulePerformance))
 			return;
 		
 		//変動させる時間を求める
 		AttendanceTimeOfExistMinus fluctuationTime = getFluctuationPredeterminedForFlow(
+				companyCommonSetting,
 				personDailySetting,
 				todayWorkType,
 				integrationOfDaily,
-				flowWorkSetting.getFlowSetting().getOvertimeSetting(),
-				manageReGetClassOfSchedule.get());
+				schedulePerformance.get(),
+				flowWorkSetting.getFlowSetting().getOvertimeSetting());
 		
 		if(!fluctuationTime.equals(AttendanceTimeOfExistMinus.ZERO)) {
 			//所定時間帯を変動させる
 			this.predetermineTimeSetForCalc.fluctuationPredeterminedTimeSheetToSchedule(
-					manageReGetClassOfSchedule.get().getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks());
+					schedulePerformance.get().getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks());
 			
 			//所定時間を変動させる
 			this.predetermineTimeSetForCalc.getAdditionSet().fluctuationPredeterminedTimeForFlow(fluctuationTime);
@@ -1336,23 +1372,30 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	* 変動させる時間を求める
-	* @param personDailySetting 毎日変更の可能性のあるマスタ管理クラス（予定）
+	 * 変動させる時間を求める
+	 * @param companyCommonSetting 会社別設定管理
+	 * @param personDailySetting 社員設定管理
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfDaily 日別実績(Work)（実績）
+	 * @param schedulePerformance 予定実績
 	 * @param FlowOTSet 流動残業設定
-	 * @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
 	 * @return changeTime 変動させる時間
 	 */
 	private AttendanceTimeOfExistMinus getFluctuationPredeterminedForFlow(
+			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			WorkType todayWorkType,
 			IntegrationOfDaily integrationOfDaily,
-			FlowOTSet flowOTSet,
-			ManageReGetClass manageReGetClassOfSchedule) {
-				
+			SchedulePerformance schedulePerformance,
+			FlowOTSet flowOTSet) {
+		
 		//予定の所定時間を計算する
-		AttendanceTime schedulePredetermineTime = WorkScheduleTimeOfDaily.calcPredeterminedFromTime(manageReGetClassOfSchedule, todayWorkType, personDailySetting, flowOTSet);
+		AttendanceTime schedulePredetermineTime = WorkScheduleTimeOfDaily.calcPredeterminedFromTime(
+				companyCommonSetting,
+				personDailySetting,
+				integrationOfDaily,
+				schedulePerformance,
+				flowOTSet);
 		
 		//実績の所定時間を計算する
 		AttendanceTime recordPredetermineTime = this.predetermineTimeSetForCalc.getpredetermineTime(todayWorkType.getDailyWork());
@@ -1379,9 +1422,9 @@ public class CalculationRangeOfOneDay {
 			WorkType todayWorkType,
 			IntegrationOfDaily integrationOfDaily,
 			FlowOTSet flowOTSet,
-			Optional<ManageReGetClass> manageReGetClassOfSchedule) {
+			Optional<SchedulePerformance> schedulePerformance) {
 		
-		if(!manageReGetClassOfSchedule.isPresent() //予定を渡している場合（予定の計算時には変動させない為）
+		if(!schedulePerformance.isPresent() //予定を渡している場合（予定の計算時には変動させない為）
 			|| !integrationOfDaily.getWorkInformation().isMatchWorkInfomation() //勤務実績と勤務予定の勤務情報が一致しない
 			|| todayWorkType.chechAttendanceDay().equals(AttendanceDayAttr.HOLIDAY_WORK) //勤務実績の勤務種類が休出
 			|| flowOTSet.getFixedChangeAtr().equals(FixedChangeAtr.NOT_CHANGE)) { //所定変動区分が「変動しない」

@@ -689,7 +689,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()), employeeId,
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(), day,
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), null)));
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), Optional.empty())));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -1206,7 +1206,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						affiliationInforOfDailyPerfor.getEmploymentCode(),
 						affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getJobTitleID(),
 						affiliationInforOfDailyPerfor.getWplID(), affiliationInforOfDailyPerfor.getYmd(),
-						affiliationInforOfDailyPerfor.getClsCode(), bonusPaySetting.get().getCode());
+						affiliationInforOfDailyPerfor.getClsCode(), Optional.of(bonusPaySetting.get().getCode()));
 			}
 
 			// 計算区分を日別実績に反映する

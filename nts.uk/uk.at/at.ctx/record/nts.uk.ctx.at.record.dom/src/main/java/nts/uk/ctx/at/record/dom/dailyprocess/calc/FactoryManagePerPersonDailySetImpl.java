@@ -69,8 +69,11 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					nowWorkingItem.getLaborSystem());
 	
 			/*加給*/
-			BonusPaySettingCode bpCode = null;
-			Optional<BonusPaySetting> bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode);
+			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
+			Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
+			if(!bpCode.isPresent()) {
+				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
+			}
 		
 			/*平日時*/	
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(

@@ -250,7 +250,7 @@ public class OverTimeOfDaily {
 					recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
 					statutoryDivision,siftCode,
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
-					recordReGet.GetAddSetting(),
+					recordReGet.getAddSetting(),
 					recordReGet.getHolidayAddtionSet().get(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),flexPreAppTime,
 					recordReGet.getDailyUnit(),recordReGet.getWorkTimezoneCommonSet(),conditionItem,

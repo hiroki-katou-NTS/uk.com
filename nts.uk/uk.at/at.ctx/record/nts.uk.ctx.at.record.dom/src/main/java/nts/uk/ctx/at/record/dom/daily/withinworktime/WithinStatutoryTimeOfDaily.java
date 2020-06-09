@@ -131,7 +131,7 @@ public class WithinStatutoryTimeOfDaily {
 
 			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 														  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
-														  recordReget.GetAddSetting(),
+														  recordReget.getAddSetting(),
 														  recordReget.getHolidayAddtionSet().get(),
 														  recordReget.getHolidayCalcMethodSet(),
 														  calcMethod,
@@ -152,7 +152,7 @@ public class WithinStatutoryTimeOfDaily {
 
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					AutoCalcOfLeaveEarlySetting.createAllTrue(),
-					recordReget.GetAddSetting(),
+					recordReget.getAddSetting(),
 					recordReget.getHolidayAddtionSet().get(),
 					recordReget.getHolidayCalcMethodSet(),
 					calcMethod,

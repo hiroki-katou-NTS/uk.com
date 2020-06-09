@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -50,8 +51,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

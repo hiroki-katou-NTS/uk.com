@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -21,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -52,8 +56,7 @@ public class IntegrationOfWorkTime {
 	
 	
 	/**
-	 * コンストラクタ（通常勤務）
-	 * 
+	 * Constructor（通常勤務）
 	 * @param workTimeCode 就業時間帯コード
 	 * @param workTimeSetting 就業時間帯の設定
 	 * @param fixedWorkSetting 固定勤務設定
@@ -67,8 +70,7 @@ public class IntegrationOfWorkTime {
 	}
 	
 	/**
-	 * コンストラクタ（フレックス勤務）
-	 * 
+	 * Constructor（フレックス勤務）
 	 * @param workTimeCode 就業時間帯コード
 	 * @param workTimeSetting 就業時間帯の設定
 	 * @param fixedWorkSetting フレックス勤務設定
@@ -82,8 +84,7 @@ public class IntegrationOfWorkTime {
 	}
 	
 	/**
-	 * コンストラクタ（流動勤務）
-	 * 
+	 * Constructor（流動勤務）
 	 * @param workTimeCode 就業時間帯コード
 	 * @param workTimeSetting 就業時間帯の設定
 	 * @param fixedWorkSetting 流動勤務設定
@@ -96,10 +97,8 @@ public class IntegrationOfWorkTime {
 		this.flowWorkSetting = Optional.of(flowWorkSetting);
 	}
 	
-	
 	/**
 	 * 就業時間帯の共通設定を取得する
-	 * 
 	 * @return 就業時間帯の共通設定
 	 */
 	public WorkTimezoneCommonSet getCommonSetting() {
@@ -114,207 +113,164 @@ public class IntegrationOfWorkTime {
 	
 	/**
 	 * 残業時間の時間帯設定を取得する
-	 * 
 	 * @param workType 勤務種類
 	 * @return 残業時間の時間帯設定
 	 */
 	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSetList(WorkType workType) {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return this.flexWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return this.fixedWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				throw new RuntimeException("Non-conformity FLOW_WORK");
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
+			case FLEX:				return this.flexWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
+			case FLOW:				throw new RuntimeException("Non-conformity FLOW_WORK");
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
 	/**
-	 * 就業時間の時間帯設定
-	 * 
+	 * 就業時間の時間帯設定を取得する
 	 * @param workType 勤務種類
 	 * @return 就業時間の時間帯設定
 	 */
 	public List<EmTimeZoneSet> getEmTimeZoneSetList(WorkType workType) {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return this.flexWorkSetting.get().getEmTimeZoneSet(workType);
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return this.fixedWorkSetting.get().getEmTimeZoneSet(workType);
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				throw new RuntimeException("Non-conformity FLOW_WORK");
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getEmTimeZoneSet(workType);
+			case FLEX:				return this.flexWorkSetting.get().getEmTimeZoneSet(workType);
+			case FLOW:				throw new RuntimeException("Non-conformity FLOW_WORK");
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
+	/**
+	 * 休出時間の時間帯設定(List)を取得する
+	 * @return 休出時間の時間帯設定(List)
+	 */
 	public List<HDWorkTimeSheetSetting> getHDWorkTimeSheetSettingList() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return this.flexWorkSetting.get().getOffdayWorkTime().getLstWorkTimezone();
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return this.fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				throw new RuntimeException("Non-conformity FLOW_WORK");
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone();
+			case FLEX:				return this.flexWorkSetting.get().getOffdayWorkTime().getLstWorkTimezone();
+			case FLOW:				throw new RuntimeException("Non-conformity FLOW_WORK");
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
+	/**
+	 * 法定内残業として扱うか判定する
+	 * @return true：法定内残業として扱う false法定内残業として扱わない
+	 */
 	public boolean isLegalInternalTime() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return false;
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return this.fixedWorkSetting.get().getLegalOTSetting().isLegal();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return false;
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getLegalOTSetting().isLegal();
+			case FLEX:				return false;
+			case FLOW:				return false;
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
+	/**
+	 * コアタイム時間帯設定を取得する
+	 * @return コアタイム時間帯設定
+	 */
 	public Optional<CoreTimeSetting> getCoreTimeSetting() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return Optional.empty();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return Optional.empty();
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return Optional.empty();
+			case FLEX:				Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
+			case FLOW:				return Optional.empty();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
-	
-	
 	
 	/**
 	 * 流動勤務の休憩設定を取得する
 	 * フレックス勤務、流動勤務以外はRunTimeException
-	 * 
-	 * @return
+	 * @return 流動勤務の休憩設定
 	 */
 	public FlowWorkRestSetting getFlowWorkRestSetting() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return this.flexWorkSetting.get().getRestSetting();
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				throw new RuntimeException("Non-conformity FIXED_WORK");
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return this.flowWorkSetting.get().getRestSetting();
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				throw new RuntimeException("Non-conformity FIXED_WORK");
+			case FLEX:				return this.flexWorkSetting.get().getRestSetting();
+			case FLOW:				return this.flowWorkSetting.get().getRestSetting();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
 	/**
 	 * 流動勤務の休憩設定詳細を取得する
-	 * 通常勤務の場合はOptional.empty()を返す為、要注意
-	 * 
-	 * @return
+	 * 固定勤務の場合はOptional.empty()を返す為、要注意
+	 * @return 流動勤務の休憩設定詳細
 	 */
 	public Optional<FlowWorkRestSettingDetail> getFlowWorkRestSettingDetail() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return Optional.of(this.flexWorkSetting.get().getRestSetting().getFlowRestSetting());
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return Optional.empty();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return Optional.of(this.flowWorkSetting.get().getRestSetting().getFlowRestSetting());
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return Optional.empty();
+			case FLEX:				return Optional.of(this.flexWorkSetting.get().getRestSetting().getFlowRestSetting());
+			case FLOW:				return Optional.of(this.flowWorkSetting.get().getRestSetting().getFlowRestSetting());
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
 	/**
 	 * 流動勤務の休憩時間帯を取得する
-	 * 通常勤務の場合はOptional.empty()を返す為、要注意
-	 * 
+	 * 固定勤務の場合はOptional.empty()を返す為、要注意
 	 * @param workType 勤務種類
 	 * @return 流動勤務の休憩時間帯
 	 */
 	public Optional<FlowWorkRestTimezone> getFlowWorkRestTimezone(WorkType workType) {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return Optional.of(this.flexWorkSetting.get().getFlowWorkRestTimezone(workType));
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return Optional.empty();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return Optional.of(this.flowWorkSetting.get().getFlowWorkRestTimezone(workType));
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return Optional.empty();
+			case FLEX:				return Optional.of(this.flexWorkSetting.get().getFlowWorkRestTimezone(workType));
+			case FLOW:				return Optional.of(this.flowWorkSetting.get().getFlowWorkRestTimezone(workType));
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
 	/**
 	 * 固定休憩の計算方法を取得する
 	 * フレックス勤務、流動勤務の場合はOptional.empty()を返す為、要注意
-	 * 
 	 * @param workType
-	 * @return
+	 * @return 固定休憩の計算方法
 	 */
 	public Optional<FixedRestCalculateMethod> getFixedRestCalculateMethod() {
-		
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return Optional.empty();
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return Optional.of(this.fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod());
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return Optional.empty();
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return Optional.of(this.fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod());
+			case FLEX:				return Optional.empty();
+			case FLOW:				return Optional.empty();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
 	/**
-	 * 
-	 * 
-	 * @return 
+	 * 共通の休憩設定を取得する
+	 * @return 共通の休憩設定
 	 */
 	public CommonRestSetting getCommonRestSetting() {
-		if(this.workTimeSetting.getWorkTimeDivision().isFlex())
-			return this.flexWorkSetting.get().getRestSetting().getCommonRestSetting();
-		
-		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				return this.fixedWorkSetting.get().getFixedWorkRestSetting().getCommonRestSet();
-			case DIFFTIME_WORK:
-				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			case FLOW_WORK:
-				return this.flowWorkSetting.get().getRestSetting().getCommonRestSetting();
-			default:
-				throw new RuntimeException("Non-conformity No Work");
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getFixedWorkRestSetting().getCommonRestSet();
+			case FLEX:				return this.flexWorkSetting.get().getRestSetting().getCommonRestSetting();
+			case FLOW:				return this.flowWorkSetting.get().getRestSetting().getCommonRestSetting();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
+	}
+	
+	/**
+	 * 法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return 法定内残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getLegalOverTimeFrameNoList(WorkType workType) {
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getLegalOverTimeFrameNoList(workType);
+			case FLEX:				return Collections.emptyList();
+			case FLOW:				return Collections.emptyList();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
@@ -323,6 +279,8 @@ public class IntegrationOfWorkTime {
 	 * 休憩時間帯が消えてしまうので、就業時間帯から取得した休憩時間帯で計算できるように
 	 * マスタから休憩時間帯を取得する。
 	 * （流動休憩の事は考慮していないので、大塚カスタマイズ以外では使用禁止）
+	 * @param workType 勤務種類
+	 * @return 控除時間帯(丸め付き)(List)
 	 * */
 	public List<DeductionTime> getBreakTimeList(WorkType worktype){
 		if(this.workTimeSetting.getWorkTimeDivision().isFlex()) {
@@ -333,5 +291,4 @@ public class IntegrationOfWorkTime {
 		}
 		return Collections.emptyList();
 	}
-
 }

@@ -172,16 +172,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//日別修正の出退勤時刻に応じて休憩を消したり入れたりする処理の為。
 		List<TimeSheetOfDeductionItem> breakTimeFromMaster = new ArrayList<>();
 		if (OOtsukaMode) {
-			/*
-			 * todo : 就業時間帯マスタから休憩時間帯を取得する事
-			 * 
-			breakTimeFromMaster = devideBreakTimeSheetForOOtsuka(
-					fixRestTimeSet.get().getLstTimezone().stream()
-							.map(lstTimeZone -> TimeSheetOfDeductionItem
-									.createFromDeductionTimeSheet(lstTimeZone))
+			breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
+					integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
+							.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
 							.collect(Collectors.toList()),
-					oneRange.getAttendanceLeavingWork().getTimeLeavingWorks());
-			*/
+					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
 		}
 		
 		//遅刻判断時刻を求める
@@ -224,12 +219,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
 	/**
 	 * 大塚モード用 休憩時間帯が出退勤を含めている場合、切り分け、 出退勤範囲外の時間帯を切り出す
-	 * 
-	 * @param breakTimeSheetOfWorkTimeMaster
-	 * @param timeLeavingWorks
-	 * @return
+	 * @param breakTimeSheetOfWorkTimeMaster 控除項目の時間帯(List)
+	 * @param timeLeavingWorks 出退勤(List)
+	 * @return 出退勤範囲外の休憩時間帯
 	 */
-	private List<TimeSheetOfDeductionItem> devideBreakTimeSheetForOOtsuka(
+	public static List<TimeSheetOfDeductionItem> devideBreakTimeSheetForOOtsuka(
 			List<TimeSheetOfDeductionItem> breakTimeSheetOfWorkTimeMaster, List<TimeLeavingWork> timeLeavingWorks) {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for (TimeSheetOfDeductionItem bTimeSheet : breakTimeSheetOfWorkTimeMaster) {

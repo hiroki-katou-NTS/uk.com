@@ -11,12 +11,17 @@ import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerPersonDailySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.SchedulePerformance;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -50,51 +55,59 @@ public class WorkScheduleTimeOfDaily {
 	
 	/**
 	* 時刻から所定時間を計算する
-	* @param manageReGetClassOfSchedule 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス(予定）
-	* @param workType 勤務種類
-	* @param personDailySetting 毎日変更の可能性のあるマスタ管理クラス（予定）
+	* @param companyCommonSetting 会社別設定管理
+	* @param personDailySetting 社員設定管理
+	* @param integrationOfDaily 日別実績(Work)（実績）
+	* @param schedulePerformance 予定実績
 	* @param FlowOTSet 流動残業設定
-	* @return
+	* @return 所定時間
 	*/
 	public static AttendanceTime calcPredeterminedFromTime(
-			ManageReGetClass manageReGetClassOfSchedule,
-			WorkType workType,
+			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
+			IntegrationOfDaily integrationOfDaily,
+			SchedulePerformance schedulePerformance,
 			FlowOTSet flowOTSet) {
 		
+		ManageReGetClass scheduleManageReGetClass = new ManageReGetClass(
+				schedulePerformance.getCalculationRangeOfOneDay(),
+				companyCommonSetting,
+				personDailySetting,
+				schedulePerformance.getWorkType(),
+				schedulePerformance.getIntegrationOfWorkTime().get(),
+				integrationOfDaily);
+		
 		//設定を退避する
-		WorkTimezoneShortTimeWorkSet cloneWorkTimezoneShortTimeWorkSet = manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().clone();
+		WorkTimezoneShortTimeWorkSet cloneWorkTimezoneShortTimeWorkSet = scheduleManageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().clone();
 		
 		//短時間勤務を勤務として扱う
-		manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().correctDataForFixedChange(flowOTSet.getFixedChangeAtr());
+		//変動させる場合にしか呼ばれない為、引数として渡す「所定変動区分」には「変動しない」以外が入っている。
+		scheduleManageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().correctDataForFixedChange(flowOTSet.getFixedChangeAtr());
 		
 		//総労働時間計算用にクラスを作成
 		//加給時間計算設定
-		String companyId = AppContexts.user().companyId();
+		String companyId = companyCommonSetting.getCompensatoryLeaveComSet().getCompanyId();
 		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId), 1,
 				WorkingTimesheetCalculationSetting.CalculateAutomatic,
 				OvertimeTimesheetCalculationSetting.CalculateAutomatic,
 				HolidayTimesheetCalculationSetting.CalculateAutomatical);
 		
-		//休暇クラス
-		VacationClass vacation = VacationClass.createAllZero();
-		
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
-				manageReGetClassOfSchedule,
-				vacation,
-				manageReGetClassOfSchedule.getWorkType().get(),
+				scheduleManageReGetClass,
+				VacationClass.createAllZero(),
+				schedulePerformance.getWorkType().get(),
 				Optional.of(WorkTimeDailyAtr.REGULAR_WORK),
 				Optional.empty(),
 				bonusPayAutoCalcSet,
 				Collections.emptyList(),
 				personDailySetting.getPersonInfo(),
-				Optional.of(manageReGetClassOfSchedule.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
-				manageReGetClassOfSchedule.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
-				Optional.of(manageReGetClassOfSchedule.getIntegrationOfDaily().getWorkInformation().getRecordInfo().getWorkTimeCode()));
+				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
+				personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
+				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTimeCode()));
 		
 		//設定を元に戻す
-		manageReGetClassOfSchedule.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().restoreWorkTimezoneShortTimeWorkSet(cloneWorkTimezoneShortTimeWorkSet);
+		scheduleManageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().restoreWorkTimezoneShortTimeWorkSet(cloneWorkTimezoneShortTimeWorkSet);
 
 		return totalWorkingTime.getTotalTime();
 	}

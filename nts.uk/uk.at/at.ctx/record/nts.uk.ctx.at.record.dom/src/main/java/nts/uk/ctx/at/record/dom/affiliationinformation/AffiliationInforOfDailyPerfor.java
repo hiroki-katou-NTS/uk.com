@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -30,10 +32,10 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 	
 	private ClassificationCode clsCode;
 	
-	private BonusPaySettingCode bonusPaySettingCode;
+	private Optional<BonusPaySettingCode> bonusPaySettingCode;
 
 	public AffiliationInforOfDailyPerfor(EmploymentCode employmentCode, String employeeId, String jobTitleID,
-			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+			String wplID, GeneralDate ymd, ClassificationCode clsCode, Optional<BonusPaySettingCode> bonusPaySettingCode) {
 		super();
 		this.employmentCode = employmentCode;
 		this.employeeId = employeeId;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
@@ -28,18 +29,24 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 予定実績
  * @author keisuke_hoshina
  *
  */
+@AllArgsConstructor
 @Getter
 public class SchedulePerformance {
-	//勤務情報
-	private WorkInformation workInformation;
-	//日別実績の予定時間
-	private WorkScheduleTimeOfDaily actualTime;
+	
+	/** 1日の計算範囲 */
+	private CalculationRangeOfOneDay calculationRangeOfOneDay;
+	/** 勤務種類 */
+	private Optional<WorkType> workType;
+	/** 統合就業時間帯 */
+	private Optional<IntegrationOfWorkTime> integrationOfWorkTime;
 	
 	public static IntegrationOfDaily createScheduleTimeSheet(IntegrationOfDaily integrationOfDaily) {
 		/*勤務予定を日別実績に変換*/

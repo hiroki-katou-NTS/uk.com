@@ -105,13 +105,13 @@ public class LeaveEarlyTimeSheet {
 	 */
 	public static LeaveEarlyTimeSheet createLeaveEarlyTimeSheet(
 			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
-			TimeLeavingWork timeLeavingWork
-			,OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet
-			,WithinWorkTimeFrame duplicateTimeSheet
-			,DeductionTimeSheet deductionTimeSheet
-			,List<TimeSheetOfDeductionItem> breakTimeFromMaster
-			,Optional<TimezoneUse> predetermineTime
-			,int workNo,
+			TimeLeavingWork timeLeavingWork,
+			OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet,
+			WithinWorkTimeFrame duplicateTimeSheet,
+			DeductionTimeSheet deductionTimeSheet,
+			List<TimeSheetOfDeductionItem> breakTimeFromMaster,
+			Optional<TimezoneUse> predetermineTime,
+			int workNo,
 			WorkType workType,
 			PredetermineTimeSetForCalc predetermineTimeForSet,
 			IntegrationOfWorkTime workTime) {

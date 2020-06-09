@@ -361,9 +361,9 @@ public class ActualWorkingTimeOfDaily {
 //		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork()){
 //			/*緊急対応　固定勤務時　就業時間帯or計算設定で遅刻早退控除しない　なら、休憩未取得処理飛ばす*/
 
-			if(recordClass.getWorkRegularAdditionSet() != null
-			&& recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()){
-				boolean lateEarlyDeductFlag = recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(recordClass.getWorkTimezoneCommonSet());
+			if(recordClass.getIntegrationOfWorkTime().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm().isFixed()
+			&& recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()){
+				boolean lateEarlyDeductFlag = recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(recordClass.getWorkTimezoneCommonSet());
 				if(!lateEarlyDeductFlag) return totalWorkingTime; 
 			}
 		
