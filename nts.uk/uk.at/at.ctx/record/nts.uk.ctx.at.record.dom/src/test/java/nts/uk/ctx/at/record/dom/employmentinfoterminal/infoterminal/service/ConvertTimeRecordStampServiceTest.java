@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.Stam
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
@@ -194,6 +195,7 @@ public class ConvertTimeRecordStampServiceTest {
 		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
 		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		NtsAssert.atomTask(() -> resultActual.getRight().get().getAtomTask());
+		NtsAssert.atomTask(() -> resultActual.getRight().get().getAtomTask(),
+				any -> require.insert((StampRecord) (any.get())), any -> require.insert((Stamp) (any.get())));
 	}
 }

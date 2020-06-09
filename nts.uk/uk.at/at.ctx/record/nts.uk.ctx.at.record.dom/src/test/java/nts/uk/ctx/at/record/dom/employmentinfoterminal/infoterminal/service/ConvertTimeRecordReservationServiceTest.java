@@ -161,7 +161,7 @@ public class ConvertTimeRecordReservationServiceTest {
 
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
 				contractCode, receptionData);
-		NtsAssert.atomTask(() -> resultActual.get());
+		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insert(any.get()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -234,7 +234,7 @@ public class ConvertTimeRecordReservationServiceTest {
 
 		Optional<AtomTask> resultActual = ConvertTimeRecordReservationService.convertData(require, empInfoTerCode,
 				contractCode, receptionData);
-		NtsAssert.atomTask(() -> resultActual.get());
+		NtsAssert.atomTask(() -> resultActual.get(), any -> require.insertLogAll(any.get()));
 
 	}
 
