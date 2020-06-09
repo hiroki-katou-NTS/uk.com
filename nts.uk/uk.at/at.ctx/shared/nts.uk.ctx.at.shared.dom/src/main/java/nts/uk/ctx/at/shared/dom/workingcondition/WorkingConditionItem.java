@@ -12,9 +12,9 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class WorkingConditionItem.
+ * 労働条件項目
  */
 @Getter
-// 労働条件項目
 public class WorkingConditionItem extends AggregateRoot {
 
 	/** The history id. */

@@ -112,7 +112,16 @@ public class MultipleMonthAggregateProcessService {
 
 		return listValueExtractAlarm;
 	}
-
+	/**
+	 * 複数月の集計処理
+	 * @param companyID
+	 * @param multiMonthErAl
+	 * @param period
+	 * @param employees
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> multimonthAggregateProcess(String companyID, List<AlarmCheckConditionByCategory> multiMonthErAl,
 			DatePeriod period, List<EmployeeSearchDto> employees, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
@@ -121,10 +130,10 @@ public class MultipleMonthAggregateProcessService {
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(employees, 100), emps -> {
 			List<String> employeeIds = emps.stream().map(e -> e.getId()).collect(Collectors.toList());
-
+			//対象者をしぼり込む
 			Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter.filterEmployees(period, 
-																														employeeIds, 
-																														multiMonthErAl.stream().map(c -> c.getExtractTargetCondition()).collect(Collectors.toList()));
+					employeeIds,
+					multiMonthErAl.stream().map(c -> c.getExtractTargetCondition()).collect(Collectors.toList()));
 			
 			multiMonthErAl.stream().forEach(eral -> {
 				synchronized (this) {
@@ -132,7 +141,10 @@ public class MultipleMonthAggregateProcessService {
 						return;
 					}
 				}
-				List<RegulationInfoEmployeeResult> targetEmps = listTargetMap.get(eral.getExtractTargetCondition().getId()).stream().distinct().collect(Collectors.toList());
+				List<RegulationInfoEmployeeResult> targetEmps = listTargetMap.get(eral.getExtractTargetCondition().getId())
+						.stream()
+						.distinct()
+						.collect(Collectors.toList());
 
 				// 対象者の件数をチェック : 対象者 ≦ 0
 				if (!targetEmps.isEmpty()) {
@@ -140,6 +152,7 @@ public class MultipleMonthAggregateProcessService {
 					MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) eral.getExtractionCondition();
 					List<MulMonCheckCondDomainEventDto> listExtra = new ArrayList<>();
 					if(mulMonAlarmCond !=null) {
+						//複数月のアラームチェック条件
 						listExtra = multiMonthFucAdapter.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
 					}
 					YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
@@ -157,7 +170,15 @@ public class MultipleMonthAggregateProcessService {
 		return listValueExtractAlarm;
 	}
 
-	// tab1
+	/**
+	 *  tab1 抽出条件で設定されている条件分チェックする
+	 * @param companyId
+	 * @param listExtra
+	 * @param period
+	 * @param employees
+	 * @param yearMonthPeriod
+	 * @return
+	 */
 	private List<ValueExtractAlarm> extraResultMulMon2(String companyId, List<MulMonCheckCondDomainEventDto> listExtra,
 			DatePeriod period, List<RegulationInfoEmployeeResult> employees, YearMonthPeriod yearMonthPeriod) {
 
@@ -177,8 +198,11 @@ public class MultipleMonthAggregateProcessService {
 			String checkItemName = extra.getNameAlarmMulMon();
 			TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(typeCheckItem,
 					TypeCheckWorkRecordMultipleMonthImport.class);
+			//加算する勤怠項目一覧
 			List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
+			//減算する勤怠項目一覧
 			List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
+			//比較演算子
 			int compare = erAlAtdItemConAdapterDto.getCompareOperator();
 			CompareOperatorText compareOperatorText = convertCompareType(compare);
 			BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
@@ -186,6 +210,7 @@ public class MultipleMonthAggregateProcessService {
 			String nameErrorAlarm = "";
 			List<Integer> listAttendanceItemIds = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(tmp)) {
+				//勤怠項目に対応する名称を生成する
 				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp,
 						TypeOfItem.Monthly.value);
 				listAttendanceItemIds = listAttdName.stream().map(AttendanceItemName::getAttendanceItemId)
@@ -203,8 +228,8 @@ public class MultipleMonthAggregateProcessService {
 			
 			// 月別実績を取得する
 			Map<String, List<MonthlyRecordValueImport>> resultActuals = actualMultipleMonthAdapter.getActualMultipleMonth(
-																										employees.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList()), 
-																										yearMonthPeriod, listAttendanceItemIds);
+					employees.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList()),
+					yearMonthPeriod, listAttendanceItemIds);
 			if(resultActuals.isEmpty()){
 				continue;
 			}
