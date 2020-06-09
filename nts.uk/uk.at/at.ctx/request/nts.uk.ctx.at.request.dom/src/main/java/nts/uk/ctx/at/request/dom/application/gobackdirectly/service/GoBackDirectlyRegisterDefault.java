@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
+import java.util.ArrayList;
 /*
 import java.util.Optional;
 import java.util.List;
@@ -17,15 +18,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeLateLeaveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeParam;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -88,9 +92,15 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	/**
 	 * 
 	 */
+	// insert ref
 	@Override
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
@@ -146,15 +156,90 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		return newAfterRegister.processAfterRegister(application);
 		
 	}
-
+	/**
+	 * 	直行直帰登録前チェック
+	 * @param companyId
+	 * @param agenAtr
+	 * @param at
+	 * @param goBackDirectly
+	 * @param inforGoBackCommonDirectOutput
+	 * @return 確認メッセージリスト
+	 */
+	public List<ConfirmMsgOutput> getBeforeRegisterMessageList(String companyId, boolean agenAtr, Application_New application, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+		String employeeID = AppContexts.user().employeeId();
+		this.inconsistencyCheck(companyId, employeeID, GeneralDate.today());
+		return processBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, agenAtr, application, null, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getErrorFlag(), Collections.emptyList());
+	}
+	/**
+	 * 共通登録前のエラーチェック処理
+	 * @param companyId 会社ID
+	 * @param agentAtr 代行申請区分
+	 * @param application 申請
+	 * @param goBackDirectly 直行直帰申請
+	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
+	 * @param mode モード＝　新規
+	 * @return 確認メッセージリスト
+	 */
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode ) { 
+//		確認メッセージリスト＝Empty
+		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
+//		mode new
+//		モードチェックする
+		if(mode) {
+//			直行直帰登録前チェック
+			lstConfirm = this.getBeforeRegisterMessageList(companyId, agentAtr, application, goBackDirectly, inforGoBackCommonDirectOutput);
+			
+		}else {
+//			直行直帰更新前チェック
+//			detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr, appID, postAtr, version, wkTypeCD, wkTimeCd);
+		}
+		return lstConfirm;
+	}
 	
 	@Override
-	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year) {
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year) {
 		String companyID = AppContexts.user().companyId();
+//		確認メッセージリスト＝Empty
+		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
+
+		
+//		モードチェックする(check mode)
+		if(checkOver1Year) {
+//			直行直帰更新前チェック
+			// return list message
+//			goBackDirectlyUpdateService.checkErrorBeforeUpdate(goBackDirectly, companyID, application.getAppID(), null);
+		}else {
+//			直行直帰登録前チェック
+			//アルゴリズム「2-1.新規画面登録前の処理」を実行する
+//			processBeforeRegister.processBeforeRegister_New(companyID, employmentRootAtr, agentAtr, application, overTimeAtr, errorFlg, lstDateHd);
+			
+		}
+		
+//		モードチェックする(check mode)
+		
+		// mode new 
+		if(checkOver1Year) {
+//			直行直帰登録前チェック
+			
+//			アルゴリズム「直行直帰申請日の矛盾チェック」を実行する
+			
+			
+//			アルゴリズム「2-1.新規画面登録前の処理」を実行する
+//			lstConfirm = processBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION, checkOver1Year, application, null, , Collections.emptyList());
+			
+			
+		}else {
+//			mode change
+			
+			
+		}
+		
+
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
+		
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 		GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly, application);
 		//直行直帰遅刻早退のチェック
@@ -167,6 +252,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				this.createThrowMsg("Msg_298", goBackLateEarly.msgLst);
 			}
 		}
+		return lstConfirm;
 	}
 	
 	public void createThrowMsg(String msgConfirm, List<String> msgLst){
@@ -392,5 +478,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			return false;
 		}
 		return true;
+	}
+	@Override
+	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly goBackDirectly,
+			InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+//		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請共通設定」．勤務の変更をチェックする
+		WorkChangeFlg changeFlg = inforGoBackCommonDirectOutput.getGobackDirectCommon().getWorkChangeFlg();
+		
+		return null;
 	}
 }

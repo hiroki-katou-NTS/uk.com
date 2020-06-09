@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirect
 public class GoBackDirectDetailDto {
 	//直行直帰
 	GoBackDirectlyDto goBackDirectlyDto;
-	//事前事後区分
+	//	
 	int prePostAtr;
 	//場所１
 	String workLocationName1;
