@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import java.sql.ResultSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class WwfdtFullJoinState {
 	private GeneralDate approvalDate;
 	private String approvalReason;
 	private GeneralDate appDate;
+	private Integer approverInListOrder;
 	
 	public static List<WwfdtFullJoinState> fromResultSet(ResultSet rs) {
 		return new NtsResultSet(rs).getList(x -> {
@@ -48,7 +50,8 @@ public class WwfdtFullJoinState {
 					x.getString("AGENT_ID"), 
 					x.getGeneralDate("APPROVAL_DATE"), 
 					x.getString("APPROVAL_REASON"), 
-					x.getGeneralDate("APP_DATE"));
+					x.getGeneralDate("APP_DATE"),
+					x.getInt("APPROVER_LIST_ORDER"));
 		});
 	}
 	
@@ -73,8 +76,10 @@ public class WwfdtFullJoinState {
 																t.getValue().get(0).getApprovalAtr(), 
 																t.getValue().get(0).getAgentID(), 
 																t.getValue().get(0).getApprovalDate(), 
-																t.getValue().get(0).getApprovalReason());
-													}).collect(Collectors.toList());
+																t.getValue().get(0).getApprovalReason(),
+																t.getValue().get(0).getApproverInListOrder());
+													}).sorted(Comparator.comparing(ApproverInfor::getApproverInListOrder))
+													.collect(Collectors.toList());
 											return ApprovalFrame.convert(
 													z.getValue().get(0).getApproverOrder(), 
 													z.getValue().get(0).getConfirmAtr(), 
