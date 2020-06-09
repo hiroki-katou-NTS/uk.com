@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 
 /**
@@ -21,9 +22,14 @@ public class TestBinaryFile {
 		//val aTestDataForOverWriteList = new TestDataForOverWriteList();
 		//aTestDataForOverWriteList.SaveBinary();
 		
-		Map<Integer, List<TmpAnnualLeaveMngWork>> map = TestDataForOverWriteList.build();
-		List<TmpAnnualLeaveMngWork> list = map.get(1);
+//		Map<Integer, List<TmpAnnualLeaveMngWork>> map = TestDataForOverWriteList.build();
+//		List<TmpAnnualLeaveMngWork> list = map.get(1);
 		
-		TmpAnnualLeaveMngWork aTmpAnnualLeaveMngWork = list.get(0);
+		List<AnnualLeaveGrantRemainingData> list = TestAnnualLeaveGrantRemainingData.build();
+		
+//		Map<Integer, List<TmpAnnualLeaveMngWork>> map = TestDataForOverWriteList.build();
+//		List<TmpAnnualLeaveMngWork> list = map.get(1);
+		
+		AnnualLeaveGrantRemainingData a = list.get(0);
 	}
 }

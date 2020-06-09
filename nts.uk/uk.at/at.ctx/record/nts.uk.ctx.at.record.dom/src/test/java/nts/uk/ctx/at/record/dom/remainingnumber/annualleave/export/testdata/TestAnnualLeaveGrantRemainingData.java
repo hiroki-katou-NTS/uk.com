@@ -20,12 +20,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
  */
 public class TestAnnualLeaveGrantRemainingData {
 
-	/** ケース番号 */
-	private String caseNo;
+//	/** ケース番号 */
+//	private String caseNo;
 	
-	/** 年休の集計結果 期待値（文字列のまま） */
+	/** 年休付与残数データ */
 	//private AggrResultOfAnnualLeave aggrResultOfAnnualLeave;
-	private Map<String, AnnualLeaveGrantRemainingData> mapStringData;
+	//private Map<String, AnnualLeaveGrantRemainingData> mapStringData;
 	
 	//private static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
 	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/AnnualLeaveGrantRemainingData.csv";
@@ -79,13 +79,13 @@ public class TestAnnualLeaveGrantRemainingData {
 		 Integer usedMinutes = TestData.stringToInteger(s);
 		 
 		 s = record.asStr("明細使用数積み崩し日数");
-		 Double stowageDays = 0.0;
+		 Double stowageDays = TestData.stringToDouble(s);
 		 
 		 s = record.asStr("明細残数日数");
-		 Double remainDays = 0.0;
+		 Double remainDays = TestData.stringToDouble(s);
 		 
 		 s = record.asStr("明細残数時間");
-		 Integer remainMinutes = 0;
+		 Integer remainMinutes = TestData.stringToInteger(s);
 		 
 		 s = record.asStr("明細使用率");
 		 Double usedPercent = 0.0;

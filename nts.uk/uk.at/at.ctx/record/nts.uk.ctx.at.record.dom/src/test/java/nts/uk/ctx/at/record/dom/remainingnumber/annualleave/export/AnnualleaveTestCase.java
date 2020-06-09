@@ -41,12 +41,12 @@ public class AnnualleaveTestCase {
 	
 //	/** 翌月管理データ取得フラグ */
 //	private String isGetNextMonthData;
-//	
-//	/** 出勤率計算フラグ */
-//	private String isCalcAttendanceRate ;
-//
-//	/** 上書きフラグ */
-//	private String isOverWrite;
+	
+	/** 出勤率計算フラグ */
+	private String isCalcAttendanceRate ;
+
+	/** 上書きフラグ */
+	private String isOverWrite;
 
 	/** 上書き用の暫定年休管理データ　*/
 	private String forOverWriteList;
@@ -105,6 +105,8 @@ public class AnnualleaveTestCase {
 		a.setMode(record.asStr("モード"));
 		a.setCriteriaDate(record.asStr("基準日"));
 		a.setForOverWriteList(record.asStr("上書き暫定"));
+		a.setIsCalcAttendanceRate(record.asStr("出勤率フラグ"));
+		a.setIsOverWrite(record.asStr("上書きフラグ"));
 		//a.setNoCheckStartDate(record.asStr("締め開始日"));
 		a.setYearMonth(record.asStr("年月"));
 		a.setGrantHdTblSet(record.asStr("付与テーブル設定"));

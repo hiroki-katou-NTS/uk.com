@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
@@ -91,13 +92,48 @@ public class TestAnnualLeave {
 					t.getAnnualLeaveRemainHistRepo());
 				
 				String companyId = "1";
+				
+				// 社員
 				String employeeId = annualleaveTestCase.getEmployee();
-				DatePeriod aggrPeriod = null; //annualleaveTestCase.getAggrPeriod();
-				InterimRemainMngMode mode = null; // annualleaveTestCase.getMode();
-				GeneralDate criteriaDate = null; // annualleaveTestCase.getCriteriaDate();
+				
+				// 期間
+				String s_aggr_period = annualleaveTestCase.getAggrPeriod();
+				DatePeriod aggrPeriod = TestData.strToDatePeriod(s_aggr_period);
+				
+				// モード
+				InterimRemainMngMode mode;
+				String s_mode = annualleaveTestCase.getMode();
+				if ( s_mode.equals("月次") || s_mode.equals("1") ){
+					mode = InterimRemainMngMode.MONTHLY;
+				}
+				else{
+					mode = InterimRemainMngMode.OTHER;
+				}
+				
+				// 基準日
+				String s_criterial_date = annualleaveTestCase.getCriteriaDate();
+				GeneralDate criterialDate = TestData.stringyyyyMMddToGeneralDate(s_criterial_date);
+				
+				// 出勤率フラグ
+				boolean isCalcAttendanceRate = true;
+				String s_isCalcAttendanceRate = annualleaveTestCase.getIsCalcAttendanceRate();
+				if (s_isCalcAttendanceRate.equals("TRUE")){
+					isCalcAttendanceRate = true;
+				} else if (s_isCalcAttendanceRate.equals("FALSE")){
+					isCalcAttendanceRate = false;
+				}
+
+				// 上書きフラグ
+				boolean isOverWrite = false;
+				String s_isOverWriteOpt = annualleaveTestCase.getIsOverWrite();
+				if (s_isOverWriteOpt.equals("TRUE")){
+					isOverWrite = true;
+				} else if ( s_isOverWriteOpt.equals("FALSE")){
+					isOverWrite = false;
+				}
+				
 				boolean isGetNextMonthData = true;
-				boolean isCalcAttendanceRate = false;
-				boolean isOverWriteOpt = false;
+				
 				boolean noCheckStartDate = true;
 				
 //				// テストしたい処理を実行
@@ -107,10 +143,10 @@ public class TestAnnualLeave {
 						employeeId,
 						aggrPeriod,
 						mode,
-						criteriaDate,
+						criterialDate,
 						isGetNextMonthData,
 						isCalcAttendanceRate,
-						Optional.of(isOverWriteOpt),
+						Optional.of(isOverWrite),
 						Optional.empty(),
 						Optional.empty(),
 						noCheckStartDate,
