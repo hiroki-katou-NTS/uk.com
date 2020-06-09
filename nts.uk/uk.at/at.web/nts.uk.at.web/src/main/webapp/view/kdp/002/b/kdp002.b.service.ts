@@ -25,9 +25,9 @@ module nts.uk.at.view.kdp002.b.service {
         return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
     }
     
-    export function getAllStampingResult(sid): JQueryPromise<any> {
-        let _path = format(paths.getAllStampingResult, sid);
-        return ajax("at", _path);
+    export function getAllStampingResult(sid: string): JQueryPromise<any> {
+        let _path = nts.uk.text.format(paths.getAllStampingResult, sid);
+        return nts.uk.request.ajax("at", _path);
     }
     
     export function getEmpInfo(id: string) {
