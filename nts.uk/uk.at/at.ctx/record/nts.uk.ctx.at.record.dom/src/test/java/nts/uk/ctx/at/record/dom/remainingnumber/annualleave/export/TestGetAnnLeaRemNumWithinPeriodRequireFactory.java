@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodRequire;
 

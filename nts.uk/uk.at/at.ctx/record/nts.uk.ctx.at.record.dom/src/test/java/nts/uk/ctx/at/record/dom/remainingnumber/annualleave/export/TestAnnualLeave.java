@@ -13,7 +13,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetAnnLeaRemNumWithinPeriodRequireFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
@@ -90,8 +89,6 @@ public class TestAnnualLeave {
 					t.getGrantYearHolidayRepo(),
 					t.getOperationStartSetRepo(),
 					t.getAnnualLeaveRemainHistRepo());
-				
-				
 				
 				String companyId = "1";
 				String employeeId = annualleaveTestCase.getEmployee();

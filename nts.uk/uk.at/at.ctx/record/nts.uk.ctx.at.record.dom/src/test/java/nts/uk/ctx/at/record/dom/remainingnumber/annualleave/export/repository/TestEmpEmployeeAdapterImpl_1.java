@@ -62,6 +62,8 @@ public class TestEmpEmployeeAdapterImpl_1 implements EmpEmployeeAdapter {
 				.entryDate(GeneralDate.ymd(2015,  4, 1))
 				.retiredDate(GeneralDate.ymd(9999,  12, 31))
 				.build();
+
+		
 		return empDto;
 	}
 	

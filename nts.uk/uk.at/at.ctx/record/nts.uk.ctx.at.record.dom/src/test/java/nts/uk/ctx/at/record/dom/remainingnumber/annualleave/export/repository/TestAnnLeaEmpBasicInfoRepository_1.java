@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 
@@ -27,9 +28,13 @@ public class TestAnnLeaEmpBasicInfoRepository_1 implements AnnLeaEmpBasicInfoRep
 		
 		AnnualLeaveEmpBasicInfo a 
 			= AnnualLeaveEmpBasicInfo.createFromJavaType(
-				"1", ent.workDaysPerYear,
-				ent.workDaysBeforeIntro, ent.grantTableCode, ent.grantStandardDate));
-		
+				employeeId, // 社員ID
+				150, // 年間所定労働日数
+				140, // 導入前労働日数
+				"", // 付与ルール
+				GeneralDate.ymd(2018, 4, 1)); // grantStandardDate
+
+		return Optional.of(a);
 	}
 	
 	// chuyển sang jdbc, tăng tốc độ
