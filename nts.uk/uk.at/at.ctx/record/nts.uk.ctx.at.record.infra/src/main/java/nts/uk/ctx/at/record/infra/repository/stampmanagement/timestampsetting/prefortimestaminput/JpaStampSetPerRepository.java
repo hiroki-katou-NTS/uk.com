@@ -164,7 +164,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 						&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
 						&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
 					
-					StampType.getStampType(
+					stampType = StampType.getStampType(
 							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
 							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
 							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
