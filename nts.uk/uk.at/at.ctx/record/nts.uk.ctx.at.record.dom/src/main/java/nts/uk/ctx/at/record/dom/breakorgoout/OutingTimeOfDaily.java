@@ -73,6 +73,29 @@ public class OutingTimeOfDaily {
 	}
 	
 	/**
+	 * 日別実績の外出時間
+	 * @param recordClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
+	 * @return 日別実績の外出時間(List)
+	 */
+	public static List<OutingTimeOfDaily> calcList(ManageReGetClass recordClass) {
+		List<OutingTimeOfDaily> outingList = new ArrayList<OutingTimeOfDaily>();
+		if(recordClass.getIntegrationOfDaily().getOutingTime().isPresent()) {
+			for(OutingTimeSheet outingOfDaily : recordClass.getIntegrationOfDaily().getOutingTime().get().getOutingTimeSheets()) {
+				outingList.add(OutingTimeOfDaily.calcOutingTime(
+						outingOfDaily,
+						recordClass.getCalculationRangeOfOneDay(),
+						recordClass.getCalculatable(),
+						recordClass.getFlexCalcSetting(),
+						PremiumAtr.RegularWork,
+						recordClass.getHolidayCalcMethodSet(),
+						recordClass.getWorkTimezoneCommonSet(),
+						recordClass));
+			}
+		}
+		return outingList;
+	}
+	
+	/**
 	 * 全ての外出時間を計算する指示を出すクラス
 	 * @param outingOfDaily 
 	 * @return

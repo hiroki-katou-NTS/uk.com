@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
- * 法定労働控除時間
+ * 所定労働控除時間
  * @author keisuke_hoshina
  *
  */

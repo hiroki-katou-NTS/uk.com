@@ -96,9 +96,21 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 Optional<WorkTimeCode> siftCode,
 			   														 Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
-			   														 AttendanceTime flexPreAppTime,
 			   														 WorkingConditionItem conditionItem,
-			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,AttendanceTime beforeApplicationTime) {
+			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+		//所定外深夜事前申請取り出し処理
+		AttendanceTime beforeApplicationTime = AttendanceTime.ZERO;
+		if(recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
+			beforeApplicationTime = recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getBeforeApplicationTime();
+		}
+		
+		//事前フレックス
+		AttendanceTime flexPreAppTime = AttendanceTime.ZERO;
+		if(recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
+				&& recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
+			flexPreAppTime = recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
+		}
+		
 		//残業時間
 		val overTime = calculationOverTime(recordReget,calcMethod,
 										   workType,flexCalcMethod,
@@ -369,6 +381,18 @@ public class ExcessOfStatutoryTimeOfDaily {
 		if(this.overTimeWork != null
 		&& this.overTimeWork.isPresent()) {
 			return new AttendanceTime(this.getOverTimeWork().get().calcTotalFrameTime() + this.getOverTimeWork().get().calcTransTotalFrameTime());
+		}
+		return new AttendanceTime(0);
+	}
+	
+	/**
+	 * 全休出枠の休出時間と振替時間の合計時間を算出する
+	 * @return　休出合計時間　＋　振替合計時間
+	 */
+	public AttendanceTime calcWorkHolidayTime() {
+		if(this.workHolidayTime != null
+		&& this.workHolidayTime.isPresent()) {
+			return new AttendanceTime(this.getWorkHolidayTime().get().calcTotalFrameTime() + this.getWorkHolidayTime().get().calcTransTotalFrameTime());
 		}
 		return new AttendanceTime(0);
 	}

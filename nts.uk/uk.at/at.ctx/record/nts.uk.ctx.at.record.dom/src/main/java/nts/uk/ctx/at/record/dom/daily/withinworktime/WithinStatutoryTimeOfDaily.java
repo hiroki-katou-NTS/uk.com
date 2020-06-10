@@ -107,7 +107,6 @@ public class WithinStatutoryTimeOfDaily {
 			   												   Optional<SettingOfFlexWork> flexCalcMethod, 
 			   												   Optional<WorkTimeDailyAtr> workTimeDailyAtr, 
 			   												   Optional<WorkTimeCode> workTimeCode,
-			   												   AttendanceTime preFlexTime,
 			   												   WorkingConditionItem conditionItem,
 			   												   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		AttendanceTime workTime = new AttendanceTime(0);
@@ -127,6 +126,14 @@ public class WithinStatutoryTimeOfDaily {
 																										  
 										:new AttendanceTime(0);
 		}
+		
+		//事前フレックス
+		AttendanceTime preFlexTime = AttendanceTime.ZERO;
+		if(recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
+				&& recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
+			preFlexTime = recordReget.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
+		}
+		
 		//就業時間の計算
 
 			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,

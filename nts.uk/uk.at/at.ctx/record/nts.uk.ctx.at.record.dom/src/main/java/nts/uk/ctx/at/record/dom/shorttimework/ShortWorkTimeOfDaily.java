@@ -58,7 +58,7 @@ public class ShortWorkTimeOfDaily {
 	}
 	
 	
-	public static ShortWorkTimeOfDaily calcShortWorkTime(ManageReGetClass recordClass,ChildCareAttribute careAtr,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	public static ShortWorkTimeOfDaily calcShortWorkTime(ManageReGetClass recordClass,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		WorkTimes workTimes = new WorkTimes(0);
 		DeductionTotalTime totalTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 							  								 TimeWithCalculation.sameTime(new AttendanceTime(0)),
@@ -66,6 +66,18 @@ public class ShortWorkTimeOfDaily {
 		DeductionTotalTime totalDeductionTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 											   				 		  TimeWithCalculation.sameTime(new AttendanceTime(0)),
 											   				 		  TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		
+		ChildCareAttribute careAtr = ChildCareAttribute.CHILD_CARE;
+		if(recordClass.getIntegrationOfDaily().getShortTime().isPresent()) {
+			val firstTimeSheet =  recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
+			if(firstTimeSheet.isPresent()) {
+				careAtr = firstTimeSheet.get().getChildCareAttr();
+			}
+		}
+		else if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
+			careAtr = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
+		}
+		
 		if(recordClass.getCalculatable()
 		 &&recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数
