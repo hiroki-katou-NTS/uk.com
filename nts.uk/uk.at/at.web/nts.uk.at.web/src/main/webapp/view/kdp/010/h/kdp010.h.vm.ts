@@ -101,7 +101,7 @@ module nts.uk.at.view.kdp010.h {
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
 						self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
 						self.backgroundColors(data.buttonDisSet.backGroundColor);
-						self.selectedStamping(data.buttonType.stampType.goOutArt);
+						self.selectedStamping(data.buttonType.stampType.goOutArt == null ? 0 : data.buttonType.stampType.goOutArt);
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
