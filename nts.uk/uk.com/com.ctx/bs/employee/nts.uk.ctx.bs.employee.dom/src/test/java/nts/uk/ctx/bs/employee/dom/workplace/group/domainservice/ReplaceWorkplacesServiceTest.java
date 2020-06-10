@@ -46,7 +46,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplace
  * Free WorkPlaces: 
  * 		000000000000000000000000000000000015
  * 		000000000000000000000000000000000016
- * ====================================================
+ * ====================================================/
  * DomainService's Parameters: 
  * WorkPlaceGroup: 00000000000001 
  * WorkPlaces:
@@ -71,35 +71,40 @@ public class ReplaceWorkplacesServiceTest {
 	@Test
 	public void testBelongAnother() {
 
+		WorkplaceGroup workPlaceGroup = new WorkplaceGroup(
+				"000000000000000000000000000000000016", 
+				"00000000000001",
+				new WorkplaceGroupCode("0000000001"),
+				new WorkplaceGroupName("00000000000000000011"), 
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));
+
+		List<AffWorkplaceGroup> affWorkplaceGroupList = Arrays.asList(
+				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000011"),
+				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000012"));
+		
+		// ------------------------- Mocking ↓
+		new Expectations() {
+			{
+				require.getByWKPGRPID("00000000000001");
+				result = affWorkplaceGroupList;
+			}
+		};
+		
 		new MockUp<AddWplOfWorkGrpService>() {
 			@Mock
-			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
-					String lstWorkplaceId) {
+			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group, String lstWorkplaceId) {
 				return WorkplaceReplaceResult.belongAnother("00000000000002");
 			}
 		};
-
-		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000016", "00000000000001",
-				new WorkplaceGroupCode("0000000001"), // dummy
-				new WorkplaceGroupName("00000000000000000011"), // dummy
-				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
-
-		List<String> lstWorkplaceId = Arrays.asList("000000000000000000000000000000000012",
-				"000000000000000000000000000000000014", "000000000000000000000000000000000016");
-
-		List<AffWorkplaceGroup> lstFormerAffInfo = Arrays.asList(
-				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000011"),
-				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000012"));
-
-		new Expectations() {
-			{
-				require.getByWKPGRPID("00000000000001");// dummy
-				result = lstFormerAffInfo;
-			}
-		};
-
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
-				lstWorkplaceId);
+		
+		// ------------------------- DomainService
+		List<String> newAffWorkplaceIdList = Arrays.asList("000000000000000000000000000000000012",
+													"000000000000000000000000000000000014", 
+													"000000000000000000000000000000000016");
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, workPlaceGroup,
+				newAffWorkplaceIdList);
+		
+		// ------------------------- Result Test
 		assertThat(results.get("000000000000000000000000000000000014").getWorkplaceReplacement().name()
 				.equals(WorkplaceReplacement.BELONGED_ANOTHER.name())).isTrue();
 	}
