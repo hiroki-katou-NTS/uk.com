@@ -28,8 +28,7 @@ module nts.uk.com.view.kdp001.a {
 
             constructor() {
                 let self = this;
-
-              
+                $("#fixed-table").ntsFixedTable({ height: 80, width: 230 });
             }
 
             /**
