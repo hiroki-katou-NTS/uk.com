@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
+@AllArgsConstructor
 public class TopPageArm extends ValueObject {
 
 	/**

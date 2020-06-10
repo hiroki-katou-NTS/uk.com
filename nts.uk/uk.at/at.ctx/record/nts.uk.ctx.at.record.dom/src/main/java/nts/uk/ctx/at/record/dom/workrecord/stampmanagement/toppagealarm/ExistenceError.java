@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm;
 /**
  * エラーの有無
- * @author yennth
+ * @author chungnt
  *
  */
 public enum ExistenceError {
