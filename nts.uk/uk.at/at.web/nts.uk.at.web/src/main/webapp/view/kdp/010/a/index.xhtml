@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.stamp.application.MessageContent
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="/view/kdp/010/main.css" of="/nts.uk.at.web" />
+			
+			<com:scriptfile path="../b/kdp010.b.vm.js" />
+			<com:scriptfile path="../b/kdp010.b.service.js" />
+			
+			<com:scriptfile path="../e/kdp010.e.vm.js" />
+			<com:scriptfile path="../e/kdp010.e.service.js" />
+			<com:stylefile path="../e/main.css" />
+			
+			<com:scriptfile path="kdp010.a.service.js" />
+			<com:scriptfile path="kdp010.a.vm.js" />
+			<com:scriptfile path="kdp010.a.start.js" />
+		</ui:define>
+
+		<!-- Side Bar -->
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
+				<li data-bind="click: selectScreenA"><a tabindex="-1" href="#tabpanel_a" role="tab-navigator" class="active">#{i18n.getText('KDP010_2')}</a></li>
+				<li data-bind="click: selectScreenB"><a tabindex="2" href="#tabpanel-b" role="tab-navigator" >#{i18n.getText('KDP010_3')}</a></li>
+				<li data-bind="click: selectScreenE"><a tabindex="3" href="#tabpanel-e" role="tab-navigator" >#{i18n.getText('KDP010_6')}</a></li>
+			</ul>
+		</ui:define>
+
+		<!-- Side Bar Content -->
+		<ui:define name="sidebar-content">
+			<!-- Screen A -->
+			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="">
+				<ui:include src="content.xhtml" />
+			</div>
+			<!-- Screen B -->
+			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
+				<ui:include src="../b/index.xhtml" />
+			</div>
+			<!-- Screen E -->
+			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
+				<ui:include src="../e/index.xhtml" />
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
