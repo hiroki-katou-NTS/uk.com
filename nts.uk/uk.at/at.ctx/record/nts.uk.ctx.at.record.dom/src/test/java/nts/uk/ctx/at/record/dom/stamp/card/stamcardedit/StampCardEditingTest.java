@@ -22,6 +22,12 @@ public class StampCardEditingTest {
 		NtsAssert.invokeGetters(cardEditing);
 	}
 	
+	/**
+	 * if (cardNumber.length() > this.digitsNumber.v()) {
+
+			return Optional.empty();
+		}
+	 */
 	@Test
 	public void testMaxLength() {
 		StampCardEditing cardEditing = StampCardEditingHelper.getDefault();
@@ -30,6 +36,12 @@ public class StampCardEditingTest {
 		assertThat(optional).isEmpty();
 	}
 	
+	/**
+	 * if (cardNumber.length() <= this.digitsNumber.v()) {
+
+			Optional.ofNullable(this.method.editCardNumber(String.valueOf(this.digitsNumber.v()), cardNumber));
+		}
+	 */
 	@Test
 	public void testNotMaxLength() {
 		StampCardEditing cardEditing = StampCardEditingHelper.getDefault();

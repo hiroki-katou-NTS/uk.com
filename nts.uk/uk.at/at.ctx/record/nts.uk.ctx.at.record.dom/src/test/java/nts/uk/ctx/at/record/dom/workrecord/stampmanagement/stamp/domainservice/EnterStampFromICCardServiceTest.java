@@ -31,12 +31,6 @@ public class EnterStampFromICCardServiceTest {
 	@Injectable
 	private Require require;
 
-	@Test
-	public void getters() {
-		EnterStampFromICCardService cardService = new EnterStampFromICCardService();
-		NtsAssert.invokeGetters(cardService);
-	}
-
 	/**
 	 * if (!stampCardOpt.isPresent()) {
 			throw new BusinessException("Msg_433");

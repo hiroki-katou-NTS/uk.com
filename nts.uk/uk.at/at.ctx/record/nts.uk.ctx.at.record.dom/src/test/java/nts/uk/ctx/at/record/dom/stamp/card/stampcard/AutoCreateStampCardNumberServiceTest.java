@@ -26,13 +26,6 @@ public class AutoCreateStampCardNumberServiceTest {
 	@Injectable
 	private Require require;
 	
-	
-	@Test
-	public void getters() {
-		AutoCreateStampCardNumberService service = new AutoCreateStampCardNumberService();
-		NtsAssert.invokeGetters(service);
-	}
-	
 	/**
 	 * !stampMeans.checkAutoCreateStamp()
 	 */

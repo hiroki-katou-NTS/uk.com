@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author sonnlb
  * 
- *         ICカードから打刻を入力す
+ *         ICカードから打刻を入力する
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.ICカードから打刻を入力する.ICカードから打刻を入力する
  */
 public class EnterStampFromICCardService {

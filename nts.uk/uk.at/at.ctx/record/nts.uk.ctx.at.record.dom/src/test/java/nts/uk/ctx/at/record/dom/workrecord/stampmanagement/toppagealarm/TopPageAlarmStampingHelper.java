@@ -11,16 +11,17 @@ public class TopPageAlarmStampingHelper {
 		List<String> lstsid = new ArrayList<>();
 		
 		list.add(new TopPageArmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageArmDetail("DUMMY", 2, "DUMMY"));
-		list.add(new TopPageArmDetail("DUMMY", 3, "DUMMY"));
-		list.add(new TopPageArmDetail("DUMMY", 4, "DUMMY"));
+		list.add(new TopPageArmDetail("DUMMY", 1, "DUMMY"));
+		list.add(new TopPageArmDetail("DUMMY", 1, "DUMMY"));
+		list.add(new TopPageArmDetail("DUMMY", 1, "DUMMY"));
 		
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
 		
-		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(list, new TopPageArm(ExistenceError.HAVE_ERROR, lstsid));
+		TopPageArm topPageArm = new TopPageArm(ExistenceError.HAVE_ERROR, lstsid);
+		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(list, topPageArm);
 		
 		return alarmStamping;
 	}
