@@ -44,7 +44,7 @@ public class EnterStampFromSmartPhoneService {
 	 *            ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
 
-	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
 			RefectActualResult refActualResults) {
 		// $打刻場所情報 = empty

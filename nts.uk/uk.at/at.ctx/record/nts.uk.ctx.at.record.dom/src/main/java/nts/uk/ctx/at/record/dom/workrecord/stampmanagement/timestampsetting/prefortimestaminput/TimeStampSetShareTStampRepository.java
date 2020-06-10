@@ -27,6 +27,6 @@ public interface TimeStampSetShareTStampRepository {
 	 * @param comppanyID
 	 * @return
 	 */
-	public Optional<TimeStampSetShareTStamp> get(String comppanyID);
+	public Optional<TimeStampSetShareTStamp> gets(String comppanyID);
 
 }

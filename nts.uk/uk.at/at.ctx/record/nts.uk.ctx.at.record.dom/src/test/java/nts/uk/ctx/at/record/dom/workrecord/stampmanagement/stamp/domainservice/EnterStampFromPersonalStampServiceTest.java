@@ -26,6 +26,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
  */
 @RunWith(JMockit.class)
 public class EnterStampFromPersonalStampServiceTest {
+	
+	@Test
+	public void getters() {
+		EnterStampFromPersonalStampService enterStampFromPersonalStampService = new EnterStampFromPersonalStampService();
+		NtsAssert.invokeGetters(enterStampFromPersonalStampService);
+	}
 
 	@Injectable
 	private Require require;
@@ -82,7 +88,6 @@ public class EnterStampFromPersonalStampServiceTest {
 		};
 		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId,
 				stmapDateTime, stampButton, refActualResults));
-
 
 	}
 

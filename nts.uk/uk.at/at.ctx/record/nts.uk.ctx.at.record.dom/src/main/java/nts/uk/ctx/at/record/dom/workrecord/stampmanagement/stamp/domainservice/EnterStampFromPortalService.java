@@ -41,7 +41,7 @@ public class EnterStampFromPortalService {
 	 * 
 	 *         ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
 
 		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
