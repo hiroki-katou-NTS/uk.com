@@ -82,7 +82,7 @@ public class ReplaceWorkplacesServiceTest {
 			@Mock
 			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
 					String lstWorkplaceId) {
-				return WorkplaceReplaceResult.belongAnother("00000000000001");
+				return WorkplaceReplaceResult.belongAnother("00000000000002");
 			}
 		};
 
