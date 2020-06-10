@@ -39,7 +39,6 @@ public class EnterStampFromSmartPhoneServiceTest {
 				"DUMMY", GeneralDateTime.now(), new StampButton(new PageNo(1), new ButtonPositionNo(1)),
 				Optional.empty(), null);
 
-		// assertThat().isFalse();
 	}
 
 	/**

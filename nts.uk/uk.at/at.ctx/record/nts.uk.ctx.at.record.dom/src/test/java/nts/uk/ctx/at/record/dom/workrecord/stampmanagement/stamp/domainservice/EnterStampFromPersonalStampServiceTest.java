@@ -49,10 +49,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
-//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -75,10 +72,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
-//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -103,10 +97,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(10));
-//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{
@@ -132,10 +123,7 @@ public class EnterStampFromPersonalStampServiceTest {
 		String contractCode = "contractCode";// dummy
 		GeneralDateTime stmapDateTime = GeneralDateTime.now();// dummy
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
-//		Relieve relieve = StampHelper.getRelieveDefault();// dummy
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();// dummy
-//		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());// dummy
-//		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1234));// dummy
 
 		new Expectations() {
 			{

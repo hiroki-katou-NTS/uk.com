@@ -24,21 +24,10 @@ public class StampTest {
 		Stamp stamp = StampHelper.getStampDefault();
 		NtsAssert.invokeGetters(stamp);
 	}
-	
-	@Test
-	public void testStamp_contructor_C0() {
-		StampNumber cardNumber = new StampNumber("cardNumber");//dummy
-		GeneralDateTime stampDateTime = GeneralDateTime.now();
-		Relieve relieve = StampHelper.getRelieveDefault();
-		StampType type = StampHelper.getStampTypeDefault();
-		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
-		Optional<StampLocationInfor> locationInfor = Optional.ofNullable(StampHelper.getStampLocationInforDefault()) ;
-		ContractCode contactCode = new ContractCode("aaaa");
-		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, true , locationInfor,
-				Optional.empty()
-				);
-		NtsAssert.invokeGetters(stamp);
-	}
+
+	/**
+	 * Test C1 初回打刻データを作成する
+	 */
 	
 	@Test
 	public void testStamp_contructor_C1() {
@@ -54,6 +43,9 @@ public class StampTest {
 		NtsAssert.invokeGetters(stamp);
 	}
 	
+	/**
+	 * Test AttendanceTime
+	 */
 	@Test
 	public void testSetAttendanceTime() {
 		AttendanceTime attendanceTime = new AttendanceTime(10);//dummy
