@@ -16,6 +16,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode;
@@ -30,6 +31,42 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.ReplaceWorkplace
  * @author phongtq
  *
  */
+
+/*
+ * WorkPlaceGroup: 
+ * 00000000000001 
+ * 
+ * WorkPlaces:
+ * 000000000000000000000000000000000011 
+ * 000000000000000000000000000000000012
+ * 
+ * WorkPlaceGroup: 
+ * 00000000000002 
+ * 
+ * WorkPlaces:
+ * 000000000000000000000000000000000013 
+ * 000000000000000000000000000000000014
+ * 
+ * Free WorkPlaces: 
+ * 000000000000000000000000000000000015
+ * 000000000000000000000000000000000016
+ * 
+ * DomainService's
+ * Params: 
+ * WorkPlaceGroup: 
+ * 00000000000001 
+ * 
+ * WorkPlaces:
+ * 000000000000000000000000000000000012 
+ * 000000000000000000000000000000000014
+ * 000000000000000000000000000000000016
+ * 
+ * Results:
+ * 000000000000000000000000000000000011 DELETE
+ * 000000000000000000000000000000000012 ALREADY_BELONGED
+ * 000000000000000000000000000000000014 BELONGED_ANOTHER
+ * 000000000000000000000000000000000014 ADD
+ */
 @RunWith(JMockit.class)
 public class ReplaceWorkplacesServiceTest {
 	@Injectable
@@ -40,15 +77,15 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testBelongAnother() {
-		
+
 		new MockUp<AddWplOfWorkGrpService>() {
 			@Mock
 			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
 					String lstWorkplaceId) {
-				return WorkplaceReplaceResult.belongAnother("000000000000000000000000000000000014");
+				return WorkplaceReplaceResult.belongAnother("00000000000001");
 			}
 		};
-		
+
 		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000016", "00000000000001",
 				new WorkplaceGroupCode("0000000001"), // dummy
 				new WorkplaceGroupName("00000000000000000011"), // dummy
@@ -68,7 +105,7 @@ public class ReplaceWorkplacesServiceTest {
 			}
 		};
 
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.getWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
 				lstWorkplaceId);
 		assertThat(results.get("000000000000000000000000000000000014").getWorkplaceReplacement().name()
 				.equals(WorkplaceReplacement.BELONGED_ANOTHER.name())).isTrue();
@@ -76,6 +113,26 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testAdd() {
+
+		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000016", "00000000000001",
+				new WorkplaceGroupCode("0000000001"), // dummy
+				new WorkplaceGroupName("00000000000000000011"), // dummy
+				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
+
+		List<String> lstWorkplaceId = Arrays.asList("000000000000000000000000000000000012",
+				"000000000000000000000000000000000014", "000000000000000000000000000000000016");
+
+		List<AffWorkplaceGroup> lstFormerAffInfo = Arrays.asList(
+				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000011"),
+				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000012"));
+
+		new Expectations() {
+			{
+				require.getByWKPGRPID("00000000000001");// dummy
+				result = lstFormerAffInfo;
+			}
+		};
+		
 		new MockUp<AddWplOfWorkGrpService>() {
 			@Mock
 			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
@@ -83,27 +140,8 @@ public class ReplaceWorkplacesServiceTest {
 				return WorkplaceReplaceResult.add(atomTakss);
 			}
 		};
-		
-		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000016", "00000000000001",
-				new WorkplaceGroupCode("0000000001"), // dummy
-				new WorkplaceGroupName("00000000000000000011"), // dummy
-				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 
-		List<String> lstWorkplaceId = Arrays.asList("000000000000000000000000000000000012",
-				"000000000000000000000000000000000014", "000000000000000000000000000000000016");
-
-		List<AffWorkplaceGroup> lstFormerAffInfo = Arrays.asList(
-				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000011"),
-				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000012"));
-
-		new Expectations() {
-			{
-				require.getByWKPGRPID("00000000000001");// dummy
-				result = lstFormerAffInfo;
-			}
-		};
-
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.getWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
 				lstWorkplaceId);
 		assertThat(results.get("000000000000000000000000000000000016").getWorkplaceReplacement().name()
 				.equals(WorkplaceReplacement.ADD.name())).isTrue();
@@ -111,15 +149,7 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testAlreadyBelong() {
-		
-		new MockUp<AddWplOfWorkGrpService>() {
-			@Mock
-			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
-					String lstWorkplaceId) {
-				return WorkplaceReplaceResult.alreadyBelong("000000000000000000000000000000000012");
-			}
-		};
-		
+
 		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000016", "00000000000001",
 				new WorkplaceGroupCode("0000000001"), // dummy
 				new WorkplaceGroupName("00000000000000000011"), // dummy
@@ -138,8 +168,16 @@ public class ReplaceWorkplacesServiceTest {
 				result = lstFormerAffInfo;
 			}
 		};
+		
+		new MockUp<AddWplOfWorkGrpService>() {
+			@Mock
+			public WorkplaceReplaceResult addWorkplace(AddWplOfWorkGrpService.Require require, WorkplaceGroup group,
+					String lstWorkplaceId) {
+				return WorkplaceReplaceResult.alreadyBelong("00000000000001");
+			}
+		};
 
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.getWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
 				lstWorkplaceId);
 		assertThat(results.get("000000000000000000000000000000000012").getWorkplaceReplacement().name()
 				.equals(WorkplaceReplacement.ALREADY_BELONGED.name())).isTrue();
@@ -147,15 +185,14 @@ public class ReplaceWorkplacesServiceTest {
 
 	@Test
 	public void testDel() {
-		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000010", // dummy
+		WorkplaceGroup group = new WorkplaceGroup("000000000000000000000000000000000014", // dummy
 				"00000000000001", // dummy
 				new WorkplaceGroupCode("0000000001"), // dummy
 				new WorkplaceGroupName("00000000000000000011"), // dummy
 				EnumAdaptor.valueOf(1, WorkplaceGroupType.class));// dummy
 		List<String> lstWorkplaceId = Arrays.asList("000000000000000000000000000000000012",
-				"000000000000000000000000000000000016", "000000000000000000000000000000000010");
+				"000000000000000000000000000000000016", "000000000000000000000000000000000014");
 		List<AffWorkplaceGroup> lstFormerAffInfo = Arrays.asList(
-				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000016"),
 				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000012"),
 				new AffWorkplaceGroup("00000000000001", "000000000000000000000000000000000011"));
 		new Expectations() {
@@ -164,13 +201,11 @@ public class ReplaceWorkplacesServiceTest {
 				result = lstFormerAffInfo;
 			}
 		};
-		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.getWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.repalceWorkplace(require, group,
 				lstWorkplaceId);
-		workplacesService.forEach((WKPID, result) -> {
-			result.getPersistenceProcess().get().run();
-			require.deleteByWKPID(WKPID);
-			result = WorkplaceReplaceResult.delete(atomTakss);
-		});
+		NtsAssert.atomTask(
+				() -> workplacesService.get("000000000000000000000000000000000011").getPersistenceProcess().get(),
+				any -> require.deleteByWKPID(any.get()));
 
 		assertThat(workplacesService.get("000000000000000000000000000000000011").getWorkplaceReplacement().name()
 				.equals(WorkplaceReplacement.DELETE.name())).isTrue();
