@@ -16,6 +16,12 @@ public interface MonthlyUnconfirmedService {
 	Optional<ValueExtractAlarmWR> checkMonthlyUnconfirmed(String employeeID,int yearMonth);
 	
 	List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(String employeeID,int yearMonth,Optional<IdentityProcessUseSet> identityProcess);
-	
+	/**
+	 * 月の本人確認を取得
+	 * @param employeeID　List＜社員ID＞
+	 * @param yearMonth　List＜年月＞
+	 * @param identityProcess　本人確認処理の利用設定
+	 * @return
+	 */
 	List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(List<String> employeeID, List<YearMonth> yearMonth, Optional<IdentityProcessUseSet> identityProcess);
 }
