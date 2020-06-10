@@ -34,7 +34,8 @@ public class W4D4CheckAcAdapter implements W4D4CheckAdapter {
 				period,listHolidayWorkTypeCode,listWorkInfoOfDailyPerByID.stream().map(c->convertToExport(c)).collect(Collectors.toList()) );
 		if (optAlarmExport.isPresent()) {			
 			AlarmExtractionValue4W4DExport alarmExport = optAlarmExport.get();
-			ValueExtractAlarm alarmImport = new ValueExtractAlarm(workplaceID, employeeID, TextResource.localize("KAL010_908",period.start().toString(ErAlConstant.DATE_FORMAT),period.end().toString(ErAlConstant.DATE_FORMAT)),
+			ValueExtractAlarm alarmImport = new ValueExtractAlarm(workplaceID, employeeID, 
+					TextResource.localize("KAL010_908",period.start().toString(ErAlConstant.DATE_FORMAT),period.end().toString(ErAlConstant.DATE_FORMAT)),
 					alarmExport.getClassification(), alarmExport.getAlarmItem(), alarmExport.getAlarmValueMessage(),
 					alarmExport.getComment(),alarmExport.getCheckedValue());
 			return Optional.of(alarmImport);
