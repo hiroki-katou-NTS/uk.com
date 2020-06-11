@@ -234,53 +234,48 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	
 	/**
 	 * 実働時間を求め、就業時間を計算する
-	 * @param holidayAdditionAtr
-	 * @param dedTimeSheet
-	 * @return
+	 * アルゴリズム：時間帯単位の計算処理
+	 * @param holidayAdditionAtr 休暇加算区分
+	 * @param timevacationUseTimeOfDaily 休暇使用合計残時間未割当
+	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
+	 * @param addSetting 加算設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param premiumAtr 割増区分
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @param lateEarlyMinusAtr 遅刻早退控除する
+	 * @return 就業時間
 	 */
-	public AttendanceTime calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,
-														AttendanceTime timevacationUseTimeOfDaily,
-														AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
-														AddSetting addSetting,
-														HolidayAddtionSet holidayAddtionSet,
-														HolidayCalcMethodSet holidayCalcMethodSet,
-														PremiumAtr premiumAtr,Optional<WorkTimezoneCommonSet> commonSetting,
-														NotUseAtr lateEarlyMinusAtr
-														) {
+	public AttendanceTime calcActualWorkTimeAndWorkTime(
+			HolidayAdditionAtr holidayAdditionAtr,
+			AttendanceTime timevacationUseTimeOfDaily,
+			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+			AddSetting addSetting,
+			HolidayAddtionSet holidayAddtionSet,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneCommonSet> commonSetting,
+			NotUseAtr lateEarlyMinusAtr) {
+		
 		//就業時間の計算
 		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet,premiumAtr);
-//		AttendanceTime dedAllTime = new AttendanceTime(0);
-//		val dedTimeSheets = this.deductionTimeSheet;
-//		if(!dedTimeSheets.isEmpty()) {
-//			dedAllTime = new AttendanceTime(dedTimeSheets.stream()
-//									  					 .map(tc -> tc.calcTotalTime().valueAsMinutes())
-//									  					 .collect(Collectors.summingInt(tc -> tc)));
-//		}
-//		if(dedAllTime.greaterThan(0)) {
-//			actualTime = actualTime.minusMinutes(dedAllTime.valueAsMinutes());
-//		}
+
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		
-		//控除時間の内、時間休暇で相殺した時間を計算
-		DeductionOffSetTime timeVacationOffSetTime = //(dedTimeSheet.isPresent())
-													 // ?dedTimeSheet.get().calcTotalDeductionOffSetTime(lateTimeOfDaily,lateTimeSheet,leaveEarlyTimeOfDaily,leaveEarlyTimeSheet)
-													  //控除時間帯が存在する前提で動いていたため、控除時間帯が無かったらオールゼロで修正
-												     // :new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
-													 new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+		//控除時間、時間休暇で相殺した時間を計算  控除時間帯が存在する前提で動いていたため、控除時間帯が無かったらオールゼロで修正
+		DeductionOffSetTime timeVacationOffSetTime = new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
 
 		//遅刻、早退時間を就業時間から控除
-			//遅刻控除時間を計算
+		//遅刻控除時間を計算
 		if(jugmentDeductLateEarly(premiumAtr,holidayCalcMethodSet,commonSetting,lateEarlyMinusAtr)) {
 			int lateDeductTime = 0;
 			if(this.lateTimeSheet.isPresent()) {
-				//lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getCalcTime().valueAsMinutes();
 				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLate(),lateEarlyMinusAtr).getTime().valueAsMinutes();
 			}
 			//早退控除時間を計算
 			int leaveEarlyDeductTime = 0;
 			if(this.leaveEarlyTimeSheet.isPresent()) {
-				//leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,NotUseAtr.USE).getTime().valueAsMinutes();
 				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(),lateEarlyMinusAtr).getTime().valueAsMinutes();
 			}
 			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
@@ -288,12 +283,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		}
 		
 		//時間休暇使用の残時間を計算 
-		//timevacationUseTimeOfDaily.subtractionDeductionOffSetTime(timeVacationOffSetTime);
 		if(holidayAdditionAtr.isHolidayAddition()) {
 			//就業時間に加算する時間休暇を就業時間へ加算     
 			workTime = new AttendanceTime(workTime.valueAsMinutes() + calcTimeVacationAddTime(holidayAddtionSet,
-																							  addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork),
-																	  						  timeVacationOffSetTime).valueAsMinutes());
+																							addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork),
+																							timeVacationOffSetTime).valueAsMinutes());
 		}
 		//丸め処理
 		TimeRoundingSetting rounding = this.getRounding();

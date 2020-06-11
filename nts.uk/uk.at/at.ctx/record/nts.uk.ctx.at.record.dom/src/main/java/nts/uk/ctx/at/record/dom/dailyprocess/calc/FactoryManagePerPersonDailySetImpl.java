@@ -28,6 +28,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.shr.com.context.AppContexts;
 
 
+/**
+ * @author kazuki_watanabe
+ *
+ */
 @Stateless
 public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPersonDailySet {
 

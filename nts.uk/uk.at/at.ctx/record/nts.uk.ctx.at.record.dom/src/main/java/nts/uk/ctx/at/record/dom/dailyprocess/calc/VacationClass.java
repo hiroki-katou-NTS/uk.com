@@ -198,10 +198,13 @@ public class VacationClass {
 	}
 
 	/**
-	 * 休暇加算設定の取得
-	 * 
-	 * @param holidayAddtionSet. 実績の就業時間帯を参照する(休暇加算時間設定クラスのメンバ)
-	 * @return
+	 * 休暇加算時間の設定の取得
+	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @param siftCode 就業時間帯コード
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param conditionItem 労働条件項目
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @return 休暇加算時間
 	 */
 	private static BreakDownTimeDay getVacationAddSet(Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
 			Optional<WorkTimeCode> siftCode, HolidayAddtionSet holidayAddtionSet, WorkingConditionItem conditionItem,
@@ -235,26 +238,28 @@ public class VacationClass {
 
 	/**
 	 * 日単位の休暇加算時間の計算
-	 * 
+	 * アルゴリズム：日単位の休暇加算時間の計算
 	 * @author ken_takasu
-	 * 
-	 * @param statutoryDivision         割増区分（"通常"、"割増")
-	 * @param                           workingSystem 労働制
-	 * @param                           addSettingOfRegularWork
-	 * @param vacationAddTimeSet
-	 * @param workType
-	 * @param predetermineTimeSet
-	 * @param siftCode
-	 * @param personalCondition
-	 * @param addSettingOfIrregularWork
-	 * @param addSettingOfFlexWork
-	 * @return
+	 * @param premiumAtr 割増区分（"通常"、"割増")
+	 * @param workType 勤務種類
+	 * @param siftCode 就業時間帯コード
+	 * @param conditionItem 労働条件項目
+	 * @param holidayAdditionSet 休暇加算時間設定
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param predTimeSettingForCalc 計算用所定時間設定
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @return 休暇加算時間
 	 */
-	public VacationAddTime calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr, WorkType workType,
-			Optional<WorkTimeCode> siftCode, WorkingConditionItem conditionItem,
-			Optional<HolidayAddtionSet> holidayAdditionSet, HolidayCalcMethodSet holidayCalcMethodSet,
+	public VacationAddTime calcVacationAddTime(
+			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			WorkType workType,
+			Optional<WorkTimeCode> siftCode,
+			WorkingConditionItem conditionItem,
+			Optional<HolidayAddtionSet> holidayAdditionSet,
+			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<PredetermineTimeSetForCalc> predTimeSettingForCalc,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+		
 		VacationAddTime vacationAddTime;
 		if (holidayAdditionSet.isPresent() && holidayCalcMethodSet.getCalcurationByActualTimeAtr(
 				premiumAtr) == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME) {// 実働時間以外も含めて計算する 場合
@@ -273,27 +278,33 @@ public class VacationClass {
 
 	/**
 	 * 休暇加算時間の計算
-	 * 
 	 * @author ken_takasu
-	 * @return
+	 * @param breakdownTimeDay 休暇加算時間
+	 * @param premiumAtr 割増区分
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param workType 勤務種類
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @return 休暇加算時間
 	 */
-	public VacationAddTime judgeVacationAddTime(BreakDownTimeDay breakdownTimeDay,
-			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr, HolidayAddtionSet holidayAddtionSet, WorkType workType,
+	public VacationAddTime judgeVacationAddTime(
+			BreakDownTimeDay breakdownTimeDay,
+			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			HolidayAddtionSet holidayAddtionSet,
+			WorkType workType,
 			HolidayCalcMethodSet holidayCalcMethodSet) {
-		VacationAddTime vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0),
-				new AttendanceTime(0));
+		
+		VacationAddTime vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 		// 加算する休暇設定を取得
 		LeaveSetAdded leaveSetAdded = getAddVacationSet(premiumAtr, holidayAddtionSet, holidayCalcMethodSet);
 		// 勤務区分をチェックする
 		if (workType.isOneDay()) {
-			val addTimes = checkVacationToAdd(leaveSetAdded, workType.getDailyWork().getOneDay(),
-					breakdownTimeDay.getOneDay());
+			val addTimes = checkVacationToAdd(leaveSetAdded, workType.getDailyWork().getOneDay(), breakdownTimeDay.getOneDay());
 			vacationAddTime = vacationAddTime.addVacationAddTime(addTimes);
 		} else {
-			vacationAddTime = vacationAddTime.addVacationAddTime(checkVacationToAdd(leaveSetAdded,
-					workType.getDailyWork().getMorning(), breakdownTimeDay.getMorning()));
-			vacationAddTime = vacationAddTime.addVacationAddTime(checkVacationToAdd(leaveSetAdded,
-					workType.getDailyWork().getAfternoon(), breakdownTimeDay.getAfternoon()));
+			vacationAddTime = vacationAddTime.addVacationAddTime(
+					checkVacationToAdd(leaveSetAdded,workType.getDailyWork().getMorning(), breakdownTimeDay.getMorning()));
+			vacationAddTime = vacationAddTime.addVacationAddTime(
+					checkVacationToAdd(leaveSetAdded,workType.getDailyWork().getAfternoon(), breakdownTimeDay.getAfternoon()));
 		}
 		return vacationAddTime;
 	}
