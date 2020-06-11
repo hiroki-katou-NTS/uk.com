@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLea
 public class TestAnnualLeave {
 
 	/** 上書き用の暫定年休管理データ */
-	private Map<Integer, List<TmpAnnualLeaveMngWork>> testDataForOverWriteListMap;
+	private Map<String, List<TmpAnnualLeaveMngWork>> testDataForOverWriteListMap;
 //	private Map<int, inputObject2> inputList2;
 //	private Map<int, expectedValue> expectedValueList;
 	
@@ -42,6 +43,8 @@ public class TestAnnualLeave {
 
 		// 上書き用の暫定年休管理データ 
 		this.testDataForOverWriteListMap = TestDataForOverWriteList.build();
+//		TestDataForOverWriteList t = new TestDataForOverWriteList();
+		
 //		this.inputList = inputObject2.build();
 //		this.expectedValueList = expectedVaue.build();
 		
@@ -61,35 +64,32 @@ public class TestAnnualLeave {
 				// テストケースＮｏ
 				String caseNo = annualleaveTestCase.getCaseNo();
 				
-				val testDataForOverWriteList // 上書き用の暫定年休管理データ
-					= testDataForOverWriteListMap.get(caseNo);
-				
 				// Requireクラス
-				GetAnnLeaRemNumWithinPeriodRequire t
+				GetAnnLeaRemNumWithinPeriodRequire g
 					= TestGetAnnLeaRemNumWithinPeriodRequireFactory.create("1");
 				
 				// テストしたい処理を実行	
 				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-					t.getEmpEmployee(),
-					t.getAnnLeaEmpBasicInfoRepo(),
-					t.getYearHolidayRepo(),
-					t.getLengthServiceRepo(),
-					t.getAnnualPaidLeaveSet(),
-					t.getAnnLeaGrantRemDataRepo(),
-					t.getAnnLeaMaxDataRepo(),
-					t.getGetClosureStartForEmployee(),
-					t.getCalcNextAnnualLeaveGrantDate(),
-					t.getInterimRemOffMonth(),
-					t.getCreateInterimAnnual(),
-					t.getInterimRemainRepo(),
-					t.getTmpAnnualLeaveMng(),
-					t.getAttendanceTimeOfMonthlyRepo(),
-					t.getGetAnnLeaRemNumWithinPeriod(),
-					t.getClosureSttMngRepo(),
-					t.getCalcAnnLeaAttendanceRate(),
-					t.getGrantYearHolidayRepo(),
-					t.getOperationStartSetRepo(),
-					t.getAnnualLeaveRemainHistRepo());
+					g.getEmpEmployee(),
+					g.getAnnLeaEmpBasicInfoRepo(),
+					g.getYearHolidayRepo(),
+					g.getLengthServiceRepo(),
+					g.getAnnualPaidLeaveSet(),
+					g.getAnnLeaGrantRemDataRepo(),
+					g.getAnnLeaMaxDataRepo(),
+					g.getGetClosureStartForEmployee(),
+					g.getCalcNextAnnualLeaveGrantDate(),
+					g.getInterimRemOffMonth(),
+					g.getCreateInterimAnnual(),
+					g.getInterimRemainRepo(),
+					g.getTmpAnnualLeaveMng(),
+					g.getAttendanceTimeOfMonthlyRepo(),
+					g.getGetAnnLeaRemNumWithinPeriod(),
+					g.getClosureSttMngRepo(),
+					g.getCalcAnnLeaAttendanceRate(),
+					g.getGrantYearHolidayRepo(),
+					g.getOperationStartSetRepo(),
+					g.getAnnualLeaveRemainHistRepo());
 				
 				String companyId = "1";
 				
@@ -132,9 +132,27 @@ public class TestAnnualLeave {
 					isOverWrite = false;
 				}
 				
+				// 上書き用の暫定年休管理データ
+				String s_forOverWriteListMap = annualleaveTestCase.getForOverWriteList();
+				val testDataForOverWriteList
+					= testDataForOverWriteListMap.get(s_forOverWriteListMap);
+				
 				boolean isGetNextMonthData = true;
 				
-				boolean noCheckStartDate = true;
+				// 集計開始日を締め開始日とする　（締め開始日を確認しない）
+				boolean noCheckStartDate = true; // ooooo
+				
+				// 不足分付与残数データ出力区分
+				boolean isOutShortRemain = true; // ooooo
+				
+				// 過去月集計モード
+				boolean aggrPastMonthMode = true; // ooooo
+				
+//				// 年月
+//				YearMonth yearMonth = YearMonth.of("202003"); // ooooo
+				
+				// 月別集計で必要な会社別設定
+				//companySets 
 				
 //				// テストしたい処理を実行
 				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave
@@ -147,12 +165,12 @@ public class TestAnnualLeave {
 						isGetNextMonthData,
 						isCalcAttendanceRate,
 						Optional.of(isOverWrite),
-						Optional.empty(),
-						Optional.empty(),
-						noCheckStartDate,
-						Optional.empty(),
-						Optional.empty(),
-						Optional.empty(),
+						Optional.of(testDataForOverWriteList),
+						Optional.empty(), 	// 前回の年休の集計結果
+						noCheckStartDate,	// 集計開始日を締め開始日とする　（締め開始日を確認しない）
+						Optional.of(isOutShortRemain), // 不足分付与残数データ出力区分
+						Optional.of(aggrPastMonthMode), // 過去月集計モード
+						Optional.empty(),	// 年月
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty());
