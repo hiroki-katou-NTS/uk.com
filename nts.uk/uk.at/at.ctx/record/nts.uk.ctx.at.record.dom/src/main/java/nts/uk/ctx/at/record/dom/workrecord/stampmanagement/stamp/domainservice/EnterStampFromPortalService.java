@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -45,7 +44,7 @@ public class EnterStampFromPortalService {
 			GeneralDateTime stampDatetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
 
 		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
-		Optional<PortalStampSettings> settingStampPotal = require.getPortalStampSetting(AppContexts.user().companyId());
+		Optional<PortalStampSettings> settingStampPotal = require.getPortalStampSetting();
 
 		if (!settingStampPotal.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -70,7 +69,7 @@ public class EnterStampFromPortalService {
 	public static interface Require extends CreateStampDataForEmployeesService.Require {
 
 		// [R-1] ポータルの打刻設定を取得する
-		Optional<PortalStampSettings> getPortalStampSetting(String comppanyID);
+		Optional<PortalStampSettings> getPortalStampSetting();
 	}
 
 }
