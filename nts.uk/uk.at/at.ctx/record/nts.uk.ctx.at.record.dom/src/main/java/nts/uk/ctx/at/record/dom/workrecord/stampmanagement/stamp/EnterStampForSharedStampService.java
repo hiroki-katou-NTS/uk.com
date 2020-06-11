@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS: 共有打刻から打刻を入力する

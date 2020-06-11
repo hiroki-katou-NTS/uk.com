@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Optional;
 
 import org.junit.Test;
@@ -12,22 +14,17 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService.Require;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStampHelper;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * 
@@ -41,103 +38,94 @@ public class EnterStampForSharedStampServiceTest {
 	@Injectable
 	private Require require;
 	
-	@Test
-	public void getters() {
-		EnterStampForSharedStampService enterStampForSharedStampService = new EnterStampForSharedStampService();
-		NtsAssert.invokeGetters(enterStampForSharedStampService);
-	}
-	
 	/**
-	 * if (!setShareTStamp.isPresent()) {
-			throw new BusinessException("Msg_1632");
-		}
+	 *  require.gets(); isPresent()
+	 *  result : BusinessException("Msg_1632");
 	 */
 	@Test
-	public void test_TimeStampSetShareTStamp_empty() {
-		
-		ContractCode contractCode = new ContractCode("DUMMY");
+	public void test_setShareTStamp_null() {
+		String contractCode = "DUMMY";
+		String employeeId = "DUMMY";
 		StampNumber stampNumber = new StampNumber("DUMMY");
 		GeneralDateTime dateTime = GeneralDateTime.now();
-		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(2));
-		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
-		RefectActualResult result = new RefectActualResult("DUMMY", new WorkLocationCD("DUMMY"),
-				new WorkTimeCode("DUMMY"), declaration);
-		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		
-		AtomTask atomTask = AtomTask.of(() -> {});// dummy
-
-		TimeStampInputResult inputResult = new TimeStampInputResult(
-				new StampDataReflectResult(Optional.of(GeneralDate.today()), atomTask), Optional.of(atomTask));
-
-		new MockUp<EnterStampForSharedStampService>() {
-			@Mock
-			public TimeStampInputResult create(EnterStampForSharedStampService.Require require, String conteactCode,
-					String employeeID, Optional<StampNumber> StampNumber, Relieve relieve,
-					GeneralDateTime stmapDateTime, StampButton stampButton, RefectActualResult refActualResult) {
-				return inputResult;
-			}
-		};
+		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
 		new Expectations() {
 			{
-				require.gets("DUMMY");
+				require.gets();
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,contractCode.v(), "DUMMY", Optional.of(stampNumber),
-				relieve, dateTime, stampButton , result));
+		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+				relieve, dateTime, stampButton , null));
+		
 	}
 	
 	/**
-	 * if (!buttonSetting.isPresent()) {
-			throw new BusinessException("Msg_1632");
-		}
+	 *  require.gets(); isPresent()
+	 *  result : BusinessException("Msg_1632");
 	 */
 	@Test
-	public void test_create() {
-		
-		ContractCode contractCode = new ContractCode("DUMMY");
+	public void test_buttonSetting_null() {
+		String contractCode = "DUMMY";
+		String employeeId = "DUMMY";
 		StampNumber stampNumber = new StampNumber("DUMMY");
 		GeneralDateTime dateTime = GeneralDateTime.now();
-		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(2));
-		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
-		RefectActualResult result = new RefectActualResult("DUMMY", new WorkLocationCD("DUMMY"),
-				new WorkTimeCode("DUMMY"), declaration);
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
-		TimeStampSetShareTStamp timeStampSetShareTStamp = TimeStampSetShareTStampHelper.getDefault();
-		
-		AtomTask atomTask = AtomTask.of(() -> {});// dummy
-
-		TimeStampInputResult inputResult = new TimeStampInputResult(
-				new StampDataReflectResult(Optional.of(GeneralDate.today()), atomTask), Optional.of(atomTask));
-
-		new MockUp<EnterStampForSharedStampService>() {
-			@Mock
-			public TimeStampInputResult create(EnterStampForSharedStampService.Require require, String conteactCode,
-					String employeeID, Optional<StampNumber> StampNumber, Relieve relieve,
-					GeneralDateTime stmapDateTime, StampButton stampButton, RefectActualResult refActualResult) {
-				return inputResult;
-			}
-		};
+		TimeStampSetShareTStamp timeStampSetShareTStamp = TimeStampSetShareTStampHelper.get_list_empty();
 		
 		new Expectations() {
 			{
-				require.gets("DUMMY");
+				require.gets();
 				result = Optional.of(timeStampSetShareTStamp);
 			}
 		};
 		
-		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require,
-				contractCode.v(),
-				"DUMMY",
-				Optional.of(stampNumber),
-				relieve,
-				dateTime,
-				stampButton,
-				result);
+		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+				relieve, dateTime, stampButton , null));
 		
-//		assertThat(timeStampInputResult.getStampDataReflectResult().getReflectDate()).isEqualTo(GeneralDate.today());
 	}
-
+	
+	/**
+	 *  return CreateStampDataForEmployeesService.create(require, new ContractCode(conteactCode), employeeID,
+	 *  StampNumber, stmapDateTime, relieve, buttonSetting.get().getButtonType(), refActualResult, null);
+	 */
+	@Test
+	public void test() {
+		String contractCode = "DUMMY";
+		String employeeId = "DUMMY";
+		StampNumber stampNumber = new StampNumber("DUMMY");
+		GeneralDateTime dateTime = GeneralDateTime.now();
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
+		
+		TimeStampSetShareTStamp timeStampSetShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		
+		new Expectations() {
+			{
+				require.gets();
+				result = Optional.of(timeStampSetShareTStamp);
+			}
+		};
+		
+		AtomTask atomTask = AtomTask.of(() -> {});// dummy
+		StampCardCreateResult stampCardCreateResult = new StampCardCreateResult("1", Optional.of(atomTask));
+		
+		new MockUp<AutoCreateStampCardNumberService>() {
+			@Mock
+			public Optional<StampCardCreateResult> create(AutoCreateStampCardNumberService.Require require,
+					String employeeID, StampMeans stampMeanss) {
+				return Optional.of(stampCardCreateResult);
+			}
+		}; 
+		
+		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+				relieve, dateTime, stampButton , null);
+		
+		assertThat(timeStampInputResult.getStampDataReflectResult().getReflectDate()).isEmpty();
+	}
 }
