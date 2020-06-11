@@ -14,7 +14,7 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			
-			<com:stylefile path="/view/kdp/010/main.css" of="/nts.uk.at.web" />
+			<com:stylefile path="../main.css"/>
 			
 			<com:scriptfile path="../b/kdp010.b.vm.js" />
 			<com:scriptfile path="../b/kdp010.b.service.js" />
@@ -40,7 +40,7 @@
 		<!-- Side Bar Content -->
 		<ui:define name="sidebar-content">
 			<!-- Screen A -->
-			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="">
+			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="with: viewmodelA">
 				<ui:include src="content.xhtml" />
 			</div>
 			<!-- Screen B -->

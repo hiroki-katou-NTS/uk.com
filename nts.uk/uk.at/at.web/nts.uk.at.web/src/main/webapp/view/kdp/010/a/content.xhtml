@@ -8,12 +8,85 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
-			<span class="title">#{i18n.getText('JMM018_A1_2')}</span>
-			<button tabindex="2" class="proceed" data-bind="">#{i18n.getText('JMM018_A3_2')}</button>
+			<span class="title">#{i18n.getText('KDP010_2')}</span>
+			<button tabindex="2" class="proceed" data-bind="">#{i18n.getText('KDP010_10')}</button>
 		</div>
 
 		<div class="contents-area">
-			page A
+			<div class="label-top">
+				<label>#{i18n.getText('KDP010_150')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_151')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="3" class="nts-input" data-bind="ntsNumberEditor: {name: '#[KDP010_152]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_153')}</div> 
+						<label>#{i18n.getText('KDP010_154')}</label>
+						<div id="first-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_155]' }"></div> 
+						<label id="background-color">#{i18n.getText('KDP010_156')}</label>
+						<div id="second-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_157]' }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_158')}</div> 
+						<div class="inline-display row-data" tabindex="4">
+							<input data-bind="ntsNumberEditor: {name: '#[KDP010_159]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							<label class="text-note">#{i18n.getText('KDP010_160')}</label>
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<div class="label-middle">
+				<label>#{i18n.getText('KDP010_161')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_162')}</div> 
+						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: optionHighlight, optionsValue: 'id', optionsText: 'name', value: selectedHighlight, enable: true }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_165')}</div> 
+						<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: optionHighlight2, optionsValue: 'id', optionsText: 'name', value: selectedHighlight2, enable: true }"></div>
+					</td>
+				</tr>
+			</table>
+			
+			<div class="label-middle">
+				<label>#{i18n.getText('KDP010_168')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_169')}</div> 
+						<div tabindex="7" data-bind="ntsRadioBoxGroup: {options: optionHighlight, optionsValue: 'id', optionsText: 'name', value: selectedHighlight, enable: true }"></div>
+					</td>
+				</tr>
+			</table>
+			<div class="label-middle">
+				<label>#{i18n.getText('KDP010_173')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label">
+							<button tabindex="9" data-bind="" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+							<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
+						</div>
+					</td>
+				</tr>
+			</table> 
 		</div>
 	</ui:composition>
 </body>

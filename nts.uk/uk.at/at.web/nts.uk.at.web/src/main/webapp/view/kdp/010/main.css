@@ -16,7 +16,7 @@
 
 
 #stamping-his-radio {
-	margin-left: 75px;
+	margin-left: 90px;
 }
 
 #letter-color {
@@ -28,7 +28,7 @@
 }
 
 #highlight-radio {
-	margin-left: 54px;
+	margin-left: 69px;
 }
 
 #correc-text-b {
@@ -49,6 +49,30 @@
 	width: 24px;
 }
 
-.ntsRadioBox {
-	margin-left: 15px;
+.label-top{
+	margin: 20px 30px;
 }
+.form-data .inline-display{
+	display: inline-block;
+}
+.form-data td{
+	height: 55px;
+}
+.form-data .row-label{
+	margin: 10px 10px 8px 30px;
+    width: 198px;
+}
+.form-data .row-data{
+	vertical-align: top;
+    margin-top: 13px;
+}
+.form-data .text-note{
+    margin: 0 20px;
+}
+.label-middle{
+	margin: 25px 30px 6px;
+}
+.radio-wrapper .ntsRadioBox{
+	margin-right: 15px;
+}
+
