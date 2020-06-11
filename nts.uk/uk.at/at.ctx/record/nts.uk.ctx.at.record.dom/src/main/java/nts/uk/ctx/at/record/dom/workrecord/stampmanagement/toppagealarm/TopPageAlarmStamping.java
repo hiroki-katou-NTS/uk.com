@@ -21,12 +21,12 @@ public class TopPageAlarmStamping implements DomainAggregate {
 	/**
 	 * 詳細
 	 */
-	public final List<TopPageArmDetail> lstTopPageDetail;
+	public final List<TopPageAlarmDetail> lstTopPageDetail;
 
 	/**
 	 * トップページアラーム
 	 */
-	public final TopPageArm pageArm;
+	public final TopPageAlarm pageAlarm;
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class TopPageAlarmStamping implements DomainAggregate {
 		//if エラーリスト.isEmpty
 		if (lsterror.isEmpty()) {
 			//	$トップページエラー無 = トップページアラーム#新規作成する(会社ID, エラーの有無.エラーなし, 管理者リスト)		
-			TopPageArm arm = new TopPageArm(companyId, ExistenceError.NO_ERROR, lstEmployeeId); 
+			TopPageAlarm arm = new TopPageAlarm(companyId, ExistenceError.NO_ERROR, lstEmployeeId); 
 			
 			// return web打刻用トップページアラーム#web打刻用トップページアラーム(empty, $トップページエラー無)		
 			return new TopPageAlarmStamping(new ArrayList<>(), arm);
@@ -50,12 +50,12 @@ public class TopPageAlarmStamping implements DomainAggregate {
 		// $詳細 = $エラーメッセージ in エラーリスト：																							
 		// 		トップページアラーム詳細#トップページアラーム詳細($エラーメッセージ, count++, 対象社員)
 		
-		TopPageArm arm = new TopPageArm(companyId ,ExistenceError.HAVE_ERROR, lstEmployeeId);
+		TopPageAlarm arm = new TopPageAlarm(companyId ,ExistenceError.HAVE_ERROR, lstEmployeeId);
 		
-		List<TopPageArmDetail> lstTopPageDetail = new ArrayList<>();
+		List<TopPageAlarmDetail> lstTopPageDetail = new ArrayList<>();
 		
 		for (int i = 0; i < lsterror.size(); i++) {
-			lstTopPageDetail.add(new TopPageArmDetail(lsterror.get(i), i, employeeID));
+			lstTopPageDetail.add(new TopPageAlarmDetail(lsterror.get(i), i, employeeID));
 		}
 		
 		// return web打刻用トップページアラーム#web打刻用トップページアラーム($詳細, $トップページエラー有)
