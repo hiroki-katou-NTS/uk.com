@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -30,6 +31,8 @@ public class GetAnnLeaRemNumWithinPeriodRequire {
 	protected EmpEmployeeAdapter empEmployee;
 	/** 年休社員基本情報 */
 	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+	/** 労働条件 */
+	protected WorkingConditionItemRepository workingConditionItemRepository;
 	/** 年休付与テーブル設定 */
 	protected YearHolidayRepository yearHolidayRepo;
 	/** 勤続年数テーブル */

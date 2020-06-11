@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -17,6 +18,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 
 @Getter
+@AllArgsConstructor
 public class GrantHdTblSet extends AggregateRoot {
 	/* 会社ID */
 	private String companyId;

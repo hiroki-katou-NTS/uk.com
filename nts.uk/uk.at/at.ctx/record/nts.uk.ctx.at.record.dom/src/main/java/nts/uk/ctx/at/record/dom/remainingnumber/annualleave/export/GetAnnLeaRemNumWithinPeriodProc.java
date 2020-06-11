@@ -352,6 +352,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum 
 			= new RepositoriesRequiredByRemNum();
 		
+		
+		
+		
+		
+		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
 		AnnualPaidLeaveSetting annualLeaveSet = null;

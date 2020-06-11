@@ -6,6 +6,10 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveGrantRule;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.WorkingDayBeforeIntro;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.WorkingDayPerYear;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.PerServiceLengthTableCD;
 
 /**
  * 年休社員基本情報
@@ -26,14 +30,36 @@ public class TestAnnLeaEmpBasicInfoRepository_1 implements AnnLeaEmpBasicInfoRep
 //		}
 //		return Optional.empty();
 		
-		AnnualLeaveEmpBasicInfo a 
-			= AnnualLeaveEmpBasicInfo.createFromJavaType(
-				employeeId, // 社員ID
-				150, // 年間所定労働日数
-				140, // 導入前労働日数
-				"", // 付与ルール
-				GeneralDate.ymd(2018, 4, 1)); // grantStandardDate
+//		AnnualLeaveEmpBasicInfo a 
+//			= AnnualLeaveEmpBasicInfo.createFromJavaType( // ←この中でAppContextを利用しているため、エラー。
+//				employeeId, // 社員ID
+//				150, // 年間所定労働日数
+//				140, // 導入前労働日数
+//				"", // 付与ルール
+//				GeneralDate.ymd(2018, 4, 1)); // grantStandardDate
+		
+		// 会社ID
+		String companyId = "1";
 
+		// 年間所定労働日数
+		WorkingDayPerYear workingDayPerYear = new WorkingDayPerYear(150);
+
+		// 導入前労働日数
+		WorkingDayBeforeIntro workingDayBeforeIntro = new WorkingDayBeforeIntro(140);
+
+		// 付与ルール
+		AnnualLeaveGrantRule grantRule = new AnnualLeaveGrantRule();
+		PerServiceLengthTableCD aPerServiceLengthTableCD = new PerServiceLengthTableCD("1");
+		grantRule.setGrantTableCode(aPerServiceLengthTableCD);
+		
+		AnnualLeaveEmpBasicInfo a 
+			= new AnnualLeaveEmpBasicInfo(
+					employeeId
+					, companyId
+					, Optional.of(workingDayPerYear)
+					, Optional.of(workingDayBeforeIntro)
+					, grantRule);
+		
 		return Optional.of(a);
 	}
 	

@@ -3,7 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.PerServiceLengthTableCD;
@@ -11,6 +13,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 // domain name: 年休社員基本情報
+@NoArgsConstructor
+@AllArgsConstructor
 public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	
 	/**

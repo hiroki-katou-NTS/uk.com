@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestAnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -37,6 +38,16 @@ public class TestAnnLeaGrantRemDataRepository_1 extends JpaRepository implements
 //	
 //	private static final String FIND_BY_EMP_AND_DATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate >= :startDate AND a.grantDate <= :endDate ORDER BY a.grantDate DESC";
 
+	/**
+	 * 年休付与残数データ CSVファイルから読み込み
+	 */
+	List<AnnualLeaveGrantRemainingData> list = TestAnnualLeaveGrantRemainingData.build();
+	
+	
+	
+	
+	
+	
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
 //		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KRcmtAnnLeaRemain.class)

@@ -65,31 +65,31 @@ public class TestAnnualLeave {
 				String caseNo = annualleaveTestCase.getCaseNo();
 				
 				// Requireクラス
-				GetAnnLeaRemNumWithinPeriodRequire g
+				GetAnnLeaRemNumWithinPeriodRequire g_require
 					= TestGetAnnLeaRemNumWithinPeriodRequireFactory.create("1");
 				
 				// テストしたい処理を実行	
 				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-					g.getEmpEmployee(),
-					g.getAnnLeaEmpBasicInfoRepo(),
-					g.getYearHolidayRepo(),
-					g.getLengthServiceRepo(),
-					g.getAnnualPaidLeaveSet(),
-					g.getAnnLeaGrantRemDataRepo(),
-					g.getAnnLeaMaxDataRepo(),
-					g.getGetClosureStartForEmployee(),
-					g.getCalcNextAnnualLeaveGrantDate(),
-					g.getInterimRemOffMonth(),
-					g.getCreateInterimAnnual(),
-					g.getInterimRemainRepo(),
-					g.getTmpAnnualLeaveMng(),
-					g.getAttendanceTimeOfMonthlyRepo(),
-					g.getGetAnnLeaRemNumWithinPeriod(),
-					g.getClosureSttMngRepo(),
-					g.getCalcAnnLeaAttendanceRate(),
-					g.getGrantYearHolidayRepo(),
-					g.getOperationStartSetRepo(),
-					g.getAnnualLeaveRemainHistRepo());
+					g_require.getEmpEmployee(),
+					g_require.getAnnLeaEmpBasicInfoRepo(),
+					g_require.getYearHolidayRepo(),
+					g_require.getLengthServiceRepo(),
+					g_require.getAnnualPaidLeaveSet(),
+					g_require.getAnnLeaGrantRemDataRepo(),
+					g_require.getAnnLeaMaxDataRepo(),
+					g_require.getGetClosureStartForEmployee(),
+					g_require.getCalcNextAnnualLeaveGrantDate(),
+					g_require.getInterimRemOffMonth(),
+					g_require.getCreateInterimAnnual(),
+					g_require.getInterimRemainRepo(),
+					g_require.getTmpAnnualLeaveMng(),
+					g_require.getAttendanceTimeOfMonthlyRepo(),
+					g_require.getGetAnnLeaRemNumWithinPeriod(),
+					g_require.getClosureSttMngRepo(),
+					g_require.getCalcAnnLeaAttendanceRate(),
+					g_require.getGrantYearHolidayRepo(),
+					g_require.getOperationStartSetRepo(),
+					g_require.getAnnualLeaveRemainHistRepo());
 				
 				String companyId = "1";
 				
@@ -185,7 +185,7 @@ public class TestAnnualLeave {
 		{
 			e1.printStackTrace();
 		}
-	}					
+	}
 
 	private void assertProcedure(List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngWorkList){
 		

@@ -5,7 +5,14 @@ import java.util.Optional;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.CalculationMethod;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.StandardCalculation;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayName;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayNote;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 //import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantCondition;
 //import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantConditionPK;
@@ -43,15 +50,45 @@ public class TestYearHolidayRepository_1 implements YearHolidayRepository{
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<GrantHdTblSet> findByCode(String companyId, String yearHolidayCode) {
+	public Optional<GrantHdTblSet> findByCode(String companyId, String s_yearHolidayCode) {
 //		return this.queryProxy().find(new KshstGrantHdTblSetPK(companyId, yearHolidayCode), KshstGrantHdTblSet.class)
 //				.map(x -> convertToDomainYearHoliday(x));
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        return null;
+		
+//		/* 会社ID */
+//		String companyId;
+
+		/* コード */
+		YearHolidayCode yearHolidayCode = new YearHolidayCode(s_yearHolidayCode);
+
+		/* 名称 */
+		YearHolidayName yearHolidayName = new YearHolidayName("年休設定");
+
+		/* 計算方法 */
+		CalculationMethod calculationMethod = CalculationMethod.ATTENDENCE_RATE; // 出勤率
+
+		/* 計算基準 */
+		StandardCalculation standardCalculation = StandardCalculation.WORK_CLOSURE_DATE; // 就業締め日
+
+		/* 一斉付与を利用する */
+		UseSimultaneousGrant useSimultaneousGrant = UseSimultaneousGrant.NOT_USE;
+
+		/* 一斉付与日 */
+		Integer simultaneousGrandMonthDays = 601;
+
+		/* 備考 */
+		YearHolidayNote yearHolidayNote = new YearHolidayNote("備考");
+		
+		List<GrantCondition> grantConditions = null;
+
+		// 年休付与テーブル設定
+		GrantHdTblSet aGrantHdTblSet 
+			= new GrantHdTblSet(
+					companyId, yearHolidayCode, yearHolidayName,
+					calculationMethod, standardCalculation, 
+					useSimultaneousGrant, simultaneousGrandMonthDays, 
+					yearHolidayNote, grantConditions);
+		
+		return Optional.of(aGrantHdTblSet);
 	}
 
 	@Override

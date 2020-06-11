@@ -1,14 +1,28 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 //import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTbl;
 //import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTblPK;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.Month;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 
 
+/**
+ * 勤続年数テーブル
+ * @author masaaki_jinno
+ *
+ */
 public class TestLengthServiceRepository_1 implements LengthServiceRepository{
 //	private static final String SELECT_BY_CODE = "SELECT c FROM KshstLengthServiceTbl c "
 //			+ "WHERE c.kshstLengthServiceTblPK.companyId = :companyId "
@@ -61,17 +75,53 @@ public class TestLengthServiceRepository_1 implements LengthServiceRepository{
 	*/
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<LengthServiceTbl> findByCode(String companyId, String yearHolidayCode) {
+	public List<LengthServiceTbl> findByCode(String companyId, String s_yearHolidayCode) {
 //	return this.queryProxy().query(SELECT_BY_CODE, KshstLengthServiceTbl.class)
 //								.setParameter("companyId", companyId)
 //								.setParameter("yearHolidayCode", yearHolidayCode).getList(c -> convertToDomain(c));
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        return null;
+//		System.out.print("要実装");
+//		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
+//	    System.out.println(className);
+//	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+//        System.out.println(methodName);
+//        return null;
+		
+		List<LengthServiceTbl> list = new ArrayList<LengthServiceTbl>();
+		
+//		/* 会社ID */
+//		String companyId;
+
+		/* 年休付与テーブル設定コード */
+		YearHolidayCode yearHolidayCode = new YearHolidayCode(s_yearHolidayCode);
+		
+		/* 付与回数 */
+		GrantNum grantNum = new GrantNum(10);
+		
+		/* 一斉付与する */
+		GrantSimultaneity allowStatus = GrantSimultaneity.NOT_USE;
+		
+		/* 付与基準日 */ // ooooo
+		GrantReferenceDate standGrantDay = GrantReferenceDate.YEAR_HD_REFERENCE_DATE;
+
+		/* 年数 */
+		LimitedTimeHdDays year = new LimitedTimeHdDays(2);
+		
+		/* 月数 */
+		Month month = new Month(24);
+		
+		GeneralDate grantDate = GeneralDate.ymd(2019, 4, 1);
+		
+		// 勤続年数テーブル
+		LengthServiceTbl lengthServiceTbl 
+			= new LengthServiceTbl(
+					companyId, yearHolidayCode, grantNum, allowStatus, 
+					standGrantDay, year, month, grantDate);
+        
+		list.add(lengthServiceTbl);
+		
+		return list;        
 	}
+	
 	/**
 	* insert a length service
 	* @author yennth
