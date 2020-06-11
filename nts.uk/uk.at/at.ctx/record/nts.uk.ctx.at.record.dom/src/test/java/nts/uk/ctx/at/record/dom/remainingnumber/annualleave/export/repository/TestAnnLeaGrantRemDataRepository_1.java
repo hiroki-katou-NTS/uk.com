@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +42,7 @@ public class TestAnnLeaGrantRemDataRepository_1 extends JpaRepository implements
 	/**
 	 * 年休付与残数データ CSVファイルから読み込み
 	 */
-	List<AnnualLeaveGrantRemainingData> list = TestAnnualLeaveGrantRemainingData.build();
-	
-	
-	
-	
+	List<AnnualLeaveGrantRemainingData> list_fromcsv = TestAnnualLeaveGrantRemainingData.build();
 	
 	
 	@Override
@@ -85,12 +82,22 @@ public class TestAnnLeaGrantRemDataRepository_1 extends JpaRepository implements
 //		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID_NOT_EXP, KRcmtAnnLeaRemain.class)
 //				.setParameter("employeeId", employeeId).getList();
 //		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        return null;
+//		System.out.print("要実装");
+//		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
+//	    System.out.println(className);
+//	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+//        System.out.println(methodName);
+//        return null;
+        
+        List<AnnualLeaveGrantRemainingData> list = new ArrayList<AnnualLeaveGrantRemainingData>();
+        
+        for(AnnualLeaveGrantRemainingData a : list_fromcsv){
+        	if ( a.getEmployeeId().equals(employeeId) ){
+        		list.add(a);
+        	}        	
+        }
+        
+        return list;
 	}
 
 //	private AnnualLeaveGrantRemainingData toDomain(KRcmtAnnLeaRemain ent) {

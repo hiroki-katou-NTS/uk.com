@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 // 日別実績の運用開始設定
 @Getter
+@AllArgsConstructor
 public class OperationStartSetDailyPerform extends AggregateRoot{
 	
 	/** The company id. */

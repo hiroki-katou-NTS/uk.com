@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -23,12 +24,21 @@ public class TestOperationStartSetDailyPerformRepository_1 implements OperationS
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<OperationStartSetDailyPerform> findByCid(CompanyId companyId) {
 //		return this.queryProxy().find(companyId, KshstStartSetDailyPfm.class).map(entity -> this.toDomain(entity));
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        return Optional.empty();
+//		System.out.print("要実装");
+//		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
+//	    System.out.println(className);
+//	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+//        System.out.println(methodName);
+//        return Optional.empty();
+        
+        // 日別実績の運用開始日 ooooo
+        GeneralDate operateStartDateDailyPerform = GeneralDate.ymd(2017,  4, 1);
+        
+        OperationStartSetDailyPerform operationStartSetDailyPerform
+        	= new OperationStartSetDailyPerform(
+        		companyId, Optional.of(operateStartDateDailyPerform));
+        
+        return Optional.of(operationStartSetDailyPerform);
 	}
 
 	/* (non-Javadoc)
