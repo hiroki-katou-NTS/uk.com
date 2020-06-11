@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDaySer
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -67,7 +68,7 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
+		
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 	
@@ -116,6 +117,10 @@ public class StampResultConfirmationQuery {
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		
+		// 8
+		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
+		
 		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	
