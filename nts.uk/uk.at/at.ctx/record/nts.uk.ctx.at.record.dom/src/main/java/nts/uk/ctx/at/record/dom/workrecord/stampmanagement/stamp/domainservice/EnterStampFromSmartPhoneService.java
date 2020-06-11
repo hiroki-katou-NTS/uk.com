@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author sonnlb
@@ -56,7 +55,7 @@ public class EnterStampFromSmartPhoneService {
 
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
 		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require
-				.getSmartphoneStampSetting(AppContexts.user().companyId());
+				.getSmartphoneStampSetting();
 
 		if (!settingSmartPhoneStampOpt.isPresent()) {
 
@@ -84,7 +83,7 @@ public class EnterStampFromSmartPhoneService {
 	public static interface Require extends CreateStampDataForEmployeesService.Require {
 
 		// [R-1] スマホ打刻の打刻設定を取得する
-		Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting(String companyId);
+		Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting();
 	}
 
 }
