@@ -9,6 +9,7 @@ module nts.uk.at.view.kdp002.t {
             messageContent: KnockoutObservable<string> = ko.observable('');
             messageColor: KnockoutObservable<string> = ko.observable('');
             errorDate: KnockoutObservable<string> = ko.observable('');
+            errorDateStr: KnockoutObservable<string> = ko.observable('');
             constructor() {
             }
             /**
@@ -46,6 +47,7 @@ module nts.uk.at.view.kdp002.t {
                     self.messageContent(error.messageContent);
                     self.messageColor(error.messageColor);
                     self.errorDate(error.lastDateError);
+                    self.errorDateStr( nts.uk.resource.getText('KDP002_102')  + error.lastDateError);
                     let listRequired = [];
                     let length = error.listRequired.length > 6 ? 6 : error.listRequired.length;
                     for (let idx = 0; idx < length; idx ++) {
@@ -54,7 +56,6 @@ module nts.uk.at.view.kdp002.t {
                     self.dataShare = {
                         listRequired: listRequired
                     }
-
                 }
 
                 dfd.resolve();

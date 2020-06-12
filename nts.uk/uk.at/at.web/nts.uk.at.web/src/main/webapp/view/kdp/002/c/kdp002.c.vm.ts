@@ -58,7 +58,7 @@ module nts.uk.at.view.kdp002.c {
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
                             let dateDisplay =res.stampRecords[0].stampDate;
-                            res.stampRecords = _.orderBy(res.stampRecords, ['stampDate', 'stampTime'], ['desc', 'desc'])
+                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
                             if (moment(res.stampRecords[0].stampDate).day() == 6) {
                                 dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
                             } else if (moment(res.stampRecords[0].stampDate).day() == 0) {

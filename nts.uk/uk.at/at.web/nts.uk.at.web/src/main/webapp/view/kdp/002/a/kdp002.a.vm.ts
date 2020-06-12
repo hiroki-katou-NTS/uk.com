@@ -17,6 +17,7 @@ module nts.uk.at.view.kdp002.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                nts.uk.ui.block.grayout();
                 service.startPage()
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
@@ -36,6 +37,8 @@ module nts.uk.at.view.kdp002.a {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
 
                 return dfd.promise();
@@ -130,7 +133,7 @@ module nts.uk.at.view.kdp002.a {
                     } else {
                         self.getTimeCardData();
                     }
-
+                    self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
             }
@@ -144,6 +147,7 @@ module nts.uk.at.view.kdp002.a {
                     } else {
                         self.getTimeCardData();
                     }
+                    self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
             }
