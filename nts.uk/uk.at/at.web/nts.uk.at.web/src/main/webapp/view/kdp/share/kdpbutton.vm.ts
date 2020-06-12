@@ -18,6 +18,7 @@ module nts.uk.at.view.kdp.share {
             if(params.data()) {
                 let layout = _.clone(params.data(), true);
                 self.selectedLayout(layout);
+                console.log(layout);
                 self.buttonLayoutType = ko.observable(layout.buttonLayoutType);
                 self.correntBtnSetting(layout.buttonSettings);
             };
