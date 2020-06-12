@@ -67,18 +67,31 @@ module nts.uk.at.view.kdp010.a {
             letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
             backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
             stampValue: KnockoutObservable<number> = ko.observable(3);
-            optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
+            employeeListDisplayOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: nts.uk.resource.getText("KDP010_163") },
                 { id: 0, name: nts.uk.resource.getText("KDP010_164") }
             ]);
-            selectedHighlight: KnockoutObservable<number> = ko.observable(0);
-            optionHighlight2: KnockoutObservableArray<any> = ko.observableArray([
+            employeeListDisplay: KnockoutObservable<number> = ko.observable(0);
+            enterPasswordAtLoginOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: nts.uk.resource.getText("KDP010_166") },
                 { id: 0, name: nts.uk.resource.getText("KDP010_167") }
             ]);
-            selectedHighlight2: KnockoutObservable<number> = ko.observable(0);
+            enterPasswordAtLogin: KnockoutObservable<number> = ko.observable(1);
+            authenticationFailurePasswordInputOption: KnockoutObservable<any> = ko.observable({ id: 1, name: nts.uk.resource.getText("KDP010_171") });
+            authenticationFailurePasswordInputOption2: KnockoutObservable<any> = ko.observable({ id: 0, name: nts.uk.resource.getText("KDP010_172") });
+            authenticationFailurePasswordInput: KnockoutObservable<number> = ko.observable(0);
+            numberAuthenfailures: KnockoutObservable<number> = ko.observable(1);
+            required: KnockoutObservable<boolean> = ko.observable(false);
             constructor(){
                 let self = this;
+                self.authenticationFailurePasswordInput.subscribe((newValue) => {
+                    if(newValue == 1){
+                        self.required(true);
+                    }else{
+                        self.required(false);
+                    }
+                    $('#numberAuthenfailures').ntsError('check'); 
+                });
             }
          }   
     }

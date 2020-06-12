@@ -30,7 +30,7 @@
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_153')}</div> 
 						<label>#{i18n.getText('KDP010_154')}</label>
 						<div id="first-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_155]' }"></div> 
-						<label id="background-color">#{i18n.getText('KDP010_156')}</label>
+						<label class="margin-left5">#{i18n.getText('KDP010_156')}</label>
 						<div id="second-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_157]' }"></div>
 					</td>
 				</tr>
@@ -52,13 +52,13 @@
 				<tr>
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_162')}</div> 
-						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: optionHighlight, optionsValue: 'id', optionsText: 'name', value: selectedHighlight, enable: true }"></div>
+						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: employeeListDisplayOption, optionsValue: 'id', optionsText: 'name', value: employeeListDisplay, enable: true }"></div>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_165')}</div> 
-						<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: optionHighlight2, optionsValue: 'id', optionsText: 'name', value: selectedHighlight2, enable: true }"></div>
+						<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: enterPasswordAtLoginOption, optionsValue: 'id', optionsText: 'name', value: enterPasswordAtLogin, enable: true }"></div>
 					</td>
 				</tr>
 			</table>
@@ -68,9 +68,14 @@
 			</div>
 			<table class="form-data">
 				<tr>
-					<td>
+					<td class="option-authent">
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_169')}</div> 
-						<div tabindex="7" data-bind="ntsRadioBoxGroup: {options: optionHighlight, optionsValue: 'id', optionsText: 'name', value: selectedHighlight, enable: true }"></div>
+						<div tabindex="7" data-bind="ntsRadioButton: {checked: authenticationFailurePasswordInput, enable: true, option: authenticationFailurePasswordInputOption, optionValue: 'id', optionText: 'name', group: 'ntsControl'}"></div>
+						<div class="inline-display row-data">
+							<label class="text-note">#{i18n.getText('KDP010_171')}</label>
+							<input tabindex="8" id="numberAuthenfailures" data-bind="ntsNumberEditor: {name: '#[KDP010_171]', value: numberAuthenfailures, constraint: 'NumberAuthenfailures', required: required, enable: authenticationFailurePasswordInput()==1}" />
+						</div>
+						<div tabindex="8" data-bind="ntsRadioButton: {checked: authenticationFailurePasswordInput, enable: true, option: authenticationFailurePasswordInputOption2, optionValue: 'id', optionText: 'name', group: 'ntsControl'}"></div>
 					</td>
 				</tr>
 			</table>

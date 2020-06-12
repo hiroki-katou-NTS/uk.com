@@ -75,4 +75,18 @@
 .radio-wrapper .ntsRadioBox{
 	margin-right: 15px;
 }
+.form-data .ntsRadioBox:nth-child(1){
+	min-width: 200px;
+	margin-right: 0;
+}
+.margin-left5{
+	margin-left: 50px;
+}
+.option-authent .ntsRadioBox:nth-child(1){
+	min-width: 90px;
+}
+.option-authent .row-data{
+	margin-right: 100px;
+	margin-top: 14px;
+}
 
