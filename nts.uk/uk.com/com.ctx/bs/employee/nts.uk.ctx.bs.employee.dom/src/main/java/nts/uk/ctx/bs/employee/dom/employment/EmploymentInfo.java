@@ -2,7 +2,7 @@ package nts.uk.ctx.bs.employee.dom.employment;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Setter
 @Getter

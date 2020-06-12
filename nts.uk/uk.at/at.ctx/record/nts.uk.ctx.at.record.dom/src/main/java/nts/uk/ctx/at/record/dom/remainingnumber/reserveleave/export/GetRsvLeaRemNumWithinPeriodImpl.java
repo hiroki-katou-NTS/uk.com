@@ -401,7 +401,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		while (checkYmd.beforeOrEquals(checkEnd)){
 			
 			// 「所属雇用履歴」を取得
-			val employmentOpt = this.employmentAdapter.findEmploymentHistoryRequire(cacheCarrier
+			val employmentOpt = this.employmentAdapter.findEmploymentHistoryRequire(cacheCarrier,
 					param.getCompanyId(), param.getEmployeeId(), checkYmd);
 			if (!employmentOpt.isPresent()) break;
 			val employment = employmentOpt.get();

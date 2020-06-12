@@ -1448,7 +1448,7 @@ public class AggregateMonthlyRecordServiceProc {
 		if (interimRemainMngMode == InterimRemainMngMode.MONTHLY) {
 
 			// 日別実績から出勤率計算用日数を取得 （月別集計用）
-			daysForCalcAttdRate = this.getDaysForCalcAttdRate.algorithmRequire(require, cacheCarrier, require,
+			daysForCalcAttdRate = this.getDaysForCalcAttdRate.algorithm(require,
 					this.companyId, this.employeeId, period, this.companySets, this.monthlyCalculatingDailys,
 					this.repositories);
 		}
@@ -1769,7 +1769,7 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())) {
 			isExistStartWorkInfo = true;
 		}
-		val firstInfoOfDailyList = require.getAffiliationInfoOfDaily(employeeIds, datePeriod);
+		val firstInfoOfDailyList = require.findAffiliations(employeeIds, datePeriod);
 		firstInfoOfDailyList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		if (firstInfoOfDailyList.size() <= 0) {
 			if (isExistStartWorkInfo) {
@@ -1780,7 +1780,7 @@ public class AggregateMonthlyRecordServiceProc {
 			return null;
 		}
 		val firstInfoOfDaily = firstInfoOfDailyList.get(0);
-		val firstWorkTypeOfDailyList = require.findWorkTypeByKey(employeeIds, datePeriod);
+		val firstWorkTypeOfDailyList = require.findWorkTypes(employeeIds, datePeriod);
 		firstWorkTypeOfDailyList.sort((a, b) -> a.getDate().compareTo(b.getDate()));
 		if (firstWorkTypeOfDailyList.size() <= 0) {
 			if (isExistStartWorkInfo) {
@@ -1879,10 +1879,12 @@ public class AggregateMonthlyRecordServiceProc {
 		// this.repositories.getAffiliationInfoOfDaily().findByKey(this.employeeId,
 		// datePeriod.start());
 		Optional<AffiliationInforOfDailyPerfor> findAffiliationByKey(String employeeId, GeneralDate ymd);
+		List<AffiliationInforOfDailyPerfor> findAffiliations(List<String> employeeId, DatePeriod ymd);
 
 		// this.repositories.getWorkTypeOfDaily().findByKey(this.employeeId,
 		// datePeriod.end());
 		Optional<WorkTypeOfDailyPerformance> findWorkTypeByKey(String employeeId, GeneralDate processingDate);
+		List<WorkTypeOfDailyPerformance> findWorkTypes(List<String> employeeId, DatePeriod ymd);
 
 		// this.specialHolidayRepo.findByCompanyId(this.companyId);
 		List<SpecialHoliday> findSpecialHolidayByCompanyId(String companyId);
@@ -2091,7 +2093,7 @@ public class AggregateMonthlyRecordServiceProc {
 			public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 					WorkingSystem workingSystem) {
 				return repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate,
-						workingSystem);
+						workingSystem).getBasicAgreementSetting();
 			}
 
 			@Override
@@ -2463,6 +2465,16 @@ public class AggregateMonthlyRecordServiceProc {
 			public List<EditStateOfMonthlyPerformance> findByClosure(String employeeId, YearMonth yearMonth,
 					ClosureId closureId, ClosureDate closureDate) {
 				return editStateRepo.findByClosure(employeeId, yearMonth, closureId, closureDate);
+			}
+
+			@Override
+			public List<AffiliationInforOfDailyPerfor> findAffiliations(List<String> employeeId, DatePeriod ymd) {
+				return repositories.getAffiliationInfoOfDaily().finds(employeeId, ymd);
+			}
+
+			@Override
+			public List<WorkTypeOfDailyPerformance> findWorkTypes(List<String> employeeId, DatePeriod ymd) {
+				return repositories.getWorkTypeOfDaily().finds(employeeId, ymd);
 			}
 		};
 	}

@@ -270,7 +270,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			
 			// 清算期間内の基準時間を集計する
 			standFlexTime = excessOutsideWorkMng.aggrStandardTime(
-					yearMonth, datePeriod, this.flexAggrSet, repositories);
+					yearMonth, datePeriod, this.flexAggrSet);
 		}
 		
 		// 期間．開始日を処理日にする
