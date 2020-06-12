@@ -67,6 +67,7 @@ public class IntegrationOfWorkTime {
 		this.fixedWorkSetting = Optional.of(fixedWorkSetting);
 		this.flexWorkSetting = Optional.empty();
 		this.flowWorkSetting = Optional.empty();
+		this.existsWorkSetting();
 	}
 	
 	/**
@@ -81,6 +82,7 @@ public class IntegrationOfWorkTime {
 		this.fixedWorkSetting = Optional.empty();
 		this.flexWorkSetting = Optional.of(flexWorkSetting);
 		this.flowWorkSetting = Optional.empty();
+		this.existsWorkSetting();
 	}
 	
 	/**
@@ -95,6 +97,21 @@ public class IntegrationOfWorkTime {
 		this.fixedWorkSetting = Optional.empty();
 		this.flexWorkSetting = Optional.empty();
 		this.flowWorkSetting = Optional.of(flowWorkSetting);
+		this.existsWorkSetting();
+	}
+	
+	/**
+	 * 勤務形態に対応する勤務設定が存在しなければならない
+	 * （存在しない場合はRunTimeException）
+	 */
+	private void existsWorkSetting() {
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				if(!this.fixedWorkSetting.isPresent()) throw new RuntimeException("Empty FixedWorkSetting");
+			case FLEX:				if(!this.flexWorkSetting.isPresent()) throw new RuntimeException("Empty FlexWorkSetting");
+			case FLOW:				if(!this.flowWorkSetting.isPresent()) throw new RuntimeException("Empty FlowWorkSetting");
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
 	}
 	
 	/**

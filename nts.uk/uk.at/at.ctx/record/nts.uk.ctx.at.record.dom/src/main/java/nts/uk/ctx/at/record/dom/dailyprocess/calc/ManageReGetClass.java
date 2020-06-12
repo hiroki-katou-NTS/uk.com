@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,6 +129,9 @@ public class ManageReGetClass {
 	 * @return 就業時間の時間帯設定
 	 */
 	public List<EmTimeZoneSet> getFixWoSetting() {
+		if(!this.workType.isPresent())
+			return Collections.emptyList();
+		
 		return this.integrationOfWorkTime.getEmTimeZoneSetList(this.workType.get());
 	}
 	
@@ -214,7 +218,10 @@ public class ManageReGetClass {
 	 * 法定内残業枠No(List)を取得する
 	 * @return 法定内残業枠No(List)
 	 */
-	public  List<OverTimeFrameNo> getStatutoryFrameNoList() {
+	public List<OverTimeFrameNo> getStatutoryFrameNoList() {
+		if(!this.workType.isPresent())
+			return Collections.emptyList();
+
 		return this.integrationOfWorkTime.getLegalOverTimeFrameNoList(this.workType.get());
 	}
 	
@@ -239,6 +246,9 @@ public class ManageReGetClass {
 	 * @return 残業時間の時間帯設定(List)
 	 */
 	public List<OverTimeOfTimeZoneSet> getOverTimeSheetSetting() {
+		if(!this.workType.isPresent())
+			return Collections.emptyList();
+		
 		return this.integrationOfWorkTime.getOverTimeOfTimeZoneSetList(this.workType.get());
 	}
 	
@@ -249,262 +259,6 @@ public class ManageReGetClass {
 	public Optional<PredetermineTimeSetForCalc> getPredSetForOOtsuka() {
 		return Optional.of(this.calculationRangeOfOneDay.getPredetermineTimeSetForCalc());
 	}
-
-//ichioka削除
-//	public ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
-//			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
-//			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-//			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-//			Optional<FixRestTimezoneSet> fixRestTimeSetting, 
-//			List<EmTimeZoneSet> fixWoSetting,
-//			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
-//			HolidayCalcMethodSet holidayCalcMethodSet, 
-//			Boolean calculatable, 
-//			int breakCount,
-//			Optional<CoreTimeSetting> coreTimeSetting, 
-//			WorkRegularAdditionSet workRegularAdditionSet,
-//			WorkFlexAdditionSet workFlexAdditionSet, 
-//			HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
-//			WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet, 
-//			Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet> workTimezoneCommonSet,
-//			List<OverTimeFrameNo> statutoryFrameNoList,
-//			Optional<FlexCalcSetting> flexCalcSetting,
-//			Optional<DeductLeaveEarly> leaveLateSet,
-//			List<OverTimeOfTimeZoneSet> overTimeSheetSetting,
-//			Optional<PredetermineTimeSetForCalc> predSetForOotsuka) {
-//		super();
-//		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
-//		this.integrationOfDaily = integrationOfDaily;
-//		this.workTimeSetting = workTimeSetting;
-//		this.workType = workType;
-//		this.subHolTransferSetList = subHolTransferSetList;
-//		this.personalInfo = personalInfo;
-//		this.dailyUnit = dailyUnit;
-//		this.fixRestTimeSetting = fixRestTimeSetting;
-//		this.fixWoSetting = fixWoSetting;
-//		this.ootsukaFixedWorkSet = ootsukaFixedWorkSet;
-//		this.holidayCalcMethodSet = holidayCalcMethodSet;
-//		this.calculatable = calculatable;
-//		this.breakCount = breakCount;
-//		this.coreTimeSetting = coreTimeSetting;
-//		this.workRegularAdditionSet = workRegularAdditionSet;
-//		this.workFlexAdditionSet = workFlexAdditionSet;
-//		this.hourlyPaymentAdditionSet = hourlyPaymentAdditionSet;
-//		this.workDeformedLaborAdditionSet = workDeformedLaborAdditionSet;
-//		this.WorkTimezoneCommonSet = workTimezoneCommonSet;
-//		this.statutoryFrameNoList = statutoryFrameNoList;
-//		this.flexCalcSetting = flexCalcSetting;
-//		this.leaveLateSet = leaveLateSet;
-//		this.overTimeSheetSetting = overTimeSheetSetting;
-//		this.predSetForOOtsuka = predSetForOotsuka;
-//	}
-//	
-//	public ManageReGetClass(
-//			CalculationRangeOfOneDay calculationRangeOfOneDay,
-//			ManagePerCompanySet companyCommonSetting,
-//			ManagePerPersonDailySet personDailySetting,
-//			WorkType workType,
-//			IntegrationOfWorkTime integrationOfWorkTime,
-//			IntegrationOfDaily integrationOfDaily) {
-//		super();
-//		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
-//		this.integrationOfDaily = integrationOfDaily;
-//		this.workTimeSetting = Optional.of(integrationOfWorkTime.getWorkTimeSetting());
-//		this.workType = Optional.of(workType);
-//		this.subHolTransferSetList = integrationOfWorkTime.getCommonSetting().getSubHolTimeSet();
-//		this.personalInfo = new DailyCalculationPersonalInformation(
-//				Optional.of(new DailyTime(personDailySetting.getPredetermineTimeSetByPersonWeekDay().getAdditionSet().getPredTime().getOneDay().valueAsMinutes())),
-//				new DailyTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes()),
-//				personDailySetting.getPersonInfo().getLaborSystem());
-//		this.dailyUnit = personDailySetting.getDailyUnit();
-//		this.fixRestTimeSetting = Optional.of(integrationOfWorkTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone().get(0).getRestTimezone());
-//		this.fixWoSetting = integrationOfWorkTime.getEmTimeZoneSetList(workType);
-//		this.ootsukaFixedWorkSet = integrationOfWorkTime.getFixedWorkSetting().get().getCalculationSetting();
-//		this.holidayCalcMethodSet = personDailySetting.getAddSetting().getVacationCalcMethodSet();
-//		this.calculatable = true;
-//		this.breakCount = 0;
-//		this.coreTimeSetting = integrationOfWorkTime.getCoreTimeSetting();
-//		this.workRegularAdditionSet = workRegularAdditionSet;
-//		this.workFlexAdditionSet = workFlexAdditionSet;
-//		this.hourlyPaymentAdditionSet = hourlyPaymentAdditionSet;
-//		this.workDeformedLaborAdditionSet = workDeformedLaborAdditionSet;
-//		this.WorkTimezoneCommonSet = Optional.of(integrationOfWorkTime.getCommonSetting());
-//		this.statutoryFrameNoList = integrationOfWorkTime.getLegalOverTimeFrameNoList(workType);
-//		this.flexCalcSetting = Optional.of(integrationOfWorkTime.getFlexWorkSetting().get().getCalculateSetting());
-//		this.leaveLateSet = Optional.of(personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
-//		this.overTimeSheetSetting = integrationOfWorkTime.getOverTimeOfTimeZoneSetList(workType);
-//		this.predSetForOOtsuka = Optional.of(calculationRangeOfOneDay.getPredetermineTimeSetForCalc());
-//	}
-	
-	
-	
-//	/**
-//	 * 計算処理に入ることができないと判断できた時Factory Method
-//	 * @param personalInfo2 
-//	 */
-//	public static ManageReGetClass cantCalc(Optional<WorkType> workType,IntegrationOfDaily integration, DailyCalculationPersonalInformation personalInfo) {
-//		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
-//																																			  new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
-//																																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-//																																			  Collections.emptyList(), 
-//																																			  Collections.emptyList(), 
-//																																			  Collections.emptyList(), 
-//																																			  Optional.empty(), 
-//																																			  Collections.emptyList(), 
-//																																			  Optional.empty(), 
-//																																			  Optional.empty())), 
-//																										Collections.emptyList(),
-//																										Optional.empty())),
-//																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
-//																 null, 
-//																 integration.getAttendanceLeave().orElse(null), 
-//																 null, 
-//																 integration.getWorkInformation(),
-//																 Optional.empty()), 
-//									integration,
-//									Optional.empty(),
-//									workType, 
-//									Collections.emptyList(), 
-//									personalInfo,
-//									null,
-//									Optional.empty(),
-//									Collections.emptyList(), 
-//									Optional.empty(),
-//									null,
-//									false,
-//									0,
-//									Optional.empty(),
-//									null,
-//									null,
-//									null,
-//									null,
-//									Optional.empty(),
-//									Collections.emptyList(),
-//									Optional.empty(),
-//									Optional.empty(),
-//									Collections.emptyList(),
-//									Optional.empty());
-//				
-//	}
-//	
-//	/**
-//	 * 計算処理に入ることができないと判断できた時Factory Method
-//	 * @param personalInfo2 
-//	 */
-//	public static ManageReGetClass cantCalc2(Optional<WorkType> workType,
-//											 IntegrationOfDaily integration,
-//											 DailyCalculationPersonalInformation personalInfo,
-//											 HolidayCalcMethodSet holidayCalcMethodSet, 
-//											 WorkRegularAdditionSet workRegularAdditionSet,
-//											 WorkFlexAdditionSet workFlexAdditionSet, 
-//											 HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
-//											 WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-//											 Optional<DeductLeaveEarly> lateLeave,
-//											 Optional<PredetermineTimeSetForCalc> predSetForOotsuka
-//			) {
-//		return new ManageReGetClass(new CalculationRangeOfOneDay(Finally.of(new FlexWithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
-//																																			  new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
-//																																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-//																																			  Collections.emptyList(), 
-//																																			  Collections.emptyList(), 
-//																																			  Collections.emptyList(), 
-//																																			  Optional.empty(), 
-//																																			  Collections.emptyList(), 
-//																																			  Optional.empty(), 
-//																																			  Optional.empty())), 
-//																										Collections.emptyList(),
-//																										Optional.empty())),
-//																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
-//																 null, 
-//																 integration.getAttendanceLeave().orElse(null), 
-//																 null, 
-//																 integration.getWorkInformation(),
-//																 Optional.empty()), 
-//									integration,
-//									Optional.empty(),
-//									workType, 
-//									Collections.emptyList(), 
-//									personalInfo,
-//									null,
-//									Optional.empty(),
-//									Collections.emptyList(), 
-//									Optional.empty(),
-//									holidayCalcMethodSet,
-//									false,
-//									0,
-//									Optional.empty(),
-//									workRegularAdditionSet,
-//									workFlexAdditionSet,
-//									hourlyPaymentAdditionSet,
-//									workDeformedLaborAdditionSet,
-//									Optional.empty(),
-//									Collections.emptyList(),
-//									Optional.empty(),
-//									lateLeave,
-//									Collections.emptyList(),
-//									predSetForOotsuka);
-//				
-//	}
-//	
-//		
-//	/**
-//	 * 計算処理に入ることができると判断できた時Factory Method
-//	 */
-//	public static ManageReGetClass canCalc(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
-//											Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
-//											List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-//											DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-//											Optional<FixRestTimezoneSet> fixRestTimeSetting, 
-//											List<EmTimeZoneSet> fixWoSetting,
-//											Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
-//											HolidayCalcMethodSet holidayCalcMethodSet, 
-//											int breakCount,
-//											Optional<CoreTimeSetting> coreTimeSetting, 
-//											WorkRegularAdditionSet workRegularAdditionSet,
-//											WorkFlexAdditionSet workFlexAdditionSet, 
-//											HourlyPaymentAdditionSet hourlyPaymentAdditionSet,
-//											WorkDeformedLaborAdditionSet workDeformedLaborAdditionSet,
-//											Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet> workTimezoneCommonSet,
-//											List<OverTimeFrameNo> statutoryFrameNoList,
-//											Optional<FlexCalcSetting> flexCalcSetting,
-//											Optional<DeductLeaveEarly> lateLeave,
-//											List<OverTimeOfTimeZoneSet> overTimeSheetSetting,
-//											Optional<PredetermineTimeSetForCalc> predSetForOotsuka) {
-//		
-//		return new ManageReGetClass(calculationRangeOfOneDay,
-//									integrationOfDaily,
-//									workTimeSetting,
-//									workType,
-//									subHolTransferSetList,
-//									personalInfo,
-//									dailyUnit,
-//									fixRestTimeSetting,
-//									fixWoSetting,
-//									ootsukaFixedWorkSet,
-//									holidayCalcMethodSet,
-//									true,
-//									breakCount,
-//									coreTimeSetting,
-//									workRegularAdditionSet,
-//									workFlexAdditionSet,
-//									hourlyPaymentAdditionSet,
-//									workDeformedLaborAdditionSet,
-//									workTimezoneCommonSet,
-//									statutoryFrameNoList,
-//									flexCalcSetting,
-//									lateLeave,
-//									overTimeSheetSetting,
-//									predSetForOotsuka);
-//	
-//	}
-	
-//	/**
-//	 * 会社共通で使いまわしをする設定をこのクラスにも設定する
-//	 */
-//	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany, ManagePerPersonDailySet managePerPerson) {
-//		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
-//		this.dailyUnit = managePerPerson.getDailyUnit();
-//	}
 
 	/**
 	 * 加算設定を取得する

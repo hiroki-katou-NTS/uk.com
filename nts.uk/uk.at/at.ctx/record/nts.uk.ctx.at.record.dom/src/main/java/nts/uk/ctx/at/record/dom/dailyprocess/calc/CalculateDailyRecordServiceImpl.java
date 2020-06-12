@@ -709,7 +709,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				flexCalcMethod, bonusPayAutoCalcSet, eachCompanyTimeSet, divergenceTimeList,
 				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
-				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().personInfo.getWorkCategory().getWeekdayTime().getWorkTimeCode(),
+				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode(),
 						recordReGetClass.getCompanyCommonSetting().getShareContainer()),
 				recordReGetClass.getLeaveLateSet().isPresent() ? recordReGetClass.getLeaveLateSet().get()
 						: new DeductLeaveEarly(1, 1),

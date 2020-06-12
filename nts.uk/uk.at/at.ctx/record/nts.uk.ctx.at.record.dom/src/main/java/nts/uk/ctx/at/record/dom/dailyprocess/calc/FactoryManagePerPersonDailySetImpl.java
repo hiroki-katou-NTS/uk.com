@@ -75,7 +75,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			/*加給*/
 			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
 			Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-			if(!bpCode.isPresent()) {
+			if(bpCode.isPresent()) {
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
 			}
 		

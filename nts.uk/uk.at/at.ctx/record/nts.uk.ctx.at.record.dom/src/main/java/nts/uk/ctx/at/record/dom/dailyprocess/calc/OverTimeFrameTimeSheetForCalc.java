@@ -226,7 +226,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				integrationOfWorkTime.getOverTimeOfTimeZoneSetList(todayWorkType),
 				personDailySetting.getDailyUnit(),
 				personDailySetting.getAddSetting().getVacationCalcMethodSet());
-		afterVariableWork.stream().sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getStart()));
+		afterVariableWork = afterVariableWork.stream()
+				.sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getStart()))
+				.collect(Collectors.toList());
 		///*法定内残業　振替*/
 		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = new ArrayList<>();
 		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(
@@ -236,7 +238,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				createTimeSheet,
+				afterVariableWork,
 				createdWithinWorkTimeSheet);
 		
 		/*return*/

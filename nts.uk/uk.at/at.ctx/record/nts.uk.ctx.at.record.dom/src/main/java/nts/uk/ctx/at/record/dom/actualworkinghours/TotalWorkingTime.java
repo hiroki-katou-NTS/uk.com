@@ -272,7 +272,7 @@ public class TotalWorkingTime {
 	
 	/**
 	 * 日別実績の総労働時間
-	 * @param recordClass 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
+	 * @param recordClass 実績
 	 * @param vacationClass 休暇クラス
 	 * @param workType 勤務種類
 	 * @param workTimeDailyAtr 勤務形態区分
@@ -422,16 +422,18 @@ public class TotalWorkingTime {
 																				shotrTime,
 																				vacationOfDaily);
 		//休暇加算時間の計算
-//		returnTotalWorkingTimereturn.setVacationAddTime(new AttendanceTime(vacationAddTime.calcTotaladdVacationAddTime()));
-		returnTotalWorkingTimereturn.setVacationAddTime(calcTotalHolidayAddTime(recordClass,
-																				vacationClass,
-																				workType,
-																				conditionItem,
-																				predetermineTimeSetByPersonInfo,
-																				recordWorkTimeCode,
-																				lateTime,
-																				leaveEarlyTime,
-																				outingList));
+		returnTotalWorkingTimereturn.setVacationAddTime(
+				calcTotalHolidayAddTime(
+						recordClass,
+						vacationClass,
+						workType,
+						conditionItem,
+						predetermineTimeSetByPersonInfo,
+						recordWorkTimeCode,
+						lateTime,
+						leaveEarlyTime,
+						outingList));
+		
 		return returnTotalWorkingTimereturn;
 	}
 	

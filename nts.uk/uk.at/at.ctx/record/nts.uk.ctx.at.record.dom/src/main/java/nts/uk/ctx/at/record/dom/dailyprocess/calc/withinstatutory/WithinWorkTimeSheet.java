@@ -441,8 +441,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			WithinWorkTimeSheet withinWorkTimeSheet) {
-		if(personDailySetting.dailyUnit.getDailyTime().greaterThan(0)
-			&& predetermineTimeSetForCalc.getAdditionSet().getPredTime().getPredetermineWorkTime() > personDailySetting.dailyUnit.getDailyTime().valueAsMinutes()) {
+		if(personDailySetting.getDailyUnit().getDailyTime().greaterThan(0)
+			&& predetermineTimeSetForCalc.getAdditionSet().getPredTime().getPredetermineWorkTime() > personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes()) {
 			return decisionPredeterminePremiumTime(
 					companyCommonSetting,
 					personDailySetting,
@@ -510,7 +510,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSetByPersonInfo,
 				Optional.of(personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()),
 				NotUseAtr.USE);
-		return workTime.minusMinutes(personDailySetting.dailyUnit.getDailyTime().valueAsMinutes());
+		return workTime.minusMinutes(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes());
 	}
 	
 	/***
@@ -1738,7 +1738,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				integrationOfDaily,
 				deductionTimeSheet,
 				predetermineTimeSet, 
-				Optional.of(personDailySetting.predetermineTimeSetByPersonWeekDay),
+				Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 				creatingWithinWorkTimeSheet.getWithinWorkTimeFrame(),
 				Optional.of(creatingWithinWorkTimeSheet.getLateDecisionClock().get(0)),
 				Optional.of(creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock().get(0)));

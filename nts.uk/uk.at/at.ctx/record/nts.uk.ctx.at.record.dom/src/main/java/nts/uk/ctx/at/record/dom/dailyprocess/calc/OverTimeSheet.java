@@ -97,15 +97,22 @@ public class OverTimeSheet {
 	
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
-	 * @param autoCalcSet 時間外時間の自動計算設定
-	 * @param integrationOfDaily 
+	 * アルゴリズム：ループ処理
+	 * @param autoCalcSet 残業時間の自動計算設定
+	 * @param workType 勤務種類
+	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
+	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param statutoryFrameNoList 法定内残業枠(List)
+	 * @return 残業枠時間(List)
 	 */
-	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalOvertimeSetting autoCalcSet,
-														   WorkType workType,
-														   Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-														   IntegrationOfDaily integrationOfDaily,
-														   List<OverTimeFrameNo> statutoryFrameNoList) {
+	public List<OverTimeFrameTime> collectOverTimeWorkTime(
+			AutoCalOvertimeSetting autoCalcSet,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			IntegrationOfDaily integrationOfDaily,
+			List<OverTimeFrameNo> statutoryFrameNoList) {
 		
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
@@ -158,12 +165,8 @@ public class OverTimeSheet {
 		}
 		//事前申請を上限とする制御
 		val afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
-		//return afterCalcUpperTimeList; 
 		//振替処理
-		val aftertransTimeList = transProcess(workType,
-											  afterCalcUpperTimeList,
-											  eachWorkTimeSet,
-											  eachCompanyTimeSet);
+		val aftertransTimeList = transProcess(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
 		return aftertransTimeList;
 	}
 	
@@ -247,7 +250,8 @@ public class OverTimeSheet {
 	
 	/**
 	 * 残業枠時間帯(WORK)を全て残業枠時間帯へ変換する
-	 * @return　残業枠時間帯List
+	 * アルゴリズム：残業枠時間帯の作成
+	 * @return 残業枠時間帯List
 	 */
 	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet(){
 		return this.frameTimeSheets.stream().map(tc -> tc.changeNotWorkFrameTimeSheet())
@@ -368,6 +372,7 @@ public class OverTimeSheet {
 	
 	/**
 	 * 代休の振替処理(残業用)
+	 * アルゴリズム：振替処理
 	 * @param workType　当日の勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
