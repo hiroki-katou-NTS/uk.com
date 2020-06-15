@@ -76,6 +76,10 @@ public class StampResultConfirmationQuery {
 		String authorityId = AppContexts.user().roles().forAttendance();
 		String sid = AppContexts.user().employeeId();
 		// add more 28 29 31 34 info
+		boolean contain28 = param.isContain28();
+		boolean contain29 = param.isContain29();
+		boolean contain31 = param.isContain31();
+		boolean contain34 = param.isContain34();
 		param.correctRequest();
 		List<Integer> attItemIds = param.getAttendanceItems();
 		
@@ -110,10 +114,18 @@ public class StampResultConfirmationQuery {
 		Optional<ItemValue> attendance = itemValues.stream().filter(i -> i.getItemId() == 31).findFirst();
 		Optional<ItemValue> leave = itemValues.stream().filter(i -> i.getItemId() == 34).findFirst();
 		
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		if(!contain28) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);			
+		}
+		if(!contain29) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);			
+		}
+		if(!contain31) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);			
+		}
+		if(!contain34) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);			
+		}
 		
 		// 8
 		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
