@@ -3,7 +3,7 @@ module nts.uk.at.view.kdp010.a {
     import viewModelscreenB = nts.uk.at.view.kdp010.b.viewmodel;
     import viewModelscreenC = nts.uk.at.view.kdp010.c.viewmodel;
     import viewModelscreenD = nts.uk.at.view.kdp010.d.viewmodel;
-    import viewModelscreenF = nts.uk.at.view.kdp010.c.viewmodel;
+    import viewModelscreenF = nts.uk.at.view.kdp010.f.viewmodel;
     import viewModelscreenE = nts.uk.at.view.kdp010.e.viewmodel;
     
     export module viewmodel {
@@ -80,7 +80,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-//                        self.viewModelF().start();
+//                        self.viewModelF().start(); 
                         self.removeErrorMonitor();
                     }
                 });
