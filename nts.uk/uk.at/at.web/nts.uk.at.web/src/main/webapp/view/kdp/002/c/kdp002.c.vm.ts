@@ -28,8 +28,8 @@ module nts.uk.at.view.kdp002.c {
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
-            permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
-            displayButton: KnockoutObservable<boolean> = ko.observable(true);
+            permissionCheck: KnockoutObservable<boolean> = ko.observable(false);
+            displayButton: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 let self = this;
