@@ -1,3 +1,9 @@
+html{
+  overflow: hidden;
+}
+#content-area {
+  overflow-y: scroll;
+}
 #kdp002a{
   width: 1200px;
   min-width: 150vmin;
@@ -14,10 +20,12 @@
   min-width: 37vmin;
 }
 #stamp-desc{
-  height: 40px;
-  width: 100%;
+  height: 73px;
+  width: 73vmin;
+  font-size: 1.5vmin;
+  padding: 0 0 0 0.5vmin;
   word-break: break-word;
-  font-size: 2vmin;
+  word-wrap: break-word;
 }
 
 #stamp-date {
@@ -63,7 +71,7 @@
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-  width: 14vmin;
+  width: 10.4vmin;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;

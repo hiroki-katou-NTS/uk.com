@@ -65,10 +65,24 @@ public interface NewBeforeRegister_New {
 	 */
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate);
 	
+	/**
+	 * 6.確定チェック（事前残業申請用）
+	 * @param companyID 会社ID 
+	 * @param employeeID 社員ID（申請本人の社員ID）
+	 * @param appDate 申請対象日
+	 */
 	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate);
 	
 	/**
 	 * 2-1.新規画面登録前の処理
+	 * @param companyID 会社ID
+	 * @param employmentRootAtr 就業ルート区分
+	 * @param agentAtr 代行申請か
+	 * @param application 申請
+	 * @param overTimeAtr 残業区分
+	 * @param errorFlg 承認ルートのエラーフラグ　（Refactor）
+	 * @param lstDateHd 休日リスト
+	 * @return
 	 */
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application_New application, OverTimeAtr overTimeAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd);

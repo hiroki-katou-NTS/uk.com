@@ -16,7 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class WkpFlexSettingDto extends FlexSettingDto{
 	
 	public WkpFlexSetting toWkpDomain(int year, String wkpId) {
-		return new WkpFlexSetting(new WkpFlexSettingMemento(year, wkpId, this.statutorySetting, this.specifiedSetting));
+		return new WkpFlexSetting(new WkpFlexSettingMemento(year, wkpId,
+				this.statutorySetting, this.specifiedSetting, this.weekAveSetting));
 	}
 	
 	private class WkpFlexSettingMemento implements WkpFlexSettingGetMemento {
@@ -25,13 +26,15 @@ public class WkpFlexSettingDto extends FlexSettingDto{
 		private String wkpId;
 		private List<MonthlyUnitDto> statutorySetting;
 		private List<MonthlyUnitDto> specifiedSetting;
+		private List<MonthlyUnitDto> weekAveSetting;
 
 		public WkpFlexSettingMemento(int year, String wkpId, List<MonthlyUnitDto> statutorySetting,
-				List<MonthlyUnitDto> specifiedSetting) {
+				List<MonthlyUnitDto> specifiedSetting, List<MonthlyUnitDto> weekAveSetting) {
 			this.year = year;
 			this.wkpId = wkpId;
 			this.statutorySetting = statutorySetting;
 			this.specifiedSetting = specifiedSetting;
+			this.weekAveSetting = weekAveSetting;
 		}
 
 		@Override
@@ -53,6 +56,13 @@ public class WkpFlexSettingDto extends FlexSettingDto{
 			}).collect(Collectors.toList());
 		}
 
+		@Override
+		public List<MonthlyUnit> getWeekAveSetting() {
+			return this.weekAveSetting.stream().map(dto -> {
+				return new MonthlyUnit(new Month(dto.getMonth()), new MonthlyEstimateTime(dto.getMonthlyTime()));
+			}).collect(Collectors.toList());
+		}
+		
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(AppContexts.user().companyId());

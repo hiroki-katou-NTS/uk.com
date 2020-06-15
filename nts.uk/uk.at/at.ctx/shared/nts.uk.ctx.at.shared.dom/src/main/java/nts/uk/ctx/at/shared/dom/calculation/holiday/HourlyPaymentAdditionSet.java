@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -23,7 +25,10 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeH
 @Getter
 @NoArgsConstructor
 /*時給者の加算設定*/
-public class HourlyPaymentAdditionSet extends AggregateRoot{
+public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/**  会社ID. */
 	private String companyId;

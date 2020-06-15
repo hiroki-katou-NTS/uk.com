@@ -52,6 +52,8 @@ public class JpaRegularWorkTimeAggrSetSetMemento<T extends KrcstRegMCalSet>
 				BooleanGetAtr.getAtrByBoolean(excessOutsideTimeSet.getLegalHoliday()));
 		this.typeValue.setIncludeExtraOt(
 				BooleanGetAtr.getAtrByBoolean(excessOutsideTimeSet.getSurchargeWeekMonth()));
+		this.typeValue.setExceptLegalHdwkOt(
+				BooleanGetAtr.getAtrByBoolean(excessOutsideTimeSet.getExceptLegalHdwk()));
 	}
 
 }

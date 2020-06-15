@@ -119,7 +119,7 @@ public class DailyPerformanceService {
 
 					List<Integer> listAppType = erAlApplicationOpt.get().getAppType();
 					List<Integer> listAppTypeWrited = applicationAdapter.getApplicationBySID(Arrays.asList(employee.getId()), eDaily.getDate(), eDaily.getDate()).stream().map(x -> x.getAppType()).collect(Collectors.toList());
-
+					//取得したエラーに対して申請が出されている場合は、アラームリストではエラー扱いにしない
 					if (intersectTwoListAppType(listAppType, listAppTypeWrited)) {
 						employeeDailyList.remove(eDaily);
 					}
@@ -134,11 +134,12 @@ public class DailyPerformanceService {
 		List<String> errorCodeList = employeeDailyList.stream().map(x -> x.getErrorAlarmWorkRecordCode()).collect(Collectors.toList());
 		errorAlarmWorkRecord.removeIf(x -> !errorCodeList.contains(x.getCode()));
 
-		// 勤務実績のエラーアラームチェック
 		List<String> errorAlarmCheckIDs = errorAlarmWorkRecord.stream().map(x -> x.getErrorAlarmCheckID()).collect(Collectors.toList());
+		//勤務実績のエラーアラームチェック		
 		List<MessageWRExtraConAdapterDto> messageList = workRecordExtraConAdapter.getMessageWRExtraConByListID(errorAlarmCheckIDs);
 
-		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream().collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
+		Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = messageList.stream()
+				.collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
 
 		//test reponse
 		Set<String> emps = new HashSet<String>(); 
@@ -192,31 +193,43 @@ public class DailyPerformanceService {
 		return valueExtractAlarmList;
 
 	}
-	
+	/**
+	 * 日別実績のエラーアラームのアラーム値を生成する
+	 * @param period 日次のカテゴリ期間
+	 * @param employeeIds　List＜社員ID＞
+	 * @param employee　List＜社員情報＞
+	 * @param holder　日次の勤怠項目、勤務実績のエラーアラーム設定
+	 * @param apps　申請情報
+	 * @return
+	 */
 	public List<ValueExtractAlarm> aggregationProcess(DatePeriod period, List<String> employeeIds, List<EmployeeSearchDto> employee, DataHolder holder, List<ApplicationImport> apps) {
 		
 		List<ValueExtractAlarm> valueExtractAlarmList = new ArrayList<>();
 		String KAL010_1 = TextResource.localize("KAL010_1");
 		Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap = holder.errorAlarmWorkRecord.stream().collect(Collectors.toMap(ErrorAlarmWorkRecordAdapterDto::getCode, x -> x));
 		
-		// 社員の日別実績エラー一覧
+		// ドメインモデル「勤務実績のエラーアラーム」を取得する
 		List<EmployeeDailyPerErrorImport> employeeDailyList = employeeDailyAdapter.getByErrorAlarm(employeeIds, period, holder.eralCode);
-
+		//日次のアラームチェック条件
 		holder.dailyAlarmCondition.stream().forEach(dailyAlCon -> {
 			List<EmployeeDailyPerErrorImport> empDailyError = employeeDailyList.stream().filter(error -> {
+				//
 				if(!dailyAlCon.getErrorAlarmCode().contains(error.getErrorAlarmWorkRecordCode())){
 					return false;
 				}
+				//取得した「社員の日別実績エラー一覧」．勤務実績のエラーアラームコードと設定した「日別実績のエラーアラーム」．コードは合わなければ取得した「社員の日別実績エラー一覧」を除く
 				if(!dailyAlCon.isAddApplication()){
 					return true;
 				}
 				ErrorAlarmWorkRecordAdapterDto errorAlarm = errorAlarmMap.get(error.getErrorAlarmWorkRecordCode());
+				//
 				if(errorAlarm.getUseAtr() > 0){
 					Optional<ErAlApplicationAdapterDto> erAlApplicationOpt = holder.eralApps.stream().filter(ea -> ea.getErrorAlarmCode().equals(error.getErrorAlarmWorkRecordCode())).findFirst();
+					//
 					if(erAlApplicationOpt.isPresent()){
 						List<Integer> listAppTypeWrited = apps.stream().filter(app -> app.getAppDate().equals(error.getDate()) && app.getEmployeeID().equals(error.getEmployeeID())).map(app -> app.getAppType())
 																		.collect(Collectors.toList());
-
+						////取得したエラーに対して申請が出されている場合は、アラームリストではエラー扱いにしない
 						if (intersectTwoListAppType(erAlApplicationOpt.get().getAppType(), listAppTypeWrited)) {
 							return false;
 						}
@@ -230,16 +243,26 @@ public class DailyPerformanceService {
 			List<String> errorCodeList = empDailyError.stream().map(x -> x.getErrorAlarmWorkRecordCode()).distinct().collect(Collectors.toList());
 
 			// 勤務実績のエラーアラームチェック
-			List<String> errorAlarmCheckIDs = holder.errorAlarmWorkRecord.stream().filter(c -> errorCodeList.contains(c.getCode())).map(x -> x.getErrorAlarmCheckID()).collect(Collectors.toList());
-
-			Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = holder.messageList.stream().filter(mes -> errorAlarmCheckIDs.contains(mes.getErrorAlarmCheckID()))
-																											.collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
+			List<String> errorAlarmCheckIDs = holder.errorAlarmWorkRecord.stream()
+					.filter(c -> errorCodeList.contains(c.getCode()))
+					.map(x -> x.getErrorAlarmCheckID()).collect(Collectors.toList());
+			//取得したエラー対応するアラーム値メッセージを生成する
+			Map<String, MessageWRExtraConAdapterDto> errAlarmCheckIDToMessage = holder.messageList.stream()
+					.filter(mes -> errorAlarmCheckIDs.contains(mes.getErrorAlarmCheckID()))
+					.collect(Collectors.toMap(MessageWRExtraConAdapterDto::getErrorAlarmCheckID, x -> x));
 			 
-			Set<Integer> listItemIDs = empDailyError.stream().map(error -> error.getAttendanceItemList()).flatMap(List::stream).collect(Collectors.toSet());
+			Set<Integer> listItemIDs = empDailyError.stream()
+					.map(error -> error.getAttendanceItemList())
+					.flatMap(List::stream)
+					.collect(Collectors.toSet());
 			List<String> empIds = empDailyError.stream().map(error -> error.getEmployeeID()).collect(Collectors.toList());
 			
-			List<AttendanceItemLinking> currentNos = holder.attendanceItemAndFrameNos.stream().filter(ai -> listItemIDs.contains(ai.getAttendanceItemId())).collect(Collectors.toList());
-			List<DailyAttendanceItemAdapterDto> currentAttendanceItems = holder.dailyAttendanceItems.stream().filter(ai -> listItemIDs.contains(ai.getAttendanceItemId())).collect(Collectors.toList());
+			List<AttendanceItemLinking> currentNos = holder.attendanceItemAndFrameNos.stream()
+					.filter(ai -> listItemIDs.contains(ai.getAttendanceItemId()))
+					.collect(Collectors.toList());
+			List<DailyAttendanceItemAdapterDto> currentAttendanceItems = holder.dailyAttendanceItems.stream()
+					.filter(ai -> listItemIDs.contains(ai.getAttendanceItemId())).collect(Collectors.toList());
+			//日別実績
 			List<AttendanceResultImport> currentattdResoult = attendanceItemAdapter.getValueOf(empIds , period, new ArrayList<>(listItemIDs));
 			
 			empDailyError.stream().forEach(error -> {
@@ -371,9 +394,11 @@ public class DailyPerformanceService {
 	
 	
 	
-	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String, ErrorAlarmWorkRecordAdapterDto> errorAlarmMap,
+	private AlarmContentMessage calculateAlarmContentMessage(EmployeeDailyPerErrorImport eDaily, String companyID, Map<String,
+			ErrorAlarmWorkRecordAdapterDto> errorAlarmMap,
 			AttendanceResultImport attendanceResult,
-			List<DailyAttendanceItemAdapterDto> dailyAttendanceItems,List<AttendanceItemLinking> attendanceItemAndFrameNos) {
+			List<DailyAttendanceItemAdapterDto> dailyAttendanceItems,
+			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
 		
 		// Attendance name
 		Map<Integer, DailyAttendanceItem> attendanceNameMap = dailyAttendanceItemNameService.getNameOfDailyAttendanceItemNew(dailyAttendanceItems,attendanceItemAndFrameNos).stream()

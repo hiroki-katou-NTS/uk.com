@@ -29,6 +29,7 @@ module nts.uk.at.view.kdp002.c {
             currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
             permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
+            displayButton: KnockoutObservable<boolean> = ko.observable(true);
 
             constructor() {
                 let self = this;
@@ -57,7 +58,7 @@ module nts.uk.at.view.kdp002.c {
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
                             let dateDisplay =res.stampRecords[0].stampDate;
-                            let sizeRecord = res.stampRecords.length;
+                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
                             if (moment(res.stampRecords[0].stampDate).day() == 6) {
                                 dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
                             } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
@@ -77,9 +78,11 @@ module nts.uk.at.view.kdp002.c {
                             if(res.itemValues) {
                                 res.itemValues.forEach(item => {
                                     if(item.valueType == "TIME" && item.value) {
-                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(item.value));
+                                        item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
                                     } else if (item.valueType == "AMOUNT") {
-                                        item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));;
+                                        item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));
+                                    } else if (item.valueType == "TIME_WITH_DAY" && item.value) {
+                                        item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
                                     }
                                 });
                             }
@@ -88,7 +91,9 @@ module nts.uk.at.view.kdp002.c {
                         }
                     }
                     if(res.confirmResult){
-                        self.permissionCheck(res.confirmResult.permissionCheck == 1?true:false);       
+                        self.permissionCheck(res.confirmResult.permissionCheck == 1 ? true: false);       
+                    } else {
+                        self.displayButton(false);
                     }
                 });
 

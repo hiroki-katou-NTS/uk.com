@@ -4,17 +4,19 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.ContentsStampType;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
-import nts.uk.ctx.at.record.dom.stamp.management.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.stamp.management.StampType;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 
 /**
@@ -27,8 +29,9 @@ public class StampRecordDto {
 	private String stampNumber;
 	private String stampDate;
 	private String stampTime;
+	private String stampTimeWithSec;
 	private String stampHow;
-	private boolean stampArt;
+	private String stampArt;
 	private String stampArtName;
 	private Integer revervationAtr;
 	private Integer empInfoTerCode;
@@ -62,10 +65,12 @@ public class StampRecordDto {
 
 	public StampRecordDto(StampRecord stampRecord, Stamp stamp) {
 		this.stampNumber = stampRecord.getStampNumber().v();
-		this.stampDate = stampRecord.getStampDateTime().toString("yyyy/MM/dd");
-		this.stampTime = stampRecord.getStampDateTime().toString("HH:mm");
+		GeneralDateTime stampDate = stampRecord.getStampDateTime();
+		this.stampDate = stampDate.toString("yyyy/MM/dd");
+		this.stampTime = stampDate.toString("HH:mm");
+		this.stampTimeWithSec = stampDate.toString();
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
-		this.stampArt = stampRecord.isStampArt();
+		this.stampArt = "";
 		
 		this.revervationAtr = stampRecord.getRevervationAtr().value;
 		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
@@ -79,7 +84,7 @@ public class StampRecordDto {
 
 			StampType type = stamp.getType();
 			this.stampArtName = type.createStampTypeDisplay();
-			this.changeHalfDay = type.isChangeHalfDay();
+			this.changeHalfDay = type.getChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
@@ -101,8 +106,67 @@ public class StampRecordDto {
 			if (stamp.getLocationInfor().isPresent()) {
 				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
 				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				this.latitude = stampLocate.getPositionInfor().getLatitude();
-				this.longitude = stampLocate.getPositionInfor().getLongitude();
+				if(stampLocate.getPositionInfor() != null) {
+					this.latitude = stampLocate.getPositionInfor().getLatitude();
+					this.longitude = stampLocate.getPositionInfor().getLongitude();					
+				}
+			}
+			this.attendanceTime = stamp.getAttendanceTime().isPresent()
+					? getTimeString(stamp.getAttendanceTime().get().v())
+					: null;
+			this.timeStampType = this.stampArtName;
+		}
+	}
+
+	public StampRecordDto(StampInfoDisp info) {
+		
+		this.stampNumber = info.getStampNumber().v();
+		GeneralDateTime stampDate = info.getStampDatetime();
+		this.stampDate = info.getStampDatetime().toString("yyyy/MM/dd");
+		this.stampTime = info.getStampDatetime().toString("HH:mm");
+		this.stampTimeWithSec = stampDate.toString();
+		Stamp stamp = info.getStamp().isPresent() ? info.getStamp().get() : null;
+		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
+		this.stampArt = info.getStampAtr();
+		
+//		this.revervationAtr = stampRecord.getRevervationAtr().value;
+//		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
+//				: null;
+
+		// stamp
+		if (stamp != null) {
+			this.authcMethod = stamp.getRelieve().getAuthcMethod().value;
+			this.stampMeans = stamp.getRelieve().getStampMeans().value;
+			
+
+			StampType type = stamp.getType();
+			this.stampArtName = type.createStampTypeDisplay();
+			this.changeHalfDay = type.getChangeHalfDay();
+			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
+			this.setPreClockArt = type.getSetPreClockArt().value;
+			this.changeClockArt = type.getChangeClockArt().value;
+			this.changeClockArtName = type.getChangeClockArt().nameId;
+			this.changeCalArt = type.getChangeCalArt().value;
+
+			RefectActualResult raResult = stamp.getRefActualResults();
+			this.cardNumberSupport = raResult.getCardNumberSupport().isPresent() ? raResult.getCardNumberSupport().get()
+					: null;
+			this.workLocationCD = raResult.getWorkLocationCD().isPresent() ? raResult.getWorkLocationCD().get().v()
+					: null;
+			this.workTimeCode = raResult.getWorkTimeCode().isPresent() ? raResult.getWorkTimeCode().get().v() : null;
+			if (raResult.getOvertimeDeclaration().isPresent()) {
+				OvertimeDeclaration overtime = raResult.getOvertimeDeclaration().get();
+				this.overTime = getTimeString(overtime.getOverTime().v());
+				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
+			}
+			this.reflectedCategory = stamp.isReflectedCategory();
+			if (stamp.getLocationInfor().isPresent()) {
+				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
+				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
+				if(stampLocate.getPositionInfor() != null) {
+					this.latitude = stampLocate.getPositionInfor().getLatitude();
+					this.longitude = stampLocate.getPositionInfor().getLongitude();					
+				}
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
@@ -112,96 +176,99 @@ public class StampRecordDto {
 	}
 
 	public String getCorectTtimeStampType() {
+		if(this.changeClockArt == null) {
+			return null;
+		}
 
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.changeHalfDay == false && this.revervationAtr == ReservationArt.NONE.value) {
+				&& this.changeHalfDay == false ) {
 			return ContentsStampType.WORK.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.NONE.value
-				&& this.changeHalfDay == false && this.revervationAtr == ReservationArt.NONE.value) {
+				&& this.changeHalfDay == false ) {
 			return ContentsStampType.WORK_STRAIGHT.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value
 				&& this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.WORK_EARLY.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
 				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.changeHalfDay == false && this.revervationAtr == ReservationArt.NONE.value) {
+				&& this.changeHalfDay == false ) {
 			return ContentsStampType.WORK_BREAK.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.DEPARTURE.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
 				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.DEPARTURE_BOUNCE.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.OVER_TIME.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.DEPARTURE_OVERTIME.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.GO_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.OUT.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.RETURN.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.RETURN.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.GETTING_STARTED.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.DEPAR.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.TEMPORARY_WORK.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.TEMPORARY_WORK.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.TEMPORARY_LEAVING.value
 				&& this.changeCalArt == ChangeCalArt.NONE.value && this.setPreClockArt == SetPreClockArt.NONE.value
-				&& this.changeHalfDay == false && this.revervationAtr == ReservationArt.NONE.value) {
+				&& this.changeHalfDay == false ) {
 			return ContentsStampType.TEMPORARY_LEAVING.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.START_SUPPORT.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.END_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.END_SUPPORT.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.WORK_SUPPORT.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.NONE.value) {
+				) {
 			return ContentsStampType.START_SUPPORT_BREAK.nameId;
 		}
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value

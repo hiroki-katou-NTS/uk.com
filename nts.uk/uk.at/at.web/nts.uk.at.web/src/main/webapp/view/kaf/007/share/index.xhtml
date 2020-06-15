@@ -113,7 +113,7 @@
 			<!--A5_1 勤務を変更する-->
 			<!-- <div class="check-work-time"
 				data-bind="ntsCheckBox: { checked: $parent.workChangeAtr, text: '#{i18n.getText('KAF007_39')}' }"></div> -->
-			<hr align="left" class="hr-style" />
+			
 			<div class="table">
 				<div class="cell valign-center">
 					<!--A6_1 勤務種類-->
@@ -129,7 +129,7 @@
 					<!-- <button id="workSelect-kaf007"
 						data-bind=" click: $vm.openKDL003Click.bind($vm)">#{i18n.getText('KAF007_24')}</button> -->
 					<button id="workSelect-kaf007"
-						data-bind=" click: function(){ $parent.openKDL003Click($vm) }">#{i18n.getText('KAF007_24')}</button>
+						data-bind=" click: function(){ $parent.openKDL003Click($vm) }, enable: $parent.editable">#{i18n.getText('KAF007_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<!--A6_2 勤務種類名-->
@@ -142,8 +142,7 @@
 			</div>
 		</div>
 		<!--A7 勤務時間-->
-		<div class="valign-center control-group-kaf007"
-			data-bind="visible: $parent.isWorkChange">
+		<div class="valign-center control-group-kaf007" data-bind="if: $parent.isWorkChange">
 			<div class="table">
 				<div class="cell valign-top">
 					<div class="lblTitle-kaf007"
@@ -354,7 +353,7 @@
 			<!--A11_1 定型理由-->
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required: $parent.requiredReason}">#{i18n.getText('KAF007_25')}</div>
 			<!--A12 申請理由（ラベル）-->
-			<div id="combo-box"
+			<div id="combo-box" style="width: 390px"
 				data-bind="ntsComboBox: {
 								name: '#[KAF007_26]',
 								options: $parent.reasonCombo,
@@ -362,14 +361,14 @@
 								optionsText: 'reasonName',
 								value: $parent.selectedReason,
 								enable: $parent.editable,
-								columns: [{ prop: 'reasonName', length: 10 }]}">
+								columns: [{ prop: 'reasonName', length: 20 }]}">
 			</div>
 		</div>
 		<!--A12 申請理由（ラベル）-->
 		<div class="valign-center control-group-kaf007"
 			data-bind="if: $parent.showReasonText()">
 			<!--A12 申請理由（ラベル）-->
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {required: $parent.requiredReason}">#{i18n.getText('KAF007_27')}</div>
+			<div class="lblTitle-kaf007 lblTitle-kaf007_ver28" data-bind="ntsFormLabel: {required: $parent.requiredReason}">#{i18n.getText('KAF007_27')}</div>
 			<!--A12_1 申請理由-->
 			<div id="multiline-kaf007">
 				<textarea id="inpReasonTextarea"
@@ -381,7 +380,7 @@
 									                   	},
 			                   						required : false, 
 			                   						name: '#[KAF007_29]',
-			                   						enable: $parent.displayAppReasonContentFlg }" />
+			                   						enable: $parent.editable }" />
 			</div>
 		</div>
 	</div>

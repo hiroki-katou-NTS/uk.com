@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import lombok.Getter;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 
 @Getter
 public class SaveHolidayShipmentCommand {
@@ -34,4 +35,8 @@ public class SaveHolidayShipmentCommand {
 	private boolean checkOver1Year;
 	
 	private Boolean isNotSelectYes;
+	
+	private DisplayInforWhenStarting displayInforWhenStarting;
+	
+	
 }

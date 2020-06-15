@@ -5,7 +5,10 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * 勤務実績のアラーム抽出値
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -23,7 +24,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author shuichi_ishida
  */
 @Getter
-public class AggrPCLogonDivergence {
+public class AggrPCLogonDivergence implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 日数 */
 	private AttendanceDaysMonth days;

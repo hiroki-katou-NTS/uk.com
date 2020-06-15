@@ -89,7 +89,18 @@ public class AggregationProcessService {
 		}
 		return result;
 	}
-
+	/**
+	 * アラーム: 集計処理
+	 * @param baseDate システム日付
+	 * @param companyID　ログイン会社ID
+	 * @param listEmployee　List＜社員ID＞
+	 * @param periodByCategory　List＜カテゴリ別期間＞
+	 * @param eralCate　List＜カテゴリ別アラームチェック条件＞
+	 * @param checkConList　List＜チェック条件＞
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecordV2(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			List<PeriodByAlarmCategory> periodByCategory, List<AlarmCheckConditionByCategory> eralCate,

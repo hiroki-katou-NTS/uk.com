@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,6 +32,9 @@ public class WorkdayoffFrameCommandDto implements WorkdayoffFrameGetMemento {
 	
 	/** The use atr. */
 	private int useAtr;
+	
+	/** The role. */
+	private int role;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getCompanyId()
@@ -70,5 +74,13 @@ public class WorkdayoffFrameCommandDto implements WorkdayoffFrameGetMemento {
 	@Override
 	public WorkdayoffFrameName getWorkdayoffFrameName() {
 		return new WorkdayoffFrameName(this.workdayoffFrName);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento#getRole()
+	 */
+	@Override
+	public WorkdayoffFrameRole getRole() {
+		return WorkdayoffFrameRole.valueOf(this.role);
 	}
 }

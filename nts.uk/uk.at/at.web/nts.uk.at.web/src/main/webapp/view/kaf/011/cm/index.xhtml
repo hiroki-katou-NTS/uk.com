@@ -4,9 +4,29 @@
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_11')}</div>
 			</div>
-			<div class="div_line_col_2">
-				<label data-bind="text:employeeName,visible:!screenModeNew()==true"
-					class="text_line"></label>
+			<div class="div_line_col_2" data-bind="if:!screenModeNew()==true">
+				<label data-bind="text:employeeName" class="text_line" style="vertical-align: top;"></label>
+				<div style="display: inline-block; margin-left: 300px;" class="nts-fixed-body-container ui-iggrid">
+					<table class="fixed-table">
+						<colgroup>
+							<col width="100px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div style="text-align: center">
+										<span data-bind="text:remainDays() +'日'"></span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="div_line_col_2" data-bind="if:screenModeNew()==true">
 				<label data-bind="text:employeeName,visible:!employeeList().length"
@@ -24,8 +44,8 @@
 						<tbody>
 							<tr>
 								<td>
-									<div data-bind="if: remainDays">
-										<span data-bind="text:remainDays() +'譌'"></span>
+									<div>
+										<span data-bind="text:remainDays() +'日'"></span>
 									</div>
 								</td>
 							</tr>
@@ -70,7 +90,7 @@
 			</div>
 
 		</div>
-		<div class="div_line" data-bind="if:screenModeNew()==true">
+		<div class="div_line" data-bind="if:screenModeNew()==true &amp;&amp; drawalReqSet().simulAppliReq() == 0">
 			<div class="div_line_col_1">
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
 			</div>
@@ -129,7 +149,7 @@
 										optionsText: 'name',
 										editable: false,
 										required:true,
-										enable: $parent.screenModeNew ,
+										enable: $parent.screenModeNew() || $parent.editable() ,
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
@@ -212,22 +232,22 @@
 						class="div_line_col_2 app_date">
 						<label class="text_line" data-bind="text:appDate"></label>
 					</div>
-					<div data-bind="if:$parent.screenModeNew() ==false">
-						<div class="div_line_col_3">
-							<!-- <div data-bind="if:$parent.appComSelectedCode() ==0"
-								style="display: inline-block;">
-								<button data-bind="click:$parent.removeAbs" class="danger">#{i18n.getText('KAF011_24')}</button>
-								<button data-bind="click:$parent.cancelAbs">#{i18n.getText('KAF011_25')}</button>
-							</div> -->
-							<!-- <button style="display: inline-block;"
-								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button> -->
-							<div style="display: inline-block;"
-								data-bind="if:wkType().workAtr() == 0">
-								<button data-bind="click:changeAbsDateToHoliday">#{i18n.getText('KAF011_27')}</button>
-								<span class="caret-right caret-inline"></span>
-							</div>
-						</div>
-					</div>
+<!-- 					<div data-bind="if:$parent.screenModeNew() ==false"> -->
+<!-- 						<div class="div_line_col_3"> -->
+<!-- 							<div data-bind="if:$parent.appComSelectedCode() ==0" -->
+<!-- 								style="display: inline-block;"> -->
+<!-- 								<button data-bind="click:$parent.removeAbs" class="danger">#{i18n.getText('KAF011_24')}</button> -->
+<!-- 								<button data-bind="click:$parent.cancelAbs">#{i18n.getText('KAF011_25')}</button> -->
+<!-- 							</div> --> 
+<!-- 							<button style="display: inline-block;" -->
+<!-- 								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button> --> 
+<!-- 							<div style="display: inline-block;" -->
+<!-- 								data-bind="if:wkType().workAtr() == 0"> -->
+<!-- 								<button data-bind="click:changeAbsDateToHoliday">#{i18n.getText('KAF011_27')}</button> -->
+<!-- 								<span class="caret-right caret-inline"></span> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
 				</div>
 				<div class="div_line">
 					<div class="div_line_col_1">
@@ -244,7 +264,7 @@
 										optionsText: 'name',
 										editable: false,
 										required:true,
-										enable: $parent.screenModeNew,
+										enable: $parent.screenModeNew() || $parent.editable(),
 										columns: [
 											{ prop: 'name', length: 10 },
 										]}">
@@ -303,7 +323,7 @@
 					<div data-bind="ntsFormLabel: { required: requiredReason}">#{i18n.getText('KAF011_16')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<div id="reasonCombo" class="kaf-011-combo-box"
+					<div id="reasonCombo" class="kaf-011-combo-box" style="width: 390px"
 						data-bind="ntsComboBox: {
 										name: '#{i18n.getText('KAF011_16')}',
 										options: appReasons ,
@@ -314,7 +334,7 @@
 										editable: false,
 										enable: kaf011FixedReasonIsEditable ,
 										columns:[
-											{ prop: 'reasonTemp', length: 10 },
+											{ prop: 'reasonTemp', length: 20 },
 										]}">
 					</div>
 				</div>

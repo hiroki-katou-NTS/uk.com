@@ -178,33 +178,40 @@ public class ExtractAlarmForEmployeeService {
 		List<ValueExtractAlarm> result = (new ArrayList<>());
 
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
+		//社員一覧から社員の職場情報を取得する
 		List<WorkplaceImport> optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
 
 //		List<Runnable> checks = new ArrayList<>();
 //		checks.add(() -> {
+			//アルゴリズム「日次の集計処理」を実行する
 			result.addAll(runDailyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「4週4休の集計処理」を実行する
 			result.addAll(runW4d4CheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「36協定の集計処理」を実行する
 			result.addAll(runAgreementCheckErAl(comId, checkConList, listPeriodByCategory, employees, employeeIds,
 					optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//アルゴリズム「月次の集計処理」を実行する
 			result.addAll(runMonthlyCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
 
 //		checks.add(() -> {
+			//複数月の集計処理(xử lý thông kê của multiple months)
 			result.addAll(runMultiMonthCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 //		});
+			//アルゴリズム「年休の集計処理」を実行する
 			result.addAll(runHolidayCheckErAl(comId, checkConList, listPeriodByCategory, employees,
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 
@@ -212,12 +219,25 @@ public class ExtractAlarmForEmployeeService {
 
 		return result;
 	}
-	
+	/**
+	 * 年休の集計処理
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runHolidayCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		List<ValueExtractAlarm> result = new ArrayList<>();
+		//年休のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> holiday = getAlarmCheckConditionCate(eralCate, AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY, checkConList);
 		if(!holiday.isEmpty()){
 //			PeriodByAlarmCategory multiMonthCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.value).findFirst().get();
@@ -232,11 +252,24 @@ public class ExtractAlarmForEmployeeService {
 		
 		return result;
 	}
-
+	/**
+	 * 複数月
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runMultiMonthCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//複数月のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> multiMonthErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.MULTIPLE_MONTH, checkConList);
 		if(!multiMonthErAl.isEmpty()){
 			PeriodByAlarmCategory multiMonthCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MULTIPLE_MONTH.value).findFirst().get();
@@ -244,20 +277,38 @@ public class ExtractAlarmForEmployeeService {
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, multiMonthCate);
 			
 			/** need internal response */
+			//複数月の集計処理
 			return (multipleMonthAggregateProcessService.multimonthAggregateProcess(comId, multiMonthErAl, new DatePeriod(multiMonthCate.getStartDate(), 
 					multiMonthCate.getEndDate()), employees, counter, shouldStop));
 		}
 		
 		return new ArrayList<>();
 	}
-
+	/**
+	 * 月次の集計処理
+	 * @param comId 会社ID
+	 * @param checkConList　List＜チェック条件＞
+	 * @param listPeriodByCategory　List＜抽出期間＞
+	 * @param employees　List＜社員情報＞
+	 * @param employeeIds　List＜社員ID＞
+	 * @param optWorkplaceImports　List＜社員の職場情報＞
+	 * @param eralCate　List＜カテゴリ別アラームチェック条件＞
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runMonthlyCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//月次のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> monthlyErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.MONTHLY, checkConList);
 		if(!monthlyErAl.isEmpty()){
-			PeriodByAlarmCategory monthlyCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MONTHLY.value).findFirst().get();
+			PeriodByAlarmCategory monthlyCate = listPeriodByCategory
+					.stream()
+					.filter(c -> c.getCategory() == AlarmCategory.MONTHLY.value)
+					.findFirst()
+					.get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, monthlyCate);
 			
@@ -269,32 +320,62 @@ public class ExtractAlarmForEmployeeService {
 		
 		return new ArrayList<>();
 	}
-
+	/**
+	 * 36協定の集計処理
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runAgreementCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//36協定の カテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> agreementErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.AGREEMENT, checkConList);
 		if(!agreementErAl.isEmpty()){
 			PeriodByAlarmCategory agreementCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.AGREEMENT.value).findFirst().get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, agreementCate);
-			
+			//３６協定運用設定
+			Optional<AgreementOperationSettingImport> aggreementSetting = agreementOperationSettingAdapter.find(comId);
 			/** need internal response */
 			// #101971, #101141, #101142, #101372 36協定チェック時の事前取得処理追加
-			return agreementProcessService.agreementProcess(comId, agreementErAl, listPeriodByCategory, employees, agreementOperationSettingAdapter.find(comId), counter, shouldStop);
+			return agreementProcessService.agreementProcess(comId, agreementErAl, listPeriodByCategory, employees, 
+					aggreementSetting, counter, shouldStop);
 		}
 		
 		return new ArrayList<>();
 	}
-
+	/**
+	 * 4週4休の集計処理
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runW4d4CheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//スケジュール4週のアラームチェック条件
 		List<AlarmCheckConditionByCategory> w4d4ErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.SCHEDULE_4WEEK, checkConList);
 		if(!w4d4ErAl.isEmpty()){
-			PeriodByAlarmCategory w4d4Cate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.SCHEDULE_4WEEK.value).findFirst().get();
+			//スケジュール4週の抽出条件期間
+			PeriodByAlarmCategory w4d4Cate = listPeriodByCategory.stream()
+					.filter(c -> c.getCategory() == AlarmCategory.SCHEDULE_4WEEK.value).findFirst().get();
 			
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, w4d4Cate);
 			
@@ -303,17 +384,32 @@ public class ExtractAlarmForEmployeeService {
 		}
 		return new ArrayList<>();
 	}
-
+	/**
+	 * アラームリスト　日次
+	 * @param comId　会社ID
+	 * @param checkConList　List＜チェック条件＞
+	 * @param listPeriodByCategory　List＜カテゴリ別期間＞
+	 * @param employees　List＜社員情報＞
+	 * @param employeeIds　List＜社員ID＞
+	 * @param optWorkplaceImports　List＜職場情報＞
+	 * @param eralCate　List＜カテゴリ別アラームチェック条件＞
+	 * @param counter　
+	 * @param shouldStop
+	 * @return
+	 */
 	private List<ValueExtractAlarm> runDailyCheckErAl(String comId, List<CheckCondition> checkConList,
 			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
 			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
 			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		//日次のカテゴリ別アラームチェック条件
 		List<AlarmCheckConditionByCategory> dailyErAl = getAlarmCheckConditionCate(eralCate, AlarmCategory.DAILY, checkConList);
 		if(!dailyErAl.isEmpty()){
+			//日次の期間
 			PeriodByAlarmCategory dailyCate = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.DAILY.value).findFirst().get();
-			
+			//社員と職場をマッピングする
 			fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, dailyCate);
 			/** need internal response */
+			//勤務実績のアラーム抽出
 			return (dailyAggregationProcessService.dailyAggregationProcess(comId, dailyCate, employees, dailyErAl, counter, shouldStop));
 		}
 		

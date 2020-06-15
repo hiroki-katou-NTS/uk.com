@@ -13,13 +13,13 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Dail
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDisplayNameAdapter;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSetPerRepository;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -55,10 +55,6 @@ public class GetOmissionContentsFinder {
 				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
 		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo), appDisplayAdapter.getAppDisplay());
 	}
-	// アルゴリズム「申請種類を取得する」を実行する
-//	private getApplicationType() {
-//		
-//	}
 
 	@AllArgsConstructor
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {

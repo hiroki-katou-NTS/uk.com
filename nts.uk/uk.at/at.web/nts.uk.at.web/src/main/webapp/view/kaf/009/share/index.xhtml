@@ -280,7 +280,7 @@
 		<div class="valign-top control-group overlay-reason"
 			data-bind="if: displayTypicalReason()">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required: requireTypicalReason}">#{i18n.getText('KAF009_25')}</div>
-			<div id="combo-box"
+			<div id="combo-box" style="width: 390px"
 				data-bind="ntsComboBox: {
 								name: '#[KAF009_26]',
 								options: reasonCombo,
@@ -288,7 +288,7 @@
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: enableTypicalReason,
-								columns: [{ prop: 'reasonName', length: 10 }]}">
+								columns: [{ prop: 'reasonName', length: 20 }]}">
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->

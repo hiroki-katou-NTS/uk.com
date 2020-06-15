@@ -70,7 +70,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 			// 36協定のアラームチェック条件
 			AlarmChkCondAgree36 alarmChkCon36 = alarmCheck.getAlarmChkCondAgree36();
 
-			// アルゴリズム「超過回数チェック」を実行する
+			
 			for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
 
 				synchronized (this) {
@@ -79,7 +79,9 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 						return;
 					}
 				}
-				Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(companyId, employeeIds, new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
+				//????
+				Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(companyId, employeeIds, 
+						new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
 
 				// 抽出条件に対応する期間を取得する
 				// List<36協定エラーアラームのチェック条件>
@@ -108,6 +110,7 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 				if (Period.Yearly.value == periodAlarm.getPeriod36Agreement()) {
 					List<DatePeriod> periodsYear = new ArrayList<>();
 					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
+					// アルゴリズム「超過回数チェック」を実行する
 					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds,
 							periodsYear, alarmChkCon36.getListCondOt());
 					for (CheckedOvertimeImport check : checkOvertimes) {

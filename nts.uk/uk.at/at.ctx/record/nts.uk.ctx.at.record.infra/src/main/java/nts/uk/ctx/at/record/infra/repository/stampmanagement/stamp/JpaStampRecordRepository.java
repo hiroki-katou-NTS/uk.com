@@ -13,9 +13,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecordPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,8 +29,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " where s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+			+ " where s.pk.cardNumber in  :cardNumbers " 
+			+ " and s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
 			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "

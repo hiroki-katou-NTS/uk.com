@@ -344,4 +344,6 @@ public interface WorkTypeRepository {
 	List<WorkTypeInfor> getNotRemoveWorkType(String companyId, List<String> lstPossible);
 	
 	List<WorkType> findListByCid(String companyId);
+	
+	List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes);
 }

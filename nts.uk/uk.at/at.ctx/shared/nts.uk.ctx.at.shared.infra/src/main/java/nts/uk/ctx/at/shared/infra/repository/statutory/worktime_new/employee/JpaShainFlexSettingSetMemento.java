@@ -71,6 +71,14 @@ public class JpaShainFlexSettingSetMemento extends JpaDefaultSettingSetMemento i
 		setSpecSettingToFlexSet(this.entity, specifiedSetting);
 	}
 
+	/*
+	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.FlexSettingSetMemento#setWeekAveSetting(java.util.List)
+	 */
+	@Override
+	public void setWeekAveSetting(List<MonthlyUnit> weekAveSetting) {
+		setWeekSettingToFlexSet(this.entity, weekAveSetting);
+	}
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */

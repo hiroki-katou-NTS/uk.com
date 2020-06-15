@@ -58,7 +58,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		if (approvalFunctionSetting == null) {
 			return null;
 		}
-		List<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
+		Optional<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
 		// 勤務種類取得
 		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType,apptype);
 		dataWork.setWorkTypeCodes(workTypeCodes);
@@ -83,7 +83,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @return
 	 */
 	public List<String> getWorkType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting, List<AppEmploymentSetting> appEmploymentSettings, int apptype) {
+			ApprovalFunctionSetting approvalFunctionSetting, Optional<AppEmploymentSetting> appEmploymentSettings, int apptype) {
 		List<String> result = new ArrayList<>();
 		if (approvalFunctionSetting == null) {
 			return result;
@@ -92,9 +92,14 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
 
-		if (sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)) {
+		if (sEmpHistImport != null && appEmploymentSettings.isPresent()) {
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
-			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
+			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
+				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
+					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
+					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
+							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+					.collect(Collectors.toList());
 			if (CollectionUtil.isEmpty(lstEmploymentWorkType)) {
 				result = this.workTypeRepository.findNotDeprecated(companyID).stream()
 				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());

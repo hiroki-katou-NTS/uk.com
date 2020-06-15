@@ -67,7 +67,7 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
+		
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 	
@@ -116,6 +116,10 @@ public class StampResultConfirmationQuery {
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
 		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		
+		// 8
+		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
+		
 		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	

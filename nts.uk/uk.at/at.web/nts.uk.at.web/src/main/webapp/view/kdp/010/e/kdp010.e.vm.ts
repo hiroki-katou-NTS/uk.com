@@ -305,6 +305,7 @@ module nts.uk.at.view.kdp010.e.viewmodel {
                     if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
                         var attendanceName: string = '';
                         var name = [];
+                        dailyAttendanceItemNames = dailyAttendanceItemNames.sort((x,y) => {return x.attendanceItemDisplayNumber - y.attendanceItemDisplayNumber});
                         for (var i = 0; i < dailyAttendanceItemNames.length; i++) {
                             attendanceName = dailyAttendanceItemNames[i].attendanceItemName;
                             name.push(dailyAttendanceItemNames[i].attendanceItemName);
