@@ -94,7 +94,7 @@ module nts.uk.at.view.kdp002.a {
                     });
                     layout.buttonSettings = btnSettings;
                 }
-
+                
                 return layout;
             }
 

@@ -6,6 +6,7 @@ module nts.uk.at.view.kdp.share {
     const DEFAULT_GRAY = '#E8E9EB';
     const GET_HIGHLIGHT_SETTING_URL = 'at/record/stamp/management/personal/stamp/getHighlightSetting';
     export class StampButtonLayOut {
+        oldLayout: KnockoutObservable<any> = ko.observable({});
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number> = ko.observable(0);
         useHighlightFunction: KnockoutObservable<StampToSuppress> = ko.observable({});
@@ -16,9 +17,9 @@ module nts.uk.at.view.kdp.share {
             self.parentVM = ko.observable(params.parent.content);
             self.useHighlightFunction(params.highlightSetting());
             if(params.data()) {
-                let layout = _.clone(params.data(), true);
+                self.oldLayout(params.data());
+                let layout = $.extend(true, {}, params.data());
                 self.selectedLayout(layout);
-                console.log(layout);
                 self.buttonLayoutType = ko.observable(layout.buttonLayoutType);
                 self.correntBtnSetting(layout.buttonSettings);
             };
@@ -32,7 +33,8 @@ module nts.uk.at.view.kdp.share {
             let self = this;
             let btnList = [];
             let btnNum = self.buttonLayoutType() === layoutType.LARGE_2_SMALL_4 ? 6 : 8;
-            let clBtnSets = _.clone(btnSets, true);
+            let clBtnSets = $.extend(true, {}, btnSets);
+            console.log(clBtnSets);
             for (let idx = 1; idx <= btnNum; idx++) {
                 let btn = _.find(clBtnSets, (btn) => {return btn.btnPositionNo  === idx});
                 if(btn && !btn.onClick) {
@@ -71,10 +73,9 @@ module nts.uk.at.view.kdp.share {
             if(self.selectedLayout().buttonSettings) {
                 if(self.useHighlightFunction().isUse) {
                     nts.uk.request.ajax('at', GET_HIGHLIGHT_SETTING_URL).done((res) => {
-                        res.isUse = false;
+                        res.isUse = self.useHighlightFunction().isUse;
                         self.useHighlightFunction(res);
-                        console.log(self.selectedLayout());
-                        self.correntBtnSetting(self.selectedLayout().buttonSettings);
+                        self.correntBtnSetting(self.oldLayout().buttonSettings);
                     });
                 }
             }
