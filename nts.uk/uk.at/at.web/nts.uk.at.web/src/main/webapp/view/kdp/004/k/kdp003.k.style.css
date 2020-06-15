@@ -1,0 +1,12 @@
+#contents-area {
+	height: auto !important;
+}
+
+#combo-box-tree-component{
+	display: none;
+}
+
+#hierarchy > div.form-label{
+	display: none;
+}
+
