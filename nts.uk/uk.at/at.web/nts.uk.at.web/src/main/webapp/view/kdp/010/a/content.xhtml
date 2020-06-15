@@ -29,16 +29,16 @@
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_153')}</div> 
 						<label>#{i18n.getText('KDP010_154')}</label>
-						<div id="first-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_155]' }"></div> 
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_155]' }"></div> 
 						<label class="margin-left5">#{i18n.getText('KDP010_156')}</label>
-						<div id="second-color-picker" class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_157]' }"></div>
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_157]' }"></div>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_158')}</div> 
-						<div class="inline-display row-data" tabindex="4">
-							<input data-bind="ntsNumberEditor: {name: '#[KDP010_159]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+						<div class="inline-display row-data">
+							<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_159]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
 							<label class="text-note">#{i18n.getText('KDP010_160')}</label>
 						</div>
 					</td>

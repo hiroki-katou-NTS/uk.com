@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title" data-bind="text: '#{i18n.getText('KDP010_4')}'.trim()"></span>
+			<button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+		</div>
+
+		<div class="contents-area">
+			<div class="label-top">
+				<label>#{i18n.getText('KDP010_175')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_176')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="3" class="nts-input" data-bind="ntsNumberEditor: {name: '#[KDP010_177]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_178')}</div> 
+						<label>#{i18n.getText('KDP010_179')}</label>
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_180]' }"></div> 
+						<label class="margin-left5">#{i18n.getText('KDP010_181')}</label>
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_182]' }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_183')}</div> 
+						<div class="inline-display row-data">
+							<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_184]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							<label class="text-note">#{i18n.getText('KDP010_185')}</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_240')}</div> 
+						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: highlightOption, optionsValue: 'id', optionsText: 'name', value: highlight, enable: true }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_186')}</div> 
+						<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: externalMapOption, optionsValue: 'id', optionsText: 'name', value: externalMap, enable: true }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label">
+							<button tabindex="9" data-bind="" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+							<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
+						</div>
+					</td>
+				</tr>
+			</table> 
+		</div>
+	</ui:composition>
+</body>
+</html>

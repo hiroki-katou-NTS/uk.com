@@ -1,3 +1,7 @@
+#sidebar-area{
+	width: 150px;
+}
+
 #label-title, #stamping-his-label, #date-time-label, #stamp-result-label,
 	#highlight-label, #stamp-button {
 	margin-top: 20px;
@@ -50,27 +54,30 @@
 }
 
 .label-top{
-	margin: 20px 30px;
+	margin: 10px 30px;
 }
 .form-data .inline-display{
 	display: inline-block;
 }
 .form-data td{
-	height: 55px;
+	height: 50px;
 }
 .form-data .row-label{
-	margin: 10px 10px 8px 30px;
+	margin: 10px 10px 0px 30px;
     width: 198px;
+}
+.form-data .colorpicker{
+    margin-left: 10px;
 }
 .form-data .row-data{
 	vertical-align: top;
-    margin-top: 13px;
+    margin-top: 15px;
 }
 .form-data .text-note{
     margin: 0 20px;
 }
 .label-middle{
-	margin: 25px 30px 6px;
+	margin: 15px 30px 0px;
 }
 .radio-wrapper .ntsRadioBox{
 	margin-right: 15px;
@@ -88,5 +95,32 @@
 .option-authent .row-data{
 	margin-right: 100px;
 	margin-top: 14px;
+}
+
+
+
+/* screen A */
+#tabpanel_a{
+	
+}
+
+/* screen B */
+#tabpanel_b{
+	
+}
+
+/* screen C */
+#tabpanel_c{
+	
+}
+
+/* screen D */
+#tabpanel_d{
+	
+}
+
+/* screen F */
+#tabpanel_f{
+	
 }
 

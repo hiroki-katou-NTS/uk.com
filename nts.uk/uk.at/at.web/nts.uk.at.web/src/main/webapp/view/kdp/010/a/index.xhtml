@@ -20,6 +20,9 @@
 			<com:scriptfile path="../b/kdp010.b.vm.js" />
 			<com:scriptfile path="../b/kdp010.b.service.js" />
 			
+			<com:scriptfile path="../c/kdp010.c.vm.js" />
+			<com:scriptfile path="../c/kdp010.c.service.js" />
+			
 			<com:scriptfile path="../e/kdp010.e.vm.js" />
 			<com:scriptfile path="../e/kdp010.e.service.js" />
 			<com:stylefile path="../e/main.css" />
@@ -32,24 +35,39 @@
 		<!-- Side Bar -->
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
-				<li data-bind="click: selectScreenA"><a tabindex="-1" href="#tabpanel_a" role="tab-navigator" class="active">#{i18n.getText('KDP010_2')}</a></li>
-				<li data-bind="click: selectScreenB"><a tabindex="2" href="#tabpanel-b" role="tab-navigator" >#{i18n.getText('KDP010_3')}</a></li>
-				<li data-bind="click: selectScreenE"><a tabindex="3" href="#tabpanel-e" role="tab-navigator" >#{i18n.getText('KDP010_6')}</a></li>
+				<li data-bind="click: selectScreenA"><a href="#tabpanel_a" role="tab-navigator" class="active">#{i18n.getText('KDP010_2')}</a></li>
+				<li data-bind="click: selectScreenB"><a href="#tabpanel-b" role="tab-navigator" >#{i18n.getText('KDP010_3')}</a></li>
+				<li data-bind="click: selectScreenC"><a href="#tabpanel-c" role="tab-navigator" >#{i18n.getText('KDP010_4')}</a></li>
+				<li data-bind="click: selectScreenD"><a href="#tabpanel-d" role="tab-navigator" >#{i18n.getText('KDP010_5')}</a></li>
+				<li data-bind="click: selectScreenF"><a href="#tabpanel-f" role="tab-navigator" >#{i18n.getText('KDP010_7')}</a></li>
+				<li data-bind="click: selectScreenE"><a href="#tabpanel-e" role="tab-navigator" >#{i18n.getText('KDP010_6')}</a></li>
 			</ul>
 		</ui:define>
 
 		<!-- Side Bar Content -->
 		<ui:define name="sidebar-content">
 			<!-- Screen A -->
-			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="with: viewmodelA">
+			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="with: viewModelA">
 				<ui:include src="content.xhtml" />
 			</div>
 			<!-- Screen B -->
-			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
+			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewModelB">
 				<ui:include src="../b/index.xhtml" />
 			</div>
+			<!-- Screen C -->
+			<div id="tabpanel-c" role="tabpanel" class="screen-c" data-bind="with: viewModelC">
+				<ui:include src="../c/index.xhtml" />
+			</div>
+			<!-- Screen D -->
+			<div id="tabpanel-d" role="tabpanel" class="screen-d" data-bind="with: viewModelC">
+				<ui:include src="../c/index.xhtml" />
+			</div>
+			<!-- Screen F -->
+			<div id="tabpanel-f" role="tabpanel" class="screen-f" data-bind="with: viewModelC">
+				<ui:include src="../c/index.xhtml" />
+			</div>
 			<!-- Screen E -->
-			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
+			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewModelE">
 				<ui:include src="../e/index.xhtml" />
 			</div>
 		</ui:define>

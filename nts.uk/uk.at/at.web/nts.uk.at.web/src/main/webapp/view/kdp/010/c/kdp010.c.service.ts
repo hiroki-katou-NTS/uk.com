@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdp010.a.service {
+module nts.uk.at.view.kdp010.c.service {
     let paths: any = {
         saveStampSetting: "at/record/stamp/management/saveStampSetting",
         updateStampSetting: "at/record/stamp/management/updateStampSetting",

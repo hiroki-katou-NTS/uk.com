@@ -1,18 +1,27 @@
 module nts.uk.at.view.kdp010.a {
     import viewModelscreenB = nts.uk.at.view.kdp010.b.viewmodel;
+    import viewModelscreenC = nts.uk.at.view.kdp010.c.viewmodel;
+    import viewModelscreenD = nts.uk.at.view.kdp010.c.viewmodel;
+    import viewModelscreenF = nts.uk.at.view.kdp010.c.viewmodel;
     import viewModelscreenE = nts.uk.at.view.kdp010.e.viewmodel;
     
     export module viewmodel {
         export class ScreenModel {
-            viewmodelA: KnockoutObservable<any>;
-            viewmodelB: KnockoutObservable<any>;
-            viewmodelE: KnockoutObservable<any>;
+            viewModelA: KnockoutObservable<any>;
+            viewModelB: KnockoutObservable<any>;
+            viewModelC: KnockoutObservable<any>;
+            viewModelD: KnockoutObservable<any>;
+            viewModelF: KnockoutObservable<any>;
+            viewModelE: KnockoutObservable<any>;
             
             constructor(){
                 let self = this;
-                self.viewmodelA = ko.observable(new ViewmodelA());
-                self.viewmodelB = ko.observable(new viewModelscreenB.ScreenModel());
-                self.viewmodelE = ko.observable(new viewModelscreenE.ScreenModel());
+                self.viewModelA = ko.observable(new ViewModelA());
+                self.viewModelB = ko.observable(new viewModelscreenB.ScreenModel());
+                self.viewModelC = ko.observable(new viewModelscreenC.ViewModelC());
+                self.viewModelD = ko.observable(new viewModelscreenD.ViewModelC());
+                self.viewModelF = ko.observable(new viewModelscreenF.ViewModelC());
+                self.viewModelE = ko.observable(new viewModelscreenE.ScreenModel());
             }
             
             public startPage(): JQueryPromise<any> {
@@ -30,16 +39,47 @@ module nts.uk.at.view.kdp010.a {
                     activate: (event, info) => {
                         let self = this;
                         //self.startPage();
+                        self.viewModelA();
                         self.removeErrorMonitor();
                     }
                 });
             }
             
-             public selectScreenB(): void {
+            public selectScreenB(): void {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewmodelB().start();
+                        self.viewModelB().start();
+                        self.removeErrorMonitor();
+                    }
+                });
+            }
+            
+            public selectScreenC(): void {
+                $("#sidebar").ntsSideBar("init", {
+                    activate: (event, info) => {
+                        let self = this;
+//                        self.viewModelC().start();
+                        self.removeErrorMonitor();
+                    }
+                });
+            }
+            
+            public selectScreenD(): void {
+                $("#sidebar").ntsSideBar("init", {
+                    activate: (event, info) => {
+                        let self = this;
+//                        self.viewModelD().start();
+                        self.removeErrorMonitor();
+                    }
+                });
+            }
+            
+            public selectScreenF(): void {
+                $("#sidebar").ntsSideBar("init", {
+                    activate: (event, info) => {
+                        let self = this;
+//                        self.viewModelF().start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -49,7 +89,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewmodelE().start();
+                        self.viewModelE().start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -62,7 +102,7 @@ module nts.uk.at.view.kdp010.a {
                 $('.nts-input').ntsError('clear');    
             }
         }
-        export class ViewmodelA {
+        export class ViewModelA {
             correcValue: KnockoutObservable<number> = ko.observable(10);
             letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
             backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
