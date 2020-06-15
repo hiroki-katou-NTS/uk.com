@@ -352,11 +352,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		RepositoriesRequiredByRemNum repositoriesRequiredByRemNum 
 			= new RepositoriesRequiredByRemNum();
 		
-		
-		
-		
-		
-		
 		// 年休の使用区分を取得する
 		boolean isManageAnnualLeave = false;
 		AnnualPaidLeaveSetting annualLeaveSet = null;
@@ -548,7 +543,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 「開始日」と「年休情報．年月日」を比較
 		boolean isSameInfo = false;
 		if (prevAnnualLeaveInfo != null){
-			if (this.aggrPeriod.start() == prevAnnualLeaveInfo.getYmd()){
+			if (this.aggrPeriod.start().equals(prevAnnualLeaveInfo.getYmd())){
 				isSameInfo = true;
 			}
 		}

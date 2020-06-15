@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
-public class TestGetClosureStartForEmployee_1 implements GetClosureStartForEmployee {
+public class TestGetClosureStartForEmployee_1 extends TestGetClosureStartForEmployee {
 
 //	/** 締めアルゴリズム */
 //	@Inject
@@ -19,25 +19,13 @@ public class TestGetClosureStartForEmployee_1 implements GetClosureStartForEmplo
 //	/** 雇用に紐づく就業締めの取得 */
 //	@Inject
 //	private ClosureEmploymentRepository closureEmploymentRepo;
-
-	/** 社員に対応する締め開始日を取得する */
-	@Override
-	//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<GeneralDate> algorithm(String employeeId) {
-		
-//		GetClosureStartForEmployeeProc proc = new GetClosureStartForEmployeeProc(
-//				this.closureService,
-//				this.empEmployee,
-//				this.shareEmploymentAdapter,
-//				this.closureEmploymentRepo);
-//		return proc.algorithm(employeeId);
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        
-        return Optional.empty();
-	}
+	
+//	/** 社員に対応する締め開始日を取得する */
+//	@Override
+//	//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+//	public Optional<GeneralDate> algorithm(String employeeId) {
+//		
+//		return Optional.ofNullable(startDate);
+//	}
 
 }

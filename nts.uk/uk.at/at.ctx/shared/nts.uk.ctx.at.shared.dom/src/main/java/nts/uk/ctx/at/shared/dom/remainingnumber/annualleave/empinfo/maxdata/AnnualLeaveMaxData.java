@@ -3,11 +3,15 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 // domain name: 年休上限データ
 public class AnnualLeaveMaxData extends AggregateRoot {
 

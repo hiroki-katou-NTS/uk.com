@@ -162,9 +162,11 @@ public class GetNextAnnualLeaveGrantProc {
 		if (this.lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
 		
 		// 年休付与年月日を計算
-		this.getNextAnnualLeaveGrantProcMulti.calcAnnualLeaveGrantDate(
-				entryDate, criteriaDate, this.simultaneousGrantMDOpt, this.lengthServiceTbls,
-				period, isSingleDay, this.nextAnnualLeaveGrantList);
+		if ( this.getNextAnnualLeaveGrantProcMulti != null){
+			this.getNextAnnualLeaveGrantProcMulti.calcAnnualLeaveGrantDate(
+					entryDate, criteriaDate, this.simultaneousGrantMDOpt, this.lengthServiceTbls,
+					period, isSingleDay, this.nextAnnualLeaveGrantList);
+		}
 //		for (val nextAnnualLeaveGrant : this.nextAnnualLeaveGrantList){
 //			
 //			// 付与回数をもとに年休付与テーブルを取得

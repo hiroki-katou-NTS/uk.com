@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetClosureStartForEmployee;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetClosureStartForEmployeeFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
@@ -100,6 +102,11 @@ public class TestAnnualLeave {
 				String s_aggr_period = annualleaveTestCase.getAggrPeriod();
 				DatePeriod aggrPeriod = TestData.strToDatePeriod(s_aggr_period);
 				
+				// 期間の開始日を「社員に対応する締め開始日」として処理を行う。
+				val testGetClosureStartForEmployee = (TestGetClosureStartForEmployee)g_require.getGetClosureStartForEmployee();
+				testGetClosureStartForEmployee.startDate 
+					= GeneralDate.ymd(aggrPeriod.start().year(), aggrPeriod.start().month(), aggrPeriod.start().day());
+				
 				// モード
 				InterimRemainMngMode mode;
 				String s_mode = annualleaveTestCase.getMode();
@@ -140,7 +147,7 @@ public class TestAnnualLeave {
 				boolean isGetNextMonthData = true;
 				
 				// 集計開始日を締め開始日とする　（締め開始日を確認しない）
-				boolean noCheckStartDate = true; // ooooo
+				boolean noCheckStartDate = true; // 今回から未使用
 				
 				// 不足分付与残数データ出力区分
 				boolean isOutShortRemain = true; // ooooo

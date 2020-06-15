@@ -6,6 +6,12 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.HalfdayAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.MaxMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.MaxTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.TimeAnnualLeaveMax;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
  * 年休上限データ
@@ -23,12 +29,38 @@ public class TestAnnLeaMaxDataRepository_1  extends JpaRepository implements Ann
 //					ent.maxMinutes, ent.usedMinutes));
 //		}
 //		return Optional.empty();
-		System.out.print("要実装");
-		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
-	    System.out.println(className);
-	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        System.out.println(methodName);
-        return Optional.empty();
+//		System.out.print("要実装");
+//		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
+//	    System.out.println(className);
+//	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+//        System.out.println(methodName);
+//        return Optional.empty();
+        
+//        // 社員ID
+//        String employeeId = "";
+        
+        // 会社ID
+		String companyId = "";
+
+		// 半日年休上限
+		HalfdayAnnualLeaveMax halfdayAnnualLeaveMax = new HalfdayAnnualLeaveMax();
+		MaxTimes maxTimes = new MaxTimes(5);
+		UsedTimes usedTimes = new UsedTimes(0);
+		halfdayAnnualLeaveMax.update(maxTimes, usedTimes);
+		
+		// 時間年休上限
+		TimeAnnualLeaveMax timeAnnualLeaveMax = new TimeAnnualLeaveMax();
+		MaxMinutes maxMinutes = new MaxMinutes(40); // 上限時間
+		UsedMinutes usedMinutes = new UsedMinutes(0); // 使用時間
+		timeAnnualLeaveMax.update(maxMinutes, usedMinutes);
+		
+		// 年休上限データ
+		AnnualLeaveMaxData a = TestAnnualLeaveMaxData.createAnnualLeaveMaxData(
+				employeeId, companyId, 
+				Optional.of(halfdayAnnualLeaveMax),
+				Optional.of(timeAnnualLeaveMax));
+        
+        return Optional.of(a);
 	}
 
 	@Override
@@ -54,6 +86,7 @@ public class TestAnnLeaMaxDataRepository_1  extends JpaRepository implements Ann
 	    System.out.println(className);
 	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         System.out.println(methodName);
+        
 	}
 
 	@Override

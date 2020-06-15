@@ -53,7 +53,7 @@ public class TestClosureStatusManagementRepository_1 extends JpaRepository imple
 //		if (lstEntity.isEmpty())
 //			return Optional.empty();
 //		return Optional.of(lstEntity.get(0).toDomain());
-		System.out.print("要実装");
+		System.out.print("要実装→OK.今回は実装なしでテストを行う");
 		final String className = Thread.currentThread().getStackTrace()[1].getClassName();
 	    System.out.println(className);
 	    final String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();

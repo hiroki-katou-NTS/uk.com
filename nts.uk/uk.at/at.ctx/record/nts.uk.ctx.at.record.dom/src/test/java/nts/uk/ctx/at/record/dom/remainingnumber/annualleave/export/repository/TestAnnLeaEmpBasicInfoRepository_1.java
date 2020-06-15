@@ -51,6 +51,7 @@ public class TestAnnLeaEmpBasicInfoRepository_1 implements AnnLeaEmpBasicInfoRep
 		AnnualLeaveGrantRule grantRule = new AnnualLeaveGrantRule();
 		PerServiceLengthTableCD aPerServiceLengthTableCD = new PerServiceLengthTableCD("1");
 		grantRule.setGrantTableCode(aPerServiceLengthTableCD);
+		grantRule.setGrantStandardDate( GeneralDate.ymd(2019, 4, 1) );
 		
 		AnnualLeaveEmpBasicInfo a 
 			= new AnnualLeaveEmpBasicInfo(

@@ -59,8 +59,8 @@ public class TestEmpEmployeeAdapterImpl_1 implements EmpEmployeeAdapter {
 				.employeeName("employeeName1")
 //				.employeeMailAddress(
 //						empExport.getPMailAddr() == null ? null : (new MailAddress(empExport.getPMailAddr().v())))
-				.entryDate(GeneralDate.ymd(2015,  4, 1))
-				.retiredDate(GeneralDate.ymd(9999,  12, 31))
+				.entryDate(GeneralDate.ymd(2015, 4, 1))
+				.retiredDate(GeneralDate.ymd(9999, 12, 31))
 				.build();
 
 		
