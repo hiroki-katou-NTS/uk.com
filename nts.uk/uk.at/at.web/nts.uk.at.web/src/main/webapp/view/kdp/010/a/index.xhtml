@@ -12,6 +12,7 @@
 				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
 				nts.uk.ctx.at.record.dom.stamp.application.MessageContent
 				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			
@@ -22,6 +23,9 @@
 			
 			<com:scriptfile path="../c/kdp010.c.vm.js" />
 			<com:scriptfile path="../c/kdp010.c.service.js" />
+			
+			<com:scriptfile path="../d/kdp010.d.vm.js" />
+			<com:scriptfile path="../d/kdp010.d.service.js" />
 			
 			<com:scriptfile path="../e/kdp010.e.vm.js" />
 			<com:scriptfile path="../e/kdp010.e.service.js" />
@@ -35,7 +39,7 @@
 		<!-- Side Bar -->
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
-				<li data-bind="click: selectScreenA"><a href="#tabpanel_a" role="tab-navigator" class="active">#{i18n.getText('KDP010_2')}</a></li>
+				<li data-bind="click: selectScreenA"><a href="#tabpanel-a" role="tab-navigator" class="active">#{i18n.getText('KDP010_2')}</a></li>
 				<li data-bind="click: selectScreenB"><a href="#tabpanel-b" role="tab-navigator" >#{i18n.getText('KDP010_3')}</a></li>
 				<li data-bind="click: selectScreenC"><a href="#tabpanel-c" role="tab-navigator" >#{i18n.getText('KDP010_4')}</a></li>
 				<li data-bind="click: selectScreenD"><a href="#tabpanel-d" role="tab-navigator" >#{i18n.getText('KDP010_5')}</a></li>
@@ -47,7 +51,7 @@
 		<!-- Side Bar Content -->
 		<ui:define name="sidebar-content">
 			<!-- Screen A -->
-			<div id="tabpanel_a" role="tabpanel" class="screen-a" data-bind="with: viewModelA">
+			<div id="tabpanel-a" role="tabpanel" class="screen-a" data-bind="with: viewModelA">
 				<ui:include src="content.xhtml" />
 			</div>
 			<!-- Screen B -->
@@ -59,8 +63,8 @@
 				<ui:include src="../c/index.xhtml" />
 			</div>
 			<!-- Screen D -->
-			<div id="tabpanel-d" role="tabpanel" class="screen-d" data-bind="with: viewModelC">
-				<ui:include src="../c/index.xhtml" />
+			<div id="tabpanel-d" role="tabpanel" class="screen-d" data-bind="with: viewModelD">
+				<ui:include src="../d/index.xhtml" />
 			</div>
 			<!-- Screen F -->
 			<div id="tabpanel-f" role="tabpanel" class="screen-f" data-bind="with: viewModelC">

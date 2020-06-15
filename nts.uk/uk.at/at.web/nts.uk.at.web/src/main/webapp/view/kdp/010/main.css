@@ -100,27 +100,39 @@
 
 
 /* screen A */
-#tabpanel_a{
+#tabpanel-a{
 	
 }
 
 /* screen B */
-#tabpanel_b{
+#tabpanel-b{
 	
 }
 
 /* screen C */
-#tabpanel_c{
+#tabpanel-c{
 	
 }
 
 /* screen D */
-#tabpanel_d{
+#tabpanel-d{
 	
+}
+#tabpanel-d .reason{
+	height: 20px;
+}
+.reason .row-data{
+    margin-left: 244px;
+    margin-top: 10px;
+}
+.form-data .reason .ntsRadioBox:nth-child(1){
+	min-width: auto;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 
 /* screen F */
-#tabpanel_f{
+#tabpanel-f{
 	
 }
 

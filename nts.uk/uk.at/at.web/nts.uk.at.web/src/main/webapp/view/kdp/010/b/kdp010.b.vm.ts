@@ -12,9 +12,9 @@ module nts.uk.at.view.kdp010.b.viewmodel {
         correcValue: KnockoutObservable<number> = ko.observable(10);
         // B5_2 - 打刻履歴表示方法
         optionStamping: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: nts.uk.resource.getText("KDP010_19") },
-            { id: 1, name: nts.uk.resource.getText("KDP010_20") },
-            { id: 2, name: nts.uk.resource.getText("KDP010_21") }
+            { id: 0, name: getText("KDP010_19") },
+            { id: 1, name: getText("KDP010_20") },
+            { id: 2, name: getText("KDP010_21") }
         ]);
         selectedStamping: KnockoutObservable<number> = ko.observable(0);
         // B6_3
@@ -23,8 +23,8 @@ module nts.uk.at.view.kdp010.b.viewmodel {
         backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
         // B10_2
         optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 1, name: nts.uk.resource.getText("KDP010_39") },
-            { id: 0, name: nts.uk.resource.getText("KDP010_40") }
+            { id: 1, name: getText("KDP010_39") },
+            { id: 0, name: getText("KDP010_40") }
         ]);
         selectedHighlight: KnockoutObservable<number> = ko.observable(0);
         // B7_2

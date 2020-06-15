@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title" data-bind="text: '#{i18n.getText('KDP010_5')}'.trim()"></span>
+			<button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+		</div>
+
+		<div class="contents-area">
+			<div class="label-top">
+				<label>#{i18n.getText('KDP010_190')}</label>
+			</div>
+			<table class="form-data">
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_191')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="3" class="nts-input" data-bind="ntsNumberEditor: {name: '#[KDP010_192]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_193')}</div> 
+						<label>#{i18n.getText('KDP010_194')}</label>
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_195]' }"></div> 
+						<label class="margin-left5">#{i18n.getText('KDP010_196')}</label>
+						<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_197]' }"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_198')}</div> 
+						<div class="inline-display row-data">
+							<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_199]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+							<label class="text-note">#{i18n.getText('KDP010_200')}</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_201')}</div> 
+						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: buttonHighlightOption, optionsValue: 'id', optionsText: 'name', value: buttonHighlight, enable: true }"></div>
+					</td>
+				</tr>
+			</table>
+			<div class="label-middle">
+				<label>#{i18n.getText('KDP010_204')}</label>
+			</div>	
+			<table class="form-data">
+				<tr>
+					<td data-bind="with: attendanceButton">
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_205')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="6" data-bind="ntsTextEditor: {name: '#[KDP010_205]',value: text, constraint: 'ButtonName', required: true}" /> 
+							<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+							<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-bind="with: leaveWorkButton">
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_208')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="7" data-bind="ntsTextEditor: {name: '#[KDP010_208]',value: text, constraint: 'ButtonName', required: true}" /> 
+							<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+							<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-bind="with: goOutButton">
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_209')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="8" data-bind="ntsTextEditor: {name: '#[KDP010_209]',value: text, constraint: 'ButtonName', required: true}" /> 
+							<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+							<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="reason">
+						<div class="inline-display row-data">
+							<label>#{i18n.getText('KDP010_210')}</label>
+							<div tabindex="9" data-bind="ntsRadioBoxGroup: {options: reasonOption, optionsValue: 'id', optionsText: 'name', value: reason, enable: true }"></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td data-bind="with: returnButton">
+						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_211')}</div>
+						<div class="inline-display row-data">
+							<input tabindex="10" data-bind="ntsTextEditor: {name: '#[KDP010_211]',value: text, constraint: 'ButtonName', required: true}" /> 
+							<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+							<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+						</div>
+					</td>
+				</tr>
+			</table> 
+		</div>
+	</ui:composition>
+</body>
+</html>
