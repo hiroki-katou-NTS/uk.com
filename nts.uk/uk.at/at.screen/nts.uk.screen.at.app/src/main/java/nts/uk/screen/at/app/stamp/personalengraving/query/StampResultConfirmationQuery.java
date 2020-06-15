@@ -75,11 +75,9 @@ public class StampResultConfirmationQuery {
 		String cid = AppContexts.user().companyId();
 		String authorityId = AppContexts.user().roles().forAttendance();
 		String sid = AppContexts.user().employeeId();
+		// add more 28 29 31 34 info
+		param.correctRequest();
 		List<Integer> attItemIds = param.getAttendanceItems();
-		attItemIds.add(28);
-		attItemIds.add(29);
-		attItemIds.add(31);
-		attItemIds.add(34);
 		
 		// 1
 		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
@@ -93,7 +91,7 @@ public class StampResultConfirmationQuery {
 		// 3
 		List<String> sids = new ArrayList<>();
 		sids.add(sid);
-		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), param.getAttendanceItems())
+		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), attItemIds)
 			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
 						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.findFirst().orElse(null);
