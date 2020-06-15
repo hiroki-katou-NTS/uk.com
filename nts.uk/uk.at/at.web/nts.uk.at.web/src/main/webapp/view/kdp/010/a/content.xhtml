@@ -9,7 +9,7 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('KDP010_2')}</span>
-			<button tabindex="2" class="proceed" data-bind="">#{i18n.getText('KDP010_10')}</button>
+			<button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
 		</div>
 
 		<div class="contents-area">
