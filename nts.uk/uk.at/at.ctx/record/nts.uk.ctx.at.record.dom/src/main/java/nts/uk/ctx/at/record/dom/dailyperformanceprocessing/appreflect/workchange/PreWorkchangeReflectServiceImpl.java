@@ -10,12 +10,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalc
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -88,15 +88,15 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 					x.getAttendanceLeavingWork(1).ifPresent(a -> {
 						a.getAttendanceStamp().ifPresent(y -> {
 							y.getStamp().ifPresent(z -> {
-								if(z.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION) {
-									z.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT);
+								if(z.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION) {
+									z.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT);
 								}
 							});
 						});
 						a.getLeaveStamp().ifPresent(y -> {
 							y.getStamp().ifPresent(z -> {
-								if(z.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION) {
-									z.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT);
+								if(z.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION) {
+									z.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT);
 								}
 							});
 						});

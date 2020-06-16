@@ -1,0 +1,52 @@
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+
+/**
+ * 日別勤怠の勤務情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.勤務情報.日別勤怠の勤務情報
+ * @author tutk
+ * 
+ *
+ */
+@Getter
+public class WorkInfoOfDailyAttendance implements DomainObject {
+
+	@Setter
+	// 勤務実績の勤務情報
+	private WorkInformation recordInfo;
+	@Setter
+	// 勤務予定の勤務情報
+	private WorkInformation scheduleInfo;
+	@Setter
+	// 計算状態
+	private CalculationState calculationState;
+	// 直行区分
+	private NotUseAttribute goStraightAtr;
+	// 直帰区分
+	private NotUseAttribute backStraightAtr;
+	// 曜日
+	private DayOfWeek dayOfWeek;
+	// 勤務予定時間帯
+	private List<ScheduleTimeSheet> scheduleTimeSheets;
+	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
+			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
+		super();
+		this.recordInfo = recordInfo;
+		this.scheduleInfo = scheduleInfo;
+		this.calculationState = calculationState;
+		this.goStraightAtr = goStraightAtr;
+		this.backStraightAtr = backStraightAtr;
+		this.dayOfWeek = dayOfWeek;
+		this.scheduleTimeSheets = scheduleTimeSheets;
+	}
+	
+	
+}

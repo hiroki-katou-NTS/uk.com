@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -35,22 +34,23 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
@@ -601,11 +601,11 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
                     new TimeWithDayAttr(data.getStartTime()),
                     null,
-                    StampSourceInfo.GO_STRAIGHT_APPLICATION);
+                    TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
                     new TimeWithDayAttr(data.getEndTime()),
                     null,
-                    StampSourceInfo.GO_STRAIGHT_APPLICATION);
+                    TimeChangeMeans.GO_STRAIGHT_APPLICATION);
             TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
             TimeActualStamp endtimeActualStamp = new TimeActualStamp(null, endWorkStamp, 0);
             timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, endtimeActualStamp);
@@ -619,13 +619,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					x.getStamp().ifPresent(y -> {
 						y.setTimeWithDay(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null);
 						y.setAfterRoundingTime(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null);
-						y.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT_APPLICATION);
+						y.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 					});
 					if(!x.getStamp().isPresent() && data.getStartTime() != null) {
 						x.setStamp(Optional.ofNullable(new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 								new TimeWithDayAttr(data.getStartTime()),
 								null,
-								StampSourceInfo.GO_STRAIGHT_APPLICATION)));
+								TimeChangeMeans.GO_STRAIGHT_APPLICATION)));
 					}	
 				}				
 			});
@@ -634,13 +634,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					x.getStamp().ifPresent(y -> {
 						y.setTimeWithDay(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null);
 						y.setAfterRoundingTime(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null);
-						y.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT_APPLICATION);
+						y.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 					});
 					if(!x.getStamp().isPresent() && data.getEndTime() != null) {
 						x.setStamp(Optional.ofNullable(new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
 								new TimeWithDayAttr(data.getEndTime()),
 								null,
-								StampSourceInfo.GO_STRAIGHT_APPLICATION)));
+								TimeChangeMeans.GO_STRAIGHT_APPLICATION)));
 					}
 				}
 			});
@@ -843,11 +843,11 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
                     new TimeWithDayAttr(data.getStartTime()),
                     null,
-                    StampSourceInfo.GO_STRAIGHT_APPLICATION);
+                    TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 			WorkStamp endWorkStamp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
                     new TimeWithDayAttr(data.getEndTime()),
                     null,
-                    StampSourceInfo.GO_STRAIGHT_APPLICATION);
+                    TimeChangeMeans.GO_STRAIGHT_APPLICATION);
             TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
             TimeActualStamp endtimeActualStamp = new TimeActualStamp(null, endWorkStamp, 0);
             timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, endtimeActualStamp);
@@ -864,7 +864,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 						new TimeWithDayAttr(data.getStartTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-								StampSourceInfo.GO_STRAIGHT_APPLICATION);
+								TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
 						stampTmp,
 						timeAttendanceStart.getNumberOfReflectionStamp());
@@ -879,7 +879,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 						new TimeWithDayAttr(data.getEndTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-								StampSourceInfo.GO_STRAIGHT_APPLICATION);
+								TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
 						stampTmp,
 						timeAttendanceEnd.getNumberOfReflectionStamp());
@@ -1218,14 +1218,14 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				a.getStamp().ifPresent(x -> {
 					x.setTimeWithDay(null);
 					x.setAfterRoundingTime(null);
-					x.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT_APPLICATION);
+					x.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 				});
 			});
 			c.getLeaveStamp().ifPresent(y -> {
 				y.getStamp().ifPresent(z -> {
 					z.setTimeWithDay(null);
 					z.setAfterRoundingTime(null);
-					z.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT_APPLICATION);
+					z.setStampSourceInfo(TimeChangeMeans.GO_STRAIGHT_APPLICATION);
 				});
 			});
 		});

@@ -38,7 +38,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Re
 import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
@@ -58,11 +57,12 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.Regist
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
@@ -1078,8 +1078,8 @@ public class DailyModifyRCommandFacade {
 	public void createStampSourceInfo(DailyRecordDto dtoEdit, List<DailyModifyQuery> querys) {
 		val sidLogin = AppContexts.user().employeeId();
 		boolean editBySelf = sidLogin.equals(dtoEdit.getEmployeeId());
-		Integer stampSource = editBySelf ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF.value
-				: StampSourceInfo.HAND_CORRECTION_BY_ANOTHER.value;
+		Integer stampSource = editBySelf ? StampSourceInfo.TimeChangeMeans.value
+				: StampSourceInfo.TimeChangeMeans.value;
 		List<ItemValue> itemValueTempDay = querys.stream().filter(
 				x -> x.getEmployeeId().equals(dtoEdit.getEmployeeId()) && x.getBaseDate().equals(dtoEdit.getDate()))
 				.flatMap(x -> x.getItemValues().stream()).collect(Collectors.toList());
@@ -1099,12 +1099,12 @@ public class DailyModifyRCommandFacade {
 				case 85:
 					dtoEdit.getAttendanceLeavingGate().get().getAttendanceLeavingGateTime()
 							.get(Math.abs(77 - x.getItemId()) / 4).getEnd()
-							.setStampSourceInfo(StampSourceInfo.HAND_CORRECTION_BY_ANOTHER.value);
+							.setStampSourceInfo(StampSourceInfo.TimeChangeMeans.value);
 					break;
 				case 31:
 				case 41:
 					if (x.getItemId() == 31 && dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getWorking()
-							.getTime().getStampSourceInfo() != StampSourceInfo.SPR.value) {
+							.getTime().getStampSourceInfo() != StampSourceInfo.TimeChangeMeans.value) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(31 - x.getItemId()) / 10)
 								.getWorking().getTime().setStampSourceInfo(stampSource);
 					} else if (x.getItemId() == 41) {
@@ -1116,7 +1116,7 @@ public class DailyModifyRCommandFacade {
 				case 44:
 					if (x.getItemId() == 34
 							&& dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(34 - x.getItemId()) / 10)
-									.getLeave().getTime().getStampSourceInfo() != StampSourceInfo.SPR.value) {
+									.getLeave().getTime().getStampSourceInfo() != StampSourceInfo.TimeChangeMeans.value) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getLeave().getTime()
 								.setStampSourceInfo(stampSource);
 					} else if (x.getItemId() == 44) {

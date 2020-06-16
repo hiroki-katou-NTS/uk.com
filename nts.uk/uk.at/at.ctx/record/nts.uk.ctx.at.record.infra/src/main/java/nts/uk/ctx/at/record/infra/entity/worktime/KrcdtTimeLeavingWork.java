@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -127,7 +127,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {

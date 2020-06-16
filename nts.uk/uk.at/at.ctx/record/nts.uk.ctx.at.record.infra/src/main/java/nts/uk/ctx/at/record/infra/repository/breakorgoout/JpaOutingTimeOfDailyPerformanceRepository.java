@@ -24,13 +24,13 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -433,25 +433,25 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				x.outStampRoundingTimeDay != null ? new TimeWithDayAttr(x.outStampRoundingTimeDay) : null,
 				x.outStampTime != null ? new TimeWithDayAttr(x.outStampTime) : null,
 				x.outStampPlaceCode != null ? new WorkLocationCD(x.outStampPlaceCode) : null,
-				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, StampSourceInfo.class) : null);
+				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, TimeChangeMeans.class) : null);
 		WorkStamp outActualStamp = new WorkStamp(
 				x.outActualRoundingTimeDay != null ? new TimeWithDayAttr(x.outActualRoundingTimeDay) : null,
 				x.outActualTime != null ? new TimeWithDayAttr(x.outActualTime) : null,
 				x.outActualPlaceCode != null ? new WorkLocationCD(x.outActualPlaceCode) : null,
-				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, StampSourceInfo.class)
+				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, TimeChangeMeans.class)
 						: null);
 		TimeActualStamp goOut = new TimeActualStamp(outActualStamp, outStamp, x.outNumberStamp);
 		WorkStamp backStamp = new WorkStamp(
 				x.backStampRoundingTimeDay != null ? new TimeWithDayAttr(x.backStampRoundingTimeDay) : null,
 				x.backStampTime != null ? new TimeWithDayAttr(x.backStampTime) : null,
 				x.backStampPlaceCode != null ? new WorkLocationCD(x.backStampPlaceCode) : null,
-				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, StampSourceInfo.class)
+				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, TimeChangeMeans.class)
 						: null);
 		WorkStamp backActualStamp = new WorkStamp(
 				x.backActualRoundingTimeDay != null ? new TimeWithDayAttr(x.backActualRoundingTimeDay) : null,
 				x.backActualTime != null ? new TimeWithDayAttr(x.backActualTime) : null,
 				x.backActualPlaceCode != null ? new WorkLocationCD(x.backActualPlaceCode) : null,
-				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, StampSourceInfo.class)
+				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, TimeChangeMeans.class)
 						: null);
 		TimeActualStamp comeBack = new TimeActualStamp(backActualStamp, backStamp, x.backNumberStamp);
 		GoingOutReason reasonForGoOut = EnumAdaptor.valueOf(x.outingReason, GoingOutReason.class);

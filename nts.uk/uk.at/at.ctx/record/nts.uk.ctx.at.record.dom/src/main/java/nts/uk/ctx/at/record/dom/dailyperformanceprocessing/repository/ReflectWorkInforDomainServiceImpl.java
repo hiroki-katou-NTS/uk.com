@@ -51,7 +51,6 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -59,7 +58,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
@@ -90,10 +88,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
@@ -104,12 +99,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -130,12 +120,22 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -1645,21 +1645,21 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (workingConditionItem.get().getAutoStampSetAtr() == NotUseAtr.USE) {
 			// 出勤と退勤を反映する設定にする
 			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
+			automaticStampSetDetailDto.setAttendanceStamp(TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO);
 			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
+			automaticStampSetDetailDto.setLeavingStamp(TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO);
 		}
 
 		// パラメータ「日別実績の勤務情報」を取得する
 		// 直行区分
 		if (workInfoOfDailyPerformanceUpdate.getGoStraightAtr() == NotUseAttribute.Use) {
 			automaticStampSetDetailDto.setAttendanceReflectAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setAttendanceStamp(StampSourceInfo.GO_STRAIGHT);
+			automaticStampSetDetailDto.setAttendanceStamp(TimeChangeMeans.GO_STRAIGHT);
 		}
 		// 直帰区分
 		if (workInfoOfDailyPerformanceUpdate.getBackStraightAtr() == NotUseAttribute.Use) {
 			automaticStampSetDetailDto.setRetirementAttr(UseAtr.USE);
-			automaticStampSetDetailDto.setLeavingStamp(StampSourceInfo.GO_STRAIGHT);
+			automaticStampSetDetailDto.setLeavingStamp(TimeChangeMeans.GO_STRAIGHT);
 		}
 
 		// 自動打刻セット詳細に従って自動打刻セットする
@@ -1933,8 +1933,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						} else {
 							WorkStamp stampInfor = leavingStamp.getAttendanceStamp().get().getStamp().get();
-							if(stampInfor.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-									 || stampInfor.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
+							if(stampInfor.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
+									 || stampInfor.getStampSourceInfo() == TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO) {
 								attendanceStamp = this.attendanceStampInfor(timeLeavingWork);
 							}	
 							
@@ -1966,8 +1966,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						} else {
 							WorkStamp leaveWorkStamp = leavingStamp.getLeaveStamp().get().getStamp().get();
-							if(leaveWorkStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-									 || leaveWorkStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
+							if(leaveWorkStamp.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
+									 || leaveWorkStamp.getStampSourceInfo() == TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO) {
 								leaveStamp = this.leaveStampInfor(timeLeavingWork);
 							}
 						}

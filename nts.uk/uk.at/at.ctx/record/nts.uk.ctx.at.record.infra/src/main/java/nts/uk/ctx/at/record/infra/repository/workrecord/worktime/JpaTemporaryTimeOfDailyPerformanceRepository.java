@@ -20,13 +20,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

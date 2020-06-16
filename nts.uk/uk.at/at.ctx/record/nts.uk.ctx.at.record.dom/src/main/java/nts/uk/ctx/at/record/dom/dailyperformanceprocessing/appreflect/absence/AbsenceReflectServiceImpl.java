@@ -9,17 +9,17 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalculateOfAppReflectParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -153,7 +153,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optWorkStamp = attendanceStamp.getStamp();
 				if(optWorkStamp.isPresent()) {
 					WorkStamp workStamp = optWorkStamp.get();
-					if(workStamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+					if(workStamp.getStampSourceInfo() == TimeChangeMeans.SPR) {
 						return false;
 					}
 				}
@@ -164,7 +164,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optStamp = leaveStamp.getStamp();
 				if(optStamp.isPresent()) {
 					WorkStamp stamp = optStamp.get();
-					if(stamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+					if(stamp.getStampSourceInfo() == TimeChangeMeans.SPR) {
 						return false;
 					}
 				}

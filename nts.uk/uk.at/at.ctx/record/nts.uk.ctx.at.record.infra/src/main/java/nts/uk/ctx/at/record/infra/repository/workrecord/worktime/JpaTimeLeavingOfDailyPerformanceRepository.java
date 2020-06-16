@@ -26,13 +26,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
@@ -40,6 +34,12 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -571,7 +571,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
 	}
 
 	private <T> List<T> getCurrent(Map<String, Map<GeneralDate, List<T>>> scheTimes,

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * 元々日別作成側に存在していたエラーアラーム処理

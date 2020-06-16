@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 
 /**　<<Event>> 実績の出退勤が変更された　*/
 @Builder

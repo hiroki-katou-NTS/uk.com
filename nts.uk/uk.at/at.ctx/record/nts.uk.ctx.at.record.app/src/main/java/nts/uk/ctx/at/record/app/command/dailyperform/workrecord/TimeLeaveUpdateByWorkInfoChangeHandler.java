@@ -9,13 +9,13 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.service.event.timeleave.TimeLeavingOfDailyService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
 /** Event：出退勤時刻を補正する */

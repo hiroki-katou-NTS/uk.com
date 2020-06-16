@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDail
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesResult;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;

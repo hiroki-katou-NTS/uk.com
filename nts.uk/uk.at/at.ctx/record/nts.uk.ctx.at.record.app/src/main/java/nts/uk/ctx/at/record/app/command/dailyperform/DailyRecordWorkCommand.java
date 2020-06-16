@@ -25,10 +25,10 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfD
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	

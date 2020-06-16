@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * ドメインサービス：日別実績計算処理

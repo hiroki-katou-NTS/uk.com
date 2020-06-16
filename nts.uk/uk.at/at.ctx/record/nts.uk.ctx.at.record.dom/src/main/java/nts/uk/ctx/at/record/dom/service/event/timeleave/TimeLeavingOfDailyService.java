@@ -14,8 +14,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -23,15 +21,17 @@ import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -141,7 +141,7 @@ public class TimeLeavingOfDailyService {
 		AtomicBoolean flag = new AtomicBoolean(false);
 		
 		stamp.ifPresent(s -> s.getStamp().ifPresent(ss -> {
-			if(ss.getStampSourceInfo() == StampSourceInfo.SPR){
+			if(ss.getStampSourceInfo() == TimeChangeMeans.SPR){
 				flag.set(true);
 			}
 		}));
@@ -335,7 +335,7 @@ public class TimeLeavingOfDailyService {
 			
 			tlx.getAttendanceStamp().ifPresent(tlxa -> {
 				tlxa.getStamp().ifPresent(tlxas -> {
-					if(tlxas.getStampSourceInfo() == StampSourceInfo.SPR){
+					if(tlxas.getStampSourceInfo() == TimeChangeMeans.SPR){
 						flag.set(true);
 					}
 				});
@@ -343,7 +343,7 @@ public class TimeLeavingOfDailyService {
 			
 			tlx.getLeaveStamp().ifPresent(tlxl -> {
 				tlxl.getStamp().ifPresent(tlxls -> {
-					if(tlxls.getStampSourceInfo() == StampSourceInfo.SPR){
+					if(tlxls.getStampSourceInfo() == TimeChangeMeans.SPR){
 						flag.set(true);
 					}
 				});
@@ -354,11 +354,11 @@ public class TimeLeavingOfDailyService {
 	}
 
 	private boolean isRemoveStamp(WorkStamp ass) {
-		return ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-				|| ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-				|| ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON
-				|| ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
-				|| ass.getStampSourceInfo() == StampSourceInfo.SPR;
+		return ass.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
+				|| ass.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION
+				|| ass.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON
+				|| ass.getStampSourceInfo() == TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO
+				|| ass.getStampSourceInfo() == TimeChangeMeans.SPR;
 	}
 
 	private Optional<WorkingConditionItem> getWorkConditionOrDefault(Optional<WorkingConditionItem> cached,

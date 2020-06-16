@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
