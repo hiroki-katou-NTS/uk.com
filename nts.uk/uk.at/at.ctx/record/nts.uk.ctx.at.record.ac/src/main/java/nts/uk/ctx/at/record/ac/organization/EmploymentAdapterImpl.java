@@ -49,4 +49,10 @@ public class EmploymentAdapterImpl implements EmploymentAdapter {
 		);
 	}
 
+	@Override
+	public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
