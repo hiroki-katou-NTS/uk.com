@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<head>
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = {width: 480, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="kdp010.i.vm.js" />
+			<com:scriptfile path="kdp010.i.start.js" />
+			<com:scriptfile path="kdp010.i.service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" class="proceed" data-bind="click: registration">#{i18n.getText('KDP010_230')}</button>
+				<button tabindex="2" class="danger" data-bind="click: deleteSetting">#{i18n.getText('KDP010_231')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
+			</div>
+			<div class="contents-area">
+				<div class="row">
+					<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
+					<textarea tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: commentDaily, constraint: 'PageComment' }" />
+				</div>
+				<div class="row">				
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>
+					<div tabindex="5" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: false, width: 50, name:'#[KDP010_234]' }" />
+				</div>
+				<div class="title">
+					<label>#{i18n.getText('KDP010_235')}</label>
+				</div>
+				
+				<div class="buton-setting">
+					<table>
+						<tr>
+							<td data-bind="with: btn1">
+								<button tabindex="5" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+							<td data-bind="with: btn2">
+								<button tabindex="6" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+						</tr>
+						<tr>
+							<td data-bind="with: btn3">
+								<button tabindex="7" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+							<td data-bind="with: btn4">
+								<button tabindex="8" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+						</tr>
+						<tr>
+							<td data-bind="with: btn5">
+								<button tabindex="9" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+							<td data-bind="with: btn6">
+								<button tabindex="10" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

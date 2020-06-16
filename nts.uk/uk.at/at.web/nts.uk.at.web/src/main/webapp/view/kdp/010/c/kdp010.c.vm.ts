@@ -19,6 +19,10 @@ module nts.uk.at.view.kdp010.c {
             constructor(){
                 let self = this;
             }
+            openIDialog() {
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/i/index.xhtml").onClosed(() => {
+                });
+            }
          }   
     }
 }

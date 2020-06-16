@@ -1,0 +1,36 @@
+#functions-area button.danger{
+	margin-left: 20px;
+    margin-right: 5px;
+}
+
+.contents-area .row{
+    margin: 15px 30px;
+}
+
+.contents-area .row textarea{
+	width: 230px;
+}
+
+.contents-area .row .form-label{
+	vertical-align: top;
+    width: 130px;
+}
+
+.contents-area .title label{
+	margin-left: 30px;
+}
+
+.buton-setting{
+	width: 220px;
+    margin: 20px auto;
+}
+
+.buton-setting td{
+    width: 110px;
+}
+
+.buton-setting button{
+    width: 90px;
+    height: 50px;
+    margin: 10px;
+}
