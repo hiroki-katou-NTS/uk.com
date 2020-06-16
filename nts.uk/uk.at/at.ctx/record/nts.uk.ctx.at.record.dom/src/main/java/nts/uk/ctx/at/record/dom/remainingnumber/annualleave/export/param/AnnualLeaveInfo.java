@@ -53,8 +53,8 @@ public class AnnualLeaveInfo implements Cloneable {
 	private AnnualLeaveUsedDayNumber usedDays;
 	/** 使用時間 */
 	private UsedMinutes usedTime;
-	/** 付与後フラグ */
-	private boolean afterGrantAtr;
+//	/** 付与後フラグ */
+//	private boolean afterGrantAtr;
 	
 	/** 年休設定 */
 	private AnnualPaidLeaveSetting annualPaidLeaveSet;
@@ -71,7 +71,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		this.grantInfo = Optional.empty();
 		this.usedDays = new AnnualLeaveUsedDayNumber(0.0);
 		this.usedTime = new UsedMinutes(0);
-		this.afterGrantAtr = false;
+//		this.afterGrantAtr = false;
 		
 		this.annualPaidLeaveSet = null;
 	}
@@ -106,7 +106,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		domain.grantInfo = grantInfo;
 		domain.usedDays = usedDays;
 		domain.usedTime = usedTime;
-		domain.afterGrantAtr = afterGrantAtr;
+//		domain.afterGrantAtr = afterGrantAtr;
 		return domain;
 	}
 	
@@ -171,7 +171,7 @@ public class AnnualLeaveInfo implements Cloneable {
 			}
 			cloned.usedDays = new AnnualLeaveUsedDayNumber(this.usedDays.v());
 			cloned.usedTime = new UsedMinutes(this.usedTime.v());
-			cloned.afterGrantAtr = this.afterGrantAtr;
+//			cloned.afterGrantAtr = this.afterGrantAtr;
 			
 			// 以下は、cloneしなくてよい。
 			cloned.maxData = this.maxData;
@@ -191,8 +191,8 @@ public class AnnualLeaveInfo implements Cloneable {
 	/**
 	 * 年休付与残数を更新
 	 */
-	public void updateRemainingNumber(){
-		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, this.afterGrantAtr);
+	public void updateRemainingNumber(boolean afterGrant){
+		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, afterGrant);
 	}
 	
 	/**
@@ -282,9 +282,14 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 「年休集計期間WORK.付与フラグ」をチェック
 		if (!aggregatePeriodWork.isGrantAtr()) return;
 		
-		// 「年休情報．付与後フラグ」をチェック
-		if (this.isAfterGrantAtr()) return;
+//		// 「年休情報．付与後フラグ」をチェック
+//		if (this.isAfterGrantAtr()) return;
 		
+		// 初回付与かチェックする
+		if ( aggregatePeriodWork.getGrantNumber() != 1 ){
+			return;
+		}
+	
 		// 現在の年休（マイナスあり）の残数を付与前として退避する
 		val withMinus = this.remainingNumber.getAnnualLeaveWithMinus();
 		withMinus.setRemainingNumberBeforeGrant(withMinus.getRemainingNumber().clone());
@@ -336,7 +341,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		}
 		
 		// 年休情報残数を更新
-		this.updateRemainingNumber();
+		this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 		
 		// 年休情報を「年休の集計結果．年休情報（消滅）」に追加
 		if (!aggrResult.getLapsed().isPresent()) aggrResult.setLapsed(Optional.of(new ArrayList<>()));
@@ -416,8 +421,8 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 作成した「年休付与残数データ」を付与残数データリストに追加
 		this.grantRemainingList.add(newRemainData);
 
-		// 付与後フラグ　←　true
-		this.afterGrantAtr = true;
+//		// 付与後フラグ　←　true
+//		this.afterGrantAtr = true;
 		
 		// 年休情報．付与情報に付与時の情報をセット
 		double oldGrantDays = 0.0;
@@ -434,7 +439,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				new AttendanceRate(attendanceRate)));
 		
 		// 年休情報残数を更新
-		this.updateRemainingNumber();
+		this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 		
 		// 「年休情報（付与時点）」に「年休情報」を追加
 		if (!aggrResult.getAsOfGrant().isPresent()) aggrResult.setAsOfGrant(Optional.of(new ArrayList<>()));
@@ -591,13 +596,11 @@ public class AnnualLeaveInfo implements Cloneable {
 			// 年休残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getAnnualLeaveWithMinus();
 			if (withMinus.getRemainingNumber().getTotalRemainingDays().v() < 0.0){
-				if (this.afterGrantAtr){
-					
+				if (aggregatePeriodWork.isAfterGrant()){
 					// 「日単位年休不足エラー（付与後）」を追加
 					aggrResult.addError(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
 				}
 				else {
-					
 					// 「日単位年休不足エラー（付与前）」を追加
 					aggrResult.addError(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
 				}

@@ -694,8 +694,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			returnInfo.setMaxData(maxDataOpt.get());
 		}
 		
-		// 年休情報残数を更新
-		returnInfo.updateRemainingNumber();
+		// 年休情報残数を更新 
+		returnInfo.updateRemainingNumber(false);
 		
 		// 年休情報を返す
 		return returnInfo;
