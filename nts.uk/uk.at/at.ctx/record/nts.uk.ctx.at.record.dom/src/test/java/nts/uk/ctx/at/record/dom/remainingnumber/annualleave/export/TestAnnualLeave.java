@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,14 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetClosureStartForEmployee;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetClosureStartForEmployeeFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
@@ -35,6 +36,7 @@ public class TestAnnualLeave {
 	
 	/** 期待値 */
 	private List<TestOutputAggrResultOfAnnualLeave> testOutputAggrResultOfAnnualLeaveList; 
+	private Map<String, TestOutputAggrResultOfAnnualLeave> testOutputAggrResultOfAnnualLeaveListMap;
 	
 	/** テストケース */
 	private List<AnnualleaveTestCase> caseList;
@@ -50,8 +52,14 @@ public class TestAnnualLeave {
 //		this.inputList = inputObject2.build();
 //		this.expectedValueList = expectedVaue.build();
 		
-		// 期待値
+		// 期待値のリスト
 		testOutputAggrResultOfAnnualLeaveList = TestOutputAggrResultOfAnnualLeave.build();
+		
+		// 期待値のリストを、テストケースＮｏをキーに、MapListへ変換
+		testOutputAggrResultOfAnnualLeaveListMap = new HashMap<String, TestOutputAggrResultOfAnnualLeave>();
+		for( TestOutputAggrResultOfAnnualLeave t : testOutputAggrResultOfAnnualLeaveList ){
+			testOutputAggrResultOfAnnualLeaveListMap.put(t.getCaseNo(), t);
+		}
 		
 		// テストケース一覧読み込み
 		this.caseList = AnnualleaveTestCase.build();
@@ -162,7 +170,7 @@ public class TestAnnualLeave {
 				//companySets 
 				
 //				// テストしたい処理を実行
-				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave
+				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeaveOpt
 					= proc.algorithm(
 						companyId,
 						employeeId,
@@ -181,9 +189,16 @@ public class TestAnnualLeave {
 						Optional.empty(),
 						Optional.empty(),
 						Optional.empty());
+				
+				if ( aggrResultOfAnnualLeaveOpt.isPresent() ){
 					
-	//			// 検証			
-	//			assertProcedure(result, exp, case);
+					// 検証			
+					assertProcedure(
+							caseNo, 
+							aggrResultOfAnnualLeaveOpt.get(), 
+							testOutputAggrResultOfAnnualLeaveListMap);
+				
+				}
 				
 				String ss = "";
 			}
@@ -193,16 +208,203 @@ public class TestAnnualLeave {
 			e1.printStackTrace();
 		}
 	}
+//	
+//	/**
+//	 * Integer項目のテスト　assertThat
+//	 * @param testCase テストケース名
+//	 * @param itemName　テスト項目名
+//	 * @param result　結果
+//	 * @param testOutputAggrResultOfAnnualLeaveList　期待値
+//	 */
+//	private void assert_integer(
+//			String testCase,
+//			String itemName,
+//			int result,
+//			TestOutputAggrResultOfAnnualLeave testOutputAggrResultOfAnnualLeaveList
+//		){
+//		
+//		int expected = 7777;
+//		String ss = testOutputAggrResultOfAnnualLeaveList.getMapStringData().get(itemName);
+//		if (0 < ss.trim().length() ){
+//			expected = Integer.valueOf(ss);
+//		}
+//		assertThat(result).as(testCase + "-" +  itemName).isEqualTo(expected);
+//	}
+			
+			
 
-	private void assertProcedure(List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngWorkList){
+	private void assertProcedure(
+			String testCase,
+			AggrResultOfAnnualLeave aggrResultOfAnnualLeave,
+			Map<String, TestOutputAggrResultOfAnnualLeave> testOutputAggrResultOfAnnualLeaveListMap
+			){
 		
-		TmpAnnualLeaveMngWork t = tmpAnnualLeaveMngWorkList.get(0);
+		TestOutputAggrResultOfAnnualLeave t_result
+			= testOutputAggrResultOfAnnualLeaveListMap.get(testCase);
 		
-		assertThat(t.getUseDays().v().equals(Double.valueOf(1.0)), is(true));			
+		if (t_result == null){
+			assertThat(t_result == null, is(false));
+			return;
+		}
+		
+		String ss;
+		
+		/** 年休情報（期間終了日時点） */
+		double result_totalRemainingDays = -9999.999;
+		int result_totalRemainingTime = -99999;
+		String item;
+		
+		AnnualLeaveInfo asOfPeriodEnd = aggrResultOfAnnualLeave.getAsOfPeriodEnd();
+		if ( asOfPeriodEnd != null ){
+			// 残数 
+			nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				= asOfPeriodEnd.getRemainingNumber();
+			if ( remainingNumber != null ){
+				
+				// 年休（マイナスあり）
+				nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave realAnnualLeave
+					= remainingNumber.getAnnualLeaveWithMinus();
+				
+				if ( realAnnualLeave != null ){
+					// 残数付与前
+					nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber remainingNumberBeforeGrant 
+						= realAnnualLeave.getRemainingNumberBeforeGrant();
+					
+					// 使用日数
+					result_totalRemainingDays = remainingNumberBeforeGrant.getTotalRemainingDays().v();
+					
+					// 使用時間
+					if ( remainingNumberBeforeGrant.getTotalRemainingTime().isPresent() ){
+						result_totalRemainingTime = remainingNumberBeforeGrant.getTotalRemainingTime().get().v();
+					}
+				}
+			}
+		}
+		
+		assert_double(testCase, "残数年休マイナスあり使用数付与前使用日数", result_totalRemainingDays, t_result);
+		assert_integer(testCase, "残数年休マイナスあり使用数付与前使用時間", result_totalRemainingTime, t_result);
+		
+		
+		
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与前使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数合計使用日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数合計使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数使用回数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与後使用日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与後使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数合計合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数合計明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数合計合計残時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与前合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与前明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与前合計残時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与後合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与後明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスあり残数付与後合計残時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし合計使用日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし合計使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし使用回数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし付与後使用日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし付与後使用時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数合計合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数合計明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数合計合計残時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与前合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与前明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与前合計残時間");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後合計残日数");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後明細");
+//		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後合計残時間");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）使用数回数");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）使用数回数付与前");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）使用数回数付与後");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）残数回数");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）残数回数付与前");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）残数回数付与後");
+//		ss = t_result.getMapStringData().get("残数未消化未消化日数");
+//		ss = t_result.getMapStringData().get("残数未消化未消化時間");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）使用数回数");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）使用数回数付与前");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）使用数回数付与後");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）残数回数");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）残数回数付与前");
+//		ss = t_result.getMapStringData().get("残数半日年休（マイナスなし）残数回数付与後");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスあり）時間");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスあり）時間付与前");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスあり）時間付与後");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスなし）時間");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスなし）時間付与前");
+//		ss = t_result.getMapStringData().get("残数時間年休（マイナスなし）時間付与後");
+//		ss = t_result.getMapStringData().get("付与残数データ");
+//		ss = t_result.getMapStringData().get("上限データ社員ID");
+//		ss = t_result.getMapStringData().get("上限データ半日年休上限上限回数");
+//		ss = t_result.getMapStringData().get("上限データ半日年休上限使用回数");
+//		ss = t_result.getMapStringData().get("上限データ半日年休上限残回数");
+//		ss = t_result.getMapStringData().get("上限データ時間年休上限上限時間");
+//		ss = t_result.getMapStringData().get("上限データ時間年休上限使用時間");
+//		ss = t_result.getMapStringData().get("上限データ時間年休上限残時間");
+//		ss = t_result.getMapStringData().get("付与情報付与日数");
+//		ss = t_result.getMapStringData().get("付与情報付与所定日数");
+//		ss = t_result.getMapStringData().get("付与情報付与労働日数");
+//		ss = t_result.getMapStringData().get("付与情報付与控除日数");
+//		ss = t_result.getMapStringData().get("付与情報控除日数付与前");
+//		ss = t_result.getMapStringData().get("付与情報控除日数付与後");
+//		ss = t_result.getMapStringData().get("付与情報出勤率");
+//		ss = t_result.getMapStringData().get("使用日数");
+//		ss = t_result.getMapStringData().get("使用時間");
+
+				
 		
 //		assertThat(result.attr2.isEqualTo(exp.attr2).as(case.asStr("no").String() + "attr2");			
 //		assertThat(result.attr3.isEqualTo(exp.attr3).as(case.asStr("no").String() + "attr3");			
+		
 	}				
 
+
+	/**
+	 * Integer項目のテスト　assertThat
+	 * @param testCase テストケース名
+	 * @param itemName　テスト項目名
+	 * @param result　結果
+	 * @param testOutputAggrResultOfAnnualLeaveList　期待値
+	 */
+	private void assert_integer(
+			String testCase,
+			String itemName,
+			int result,
+			TestOutputAggrResultOfAnnualLeave testOutputAggrResultOfAnnualLeaveList
+		){
+		
+		int expected = 7777;
+		String ss = testOutputAggrResultOfAnnualLeaveList.getMapStringData().get(itemName);
+		if (0 < ss.trim().length() ){
+			expected = Integer.valueOf(ss);
+		}
+		assertThat(result).as(testCase + " " +  itemName).isEqualTo(expected);
+	}
+	
+	/**
+	 * Double項目のテスト　assertThat
+	 * @param testCase テストケース名
+	 * @param itemName　テスト項目名
+	 * @param result　結果
+	 * @param testOutputAggrResultOfAnnualLeaveList　期待値
+	 */
+	private void assert_double(
+			String testCase,
+			String itemName,
+			double result,
+			TestOutputAggrResultOfAnnualLeave testOutputAggrResultOfAnnualLeaveList
+		){
+		
+		double expected = 0.7777;
+		String ss = testOutputAggrResultOfAnnualLeaveList.getMapStringData().get(itemName);
+		if (0 < ss.trim().length() ){
+			expected = Double.valueOf(ss);
+		}
+		assertThat(result).as(testCase + " " +  itemName).isEqualTo(expected);
+	}
 	
 }
