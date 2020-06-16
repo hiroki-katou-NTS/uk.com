@@ -52,10 +52,9 @@ public class TopPageAlarmStampingTest {
 		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
 		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
 		
-		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(list, new TopPageAlarm("DUMMY", ExistenceError.NO_ERROR, lstsid));
-		TopPageAlarmStamping alarmStamping1 = alarmStamping.get("DUMMY", lstsid, "DUMMY", lstsid);
-		
-		assertThat(alarmStamping1.lstTopPageDetail).isEmpty();
+		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping("DUMMY", lstsid, "DUMMY", lstsid);
+	
+		assertThat(alarmStamping.lstTopPageDetail).isEmpty();
 	}
 	
 	/**
@@ -78,8 +77,7 @@ public class TopPageAlarmStampingTest {
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
 		
-		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(list, new TopPageAlarm("DUMMY", ExistenceError.NO_ERROR, lstsid));
-		TopPageAlarmStamping alarmStamping1 = alarmStamping.get("DUMMY", lstsid, "DUMMY", lstsid);
+		TopPageAlarmStamping alarmStamping1 = new TopPageAlarmStamping("DUMMY", lstsid, "DUMMY", lstsid);
 		
 		assertThat(alarmStamping1.lstTopPageDetail.get(0).getSid()).isEqualTo("DUMMY");
 		assertThat(alarmStamping1.lstTopPageDetail.get(0).getSerialNumber()).isEqualTo(0);
