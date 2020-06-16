@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -55,8 +57,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setClassificationCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
-			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
-					: domain.getBonusPaySettingCode().v());
+			dto.setSubscriptionCode(!domain.getBonusPaySettingCode().isPresent() ? null 
+					: domain.getBonusPaySettingCode().get().v());
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
@@ -105,6 +107,6 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
 												employeeId, this.jobId, this.workplaceID, date,
 												new ClassificationCode(this.classificationCode),
-												new BonusPaySettingCode(this.subscriptionCode));
+												Optional.of(new BonusPaySettingCode(this.subscriptionCode)));
 	}
 }

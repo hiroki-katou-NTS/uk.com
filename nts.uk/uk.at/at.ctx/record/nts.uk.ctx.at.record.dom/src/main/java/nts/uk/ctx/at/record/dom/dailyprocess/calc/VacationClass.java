@@ -60,36 +60,45 @@ public class VacationClass {
 
 	/**
 	 * 休暇使用時間の計算
-	 * 
-	 * @return
+	 * @param workType 勤務種類
+	 * @param siftCode 就業時間帯コード
+	 * @param conditionItem 労働条件項目
+	 * @param goOutTimeOfDaily 日別実績の外出時間(List)
+	 * @param lateTimeOfDaily 日別実績の遅刻時間(List)
+	 * @param leaveEarlyTimeOfDaily 日別実績の早退時間(list)
+	 * @param recordReGet 実績
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @return 日別実績の休暇
 	 */
-	public static HolidayOfDaily calcUseRestTime(WorkType workType, Optional<WorkTimeCode> siftCode,
-			WorkingConditionItem conditionItem, List<OutingTimeOfDaily> goOutTimeOfDaily,
-			List<LateTimeOfDaily> lateTimeOfDaily, List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily,
-			ManageReGetClass recordReGet, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+	public static HolidayOfDaily calcUseRestTime(
+			WorkType workType,
+			Optional<WorkTimeCode> siftCode,
+			WorkingConditionItem conditionItem,
+			List<OutingTimeOfDaily> goOutTimeOfDaily,
+			List<LateTimeOfDaily> lateTimeOfDaily,
+			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily,
+			ManageReGetClass recordReGet,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 
 		Optional<PredetermineTimeSetForCalc> predSetting = recordReGet.getCalculatable()
 				? Optional.of(recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc())
 				: Optional.empty();
-		// ***欠勤***//
+		//欠勤使用時間
 		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.Absence, predSetting,
 				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
 		val absenceOfDaily = new AbsenceOfDaily(absenceUseTime);
-		// ***欠勤***//
 
-		// ***時間消化休暇***//
+		//時間消化休暇使用時間
 		AttendanceTime timeDigest = new AttendanceTime(0);
 		val timeDigestOfDaily = new TimeDigestOfDaily(timeDigest, new AttendanceTime(0));
-		// ***時間消化休暇***//
 
-		// ***積立年休使用時間***//
+		//積立年休使用時間
 		AttendanceTime yearlyReservedTime = vacationTimeOfcalcDaily(workType, VacationCategory.YearlyReserved,
 				predSetting, predetermineTimeSetByPersonInfo, siftCode, conditionItem,
 				recordReGet.getHolidayAddtionSet());
 		val yearlyReservedOfDaily = new YearlyReservedOfDaily(yearlyReservedTime);
-		// ***積立年休使用時間***//
 
-		// ***代休***//
+		//代休使用時間の計算
 		AttendanceTime substituUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.SubstituteHoliday,
 				predSetting, predetermineTimeSetByPersonInfo, siftCode, conditionItem,
 				recordReGet.getHolidayAddtionSet());
@@ -105,9 +114,8 @@ public class VacationClass {
 		substituUseTime = substituUseTime.addMinutes(sumSubTime);
 
 		val substituteOfDaily = new SubstituteHolidayOfDaily(substituUseTime, new AttendanceTime(0));
-		// ***代休***//
 
-		// ***超過有休***//
+		//超過有休使用時間
 		AttendanceTime overSalaryTime = vacationTimeOfcalcDaily(workType, VacationCategory.TimeDigestVacation,
 				predSetting, predetermineTimeSetByPersonInfo, siftCode, conditionItem,
 				recordReGet.getHolidayAddtionSet());
@@ -123,9 +131,8 @@ public class VacationClass {
 		overSalaryTime = overSalaryTime.addMinutes(sumOverTime);
 
 		val overSalaryOfDaily = new OverSalaryOfDaily(overSalaryTime, new AttendanceTime(0));
-		// ***超過有休***//
 
-		// ***特別休暇***//
+		//特別休暇使用時間の計算
 		AttendanceTime specHolidayTime = vacationTimeOfcalcDaily(workType, VacationCategory.SpecialHoliday, predSetting,
 				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
 		int sumSpecTime = goOutTimeOfDaily.stream()
@@ -140,9 +147,8 @@ public class VacationClass {
 		specHolidayTime = specHolidayTime.addMinutes(sumSpecTime);
 
 		val specHolidayOfDaily = new SpecialHolidayOfDaily(specHolidayTime, new AttendanceTime(0));
-		// ***特別休暇***//
 
-		// ***年休***//
+		//年休使用時間の計算
 		AttendanceTime annualUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.AnnualHoliday, predSetting,
 				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
 		int sumAnnTime = goOutTimeOfDaily.stream()
@@ -157,7 +163,6 @@ public class VacationClass {
 		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
 
 		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
-		// ***年休***//
 
 		return new HolidayOfDaily(absenceOfDaily, timeDigestOfDaily, yearlyReservedOfDaily, substituteOfDaily,
 				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily);

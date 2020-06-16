@@ -311,8 +311,8 @@ public class TotalWorkingTime {
 				predetermineTimeSetByPersonInfo);
 		
 		//日別実績の所定外時間
-		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(
-				recordClass, 
+		ExcessOfStatutoryTimeOfDaily excesstime = ExcessOfStatutoryTimeOfDaily.calculationExcessTime(
+				recordClass,
 				CalcMethodOfNoWorkingDayForCalc.isCalculateFlexTime,
 				workType,
 				flexCalcMethod,
@@ -407,20 +407,22 @@ public class TotalWorkingTime {
 				withinStatutoryTimeOfDaily.setActualWorkTime(recordClass.getPredSetForOOtsuka().get().getAdditionSet().getPredTime().getOneDay());
 			}
 		}
-		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(totalWorkTime,
-																				totalCalcTime,
-																				actualTime,
-																				withinStatutoryTimeOfDaily,
-																				excesstime,
-																				lateTime,
-																				leaveEarlyTime,
-																				breakTime,
-																				outingList,
-																				raiseTime,
-																				workCount,
-																				tempTime,
-																				shotrTime,
-																				vacationOfDaily);
+		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(
+				totalWorkTime,
+				totalCalcTime,
+				actualTime,
+				withinStatutoryTimeOfDaily,
+				excesstime,
+				lateTime,
+				leaveEarlyTime,
+				breakTime,
+				outingList,
+				raiseTime,
+				workCount,
+				tempTime,
+				shotrTime,
+				vacationOfDaily);
+		
 		//休暇加算時間の計算
 		returnTotalWorkingTimereturn.setVacationAddTime(
 				calcTotalHolidayAddTime(

@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetForCalc;
@@ -67,16 +68,7 @@ public class ShortWorkTimeOfDaily {
 											   				 		  TimeWithCalculation.sameTime(new AttendanceTime(0)),
 											   				 		  TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		
-		ChildCareAttribute careAtr = ChildCareAttribute.CHILD_CARE;
-		if(recordClass.getIntegrationOfDaily().getShortTime().isPresent()) {
-			val firstTimeSheet =  recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
-			if(firstTimeSheet.isPresent()) {
-				careAtr = firstTimeSheet.get().getChildCareAttr();
-			}
-		}
-		else if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
-			careAtr = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
-		}
+		ChildCareAttribute careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
 		
 		if(recordClass.getCalculatable()
 		 &&recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
@@ -197,4 +189,23 @@ public class ShortWorkTimeOfDaily {
 									  withinDedTime,
 									  excessDedTime);
 	}
+	
+	/**
+	 * 日別実績(Work)から育児介護区分を取得する
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return 育児介護区分
+	 */
+	private static ChildCareAttribute getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
+		if(integrationOfDaily.getShortTime().isPresent()) {
+			val firstTimeSheet = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
+			if(firstTimeSheet.isPresent()) {
+				return firstTimeSheet.get().getChildCareAttr();
+			}
+		}
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			return integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
+		}
+		return ChildCareAttribute.CHILD_CARE;
+	}
+	
 }

@@ -79,7 +79,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "'" : null;
+			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().get().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
 					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
 					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
@@ -102,8 +102,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null
-				? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().isPresent()
+				? affiliationInforOfDailyPerfor.getBonusPaySettingCode().get().v() : null;
 		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null
 				: affiliationInforOfDailyPerfor.getClsCode().v();
 		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null
@@ -135,7 +135,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 						rec.getString("WKP_ID"), 
 						ymd, 
 						new ClassificationCode(rec.getString("CLS_CODE")), 
-						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						Optional.of(new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE"))));
 				return ent;
 			});
 			
@@ -168,7 +168,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
+		String bonusPaycode = domain.getBonusPaySettingCode().isPresent() ? "'" + domain.getBonusPaySettingCode().get().v() + "'" : null;
 		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
 				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
 				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
@@ -214,7 +214,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				AffiliationInforOfDailyPerfor ent = new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")), Optional.of(new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE"))));
 				return ent;
 			});
 		} catch (SQLException e) {
@@ -259,7 +259,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				return new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")), Optional.of(new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE"))));
 			});
 		}
 	}
