@@ -5,8 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
 
 import java.util.Optional;
 
-import org.hamcrest.object.IsCompatibleType;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
