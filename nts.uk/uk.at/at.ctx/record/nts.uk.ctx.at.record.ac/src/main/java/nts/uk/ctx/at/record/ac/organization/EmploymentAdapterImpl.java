@@ -51,8 +51,10 @@ public class EmploymentAdapterImpl implements EmploymentAdapter {
 
 	@Override
 	public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<EmploymentHistoryImported>  data = empPub.findSEmpHistBySid(companyId, employeeId).stream().map(f -> 
+		new EmploymentHistoryImported(f.getEmployeeId(), f.getEmploymentCode(), f.getPeriod())
+	).collect(Collectors.toList());
+	return data;
 	}
 
 }
