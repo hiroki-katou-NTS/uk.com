@@ -69,6 +69,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -378,7 +379,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				continue;
 			}
 			try {
-				// update record
+				// updater record
 				updateRecord(stateInfo.integrationOfDaily);
 				clearConfirmApproval(stateInfo.integrationOfDaily, iPUSOptTemp, approvalSetTemp);
 				upDateCalcState(stateInfo);
@@ -471,19 +472,27 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
 		//計算処理
 		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
-		
+		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
+		boolean checkNextEmp =false;
 		//データ更新
 		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
 			// 締めIDを取得する
-						Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-								.findByEmploymentCD(cid, stateInfo.getIntegrationOfDaily().getAffiliationInfor().getEmploymentCode().v());
-						
+			if(checkNextEmp) {
+				continue;
+			}
+			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(), listEmploymentHis);
+			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
+			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
+				checkNextEmp = true;
+				continue;
+			}
 						LockStatus lockStatus = LockStatus.UNLOCK;
 						if(isCalWhenLock ==null || isCalWhenLock == false) {
+							Closure closureData = closureService.getClosureDataByEmployee(employeeId, stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd());
 							//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
 							//実績ロックされているか判定する
 							lockStatus = lockStatusService.getDetermineActualLocked(cid, 
-									stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(), closureEmploymentOptional.get().getClosureId(), PerformanceType.DAILY);
+									stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(),  closureData.getClosureId().value, PerformanceType.DAILY);
 						}
 						if(lockStatus == LockStatus.LOCK) {
 							continue;
