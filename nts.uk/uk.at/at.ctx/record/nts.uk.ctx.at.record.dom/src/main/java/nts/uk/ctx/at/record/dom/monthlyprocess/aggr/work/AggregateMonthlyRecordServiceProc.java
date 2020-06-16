@@ -1344,7 +1344,9 @@ public class AggregateMonthlyRecordServiceProc {
 							new MonthlyDays(daysForCalcAttdRate.getWorkingDays()),
 							new MonthlyDays(daysForCalcAttdRate.getPrescribedDays()),
 							new MonthlyDays(daysForCalcAttdRate.getDeductedDays())),
-					asOfPeriodEnd.isAfterGrantAtr());
+//					asOfPeriodEnd.isAfterGrantAtr()); // 仕様を一旦、保留。コンパイルを通すためにfalseをセット
+					false);
+			
 			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
 			
 			// 年休エラーから月別残数エラー一覧を作成する
