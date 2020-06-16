@@ -139,6 +139,16 @@ public interface EmploymentHistoryRepository {
 	 */
 	void updateAll(List<DateHistoryItem> itemToBeUpdateds);
 	
-	List<DateHistoryItem> getByEmployeeId(String employeeId);
+    
+    /**
+     * get with employeeId
+     * startDate <= standardDate <= endDate 
+     * @param employeeId
+     * @param standardDate
+     * @return
+     */
+    List<DateHistoryItem> getByEmployeeId(String employeeId);
+    
+	
 
 }
