@@ -30,11 +30,14 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -42,6 +45,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -103,6 +108,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 月別集計エラー処理 */
 	@Inject
 	private MonthlyAggregationErrorService monthError;
+    @Inject
+    private DetermineActualResultLock lockStatusService;
+    
+    @Inject
+    private ClosureService closureService;
+    
 	
 	/** 社員の月別実績を集計する */
 	@SuppressWarnings("rawtypes")
@@ -193,7 +204,13 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		}
 		
 		ConcurrentStopwatches.stop("11000:集計期間の判断：");
-		
+        Closure closureData = closureService.getClosureDataByEmployee(employeeId, criteriaDate);
+        Boolean isCalWhenLock = null;
+        Optional<ExecutionLog> executionLog =  empCalAndSumExeLogRepository.getByExecutionContent(empCalAndSumExecLogID, 3);
+        if(executionLog.isPresent()) {
+            isCalWhenLock = executionLog.get().getIsCalWhenLock();
+        }
+        
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
 			val closureId = aggrPeriod.getClosureId();
@@ -231,7 +248,16 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
 				continue;
 			}
-			
+            LockStatus lockStatus = LockStatus.UNLOCK;
+            //「ロック中の計算/集計する」の値をチェックする
+            if(isCalWhenLock!=null && isCalWhenLock ==false ) {
+                //
+                lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
+                        criteriaDate, closureData.getClosureId().value, PerformanceType.MONTHLY);
+            }
+            if(lockStatus == LockStatus.LOCK) {
+                continue;
+            }
 			// 再実行の場合
 			if (executionType == ExecutionType.RERUN){
 				
