@@ -417,6 +417,17 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<ProcessState> process = new ArrayList<>();
 		
 		for(GeneralDate day: executeDate) {
+            LockStatus lockStatus = LockStatus.UNLOCK;
+            //「ロック中の計算/集計する」の値をチェックする
+            if(executionLog.get().getIsCalWhenLock() == null || executionLog.get().getIsCalWhenLock() == false) {
+                Closure closureData = closureService.getClosureDataByEmployee(employeeId, day);
+                //アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
+                lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
+                        day, closureData.getClosureId().value, PerformanceType.DAILY);
+            }
+            if(lockStatus == LockStatus.LOCK) {
+                continue;
+            }
             //ドメインモデル「日別実績の勤務情報」を取得する (Lấy dữ liệu từ domain)
             Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(employeeId, day);
 			try {
