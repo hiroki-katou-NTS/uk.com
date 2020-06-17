@@ -26,6 +26,8 @@ public interface SyEmploymentPub {
 	// RequestList31
 	Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 
+	//giống RQ 31 nhưng là truyền vào SID
+	List<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId);
 	/**
 	 * Find all.
 	 *

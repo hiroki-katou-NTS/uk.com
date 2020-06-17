@@ -9,6 +9,7 @@ module nts.uk.at.view.kdp002.t {
             messageContent: KnockoutObservable<string> = ko.observable('');
             messageColor: KnockoutObservable<string> = ko.observable('');
             errorDate: KnockoutObservable<string> = ko.observable('');
+            errorDateStr: KnockoutObservable<string> = ko.observable('');
             constructor() {
             }
             /**
@@ -42,18 +43,20 @@ module nts.uk.at.view.kdp002.t {
                         }]
                     }
                 } else {
+                    self.share.dailyAttdErrorInfos = _.orderBy(self.share.dailyAttdErrorInfos, ['lastDateError'], ['desc']);
                     let error = self.share.dailyAttdErrorInfos[0];
                     self.messageContent(error.messageContent);
                     self.messageColor(error.messageColor);
                     self.errorDate(error.lastDateError);
+                    self.errorDateStr( nts.uk.resource.getText('KDP002_102')  + error.lastDateError);
                     let listRequired = [];
-                    for (let idx = 0; idx < error.listRequired.length - 1; idx ++) {
+                    let length = error.listRequired.length > 6 ? 6 : error.listRequired.length;
+                    for (let idx = 0; idx < length; idx ++) {
                         listRequired.push(self.getBtn(error.listRequired[idx]));
                     }
                     self.dataShare = {
                         listRequired: listRequired
                     }
-
                 }
 
                 dfd.resolve();
@@ -191,12 +194,11 @@ module nts.uk.at.view.kdp002.t {
             /**
              * Close dialog
              */
-            public jumpScreen(data): void {
-                let self = this;
+            public jumpScreen(data, vm): void {
                 let shareG = {
-                    messageContent: self.labelNames(),
-                    messageColor: self.labelColor(),
-                    errorDate: self.errorDate(),
+                    messageContent: vm.labelNames(),
+                    messageColor: vm.labelColor(),
+                    errorDate: vm.errorDate(),
                     btn: data
                 };
                 nts.uk.ui.windows.setShared('KDP010_T', shareG);

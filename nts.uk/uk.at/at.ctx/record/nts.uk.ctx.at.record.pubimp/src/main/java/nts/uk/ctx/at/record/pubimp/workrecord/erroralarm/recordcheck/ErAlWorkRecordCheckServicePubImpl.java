@@ -89,10 +89,12 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod, Collection<String> employeeIds,
 			List<ErAlSubjectFilterConditionDto> conditions) {
 		List<String> empIds = new ArrayList<>(employeeIds);
+		//勤務種別
 		Map<String, Map<GeneralDate, WorkTypeOfDailyPerformance>> businessTypes = businessTypeFinder.finds(empIds, targetPeriod)
 				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 						Collectors.collectingAndThen(Collectors.toList(), 
 								list -> list.stream().collect(Collectors.toMap(b -> b.getDate(), b -> b)))));
+		//所属情報
 		List<AffiliationInforOfDailyPerfor> affiliations = affiliationFinder.finds(empIds, targetPeriod);
 		return conditions.stream().collect(Collectors.toMap(c -> c.getErrorAlarmId(), c -> {
 			return affiliations.stream().map(a -> {

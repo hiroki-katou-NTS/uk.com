@@ -199,19 +199,30 @@ public class W4D4AlarmService {
 		return result;
 
 	}
-
+	/**
+	 * 4週4休の集計処理
+	 * @param companyID
+	 * @param employees
+	 * @param period
+	 * @param w4d4ErAl
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ValueExtractAlarm> calculateTotal4W4D(String companyID, List<EmployeeSearchDto> employees, DatePeriod period, List<AlarmCheckConditionByCategory> w4d4ErAl, 
+	public List<ValueExtractAlarm> calculateTotal4W4D(String companyID, List<EmployeeSearchDto> employees, DatePeriod period,
+			List<AlarmCheckConditionByCategory> w4d4ErAl, 
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		List<ValueExtractAlarm> result = Collections.synchronizedList(new ArrayList<ValueExtractAlarm>());
 		List<String> empIds = employees.stream().map(e-> e.getId()).collect(Collectors.toList());
 		
 		List<AlarmCheckTargetCondition> listExtractionCondition = w4d4ErAl.stream().map(c-> c.getExtractTargetCondition()).collect(Collectors.toList());
-		
-		List<String> workTypes = workTypeRepository.findWorkTypeCodeOneDay(companyID, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
-		
+		//ドメインモデル「勤務種類」を取得　
+		List<String> workTypes = workTypeRepository.findWorkTypeCodeOneDay(companyID, DeprecateClassification.NotDeprecated.value, 
+				WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
+		//日別実績の勤務情報を取得する
 		List<RecordWorkInfoFunAdapterDto> workInfos = recordWorkInfoFunAdapter.findByPeriodOrderByYmdAndEmps(empIds, period);
-
+		//対象者をしぼり込む
 		Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter.filterEmployees(period, empIds, listExtractionCondition);
 		
 		w4d4ErAl.forEach(c -> {
@@ -220,7 +231,8 @@ public class W4D4AlarmService {
 			if (fourW4DCheckCond.isForActualResultsOnly()) {
 				List<RegulationInfoEmployeeResult> targetEmps = listTargetMap.get(c.getExtractTargetCondition().getId());
 				if(!targetEmps.isEmpty()) {
-					Map<String, List<RegulationInfoEmployeeResult>> valueMap = targetEmps.stream().collect(Collectors.groupingBy(v -> v.getEmployeeId(), Collectors.toList()));
+					Map<String, List<RegulationInfoEmployeeResult>> valueMap = targetEmps.stream()
+							.collect(Collectors.groupingBy(v -> v.getEmployeeId(), Collectors.toList()));
 					parallelManager.forEach(CollectionUtil.partitionBySize(employees, 100), emps -> {
 						
 						synchronized (this) {
@@ -230,7 +242,8 @@ public class W4D4AlarmService {
 						}
 						emps.stream().forEach(emp -> {
 							if(valueMap.containsKey(emp.getId())){
-								List<RecordWorkInfoFunAdapterDto> currentWorkInfos = workInfos.stream().filter(wi -> emp.getId().equals(wi.getEmployeeId())).collect(Collectors.toList());
+								List<RecordWorkInfoFunAdapterDto> currentWorkInfos = workInfos.stream()
+										.filter(wi -> emp.getId().equals(wi.getEmployeeId())).collect(Collectors.toList());
 								this.checkWithActualResults(emp, period, workTypes, currentWorkInfos).ifPresent(er -> {
 									er.setAlarmValueMessage(alarmValueMessage);
 									result.add(er);
@@ -251,7 +264,8 @@ public class W4D4AlarmService {
 
 	}
 	
-	public Optional<ValueExtractAlarm> checkWithActualResults(EmployeeSearchDto employee, DatePeriod period,List<String> listHolidayWorkTypeCode,List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID) {
+	public Optional<ValueExtractAlarm> checkWithActualResults(EmployeeSearchDto employee, DatePeriod period,
+			List<String> listHolidayWorkTypeCode,List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID) {
 		return w4D4CheckAdapter.checkHoliday(employee.getWorkplaceId(), employee.getId(), period,listHolidayWorkTypeCode,listWorkInfoOfDailyPerByID);
 	}
 }

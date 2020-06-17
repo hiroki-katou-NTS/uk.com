@@ -193,7 +193,17 @@ public class AgreementProcessService {
 
 	@Inject
 	private AgreementCheckService checkService;
-	
+	/**
+	 * 36協定の集計処理
+	 * @param comId
+	 * @param agreementErAl
+	 * @param periodAlarms
+	 * @param employees
+	 * @param agreementSetObj
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@SneakyThrows
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> agreementProcess(String comId, List<AlarmCheckConditionByCategory> agreementErAl, List<PeriodByAlarmCategory> periodAlarms, 

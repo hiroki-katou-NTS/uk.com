@@ -171,6 +171,25 @@ public class OutputScreenListOfStampFinder {
 
 			// StampInfoDisp
 			for (val stampInfoDisp : item.getListStampInfoDisp()) {
+				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+				if(!stampInfoDisp.getStamp().isPresent()){
+					employeEngravingInfor
+					.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
+			employeEngravingInfor
+					.setWorkplaceName((empInfo != null) ? empInfo.getWorkplace().getWorkplaceName() : "");
+			employeEngravingInfor.setEmployeeCode((empInfo != null) ? empInfo.getEmployeeCode() : "");
+			employeEngravingInfor.setEmployeeName((empInfo != null) ? empInfo.getBusinessName() : "");
+			employeEngravingInfor.setDateAndTime(stampInfoDisp.getStampDatetime().toString());
+			employeEngravingInfor.setAttendanceAtr(stampInfoDisp.getStampAtr());
+			employeEngravingInfor.setStampMeans("");
+			employeEngravingInfor.setAuthcMethod("");
+			employeEngravingInfor.setInstallPlace("");
+			employeEngravingInfor.setLocalInfor("");
+			employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
+			employeEngravingInfor.setSupportCard("");
+			employeEngravingInfor.setWorkTimeDisplayName("");
+			result.add(employeEngravingInfor);
+				}
 				if (!stampInfoDisp.getStamp().isPresent())
 					continue;
 				val stamp = stampInfoDisp.getStamp().get();
@@ -179,7 +198,7 @@ public class OutputScreenListOfStampFinder {
 				String optSupportCard = "";
 				String workLocationName = "";
 				String workTimeName = "";
-				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
+				
 				if (stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
 					val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
 					val optWorkLocation = listWorkLocation.stream()

@@ -28,8 +28,8 @@ module nts.uk.at.view.kdp002.c {
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any> = ko.observable();
             currentCodeList: KnockoutObservableArray<any>;
-            permissionCheck: KnockoutObservable<boolean> = ko.observable(true);
-            displayButton: KnockoutObservable<boolean> = ko.observable(true);
+            permissionCheck: KnockoutObservable<boolean> = ko.observable(false);
+            displayButton: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 let self = this;
@@ -58,7 +58,7 @@ module nts.uk.at.view.kdp002.c {
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
                             let dateDisplay =res.stampRecords[0].stampDate;
-                            res.stampRecords = _.orderBy(res.stampRecords, ['stampDate', 'stampTime'], ['desc', 'desc'])
+                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
                             if (moment(res.stampRecords[0].stampDate).day() == 6) {
                                 dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
                             } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
@@ -77,7 +77,9 @@ module nts.uk.at.view.kdp002.c {
 							
                             if(res.itemValues) {
                                 res.itemValues.forEach(item => {
-                                    if(item.valueType == "TIME" && item.value) {
+                                    if(item.itemId == 28 || item.itemId == 29 || item.itemId == 31 || item.itemId == 34) {
+                                        item.value = '';
+                                    } else if(item.valueType == "TIME" && item.value) {
                                         item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
                                     } else if (item.valueType == "AMOUNT") {
                                         item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));

@@ -27,6 +27,12 @@
 
       <ui:define name="content">
         <div id="contents-area">
+          <div class="label-title" style="margin-bottom: 5px">
+            <label
+              class="basic-label" 
+              data-bind="text: errorDateStr"
+            ></label>
+          </div>
           <div id="label-title">
             <label
               class="basic-label"
@@ -34,65 +40,27 @@
               data-bind="text: messageContent , style:{ color : messageColor }"
             ></label>
           </div>
-          <com:ko-if bind="dataShare.listRequired.length > 5 ">
+          
             <div id="label-title-2">
-              <label class="basic-label">#{i18n.getText('KDP002_95')}</label>
+              <com:ko-if bind="dataShare.listRequired.length > 0 ">
+                <label class="basic-label">#{i18n.getText('KDP002_95')}</label>
+              </com:ko-if>
             </div>
-          </com:ko-if>
           <!-- <com:ko-if bind="dataShare.listRequired.length < 7 ">
             <div id="label-title-2">
               <label class="basic-label"></label>
             </div>
           </com:ko-if> -->
           <!-- G7 -->
-          <table id="table-grid">
-            <tr>
-              <td>
+          <div id="table-grid">
+              <div class="" data-bind="foreach: dataShare.listRequired"> 
                 <button
                   class="proceed btn-name btn_1"
-                  data-bind="text: dataShare.listRequired[0].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[0])"
+                  data-bind="text: buttonName, click: $parent.jumpScreen.bind($data, $data, $parent), css: {class: 'btn_' + $index}"
                   id="button1"
                 ></button>
-              </td>
-              <td>
-                <button
-                  class="proceed btn-name btn_2"
-                  data-bind="text: dataShare.listRequired[1].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[1])"
-                  id="button2"
-                ></button>
-              </td>
-              <td>
-                <button
-                  class="proceed btn-name btn_3"
-                  data-bind="text: dataShare.listRequired[2].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[2])"
-                  id="button3"
-                ></button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button
-                  class="proceed btn-name btn_5"
-                  data-bind="text: dataShare.listRequired[3].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[3])"
-                  id="button5"
-                ></button>
-              </td>
-              <td>
-                <button
-                  class="proceed btn-name btn_6"
-                  data-bind="text: dataShare.listRequired[4].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[4])"
-                  id="button6"
-                ></button>
-              </td>
-              <td>
-                <button
-                  class="proceed btn-name btn_7"
-                  data-bind="text: dataShare.listRequired[5].buttonName, click: jumpScreen.bind($data, dataShare.listRequired[5])"
-                  id="button7"
-                ></button>
-              </td>
-            </tr>
-          </table>
+              </div>
+          </div>
         </div>
         <div id="functions-area-bottom">
           <button
