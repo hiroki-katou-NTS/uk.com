@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 390, height: 74 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdp001.a.style.css" />
+			<com:scriptfile path="kdp001.a.start.js" />
+			<com:scriptfile path="kdp001.a.service.js" />
+			<com:scriptfile path="kdp001.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<span class="label">Demo</span> <span class="label">Demo</span>
+			</div>
+			<div id="contents-area">
+				<div id="left-area">
+					<!-- A2_1 -->
+					<div>
+						<button class="button">出勤ボタン</button>
+						<!-- A2_2 -->
+						<button class="button">タン</button>
+						<!-- A3_1 -->
+						<button style="margin-left: 10px" class="button">タン</button>
+						<!-- A3_2 -->
+						<button class="button">タン</button>
+					</div>
+					<div>
+						<a class="hyperlink" href="#">#{i18n.getText('KDP001_4')}</a>
+					</div>
+				</div>
+				<div id="right-area">
+					<table id="fixed-table">
+						<colgroup>
+							<col width="70px" />
+							<col width="70px" />
+							<col width="90px" />
+						</colgroup>
+						<thead>
+						</thead>
+						<tbody>
+							<tr>
+								<td>sa</td>
+								<td>sa</td>
+								<td>sa</td>
+							</tr>
+							<tr>
+								<td>sa</td>
+								<td>sa</td>
+								<td>sa</td>
+							</tr>
+							<tr>
+								<td>sa</td>
+								<td>sa</td>
+								<td>sa</td>
+							</tr>
+							<tr>
+								<td>sa</td>
+								<td>sa</td>
+								<td>sa</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

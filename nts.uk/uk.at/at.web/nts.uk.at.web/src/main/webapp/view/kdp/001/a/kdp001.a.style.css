@@ -1,0 +1,21 @@
+@import url("base.css");
+
+.button {
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	vertical-align: middle;
+	white-space: normal;
+}
+
+#left-area {
+	display: inline-block;
+}
+
+#right-area {
+	display: inline-block;
+}
+
+.nts-fixed-table  div:first-of-type {
+	float: left;
+}
