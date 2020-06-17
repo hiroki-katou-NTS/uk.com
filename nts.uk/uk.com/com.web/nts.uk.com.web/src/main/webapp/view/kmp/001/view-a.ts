@@ -9,8 +9,69 @@ const template = `
 	<button class="danger" data-bind="text: $i18n('KMP001_6')"></button>
 	<button data-bind="text: $i18n('KMP001_7')"></button>
 </div>
+<div class="view-kmp">
+	<div class="list-component float-left viewa">
+		<div class="caret-right caret-background bg-green" style="padding: 10px;">
+			<table id="can-id-de-lam-gi" data-bind="ntsGridList: {
+						height: 300,
+						options: items,
+						optionsValue: 'code',
+						columns: [
+				            { headerText: $i18n('KMP001_8'), prop: 'code', width: 100 },
+				            { headerText: $i18n('KMP001_9'), prop: 'code1', width: 130 },
+				            { headerText: $i18n('KMP001_10'), prop: 'name', width: 80 },
+	 						{ headerText: $i18n('KMP001_11'), prop: 'startDate', width: 70 }
+				        ],
+						multiple: false,
+						enable: true
+					}">
+			</table>
+		</div>
+	</div>
+	<div class="float-left model-component">
+		<table>
+			<tbody>
+				<tr>
+					<td class="label-column-a">
+						<div data-bind="text: $component$i18n('KMP001_8')"></div>
+					</td>
+					<td>
+						<div>0000000000002</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="label-column-a">
+						<div data-bind="text: $component$i18n('KMP001_9')"></div>
+					</td>
+					<td>
+						<div>日通　社員１</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="label-column-a">
+					<div data-bind="text: $component$i18n('KMP001_20')"></div>
+					</td>
+					<td>
+						<div>2000/01/01</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="label-column-a">
+						<div data-bind="text: $component$i18n('KMP001_21')"></div>
+					</td>
+					<td>
+					<div>2000/01/01</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 <div>
-</div>`;
+`;
+
+interface Params {
+
+}
 
 @component({
 	name: 'view-a',
@@ -18,6 +79,14 @@ const template = `
 })
 class ViewA extends ko.ViewModel {
 	public params!: Params;
+
+	public items: KnockoutObservableArray<any> = ko.observableArray([
+		{ code: '001', code1: '001', name: 'Nittsu', startDate: '○' },
+		{ code: '002', code1: '002', name: 'Nittsu', startDate: '○' },
+		{ code: '003', code1: '003', name: 'Nittsu', startDate: '○' },
+		{ code: '004', code1: '004', name: 'Nittsu', startDate: '○' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '○' }
+	]);
 
 	created(params: Params) {
 		this.params = params;

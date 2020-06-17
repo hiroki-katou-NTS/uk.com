@@ -1,65 +1,68 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
-const template = `<div class="sidebar-content-header">
+const template = `
+<div class="sidebar-content-header">
 	<span class="title" data-bind= "text: $i18n('KMP001_3')"></span>
 	<button class="proceed" data-bind= "text: $i18n('KMP001_5')"></button>
 </div>
 <div class="view-kmp">
-	<div class="layout-date float-left list-component">
-		<table>
-			<tbody>
-				<tr>
-					<td>
-						<div data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
-					</td>
-					<td>
-						<div style="margin-left: 20px" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
-							required: required,
-							enable: enable, 
-							showNextPrevious: true,
-							value: dateValue, 
-							maxRange: 'oneMonth'}"/>		
-					</td>
-					<td>
-						<button style="margin-left: 20px" class="caret-bottom" data-bind= "text: $i18n('KMP001_15')"'></button>
-					</td>
-				<tr>
-			</tbody>
-		</table>
-	</div>
-	<div class="float-left list-component caret-right caret-background bg-green" style="padding: 10px;">
-		<div style="width: 460px"
-			data-bind="ntsSearchBox: {
-				label: $i18n('KMP001_22'),
-				searchMode: 'filter',
-				targetKey: 'code',
-				comId: 'card-list', 
-				items: items,
-				selected: currentCode,
-				selectedKey: 'code',
-				fields: ['name', 'code','code1'],
-				mode: 'igGrid'
-				}"></div>
-		<div>
-			<table id="card-list" 
-				data-bind="ntsGridList: {
-					height: 300,
-					options: items,
-					optionsValue: 'code',
-					columns: [
-			            { headerText: $i18n('KMP001_22'), prop: 'code', width: 150 },
-			            { headerText: $i18n('KMP001_27'), prop: 'code1', width: 100 },
-			            { headerText: $i18n('KMP001_28'), prop: 'name', width: 80 },
- 						{ headerText: $i18n('KMP001_29'), prop: 'name', width: 130 }
-			        ],
-					multiple: false,
-					enable: true,
-					value: currentCode
-				}">
+	<div class="list-component float-left">
+		<div class="layout-date">
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<div data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
+						</td>
+						<td>
+							<div style="margin-left: 20px" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+								required: required,
+								enable: enable, 
+								showNextPrevious: true,
+								value: dateValue, 
+								maxRange: 'oneMonth'}"/>		
+						</td>
+						<td>
+							<button style="margin-left: 20px" class="caret-bottom" data-bind= "text: $i18n('KMP001_15')"'></button>
+						</td>
+					<tr>
+				</tbody>
 			</table>
 		</div>
+		<div class="caret-right caret-background bg-green" style="padding: 10px;">
+			<div style="width: 460px"
+				data-bind="ntsSearchBox: {
+					label: $i18n('KMP001_22'),
+					searchMode: 'filter',
+					targetKey: 'code',
+					comId: 'card-list', 
+					items: items,
+					selected: currentCode,
+					selectedKey: 'code',
+					fields: ['name', 'code','code1'],
+					mode: 'igGrid'
+					}"></div>
+			<div>
+				<table id="card-list" 
+					data-bind="ntsGridList: {
+						height: 300,
+						options: items,
+						optionsValue: 'code',
+						columns: [
+				            { headerText: $i18n('KMP001_22'), prop: 'code', width: 150 },
+				            { headerText: $i18n('KMP001_27'), prop: 'code1', width: 100 },
+				            { headerText: $i18n('KMP001_28'), prop: 'name', width: 80 },
+	 						{ headerText: $i18n('KMP001_29'), prop: 'name', width: 130 }
+				        ],
+						multiple: false,
+						enable: true,
+						value: currentCode
+					}">
+				</table>
+			</div>
+		</div>
 	</div>
-	<div class="float-left model-component">
+	<div class="model-component float-left ">
 		<table>
 			<tbody>
 				<tr>

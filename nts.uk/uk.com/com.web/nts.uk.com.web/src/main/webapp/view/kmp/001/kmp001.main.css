@@ -16,6 +16,13 @@
 	float: left;
 }
 
+.view-kmp .viewa {
+	margin-left: 70px;
+}
+
+.view-kmp{
+	float: left;
+}
 
 .view-kmp .model-component {
 	margin-left: 50px;
@@ -25,9 +32,12 @@
 	padding-bottom: 15px;
 }
 
-
 .view-kmp .model-component table td.label-column {
 	width: 260px;
+}
+
+.view-kmp .model-component table td.label-column-a {
+	width: 160px;
 }
 
 .view-kmp .model-component table td.label-column button {
@@ -41,6 +51,6 @@
 
 .view-kmp .layout-date{
 	margin-bottom: 10px;
-	width: 100vw;
-	float: left;
 }
+
+

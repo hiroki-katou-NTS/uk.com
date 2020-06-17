@@ -1,6 +1,7 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
-const template = `<div class="sidebar-content-header">
+const template = `
+<div class="sidebar-content-header">
 	<span class="title" data-bind= "text: $i18n('KMP001_2')"></span>
 	<button class="proceed" data-bind= "text: $i18n('KMP001_5')"></button>
 	<button class="danger" data-bind= "text: $i18n('KMP001_6')"></button>
@@ -52,7 +53,7 @@ const template = `<div class="sidebar-content-header">
 				<tr>
 					<td class="label-column">
 						<div data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
-						<button data-bind="text: $i18n('KMP001_26')">Normal</button>
+						<button data-bind="text: $i18n('KMP001_26')"></button>
 					</td>
 					<td class="data">
 						<div>00000002</div>
@@ -93,7 +94,7 @@ class ViewBComponent extends ko.ViewModel {
 	public params!: Params;
 
 	public items: KnockoutObservableArray<any> = ko.observableArray([
-		{ code: '001', code1: '001',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
+		{ code: '001', code1: '001',  name: '○', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '002', code1: '002',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '003', code1: '003', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
 		{ code: '004', code1: '004', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
