@@ -4,11 +4,12 @@
 }
 
 .contents-area .row{
-    margin: 15px 30px;
+    margin: 15px 10px 15px 30px;
 }
 
 .contents-area .row textarea{
-	width: 210px;
+	width: 300px;
+	height: 105px;
 }
 
 .contents-area .row .form-label{
@@ -21,8 +22,8 @@
 }
 
 .buton-setting{
-	width: 220px;
-    margin: 20px auto;
+    display: inline-block;
+    margin-top: 28px;
 }
 
 .buton-setting td{
@@ -31,6 +32,6 @@
 
 .buton-setting button{
     width: 90px;
-    height: 50px;
-    margin: 10px;
+    height: 40px;
+    margin: 10px 20px 10px 0;
 }

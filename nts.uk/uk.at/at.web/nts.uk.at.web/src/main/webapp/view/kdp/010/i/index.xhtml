@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = {width: 460, height: 500 };</script>
+			<script>var dialogSize = {width: 535, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdp010.i.vm.js" />
@@ -36,38 +36,39 @@
 					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>
 					<div tabindex="5" class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_234]' }" />
 				</div>
-				<div class="title">
-					<label>#{i18n.getText('KDP010_235')}</label>
+				<div class="row">
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_235')}</div>
+					<div class="buton-setting">
+						<table>
+							<tr>
+								<td data-bind="with: btn1">
+									<button tabindex="5" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+								<td data-bind="with: btn2">
+									<button tabindex="6" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+							</tr>
+							<tr>
+								<td data-bind="with: btn3">
+									<button tabindex="7" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+								<td data-bind="with: btn4">
+									<button tabindex="8" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+							</tr>
+							<tr>
+								<td data-bind="with: btn5">
+									<button tabindex="9" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+								<td data-bind="with: btn6">
+									<button tabindex="10" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 				
-				<div class="buton-setting">
-					<table>
-						<tr>
-							<td data-bind="with: btn1">
-								<button tabindex="5" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-							<td data-bind="with: btn2">
-								<button tabindex="6" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-						</tr>
-						<tr>
-							<td data-bind="with: btn3">
-								<button tabindex="7" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-							<td data-bind="with: btn4">
-								<button tabindex="8" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-						</tr>
-						<tr>
-							<td data-bind="with: btn5">
-								<button tabindex="9" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-							<td data-bind="with: btn6">
-								<button tabindex="10" data-bind="click: setting, text: text, style:{'background-color': bgColor(), color: textColor()}"></button>
-							</td>
-						</tr>
-					</table>
-				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

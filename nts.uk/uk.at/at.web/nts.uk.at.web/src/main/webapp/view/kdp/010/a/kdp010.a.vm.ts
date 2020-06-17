@@ -118,7 +118,7 @@ module nts.uk.at.view.kdp010.a {
                 { id: 0, name: getText("KDP010_167") }
             ]);
             enterPasswordAtLogin: KnockoutObservable<number> = ko.observable(1);
-            authenticationFailurePasswordInputOption: KnockoutObservable<any> = ko.observable({ id: 1, name: getText("KDP010_171") });
+            authenticationFailurePasswordInputOption: KnockoutObservable<any> = ko.observable({ id: 1, name: getText("KDP010_170") });
             authenticationFailurePasswordInputOption2: KnockoutObservable<any> = ko.observable({ id: 0, name: getText("KDP010_172") });
             authenticationFailurePasswordInput: KnockoutObservable<number> = ko.observable(0);
             numberAuthenfailures: KnockoutObservable<number> = ko.observable(1);
