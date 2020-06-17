@@ -9,6 +9,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface EmploymentHistoryRepository {
+	
 	/**
 	 * Get employment history by employee id
 	 * @param sid
@@ -137,5 +138,17 @@ public interface EmploymentHistoryRepository {
 	 * @param itemToBeUpdateds
 	 */
 	void updateAll(List<DateHistoryItem> itemToBeUpdateds);
+	
+    
+    /**
+     * get with employeeId
+     * startDate <= standardDate <= endDate 
+     * @param employeeId
+     * @param standardDate
+     * @return
+     */
+    List<DateHistoryItem> getByEmployeeId(String employeeId);
+    
+	
 
 }

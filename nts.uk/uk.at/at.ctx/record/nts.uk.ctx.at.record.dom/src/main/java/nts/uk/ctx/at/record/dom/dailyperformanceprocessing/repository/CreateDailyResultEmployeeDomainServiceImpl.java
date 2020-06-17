@@ -27,6 +27,9 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.EmployeeAndClosureOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.CheckProcessed;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.context.ContextSupport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createrebuildflag.CreateRebuildFlag;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -119,6 +122,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
     @Inject
     private ClosureService closureService;
     
+    @Inject
+    private CheckProcessed checkProcessed;
+    
     
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
@@ -163,9 +169,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		GeneralDate processingDate = newPeriod.start();
 
 		// Imported（就業）「所属雇用履歴」を取得する
-		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
-				employeeId, processingDate);
-		if (!employmentHisOptional.isPresent()) {
+		//      Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
+		//      employeeId, processingDate);
+		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(companyId, employeeId);
+		if (listEmploymentHis.isEmpty()) {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
 			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
@@ -182,12 +189,22 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		Optional<ClosureStatusManagement> closureStatusManagement = this.closureStatusManagementRepository
 				.getLatestByEmpId(employeeId);
 
-		String employmentCode = employmentHisOptional.get().getEmploymentCode();
+		//String employmentCode = employmentHisOptional.get().getEmploymentCode();
 		// Create task list and execute.
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
+        boolean checkNextEmp =false;
 		for (List<GeneralDate> listDay : exectedList) {
 			for (GeneralDate day : listDay) {
+                if(checkNextEmp) {
+                    continue;
+                }
+                OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(day, listEmploymentHis);
+                if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
+                if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
+                    checkNextEmp = true;
+                    continue;
+                }
                 LockStatus lockStatus = LockStatus.UNLOCK;
                 //「ロック中の計算/集計する」の値をチェックする
                 if(executionLog.get().getIsCalWhenLock() == null || executionLog.get().getIsCalWhenLock() == false) {
@@ -202,8 +219,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
                 //日別実績を作成する (tạo 日別実績)
 				ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext, employeeId, day,
 						companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType , reCreateWorkPlace , reCreateRestTime , employeeGeneralInfoImport,
-						stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, employmentHisOptional,
-						employmentCode, periodInMasterList, closureStatusManagement);
+                        stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, outputCheckProcessed.getEmploymentHistoryImported(),
+                        outputCheckProcessed.getEmploymentHistoryImported().get().getEmploymentCode(), periodInMasterList, closureStatusManagement);
 				if (processState == ProcessState.INTERRUPTION) {
 					stateList.add(processState);
 					return ProcessState.INTERRUPTION;
@@ -259,20 +276,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// this.provider().findClousureEmployementByEmpCd(companyId,
 		// employmentCode);
 
-		if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
-				&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
-//				process.add(ProcessState.SUCCESS);
-//				return;
-			return ProcessState.SUCCESS;
-		} else {
-			if (!closureStatusManagement.isPresent() || (closureStatusManagement.isPresent() && !closureStatusManagement.get().getPeriod().contains(day))) {
-				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
-				if (employmentHisOptional.get().getEmploymentCode()
-						.equals(closureEmploymentOptional.get().getEmploymentCD())) {
-					employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
-					employeeAndClosureDto.setEmployeeId(employeeId);
-					employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
-				}
+        if (!closureStatusManagement.isPresent() || (closureStatusManagement.isPresent() && !closureStatusManagement.get().getPeriod().contains(day))) {
+            EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
+            if (employmentHisOptional.get().getEmploymentCode()
+                    .equals(closureEmploymentOptional.get().getEmploymentCD())) {
+                employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
+                employeeAndClosureDto.setEmployeeId(employeeId);
+                employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
+            }
 
 				// アルゴリズム「実績ロックされているか判定する」を実行する
 				/*EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
@@ -284,36 +295,28 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 							.getExecutionType();
 
 					if (reCreateAttr == ExecutionType.RERUN) {
-						DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo()
-								.get().getCreationType();
+						DailyRecreateClassification creationType = executionLog.get().getDailyCreationSetInfo().get()
+								.getCreationType();
 						if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
 							// 再設定
 							this.resetDailyPerforDomainService.resetDailyPerformance(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr, periodInMasterList,
-                            		employeeGeneralInfoImport,recreateFlag,optDaily);
+									empCalAndSumExecLogID, reCreateAttr, null, null,recreateFlag,optDaily);
 						} else {
-                            // 再作成フラグの作成
-                            recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
-                                    reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
-							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr , reCreateWorkType, reCreateWorkPlace ,
-									employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-									mapDateHistoryItem, periodInMasterList, recreateFlag,optDaily);
+							// 再作成フラグの作成
+							recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+									reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
+							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
+									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
+									stampReflectionManagement,recreateFlag,optDaily);
 						}
 					} else {
-                        // 再作成フラグの作成
-                        recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
-                                reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
-						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-								empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, employeeGeneralInfoImport,
-								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
-								periodInMasterList ,recreateFlag,optDaily);
+						// 再作成フラグの作成
+						recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
+								reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
+						this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
+								day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement,recreateFlag,optDaily);
 					}
-			//	}
-			}
-
-			// 暫定データの登録
-			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, Arrays.asList(day));
+//					}
 			
 			Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
 			if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
@@ -337,7 +340,8 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	public ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext,
 			String employeeId, DatePeriod periodTime, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
-			Optional<StampReflectionManagement> stampReflectionManagement) {
+			Optional<StampReflectionManagement> stampReflectionManagement
+			) {
 
 		// 正常終了 : 0
 		// 中断 : 1
@@ -356,9 +360,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<GeneralDate> listDayBetween = this.getDaysBetween(newPeriod.start(), newPeriod.end());
 
 		// Imported（就業）「所属雇用履歴」を取得する
-		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
-				employeeId, processingDate);
-		if (!employmentHisOptional.isPresent()) {
+		/*Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
+				employeeId, processingDate);*/
+		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(companyId, employeeId);
+		if (listEmploymentHis.isEmpty()) {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
 			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
@@ -371,15 +376,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			this.errMessageInfoRepository.add(employmentErrMes);
 			return ProcessState.SUCCESS;
 		}
-		String employmentCode = employmentHisOptional.get().getEmploymentCode();
-
+	
 		// Create task list and execute.
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
 		for (List<GeneralDate> listDay : exectedList) {
 			ProcessState processState = this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext, employeeId,
 					listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType, reCreateWorkPlace, reCreateRestTime,
-					stampReflectionManagement, employmentHisOptional, employmentCode);
+					stampReflectionManagement, Optional.empty(), "", listEmploymentHis);
 			stateList.add(processState);
 		}
 
@@ -412,11 +416,23 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			Optional<StampReflectionManagement> stampReflectionManagement,
-			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode) {
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
+			List<EmploymentHistoryImported> listEmploymentHis) {
 
 		List<ProcessState> process = new ArrayList<>();
-		
+		boolean checkNextEmp = false;
 		for(GeneralDate day: executeDate) {
+			if(checkNextEmp) {
+				continue;
+			}
+			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(day, listEmploymentHis);
+			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
+			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
+				checkNextEmp = true;
+				continue;
+			}
+			employmentHisOptional = outputCheckProcessed.getEmploymentHistoryImported();
+			employmentCode = outputCheckProcessed.getEmploymentHistoryImported().get().getEmploymentCode();
             LockStatus lockStatus = LockStatus.UNLOCK;
             //「ロック中の計算/集計する」の値をチェックする
             if(executionLog.get().getIsCalWhenLock() == null || executionLog.get().getIsCalWhenLock() == false) {
@@ -437,19 +453,13 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				// Optional<ClosureEmployment> closureEmploymentOptional =
 				// this.provider().findClousureEmployementByEmpCd(companyId,
 				// employmentCode);
-	
-				if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
-						&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
-					process.add(ProcessState.SUCCESS);
-					break;
-				} else {
-					EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
-					if (employmentHisOptional.get().getEmploymentCode()
-							.equals(closureEmploymentOptional.get().getEmploymentCD())) {
-						employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
-						employeeAndClosureDto.setEmployeeId(employeeId);
-						employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
-					}
+				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();   
+		            if (employmentHisOptional.get().getEmploymentCode()
+		                    .equals(closureEmploymentOptional.get().getEmploymentCD())) {
+		                employeeAndClosureDto.setClosureId(closureEmploymentOptional.get().getClosureId());
+		                employeeAndClosureDto.setEmployeeId(employeeId);
+		                employeeAndClosureDto.setPeriod(employmentHisOptional.get().getPeriod());
+		            }
 	
 					// アルゴリズム「実績ロックされているか判定する」を実行する
 					//EmployeeAndClosureOutput employeeAndClosure = this.determineActualLocked(companyId,
@@ -488,8 +498,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	//					asyncContext.finishedAsCancelled();
 						process.add(ProcessState.INTERRUPTION);
 						break;
-					}
-				}
+					}	
 			
 			} catch (Exception ex) {
 				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
