@@ -4,5 +4,43 @@
 }
 
 .sidebar-content-header ~ div {
-	padding: 10px;
+	padding: 20px;
+	float: left;
+}
+
+.view-kmp .nts-searchbbox-wrapper .form-label {
+	border: 0 !important;
+}
+
+.view-kmp .float-left {
+	float: left;
+}
+
+
+.view-kmp .model-component {
+	margin-left: 50px;
+}
+
+.view-kmp .model-component table td {
+	padding-bottom: 15px;
+}
+
+
+.view-kmp .model-component table td.label-column {
+	width: 260px;
+}
+
+.view-kmp .model-component table td.label-column button {
+	font-size: 18px;
+}
+
+.view-kmp .model-component table td.data div {
+	font-size: 18px;
+	float: left;
+}
+
+.view-kmp .layout-date{
+	margin-bottom: 10px;
+	width: 100vw;
+	float: left;
 }
