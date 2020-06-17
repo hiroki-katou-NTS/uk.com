@@ -10,7 +10,7 @@ import { component, Prop } from '@app/core/component';
         </button>
       </div>
       <div class="collapse">
-        <div v-for="item in items"  v-if="item.isVisible" class="card-body">
+        <div v-for="item in items"  v-if="item.isVisible" :key="item.content" class="card-body">
           {{item.content}}
         </div>
       </div>

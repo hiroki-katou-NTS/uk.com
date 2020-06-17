@@ -2,15 +2,17 @@
 import { component, Prop, Watch } from '@app/core/component';
 import { _, Vue } from '@app/provider';
 import { KAFSOOA } from '../a/index';
-import { Item, SubItem } from '../ModelClass/ItemA';
+import {ItemKAF00B} from '../components/item_b/index';
 
 @component({
     name: 'KAFS00_A',
     route: '/kaf/s00/start',
     template: require('./index.html'),
     constraints: [],
+    style: require('../../s05/style.scss'),
     components: {
-        'nts-kafs00-a': KAFSOOA
+        'nts-kafs00-a': KAFSOOA,
+        'nts-item-kafsoo-b': ItemKAF00B
     }
 })
 

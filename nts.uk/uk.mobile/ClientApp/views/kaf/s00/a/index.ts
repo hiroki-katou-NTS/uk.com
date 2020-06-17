@@ -13,7 +13,6 @@ import { Item, InputPram,SubItem } from '../ModelClass/ItemA';
 })
 
 export class KAFSOOA extends Vue {
-    // contain data to displying 
     @Prop()
     public items ?: Array<Item>;
     public created() {
@@ -49,6 +48,7 @@ export class KAFSOOA extends Vue {
         });
         insert = [];
         insert.push(c);
+        insert.push(b);
         dataSource.push({
             title: 'C',
             lstItem: insert,
