@@ -101,7 +101,7 @@ public class ReplaceWorkplacesServiceTest {
 		List<String> newAffWorkplaceIdList = Arrays.asList("000000000000000000000000000000000012",
 													"000000000000000000000000000000000014", 
 													"000000000000000000000000000000000016");
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, workPlaceGroup,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.replaceWorkplace(require, workPlaceGroup,
 				newAffWorkplaceIdList);
 		
 		// ------------------------- Result Test
@@ -145,7 +145,7 @@ public class ReplaceWorkplacesServiceTest {
 				"000000000000000000000000000000000014", 
 				"000000000000000000000000000000000016");
 
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.replaceWorkplace(require, group,
 				newAffWorkplaceIdList);
 		
 		// ------------------------- Result Test
@@ -185,7 +185,7 @@ public class ReplaceWorkplacesServiceTest {
 		List<String> newAffWorkplaceIdList = Arrays.asList("000000000000000000000000000000000012",
 				"000000000000000000000000000000000014", "000000000000000000000000000000000016");
 
-		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.repalceWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> results = ReplaceWorkplacesService.replaceWorkplace(require, group,
 				newAffWorkplaceIdList);
 		
 		// ------------------------- Result Test
@@ -216,7 +216,7 @@ public class ReplaceWorkplacesServiceTest {
 		// ------------------------- DomainService
 		List<String> newAffWorkplaceIdList = Arrays.asList("000000000000000000000000000000000012",
 				"000000000000000000000000000000000016", "000000000000000000000000000000000014");
-		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.repalceWorkplace(require, group,
+		Map<String, WorkplaceReplaceResult> workplacesService = ReplaceWorkplacesService.replaceWorkplace(require, group,
 				newAffWorkplaceIdList);
 		
 		// ------------------------- Require Test Delete By WKPID

@@ -70,7 +70,7 @@ public class UpdateWorkplaceGroupCommandHandler
 		ReplaceWorkplacesService.Require updateRequire = new UpdateWplOfWorkGrpRequireImpl(affRepo);
 
 		// 3: 入れ替える(Require, 職場グループ, List<職場ID>): List<職場グループの職場入替処理結果>
-		Map<String, WorkplaceReplaceResult> wplResult = ReplaceWorkplacesService.getWorkplace(updateRequire,
+		Map<String, WorkplaceReplaceResult> wplResult = ReplaceWorkplacesService.replaceWorkplace(updateRequire,
 				wpgrp.get(), cmd.getLstWKPID());
 		List<WorkplaceReplaceResult> resultProcessData = wplResult.entrySet().stream()
 				.map(x -> (WorkplaceReplaceResult) x.getValue()).collect(Collectors.toList());

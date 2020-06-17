@@ -19,12 +19,21 @@ public class ShiftPalletsOrgFinder {
 
 	@Inject
 	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+
+	public List<ShiftPalletsOrgDto> getbyWorkPlaceId(String workplaceId) {
+		// 0 = work place
+		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
+		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId))
+				.collect(Collectors.toList());
+		return result;
+	}
 	
-	public List<ShiftPalletsOrgDto>   getbyWorkPlaceId(String workplaceId){
-		//0 = work place
-		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0 ,workplaceId);
-		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId) )
-				.collect(Collectors.toList());						
+	// 会社別シフトパレットの一覧を取得する
+	public List<ShiftPalletsOrgDto> getByListPage(String workplaceId) {
+		// 0 = work place
+		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
+		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId))
+				.collect(Collectors.toList());
 		return result;
 	}
 }
