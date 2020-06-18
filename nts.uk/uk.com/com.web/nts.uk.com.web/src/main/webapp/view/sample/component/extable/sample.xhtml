@@ -47,6 +47,19 @@
 					.per-icon {
 						margin-top: 2px !important;
 					}
+					a {
+						color: black;
+					}
+					.header-image {
+						background-image: url("http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/72.png");
+						background-size: contain;
+						width: 20px;
+						height: 20px;
+					}
+					.header-image:hover {
+						background-image: url("http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/2.png");
+						cursor: pointer;
+					}
 				</style>
 			</ui:define>
 			
@@ -69,6 +82,7 @@
 						<input type="button" id="set-sticker-valid" value="Sticker Validate"/>
 						<input type="button" id="stick-styler" value="Stick Styler"/>
 						<input type="button" id="stick-undo" value="Undo Stick"/>
+						<input type="button" id="stick-redo" value="Redo Stick"/>
 						</div>
 						<br/>
 						<div id="extable" style="height: 1000px;"></div>
