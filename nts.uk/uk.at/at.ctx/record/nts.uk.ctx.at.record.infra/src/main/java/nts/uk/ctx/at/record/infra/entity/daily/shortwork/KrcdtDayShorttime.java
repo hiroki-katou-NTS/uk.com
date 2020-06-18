@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -19,8 +19,6 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyRepository;
@@ -39,6 +37,8 @@ import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekA
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;

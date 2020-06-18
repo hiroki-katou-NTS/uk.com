@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCa
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;

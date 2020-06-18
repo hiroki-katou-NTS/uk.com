@@ -21,11 +21,11 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;

@@ -8,8 +8,8 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 

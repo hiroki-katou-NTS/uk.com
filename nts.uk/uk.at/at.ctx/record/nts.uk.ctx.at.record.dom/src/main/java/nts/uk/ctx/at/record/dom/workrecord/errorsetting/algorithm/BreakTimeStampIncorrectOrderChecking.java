@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 
 /*
  * 休憩系打刻順序不正をチェックする

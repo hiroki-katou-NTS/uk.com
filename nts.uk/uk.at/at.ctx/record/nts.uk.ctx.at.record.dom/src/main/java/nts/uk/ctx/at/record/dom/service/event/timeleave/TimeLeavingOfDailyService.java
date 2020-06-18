@@ -15,7 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
@@ -32,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualSt
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;

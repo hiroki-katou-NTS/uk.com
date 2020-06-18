@@ -16,13 +16,13 @@ import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Stateless
 public class OvertimeOfDailyService {

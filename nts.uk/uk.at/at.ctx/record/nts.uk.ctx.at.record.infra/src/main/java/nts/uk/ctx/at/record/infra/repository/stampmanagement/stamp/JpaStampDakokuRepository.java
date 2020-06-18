@@ -18,7 +18,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -34,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;

@@ -11,11 +11,11 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.i18n.TextResource;
 /**
  * 

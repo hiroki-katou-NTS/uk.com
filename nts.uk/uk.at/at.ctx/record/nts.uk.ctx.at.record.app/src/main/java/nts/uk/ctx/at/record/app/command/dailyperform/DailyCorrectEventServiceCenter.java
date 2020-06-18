@@ -29,7 +29,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateB
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateByWorkInfoChangeHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -42,6 +41,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
