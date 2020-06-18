@@ -208,30 +208,6 @@ public class TestAnnualLeave {
 			e1.printStackTrace();
 		}
 	}
-//	
-//	/**
-//	 * Integer項目のテスト　assertThat
-//	 * @param testCase テストケース名
-//	 * @param itemName　テスト項目名
-//	 * @param result　結果
-//	 * @param testOutputAggrResultOfAnnualLeaveList　期待値
-//	 */
-//	private void assert_integer(
-//			String testCase,
-//			String itemName,
-//			int result,
-//			TestOutputAggrResultOfAnnualLeave testOutputAggrResultOfAnnualLeaveList
-//		){
-//		
-//		int expected = 7777;
-//		String ss = testOutputAggrResultOfAnnualLeaveList.getMapStringData().get(itemName);
-//		if (0 < ss.trim().length() ){
-//			expected = Integer.valueOf(ss);
-//		}
-//		assertThat(result).as(testCase + "-" +  itemName).isEqualTo(expected);
-//	}
-			
-			
 
 	private void assertProcedure(
 			String testCase,
@@ -262,13 +238,13 @@ public class TestAnnualLeave {
 			if ( remainingNumber != null ){
 				
 				// 年休（マイナスあり）
-				nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave realAnnualLeave
+				nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave annualLeave
 					= remainingNumber.getAnnualLeaveWithMinus();
 				
-				if ( realAnnualLeave != null ){
+				if ( annualLeave != null ){
 					// 残数付与前
 					nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber remainingNumberBeforeGrant 
-						= realAnnualLeave.getRemainingNumberBeforeGrant();
+						= annualLeave.getRemainingNumberBeforeGrant();
 					
 					// 使用日数
 					result_totalRemainingDays = remainingNumberBeforeGrant.getTotalRemainingDays().v();

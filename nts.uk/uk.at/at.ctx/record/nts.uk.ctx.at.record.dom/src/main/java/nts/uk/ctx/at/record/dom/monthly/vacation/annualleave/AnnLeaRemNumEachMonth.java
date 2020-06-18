@@ -34,7 +34,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	/** 年休 */
 	private AnnualLeave annualLeave;
 	/** 実年休 */
-	private RealAnnualLeave realAnnualLeave;
+	private AnnualLeave realAnnualLeave;
 	/** 半日年休 */
 	private Optional<HalfDayAnnualLeave> halfDayAnnualLeave;
 	/** 実半日年休 */
@@ -72,7 +72,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		this.closurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.closureStatus = ClosureStatus.UNTREATED;
 		this.annualLeave = new AnnualLeave();
-		this.realAnnualLeave = new RealAnnualLeave();
+		this.realAnnualLeave = new AnnualLeave();
 		this.halfDayAnnualLeave = Optional.empty();
 		this.realHalfDayAnnualLeave = Optional.empty();
 		this.annualLeaveGrant = Optional.empty();
@@ -109,7 +109,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 			DatePeriod closurePeriod,
 			ClosureStatus closureStatus,
 			AnnualLeave annualLeave,
-			RealAnnualLeave realAnnualLeave,
+			AnnualLeave realAnnualLeave,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeave,
 			Optional<HalfDayAnnualLeave> realHalfDayAnnualLeave,
 			Optional<AnnualLeaveGrant> annualLeaveGrant,

@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 
 /**
  * 年休情報残数
@@ -19,7 +19,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	/** 年休（マイナスなし） */
 	private AnnualLeave annualLeaveNoMinus;
 	/** 年休（マイナスあり） */
-	private RealAnnualLeave annualLeaveWithMinus;
+	private AnnualLeave annualLeaveWithMinus;
 	/** 半日年休（マイナスなし） */
 	private Optional<HalfDayAnnualLeave> halfDayAnnualLeaveNoMinus;
 	/** 半日年休（マイナスあり） */
@@ -28,6 +28,8 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	private Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveNoMinus;
 	/** 時間年休（マイナスあり） */
 	private Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus;
+	/** 年休未消化数 */
+	private Optional<AnnualLeaveUndigestNumber> annualLeaveUndigestNumber;
 
 	/**
 	 * コンストラクタ
@@ -35,11 +37,11 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	public AnnualLeaveRemainingNumber(){
 		
 		this.annualLeaveNoMinus = new AnnualLeave();
-		this.annualLeaveWithMinus = new RealAnnualLeave();
 		this.halfDayAnnualLeaveNoMinus = Optional.empty();
 		this.halfDayAnnualLeaveWithMinus = Optional.empty();
 		this.timeAnnualLeaveNoMinus = Optional.empty();
 		this.timeAnnualLeaveWithMinus = Optional.empty();
+		this.annualLeaveUndigestNumber = Optional.empty();
 	}
 	
 	/**
@@ -50,23 +52,24 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 * @param halfDayAnnualLeaveWithMinus 半日年休（マイナスあり）
 	 * @param timeAnnualLeaveNoMinus 時間年休（マイナスなし）
 	 * @param timeAnnualLeaveWithMinus 時間年休（マイナスあり）
+	 * @param annualLeaveUndigestNumber 年休未消化数
 	 * @return 年休情報残数
 	 */
 	public static AnnualLeaveRemainingNumber of(
 			AnnualLeave annualLeaveNoMinus,
-			RealAnnualLeave annualLeaveWithMinus,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeaveNoMinus,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeaveWithMinus,
 			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveNoMinus,
-			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus){
+			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus,
+			Optional<AnnualLeaveUndigestNumber> annualLeaveUndigestNumber){
 		
 		AnnualLeaveRemainingNumber domain = new AnnualLeaveRemainingNumber();
 		domain.annualLeaveNoMinus = annualLeaveNoMinus;
-		domain.annualLeaveWithMinus = annualLeaveWithMinus;
 		domain.halfDayAnnualLeaveNoMinus = halfDayAnnualLeaveNoMinus;
 		domain.halfDayAnnualLeaveWithMinus = halfDayAnnualLeaveWithMinus;
 		domain.timeAnnualLeaveNoMinus = timeAnnualLeaveNoMinus;
 		domain.timeAnnualLeaveWithMinus = timeAnnualLeaveWithMinus;
+		domain.annualLeaveUndigestNumber = annualLeaveUndigestNumber;
 		return domain;
 	}
 	
@@ -88,6 +91,9 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			if (this.timeAnnualLeaveWithMinus.isPresent()){
 				cloned.timeAnnualLeaveWithMinus = Optional.of(this.timeAnnualLeaveWithMinus.get().clone());
 			}
+			if (this.annualLeaveUndigestNumber.isPresent()){
+				cloned.annualLeaveUndigestNumber = Optional.of(this.annualLeaveUndigestNumber.get().clone());
+			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("AnnualLeaveRemainingNumber clone error.");
@@ -107,6 +113,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
 		
 		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
-		this.annualLeaveNoMinus.setValueFromRealAnnualLeave(this.annualLeaveWithMinus);
+		//this.annualLeaveNoMinus.setValueFromAnnualLeave(this.annualLeaveWithMinus);
+		this.annualLeaveNoMinus = this.annualLeaveWithMinus.clone();
 	}
 }
