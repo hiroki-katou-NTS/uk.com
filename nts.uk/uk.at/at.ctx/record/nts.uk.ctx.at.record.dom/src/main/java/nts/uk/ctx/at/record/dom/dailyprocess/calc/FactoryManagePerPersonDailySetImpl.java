@@ -54,9 +54,8 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
-		
 		try {
-			/*法定労働時間*/	
+			/*法定労働時間*/
 			DailyUnit dailyUnit = this.dailyStatutoryWorkingHours.getDailyUnit(companyId,
 						daily.getAffiliationInfor().getEmploymentCode().toString(),
 						daily.getAffiliationInfor().getEmployeeId(),
@@ -79,7 +78,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
 			}
 		
-			/*平日時*/	
+			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(),
 					companySetting.getShareContainer());

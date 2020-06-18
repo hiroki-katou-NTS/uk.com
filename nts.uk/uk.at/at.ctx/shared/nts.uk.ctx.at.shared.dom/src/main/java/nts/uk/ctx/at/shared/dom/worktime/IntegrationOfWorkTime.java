@@ -106,11 +106,22 @@ public class IntegrationOfWorkTime {
 	 */
 	private void existsWorkSetting() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				if(!this.fixedWorkSetting.isPresent()) throw new RuntimeException("Empty FixedWorkSetting");
-			case FLEX:				if(!this.flexWorkSetting.isPresent()) throw new RuntimeException("Empty FlexWorkSetting");
-			case FLOW:				if(!this.flowWorkSetting.isPresent()) throw new RuntimeException("Empty FlowWorkSetting");
-			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
-			default:				throw new RuntimeException("Non-conformity No Work");
+			case FIXED:	
+				if(!this.fixedWorkSetting.isPresent())
+					throw new RuntimeException("Empty FixedWorkSetting");
+				break;
+			case FLEX:
+				if(!this.flexWorkSetting.isPresent())
+					throw new RuntimeException("Empty FlexWorkSetting");
+				break;
+			case FLOW:
+				if(!this.flowWorkSetting.isPresent())
+					throw new RuntimeException("Empty FlowWorkSetting");
+				break;
+			case TIMEDIFFERENCE:
+				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:
+				throw new RuntimeException("Non-conformity No Work");
 		}
 	}
 	
@@ -152,7 +163,7 @@ public class IntegrationOfWorkTime {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				return this.fixedWorkSetting.get().getEmTimeZoneSet(workType);
 			case FLEX:				return this.flexWorkSetting.get().getEmTimeZoneSet(workType);
-			case FLOW:				throw new RuntimeException("Non-conformity FLOW_WORK");
+			case FLOW:				return Collections.emptyList();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}

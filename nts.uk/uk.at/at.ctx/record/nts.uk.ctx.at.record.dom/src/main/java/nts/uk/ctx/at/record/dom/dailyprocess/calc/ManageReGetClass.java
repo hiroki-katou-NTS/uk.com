@@ -121,6 +121,12 @@ public class ManageReGetClass {
 	 * @return 固定勤務の休憩時間帯
 	 */
 	public Optional<FixRestTimezoneSet> getFixRestTimeSetting() {
+		if(!this.integrationOfWorkTime.getFixedWorkSetting().isPresent())
+			return Optional.empty();
+		
+		if(this.integrationOfWorkTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone().isEmpty())
+			return Optional.empty();
+		
 		return Optional.of(this.integrationOfWorkTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone().get(0).getRestTimezone());
 	}
 	
@@ -140,6 +146,9 @@ public class ManageReGetClass {
 	 * @return 固定勤務の計算設定
 	 */
 	public Optional<FixedWorkCalcSetting> getOotsukaFixedWorkSet() {
+		if(!this.integrationOfWorkTime.getFixedWorkSetting().isPresent())
+			return Optional.empty();
+			
 		return this.integrationOfWorkTime.getFixedWorkSetting().get().getCalculationSetting();
 	}
 	

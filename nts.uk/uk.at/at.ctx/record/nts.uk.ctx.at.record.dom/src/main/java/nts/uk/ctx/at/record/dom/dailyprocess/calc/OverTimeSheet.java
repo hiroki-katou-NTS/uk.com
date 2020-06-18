@@ -261,8 +261,19 @@ public class OverTimeSheet {
 	
 	/**
 	 * 残業時間帯に入っている加給時間の計算
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
 		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
@@ -280,8 +291,19 @@ public class OverTimeSheet {
 	
 	/**
 	 * 残業時間帯に入っている特定加給時間の計算
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
 		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
@@ -662,7 +684,7 @@ public class OverTimeSheet {
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
 	 * @return 残業時間帯
 	 */
-	public static OverTimeSheet createAsFlow(
+	public static Optional<OverTimeSheet> createAsFlow(
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			WorkType todayWorkType,
@@ -673,18 +695,20 @@ public class OverTimeSheet {
 			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
 		
 		//計算範囲の取得
-		TimeSpanForDailyCalc calcRange = createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().get();
+		Optional<TimeSpanForDailyCalc> calcRange = getStartEnd(integrationOfDaily, createdWithinWorkTimeSheet);
+		
+		if(!calcRange.isPresent())	return Optional.empty();
 		
 		//Listクラスへ変換
 		TimeSheetOfDeductionItemList timeSheetOfDeductionItemList = new TimeSheetOfDeductionItemList(timeSheetOfDeductionItems);
 		//重複している控除項目の時間帯
-		List<TimeSheetOfDeductionItem> overlappingTimeSheets = timeSheetOfDeductionItemList.getOverlappingTimeSheets(calcRange);
+		List<TimeSheetOfDeductionItem> overlappingTimeSheets = timeSheetOfDeductionItemList.getOverlappingTimeSheets(calcRange.get());
 		
 		List<OverTimeFrameTimeSheetForCalc> overTimeFrameTimeSheets = new ArrayList<>();
 		
 		for(FlowOTTimezone processingFlowOTTimezone : integrationOfWorkTime.getFlowWorkSetting().get().getHalfDayWorkTimezoneLstOTTimezone()) {
 			//残業開始時刻
-			TimeWithDayAttr overTimeStartTime = calcRange.getStart();
+			TimeWithDayAttr overTimeStartTime = calcRange.get().getStart();
 			
 			//残業時間帯の開始時刻を計算
 			if(overTimeFrameTimeSheets.size() != 0) {
@@ -700,7 +724,7 @@ public class OverTimeSheet {
 					processingFlowOTTimezone,
 					overlappingTimeSheets,
 					overTimeStartTime,
-					calcRange.getEnd(),
+					calcRange.get().getEnd(),
 					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet()));
@@ -711,7 +735,7 @@ public class OverTimeSheet {
 				integrationOfWorkTime.getFlowWorkSetting().get(),
 				personDailySetting.getAddSetting(),
 				createdWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
-				calcRange.getStart(),
+				calcRange.get().getStart(),
 				integrationOfDaily.getCalAttr().getOvertimeSetting(),
 				overTimeFrameTimeSheets);
 		
@@ -742,7 +766,7 @@ public class OverTimeSheet {
 				overTimeFrameTimeSheets,
 				createdWithinWorkTimeSheet);
 		
-		return new OverTimeSheet(new RaisingSalaryTime(), overTimeFrameTimeSheets, new SubHolOccurrenceInfo());
+		return Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overTimeFrameTimeSheets, new SubHolOccurrenceInfo()));
 	}
 	
 	/**
@@ -822,6 +846,32 @@ public class OverTimeSheet {
 		return overTimeFrames;
 	}
 	
+	/**
+	 * 残業開始終了時刻を取得する
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
+	 * @return 残業開始終了時刻
+	 */
+	private static Optional<TimeSpanForDailyCalc> getStartEnd(IntegrationOfDaily integrationOfDaily, WithinWorkTimeSheet createdWithinWorkTimeSheet) {
+		if(!createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().isPresent())
+			return Optional.empty();
+		
+		if(!integrationOfDaily.getAttendanceLeave().isPresent()
+				|| !integrationOfDaily.getAttendanceLeave().get().getLeavingWork().isPresent()
+				|| !integrationOfDaily.getAttendanceLeave().get().getLeavingWork().get().getStamp().isPresent())
+			return Optional.empty();
+		
+		//残業開始時刻
+		TimeWithDayAttr start = createdWithinWorkTimeSheet.getStartEndToWithinWorkTimeFrame().get().getEnd();
+		
+		//残業終了時刻
+		TimeWithDayAttr end = integrationOfDaily.getAttendanceLeave().get().getLeavingWork().get().getStamp().get().getTimeWithDay();
+		
+		if(start.greaterThan(end))
+			return Optional.empty();
+		
+		return Optional.of(new TimeSpanForDailyCalc(start, end));
+	}
 }
 
 class ReturnValueForCreateAsFlow {

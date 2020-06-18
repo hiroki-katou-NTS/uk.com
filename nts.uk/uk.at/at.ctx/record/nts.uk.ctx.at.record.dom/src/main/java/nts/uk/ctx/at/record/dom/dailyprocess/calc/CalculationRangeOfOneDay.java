@@ -467,10 +467,19 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 加給時間を計算する(就内・残業・休出時間帯の
+	 * 加給時間を計算する(就内・残業・休出時間帯)
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @param bonusPayAtr 加給区分
+	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
-											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
+	public List<BonusPayTime> calcBonusPayTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			CalAttrOfDailyPerformance calcAtrOfDaily,
+			BonusPayAtr bonusPayAtr) {
 		
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
@@ -492,10 +501,20 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	 * 就�??残業�??休�?時間�??特定加給時間の合計を求め�?
+	 * 特定加給時間を計算する(就内・残業・休出時間帯)
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @param bonusPayAtr 加給区分
+	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
-												   CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
+	public List<BonusPayTime> calcSpecBonusPayTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			CalAttrOfDailyPerformance calcAtrOfDaily,
+			BonusPayAtr bonusPayAtr){
+		
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
 		List<BonusPayTime> withinBonusPay = new ArrayList<>();
@@ -586,15 +605,24 @@ public class CalculationRangeOfOneDay {
 	
 	
 	/**
-	 * 控除時間を取�?
-	 * @param dedClassification 
-	 * @param dedAtr
-	 * @param statutoryAtrs
-	 * @param pertimesheet
-	 * @return
+	 * 控除時間を取得
+	 * @param dedClassification 条件
+	 * @param dedAtr 控除区分
+	 * @param statutoryAtrs 法定内区分
+	 * @param pertimesheet 丸め区分(時間帯で丸めるかの区分)
+	 * @param premiumAtr 割増区分
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @return 控除時間
 	 */
-	public TimeWithCalculation calcWithinTotalTime(ConditionAtr dedClassification, DeductionAtr dedAtr,StatutoryAtr statutoryAtr,TimeSheetRoundingAtr pertimesheet
-			,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	public TimeWithCalculation calcWithinTotalTime(
+			ConditionAtr dedClassification,
+			DeductionAtr dedAtr,
+			StatutoryAtr statutoryAtr,
+			TimeSheetRoundingAtr pertimesheet,
+			PremiumAtr premiumAtr,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			Optional<WorkTimezoneCommonSet> commonSetting) {
 		if(statutoryAtr.isStatutory()) {
 			if(this.withinWorkingTimeSheet.isPresent()) {
 				return TimeWithCalculation.sameTime(this.withinWorkingTimeSheet.get().calculationAllFrameDeductionTime(dedAtr, dedClassification,premiumAtr,holidayCalcMethodSet,commonSetting));

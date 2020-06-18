@@ -162,21 +162,21 @@ public class DeductionTimeSheet {
 		}
 
 		/* 丸め処理(未完成)*/
-		if(integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
-			List<EmTimeZoneSet> fixWoSetting = integrationOfWorkTime.getEmTimeZoneSetList(todayWorkType);
-			
-			val mostFastOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == 1).findFirst();
-			val mostLateOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == fixWoSetting.size()).findFirst();
-			if(mostFastOclock.isPresent() && mostLateOclock.isPresent()) {
-				goOutDeletedList = rounding(
-						dedAtr,
-						goOutDeletedList,
-						integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet(),
-						mostFastOclock.get().getTimezone().getStart(),
-						mostLateOclock.get().getTimezone().getEnd(),
-						predetermineTimeSetForCalc.getOneDayTimeSpan());
-			}
-		}
+//		if(integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
+//			List<EmTimeZoneSet> fixWoSetting = integrationOfWorkTime.getEmTimeZoneSetList(todayWorkType);
+//			
+//			val mostFastOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == 1).findFirst();
+//			val mostLateOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == fixWoSetting.size()).findFirst();
+//			if(mostFastOclock.isPresent() && mostLateOclock.isPresent()) {
+//				goOutDeletedList = rounding(
+//						dedAtr,
+//						goOutDeletedList,
+//						integrationOfWorkTime.getCommonSetting().getGoOutSet().getTotalRoundingSet(),
+//						mostFastOclock.get().getTimezone().getStart(),
+//						mostLateOclock.get().getTimezone().getEnd(),
+//						predetermineTimeSetForCalc.getOneDayTimeSpan());
+//			}
+//		}
 		return goOutDeletedList;
 	}
 
@@ -219,19 +219,20 @@ public class DeductionTimeSheet {
 		}
 		/* 短時間勤務時間帯を取得 */
 		//育児
-		List<ShortWorkingTimeSheet> chilCare = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().filter(tc -> tc.getChildCareAttr().isChildCare()).collect(Collectors.toList());
-//		if(dedAtr.isDeduction()
-//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getCalculateIncludCareTime()==NotUseAtr.USE) {
-//			chilCare = new ArrayList<>();
-//		}
-		List<TimeSheetOfDeductionItem> list = getShortTime(attendanceLeaveWork,chilCare,integrationOfWorkTime.getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse());
-		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list) {
-			sheetList.add(timeSheetOfDeductionItem);
+		if(integrationOfDaily.getShortTime().isPresent()) {
+			List<ShortWorkingTimeSheet> chilCare = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream()
+					.filter(tc -> tc.getChildCareAttr().isChildCare())
+					.collect(Collectors.toList());
+			List<TimeSheetOfDeductionItem> list = getShortTime(attendanceLeaveWork,chilCare,integrationOfWorkTime.getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse());
+			for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list) {
+				sheetList.add(timeSheetOfDeductionItem);
+			}
 		}
 		//介護
-		val care = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().filter(tc -> tc.getChildCareAttr().isCare()).collect(Collectors.toList());
-		sheetList.addAll(getShortTime(attendanceLeaveWork,care,integrationOfWorkTime.getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse()));
+		if(integrationOfDaily.getShortTime().isPresent()) {
+			val care = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().filter(tc -> tc.getChildCareAttr().isCare()).collect(Collectors.toList());
+			sheetList.addAll(getShortTime(attendanceLeaveWork,care,integrationOfWorkTime.getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse()));
+		}
 		/* ソート処理 */
 		sheetList = sheetList.stream()
 				.sorted((first, second) -> first.getTimeSheet().getTimeSpan().getStart().compareTo(second.getTimeSheet().getTimeSpan().getStart()))

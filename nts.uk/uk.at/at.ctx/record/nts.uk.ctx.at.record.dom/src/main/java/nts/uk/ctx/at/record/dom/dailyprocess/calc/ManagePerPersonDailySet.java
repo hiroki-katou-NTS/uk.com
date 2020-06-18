@@ -42,7 +42,8 @@ public class ManagePerPersonDailySet {
 	 * @param personInfo 労働条件
 	 * @param dailyUnit　法定労働時間
 	 */
-	public ManagePerPersonDailySet(WorkingConditionItem personInfo,
+	public ManagePerPersonDailySet(
+			WorkingConditionItem personInfo,
 			DailyUnit dailyUnit,
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
@@ -51,6 +52,7 @@ public class ManagePerPersonDailySet {
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
 		this.addSetting = addSetting;
+		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
 	}
 }

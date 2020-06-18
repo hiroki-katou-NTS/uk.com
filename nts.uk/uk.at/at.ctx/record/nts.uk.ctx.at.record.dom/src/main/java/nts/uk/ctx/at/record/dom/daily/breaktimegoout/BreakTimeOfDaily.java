@@ -73,15 +73,16 @@ public class BreakTimeOfDaily {
 	
 	/**
 	 * 全ての休憩時間を算出する指示クラス
+	 * アルゴリズム：日別実績の休憩時間
 	 * @param oneDay 1日の計算範囲
 	 * @param breakTimeCount 休憩回数
-	 * @param boolean 
+	 * @param boolean 計算処理に入ることができるかフラグ
 	 * @return 日別実績の休憩時間
 	 */
 	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay, int breakTimeCount, Boolean isCalculatable,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		DeductionTotalTime recordCalcTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		DeductionTotalTime dedCalcTime =  DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
-		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0); 
+		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0);
 		AttendanceTime duringTime = new AttendanceTime(0);
 		List<BreakTimeSheet> breakTimeSheets = Collections.emptyList();
 		if(isCalculatable) {
@@ -96,26 +97,49 @@ public class BreakTimeOfDaily {
 			//補正後時間帯
 			breakTimeSheets = new ArrayList<>();
 		}
-		
 		return new BreakTimeOfDaily(recordCalcTime,dedCalcTime,goOutTimes,duringTime,breakTimeSheets);
 	}
 
 	/**
-	 *　合計時間算出
-	 * @param oneDay 
-	 * @return
+	 * 休憩合計時間の計算
+	 * @param dedAtr 控除区分
+	 * @param oneDay 1日の計算範囲
+	 * @param premiumAtr 割増区分
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @return 控除合計時間
 	 */
-	public static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	public static DeductionTotalTime calculationDedBreakTime(
+			DeductionAtr dedAtr,
+			CalculationRangeOfOneDay oneDay,
+			PremiumAtr premiumAtr,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			Optional<WorkTimezoneCommonSet> commonSetting) {
 		return createDudAllTime(ConditionAtr.BREAK,dedAtr,TimeSheetRoundingAtr.PerTimeSheet,oneDay,premiumAtr,holidayCalcMethodSet,commonSetting);
 	}
 	
-	private static DeductionTotalTime createDudAllTime(ConditionAtr conditionAtr, DeductionAtr dedAtr,
-			TimeSheetRoundingAtr pertimesheet, CalculationRangeOfOneDay oneDay,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	/**
+	 * 控除合計時間の計算
+	 * @param conditionAtr 条件
+	 * @param dedAtr 控除区分
+	 * @param pertimesheet 丸め区分(時間帯で丸めるかの区分)
+	 * @param oneDay 1日の計算範囲
+	 * @param premiumAtr 割増区分
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @return 控除合計時間
+	 */
+	private static DeductionTotalTime createDudAllTime(
+			ConditionAtr conditionAtr,
+			DeductionAtr dedAtr,
+			TimeSheetRoundingAtr pertimesheet,
+			CalculationRangeOfOneDay oneDay,
+			PremiumAtr premiumAtr,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			Optional<WorkTimezoneCommonSet> commonSetting) {
 		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
 		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet,premiumAtr,holidayCalcMethodSet,commonSetting);
-		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()),
-									  withinDedTime,
-									  excessDedTime);
+		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()), withinDedTime, excessDedTime);
 	}
 	
 	/**
@@ -141,6 +165,4 @@ public class BreakTimeOfDaily {
 		
 		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
 	}
-	
-		
 }

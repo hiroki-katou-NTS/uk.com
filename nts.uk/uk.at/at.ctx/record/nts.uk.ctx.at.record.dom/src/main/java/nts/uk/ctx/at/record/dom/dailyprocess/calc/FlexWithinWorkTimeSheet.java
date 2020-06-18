@@ -484,34 +484,40 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		return result;
 	}
 	
+	/**
+	 * コアタイム内外を分けて計算
+	 * @param isWithin
+	 * @return
+	 */
 	public AttendanceTime calcOutingTimeInFlex(boolean isWithin) {
 		val a = this.getCoreTimeSheet();
 		AttendanceTime returnValue = new AttendanceTime(0);
 		if(a.isPresent()) {
 			for(WithinWorkTimeFrame b : this.getWithinWorkTimeFrame()) {
 				if(isWithin) {
+					//コア内外出時間の計算
 					val dupRange = a.get().getDuplicatedWith(b.timeSheet);
 					if(dupRange.isPresent()) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
-												 .map(tc -> tc.replaceTimeSpan(dupRange))
-												 .filter(tc -> tc.getGoOutReason().isPresent())
-												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
-														 || tc.getGoOutReason().get().isCompensation())
-												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
-												 .collect(Collectors.summingInt(tc -> tc)));
-												 
+								.map(tc -> tc.replaceTimeSpan(dupRange))
+								.filter(tc -> tc.getGoOutReason().isPresent())
+								.filter(tc -> tc.getGoOutReason().get().isPrivate()
+										 || tc.getGoOutReason().get().isCompensation())
+								.map(tc -> tc.calcTotalTime().valueAsMinutes())
+								.collect(Collectors.summingInt(tc -> tc)));
 					}
 				}
 				else {
+					//コア外外出時間の計算
 					val dupRangeList = a.get().getNotDuplicationWith(b.timeSheet);
 					for(TimeSpanForDailyCalc newSpan : dupRangeList) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
-																			  .map(tc -> tc.replaceTimeSpan(Optional.of(newSpan)))
-																			  .filter(tc -> tc.getGoOutReason().isPresent())
-																			  .filter(tc -> tc.getGoOutReason().get().isPrivate()
-																					  || tc.getGoOutReason().get().isCompensation())
-																			  .map(tc -> tc.calcTotalTime().valueAsMinutes())
-																			  .collect(Collectors.summingInt(tc -> tc)));
+								.map(tc -> tc.replaceTimeSpan(Optional.of(newSpan)))
+								.filter(tc -> tc.getGoOutReason().isPresent())
+								.filter(tc -> tc.getGoOutReason().get().isPrivate()
+										|| tc.getGoOutReason().get().isCompensation())
+								.map(tc -> tc.calcTotalTime().valueAsMinutes())
+								.collect(Collectors.summingInt(tc -> tc)));
 					}
 				}
 			}

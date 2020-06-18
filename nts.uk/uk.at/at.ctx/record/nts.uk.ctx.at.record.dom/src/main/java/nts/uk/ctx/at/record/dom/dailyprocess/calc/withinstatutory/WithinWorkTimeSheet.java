@@ -720,7 +720,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				addSetting,
 				holidayAddtionSet,
 				holidayCalcMethodSet,
-				premiumAtr,commonSetting,
+				premiumAtr,
+				commonSetting,
 				lateEarlyMinusAtr);
 		
 		//フレの時は上限値制御をしたくない。
@@ -1376,25 +1377,56 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
 		
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
-	
 	/**
 	 * 就業時間内時間帯に入っている加給時間の計算
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
-			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcBonusPay(
+					ActualWorkTimeSheetAtr.WithinWorkTime,
+					raisingAutoCalcSet,
+					bonusPayAutoCalcSet,
+					calcAtrOfDaily,
+					bonusPayAtr));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
 	}
 	/**
 	 * 就業時間内時間帯に入っている特定加給時間の計算
+	 * アルゴリズム：加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
-			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet, calcAtrOfDaily,bonusPayAtr));
+			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(
+					ActualWorkTimeSheetAtr.WithinWorkTime,
+					raisingAutoCalcSet,
+					bonusPayAutoCalcSet,
+					calcAtrOfDaily,
+					bonusPayAtr));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
@@ -1740,8 +1772,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				predetermineTimeSet, 
 				Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 				creatingWithinWorkTimeSheet.getWithinWorkTimeFrame(),
-				Optional.of(creatingWithinWorkTimeSheet.getLateDecisionClock().get(0)),
-				Optional.of(creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock().get(0)));
+				creatingWithinWorkTimeSheet.getLateDecisionClock().isEmpty()
+					? Optional.empty()
+					: Optional.of(creatingWithinWorkTimeSheet.getLateDecisionClock().get(0)),
+				creatingWithinWorkTimeSheet.getLateDecisionClock().isEmpty()
+					? Optional.empty()
+					: Optional.of(creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock().get(0)));
 		
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(0).setPremiumTimeSheetInPredetermined(
 				predetermineWithinPremiumTime.get(0).getPremiumTimeSheetInPredetermined());

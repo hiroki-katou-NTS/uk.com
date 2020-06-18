@@ -338,7 +338,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
 		val stampIncorrectError = dailyRecordCreateErrorAlermService.stampIncorrect(integrationOfDaily);
 		val lackOfstampError = dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
-		if (stampIncorrectError != null || lackOfstampError != null) {
+		//if (stampIncorrectError != null || lackOfstampError != null) {
+		if (stampIncorrectError != null || (!lackOfstampError.isEmpty() && lackOfstampError.get(0) != null)) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		
@@ -569,7 +570,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				break;
 				
 			case FLOW:
-				if (!integrationOfWorkTime.get().getFixedWorkSetting().isPresent())
+				if (!integrationOfWorkTime.get().getFlowWorkSetting().isPresent())
 					return Optional.empty();
 				
 				/* 前日の勤務情報取得 */

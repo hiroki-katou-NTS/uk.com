@@ -200,12 +200,21 @@ public class HolidayWorkTimeSheet{
 		}
 		return totalTime;
 	}
-
 	
 	/**
 	 * 休出時間帯に入っている加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInHolidayWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInHolidayWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheetForCalc timeFrame : workHolidayTime) {
 			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
@@ -213,10 +222,21 @@ public class HolidayWorkTimeSheet{
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
 	}
+	
 	/**
 	 * 休出時間帯に入っている特定加給時間の計算
+	 * @param raisingAutoCalcSet 加給の自動計算設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param bonusPayAtr 加給区分
+	 * @param calcAtrOfDaily 日別実績の計算区分
+	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecBonusPayTimeInHolidayWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecBonusPayTimeInHolidayWorkTime(
+			AutoCalRaisingSalarySetting raisingAutoCalcSet,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			BonusPayAtr bonusPayAtr,
+			CalAttrOfDailyPerformance calcAtrOfDaily) {
+		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheetForCalc timeFrame : workHolidayTime) {
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));

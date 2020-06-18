@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 就業時間外時間帯
@@ -208,7 +209,7 @@ public class OutsideWorkTimeSheet {
 			WithinWorkTimeSheet createdWithinWorkTimeSheet,
 			PreviousAndNextDaily previousAndNextDaily) {
 		
-		OverTimeSheet overTimeSheet = OverTimeSheet.createAsFlow(
+		Optional<OverTimeSheet> overTimeSheet = OverTimeSheet.createAsFlow(
 				companyCommonSetting,
 				personDailySetting,
 				todayWorkType,
@@ -218,10 +219,13 @@ public class OutsideWorkTimeSheet {
 				timeSheetOfDeductionItems,
 				createdWithinWorkTimeSheet);
 		
+		if(!overTimeSheet.isPresent())
+			return new OutsideWorkTimeSheet(Optional.empty(), Optional.empty());
+		
 		//0時跨ぎの時間帯分割
 		OverDayEnd overDayEnd = OverDayEnd.forOverTime(
 				integrationOfWorkTime.getFlowWorkSetting().get().getCommonSetting().isZeroHStraddCalculateSet(),
-				overTimeSheet.getFrameTimeSheets(),
+				overTimeSheet.get().getFrameTimeSheets(),
 				previousAndNextDaily.getPreviousWorkType(),
 				todayWorkType,
 				previousAndNextDaily.getNextWorkType(),
