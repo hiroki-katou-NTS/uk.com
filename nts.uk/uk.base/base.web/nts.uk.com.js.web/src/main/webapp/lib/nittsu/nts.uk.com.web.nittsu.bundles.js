@@ -47405,9 +47405,9 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
             return null;
         });
     }
-}, $storage = function (params) {
+}, $storage = function ($data) {
     if (arguments.length === 1) {
-        return $storeSession(OPENWD, params);
+        return $storeSession(OPENWD, $data);
     }
     else if (arguments.length === 0) {
         return $.Deferred().resolve()
@@ -47431,6 +47431,7 @@ function bean() {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
