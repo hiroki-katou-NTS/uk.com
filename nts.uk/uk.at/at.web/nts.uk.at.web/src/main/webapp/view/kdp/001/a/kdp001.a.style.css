@@ -1,21 +1,116 @@
 @import url("base.css");
 
-.button {
-	width: 60px;
-	height: 60px;
+.button-big {
+	width: 65px;
+	height: 65px;
 	text-align: center;
 	vertical-align: middle;
 	white-space: normal;
+	font-size: 1rem;
 }
 
 #left-area {
 	display: inline-block;
+	float: left;
 }
 
 #right-area {
 	display: inline-block;
+	width: 170px;
+}
+
+.right-area-big {
+	margin-left: 10px;
 }
 
 .nts-fixed-table  div:first-of-type {
 	float: left;
+}
+
+#functions-area {
+	color: white;
+	background-color: #3e7db6;
+}
+
+.functions-area-big {
+	line-height: 20px;
+	height: 25px !important;
+}
+
+.stamp-button {
+	color: #0000FF;
+	background-color: #ccccff;
+}
+
+.stamp-button-1 {
+	color: #0000FF;
+	background-color: #66ffff
+}
+
+.contents-area-big {
+	font-size: 0.8rem !important;
+}
+
+.not_used_label {
+	color: red;
+	font-size: 1.2rem !important;
+}
+
+.nts-fixed-body-container {
+	border-top: 1px solid #CCC !important;
+}
+
+.stamp-time-big {
+	font-size: 1rem !important;
+}
+
+.button-small {
+	width: 35px;
+	height: 35px;
+	text-align: center;
+	vertical-align: middle;
+	white-space: normal;
+	font-size: 0.6rem !important;
+	padding: 1px 5px !important;
+}
+
+.right-area-small {
+	margin-left: 3px;
+}
+
+.functions-area-small {
+	line-height: 1px;
+	height: 10px !important;
+}
+
+.stamp-button {
+	color: #0000FF;
+	background-color: #ccccff;
+}
+
+.contents-area-small {
+	font-size: 0.7rem !important;
+	padding: 1px !important
+}
+
+#fixed-table td {
+	font-size: 8px !important;
+}
+
+.hyperlink-small {
+	font-size: 0.7rem !important;
+	line-height: 6px;
+}
+
+.div_link-small {
+	line-height: 6px;
+}
+
+.not_used_label {
+	color: red;
+	font-size: 1rem !important;
+}
+
+.stamp-time-small {
+	font-size: 0.8rem !important;
 }

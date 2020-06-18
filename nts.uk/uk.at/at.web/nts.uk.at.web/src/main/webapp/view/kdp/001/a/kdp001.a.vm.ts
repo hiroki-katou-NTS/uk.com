@@ -1,4 +1,4 @@
-module nts.uk.com.view.kdp001.a {
+module nts.uk.at.view.kdp001.a {
 
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -10,80 +10,206 @@ module nts.uk.com.view.kdp001.a {
 
     export module viewmodel {
         export class ScreenModel {
-            commonMasters: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
-            selectedCommonMaster: KnockoutObservable<ICommonMaster> = ko.observable(new CommonMaster());
-            commonMasterItems: KnockoutObservableArray<ICommonMaster> = ko.observableArray([]);
-            selectedCommonMasterItem: KnockoutObservable<MasterItem> = ko.observable(new MasterItem(this.defaultItem));
-            defaultItem = {
-                commonMasterItemId: null,
-                commonMasterItemCode: "",
-                commonMasterItemName: "",
-                displayNumber: null,
-                usageStartDate: moment(new Date()).format("YYYY/MM/DD"),
-                usageEndDate: "9999/12/31"
-            }
-            fistLoad = true;
-            
-            newMode: KnockoutObservable<boolean> = ko.observable(false);
 
+            isUsed: KnockoutObservable<boolean> = ko.observable(false);
+            setting: KnockoutObservable<IStampSetting> = ko.observable();
+            stampDatas: KnockoutObservableArray<any> = ko.observableArray([]);
+            systemDate: KnockoutObservable<any> = ko.observable();
+            screenMode: KnockoutObservable<any> = ko.observable();
+            buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
+                {
+                    buttonPositionNo: 1,
+                    buttonDisSet: {
+
+                        buttonNameSet: {
+                            textColor: '#f3f3f3',
+                            buttonName: 'test'
+                        },
+                        /** 背景色 */
+                        backGroundColor: '#3e7db6'
+                    }
+                },
+                {
+                    buttonPositionNo: 2,
+                    buttonDisSet: {
+
+                        buttonNameSet: {
+                            textColor: '#f3f3f3',
+                            buttonName: 'test2'
+                        },
+                        /** 背景色 */
+                        backGroundColor: '#3e7db6'
+                    }
+                },
+                {
+                    buttonPositionNo: 3,
+                    buttonDisSet: {
+
+                        buttonNameSet: {
+                            textColor: '#f3f3f3',
+                            buttonName: 'test3'
+                        },
+                        /** 背景色 */
+                        backGroundColor: '#3e7db6'
+                    }
+                },
+                {
+                    buttonPositionNo: 4,
+                    buttonDisSet: {
+
+                        buttonNameSet: {
+                            textColor: '#f3f3f3',
+                            buttonName: 'test4'
+                        },
+                        /** 背景色 */
+                        backGroundColor: '#3e7db6'
+                    }
+                }
+            ]);
             constructor() {
                 let self = this;
-                $("#fixed-table").ntsFixedTable({ height: 80, width: 230 });
+                 
+                
             }
 
             /**
              * start page
              */
-            public start_page(): JQueryPromise<any> {
-
-                let self = this, dfd = $.Deferred();
-
-                dfd.resolve();
-                return dfd.promise();
+            public getSystemDate() {
+                let self = this,
+                    date = moment(self.systemDate()).format("YYYY/MM/DD")
+                    ;
+                return nts.uk.time.applyFormat("Long_YMDW", [date]);
             }
+            
+            public getSystemTime() {
+                let self = this,
+                    time = moment(self.systemDate()).format("HH:mm");
+                return time;
+            }
+            public stamp(data) {
+                let self = __viewContext['viewModel'],
+                    cmd = {
+                        datetime:self.systemDate(),
 
+                        buttonPositionNo: data.buttonPositionNo,
+
+                        refActualResults: null
+
+                    }
+                    ;
+
+                if (data.buttonPositionNo != 3 && data.buttonPositionNo != 4) {
+
+                    service.registerStampInput(cmd).done(() => {
+
+
+                    });
+                }else{
+                    switch (data.buttonPositionNo) {
+                        case 3:
+                        self.openDialogC();
+                            break;
+                        case 4:
+                        self.openDialogB();
+                            break;
+                    }   
+                
+                }
+
+            }
+            
             public openDialogB() {
                 let self = this;
-                setShared('listMasterToB',
-                {
-                    commonMasters: self.commonMasters(),
-                    commonMasterId: self.selectedCommonMaster().commonMasterId(),
-                    commonMasterItems: self.commonMasterItems(),
-                    commonMasterItemId: self.selectedCommonMasterItem().commonMasterItemId()
-                });
-                nts.uk.ui.windows.sub.modal('/view/cmm/022/b/index.xhtml').onClosed(function(): any {
-                    let data: IDialogToMaster = getShared('DialogBToMaster');
-
-                    self.selectedCommonMaster().commonMasterId.valueHasMutated();
+                nts.uk.ui.windows.sub.modal('/view/cps/002/b/index.xhtml').onClosed(function(): any {
+                    service.getEmployeeStampData().done((data) => {
+                        self.stampDatas(data.listStampInfoDisp);
+                    });
                 });
             }
 
             public openDialogC() {
                 let self = this;
-                setShared('listMasterToC', {
-                    commonMasters: self.commonMasters(),
-                    commonMasterId: self.selectedCommonMaster().commonMasterId()
-                });
-                
-                nts.uk.ui.windows.sub.modal('/view/cmm/022/c/index.xhtml').onClosed(function(): any {
-                    let data: IDialogToMaster = getShared('DialogCToMaster');
-                    self.commonMasters(data.masterList);
-                    self.selectedCommonMaster().commonMasterId.valueHasMutated();
+
+                nts.uk.ui.windows.sub.modal('/view/cps/002/c/index.xhtml').onClosed(function(): any {
+                    service.getEmployeeStampData().done((data) => {
+                        self.stampDatas(data.listStampInfoDisp);
+                    });
                 });
             }
+            
+            public start_page(): JQueryPromise<any> {
 
+                let self = this, dfd = $.Deferred();
+                
+                let url = $(location).attr('search');
+                let urlParam: string = url.split("=")[1];
+                if (urlParam) {
+                    self.screenMode(urlParam);
+                }
+                service.confirmUseOfStampInput({ stampMeans: 4 }).done((result) => {
+                    self.isUsed(result.used != 2);
+                    self.systemDate(result.systemDate);
+                    service.getSettingStampInput().done((setting: IStampSetting) => {
+                        self.setting(setting);
+                        if (!!setting) {
+                            let buttons;
+                            if (self.showButtonGoOutAndBack() && setting.portalStampSettings.buttonSettings.length > 2) {
+                                buttons = setting.portalStampSettings.buttonSettings.splice(2);
+                            } else {
+                                buttons = setting.portalStampSettings.buttonSettings;
+                            }
+                            self.buttons(_.sortBy(buttons, ['buttonPositionNo']));
+                        }
+                    });
+
+                    service.getEmployeeStampData().done((data) => {
+                        self.stampDatas(data.listStampInfoDisp);
+                        if (self.stampDatas().length) {
+                            if (self.screenMode() == 'a' || self.screenMode() == 'b') {
+                                $("#fixed-table").ntsFixedTable({ height: 53, width: 215 });
+                            } else {
+                                if (!self.screenMode()) {
+                                    $("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
+                                }
+                            }
+
+                        }
+                    });
+
+                    dfd.resolve();
+
+                });
+                return dfd.promise();
+            }
+            
+            public isScreenCD() {
+                let self = this;
+                return self.screenMode() == 'c' || self.screenMode() == 'd';
+            }
+            
+            public showButtonGoOutAndBack() {
+                let self = this;
+                return self.screenMode() == 'b' || self.screenMode() == 'c';
+            }
+            
+            public showTable() {
+                let self = this;
+                console.log(self.screenMode());
+                return self.screenMode() != 'a' && self.screenMode() != 'b';
+            }
         }
-
+        
 
     }
-    
-    
+
+
     export interface IDialogToMaster {
         commonMasterId: string;
         masterList: Array<ICommonMaster>;
         itemList: Array<IMasterItem>;
         commonMasterItemId: string;
-        
+
     }
 
     export interface ICommonMaster {
@@ -97,29 +223,189 @@ module nts.uk.com.view.kdp001.a {
         commonMasterMemo: string;
     }
 
-    export class CommonMaster {
-        commonMasterId: KnockoutObservable<String> = ko.observable();
-        commonMasterCode: KnockoutObservable<String> = ko.observable();
-        commonMasterName: KnockoutObservable<String> = ko.observable();
-        commonMasterMemo: KnockoutObservable<String> = ko.observable();
-        constructor(data?: ICommonMaster) {
-            let self = this;
-            if (data) {
-                self.commonMasterId(data.commonMasterId);
-                self.commonMasterCode(data.commonMasterCode);
-                self.commonMasterName(data.commonMasterName);
-                self.commonMasterMemo(data.commonMasterMemo);
-            }
-        }
-        
-        updateData(data?) {
-            let self = this;
-            self.commonMasterCode(data ? data.commonMasterCode : "");
-            self.commonMasterName(data ? data.commonMasterName : "");
-            self.commonMasterMemo(data ? data.commonMasterMemo : "");
+    export interface IStampSetting {
+        portalStampSettings: IPortalStampSettingsDto;
 
-        }
+        empInfos: Array<IEmpInfoPotalStampDto>;
     }
+
+    export interface IPortalStampSettingsDto {
+        // 会社ID
+        cid: String;
+
+        // 打刻画面の表示設定
+        displaySettingsStampScreen: IDisplaySettingsStampScreenDto;
+
+        // 打刻ボタン設定
+        buttonSettings: Array<IButtonSettingsDto>;
+
+        // 打刻ボタンを抑制する
+        suppressStampBtn: boolean;
+
+        // トップメニューリンク利用する
+        useTopMenuLink: boolean;
+    }
+
+    export interface IDisplaySettingsStampScreenDto {
+        /** 打刻画面のサーバー時刻補正間隔 */
+        serverCorrectionInterval: number;
+
+        /** 打刻画面の日時の色設定 */
+        settingDateTimeColor: ISettingDateTimeColorOfStampScreenDto;
+
+        /** 打刻結果自動閉じる時間 */
+        resultDisplayTime: number;
+    }
+
+    export interface ISettingDateTimeColorOfStampScreenDto {
+        /** 文字色 */
+        textColor: string;
+
+        /** 背景色 */
+        backgroundColor: string;
+    }
+
+    export interface IButtonSettingsDto {
+        /** ボタン位置NO */
+        buttonPositionNo: number;
+
+        /** ボタンの表示設定 */
+        buttonDisSet: IButtonDisSetDto;
+
+        /** ボタン種類 */
+        buttonType: IButtonTypeDto;
+
+        /** 使用区分 */
+        usrArt: number;
+
+        /** 音声使用方法 */
+        audioType: number;
+
+    }
+    export interface IButtonDisSetDto {
+        /** ボタン名称設定 */
+        buttonNameSet: IButtonNameSetDto;
+
+        /** 背景色 */
+        backGroundColor: String;
+    }
+
+    export interface IButtonNameSetDto {
+        /** 文字色 */
+        textColor: string;
+
+        /** ボタン名称 */
+        buttonName: string;
+    }
+
+    export interface IButtonTypeDto {
+        /** 予約区分 */
+        reservationArt: number;
+
+        /** 打刻種類 */
+        stampType: IStampTypeDto;
+    }
+
+    export interface IStampTypeDto {
+        /** 勤務種類を半休に変更する */
+        changeHalfDay: boolean;
+
+        /** 外出区分 */
+        goOutArt: number;
+
+        /** 所定時刻セット区分 */
+        setPreClockArt: number;
+
+        /** 時刻変更区分 */
+        changeClockArt: number;
+
+        /** 計算区分変更対象 */
+        changeCalArt: number;
+
+    }
+
+    export interface IEmpInfoPotalStampDto {
+        /**
+         * ・社員の打刻データ(Opt) ← 社員の打刻データ EA3782
+         */
+        stampDataOfEmp: IStampDataOfEmployeesDto;
+        /**
+         * ・抑制する打刻(Opt)
+         */
+        StampToSuppress: IStampToSuppressDto;
+    }
+
+    export interface IStampToSuppressDto {
+        goingToWork: boolean;
+        departure: boolean;
+        goOut: boolean;
+        turnBack: boolean;
+    }
+
+    export interface IStampDataOfEmployeesDto {
+        employeeId: String;
+        date: String;
+        stampRecords: Array<IStampRecordDto>;
+    }
+
+    export interface IStampRecordDto {
+        stampNumber: String;
+        stampDate: String;
+        stampTime: String;
+        stampHow: String;
+        stampArt: String;
+        stampArtName: String;
+        revervationAtr: number;
+        empInfoTerCode: number;
+        timeStampType: String;
+
+        // stamp
+        authcMethod: number;
+        stampMeans: number;
+
+        changeHalfDay: boolean;
+        goOutArt: number;
+        setPreClockArt: number;
+        changeClockArt: number;
+        changeClockArtName: String;
+        changeCalArt: number;
+
+        cardNumberSupport: String;
+        workLocationCD: String;
+        workTimeCode: String;
+        overTime: String;
+        overLateNightTime: String;
+
+        reflectedCategory: boolean;
+
+        locationInfor: IStampLocationInforDto;
+        outsideAreaAtr: boolean;
+        latitude: number;
+        longitude: number;
+
+        attendanceTime: String;
+
+
+    }
+    export interface IStampLocationInforDto {
+
+        outsideAreaAtr: boolean;
+
+        /**
+         * 打刻位置情報
+         */
+        positionInfor: IGeoCoordinateDto;
+    }
+
+    export interface IGeoCoordinateDto {
+        latitude: number;
+
+        /** 経度 */
+        longitude: number;
+
+    }
+
+
 
     export interface IMasterItem {
         // 共通項目ID
@@ -137,11 +423,11 @@ module nts.uk.com.view.kdp001.a {
     }
 
     export class MasterItem {
-       
+
         commonMasterItemId: KnockoutObservable<String> = ko.observable();
-       
+
         commonMasterItemCode: KnockoutObservable<String> = ko.observable();
-      
+
         commonMasterItemName: KnockoutObservable<String> = ko.observable();
         displayNumber: KnockoutObservable<number> = ko.observable();
         usageStartDate: KnockoutObservable<String> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
@@ -158,7 +444,7 @@ module nts.uk.com.view.kdp001.a {
                 self.usageEndDate(data.usageEndDate);
             }
         }
-        
+
         updateData(data: IMasterItem) {
             let self = this;
             self.commonMasterItemCode(data.commonMasterItemCode);
