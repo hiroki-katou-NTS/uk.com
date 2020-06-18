@@ -28,7 +28,7 @@
 	margin-left: 50px;
 }
 
-.view-kmp .model-component table td {
+.view-kmp .model-component table.layout-grid td {
 	padding-bottom: 15px;
 }
 
