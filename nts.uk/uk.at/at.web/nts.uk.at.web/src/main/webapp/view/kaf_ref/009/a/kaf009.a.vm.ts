@@ -1,20 +1,20 @@
 module nts.uk.at.view.kaf007_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-    import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange; 
+    import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     
     @bean()
-    class Kaf007AViewModel extends ko.ViewModel {
+    class Kaf009AViewModel extends ko.ViewModel {
         
         application: KnockoutObservable<Application>;
-        appWorkChange: KnockoutObservable<AppWorkChange>;
+        model: KnockoutObservable<Model>;
         commonSetting: any;
     
         created(params: any) {
             const vm = this;
-            vm.application = ko.observable(new Application("", 1, 2, ""));
-            vm.appWorkChange = ko.observable(new AppWorkChange(100, 200));      
+            vm.application = ko.observable(new Application("", 1, 2, ""));   
             vm.commonSetting = ko.observable(CommonProcess.initCommonSetting());
+            vm.model = ko.observable(new Model(true, true, '01', 'ddd','30','33'));
         }
     
         mounted() {
@@ -31,8 +31,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
         register() {
             const vm = this;
             console.log(ko.toJS(vm.application()));
-            console.log(ko.toJS(vm.appWorkChange()));
-            vm.appWorkChange(new AppWorkChange(500, 200));    
+            console.log(ko.toJS(vm.model()));
+            vm.model(new Model(true, true, '01', 'hoang','30','33'));
         }
     }
     

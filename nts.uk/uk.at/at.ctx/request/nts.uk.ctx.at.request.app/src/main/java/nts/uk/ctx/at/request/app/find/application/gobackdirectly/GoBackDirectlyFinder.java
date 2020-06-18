@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackApplicationDomainService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
@@ -55,7 +56,8 @@ public class GoBackDirectlyFinder {
 	private HolidayService holidayServiceDomain;
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
-
+	@Inject
+	private GoBackApplicationDomainService goBackApplicationDomainService;
 	/**
 	 * Get GoBackDirectlyDto
 	 * 
@@ -164,45 +166,46 @@ public class GoBackDirectlyFinder {
 	 */
 	public InforGoBackCommonDirectDto getCommonSetting(String companyID, List<String> sIDs, List<String> appDates,
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
-		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
-		List<GeneralDate> lstDate = new ArrayList<>();
-		if (!CollectionUtil.isEmpty(appDates)) {
-			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
-					.collect(Collectors.toList()));
-		}
-		String sId = CollectionUtil.isEmpty(sIDs) ? "" : sIDs.get(0);
-		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
-		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
-		AppDispInfoStartupDto appDispInfoStartupDto = AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
-		AppEmploymentSetting aes = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
-		List<WorkTimeSetting> lstWts = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst();
-		// 直行直帰申請起動時初期データを取得する
-		InforGoBackDirectOutput inforGoBackDirectOutput = this.getInforGoBackDirect(companyID, sId, appDate, baseDate, aes,
-				lstWts);
-		output.setLstWorkType(inforGoBackDirectOutput.getLstWorkType());
-		output.setWorkType(inforGoBackDirectOutput.getWorkType());
-		output.setWorkTime(inforGoBackDirectOutput.getWorkTime());
-		// エラー情報をチェックする(Check ErrorInfo)
-		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorFlag() != ErrorFlagImport.NO_ERROR) {
-			// handle error message
-		} else {
-			// ドメインモデル「直行直帰申請共通設定」より取得する
-			Optional<GoBackDirectlyCommonSetting> gbdcs = goBackDirectCommonSetRepo.findByCompanyID(companyID);
-			if (gbdcs.isPresent()) {
-				output.setGobackDirectCommon(gbdcs.get());
-			}
-			output.setAppDispInfoStartup(appDispInfoStartupOutput);
-		}
-		// check output mode Screen
-		// waiting handle
-		Optional<GoBackDirectly> gbdOptional = Optional.ofNullable(null);
-		output.setGoBackDirectly(gbdOptional);
-		if (appDispInfoStartupDto.appDetailScreenInfo != null) {
-			if (appDispInfoStartupDto.appDetailScreenInfo.outputMode == 1) {
-				// 直行直帰申請
-			}
-		}
-		return InforGoBackCommonDirectDto.convertDto(output);
+//		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
+//		List<GeneralDate> lstDate = new ArrayList<>();
+//		if (!CollectionUtil.isEmpty(appDates)) {
+//			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
+//					.collect(Collectors.toList()));
+//		}
+//		String sId = CollectionUtil.isEmpty(sIDs) ? "" : sIDs.get(0);
+//		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
+//		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
+//		AppDispInfoStartupDto appDispInfoStartupDto = AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
+//		AppEmploymentSetting aes = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
+//		List<WorkTimeSetting> lstWts = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst();
+//		// 直行直帰申請起動時初期データを取得する
+//		InforGoBackDirectOutput inforGoBackDirectOutput = this.getInforGoBackDirect(companyID, sId, appDate, baseDate, aes,
+//				lstWts);
+//		output.setLstWorkType(inforGoBackDirectOutput.getLstWorkType());
+//		output.setWorkType(inforGoBackDirectOutput.getWorkType());
+//		output.setWorkTime(inforGoBackDirectOutput.getWorkTime());
+//		// エラー情報をチェックする(Check ErrorInfo)
+//		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorFlag() != ErrorFlagImport.NO_ERROR) {
+//			// handle error message
+//		} else {
+//			// ドメインモデル「直行直帰申請共通設定」より取得する
+//			Optional<GoBackDirectlyCommonSetting> gbdcs = goBackDirectCommonSetRepo.findByCompanyID(companyID);
+//			if (gbdcs.isPresent()) {
+//				output.setGobackDirectCommon(gbdcs.get());
+//			}
+//			output.setAppDispInfoStartup(appDispInfoStartupOutput);
+//		}
+//		// check output mode Screen
+//		// waiting handle
+//		Optional<GoBackDirectly> gbdOptional = Optional.ofNullable(null);
+//		output.setGoBackDirectly(gbdOptional);
+//		if (appDispInfoStartupDto.appDetailScreenInfo != null) {
+//			if (appDispInfoStartupDto.appDetailScreenInfo.outputMode == 1) {
+//				// 直行直帰申請
+//			}
+//		}
+//		return InforGoBackCommonDirectDto.convertDto(output);
+		return null;
 	}
 	/**
 	 * 申請日を変更する
@@ -231,6 +234,26 @@ public class GoBackDirectlyFinder {
 	 */
 	public GoBackDirectDetailDto getGoBackDirectDetailByAppId(String appID) {
 		return GoBackDirectDetailDto.convertToDto(goBackAppSet.getGoBackDirectAppSet(appID));
+	}
+	public InforGoBackCommonDirectDto getOutputApplication(String sId, String appdate) {
+		String companyID = AppContexts.user().companyId();
+		List<String>sIds = new ArrayList<String>();
+		sIds.add(AppContexts.user().employeeId());
+		List<String> appDates = new ArrayList<String>();
+		GeneralDate today = GeneralDate.today();
+		appDates.add(today.toString("yyyy/MM/dd"));
+		Boolean newMode = true;
+		//起動時の申請表示情報を取得する
+		AppDispInfoStartupOutput appDispInfoStartupOutput = this.getApplicationDisplay(
+				companyID, 
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
+				sIds, 
+				appDates, 
+				newMode
+				);
+		nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput output = goBackApplicationDomainService.getInfoOutput(companyID, sIds, appDates, appDispInfoStartupOutput);
+		
+		return InforGoBackCommonDirectDto.convertDto(output);
 	}
 
 }

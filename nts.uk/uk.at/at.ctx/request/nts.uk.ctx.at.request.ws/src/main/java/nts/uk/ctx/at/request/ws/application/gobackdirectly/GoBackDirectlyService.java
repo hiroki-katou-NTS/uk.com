@@ -83,50 +83,48 @@ public class GoBackDirectlyService extends WebService {
 	@POST
 	@Path("getGoBackCommonSettingNew")
 	public InforGoBackCommonDirectDto getGoBackCommonSettingNew(ParamDirectBack param) {
-		String companyID = AppContexts.user().companyId();
-		List<String> sIds = new ArrayList<String>();
-		sIds.add(AppContexts.user().employeeId());
-		List<String> appDates = new ArrayList<String>();
-		GeneralDate today = GeneralDate.today();
-		appDates.add(today.toString("yyyy/MM/dd"));
-		Boolean newMode = true;
+//		String companyID = AppContexts.user().companyId();
+//		List<String> sIds = new ArrayList<String>();
+//		sIds.add(AppContexts.user().employeeId());
+//		List<String> appDates = new ArrayList<String>();
+//		GeneralDate today = GeneralDate.today();
+//		appDates.add(today.toString("yyyy/MM/dd"));
+//		Boolean newMode = true;
 		//起動時の申請表示情報を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = goBackDirectlyFinder.getApplicationDisplay(companyID,ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
-				sIds, appDates, newMode
-				);
-		//起動する
-		return this.goBackDirectlyFinder.getCommonSetting(companyID, sIds, appDates, appDispInfoStartupOutput);
+		
+		return this.goBackDirectlyFinder.getOutputApplication(param.getApplicantEmployeeID(), param.getApplicantList());
 	}
 	@POST
 	@Path("getAppDataByDate")
 	public InforGoBackCommonDirectDto changeDataByDate(ParamChangeDate param) {
-		AppDispInfoStartupDto appDispInfoStartupDto = param.getInforGoBackCommonDirectDto().getAppDispInfoStartupDto();
-//		申請日を変更する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = goBackDirectlyFinder.getDataByDate(param.getCompanyId(), 
-				param.getAppDates(), param.getEmployeeIds(), ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, appDispInfoStartupDto.appDispInfoNoDateOutput.toDomain(), appDispInfoStartupDto.appDispInfoWithDateOutput.toDomain());
-		appDispInfoStartupDto.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput);
-		param.getInforGoBackCommonDirectDto().setAppDispInfoStartupDto(appDispInfoStartupDto);
-//		直行直帰申請起動時初期データを取得する
-		List<GeneralDate> lstDate = new ArrayList<>();
-		if (!CollectionUtil.isEmpty(param.getAppDates())) {
-			lstDate.addAll(param.getAppDates().stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
-					.collect(Collectors.toList()));
-		}
-		String sId = CollectionUtil.isEmpty(param.getEmployeeIds()) ? "" : param.getEmployeeIds().get(0);
-		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
-		GeneralDate baseDate = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getBaseDate();
-		AppEmploymentSetting aes = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getEmploymentSet();
-		List<WorkTimeSetting> lstWts = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getWorkTimeLst();
-		InforGoBackDirectOutput inforGoBackDirectOutput = goBackDirectlyFinder.getInforGoBackDirect(param.getCompanyId(),
-				sId,
-				appDate,
-				baseDate,
-				aes,
-				lstWts);
-		param.getInforGoBackCommonDirectDto().setWorkType(inforGoBackDirectOutput.getWorkType());
-		param.getInforGoBackCommonDirectDto().setWorkTime(inforGoBackDirectOutput.getWorkTime());
-		param.getInforGoBackCommonDirectDto().setLstWorkType(inforGoBackDirectOutput.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()));
-		return param.getInforGoBackCommonDirectDto();
+//		AppDispInfoStartupDto appDispInfoStartupDto = param.getInforGoBackCommonDirectDto().getAppDispInfoStartupDto();
+////		申請日を変更する
+//		AppDispInfoWithDateOutput appDispInfoWithDateOutput = goBackDirectlyFinder.getDataByDate(param.getCompanyId(), 
+//				param.getAppDates(), param.getEmployeeIds(), ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, appDispInfoStartupDto.appDispInfoNoDateOutput.toDomain(), appDispInfoStartupDto.appDispInfoWithDateOutput.toDomain());
+//		appDispInfoStartupDto.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput);
+//		param.getInforGoBackCommonDirectDto().setAppDispInfoStartupDto(appDispInfoStartupDto);
+////		直行直帰申請起動時初期データを取得する
+//		List<GeneralDate> lstDate = new ArrayList<>();
+//		if (!CollectionUtil.isEmpty(param.getAppDates())) {
+//			lstDate.addAll(param.getAppDates().stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
+//					.collect(Collectors.toList()));
+//		}
+//		String sId = CollectionUtil.isEmpty(param.getEmployeeIds()) ? "" : param.getEmployeeIds().get(0);
+//		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
+//		GeneralDate baseDate = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getBaseDate();
+//		AppEmploymentSetting aes = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getEmploymentSet();
+//		List<WorkTimeSetting> lstWts = appDispInfoStartupDto.toDomain().getAppDispInfoWithDateOutput().getWorkTimeLst();
+//		InforGoBackDirectOutput inforGoBackDirectOutput = goBackDirectlyFinder.getInforGoBackDirect(param.getCompanyId(),
+//				sId,
+//				appDate,
+//				baseDate,
+//				aes,
+//				lstWts);
+//		param.getInforGoBackCommonDirectDto().setWorkType(inforGoBackDirectOutput.getWorkType());
+//		param.getInforGoBackCommonDirectDto().setWorkTime(inforGoBackDirectOutput.getWorkTime());
+//		param.getInforGoBackCommonDirectDto().setLstWorkType(inforGoBackDirectOutput.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()));
+//		return param.getInforGoBackCommonDirectDto();
+		return null;
 	}
 
 	/**

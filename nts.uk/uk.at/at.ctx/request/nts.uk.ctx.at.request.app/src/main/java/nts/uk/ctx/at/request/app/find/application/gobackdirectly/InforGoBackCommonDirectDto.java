@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 //直行直帰申請起動時の表示情報
 public class InforGoBackCommonDirectDto {
 //	勤務種類初期選択
-	private InforWorkType workType;
+	private nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType workType;
 //	就業時間帯初期選択
-	private InforWorkTime workTime;
+	private nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime workTime;
 //	申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartupDto;
 //	直行直帰申請共通設定
@@ -27,7 +27,7 @@ public class InforGoBackCommonDirectDto {
 //	直行直帰申請
 	private GoBackDirectlyDto goBackDirectly;
 	
-	public static InforGoBackCommonDirectDto convertDto(InforGoBackCommonDirectOutput output) {
+	public static InforGoBackCommonDirectDto convertDto(nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput output) {
 		return new InforGoBackCommonDirectDto(
 					output.getWorkType(),
 					output.getWorkTime(),
