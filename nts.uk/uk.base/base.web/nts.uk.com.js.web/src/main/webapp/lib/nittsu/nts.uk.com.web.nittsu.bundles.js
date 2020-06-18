@@ -47443,7 +47443,7 @@ function bean() {
 }
 function component(options) {
     return function (ctor) {
-        return $.Deferred().resolve(options.template.endsWith('.html'))
+        return $.Deferred().resolve(options.template.match(/\.html$/))
             .then(function (url) {
             return url ? $.get(options.template) : options.template;
         })
@@ -47452,7 +47452,7 @@ function component(options) {
                 ko.components.register(options.name, {
                     template: template,
                     viewModel: {
-                        createViewModel: function ($params, __) {
+                        createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
                             // hook to created function
                             if ($created && _.isFunction($created)) {
@@ -47461,6 +47461,7 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                _.extend($viewModel, { $el: $el.element });
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
