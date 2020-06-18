@@ -35,7 +35,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -245,7 +245,7 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	
 	/** 日の法定労働時間の取得 */
 	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	private DailyStatutoryLaborTime dailyStatutoryWorkingHours;
 	/** 週・月の法定労働時間の取得*/
 	@Inject
 	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;

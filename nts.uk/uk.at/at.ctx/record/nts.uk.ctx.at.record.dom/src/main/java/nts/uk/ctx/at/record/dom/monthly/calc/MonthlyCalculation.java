@@ -41,14 +41,14 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHoursImpl;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSetImpl;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetFlexAggrSetImpl;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetRegularAggrSetImpl;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetFlexAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetRegularAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
@@ -78,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLabor
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
@@ -1509,14 +1510,12 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.agreementTimeOfManagePeriod.sum(target.agreementTimeOfManagePeriod);
 	}
 
-	public static interface Require extends GetRegularAggrSetImpl.Require, GetDeforAggrSetImpl.Require,
-			GetFlexAggrSetImpl.Require, MonthlyStatutoryWorkingHoursImpl.Require,
+	public static interface Require extends GetRegularAggrSet.Require, GetDeforAggrSet.Require,
+			GetFlexAggrSet.Require, MonthlyStatutoryWorkingHours.Require,
 			RegularAndIrregularTimeOfMonthly.Require, AgreementTimeOfManagePeriod.Require, FlexTimeOfMonthly.Require {
-		// repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(employeeId,
-		// checkPeriod);
-		List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod);
 
-		// repositories.getWorkingCondition().getByHistoryId(startHistoryId);
+		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
+
 		Optional<WorkingCondition> getByHistoryId(String historyId);
 
 	}
@@ -1524,93 +1523,93 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	public Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
 		return new MonthlyCalculation.Require() {
 			@Override
-			public Optional<ShainNormalSetting> findShainNormalSetting(String cid, String empId, int year) {
+			public Optional<ShainNormalSetting> statutoryWorkTimeSetByEmployee(String cid, String empId, int year) {
 				return repositories.getShainNormalSettingRepository().find(cid, empId, year);
 			}
 
 			@Override
-			public Optional<ShainDeforLaborSetting> findShainDeforLaborSetting(String cid, String empId, int year) {
+			public Optional<ShainDeforLaborSetting> statutoryDeforWorkTimeSetByEmployee(String cid, String empId, int year) {
 				return repositories.getShainDeforLaborSettingRepository().find(cid, empId, year);
 			}
 
 			@Override
-			public Optional<WkpNormalSetting> findWkpNormalSetting(String cid, String wkpId, int year) {
+			public Optional<WkpNormalSetting> statutoryWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
 				return repositories.getWkpNormalSettingRepository().find(cid, wkpId, year);
 			}
 
 			@Override
-			public Optional<WkpDeforLaborSetting> findWkpDeforLaborSetting(String cid, String wkpId, int year) {
+			public Optional<WkpDeforLaborSetting> statutoryDeforWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
 				return repositories.getWkpDeforLaborSettingRepository().find(cid, wkpId, year);
 			}
 
 			@Override
-			public Optional<EmpNormalSetting> findEmpNormalSetting(String cid, String emplCode, int year) {
+			public Optional<EmpNormalSetting> statutoryWorkTimeSetByEmployment(String cid, String emplCode, int year) {
 				return repositories.getEmpNormalSettingRepository().find(cid, emplCode, year);
 			}
 
 			@Override
-			public Optional<EmpDeforLaborSetting> findEmpDeforLaborSetting(String cid, String emplCode, int year) {
+			public Optional<EmpDeforLaborSetting> statutoryDeforWorkTimeSetByEmployment(String cid, String emplCode, int year) {
 				return repositories.getEmpDeforLaborSettingRepository().find(cid, emplCode, year);
 			}
 
 			@Override
-			public Optional<ComNormalSetting> findComNormalSetting(String companyId, int year) {
+			public Optional<ComNormalSetting> statutoryWorkTimeSetByCompany(String companyId, int year) {
 				return repositories.getComNormalSettingRepository().find(companyId, year);
 			}
 
 			@Override
-			public Optional<ComDeforLaborSetting> findComDeforLaborSetting(String companyId, int year) {
+			public Optional<ComDeforLaborSetting> statutoryDeforWorkTimeSetByCompany(String companyId, int year) {
 				return repositories.getComDeforLaborSettingRepository().find(companyId, year);
 			}
 
 			@Override
-			public Optional<ShainFlexSetting> findShainFlexSetting(String cid, String empId, int year) {
+			public Optional<ShainFlexSetting> flexSettingByEmployee(String cid, String empId, int year) {
 				return repositories.getShainFlexSettingRepository().find(cid, empId, year);
 			}
 
 			@Override
-			public Optional<EmpFlexSetting> findEmpFlexSetting(String cid, String emplCode, int year) {
+			public Optional<EmpFlexSetting> flexSettingByEmployment(String cid, String emplCode, int year) {
 				return repositories.getEmpFlexSettingRepository().find(cid, emplCode, year);
 			}
 
 			@Override
-			public Optional<ComFlexSetting> findComFlexSetting(String companyId, int year) {
+			public Optional<ComFlexSetting> flexSettingByCompany(String companyId, int year) {
 				return repositories.getComFlexSettingRepository().find(companyId, year);
 			}
-
+			
 			@Override
-			public Optional<UsageUnitSetting> findByCompany(String companyId) {
-				return repositories.getUsageUnitSetRepo().findByCompany(companyId);
+			public Optional<WkpFlexSetting> flexSettingByWorkplace(String cid, String wkpId, int year) {
+				return repositories.getWkpFlexSettingRepository().find(cid, wkpId, year);
 			}
 
 			@Override
-			public Optional<WkpFlexMonthActCalSet> findWkpFlexMonthActCalSet(String cid, String wkpId) {
+			public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId) {
 				return repositories.getWkpFlexMonthActCalSetRepository().find(cid, wkpId);
 			}
 
 			@Override
-			public Optional<EmpFlexMonthActCalSet> findEmpFlexMonthActCalSet(String cid, String empCode) {
+			public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode) {
 				return repositories.getEmpFlexMonthActCalSetRepository().find(cid, empCode);
 			}
 
 			@Override
-			public Optional<WkpDeforLaborMonthActCalSet> findWkpDeforLaborMonthActCalSet(String cid, String wkpId) {
-				return repositories.getWkpDeforLaborMonthActCalSetRepository().find(companyId, wkpId);
+			public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
+				return repositories.getWkpDeforLaborMonthActCalSetRepository().find(cid, wkpId);
 			}
 
 			@Override
-			public Optional<EmpDeforLaborMonthActCalSet> findEmpDeforLaborMonthActCalSet(String cid, String empCode) {
-				return repositories.getEmpDeforLaborMonthActCalSetRepository().find(companyId, empCode);
+			public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(String cid, String empCode) {
+				return repositories.getEmpDeforLaborMonthActCalSetRepository().find(cid, empCode);
 			}
 
 			@Override
-			public Optional<WkpRegulaMonthActCalSet> findWkpRegulaMonthActCalSet(String cid, String wkpId) {
-				return repositories.getWkpRegulaMonthActCalSetRepository().find(companyId, wkpId);
+			public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId) {
+				return repositories.getWkpRegulaMonthActCalSetRepository().find(cid, wkpId);
 			}
 
 			@Override
-			public Optional<EmpRegulaMonthActCalSet> findEmpRegulaMonthActCalSet(String cid, String empCode) {
-				return repositories.getEmpRegulaMonthActCalSetRepository().find(companyId, empCode);
+			public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode) {
+				return repositories.getEmpRegulaMonthActCalSetRepository().find(cid, empCode);
 			}
 
 			@Override
@@ -1624,7 +1623,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			}
 
 			@Override
-			public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId,
+			public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlyByYmWithOrder(String employeeId,
 					YearMonth yearMonth) {
 				return repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, yearMonth);
 			}
@@ -1658,7 +1657,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 					WorkingSystem workingSystem) {
 				return repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate,
-						workingSystem);
+						workingSystem).getBasicAgreementSetting();
 			}
 
 			@Override
@@ -1667,57 +1666,57 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			}
 
 			@Override
-			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+			public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode) {
 				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
 			}
 
 			@Override
-			public Optional<EmpRegularLaborTime> findById(String cid, String employmentCode) {
+			public Optional<EmpRegularLaborTime> regularLaborTimeByEmployment(String cid, String employmentCode) {
 				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
 			}
 
 			@Override
-			public Optional<ComTransLaborTime> findcomTransLaborTime(String companyId) {
+			public Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId) {
 				return repositories.getComTransLaborTime().find(companyId);
 			}
 
 			@Override
-			public Optional<ComRegularLaborTime> findcomRegularLaborTime(String companyId) {
+			public Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId) {
 				return repositories.getComRegularLaborTime().find(companyId);
 			}
 
 			@Override
-			public Optional<ShainRegularLaborTime> findShainRegularLaborTime(String Cid, String EmpId) {
+			public Optional<ShainRegularLaborTime> regularLaborTimeByEmployee(String Cid, String EmpId) {
 				return repositories.getShainRegularWorkTime().find(Cid, EmpId);
 			}
 
 			@Override
-			public Optional<ShainTransLaborTime> findShainTransLaborTime(String cid, String empId) {
+			public Optional<ShainTransLaborTime> transLaborTimeByEmployee(String cid, String empId) {
 				return repositories.getShainTransLaborTime().find(cid, empId);
 			}
 
 			@Override
-			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
+			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
 				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
 			}
 
 			@Override
-			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
+			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
 				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
 			}
 
 			@Override
-			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
+			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
 				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
 			}
 
 			@Override
-			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
+			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
 				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
 			}
 
 			@Override
-			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
+			public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
 				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
 			}
 
@@ -1726,6 +1725,35 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				return repositories.getWorkingCondition().getByHistoryId(historyId);
 			}
 
-		};
+			@Override
+			public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return repositories.getAffWorkplace().findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+
+			@Override
+			public Optional<EmpTransLaborTime> transLaborTimeByEmployment(String cid, String emplId) {
+
+				return repositories.getEmpTransWorkTime().find(cid, emplId);
+			}
+
+			@Override
+			public Optional<WkpRegularLaborTime> regularLaborTimeByWorkplace(String cid, String wkpId) {
+
+				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
+			}
+
+			@Override
+			public Optional<WkpTransLaborTime> transLaborTimeByWorkplace(String cid, String wkpId) {
+				
+				return repositories.getWkpTransLaborTime().find(cid, wkpId);
+			}
+
+			@Override
+			public Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId) {
+				
+				return repositories.getUsageUnitSetRepo().findByCompany(companyId);
+			}
+		}
 	}
 }

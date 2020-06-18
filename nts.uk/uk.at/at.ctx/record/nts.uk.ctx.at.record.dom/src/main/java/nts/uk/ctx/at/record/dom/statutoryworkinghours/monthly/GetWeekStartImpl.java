@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
@@ -20,7 +20,7 @@ public class GetWeekStartImpl implements GetWeekStart {
 
 	/** 日の法定労働時間 */
 	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	private DailyStatutoryLaborTime dailyStatutoryWorkingHours;
 	
 	/** 週開始を取得する */
 	@Override

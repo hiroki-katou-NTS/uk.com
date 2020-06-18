@@ -369,7 +369,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 				startWeekNo, companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
 	}
 	
-	public static interface Require extends MonthlyCalculation.Require{
+	public static interface Require extends MonthlyCalculation.Require {
 
 	}
 

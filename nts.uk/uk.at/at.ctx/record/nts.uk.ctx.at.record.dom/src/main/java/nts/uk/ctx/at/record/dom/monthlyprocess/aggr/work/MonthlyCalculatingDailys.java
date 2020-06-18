@@ -96,19 +96,9 @@ public class MonthlyCalculatingDailys {
 	 * @return 月の計算中の日別実績データ
 	 */
 	public static MonthlyCalculatingDailys loadData(
-			String employeeId,
-			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
-			MonAggrEmployeeSettings settings){
-		
-		return loadDataRequire(createRequireImpl(repositories), employeeId, period, repositories, settings);
-	}
-	
-	public static MonthlyCalculatingDailys loadDataRequire(
 			Require require, 
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
@@ -117,19 +107,15 @@ public class MonthlyCalculatingDailys {
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の勤怠時間
-		val attendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		val attendanceTimeOfDailyList = require.dailyAttendanceTimes(employeeId, findPeriod);
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
 		// 共通処理
-//		result.loadDataCommon(require, employeeId, period, repositories);
-//
-//		return correctExamDayTimeRequire(require, result, repositories);
-		result.loadDataCommon(require, employeeId, period, repositories, settings);
+		result.loadDataCommon(require, employeeId, period, settings);
 		
-		return correctExamDayTime(result, repositories, settings);
+		return correctExamDayTime(result, settings);
 	}
 	
 	/**
@@ -141,14 +127,14 @@ public class MonthlyCalculatingDailys {
 	 * @return 月の計算中の日別実績データ
 	 */
 	public static MonthlyCalculatingDailys loadData(
+			Require require,
 			String employeeId,
 			DatePeriod period,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
-		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories, settings);
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(require, employeeId, period, settings);
 		
 		// 日別実績の勤怠時間リストの指定がない時、終了
 		if (attendanceTimeOfDailys.size() <= 0) return result;
@@ -159,7 +145,7 @@ public class MonthlyCalculatingDailys {
 			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
 		}
 		
-		return correctExamDayTime(result, repositories, settings);
+		return correctExamDayTime(result, settings);
 	}
 	
 	/**
@@ -175,11 +161,10 @@ public class MonthlyCalculatingDailys {
 			String employeeId,
 			DatePeriod period,
 			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
-		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories, settings);
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(require, employeeId, period, settings);
 
 		// 日別実績(WORK)指定がない時、終了
 		if (!dailyWorksOpt.isPresent()) return result;
@@ -258,35 +243,12 @@ public class MonthlyCalculatingDailys {
 			}
 		}
 		
-//<<<<<<< HEAD
-		return correctExamDayTimeRequire(require, result, repositories);
+		return correctExamDayTime(result, settings);
 
 	}
 	
-	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, RepositoriesRequiredByMonthlyAggr repositories){
-		return correctExamDayTimeRequire(createRequireImpl(repositories), calcDaily, repositories);
-	}
-	private static MonthlyCalculatingDailys correctExamDayTimeRequire(Require require, MonthlyCalculatingDailys calcDaily, RepositoriesRequiredByMonthlyAggr repositories){
-		for (Entry<GeneralDate, AttendanceTimeOfDailyPerformance> dailyAttenTime : calcDaily.attendanceTimeOfDailyMap.entrySet()) {
-			GeneralDate currentDate = dailyAttenTime.getKey();
-			if (calcDaily.workInfoOfDailyMap.containsKey(currentDate)) {
-				WorkInfoOfDailyPerformance wi = calcDaily.workInfoOfDailyMap.get(currentDate);
-				val workCondition = require.getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
-				workCondition.ifPresent(wc -> {
-					if (wc.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
-						calcDaily.attendanceTimeOfDailyMap.put(currentDate, examDayTimeCorrect(dailyAttenTime.getValue(), wi));
-					}
-				});
-			}
-		}
-		return calcDaily;
-//=======
-//		return correctExamDayTime(result, repositories, settings);
-//>>>>>>> 8988ec62963... update for response 試験日対応
-	}
-	
 	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, 
-			RepositoriesRequiredByMonthlyAggr repositories, MonAggrEmployeeSettings settings){
+			MonAggrEmployeeSettings settings){
 		
 		
 		for (Entry<GeneralDate, AttendanceTimeOfDailyPerformance> dailyAttenTime : calcDaily.attendanceTimeOfDailyMap.entrySet()) {
@@ -296,7 +258,6 @@ public class MonthlyCalculatingDailys {
 			if (calcDaily.workInfoOfDailyMap.containsKey(currentDate)) {
 				WorkInfoOfDailyPerformance wi = calcDaily.workInfoOfDailyMap.get(currentDate);
 				
-//				val workCondition = repositories.getWorkingConditionItem().getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
 				settings.getWorkingConditions().entrySet().stream()
 				.filter(wc -> wc.getValue().contains(wi.getYmd()))
 				.findFirst().flatMap(wc -> settings.getWorkingConditionItems().stream()
@@ -305,7 +266,8 @@ public class MonthlyCalculatingDailys {
 														.findFirst())
 				.ifPresent(laborSystem -> {
 					if (laborSystem == WorkingSystem.FLEX_TIME_WORK) {
-						calcDaily.attendanceTimeOfDailyMap.put(currentDate, examDayTimeCorrect(dailyAttenTime.getValue(), wi));
+						calcDaily.attendanceTimeOfDailyMap.put(currentDate, 
+								examDayTimeCorrect(dailyAttenTime.getValue(), wi));
 					}
 				});
 			}
@@ -379,21 +341,19 @@ public class MonthlyCalculatingDailys {
 			Require require,
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		
 		// データ取得共通処理　（36協定時間用）
-//		this.loadDataCommonForAgreementRequire(require, employeeId, period, repositories);
-		this.loadDataCommonForAgreement(employeeId, period, repositories, settings);
+		this.loadDataCommonForAgreement(require, employeeId, period, settings);
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の出退勤
-		val timeLeaveOfDailyList = require.findTimeLeavingbyPeriodOrderByYmd(employeeId, findPeriod);
+		val timeLeaveOfDailyList = require.dailyTimeLeavings(employeeId, findPeriod);
 		for (val timeLeaveOfDaily : timeLeaveOfDailyList){
 			this.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
 		}
@@ -401,21 +361,21 @@ public class MonthlyCalculatingDailys {
 		// ※　以下は、期間外の配慮不要。
 
 		// 日別実績の臨時出退勤
-		val temporaryTimeOfDailys = require.findTemporarybyPeriodOrderByYmd(employeeId, period);
+		val temporaryTimeOfDailys = require.dailyTemporaryTimes(employeeId, period);
 		for (val temporaryTimeOfDaily : temporaryTimeOfDailys){
 			val ymd = temporaryTimeOfDaily.getYmd();
 			this.temporaryTimeOfDailyMap.putIfAbsent(ymd, temporaryTimeOfDaily);
 		}
 		
 		// 日別実績の特定日区分
-		val specificDateAttrOfDailys = require.findSpecificDateByPeriodOrderByYmd(employeeId, period);
+		val specificDateAttrOfDailys = require.dailySpecificDates(employeeId, period);
 		for (val specificDateAttrOfDaily : specificDateAttrOfDailys){
 			val ymd = specificDateAttrOfDaily.getYmd();
 			this.specificDateAttrOfDailyMap.putIfAbsent(ymd, specificDateAttrOfDaily);
 		}
 		
 		// 社員の日別実績エラー一覧
-		this.employeeDailyPerErrorList = require.findEmployeeDailyPerErrorByPeriodOrderByYmd(employeeId, period);
+		this.employeeDailyPerErrorList = require.dailyEmpErrors(employeeId, period);
 		val itrPerError = this.employeeDailyPerErrorList.listIterator();
 		while (itrPerError.hasNext()){
 			val perError = itrPerError.next();
@@ -423,25 +383,25 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 日別実績の任意項目
-		this.anyItemValueOfDailyList = require.findsAnyItemValue(employeeIds, period);
+		this.anyItemValueOfDailyList = require.dailyAnyItems(employeeIds, period);
 		
 		// PCログオン情報
-		val pcLogonInfos = require.findsPcLongOnInfo(employeeIds, period);
+		val pcLogonInfos = require.dailyPcLogons(employeeIds, period);
 		for (val pcLogonInfo : pcLogonInfos){
 			val ymd = pcLogonInfo.getYmd();
 			this.pcLogonInfoMap.putIfAbsent(ymd, pcLogonInfo);
 		}
 		
 		// 年休付与残数データリスト
-		this.grantRemainingDatas = require.findNotExp(employeeId).stream()
+		this.grantRemainingDatas = require.annLeaveRemains(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 積立年休付与残数データリスト
-		this.rsvGrantRemainingDatas = require.findNotExp(employeeId, null).stream()
+		this.rsvGrantRemainingDatas = require.rsvLeaveRemains(employeeId, null).stream()
 						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 日別実績の勤務種別
-		val workTypes = require.finds(employeeIds, period);
+		val workTypes = require.dailyWorkTypes(employeeIds, period);
 		for (val workType : workTypes){
 			val ymd = workType.getDate();
 			this.workTypeOfDailyMap.putIfAbsent(ymd, workType);
@@ -456,9 +416,9 @@ public class MonthlyCalculatingDailys {
 	 * @return 月の計算中の日別実績データ
 	 */
 	public static MonthlyCalculatingDailys loadDataForAgreement(
+			Require require,
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
@@ -467,16 +427,15 @@ public class MonthlyCalculatingDailys {
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の勤怠時間
-		val attendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		val attendanceTimeOfDailyList = require.dailyAttendanceTimes(employeeId, findPeriod);
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(employeeId, period, repositories, settings);
+		result.loadDataCommonForAgreement(require, employeeId, period, settings);
 		
-		return correctExamDayTime(result, repositories, settings);
+		return correctExamDayTime(result, settings);
 	}
 	
 	/**
@@ -488,10 +447,10 @@ public class MonthlyCalculatingDailys {
 	 * @return 月の計算中の日別実績データ
 	 */
 	public static MonthlyCalculatingDailys loadDataForAgreement(
+			Require require,
 			String employeeId,
 			DatePeriod period,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
@@ -500,8 +459,7 @@ public class MonthlyCalculatingDailys {
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の勤怠時間
-		val attendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
+		val attendanceTimeOfDailyList = require.dailyAttendanceTimes(employeeId, findPeriod);
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
@@ -512,9 +470,9 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(employeeId, period, repositories, settings);
+		result.loadDataCommonForAgreement(require, employeeId, period, settings);
 		
-		return correctExamDayTime(result, repositories, settings);
+		return correctExamDayTime(result, settings);
 	}
 	
 	/**
@@ -524,34 +482,19 @@ public class MonthlyCalculatingDailys {
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
 	public void loadDataCommonForAgreement(
-			String employeeId,
-			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
-			MonAggrEmployeeSettings settings){
-		loadDataCommonForAgreementRequire(createRequireImpl(repositories), employeeId, period, repositories, settings);
-	}
-	
-	private void loadDataCommonForAgreementRequire(
 			Require require,
 			String employeeId,
 			DatePeriod period,
-			RepositoriesRequiredByMonthlyAggr repositories,
 			MonAggrEmployeeSettings settings){
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
 		
 		// 日別実績の勤務情報
-		val workInfoOfDailyList = require.findWorkInfoByPeriodOrderByYmd(employeeId, findPeriod);
+		val workInfoOfDailyList = require.dailyWorkInfos(employeeId, findPeriod);
 		for (val workInfoOfDaily : workInfoOfDailyList){
 			this.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
 		}
-		
-//		val workConditions =
-//				repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(employeeId, findPeriod);
-//		for (val conditionItem : workConditions){
-//			this.workConditions.putIfAbsent(conditionItem.get, conditionItem);
-//		}
 	}
 	
 	/**
@@ -570,83 +513,26 @@ public class MonthlyCalculatingDailys {
 	}
 	
 	public static interface Require{
-//		repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		List<AttendanceTimeOfDailyPerformance> findAttendanceTimeByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		List<WorkInfoOfDailyPerformance> findWorkInfoByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getWorkingConditionItem().getBySidAndStandardDate(wi.getEmployeeId(), currentDate);
-		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
-//		repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, findPeriod);
-		List<TimeLeavingOfDailyPerformance> findTimeLeavingbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getTemporaryTimeOfDaily().findbyPeriodOrderByYmd(employeeId, period);
-		List<TemporaryTimeOfDailyPerformance> findTemporarybyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getSpecificDateAttrOfDaily().findByPeriodOrderByYmd(employeeId, period);
-		List<SpecificDateAttrOfDailyPerfor> findSpecificDateByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, period);
-		List<EmployeeDailyPerError> findEmployeeDailyPerErrorByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-//		repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
-		List<AnyItemValueOfDaily> findsAnyItemValue(List<String> employeeId, DatePeriod baseDate);
-//		repositories.getPCLogonInfoOfDaily().finds(employeeIds, period);
-		List<PCLogOnInfoOfDaily> findsPcLongOnInfo(List<String> employeeId, DatePeriod baseDate);
-//		repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
-		List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
-//		repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null)
-		List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId);
-//		repositories.getWorkTypeOfDaily().finds(employeeIds, period);
-		List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate);
-	}
-
-	private static Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
-		return new MonthlyCalculatingDailys.Require() {
-			@Override
-			public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-				return repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, baseDate);
-			}
-			@Override
-			public List<PCLogOnInfoOfDaily> findsPcLongOnInfo(List<String> employeeIds, DatePeriod baseDate) {
-				return repositories.getPCLogonInfoOfDaily().finds(employeeIds, baseDate);
-			}
-			@Override
-			public List<AnyItemValueOfDaily> findsAnyItemValue(List<String> employeeIds, DatePeriod baseDate) {
-				return repositories.getAnyItemValueOfDaily().finds(employeeIds, baseDate);
-			}
-			@Override
-			public List<WorkTypeOfDailyPerformance> finds(List<String> employeeIds, DatePeriod baseDate) {
-				return repositories.getWorkTypeOfDaily().finds(employeeIds, baseDate);
-			}
-			@Override
-			public List<WorkInfoOfDailyPerformance> findWorkInfoByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
-				return repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
-			}
-			@Override
-			public List<TimeLeavingOfDailyPerformance> findTimeLeavingbyPeriodOrderByYmd(String employeeId,
-					DatePeriod datePeriod) {
-				return repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
-			}
-			@Override
-			public List<TemporaryTimeOfDailyPerformance> findTemporarybyPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
-				return repositories.getTemporaryTimeOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
-			}
-			@Override
-			public List<SpecificDateAttrOfDailyPerfor> findSpecificDateByPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
-				return repositories.getSpecificDateAttrOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
-			}
-			@Override
-			public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId) {
-				return repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null);
-			}
-			@Override
-			public List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId) {
-				return repositories.getAnnLeaGrantRemData().findNotExp(employeeId);
-			}
-			@Override
-			public List<EmployeeDailyPerError> findEmployeeDailyPerErrorByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
-				return repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, datePeriod);
-			}
-			@Override
-			public List<AttendanceTimeOfDailyPerformance> findAttendanceTimeByPeriodOrderByYmd(String employeeId,DatePeriod datePeriod) {
-				return repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
-			}
-		};
+		List<AttendanceTimeOfDailyPerformance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod);
+		
+		List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod);
+		
+		List<TimeLeavingOfDailyPerformance> dailyTimeLeavings(String employeeId, DatePeriod datePeriod);
+		
+		List<TemporaryTimeOfDailyPerformance> dailyTemporaryTimes(String employeeId, DatePeriod datePeriod);
+		
+		List<SpecificDateAttrOfDailyPerfor> dailySpecificDates(String employeeId, DatePeriod datePeriod);
+		
+		List<EmployeeDailyPerError> dailyEmpErrors(String employeeId, DatePeriod datePeriod);
+		
+		List<AnyItemValueOfDaily> dailyAnyItems(List<String> employeeId, DatePeriod baseDate);
+		
+		List<PCLogOnInfoOfDaily> dailyPcLogons(List<String> employeeId, DatePeriod baseDate);
+		
+		List<AnnualLeaveGrantRemainingData> annLeaveRemains(String employeeId);
+		
+		List<ReserveLeaveGrantRemainingData> rsvLeaveRemains(String employeeId, String cId);
+		
+		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod baseDate);
 	}
 }

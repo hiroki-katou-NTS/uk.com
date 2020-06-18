@@ -5,16 +5,15 @@ import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantImpl.Require;
 
 /**
  * 次回年休付与を取得する
  * @author shuichu_ishida
  */
-public interface GetNextAnnualLeaveGrant {
+public class GetNextAnnualLeaveGrant {
 
 	/**
 	 * 次回年休付与を取得する
@@ -27,8 +26,12 @@ public interface GetNextAnnualLeaveGrant {
 	 * @param isSingleDay 単一日フラグ
 	 * @return 次回年休付与リスト
 	 */
-	List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
-			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay);
+	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
+			String companyId, String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate,
+			DatePeriod period, boolean isSingleDay) {
+		return algorithm(require, cacheCarrier, companyId, grantTableCode, entryDate, criteriaDate, 
+				period, isSingleDay, Optional.empty(), Optional.empty());
+	}
 
 	/**
 	 * 次回年休付与を取得する
@@ -43,11 +46,16 @@ public interface GetNextAnnualLeaveGrant {
 	 * @param lengthServiceTbls 勤続年数テーブルリスト
 	 * @return 次回年休付与リスト
 	 */
-	List<NextAnnualLeaveGrant> algorithm(String companyId, String grantTableCode, GeneralDate entryDate,
-			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay,
-			Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls);
+	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+			String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period, 
+			boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls) {
+		
+		return GetNextAnnualLeaveGrantProc.algorithm(require, cacheCarrier, 
+															companyId, grantTableCode, entryDate, criteriaDate, period, 
+															isSingleDay,grantHdTblSet, lengthServiceTbls);
+	}
 	
-	List<NextAnnualLeaveGrant> algorithmRequire(Require require, CacheCarrier cacheCarrier, String companyId, String grantTableCode, GeneralDate entryDate,
-			GeneralDate criteriaDate, DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet,
-			Optional<List<LengthServiceTbl>> lengthServiceTbls);
+	public static interface RequireM1 extends GetNextAnnualLeaveGrantProc.RequireM1{
+		
+	}
 }

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -65,7 +65,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 	//リポジトリ；法定労働
 	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	private DailyStatutoryLaborTime dailyStatutoryWorkingHours;
 	
 	//計算処理
 	@Inject
