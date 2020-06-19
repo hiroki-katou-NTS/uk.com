@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.affiliationinformation;
+package nts.uk.ctx.at.shared.dom.affiliationinformation;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -80,11 +80,11 @@ public class TimeLeavingWork extends DomainObject{
 		//Optional<TimeActualStamp> val = attendanceStamp.orElse(Optional.of(new TimeActualStamp()));
 		TimeActualStamp att_myObj = attendanceStamp.orElse(new TimeActualStamp()); //出勤
 		WorkStamp att_stamp = att_myObj.getStamp().orElse(new WorkStamp()); //出勤（実じゃない）
-		TimeWithDayAttr att_attr = att_stamp.getTimeWithDay(); //出勤時刻
+		TimeWithDayAttr att_attr = att_stamp.getTimeDay().getTimeWithDay().get(); //出勤時刻
 		
 		TimeActualStamp lea_myObj = leaveStamp.orElse(new TimeActualStamp()); //退勤
 		WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）                                                                                                                                                                                                 
-		TimeWithDayAttr lea_attr = lea_stamp.getTimeWithDay(); //退勤時刻
+		TimeWithDayAttr lea_attr = lea_stamp.getTimeDay().getTimeWithDay().get(); //退勤時刻
 		
 		return new TimeSpanForCalc(att_attr,lea_attr);
 		/*
@@ -141,14 +141,14 @@ public class TimeLeavingWork extends DomainObject{
 			|| !this.getAttendanceStamp().isPresent()
 			|| this.getAttendanceStamp().get().getStamp() == null
 			|| !this.getAttendanceStamp().get().getStamp().isPresent()
-			|| this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			|| this.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get() == null) {
 			return false;
 		}
 		if(this.getLeaveStamp() == null
 				|| !this.getLeaveStamp().isPresent()
 				|| this.getLeaveStamp().get().getStamp() == null
 				|| !this.getLeaveStamp().get().getStamp().isPresent()
-				|| this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+				|| this.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get() == null) {
 			return false;
 		}
 		return true;

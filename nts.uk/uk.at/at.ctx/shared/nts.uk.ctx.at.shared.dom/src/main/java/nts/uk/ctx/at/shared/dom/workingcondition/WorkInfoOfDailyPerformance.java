@@ -14,10 +14,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotU
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
-import nts.uk.ctx.at.shared.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.shared.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
