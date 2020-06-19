@@ -25,4 +25,6 @@ public interface ShiftPalletsOrgRepository {
 	// Delete with id and page
 	public void deleteByWorkPlaceId(String workplaceId, int page);
 
+	List<ShiftPalletsOrg> findByCID(String cid);
+
 }
