@@ -193,7 +193,7 @@ module nts.uk.at.view.kdp001.a {
                 
                 service.confirmUseOfStampInput({ stampMeans: 4 }).done((result) => {
                     self.isUsed(result.used != 2);
-                    self.systemDate(moment(result.systemDate));
+                    self.systemDate(moment.utc(result.systemDate));
                     setInterval(() => {
                         self.systemDate(self.systemDate().add(1, 'seconds'));
                     }, 1000);

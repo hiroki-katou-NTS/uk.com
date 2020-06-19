@@ -69,7 +69,7 @@ public class ConfirmUseOfStampInputCommandHandler
 		// 1. 判断する(@Require, 社員ID, 打刻手段)
 		MakeUseJudgmentResults jugResult = this.stampAvailableService.decide(require, employeeId, stampMeans);
 		// not 打刻カード作成結果 empty
-		Optional<StampCardCreateResult> cradResultOpt = jugResult.get().cardResult;
+		Optional<StampCardCreateResult> cradResultOpt = jugResult.get().getCardResult();
 
 		if (cradResultOpt.isPresent()) {
 
@@ -77,9 +77,9 @@ public class ConfirmUseOfStampInputCommandHandler
 			transaction.execute(() -> {
 				atom.get().run();
 			});
-			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.used.value);
+			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
 		}
-		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.used.value);
+		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
 
 	}
 
