@@ -11,12 +11,12 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
  */
 public class CorrectWorkSchedule {
 	
-	public WorkSchedule createWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
+	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
-		//TODO : Chưa remove từ record sang shared nên chưa sử dụng được (tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty)
+		//TODO : Chưa remove từ record sang shared nên chưa sử dụng được (tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
 		//勤怠ルールの補正処理 
-		//TODO Thuật toán này hiện chưa ai làm + cũng chưa phải làm. nên tạm thời bỏ qua
-		//勤務予定情報を計算する -CalculateDailyRecordServiceCenter
+		//TODO Thuật toán này hiện chưa ai làm + cũng chưa phải làm. nên tạm thời bỏ qua (TKT-TQP)
+		//勤務予定情報を計算する -CalculateDailyRecordServiceCenter (TKT-TQP)
 		//TODO: đang để record -> có thể sẽ chueyern về shared, 
 		return workSchedule; //Return tạm thời
 		

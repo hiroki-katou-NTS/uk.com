@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.calculationattribute;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

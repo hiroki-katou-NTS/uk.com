@@ -80,6 +80,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
+	
+	private static final String SELECT_WORKTYPE_ATR = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = :deprecateAtr";
 
 	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " LEFT JOIN KshmtWorkTypeOrder o"
@@ -377,6 +380,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 							.setParameter("lstPossible", subPossibleList).getList(x -> toDomain(x)));
 		});
 		return datas;
+	}
+	
+	@Override
+	public List<WorkType> findWorkByDeprecate(String companyId, int deprecateAtr) {
+		return this.queryProxy().query(SELECT_WORKTYPE_ATR, KshmtWorkType.class)
+				.setParameter("companyId", companyId).setParameter("deprecateAtr", deprecateAtr)
+				.getList(x -> toDomain(x));
 	}
 	
 	@Override

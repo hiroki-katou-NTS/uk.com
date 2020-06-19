@@ -4,9 +4,9 @@ package nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
 
 public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
