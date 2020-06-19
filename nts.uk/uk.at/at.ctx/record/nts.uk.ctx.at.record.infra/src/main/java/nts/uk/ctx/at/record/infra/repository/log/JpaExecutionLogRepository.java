@@ -70,7 +70,7 @@ public class JpaExecutionLogRepository extends JpaRepository implements Executio
 			GeneralDateTime executionEndDate, GeneralDateTime dailyCreateStartTime, GeneralDateTime dailyCreateEndTime,
 			GeneralDateTime dailyCalculateStartTime, GeneralDateTime dailyCalculateEndTime,
 			GeneralDateTime reflectApprovalStartTime, GeneralDateTime reflectApprovalEndTime,
-			GeneralDateTime monthlyAggregateStartTime, GeneralDateTime monthlyAggregateEndTime , int stopped, int type) {
+			GeneralDateTime monthlyAggregateStartTime, GeneralDateTime monthlyAggregateEndTime , int stopped) {
 		
 		List<KrcdtExecutionLog> krcdtExecutionLogs = this.queryProxy().query(SELECT_BY_CAL_AND_SUM_EXE_ID, KrcdtExecutionLog.class)
 		.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getList();
@@ -80,24 +80,11 @@ public class JpaExecutionLogRepository extends JpaRepository implements Executio
 		Optional<KrcdtExecutionLog> log = Optional.empty();
 		Optional<KrcdtExecutionLog> monthlyLog = Optional.empty();
 		
-		if(type == 4) {
 		createLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 0).findFirst();
 		calculateLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 1).findFirst();
 		log = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 2).findFirst();
 		monthlyLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 3).findFirst();
-		}
-		if(type == 0){
-			createLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 0).findFirst();
-		}
-		if(type == 1){
-			calculateLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 1).findFirst();
-		}
-		if(type == 2){
-			log = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 2).findFirst();
-		}
-		if(type == 3){
-			monthlyLog = krcdtExecutionLogs.stream().filter(item -> item.krcdtExecutionLogPK.executionContent == 3).findFirst();
-		}
+
 		if (createLog.isPresent() && dailyCreateEndTime != null) {
 			if (dailyCreateStartTime != null) {
 				createLog.get().executionStartDate = dailyCreateStartTime;				
