@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 抑制する打刻種類を取得する
@@ -40,11 +40,11 @@ public class GetStampTypeToSuppressService {
 			// return 抑制する打刻#[C-1] 全ての打刻を強調しない()
 			return StampToSuppress.allStampFalse();
 		}
-
+		// $日時期間 = 日時期間#1日範囲を求める(require, 社員ID)
 		DateAndTimePeriod dateAndTimePeriod = DateAndTimePeriod.calOneDayRange(require, employeeId);
-
+		// $打刻リスト = [prv-2] 打刻データを取得する(require, 社員ID, 日時期間)
 		List<Stamp> listStamp = getDataStamp(require, employeeId, dateAndTimePeriod);
-
+		// return [prv-3] 抑制する打刻を判断する($打刻リスト)
 		return judgmentStampToSuppress(listStamp);
 	}
 
@@ -56,15 +56,47 @@ public class GetStampTypeToSuppressService {
 	 * @return
 	 */
 	private static boolean checkOffStampButton(Require require, StampMeans stampMeans) {
+		// if not 打刻手段.打刻ボタンを抑制する必要か()
 		if (!stampMeans.checkIndivition()) {
 			return false;
 		}
-		Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet();
-		if (!optStampSettingPerson.isPresent()) {
-			return false;
+		// if 打刻手段 = 個人打刻
+		if (stampMeans.equals(StampMeans.INDIVITION)) {
+			// $個人利用の打刻設定 = require.個人利用の打刻設定()
+			Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet(AppContexts.user().companyId());
+			// if $個人利用の打刻設定.isEmpty
+			if (!optStampSettingPerson.isPresent()) {
+				return false;
+			}
+			// return $個人利用の打刻設定.打刻ボタンを抑制する
+			return optStampSettingPerson.get().isButtonEmphasisArt();
+		}
+		// if 打刻手段 = スマホ打刻
+		if (stampMeans.equals(StampMeans.SMART_PHONE)) {
+			// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定()
+			Optional<SettingsSmartphoneStamp> optSettingsSmartphoneStamp = require
+					.getSettingsSmartphone(AppContexts.user().companyId());
+			// if $スマホ打刻の打刻設定.isEmpty
+
+			if (!optSettingsSmartphoneStamp.isPresent()) {
+				return false;
+			}
+			// return $スマホ打刻の打刻設定.打刻ボタンを抑制する
+			return optSettingsSmartphoneStamp.get().getSuppressStampBtn();
+		}
+		// if 打刻手段 = ポータル打刻
+		if (stampMeans.equals(StampMeans.PORTAL)) {
+			// $ポータルの打刻設定 = require.ポータルの打刻設定()
+			Optional<PortalStampSettings> optPotalSetting = require.getPotalSettings(AppContexts.user().companyId());
+			// if $ポータルの打刻設定.isEmpty
+			if (!optPotalSetting.isPresent()) {
+				return false;
+			}
+			// return $個人利用の打刻設定.打刻ボタンを抑制する
+			return optPotalSetting.get().getSuppressStampBtn();
 		}
 
-		return optStampSettingPerson.get().isButtonEmphasisArt();
+		return false;
 	}
 
 	/**
@@ -134,25 +166,35 @@ public class GetStampTypeToSuppressService {
 	public static interface Require extends DateAndTimePeriod.Require {
 
 		/**
-		 * [R-1] 労働条件を取得する
+		 * [R-1] 個人利用の打刻設定
 		 * 
-		 * アルゴリズム.社員の労働条件を取得する(社員ID, 基準日)
+		 * 個人利用の打刻設定Repository.取得する(会社ID)
 		 * 
 		 * @param companyId
 		 * @return
 		 */
-		List<TimeOfMonthly> findByDate(String companyId, GeneralDate criteriaDate);
-
-		Optional<StampSettingPerson> getStampSet();
+		Optional<StampSettingPerson> getStampSet(String companyId);
 
 		/**
-		 * [R-2] 所定時間設定を取得する
+		 * [R-2] スマホ打刻の打刻設定
 		 * 
-		 * 所定時間設定Repository.取得する(就業時間帯コード)
+		 * スマホ打刻の打刻設定Repository.取得する(会社ID)
 		 * 
 		 * @param companyId
 		 * @return
 		 */
+		Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId);
+
+		/**
+		 * [R-3] ポータルの打刻設定
+		 * 
+		 * ポータルの打刻設定Repository.取得する(会社ID)
+		 * 
+		 * @param companyId
+		 * @param criteriaDate
+		 * @return
+		 */
+		Optional<PortalStampSettings> getPotalSettings(String comppanyID);
 	}
 
 }

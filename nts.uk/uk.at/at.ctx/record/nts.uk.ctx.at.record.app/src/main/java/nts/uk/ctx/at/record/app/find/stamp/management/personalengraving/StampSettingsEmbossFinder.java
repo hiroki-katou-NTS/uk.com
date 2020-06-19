@@ -33,6 +33,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.G
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -74,6 +78,12 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+	
+	@Inject
+	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
+
+	@Inject
+	private PortalStampSettingsRepository portalStampSettingsrepo;
 
 	// 
 	public KDP002AStartPageOutput getSettings() {
@@ -137,7 +147,8 @@ public class StampSettingsEmbossFinder {
 	
 	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
-				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo);
+				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo,
+				settingsSmartphoneStampRepo, portalStampSettingsrepo);
 		
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
 	} 
@@ -200,39 +211,51 @@ public class StampSettingsEmbossFinder {
 
 		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
+		
+		@Inject
+		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
+
+		@Inject
+		private PortalStampSettingsRepository portalStampSettingsrepo;
 
 		public StampTypeToSuppressRequiredImpl(StampCardRepository stampCardRepo, StampRecordRepository stampRecordRepo,
 				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
 				WorkingConditionService workingConditionService,
-				PredetemineTimeSettingRepository predetemineTimeSettingRepo) {
+				PredetemineTimeSettingRepository predetemineTimeSettingRepo,
+				SettingsSmartphoneStampRepository settingsSmartphoneStampRepo,
+				PortalStampSettingsRepository portalStampSettingsrepo) {
 			super(stampCardRepo, stampRecordRepo, stampDakokuRepo);
 			this.stampSetPerRepo = stampSetPerRepo;
 			this.workingConditionService = workingConditionService;
 			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
-		}
-
-		@Override
-		public Optional<StampSettingPerson> getStampSet() {
-			return stampSetPerRepo.getStampSet(AppContexts.user().companyId());
-		}
-
-		@Override
-		public List<nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly> findByDate(String companyId,
-				GeneralDate criteriaDate) {
-			// TODO Auto-generated method stub
-			return null;
+			this.settingsSmartphoneStampRepo = settingsSmartphoneStampRepo;
+			this.portalStampSettingsrepo = portalStampSettingsrepo;
 		}
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			// TODO Auto-generated method stub
-			return null;
+			return this.workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			String companyId = AppContexts.user().companyId();
+			return this.predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
+		}
+
+		@Override
+		public Optional<StampSettingPerson> getStampSet(String companyId) {
+			return this.stampSetPerRepo.getStampSet(companyId);
+		}
+
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+			return this.settingsSmartphoneStampRepo.get(companyId);
+		}
+
+		@Override
+		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
+			return this.portalStampSettingsrepo.get(comppanyID);
 		}
 
 

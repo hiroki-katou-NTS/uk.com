@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -30,6 +31,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -65,6 +70,12 @@ public class GetSettingStampInput {
 
 	@Inject
 	private StampCardRepository stampCardRepo;
+	
+	@Inject
+	private PredetemineTimeSettingRepository preRepo;
+	
+	@Inject
+	private WorkingConditionService workingService;
 
 	public SettingPotalStampInputDto getSettingPotalStampInput() {
 		// get ログイン会社ID
@@ -103,7 +114,7 @@ public class GetSettingStampInput {
 			if (settingOpt.get().getSuppressStampBtn() == true) {
 				GetStampTypeToSuppressServiceRequireImpl stampTypeRequire = new GetStampTypeToSuppressServiceRequireImpl(
 						stampSetPerRepo, settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo,
-						stampRepo, stampCardRepo);
+						stampRepo, stampCardRepo, preRepo, workingService);
 				if (infoPotal == null) {
 					infoPotal = new EmpInfoPotalStampDto();
 				}
@@ -171,6 +182,13 @@ public class GetSettingStampInput {
 
 		@Inject
 		private StampCardRepository stampCardRepo;
+		
+		@Inject
+		private PredetemineTimeSettingRepository preRepo;
+		
+		@Inject
+		private WorkingConditionService workingService;
+		
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -187,22 +205,33 @@ public class GetSettingStampInput {
 			String contractCode = AppContexts.user().contractCode();
 			return this.stampRepo.get(contractCode, stampNumbers, date);
 		}
+		@Override
+		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
+			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+		}
 
 		@Override
-		public Optional<StampSettingPerson> getStampSet() {
+		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
 			String companyId = AppContexts.user().companyId();
+			return this.preRepo.findByWorkTimeCode(companyId, workTimeCode);
+		}
+
+		@Override
+		public Optional<StampSettingPerson> getStampSet(String companyId) {
 			return this.stampSetPerRepo.getStampSet(companyId);
 		}
 
 		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp(String comppanyID) {
-			return this.settingsSmartphoneStampRepo.get(comppanyID);
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+			return this.settingsSmartphoneStampRepo.get(companyId);
 		}
 
 		@Override
-		public Optional<PortalStampSettings> getPortalStampSettings(String comppanyID) {
+		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
 		}
+
+		
 
 	}
 

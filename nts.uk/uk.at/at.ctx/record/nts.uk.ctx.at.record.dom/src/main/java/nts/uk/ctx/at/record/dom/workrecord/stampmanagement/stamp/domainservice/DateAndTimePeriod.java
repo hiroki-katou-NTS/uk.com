@@ -86,7 +86,7 @@ public class DateAndTimePeriod implements DomainValue {
 	public static interface Require extends GetEmpStampDataService.Require {
 
 		/**
-		 * [R-1] 個人利用の打刻設定 StampSetPerRepository
+		 * [R-1] 労働条件を取得する
 		 * 
 		 * @param companyId
 		 * @return
@@ -94,7 +94,7 @@ public class DateAndTimePeriod implements DomainValue {
 		Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate);
 
 		/**
-		 * [R-2] スマホ打刻の打刻設定
+		 * [R-2] 所定時間設定を取得する
 		 * 
 		 * @param companyId
 		 * @return
