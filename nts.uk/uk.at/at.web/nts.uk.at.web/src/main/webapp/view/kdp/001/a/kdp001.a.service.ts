@@ -14,8 +14,8 @@ module nts.uk.at.view.kdp001.a.service {
         getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
     }
 
-    export function getEmployeeStampData(): JQueryPromise<any> {
-        return ajax("at", url.getEmployeeStampData);
+    export function getEmployeeStampData(query): JQueryPromise<any> {
+        return ajax("at", url.getEmployeeStampData, query);
     }
 
     export function confirmUseOfStampInput(cmd): JQueryPromise<any> {

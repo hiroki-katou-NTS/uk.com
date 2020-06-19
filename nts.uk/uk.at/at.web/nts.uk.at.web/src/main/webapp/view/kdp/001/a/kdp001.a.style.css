@@ -77,10 +77,14 @@
 .right-area-small {
 	margin-left: 3px;
 }
+.stamp-date-small {
+	font-size: 0.7rem !important;
+}
 
 .functions-area-small {
 	line-height: 1px;
 	height: 10px !important;
+	
 }
 
 .stamp-button {
@@ -112,5 +116,5 @@
 }
 
 .stamp-time-small {
-	font-size: 0.8rem !important;
+	font-size: 0.9rem !important;
 }

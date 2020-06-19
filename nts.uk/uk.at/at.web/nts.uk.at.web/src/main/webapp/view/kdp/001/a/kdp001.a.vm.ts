@@ -13,7 +13,51 @@ module nts.uk.at.view.kdp001.a {
 
             isUsed: KnockoutObservable<boolean> = ko.observable(false);
             setting: KnockoutObservable<IStampSetting> = ko.observable();
-            stampDatas: KnockoutObservableArray<any> = ko.observableArray([]);
+            stampDatas: KnockoutObservableArray<any> = ko.observableArray([{
+                stampNumber: 1,
+                stampDatetime: moment(),
+                stampAtr: 'Test',
+                stamp: {
+                    relieve: {
+                        stampMeans: '123123'
+                    }
+                }
+
+            },
+                {
+                    stampNumber: 1,
+                    stampDatetime: moment(),
+                    stampAtr: 'Test',
+                    stamp: {
+                        relieve: {
+                            stampMeans: '123123'
+                        }
+                    }
+
+                },
+                {
+                    stampNumber: 1,
+                    stampDatetime: moment(),
+                    stampAtr: 'Test2',
+                    stamp: {
+                        relieve: {
+                            stampMeans: '123123'
+                        }
+                    }
+
+                },
+                {
+                    stampNumber: 1,
+                    stampDatetime: moment(),
+                    stampAtr: 'Test3',
+                    stamp: {
+                        relieve: {
+                            stampMeans: '123123'
+                        }
+                    }
+
+                }
+                ]);
             systemDate: KnockoutObservable<any> = ko.observable();
             screenMode: KnockoutObservable<any> = ko.observable();
             buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
@@ -68,8 +112,8 @@ module nts.uk.at.view.kdp001.a {
             ]);
             constructor() {
                 let self = this;
-                 
-                
+
+
             }
 
             /**
@@ -77,20 +121,20 @@ module nts.uk.at.view.kdp001.a {
              */
             public getSystemDate() {
                 let self = this,
-                    date = moment(self.systemDate()).format("YYYY/MM/DD")
+                    date = self.systemDate().format("YYYY/MM/DD")
                     ;
                 return nts.uk.time.applyFormat("Long_YMDW", [date]);
             }
-            
+
             public getSystemTime() {
                 let self = this,
-                    time = moment(self.systemDate()).format("HH:mm");
+                    time = self.systemDate().format("HH:mm");
                 return time;
             }
             public stamp(data) {
                 let self = __viewContext['viewModel'],
                     cmd = {
-                        datetime:self.systemDate(),
+                        datetime: self.systemDate(),
 
                         buttonPositionNo: data.buttonPositionNo,
 
@@ -105,20 +149,20 @@ module nts.uk.at.view.kdp001.a {
 
 
                     });
-                }else{
+                } else {
                     switch (data.buttonPositionNo) {
                         case 3:
-                        self.openDialogC();
+                            self.openDialogC();
                             break;
                         case 4:
-                        self.openDialogB();
+                            self.openDialogB();
                             break;
-                    }   
-                
+                    }
+
                 }
 
             }
-            
+
             public openDialogB() {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cps/002/b/index.xhtml').onClosed(function(): any {
@@ -137,19 +181,22 @@ module nts.uk.at.view.kdp001.a {
                     });
                 });
             }
-            
+
             public start_page(): JQueryPromise<any> {
 
                 let self = this, dfd = $.Deferred();
-                
+
                 let url = $(location).attr('search');
                 let urlParam: string = url.split("=")[1];
-                if (urlParam) {
-                    self.screenMode(urlParam);
-                }
+                
+                self.screenMode(!!urlParam ? urlParam : null);
+                
                 service.confirmUseOfStampInput({ stampMeans: 4 }).done((result) => {
                     self.isUsed(result.used != 2);
-                    self.systemDate(result.systemDate);
+                    self.systemDate(moment(result.systemDate));
+                    setInterval(() => {
+                        self.systemDate(self.systemDate().add(1, 'seconds'));
+                    }, 1000);
                     service.getSettingStampInput().done((setting: IStampSetting) => {
                         self.setting(setting);
                         if (!!setting) {
@@ -162,8 +209,8 @@ module nts.uk.at.view.kdp001.a {
                             self.buttons(_.sortBy(buttons, ['buttonPositionNo']));
                         }
                     });
-
-                    service.getEmployeeStampData().done((data) => {
+                    let query = { startDate: moment().format("YYYY/MM/DD"), endDate: moment().format("YYYY/MM/DD") };
+                    service.getEmployeeStampData(query).done((data) => {
                         self.stampDatas(data.listStampInfoDisp);
                         if (self.stampDatas().length) {
                             if (self.screenMode() == 'a' || self.screenMode() == 'b') {
@@ -182,24 +229,28 @@ module nts.uk.at.view.kdp001.a {
                 });
                 return dfd.promise();
             }
-            
+
             public isScreenCD() {
                 let self = this;
                 return self.screenMode() == 'c' || self.screenMode() == 'd';
             }
-            
+
             public showButtonGoOutAndBack() {
                 let self = this;
                 return self.screenMode() == 'b' || self.screenMode() == 'c';
             }
-            
+
             public showTable() {
                 let self = this;
                 console.log(self.screenMode());
                 return self.screenMode() != 'a' && self.screenMode() != 'b';
             }
+            public isWidget(){
+                let self =this;
+                return !self.screenMode();
+            }
         }
-        
+
 
     }
 
