@@ -10,9 +10,15 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+<<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
+=======
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+>>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

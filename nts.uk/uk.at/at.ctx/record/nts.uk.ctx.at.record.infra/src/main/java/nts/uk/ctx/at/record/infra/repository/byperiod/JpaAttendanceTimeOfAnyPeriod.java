@@ -13,7 +13,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodRepository;
@@ -32,7 +31,8 @@ import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAn
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpMedicalTime;
-import nts.uk.ctx.at.shared.dom.raisesalarytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;

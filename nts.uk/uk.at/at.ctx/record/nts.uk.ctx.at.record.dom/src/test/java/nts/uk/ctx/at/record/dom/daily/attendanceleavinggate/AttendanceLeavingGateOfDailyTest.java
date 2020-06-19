@@ -7,9 +7,10 @@ import java.util.List;
 //import org.junit.Assert;
 import org.junit.Test;
 
-import nts.uk.ctx.at.shared.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 //import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 //import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
@@ -24,8 +25,8 @@ public class AttendanceLeavingGateOfDailyTest {
 		
 		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
 		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(1),
-										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
-										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
+										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),TimeChangeMeans.TIME_RECORDER),
+										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),TimeChangeMeans.TIME_RECORDER)));
 //		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(2),
 //										   new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
 //										   new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));

@@ -7,9 +7,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -55,47 +55,47 @@ public class TimeStampDto implements ItemConst {
 				c.stampInfo());
 	}
 	
-	public StampSourceInfo stampInfo(){
+	public TimeChangeMeans stampInfo(){
 		switch (stampSourceInfo) {
 		case 0:
-			return StampSourceInfo.TIME_RECORDER;
+			return TimeChangeMeans.TIME_RECORDER;
 		case 1:
-			return StampSourceInfo.STAMP_APPLICATION;
+			return TimeChangeMeans.STAMP_APPLICATION;
 		case 2:
-			return StampSourceInfo.STAMP_APPLICATION_NR;
+			return TimeChangeMeans.STAMP_APPLICATION_NR;
 		case 3:
-			return StampSourceInfo.GO_STRAIGHT;
+			return TimeChangeMeans.GO_STRAIGHT;
 		case 4:
-			return StampSourceInfo.GO_STRAIGHT_APPLICATION;
+			return TimeChangeMeans.GO_STRAIGHT_APPLICATION;
 		case 5:
-			return StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON;
+			return TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON;
 		case 6:
-			return StampSourceInfo.HAND_CORRECTION_BY_MYSELF;
+			return TimeChangeMeans.HAND_CORRECTION_BY_MYSELF;
 		case 7:
-			return StampSourceInfo.HAND_CORRECTION_BY_ANOTHER;
+			return TimeChangeMeans.HAND_CORRECTION_BY_ANOTHER;
 		case 8:
-			return StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO;
+			return TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO;
 		case 9:
-			return StampSourceInfo.CORRECTION_RECORD_SET;
+			return TimeChangeMeans.CORRECTION_RECORD_SET;
 		case 10:
-			return StampSourceInfo.TIME_RECORDER_ID_INPUT;
+			return TimeChangeMeans.TIME_RECORDER_ID_INPUT;
 		case 11:
-			return StampSourceInfo.WEB_STAMP_INPUT;
+			return TimeChangeMeans.WEB_STAMP_INPUT;
 		case 12:
-			return StampSourceInfo.TIME_RECORDER_MAGNET_CARD;
+			return TimeChangeMeans.TIME_RECORDER_MAGNET_CARD;
 		case 13:
-			return StampSourceInfo.TIME_RECORDER_Ic_CARD;
+			return TimeChangeMeans.TIME_RECORDER_Ic_CARD;
 		case 14:
-			return StampSourceInfo.TIME_RECORDER_FINGER_STAMP;
+			return TimeChangeMeans.TIME_RECORDER_FINGER_STAMP;
 		case 15:
-			return StampSourceInfo.MOBILE_STAMP;
+			return TimeChangeMeans.MOBILE_STAMP;
 		case 16:
-			return StampSourceInfo.MOBILE_STAMP_OUTSIDE;
+			return TimeChangeMeans.MOBILE_STAMP_OUTSIDE;
 		case 17:
-			return StampSourceInfo.STAMP_LEAKAGE_CORRECTION;
+			return TimeChangeMeans.STAMP_LEAKAGE_CORRECTION;
 		case 18:
 		default:
-			return StampSourceInfo.SPR;
+			return TimeChangeMeans.SPR;
 		}
 	}
 }

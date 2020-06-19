@@ -11,8 +11,13 @@ import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.daily.attendanceleavinggate.PCLogOnNo;
+=======
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
+>>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

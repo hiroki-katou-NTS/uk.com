@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.worktime;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime;
 
 import java.util.Optional;
 
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.daily.attendanceleavinggate.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 //import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -27,12 +31,15 @@ public class TimeLeavingWork extends DomainObject{
 	 * 勤務NO
 	 */
 	private WorkNo workNo;
-	
 	//出勤
 	private Optional<TimeActualStamp> attendanceStamp;
-	
 	//退勤
 	private Optional<TimeActualStamp> leaveStamp;
+	//遅刻を取り消した
+	private boolean canceledLate;
+	//早退を取り消した
+	private boolean CanceledEarlyLeave;
+	
 	
 	private TimeSpanForCalc timespan;
 	
@@ -158,6 +165,16 @@ public class TimeLeavingWork extends DomainObject{
 			return true;
 		}
 		return false;
+	}
+
+	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp,
+			Optional<TimeActualStamp> leaveStamp, boolean canceledLate, boolean canceledEarlyLeave) {
+		super();
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+		this.canceledLate = canceledLate;
+		CanceledEarlyLeave = canceledEarlyLeave;
 	}
 	
 }

@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.shared.dom.raisesalarytime.enums;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime;
 
 import lombok.AllArgsConstructor;
 
 /**
- * 
+ * するしない区分
  * @author nampt
  * 早退
  *

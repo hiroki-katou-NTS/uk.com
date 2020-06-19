@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.shared.dom.workinformation.enums;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
+
 
 import lombok.AllArgsConstructor;
 

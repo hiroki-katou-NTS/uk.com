@@ -6,14 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
@@ -21,20 +18,39 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 
 /** 日別実績の任意項目*/
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class AnyItemValueOfDaily {
-	
+	//社員ID
 	private String employeeId;
-	
+	//年月日
 	private GeneralDate ymd;
 
-	/** 任意項目値: 任意項目値 */
-	private List<AnyItemValue> items;
+	//任意項目
+	private AnyItemValueOfDailyAttd anyItem;
 	
+	public AnyItemValueOfDaily(String employeeId, GeneralDate ymd, List<AnyItemValue> items) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.anyItem = new AnyItemValueOfDailyAttd(items);
+	}
+	
+	public AnyItemValueOfDaily(String employeeId, GeneralDate ymd, AnyItemValueOfDailyAttd anyItem) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.anyItem = anyItem;
+	}
 	
 	
     /**
@@ -142,6 +158,6 @@ public class AnyItemValueOfDaily {
     }
 
     public Optional<AnyItemValue> getNo(int no) {
-    	return items.stream().filter(i -> i.getItemNo().v() == no).findFirst();
+    	return this.anyItem.getItems().stream().filter(i -> i.getItemNo().v() == no).findFirst();
     }
 }

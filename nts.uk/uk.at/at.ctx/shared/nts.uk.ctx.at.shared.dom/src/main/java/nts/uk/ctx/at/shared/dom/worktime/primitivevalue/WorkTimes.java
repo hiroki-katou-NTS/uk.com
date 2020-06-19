@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.shared.dom.worktime.primitivevalue;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime;
+
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

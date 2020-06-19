@@ -14,6 +14,10 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
@@ -27,33 +31,31 @@ import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
 @Getter
 @NoArgsConstructor
 public class TimeLeavingOfDailyPerformance extends AggregateRoot {
-
+	//社員ID
 	private String employeeId;
-
-	private WorkTimes workTimes;
-
-	// 1 ~ 2
-	private List<TimeLeavingWork> timeLeavingWorks;
-
+	//年月日
 	private GeneralDate ymd;
+
+	private TimeLeavingOfDailyAttd attendance;
+	
+	
 	
 	public TimeLeavingOfDailyPerformance(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
 			GeneralDate ymd) {
 		super();
 		this.employeeId = employeeId;
-		this.workTimes = workTimes;
-		this.timeLeavingWorks = timeLeavingWorks;
 		this.ymd = ymd;
+		this.attendance = new TimeLeavingOfDailyAttd(timeLeavingWorks, workTimes);
 	}
 
 	public void setProperty(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
 			GeneralDate ymd) {
 		this.employeeId = employeeId;
-		this.workTimes = workTimes;
-		this.timeLeavingWorks = timeLeavingWorks;
 		this.ymd = ymd;
+		this.attendance = new TimeLeavingOfDailyAttd(timeLeavingWorks, workTimes);
 
 	}
+	
 	
 	/**
 	 * 指定した勤怠Noのデータを取得する
@@ -61,19 +63,19 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return　出退勤クラス
 	 */
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(WorkNo workNo) {
-		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
+		return this.attendance.getTimeLeavingWorks().stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
 	}
 	
 	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
 	public void timeLeaveChangedByNo(int no) {
-		timeLeavingWorks.stream().filter(tl -> tl.getWorkNo().v() == no).findFirst().ifPresent(tl -> {
+		this.attendance.getTimeLeavingWorks().stream().filter(tl -> tl.getWorkNo().v() == no).findFirst().ifPresent(tl -> {
 			TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(Arrays.asList(tl)).build().toBePublished();
 		});
 	}
 	
 	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
 	public void timeLeavesChanged() {
-		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(timeLeavingWorks).build().toBePublished();
+		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(this.attendance.getTimeLeavingWorks()).build().toBePublished();
 	}
 	
 	/**
@@ -81,7 +83,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return　打刻漏れである
 	 */
 	public boolean isLeakageStamp(){
-		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
+		for(TimeLeavingWork timeLeavingWork:this.attendance.getTimeLeavingWorks()) {
 			//打刻漏れを起こしている(計算できる状態でない)
 			if(!timeLeavingWork.checkLeakageStamp())
 				return true;
@@ -95,7 +97,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return　出退勤クラス
 	 */
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
-		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
+		return this.attendance.getTimeLeavingWorks().stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
 	}
 	
 	/**
@@ -103,7 +105,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public Optional<TimeActualStamp> getLeavingWork() {
-		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.workTimes.v()));
+		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.attendance.getWorkTimes().v()));
 		return (targetAttendanceLeavingWorkTime.isPresent())?targetAttendanceLeavingWorkTime.get().getLeaveStamp():Optional.empty();
 	}
 	
@@ -112,7 +114,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return　true:1回　false:2回目
 	 */
 	public boolean isFirstTimeWork() {
-		return (this.workTimes.v()) == 1;
+		return (this.attendance.getWorkTimes().v()) == 1;
 	}
 	
 	
@@ -126,12 +128,12 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public TimeLeavingOfDailyPerformance calcJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave,JustCorrectionAtr justCorrectionAtr) {
 		if(justCorrectionAtr.isNotUse()) return this;
 		List<TimeLeavingWork> newAttendanceLeave = new ArrayList<>();
-		for(TimeLeavingWork attendanceLeave : timeLeavingWorks) {
+		for(TimeLeavingWork attendanceLeave : this.attendance.getTimeLeavingWorks()) {
 			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
 		
 		return new TimeLeavingOfDailyPerformance(this.getEmployeeId(), 
-												 this.getWorkTimes(), 
+												this.attendance.getWorkTimes(),
 												 newAttendanceLeave, 
 												 this.getYmd());
 	}
@@ -144,7 +146,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
 		if(timeSpan == null) return Collections.emptyList();
 		List<TimeSpanForCalc> returnList = new ArrayList<>();
-		for(TimeLeavingWork tlw : this.timeLeavingWorks ) {
+		for(TimeLeavingWork tlw : this.attendance.getTimeLeavingWorks() ) {
 			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
 			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
@@ -156,11 +158,18 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return 打刻順序不正である
 	 */
 	public boolean isReverseOrder() {
-		for(TimeLeavingWork tl : this.getTimeLeavingWorks()) {
+		for(TimeLeavingWork tl : this.attendance.getTimeLeavingWorks()) {
 			if(tl.isReverseOrder()) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public TimeLeavingOfDailyPerformance(String employeeId, GeneralDate ymd, TimeLeavingOfDailyAttd attendance) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.attendance = attendance;
 	}
 }

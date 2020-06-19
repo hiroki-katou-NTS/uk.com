@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RecordRemarks;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

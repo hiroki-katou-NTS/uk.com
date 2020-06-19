@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.shared.dom.raisesalarytime;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime;
+
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;

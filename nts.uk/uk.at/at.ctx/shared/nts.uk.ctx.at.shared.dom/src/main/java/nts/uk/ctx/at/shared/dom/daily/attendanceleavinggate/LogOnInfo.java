@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.daily.attendanceleavinggate;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit;
 
 import java.util.Optional;
 

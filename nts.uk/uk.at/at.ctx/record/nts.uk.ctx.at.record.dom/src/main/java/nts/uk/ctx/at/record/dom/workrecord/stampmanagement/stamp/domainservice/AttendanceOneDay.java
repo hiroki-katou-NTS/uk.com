@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
 public class AttendanceOneDay {
 

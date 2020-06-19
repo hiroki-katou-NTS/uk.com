@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.worktime;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common;
 
 import java.util.Optional;
 
@@ -6,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 //import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -23,6 +26,7 @@ public class TimeActualStamp {
 	@Setter
 	private Optional<WorkStamp> stamp = Optional.empty();
 	
+	//打刻反映回数
 	private Integer numberOfReflectionStamp;
 	
 	/**
@@ -34,12 +38,12 @@ public class TimeActualStamp {
 		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime()!=null?this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime):null,
 				  								  this.actualStamp.isPresent() && this.actualStamp.get().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
 				  								  this.actualStamp.isPresent() && this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
-				  								  this.actualStamp.isPresent() ? this.actualStamp.get().getStampSourceInfo():StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+				  								  this.actualStamp.isPresent() ? this.actualStamp.get().getStampSourceInfo():TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 
 		WorkStamp stamp = new WorkStamp(this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime()!=null?this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime):null,
 										this.stamp.isPresent() && this.stamp.get().getTimeWithDay()!=null?this.stamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
 										this.stamp.isPresent() && this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
-										this.stamp.isPresent() ? this.stamp.get().getStampSourceInfo() : StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+										this.stamp.isPresent() ? this.stamp.get().getStampSourceInfo() : TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 		
 		return new TimeActualStamp( actualWorkStamp,
 									stamp,
@@ -54,12 +58,12 @@ public class TimeActualStamp {
 		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime()!=null?this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime):null,
 												  this.actualStamp.isPresent() && this.actualStamp.get().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().backByMinutes(moveTime):null,
 												  this.actualStamp.isPresent() && this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
-											      this.actualStamp.isPresent() ? this.actualStamp.get().getStampSourceInfo() : StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+											      this.actualStamp.isPresent() ? this.actualStamp.get().getStampSourceInfo() : TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 
 		WorkStamp stamp = new WorkStamp(this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime()!=null?this.stamp.get().getAfterRoundingTime().backByMinutes(moveTime):null,
 										this.stamp.isPresent() && this.stamp.get().getTimeWithDay()!=null?this.stamp.get().getTimeWithDay().backByMinutes(moveTime):null,
 										this.stamp.isPresent() && this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
-										this.stamp.isPresent() ? this.stamp.get().getStampSourceInfo() : StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+										this.stamp.isPresent() ? this.stamp.get().getStampSourceInfo() : TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 		
 		return new TimeActualStamp(actualWorkStamp,
 								   stamp,

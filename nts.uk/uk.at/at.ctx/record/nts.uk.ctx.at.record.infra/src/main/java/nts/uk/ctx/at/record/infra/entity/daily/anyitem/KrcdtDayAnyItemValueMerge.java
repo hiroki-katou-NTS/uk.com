@@ -18,13 +18,13 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemNo;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

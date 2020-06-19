@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.worklocation;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

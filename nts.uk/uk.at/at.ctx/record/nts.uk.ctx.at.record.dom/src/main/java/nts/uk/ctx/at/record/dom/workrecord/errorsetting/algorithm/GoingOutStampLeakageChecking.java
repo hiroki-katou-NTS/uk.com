@@ -9,22 +9,22 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
+import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.CorrectionResult;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.calculationsetting.GoBackOutCorrectionClass;
-import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /*
  * 外出系打刻漏れをチェックする
@@ -211,11 +211,11 @@ public class GoingOutStampLeakageChecking {
 								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
 								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
 							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON) {
 								stamp = new WorkStamp(
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 												.getAfterRoundingTime(),
@@ -225,7 +225,7 @@ public class GoingOutStampLeakageChecking {
 														? timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 																.getLocationCode().get()
 														: null,
-										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+										TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
 
@@ -258,11 +258,11 @@ public class GoingOutStampLeakageChecking {
 								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
 								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get()
-									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
 									|| leavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION
 									|| leavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON) {
 								stamp = new WorkStamp(
 										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
@@ -271,7 +271,7 @@ public class GoingOutStampLeakageChecking {
 														? leavingWork.getAttendanceStamp().get().getStamp().get()
 																.getLocationCode().get()
 														: null,
-										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+										TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
 					}
@@ -335,11 +335,11 @@ public class GoingOutStampLeakageChecking {
 							|| (goOut.isPresent() && goOut.get().getStamp() == null)
 							|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
 						if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-								.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+								.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
 								|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+										.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION
 								|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+										.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON) {
 							stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
@@ -348,7 +348,7 @@ public class GoingOutStampLeakageChecking {
 													? timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 															.getLocationCode().get()
 													: null,
-									StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+									TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 						}
 					}
 				}
@@ -380,11 +380,11 @@ public class GoingOutStampLeakageChecking {
 								|| (goOut.isPresent() && goOut.get().getStamp() == null)
 								|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get()
-									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT
 									|| leavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION
 									|| leavingWork.getAttendanceStamp().get().getStamp().get()
-											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+											.getStampSourceInfo() == TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON) {
 								stamp = new WorkStamp(
 										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
@@ -393,7 +393,7 @@ public class GoingOutStampLeakageChecking {
 														? leavingWork.getAttendanceStamp().get().getStamp().get()
 																.getLocationCode().get()
 														: null,
-										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+										TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
 					}

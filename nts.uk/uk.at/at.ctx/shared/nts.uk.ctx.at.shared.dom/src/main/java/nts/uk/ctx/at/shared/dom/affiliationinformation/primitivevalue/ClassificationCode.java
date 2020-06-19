@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.shared.dom.affiliationinformation.primitivevalue;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor;
 
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;

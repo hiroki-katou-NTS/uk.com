@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.shared.dom.raisesalarytime;
+
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.raisesalarytime.enums.SpecificDateAttr;
+
 
 /**
  * 
@@ -16,6 +17,6 @@ public class SpecificDateAttrSheet {
 	
 	//特定日項目NO
 	private SpecificDateItemNo specificDateItemNo;
-
+	//するしない区分
 	private SpecificDateAttr specificDateAttr;
 }
