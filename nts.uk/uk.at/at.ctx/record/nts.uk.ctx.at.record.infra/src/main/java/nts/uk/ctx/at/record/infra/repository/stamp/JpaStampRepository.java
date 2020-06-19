@@ -26,9 +26,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 
-/**
- * 打刻Repository
- */
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c ";

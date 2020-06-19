@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 
 /**
  * @author sonnlb
@@ -119,7 +118,7 @@ public class AutoCreateStampCardNumberService {
 		}
 		// $登録済カード = require.打刻カードを取得する(契約コード, $打刻カード番号)
 
-		Optional<Stamp> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
+		Optional<StampCard> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
 
 		// if not $登録済カード.isEmpty
 		if (stampOpt.isPresent()) {
@@ -130,13 +129,13 @@ public class AutoCreateStampCardNumberService {
 	
 	public static interface Require {
 		// [R-1] 社員情報を取得する
-		List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid);
+		List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids);
 		// [R-2] 会社情報を取得する
 		Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
 		// [R-3] 打刻カード編集を取得する
 		Optional<StampCardEditing> get(String companyId);
 		// [R-4] 打刻カードを取得する
-		Optional<Stamp> get(String contractCode, String stampNumber);
+		Optional<StampCard> get(String contractCode, String stampNumber);
 		// [R-5] 打刻カードを追加する
 		void add(StampCard domain);
 	}

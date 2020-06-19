@@ -81,7 +81,7 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 			return Optional.empty();
 		}
 		
-		List<ButtonSettings> buttonSettings = this.queryProxy().query(SELECT_STAMP_LAYOUT_DETAIL,KrcmtStampLayoutDetail.class).getList()
+		List<ButtonSettings> buttonSettings = this.queryProxy().query(SELECT_STAMP_LAYOUT_DETAIL,KrcmtStampLayoutDetail.class).setParameter("companyId", comppanyID).getList()
 				
 				.stream().map(m -> new ButtonSettings(new ButtonPositionNo(m.pk.buttonPositionNo),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode(m.textColor), new ButtonName(m.buttonName)), new ColorCode(m.backGroundColor)),

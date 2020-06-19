@@ -12,10 +12,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
@@ -34,13 +33,14 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.G
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -216,14 +216,26 @@ public class StampSettingsEmbossFinder {
 			return stampSetPerRepo.getStampSet(AppContexts.user().companyId());
 		}
 
+//		@Override
+//		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
+//			return workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+//		}
+//
+//		@Override
+//		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
+//			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
+//		}
+
 		@Override
-		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp(String comppanyID) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
-		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
-			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
+		public Optional<PortalStampSettings> getPortalStampSettings(String comppanyID) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}
@@ -255,7 +267,7 @@ public class StampSettingsEmbossFinder {
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
+		public Optional<StampCard> get(String contractCode, String stampNumber) {
 			return null;
 		}
 

@@ -7,6 +7,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
+/**
+ * 打刻Repository
+ */
 public interface StampDakokuRepository {
 
 	/**

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
  * @author tutk
  *
  */
-
+@Stateless
 public class StampFunctionAvailableService {
 
 	/**
@@ -34,7 +36,7 @@ public class StampFunctionAvailableService {
 		// $利用設定 = require.利用設定を取得する()
 		Optional<SettingsUsingEmbossing> cardCreate = require.get();
 		// $利用設定.打刻利用できるか(打刻手段)
-		if (!cardCreate.isPresent() || cardCreate.get().canUsedStamping(stampMeans)) {
+		if (!cardCreate.isPresent() || !cardCreate.get().canUsedStamping(stampMeans)) {
 			return new MakeUseJudgmentResults(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, Optional.empty());
 		}
 

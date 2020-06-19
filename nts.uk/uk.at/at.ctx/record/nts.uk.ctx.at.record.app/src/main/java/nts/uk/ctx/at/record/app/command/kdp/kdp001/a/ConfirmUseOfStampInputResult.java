@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CanEngravingUsed;
 
 /**
  * 
@@ -11,6 +13,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class ConfirmUseOfStampInputResult {
-	// 打刻カード番号
-	private String cardNumber;
+	private GeneralDateTime systemDate;
+
+	// 打刻利用可否
+	private int used;
 }

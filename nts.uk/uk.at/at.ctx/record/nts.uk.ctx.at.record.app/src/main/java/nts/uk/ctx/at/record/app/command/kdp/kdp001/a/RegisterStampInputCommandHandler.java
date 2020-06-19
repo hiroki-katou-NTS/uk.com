@@ -2,8 +2,10 @@ package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
@@ -14,19 +16,30 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.E
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author sonnlb
+ *         UKDesign.UniversalK.就業.KDP_打刻.KDP001_打刻入力(ポータル).A:打刻入力(ポータル).メニュー別OCD.打刻入力(ポータル)を登録する
+ *
+ */
+@Stateless
 public class RegisterStampInputCommandHandler
 		extends CommandHandlerWithResult<RegisterStampInputCommand, RegisterStampInputResult> {
 
 	@Inject
 	private EnterStampFromPortalService portalService;
 
+	@Inject
+	private PortalStampSettingsRepository settingRepo;
+
 	@Override
 	protected RegisterStampInputResult handle(CommandHandlerContext<RegisterStampInputCommand> context) {
 		RegisterStampInputCommand cmd = context.getCommand();
 
-		EnterStampFromPortalServiceRequireImpl require = new EnterStampFromPortalServiceRequireImpl();
+		EnterStampFromPortalServiceRequireImpl require = new EnterStampFromPortalServiceRequireImpl(settingRepo);
 
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 
@@ -68,12 +81,14 @@ public class RegisterStampInputCommandHandler
 		return new RegisterStampInputResult(inputResult.getStampDataReflectResult().getReflectDate());
 	}
 
+	@AllArgsConstructor
 	private class EnterStampFromPortalServiceRequireImpl implements EnterStampFromPortalService.Require {
+		@Inject
+		private PortalStampSettingsRepository settingRepo;
 
 		@Override
 		public Optional<PortalStampSettings> get(String comppanyID) {
-			// TODO Auto-generated method stub
-			return null;
+			return this.settingRepo.get(comppanyID);
 		}
 
 	}

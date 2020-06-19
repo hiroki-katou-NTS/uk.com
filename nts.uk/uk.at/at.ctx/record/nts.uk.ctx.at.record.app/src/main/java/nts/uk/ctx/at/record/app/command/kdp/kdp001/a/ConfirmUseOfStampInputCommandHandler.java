@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -10,16 +11,21 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,16 +35,33 @@ import nts.uk.shr.com.context.AppContexts;
  *         UKDesign.UniversalK.就業.KDP_打刻.KDP001_打刻入力(ポータル).A:打刻入力(ポータル).メニュー別OCD.打刻入力(ポータル)の利用確認を行う
  *
  */
+@Stateless
 public class ConfirmUseOfStampInputCommandHandler
 		extends CommandHandlerWithResult<ConfirmUseOfStampInputCommand, ConfirmUseOfStampInputResult> {
 
 	@Inject
 	private StampFunctionAvailableService stampAvailableService;
 
+	@Inject
+	private StampUsageRepository stampUsageRepo;
+
+	@Inject
+	private StampCardRepository stampCardRepo;
+
+	@Inject
+	private StampCardEditingRepo stampCardEditRepo;
+
+	@Inject
+	private CompanyAdapter companyAdapter;
+
+	@Inject
+	private EmployeeRecordAdapter sysEmpPub;
+
 	@Override
 	protected ConfirmUseOfStampInputResult handle(CommandHandlerContext<ConfirmUseOfStampInputCommand> context) {
 
-		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl();
+		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
+				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub);
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
 
@@ -54,54 +77,62 @@ public class ConfirmUseOfStampInputCommandHandler
 			transaction.execute(() -> {
 				atom.get().run();
 			});
-			return new ConfirmUseOfStampInputResult(cradResultOpt.get().getCardNumber());
+			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.used.value);
 		}
-		return null;
+		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.used.value);
 
 	}
 
 	@AllArgsConstructor
 	private class StampFunctionAvailableServiceRequireImpl implements StampFunctionAvailableService.Require {
+		@Inject
+		private StampUsageRepository stampUsageRepo;
+
+		@Inject
+		private StampCardRepository stampCardRepo;
+
+		@Inject
+		private StampCardEditingRepo stampCardEditRepo;
+
+		@Inject
+		private CompanyAdapter companyAdapter;
+
+		@Inject
+		private EmployeeRecordAdapter sysEmpPub;
+
 		@Override
-		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid) {
-			// TODO Auto-generated method stub
-			return null;
+		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
+			return this.sysEmpPub.findBySidNotDel(sids);
 		}
 
 		@Override
 		public Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid) {
-			// TODO Auto-generated method stub
-			return null;
+			return this.companyAdapter.getCompanyNotAbolitionByCid(cid);
 		}
 
 		@Override
 		public Optional<StampCardEditing> get(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
+			return this.stampCardEditRepo.get(companyId);
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<StampCard> get(String contractCode, String stampNumber) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 		@Override
 		public void add(StampCard domain) {
-			// TODO Auto-generated method stub
-
+			this.stampCardRepo.add(domain);
 		}
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
-			// TODO Auto-generated method stub
-			return null;
+			return this.stampCardRepo.getListStampCard(sid);
 		}
 
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.stampUsageRepo.get(AppContexts.user().companyId());
 		}
 
 	}

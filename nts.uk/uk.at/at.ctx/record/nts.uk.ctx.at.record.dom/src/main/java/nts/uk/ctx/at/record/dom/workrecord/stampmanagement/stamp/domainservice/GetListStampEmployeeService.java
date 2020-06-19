@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
  * @author tutk
  *
  */
+@Stateless
 public class GetListStampEmployeeService {
 	
 	/**

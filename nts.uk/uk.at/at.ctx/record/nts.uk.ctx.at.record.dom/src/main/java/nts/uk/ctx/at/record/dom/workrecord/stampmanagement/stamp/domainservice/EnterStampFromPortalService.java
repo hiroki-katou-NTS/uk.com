@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -22,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.ポータル打刻から打刻を入力する.ポータル打刻から打刻を入力する
  *
  */
+@Stateless
 public class EnterStampFromPortalService {
 	/**
 	 * [1] 作成する
@@ -63,7 +66,7 @@ public class EnterStampFromPortalService {
 
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, NULLL, 打刻日時, $打刻する方法,
 		// $ボタン詳細設定.ボタン種類, 実績への反映内容, NULL)
-		//TODO: Chungnt Gọi đến DS của anh Sơn :D
+		// TODO: Chungnt Gọi đến DS của anh Sơn :D
 		return null;
 	}
 
