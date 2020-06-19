@@ -117,7 +117,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 
 	/**
 	 * 打刻レイアウトの設定内容を更新する
-	 * update KrcctStampPageLayout
+	 * update KrcmtStampPageLayout
 	 */
 	@Override
 	public void updatePage(StampPageLayout layout) {
@@ -126,23 +126,21 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
-		if(oldData.isPresent()){
+		
+		if (oldData.isPresent()) {
 			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
 			oldData.get().pageName = newData.pageName;
 			oldData.get().buttonLayoutType = newData.buttonLayoutType;
 			oldData.get().pageComment = newData.pageComment;
 			oldData.get().commentColor = newData.commentColor;
-
+	
 			newData.lstButtonSet.stream().forEach(x -> {
 				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
 						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 				Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 						.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
-	//			if(!optional.isPresent() && ((oldData.get().lstButtonSet == null ) || 
-	//					(x.reservationArt == 0 && x.changeCalArt == null && x.changeClockArt == null && x.changeHalfDay == null) || (x.krcctStampPageLayout == null)) && !x.buttonName.equals("外出") ) {
-	//				return;
-	//			}
-				if(optional.isPresent()){
+
+				if(optional.isPresent()) {
 					optional.get().useArt = x.useArt;
 					optional.get().buttonName = x.buttonName;
 					optional.get().reservationArt = x.reservationArt;
@@ -154,7 +152,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					optional.get().textColor = x.textColor;
 					optional.get().backGroundColor = x.backGroundColor;
 					optional.get().aidioType = x.aidioType;
-				}else {
+				} else {
 					StampType stampType = null;
 					
 					if(optional2.get().getButtonType().getStampType().isPresent() && !(optional2.get().getButtonType().getStampType().get().getChangeHalfDay() == null 
@@ -163,14 +161,14 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 							&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
 							&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
 						
-						StampType.getStampType(
+						stampType = StampType.getStampType(
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null);
-						
 					}
+
 					ButtonSettings settings = new ButtonSettings(
 							optional2.get().getButtonPositionNo(), 
 							new ButtonDisSet(
@@ -183,11 +181,12 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 									), 
 							optional2.get().getUsrArt(), 
 							optional2.get().getAudioType());
+					
 					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
 				}
-				
 			});
 		}
+		
 		this.commandProxy().update(oldData.get());
 	}
 

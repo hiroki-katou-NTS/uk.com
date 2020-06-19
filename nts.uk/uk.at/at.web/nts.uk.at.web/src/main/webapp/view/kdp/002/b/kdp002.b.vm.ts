@@ -86,14 +86,14 @@ module nts.uk.at.view.kdp002.b {
                 let sid = self.infoEmpFromScreenA.employeeId;
                 service.getAllStampingResult(sid).done(function(data) {
                     _.forEach(data, (a) => {
-                        let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampDate', 'stampTime'], ['desc', 'desc']);
+                        let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
                         _.forEach(items, (sr) => {
                             self.listStampRecord.push(sr);
                         });
                     });
                     if (_.size(self.listStampRecord()) > 0) {
                         self.laceName(data[0].workPlaceName);
-                        self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampDate', 'stampTime'], ['desc', 'desc']));
+                        self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampTimeWithSec'], ['desc']));
                         _.forEach(self.listStampRecord(), (sr) => {
                             let changeClockArtDisplay = "<div class='full-width' style='text-align: center'> " + sr.stampArtName + " </div>";
                             if (sr.changeClockArt == 0) {
@@ -103,11 +103,11 @@ module nts.uk.at.view.kdp002.b {
                             }
                             let dateDisplay = nts.uk.time.applyFormat("Short_YMDW", sr.stampDate)
                             if(moment(sr.stampDate).day() ==6){
-                                dateDisplay = "<span class='color-schedule-saturday' >"+dateDisplay + "</span>";
+                                dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
                                 sr.stampDate ="<span class='color-schedule-saturday' style='float:left;'>"+sr.stampDate + "</span>";
                             }else if(moment(sr.stampDate).day() == 0){
-                                dateDisplay = "<span class='color-schedule-sunday'>"+dateDisplay + "</span>";
-                                sr.stampDate ="<span class='color-schedule-sunday' style='float:left;'>"+sr.stampDate + "</span>";
+                                dateDisplay = "<span class='color-schedule-sunday'>" + dateDisplay + "</span>";
+                                sr.stampDate ="<span class='color-schedule-sunday' style='float:left;'>" + sr.stampDate + "</span>";
                             }
                             self.items.push(new model.ItemModels( 
                                 dateDisplay,

@@ -67,7 +67,7 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
+		
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 	
@@ -78,11 +78,15 @@ public class StampResultConfirmationQuery {
 		String cid         = AppContexts.user().companyId();
 		String sid         = param.getEmployeeId();
 		String authorityId = AppContexts.user().roles().forAttendance();
+
+		// add more 28 29 31 34 info
+		boolean contain28 = param.isContain28();
+		boolean contain29 = param.isContain29();
+		boolean contain31 = param.isContain31();
+		boolean contain34 = param.isContain34();
+		param.correctRequest();
+
 		List<Integer> attItemIds = param.getAttendanceItems();
-		attItemIds.add(28);
-		attItemIds.add(29);
-		attItemIds.add(31);
-		attItemIds.add(34);
 		
 		// 1
 		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod(), sid);
@@ -100,7 +104,7 @@ public class StampResultConfirmationQuery {
 		// 5 アルゴリズム「指定した勤怠項目IDに対応する項目を返す」を実行する
 		List<String> sids = new ArrayList<>();
 		sids.add(sid);
-		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), param.getAttendanceItems())
+		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), attItemIds)
 			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
 						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.findFirst().orElse(null);
@@ -121,10 +125,22 @@ public class StampResultConfirmationQuery {
 		Optional<ItemValue> attendance = itemValues.stream().filter(i -> i.getItemId() == 31).findFirst();
 		Optional<ItemValue> leave = itemValues.stream().filter(i -> i.getItemId() == 34).findFirst();
 		
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		if(!contain28) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);			
+		}
+		if(!contain29) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);			
+		}
+		if(!contain31) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);			
+		}
+		if(!contain34) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);			
+		}
+		
+		// 8
+		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
+		
 		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	

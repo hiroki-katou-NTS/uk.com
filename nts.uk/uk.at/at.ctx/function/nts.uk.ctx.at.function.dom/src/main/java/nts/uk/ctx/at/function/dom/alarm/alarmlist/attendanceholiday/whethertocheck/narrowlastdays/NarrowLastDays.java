@@ -16,7 +16,13 @@ public class NarrowLastDays {
 
 	@Inject
 	private CheckLastgrantNumber checkLastgrantNumber;
-	
+	/**
+	 * 前回年休付与日数の条件で絞り込む
+	 * @param employeeId
+	 * @param annualHolidayAlarmCondition
+	 * @param baseDate
+	 * @return
+	 */
 	public boolean checkNarrowLastDays(String employeeId,AnnualHolidayAlarmCondition annualHolidayAlarmCondition,GeneralDate baseDate) {
 		//「前回年休付与日数の条件で絞り込む」をチェックする
 		boolean check = annualHolidayAlarmCondition.getAlarmCheckSubConAgr().isNarrowLastDay();

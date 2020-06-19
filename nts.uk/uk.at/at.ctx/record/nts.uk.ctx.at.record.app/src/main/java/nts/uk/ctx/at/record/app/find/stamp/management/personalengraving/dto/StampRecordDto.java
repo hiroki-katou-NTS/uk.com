@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
@@ -27,6 +29,7 @@ public class StampRecordDto {
 	private String stampNumber;
 	private String stampDate;
 	private String stampTime;
+	private String stampTimeWithSec;
 	private String stampHow;
 	private String stampArt;
 	private String stampArtName;
@@ -62,8 +65,10 @@ public class StampRecordDto {
 
 	public StampRecordDto(StampRecord stampRecord, Stamp stamp) {
 		this.stampNumber = stampRecord.getStampNumber().v();
-		this.stampDate = stampRecord.getStampDateTime().toString("yyyy/MM/dd");
-		this.stampTime = stampRecord.getStampDateTime().toString("HH:mm");
+		GeneralDateTime stampDate = stampRecord.getStampDateTime();
+		this.stampDate = stampDate.toString("yyyy/MM/dd");
+		this.stampTime = stampDate.toString("HH:mm");
+		this.stampTimeWithSec = stampDate.toString();
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = "";
 		
@@ -116,15 +121,15 @@ public class StampRecordDto {
 	public StampRecordDto(StampInfoDisp info) {
 		
 		this.stampNumber = info.getStampNumber().v();
+		GeneralDateTime stampDate = info.getStampDatetime();
 		this.stampDate = info.getStampDatetime().toString("yyyy/MM/dd");
 		this.stampTime = info.getStampDatetime().toString("HH:mm");
+		this.stampTimeWithSec = stampDate.toString();
 		Stamp stamp = info.getStamp().isPresent() ? info.getStamp().get() : null;
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = info.getStampAtr();
-		
-//		this.revervationAtr = stampRecord.getRevervationAtr().value;
-//		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
-//				: null;
+		this.stampArtName = info.getStampAtr();
+		this.timeStampType = this.stampArtName;
 
 		// stamp
 		if (stamp != null) {
@@ -133,7 +138,6 @@ public class StampRecordDto {
 			
 
 			StampType type = stamp.getType();
-			this.stampArtName = type.createStampTypeDisplay();
 			this.changeHalfDay = type.getChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
@@ -164,7 +168,7 @@ public class StampRecordDto {
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
-			this.timeStampType = this.stampArtName;
+			
 		}
 	}
 
@@ -264,16 +268,16 @@ public class StampRecordDto {
 				) {
 			return ContentsStampType.START_SUPPORT_BREAK.nameId;
 		}
-//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-//				&& this.revervationAtr == ReservationArt.RESERVATION.value) {
-//			return ContentsStampType.RESERVATION.nameId;
-//		}
-//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-//				&& this.revervationAtr == ReservationArt.CANCEL_RESERVATION.value) {
-//			return ContentsStampType.CANCEL_RESERVATION.nameId;
-//		}
+		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+				&& this.revervationAtr == ReservationArt.RESERVATION.value) {
+			return ContentsStampType.RESERVATION.nameId;
+		}
+		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+				&& this.revervationAtr == ReservationArt.CANCEL_RESERVATION.value) {
+			return ContentsStampType.CANCEL_RESERVATION.nameId;
+		}
 
 		return null;
 	}

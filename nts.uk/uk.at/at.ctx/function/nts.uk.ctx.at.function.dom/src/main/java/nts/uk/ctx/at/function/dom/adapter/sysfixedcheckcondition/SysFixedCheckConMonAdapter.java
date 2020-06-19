@@ -21,7 +21,12 @@ public interface SysFixedCheckConMonAdapter {
 
 	// 1:月次未確認 ( process two record Monthly)
 	public List<ValueExtractAlarm> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,IdentityConfirmProcessImport identityConfirmProcessImport);
-	
+	/**
+	 * 本人確認処理の利用設定を取得
+	 * @param employeeID
+	 * @param yearMonth
+	 * @return
+	 */
 	public List<ValueExtractAlarm> checkMonthlyUnconfirmeds(List<String> employeeID, List<YearMonth> yearMonth);
 	
 	// 2:1960

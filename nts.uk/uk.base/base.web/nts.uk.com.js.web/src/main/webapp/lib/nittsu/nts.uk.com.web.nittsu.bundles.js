@@ -47403,9 +47403,9 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
             return null;
         });
     }
-}, $storage = function (params) {
+}, $storage = function ($data) {
     if (arguments.length === 1) {
-        return $storeSession(OPENWD, params);
+        return $storeSession(OPENWD, $data);
     }
     else if (arguments.length === 0) {
         return $.Deferred().resolve()
@@ -47429,6 +47429,7 @@ function bean() {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -47449,7 +47450,7 @@ function component(options) {
                 ko.components.register(options.name, {
                     template: template,
                     viewModel: {
-                        createViewModel: function ($params, __) {
+                        createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
                             // hook to created function
                             if ($created && _.isFunction($created)) {
@@ -47458,6 +47459,7 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                _.extend($viewModel, { $el: $el.element });
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }

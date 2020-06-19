@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
@@ -72,14 +72,10 @@ import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatus;
 import nts.uk.ctx.bs.employee.pub.employmentstatus.EmploymentStatusPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
-import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
-import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.service.PersonService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class SyEmployeePubImp.
@@ -959,6 +955,22 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<Person> personDomainLst = personRepo.getPersonByPersonIds(personLst);
 		emps.stream().forEach(c ->{
 			Optional<Person> personOpt = personDomainLst.stream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
+			if(personOpt.isPresent()) {
+				result.add(new ResultRequest596Export(c.getEmployeeId(), c.getEmployeeCode().v(),
+						personOpt.get().getPersonNameGroup().getBusinessName().v()));
+			}
+		});
+		return result;
+	}
+	
+	@Override
+	public List<ResultRequest596Export> getEmpNotDeletedLstBySids(List<String> sids) {
+		List<ResultRequest596Export> result = new ArrayList<>();
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findBySidNotDel(sids);
+		List<String> personIds = emps.parallelStream().map(c -> c.getPersonId()).collect(Collectors.toList());
+		List<Person> personLst = personRepo.getPersonByPersonIds(personIds);
+		emps.parallelStream().forEach(c ->{
+			Optional<Person> personOpt = personLst.parallelStream().filter(p -> p.getPersonId().equals(c.getPersonId())).findFirst();
 			if(personOpt.isPresent()) {
 				result.add(new ResultRequest596Export(c.getEmployeeId(), c.getEmployeeCode().v(),
 						personOpt.get().getPersonNameGroup().getBusinessName().v()));
