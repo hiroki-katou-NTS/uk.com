@@ -31,18 +31,18 @@
         <span class="textSize">{{'KAFS07_3' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary textSize">0001</span>
+          <span class="badge badge-secondary textSize">{{worktype.code}}</span>
           <!-- A4_2_2 -->
-          <span>Name of selection</span>
+          <span>{{worktype.name}}</span>
         </button>
 
         <!-- A4_3 -->
         <span class="textSize">{{'KAFS07_4' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary textSize">0001</span>
+          <span class="badge badge-secondary textSize">{{worktime.code}}</span>
           <!-- A4_3_2 -->
-          <span>Name of selection</span>
+          <span>{{worktime.name}}</span>
           <!-- A4_3_3 -->
           <span class="d-block mt-1">09:30~17:30</span>
         </button>
@@ -60,8 +60,8 @@
         <nts-switchbox v-model="switchbox1" v-bind:value="2">{{'KAFS07_12' | i18n}}</nts-switchbox>
       </div>
       <div class="card-body">
-        <nts-switchbox v-model="switchbox1" v-bind:value="1">{{'KAFS07_13' | i18n}}</nts-switchbox>
-        <nts-switchbox v-model="switchbox1" v-bind:value="2">{{'KAFS07_14' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="switchbox2" v-bind:value="1">{{'KAFS07_13' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="switchbox2" v-bind:value="2">{{'KAFS07_14' | i18n}}</nts-switchbox>
       </div>
     </div>
 
@@ -73,7 +73,7 @@
         <span class="badge badge-warning">必須</span>
       </div>
       <div class="card-body">
-          <nts-time-range-input v-model="value"/>
+          <nts-time-range-input v-model="valueWorkHours1"/>
       </div>
     </div>
 
@@ -85,7 +85,7 @@
         <span class="badge badge-warning">必須</span>
       </div>
       <div class="card-body">
-          <nts-time-range-input v-model="value"/>
+          <nts-time-range-input v-model="valueWorkHours2"/>
       </div>
     </div>
     <!-- display text by  ※1-->

@@ -15,11 +15,12 @@ import { CmmS45ComponentsApp2Component, AppWorkChange } from '../../../cmm/s45/c
     constraints: []
 })
 export class KafS07BComponent extends Vue {
-    public title: string = 'KafS07B';
+    public title: string = 'KafS07B'; 
     public app: AppWorkChange = {
         workType: '001 worktype',
         workTime: '002 worktime',
         workHours1: '08:30 ~ 17:30',
         workHours2: '08:30 ~ 17:30'
     };
+    
 }

@@ -11,7 +11,7 @@ import { component, Prop } from '@app/core/component';
 export class CmmS45ComponentsApp2Component extends Vue {
     public title: string = 'CmmS45ComponentsApp1';
     @Prop({ default: () => ({ appWorkChange: new AppWorkChange('', '', '', '') }) })
-    public params: AppWorkChange;
+    public readonly params: AppWorkChange;
     public $app() {
         return this.params;
     }
