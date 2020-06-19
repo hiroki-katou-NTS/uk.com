@@ -4,6 +4,7 @@ import { component } from '@app/core/component';
 @component({
     name: 'cmms45componentsapp2',
     template: require('./index.vue'),
+    style: require('./style.scss'),
     validations: {},
     constraints: []
 })

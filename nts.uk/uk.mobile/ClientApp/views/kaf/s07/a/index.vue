@@ -28,19 +28,19 @@
       </div>
       <div class="card-body">
         <!-- A4_2 -->
-        <span>{{'KAFS07_3' | i18n}}</span>
+        <span class="textSize">{{'KAFS07_3' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary">0001</span>
+          <span class="badge badge-secondary textSize">0001</span>
           <!-- A4_2_2 -->
           <span>Name of selection</span>
         </button>
 
         <!-- A4_3 -->
-        <span>{{'KAFS07_4' | i18n}}</span>
+        <span class="textSize">{{'KAFS07_4' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2">
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary">0001</span>
+          <span class="badge badge-secondary textSize">0001</span>
           <!-- A4_3_2 -->
           <span>Name of selection</span>
           <!-- A4_3_3 -->

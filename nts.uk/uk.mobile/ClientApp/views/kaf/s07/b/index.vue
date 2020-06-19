@@ -1,6 +1,5 @@
 <template>
-<div class="kafs07b">
-    <span>{{'KAFS07_2' | i18n}}</span>
-
-</div>
+  <div class="kafs07b">
+      <cmms45componentsapp2></cmms45componentsapp2>
+  </div>
 </template>
