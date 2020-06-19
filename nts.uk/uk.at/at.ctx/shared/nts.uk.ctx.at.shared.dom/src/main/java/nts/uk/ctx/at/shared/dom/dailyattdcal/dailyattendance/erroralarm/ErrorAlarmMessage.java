@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergence.time.message;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

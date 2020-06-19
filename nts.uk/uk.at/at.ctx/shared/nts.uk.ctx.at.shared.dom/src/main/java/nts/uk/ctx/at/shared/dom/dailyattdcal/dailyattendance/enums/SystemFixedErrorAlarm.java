@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.errorsetting;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums;
 
 import java.util.Optional;
 

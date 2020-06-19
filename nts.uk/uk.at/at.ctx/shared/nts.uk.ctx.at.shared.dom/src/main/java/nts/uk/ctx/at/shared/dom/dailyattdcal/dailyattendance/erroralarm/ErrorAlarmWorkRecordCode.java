@@ -1,7 +1,7 @@
 /**
  * 2:17:33 PM Jul 21, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 
 /**
  * 

@@ -14,11 +14,11 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  */
 @Getter
 @NoArgsConstructor
-public class SpecificDateAttrOfDailyAttr implements DomainObject {
+public class SpecificDateAttrOfDailyAttd implements DomainObject {
 	//特定日区分
 	private List<SpecificDateAttrSheet> specificDateAttrSheets;
 
-	public SpecificDateAttrOfDailyAttr(List<SpecificDateAttrSheet> specificDateAttrSheets) {
+	public SpecificDateAttrOfDailyAttd(List<SpecificDateAttrSheet> specificDateAttrSheets) {
 		super();
 		this.specificDateAttrSheets = specificDateAttrSheets;
 	}

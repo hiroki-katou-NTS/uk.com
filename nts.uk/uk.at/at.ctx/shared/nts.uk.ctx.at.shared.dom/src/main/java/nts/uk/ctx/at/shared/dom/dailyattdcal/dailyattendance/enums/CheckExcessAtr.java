@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums;
 
 /**
  * 実績超過を判定したい項目

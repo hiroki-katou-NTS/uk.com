@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 
@@ -26,7 +26,7 @@ public class SpecificDateAttrOfDailyPerfor extends AggregateRoot {
 	private GeneralDate ymd;
 	
 	//特定日
-	private SpecificDateAttrOfDailyAttr specificDay;
+	private SpecificDateAttrOfDailyAttd specificDay;
 	
 	/**
 	 * 使用する　になっている特定日Noを取得
@@ -40,9 +40,9 @@ public class SpecificDateAttrOfDailyPerfor extends AggregateRoot {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.specificDay = new SpecificDateAttrOfDailyAttr(specificDateAttrSheets);
+		this.specificDay = new SpecificDateAttrOfDailyAttd(specificDateAttrSheets);
 	}
-	public SpecificDateAttrOfDailyPerfor(String employeeId, GeneralDate ymd, SpecificDateAttrOfDailyAttr specificDay) {
+	public SpecificDateAttrOfDailyPerfor(String employeeId, GeneralDate ymd, SpecificDateAttrOfDailyAttd specificDay) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;

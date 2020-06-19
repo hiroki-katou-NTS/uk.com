@@ -1,8 +1,15 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 /**
@@ -56,4 +63,17 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				this.budgetTimeVariance = budgetTimeVariance;
 				this.medicalCareTime = medicalCareTime;
 				}
+	/**
+	 * エラーチェックの指示メソッド 
+	 * @param attendanceItemConverter 
+	 * @return 社員のエラーチェック一覧
+	 */
+	public List<EmployeeDailyPerError> getErrorList(String employeeId,GeneralDate targetDate,
+			   										SystemFixedErrorAlarm fixedErrorAlarmCode, CheckExcessAtr checkAtr) {
+		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
+		if(this.getActualWorkingTimeOfDaily() != null) {
+			return this.getActualWorkingTimeOfDaily().requestCheckError(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
+		}
+		return returnErrorItem;
+	}
 }
