@@ -246,4 +246,5 @@ public interface SyEmployeePub {
 	 */
 	List<EmployeeDataMngInfoExport> findBySidNotDel(List<String> sids);
 	
+	List<ResultRequest596Export> getEmpNotDeletedLstBySids(List<String> sids);
 }

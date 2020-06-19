@@ -59,10 +59,6 @@ public class GetOmissionContentsFinder {
 		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
 		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, stampButton), appDisplayAdapter.getAppDisplay());
 	}
-	// アルゴリズム「申請種類を取得する」を実行する
-//	private getApplicationType() {
-//		
-//	}
 
 	@AllArgsConstructor
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {

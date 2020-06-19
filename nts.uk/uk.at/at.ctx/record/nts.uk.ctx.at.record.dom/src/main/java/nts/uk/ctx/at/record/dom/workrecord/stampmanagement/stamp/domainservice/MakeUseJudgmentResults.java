@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 
 /**
@@ -17,11 +18,13 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 public class MakeUseJudgmentResults {
 
 	// 打刻利用可否
-	public final CanEngravingUsed used;
+	@Getter
+	private final CanEngravingUsed used;
 
 	// 打刻カード作成結果
-	public final Optional<StampCardCreateResult> cardResult;
-
+	@Getter
+	private final Optional<StampCardCreateResult> cardResult;
+	
 	// [C-1] 利用できる
 	public static MakeUseJudgmentResults get() {
 		return new MakeUseJudgmentResults(CanEngravingUsed.AVAILABLE, Optional.empty());

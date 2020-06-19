@@ -37,14 +37,14 @@ public class KrcdtTopAlStamp extends ContractUkJpaEntity implements Serializable
 	 */
 	@Basic(optional = false)
 	@Column(name = "EXISTENCE_ERROR")
-	public int existence_error;
+	public int existenceError;
 	
 	/**
 	 * 中止フラグ
 	 */
 	@Basic(optional = false)
 	@Column(name = "IS_CANCELLED")
-	public int is_cancelled;
+	public int isCancelled;
 	
 	@Override
 	protected Object getKey() {

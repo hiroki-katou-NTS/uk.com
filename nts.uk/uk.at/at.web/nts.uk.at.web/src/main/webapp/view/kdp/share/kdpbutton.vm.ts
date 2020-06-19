@@ -4,7 +4,9 @@ module nts.uk.at.view.kdp.share {
         SMALL_8:1
     }
     const DEFAULT_GRAY = '#E8E9EB';
+    const GET_HIGHLIGHT_SETTING_URL = 'at/record/stamp/management/personal/stamp/getHighlightSetting';
     export class StampButtonLayOut {
+        oldLayout: KnockoutObservable<any> = ko.observable({});
         buttonSettings: KnockoutObservableArray<ButtonSetting> = ko.observableArray([]);
         buttonLayoutType: KnockoutObservable<number> = ko.observable(0);
         useHighlightFunction: KnockoutObservable<StampToSuppress> = ko.observable({});
@@ -13,22 +15,28 @@ module nts.uk.at.view.kdp.share {
         constructor(params: any) {
             let self = this;
             self.parentVM = ko.observable(params.parent.content);
-            console.log(params.highlightSetting());
             self.useHighlightFunction(params.highlightSetting());
             if(params.data()) {
-                let layout = params.data();
+                self.oldLayout(params.data());
+                let layout = $.extend(true, {}, params.data());
                 self.selectedLayout(layout);
                 self.buttonLayoutType = ko.observable(layout.buttonLayoutType);
-                self.correntBtnSetting(layout.buttonSettings, params.clickBinding);
+                self.correntBtnSetting(layout.buttonSettings);
             };
+
+            params.highlightSetting.subscribe(() => {
+                self.reloadHighLight();
+            });
         }
 
-        public correntBtnSetting(btnSets: Array<ButtonSetting>, clickBinding: any) {
+        public correntBtnSetting(btnSets: Array<ButtonSetting>) {
             let self = this;
             let btnList = [];
             let btnNum = self.buttonLayoutType() === layoutType.LARGE_2_SMALL_4 ? 6 : 8;
+            let clBtnSets = $.extend(true, {}, btnSets);
+            console.log(clBtnSets);
             for (let idx = 1; idx <= btnNum; idx++) {
-                let btn = _.find(btnSets, (btn) => {return btn.btnPositionNo  === idx});
+                let btn = _.find(clBtnSets, (btn) => {return btn.btnPositionNo  === idx});
                 if(btn && !btn.onClick) {
                     btn.onClick = () => {};
                 }
@@ -56,9 +64,23 @@ module nts.uk.at.view.kdp.share {
                 
                 btnList.push(btn && btn.usrArt == 1 ? btn : {idx: idx, btnPositionNo: -1, btnName: '', btnBackGroundColor: '', btnTextColor: '', onClick: () => {}});
             }
-            console.log(btnList);
+         
             self.buttonSettings(btnList);
         }
+
+        public reloadHighLight() {
+            let self = this;
+            if(self.selectedLayout().buttonSettings) {
+                if(self.useHighlightFunction().isUse) {
+                    nts.uk.request.ajax('at', GET_HIGHLIGHT_SETTING_URL).done((res) => {
+                        res.isUse = self.useHighlightFunction().isUse;
+                        self.useHighlightFunction(res);
+                        self.correntBtnSetting(self.oldLayout().buttonSettings);
+                    });
+                }
+            }
+        }
+
     }
 }
 

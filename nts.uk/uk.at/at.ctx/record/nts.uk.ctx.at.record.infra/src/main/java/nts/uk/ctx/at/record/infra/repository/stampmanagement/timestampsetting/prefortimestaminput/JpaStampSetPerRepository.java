@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcctStampDisplay;
+import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampPerson;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampLayoutDetail;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayoutPk;
@@ -33,20 +33,20 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaStampSetPerRepository extends JpaRepository implements StampSetPerRepository {
 
-	private static final String SELECT_ALL = "SELECT c FROM KrcmtStampDisplay c ";
+	private static final String SELECT_ALL = "SELECT c FROM KrcmtStampPerson c ";
 
 	private static final String SELECT_BY_CID = SELECT_ALL + " WHERE c.pk.companyId = :companyId";
 
-	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID + " AND c.pk.operationMethod = :operationMethod";
+	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID ;
 
 	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtStampPageLayout c ";
 
 	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
 	
-	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.operationMethod = :operationMethod";
+	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.stampMeans = :operationMethod";
 	
 	private static final String SELECT_BY_CID_PAGENO = SELECT_BY_CID_PAGE 
-			+ " AND c.pk.operationMethod = :operationMethod"
+			+ " AND c.pk.stampMeans = :operationMethod"
 			+ " AND c.pk.pageNo = :pageNo";
 	
 	private static final String SELECT_BY_CID_LAYOUT = SELECT_BY_CID_PAGENO 
@@ -58,7 +58,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void insert(StampSettingPerson stampSettingPerson) {
-		commandProxy().insert(KrcctStampDisplay.toEntity(stampSettingPerson));
+		commandProxy().insert(KrcmtStampPerson.toEntity(stampSettingPerson));
 	}
 
 	/**
@@ -68,12 +68,11 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void update(StampSettingPerson stampSettingPerson) {
 		
-		Optional<KrcctStampDisplay> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcctStampDisplay.class)
+		Optional<KrcmtStampPerson> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcmtStampPerson.class)
 				.setParameter("companyId", stampSettingPerson.getCompanyId())
-				.setParameter("operationMethod", 1)
 				.getSingle();
 		if(oldData.isPresent()){
-			KrcctStampDisplay newData = KrcctStampDisplay.toEntity(stampSettingPerson);
+			KrcmtStampPerson newData = KrcmtStampPerson.toEntity(stampSettingPerson);
 			oldData.get().correctionInterval = newData.correctionInterval;
 			oldData.get().histDisplayMethod = newData.histDisplayMethod;
 			oldData.get().resultDisplayTime = newData.resultDisplayTime;
@@ -91,7 +90,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampSettingPerson> getStampSet(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
 	}
 	
@@ -102,7 +101,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public Optional<StampSettingPerson> getStampSetting(String companyId) {
 		List<StampPageLayout> layouts = getAllStampSetPage(companyId);
-		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain(layouts));
 	}
 
@@ -118,7 +117,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 
 	/**
 	 * 打刻レイアウトの設定内容を更新する
-	 * update KrcctStampPageLayout
+	 * update KrcmtStampPageLayout
 	 */
 	@Override
 	public void updatePage(StampPageLayout layout) {
@@ -127,23 +126,21 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
-		if(oldData.isPresent()){
+		
+		if (oldData.isPresent()) {
 			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
 			oldData.get().pageName = newData.pageName;
 			oldData.get().buttonLayoutType = newData.buttonLayoutType;
 			oldData.get().pageComment = newData.pageComment;
 			oldData.get().commentColor = newData.commentColor;
-
+	
 			newData.lstButtonSet.stream().forEach(x -> {
 				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
 						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
 				Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
 						.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
-	//			if(!optional.isPresent() && ((oldData.get().lstButtonSet == null ) || 
-	//					(x.reservationArt == 0 && x.changeCalArt == null && x.changeClockArt == null && x.changeHalfDay == null) || (x.krcctStampPageLayout == null)) && !x.buttonName.equals("外出") ) {
-	//				return;
-	//			}
-				if(optional.isPresent()){
+
+				if(optional.isPresent()) {
 					optional.get().useArt = x.useArt;
 					optional.get().buttonName = x.buttonName;
 					optional.get().reservationArt = x.reservationArt;
@@ -155,7 +152,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					optional.get().textColor = x.textColor;
 					optional.get().backGroundColor = x.backGroundColor;
 					optional.get().aidioType = x.aidioType;
-				}else {
+				} else {
 					StampType stampType = null;
 					
 					if(optional2.get().getButtonType().getStampType().isPresent() && !(optional2.get().getButtonType().getStampType().get().getChangeHalfDay() == null 
@@ -164,14 +161,14 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 							&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
 							&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
 						
-						StampType.getStampType(
+						stampType = StampType.getStampType(
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
 								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null);
-						
 					}
+
 					ButtonSettings settings = new ButtonSettings(
 							optional2.get().getButtonPositionNo(), 
 							new ButtonDisSet(
@@ -184,11 +181,12 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 									), 
 							optional2.get().getUsrArt(), 
 							optional2.get().getAudioType());
+					
 					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
 				}
-				
 			});
 		}
+		
 		this.commandProxy().update(oldData.get());
 	}
 

@@ -39,16 +39,16 @@ public class JpaTopPageAlarmStampingRepository extends JpaRepository implements 
 	public KrcdtTopAlStamp toEntity(TopPageAlarmStamping domain) {
 		KrcdtTopAlStamp entity = new KrcdtTopAlStamp();
 
-		entity.existence_error = domain.pageArm.getError().value;
-		entity.is_cancelled = domain.pageArm.getIsCancelled().value;
-		entity.pk.finishDateTime = domain.getPageArm().getFinishDateTime();
-		entity.pk.sid_tgt = domain.getLstTopPageDetail().get(0).getSid();
+		entity.existenceError = domain.pageAlarm.getError().value;
+		entity.isCancelled = domain.pageAlarm.getIsCancelled().value;
+		entity.pk.finishDateTime = domain.getPageAlarm().getFinishDateTime();
+		entity.pk.sidTgt = domain.getLstTopPageDetail().get(0).getSid();
 
 		return entity;
 	}
 
 //	public TopPageAlarmStamping toDomain(KrcdtTopAlStamp entity) {
-//		TopPageArm pageArm = new TopPageArm(error, lstsid)
+//		TopPageAlarm pageArm = new TopPageAlarm(error, lstsid)
 //		
 //		
 //		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(lstTopPageDetail, pageArm);

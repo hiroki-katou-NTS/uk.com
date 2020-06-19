@@ -70,7 +70,7 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	}
 	
 	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JoinTable(name = "KRCCT_STAMP_LAYOUT_DETAIL")
+    @JoinTable(name = "KRCMT_STAMP_LAYOUT_DETAIL")
 	public List<KrcmtStampLayoutDetail> lstButtonSet;
 	
 	public StampPageLayout toDomain(){

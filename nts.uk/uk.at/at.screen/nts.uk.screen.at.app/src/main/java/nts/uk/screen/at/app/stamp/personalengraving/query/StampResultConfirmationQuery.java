@@ -67,43 +67,56 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-	
+		
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 	
+	@Inject
+	private GetRoleIDQuery getRoleIDQuery;
+	
 	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
-		String cid = AppContexts.user().companyId();
+		String cid         = AppContexts.user().companyId();
+		String sid         = param.getEmployeeId();
 		String authorityId = AppContexts.user().roles().forAttendance();
-		String sid = AppContexts.user().employeeId();
+
+		// add more 28 29 31 34 info
+		boolean contain28 = param.isContain28();
+		boolean contain29 = param.isContain29();
+		boolean contain31 = param.isContain31();
+		boolean contain34 = param.isContain34();
+		param.correctRequest();
+
 		List<Integer> attItemIds = param.getAttendanceItems();
-		attItemIds.add(28);
-		attItemIds.add(29);
-		attItemIds.add(31);
-		attItemIds.add(34);
 		
 		// 1
-		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod());
+		List<DisplayScreenStampingResultDto> screenDisplays = displayScreenStamping.getDisplay(param.toStampDatePeriod(), sid);
 		
 		// 2
 		ConfirmStatusOfDayRequiredImpl required = new ConfirmStatusOfDayRequiredImpl(closereSv, syWorkplaceAdapter, confirmStatusActualDayChange, iGetDailyLock);
 		ConfirmStatusActualResult confirmStatusAcResults = ConfirmStatusOfDayService.get(required, cid, sid, GeneralDateTime.now().toDate());
 		
-		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(authorityId) , param.getAttendanceItems(), Collections.emptyList());
+		// 3 打刻結果を表示するためにロールIDを取得する 2020/05/13  EA3769　追加
+		String roleId = getRoleIDQuery.getRoleId(cid, sid);
 		
-		// 3
+		// 4 アルゴリズム「会社の日次項目を取得する」を実行する
+		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, Optional.ofNullable(roleId) , param.getAttendanceItems(), Collections.emptyList());
+		
+		// 5 アルゴリズム「指定した勤怠項目IDに対応する項目を返す」を実行する
 		List<String> sids = new ArrayList<>();
 		sids.add(sid);
-		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), param.getAttendanceItems())
+		DailyModifyResult dailyResult = AttendanceItemUtil.toItemValues(this.fullFinder.find(sids, param.toStampDatePeriod()), attItemIds)
 			.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
 						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.findFirst().orElse(null);
 		List<ItemValue> itemValues = dailyResult != null ? dailyResult.getItems() : Collections.emptyList();
-		// 4
+		
+		// 6
 		List<String> itemIds = new ArrayList<>();
 		Optional<ItemValue> itemId = itemValues.stream().filter(i -> i.getItemId() == 28).findFirst();
 		itemIds.add(itemId.isPresent() ? itemId.get().value() : "");
 		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, itemIds);
-		// 5
+		
+		// 7
 		itemIds.clear();
 		Optional<ItemValue> itemId2 = itemValues.stream().filter(i -> i.getItemId() == 29).findFirst();
 		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
@@ -112,10 +125,22 @@ public class StampResultConfirmationQuery {
 		Optional<ItemValue> attendance = itemValues.stream().filter(i -> i.getItemId() == 31).findFirst();
 		Optional<ItemValue> leave = itemValues.stream().filter(i -> i.getItemId() == 34).findFirst();
 		
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);
-		dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);
+		if(!contain28) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 28);			
+		}
+		if(!contain29) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 29);			
+		}
+		if(!contain31) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 31);			
+		}
+		if(!contain34) {
+			dailyItems.removeIf(r -> r.getAttendanceItemId() == 34);			
+		}
+		
+		// 8
+		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
+		
 		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
 	}
 	

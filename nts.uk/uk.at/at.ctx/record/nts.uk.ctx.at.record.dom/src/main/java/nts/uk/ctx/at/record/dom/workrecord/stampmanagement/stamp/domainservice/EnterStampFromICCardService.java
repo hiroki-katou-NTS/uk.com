@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author sonnlb
  * 
- *         ICカードから打刻を入力す
+ *         ICカードから打刻を入力する
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.ICカードから打刻を入力する.ICカードから打刻を入力する
  */
 public class EnterStampFromICCardService {
@@ -65,7 +65,7 @@ public class EnterStampFromICCardService {
 				refectActualResult);
 		
 		//return 打刻結果（社員ID込み）#打刻結果（社員ID込み）($打刻入力結果,  $打刻カード.社員ID)
-		return new StampingResultEmployeeId(timeStampInputResult, AppContexts.user().employeeId());
+		return new StampingResultEmployeeId(timeStampInputResult, stampCardOpt.get().getEmployeeId());
 	}
 
 	public static interface Require extends EnterStampForSharedStampService.Require {

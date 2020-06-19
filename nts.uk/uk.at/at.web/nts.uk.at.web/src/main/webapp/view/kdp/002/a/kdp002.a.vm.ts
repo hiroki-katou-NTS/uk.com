@@ -17,6 +17,7 @@ module nts.uk.at.view.kdp002.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                nts.uk.ui.block.grayout();
                 service.startPage()
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
@@ -36,6 +37,8 @@ module nts.uk.at.view.kdp002.a {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
 
                 return dfd.promise();
@@ -91,7 +94,7 @@ module nts.uk.at.view.kdp002.a {
                     });
                     layout.buttonSettings = btnSettings;
                 }
-
+                
                 return layout;
             }
 
@@ -123,14 +126,21 @@ module nts.uk.at.view.kdp002.a {
 
             public openScreenB(button, layout) {
                 let self = this;
-                nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
+
+                nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
+                nts.uk.ui.windows.setShared("infoEmpToScreenB", {
+                    employeeId   : __viewContext.user.employeeId,
+                    employeeCode : __viewContext.user.employeeCode,
+                    mode         : Mode.Personal,
+                });               
+
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
                         self.getTimeCardData();
                     }
-
+                    self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
             }
@@ -138,12 +148,19 @@ module nts.uk.at.view.kdp002.a {
             public openScreenC(button, layout) {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
+                nts.uk.ui.windows.setShared("infoEmpToScreenC", {
+                    employeeId   : __viewContext.user.employeeId,
+                    employeeCode : __viewContext.user.employeeCode,
+                    mode         : Mode.Personal,
+                });
+                
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
                         self.getTimeCardData();
                     }
+                    self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
             }
@@ -179,5 +196,9 @@ module nts.uk.at.view.kdp002.a {
 
         }
 
+    }
+    enum Mode {
+        Personal = 1, // 個人
+        Shared = 2  // 共有 
     }
 }

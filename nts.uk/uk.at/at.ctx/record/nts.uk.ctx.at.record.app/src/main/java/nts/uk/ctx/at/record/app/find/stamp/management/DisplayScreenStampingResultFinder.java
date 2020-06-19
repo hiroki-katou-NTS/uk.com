@@ -46,8 +46,7 @@ public class DisplayScreenStampingResultFinder {
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
 
-	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod) {
-		String employeeId = AppContexts.user().employeeId();
+	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod, String employeeId) {
 		List<String> listWorkLocationCode = new ArrayList<>();
 		List<EmployeeStampInfo> listStampDataOfEmployees = new ArrayList<>();
 		List<DisplayScreenStampingResultDto> res = new ArrayList<>();

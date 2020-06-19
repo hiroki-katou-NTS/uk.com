@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,17 +22,18 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 打刻画面の表示設定
+ * update thành 個人利用の打刻設定
  * @author phongtq
  *
  */
 
 @Entity
 @NoArgsConstructor
-@Table(name="KRCCT_STAMP_DISPLAY")
-public class KrcctStampDisplay extends ContractUkJpaEntity{
+@Table(name="KRCMT_STAMP_PERSON")
+public class KrcmtStampPerson extends ContractUkJpaEntity{
 
 	@EmbeddedId
-    public KrcctStampDisplayPk pk;
+    public KrcmtStampPersonPk pk;
 	
 	/** 打刻画面のサーバー時刻補正間隔 */
 	@Column(name ="CORRECTION_INTERVAL")
@@ -65,7 +65,7 @@ public class KrcctStampDisplay extends ContractUkJpaEntity{
 		return this.pk;
 	}
 	
-	public KrcctStampDisplay(KrcctStampDisplayPk pk, int correctionInterval, int histDisplayMethod,
+	public KrcmtStampPerson(KrcmtStampPersonPk pk, int correctionInterval, int histDisplayMethod,
 			int resultDisplayTime, String textColor, String backGroundColor, boolean buttonEmphasisArt) {
 		super();
 		this.pk = pk;
@@ -107,10 +107,9 @@ public class KrcctStampDisplay extends ContractUkJpaEntity{
 				layouts, null);
 	}
 	
-	public static KrcctStampDisplay toEntity(StampSettingPerson person){
-		return new KrcctStampDisplay(new KrcctStampDisplayPk(
-				person.getCompanyId(), 
-				1), 
+	public static KrcmtStampPerson toEntity(StampSettingPerson person){
+		return new KrcmtStampPerson(new KrcmtStampPersonPk(
+				person.getCompanyId()), 
 				person.getStampingScreenSet().getCorrectionInterval().v(), 
 				person.getStampingScreenSet().getHistoryDisplayMethod().value, 
 				person.getStampingScreenSet().getResultDisplayTime().v(), 

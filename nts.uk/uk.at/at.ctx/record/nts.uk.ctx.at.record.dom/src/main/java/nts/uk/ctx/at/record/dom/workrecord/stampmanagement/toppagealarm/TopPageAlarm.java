@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * トップページアラーム
@@ -16,7 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
-public class TopPageArm extends ValueObject {
+@AllArgsConstructor
+public class TopPageAlarm extends ValueObject {
 
 	/**
 	 * 	会社ID
@@ -45,13 +46,14 @@ public class TopPageArm extends ValueObject {
 	
 	/**
 	 * [C-1] 新規作成する
-	 * @param error
-	 * @param lstsid
+	 * @param companyId  会社ID
+	 * @param error		エラーの有無	
+	 * @param lstsid	
 	 */
-	public TopPageArm(ExistenceError error , List<String> lstsid) {
+	public TopPageAlarm(String companyId, ExistenceError error , List<String> lstsid) {
 		super();
 		
-		this.cid = AppContexts.user().companyId();
+		this.cid = companyId;
 		this.finishDateTime = GeneralDateTime.now();
 		this.error = error;
 		this.isCancelled = IsCancelled.NOT_CANCELLED;

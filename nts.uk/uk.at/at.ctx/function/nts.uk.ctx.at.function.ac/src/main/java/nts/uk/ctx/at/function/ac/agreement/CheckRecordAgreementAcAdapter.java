@@ -177,7 +177,6 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	@Inject
 	private CheckAgreementTimeStatusAdapter checkAgreementTimeStatusAdapter;
 
-	//エラーアラームチェック
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period,
