@@ -17,8 +17,8 @@ module kdp003.k.vm {
 
     export class ViewModel {
 
-        multipleSelectMode: KnockoutObservable<boolean> = ko.observable(true);
-        singleSelectMode: KnockoutObservable<boolean> = ko.observable(false);
+        multipleSelectMode: KnockoutObservable<boolean> = ko.observable(false);
+        singleSelectMode: KnockoutObservable<boolean> = ko.observable(true);
 
         multiSelectedId: KnockoutObservable<any>;
         baseDate: KnockoutObservable<Date>;
@@ -38,7 +38,7 @@ module kdp003.k.vm {
             self.treeGrid = {
                 isShowAlreadySet: false,
                 isMultipleUse: false,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 startMode: 0,//WORKPLACE,
                 selectedId: self.multiSelectedId,
                 baseDate: self.baseDate,
@@ -104,7 +104,7 @@ module kdp003.k.vm {
             self.treeGrid = {
                 isShowAlreadySet: false,
                 isMultipleUse: true,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 startMode: 0,//WORKPLACE,
                 selectedId: self.multiSelectedId,
                 baseDate: self.baseDate,

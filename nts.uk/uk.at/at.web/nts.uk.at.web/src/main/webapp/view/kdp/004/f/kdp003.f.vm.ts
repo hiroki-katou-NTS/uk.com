@@ -23,7 +23,7 @@ module kdp003.f.vm {
         modeFingerVein:KnockoutObservable<boolean> = ko.observable(false); // mode tĩnh mạch
         
         // truong hợp Setting : Select company từ List ＆   Nhiều công ty được đăng ký
-        selectCompFromListMode : KnockoutObservable<boolean>   = ko.observable(true);
+        selectCompFromListMode : KnockoutObservable<boolean>   = ko.observable(false);
         companyList: KnockoutObservableArray<CompanyItemModel> = ko.observableArray([]);
         selectedCompanyCode: KnockoutObservable<string>        = ko.observable('');
         
@@ -32,15 +32,15 @@ module kdp003.f.vm {
         inputCompanyCode : KnockoutObservable<string>      = ko.observable('000002');
         
         // trường hợp Chỉ có một công ty được đăng ký
-        oneCompanyRegistered : KnockoutObservable<boolean> = ko.observable(false);
+        oneCompanyRegistered : KnockoutObservable<boolean> = ko.observable(true);
         companyCdAndName: KnockoutObservable<string>       = ko.observable('companyCdAndName');
         
         // trường hợp select vào label [ 一覧にない社員で打刻する ] PA4 trong component chọn employee
-        selectIdMode : KnockoutObservable<boolean>    = ko.observable(true);
+        selectIdMode : KnockoutObservable<boolean>    = ko.observable(false);
         employeeCodeInput: KnockoutObservable<string> = ko.observable('employeeCode');
         
         // trường hợp chọn nhân viên trong list nhân viên PA5.
-        selectNameMode : KnockoutObservable<boolean> = ko.observable(false);
+        selectNameMode : KnockoutObservable<boolean> = ko.observable(true);
         employeeCodeView: KnockoutObservable<string> = ko.observable('employeeCode đây');
         
         // lấy setting trong domain 共有打刻の打刻設定
