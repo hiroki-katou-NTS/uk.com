@@ -5,18 +5,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.ClockHourMinute;
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * DS : 抑制する打刻種類を取得する
@@ -25,6 +23,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author tutk
  *
  */
+@Stateless
 public class GetStampTypeToSuppressService {
 
 	/**
@@ -36,10 +35,13 @@ public class GetStampTypeToSuppressService {
 	 * @return
 	 */
 	public static StampToSuppress get(Require require, String employeeId, StampMeans stampMeans) {
+		// if not [prv-1] 打刻ボタンを抑制するか(require, 打刻手段)
 		if (!checkOffStampButton(require, stampMeans)) {
+			// return 抑制する打刻#[C-1] 全ての打刻を強調しない()
 			return StampToSuppress.allStampFalse();
 		}
-		DateAndTimePeriod dateAndTimePeriod = calOneDayRange(require, employeeId);
+
+		DateAndTimePeriod dateAndTimePeriod = DateAndTimePeriod.calOneDayRange(require, employeeId);
 
 		List<Stamp> listStamp = getDataStamp(require, employeeId, dateAndTimePeriod);
 
@@ -66,51 +68,7 @@ public class GetStampTypeToSuppressService {
 	}
 
 	/**
-	 * [prv-2] 1日範囲を求める
-	 * 
-	 * @param require
-	 * @param employeeId
-	 * @return
-	 */
-	private static DateAndTimePeriod calOneDayRange(Require require, String employeeId) {
-		Optional<WorkingConditionItem> optWorkingConditionItem = require.findWorkConditionByEmployee(employeeId,
-				GeneralDate.today());
-		if (!optWorkingConditionItem.isPresent()) {
-			throw new BusinessException("Msg_430");
-		}
-
-		Optional<WorkTimeCode> workTimeCode = optWorkingConditionItem.get().getWorkCategory().getWeekdayTime()
-				.getWorkTimeCode();
-		if (!workTimeCode.isPresent()) {
-			throw new BusinessException("Msg_1142");
-		}
-
-		Optional<PredetemineTimeSetting> optPredetemineTimeSetting = require.findByWorkTimeCode(workTimeCode.get().v());
-		if (!optPredetemineTimeSetting.isPresent()) {
-			throw new BusinessException("Msg_1142");
-		}
-
-		TimeWithDayAttr startDateClock = optPredetemineTimeSetting.get().getStartDateClock();
-		GeneralDate baseDate = GeneralDate.today();
-		ClockHourMinute clockHourMinute = GeneralDateTime.now().clockHourMinute();
-		if (clockHourMinute.v() < startDateClock.v()) {
-			GeneralDateTime dateTime = GeneralDateTime.now().addDays(-1);
-			GeneralDateTime statDateTime = GeneralDateTime
-					.ymdhms(dateTime.year(), dateTime.month(), dateTime.day(), 0, 0, 0).addMinutes(startDateClock.v());
-			GeneralDateTime endDateTime = GeneralDateTime.ymdhms(GeneralDateTime.now().year(),
-					GeneralDateTime.now().month(), GeneralDateTime.now().day(), 0, 0, 0).addMinutes(startDateClock.v());
-			return new DateAndTimePeriod(statDateTime, endDateTime);
-		}
-		GeneralDate date = baseDate.addDays(1);
-		GeneralDateTime statDateTime = GeneralDateTime
-				.ymdhms(baseDate.year(), baseDate.month(), baseDate.day(), 0, 0, 0).addMinutes(startDateClock.v());
-		GeneralDateTime endDateTime = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
-				.addMinutes(startDateClock.v());
-		return new DateAndTimePeriod(statDateTime, endDateTime);
-	}
-
-	/**
-	 * [prv-3] 打刻データを取得する
+	 * [prv-2] 打刻データを取得する
 	 * 
 	 * @param require
 	 * @param employeeId
@@ -142,7 +100,7 @@ public class GetStampTypeToSuppressService {
 	}
 
 	/**
-	 * [prv-4] 抑制する打刻を判断する
+	 * [prv-3] 抑制する打刻を判断する
 	 * 
 	 * @param listStamp
 	 * @return
@@ -161,7 +119,7 @@ public class GetStampTypeToSuppressService {
 						|| c.getType().getChangeClockArt() == ChangeClockArt.RETURN)
 				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime())).findFirst();
 		boolean checkGoOut = false;
-		if(stamp.isPresent()) {
+		if (stamp.isPresent()) {
 			checkGoOut = stamp.get().getType().getChangeClockArt() == ChangeClockArt.GO_OUT;
 		}
 
@@ -173,33 +131,28 @@ public class GetStampTypeToSuppressService {
 		return new StampToSuppress(goingToWork, departure, goOut, turnBack);
 	}
 
-	public static interface Require extends GetEmpStampDataService.Require {
+	public static interface Require extends DateAndTimePeriod.Require {
 
 		/**
-		 * [R-1] 個人利用の打刻設定 StampSetPerRepository
+		 * [R-1] 労働条件を取得する
+		 * 
+		 * アルゴリズム.社員の労働条件を取得する(社員ID, 基準日)
 		 * 
 		 * @param companyId
 		 * @return
 		 */
+		List<TimeOfMonthly> findByDate(String companyId, GeneralDate criteriaDate);
+
 		Optional<StampSettingPerson> getStampSet();
 
 		/**
-		 * [R-2] 労働条件を取得する WorkingConditionService
+		 * [R-2] 所定時間設定を取得する
 		 * 
-		 * @param employeeId
-		 * @param baseDate
-		 * @return
-		 */
-		Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate);
-
-		/**
-		 * [R-3] 所定時間設定を取得する PredetemineTimeSettingRepository
+		 * 所定時間設定Repository.取得する(就業時間帯コード)
 		 * 
 		 * @param companyId
-		 * @param workTimeCode
 		 * @return
 		 */
-		Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode);
 	}
 
 }

@@ -33,14 +33,14 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.G
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -216,27 +216,26 @@ public class StampSettingsEmbossFinder {
 			return stampSetPerRepo.getStampSet(AppContexts.user().companyId());
 		}
 
-//		@Override
-//		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-//			return workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
-//		}
-//
-//		@Override
-//		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
-//			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
-//		}
-
 		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp(String comppanyID) {
+		public List<nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly> findByDate(String companyId,
+				GeneralDate criteriaDate) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Optional<PortalStampSettings> getPortalStampSettings(String comppanyID) {
+		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
 
 	}
 	
