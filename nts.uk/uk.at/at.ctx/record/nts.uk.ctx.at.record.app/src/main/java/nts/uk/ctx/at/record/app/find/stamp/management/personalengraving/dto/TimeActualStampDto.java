@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
 import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
 
 /**
  * @author anhdt

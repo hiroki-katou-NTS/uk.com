@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 /**
  * 
  * @author nampt

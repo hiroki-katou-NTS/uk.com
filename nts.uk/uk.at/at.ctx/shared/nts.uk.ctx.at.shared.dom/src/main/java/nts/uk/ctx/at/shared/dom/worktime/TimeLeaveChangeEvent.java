@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worktime;
+package nts.uk.ctx.at.shared.dom.worktime;
 
 import java.util.List;
 

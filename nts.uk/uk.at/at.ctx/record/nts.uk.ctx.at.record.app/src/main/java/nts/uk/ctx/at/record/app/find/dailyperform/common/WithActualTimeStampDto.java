@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
 
 @Data
 /** 勤怠打刻(実打刻付き) */

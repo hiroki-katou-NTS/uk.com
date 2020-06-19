@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.raisesalarytime;
+package nts.uk.ctx.at.shared.dom.raisesalarytime;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 
 /**
  * 

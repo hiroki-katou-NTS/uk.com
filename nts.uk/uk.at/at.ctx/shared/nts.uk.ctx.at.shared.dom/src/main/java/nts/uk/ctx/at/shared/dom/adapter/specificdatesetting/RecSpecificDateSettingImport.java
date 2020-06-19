@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.adapter.specificdatesetting;
+package nts.uk.ctx.at.shared.dom.adapter.specificdatesetting;
 
 import java.util.List;
 

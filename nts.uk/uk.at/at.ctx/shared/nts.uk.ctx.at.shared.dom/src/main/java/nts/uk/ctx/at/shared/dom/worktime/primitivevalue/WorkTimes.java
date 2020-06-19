@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worktime.primitivevalue;
+package nts.uk.ctx.at.shared.dom.worktime.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

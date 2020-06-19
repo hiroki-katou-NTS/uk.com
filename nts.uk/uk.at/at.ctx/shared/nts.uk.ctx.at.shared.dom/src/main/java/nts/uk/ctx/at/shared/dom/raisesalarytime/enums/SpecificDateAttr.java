@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.raisesalarytime.enums;
+package nts.uk.ctx.at.shared.dom.raisesalarytime.enums;
 
 import lombok.AllArgsConstructor;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.statement.dtoimport;
+package nts.uk.ctx.at.shared.dom.statement.dtoimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

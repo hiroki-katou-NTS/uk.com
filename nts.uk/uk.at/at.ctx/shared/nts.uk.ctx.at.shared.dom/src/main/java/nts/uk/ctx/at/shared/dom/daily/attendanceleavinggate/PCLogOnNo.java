@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.daily.attendanceleavinggate;
+package nts.uk.ctx.at.shared.dom.daily.attendanceleavinggate;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

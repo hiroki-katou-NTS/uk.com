@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.adapter.specificdatesetting;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 
 public interface RecSpecificDateSettingAdapter {
 

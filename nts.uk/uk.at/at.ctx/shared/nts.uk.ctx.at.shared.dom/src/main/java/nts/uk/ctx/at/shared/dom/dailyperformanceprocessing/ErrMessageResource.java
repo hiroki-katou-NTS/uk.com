@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

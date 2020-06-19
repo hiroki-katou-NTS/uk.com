@@ -7,13 +7,9 @@ import java.util.List;
 //import org.junit.Assert;
 import org.junit.Test;
 
-//import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-//import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-//import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-//import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 //import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 //import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;

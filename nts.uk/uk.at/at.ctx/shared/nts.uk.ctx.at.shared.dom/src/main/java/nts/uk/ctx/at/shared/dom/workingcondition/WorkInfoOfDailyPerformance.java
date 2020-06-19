@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workinformation;
+package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.workinformation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
+import nts.uk.ctx.at.shared.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.shared.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**

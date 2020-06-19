@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue;
+package nts.uk.ctx.at.shared.dom.raisesalarytime;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;

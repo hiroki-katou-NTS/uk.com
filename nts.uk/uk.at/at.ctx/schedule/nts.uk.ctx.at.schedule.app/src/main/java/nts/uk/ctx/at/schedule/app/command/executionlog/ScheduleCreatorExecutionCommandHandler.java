@@ -21,6 +21,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterSch;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -68,11 +70,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -452,6 +454,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		
 		// 所属情報を取得する
 		// Imported(就業)「社員の履歴情報」を取得する
+		// 職場、職位、雇用、分類を取得する
+		// EA修正履歴：No1675
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds, period);
 		// 勤務種別情報を取得する
 		// ドメインモデル「社員の勤務種別の履歴」を取得する
@@ -460,7 +464,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
 				.findByCidSidBaseDate(companyId, employeeIds, period);
 
-		// EA No1675
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter
 				.findListOfEmployee(employeeIds, period).stream().collect(Collectors
@@ -475,15 +478,41 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// 社員の短時間勤務履歴を期間で取得する
 		// EA No2134
 		List<ShortWorkTimeDto> listShortWorkTimeDto = this.scShortWorkTimeAdapter.findShortWorkTimes(employeeIds, period);
-
 		
+		// 「社員の予定管理状態」を取得する ↓
+		// ToDo
+		// 社員一覧のループ
+		// 「パラメータ」・社員ID一覧・期間
+		List<WorkSchedule> listWorkSchedules = new ArrayList<>();
+		for(val id : employeeIds) {
+			// 期間のループ
+			for (val date : period.datesBetween()) {
+				// ToDo : Đợi của Hiếu (TKT-TQP)
+				// http://192.168.50.14:81/domain/?type=dom&dom=社員の予定管理状態
+				// 「Output」・社員の予定管理状態一覧
+				WorkSchedule workSchedule = null;
+				listWorkSchedules.add(workSchedule);
+			}
+		}
+		// -----↑
+		
+		// 勤務種類情報を取得する ↓
+		// EA修正履歴　No2282
+		// ドメインモデル「勤務種類」を取得する
+		List<WorkType> lstWorkTypeInfo = workTypeRepository.findWorkByDeprecate(companyId, DeprecateClassification.NotDeprecated.value);
+		// -----↑
+		// 勤務種別をテク定期間の社員情報を入れて返す (Comment theo luồng của bác Bình)
 		CreateScheduleMasterCache cache = new CreateScheduleMasterCache(
 				empGeneralInfo,
 				mapEmploymentStatus,
 				listWorkingConItem,
 				listShortWorkTimeDto,
-				listBusTypeOfEmpHis);
+				listBusTypeOfEmpHis,
+				lstWorkTypeInfo,
+				listWorkSchedules
+				);
 		
+
 		
 		// ドメインモデル「勤務種類」を取得する  - 廃止区分　＝　廃止しない
 		cache.getListWorkType().addAll(this.workTypeRepository.findNotDeprecateByCompanyId(companyId));

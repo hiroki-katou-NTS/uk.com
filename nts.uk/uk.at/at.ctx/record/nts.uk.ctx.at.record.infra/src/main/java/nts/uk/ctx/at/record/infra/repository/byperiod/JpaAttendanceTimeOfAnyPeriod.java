@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodRepository;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAggrHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAggrOverTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAnyItemValue;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAn
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpMedicalTime;
+import nts.uk.ctx.at.shared.dom.raisesalarytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;

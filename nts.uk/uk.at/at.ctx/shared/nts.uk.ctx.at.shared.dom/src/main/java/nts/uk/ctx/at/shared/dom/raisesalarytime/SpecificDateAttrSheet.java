@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.record.dom.raisesalarytime;
+package nts.uk.ctx.at.shared.dom.raisesalarytime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.raisesalarytime.enums.SpecificDateAttr;
 
 /**
  * 

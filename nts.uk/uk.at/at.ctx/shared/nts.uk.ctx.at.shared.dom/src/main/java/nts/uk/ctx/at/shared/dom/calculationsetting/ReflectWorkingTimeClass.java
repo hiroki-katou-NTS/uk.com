@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.calculationsetting.enums;
+package nts.uk.ctx.at.shared.dom.calculationsetting;
 
 import lombok.AllArgsConstructor;
 

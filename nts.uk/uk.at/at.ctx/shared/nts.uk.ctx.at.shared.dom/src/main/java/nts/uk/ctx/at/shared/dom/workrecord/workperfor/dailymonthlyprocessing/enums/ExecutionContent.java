@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums;
+package nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums;
 
 /**
  * @author danpv

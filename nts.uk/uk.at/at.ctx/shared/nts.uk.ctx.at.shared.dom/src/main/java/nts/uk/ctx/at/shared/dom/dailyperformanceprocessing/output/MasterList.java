@@ -1,14 +1,14 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output;
 
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 期間ごとのマスタ一覧

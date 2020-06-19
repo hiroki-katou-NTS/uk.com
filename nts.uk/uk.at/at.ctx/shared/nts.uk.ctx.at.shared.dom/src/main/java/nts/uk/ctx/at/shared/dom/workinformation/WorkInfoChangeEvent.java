@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workinformation;
+package nts.uk.ctx.at.shared.dom.workinformation;
 
 import lombok.Builder;
 import lombok.Getter;

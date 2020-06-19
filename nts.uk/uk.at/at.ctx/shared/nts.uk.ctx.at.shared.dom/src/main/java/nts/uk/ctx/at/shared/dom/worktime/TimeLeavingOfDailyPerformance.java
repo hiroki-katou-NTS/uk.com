@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worktime;
+package nts.uk.ctx.at.shared.dom.worktime;
 
 //import java.sql.Time;
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ import lombok.Setter;
 //import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
 
 /**
  * 

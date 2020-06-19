@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.worktime.WorkStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

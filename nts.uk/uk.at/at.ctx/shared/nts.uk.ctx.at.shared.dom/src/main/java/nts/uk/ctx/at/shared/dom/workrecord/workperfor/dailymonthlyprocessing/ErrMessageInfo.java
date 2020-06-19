@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
+package nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing;
 
 
 import lombok.AllArgsConstructor;
@@ -6,7 +6,8 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 /**
  * エラーメッセージ情報
  * @author tutk

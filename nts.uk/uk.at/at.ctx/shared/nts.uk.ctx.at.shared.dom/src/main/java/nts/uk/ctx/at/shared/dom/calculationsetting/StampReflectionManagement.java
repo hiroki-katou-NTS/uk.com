@@ -2,17 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.calculationsetting;
+package nts.uk.ctx.at.shared.dom.calculationsetting;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.ActualStampOfPriorityClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampReflectionClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.BreakSwitchClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.ReflectWorkingTimeClass;
 
 /**
  * The Class StampReflectionManagement.

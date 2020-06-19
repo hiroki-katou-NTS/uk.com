@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImporte
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -27,7 +28,7 @@ public class CreateScheduleMasterCache {
 	//特定期間の社員情報 -> 社員ID,勤務種別一覧,部門履歴一覧
 	private final List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis;
 	//勤務種類一覧
-	private final List<WorkType> listWorkType = new ArrayList<>();
+	private final List<WorkType> listWorkType;
 	//就業時間帯一覧
 	private final List<WorkTimeSetting> listWorkTimeSetting = new ArrayList<>();
 	//固定勤務設定一覧
@@ -36,19 +37,25 @@ public class CreateScheduleMasterCache {
 	private final Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
 	//時差勤務設定一覧
 	private final Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
+	//社員の予定管理状態一覧
+	private final List<WorkSchedule> listWorkSchedules;
 	
 	public CreateScheduleMasterCache(
 			EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem,
 			List<ShortWorkTimeDto> listShortWorkTimeDto,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<WorkType> listWorkType,
+			List<WorkSchedule> listWorkSchedules) {
 		
 		this.empGeneralInfo = empGeneralInfo;
 		this.mapEmploymentStatus = mapEmploymentStatus;
 		this.listWorkingConItem = listWorkingConItem;
 		this.listShortWorkTimeDto = listShortWorkTimeDto;
 		this.listBusTypeOfEmpHis = listBusTypeOfEmpHis;
+		this.listWorkType = listWorkType;
+		this.listWorkSchedules = listWorkSchedules;
 	}
 	
 	public ShortWorkTimeDto.List getShortWorkTimeDtos() {
@@ -58,4 +65,5 @@ public class CreateScheduleMasterCache {
 	public BusinessTypeOfEmpDto.List getBusinessTypeOfEmpDtos() {
 		return new BusinessTypeOfEmpDto.List(listBusTypeOfEmpHis);
 	}
+	
 }
