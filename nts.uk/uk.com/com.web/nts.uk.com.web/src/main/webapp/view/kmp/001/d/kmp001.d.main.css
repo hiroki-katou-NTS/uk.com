@@ -1,0 +1,22 @@
+.view-dialog ~ div {
+	padding: 10px;
+}
+
+.view-dialog .box {
+	height: 200px;
+	padding: 10px;
+	border: 1px solid black;
+}
+
+.view-dialog .box .label-column {
+	width: 100px;
+}
+
+.view-dialog .view-button {
+	float: left;
+}
+
+#button_decide {
+	height: 50px;
+	font-size: 25px
+}

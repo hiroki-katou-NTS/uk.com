@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 interface Params {
 	model: KnockoutObservable<string>;

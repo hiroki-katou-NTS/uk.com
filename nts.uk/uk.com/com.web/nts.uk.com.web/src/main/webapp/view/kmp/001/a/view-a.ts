@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 const template = `
 <div id="com-ccg001"></div>
@@ -7,7 +7,7 @@ const template = `
 	<button data-bind="text: $i18n('KMP001_4')"></button>
 	<button class="proceed" data-bind="text: $i18n('KMP001_5')"></button>
 	<button class="danger" data-bind="text: $i18n('KMP001_6')"></button>
-	<button data-bind="text: $i18n('KMP001_7')"></button>
+	<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
 </div>
 <div class="view-kmp">
 	<div class="list-component float-left viewa">
@@ -110,7 +110,7 @@ class ViewA extends ko.ViewModel {
 				* Self-defined function: Return data from CCG001
 				* @param: data: the data return from CCG001
 				*/
-				returnDataFromCcg001: function (data: any) {
+				returnDataFromCcg001: function(data: any) {
 					const employees = data.listEmployee
 						.map(m => ({
 							code: m.employeeCode,
@@ -147,6 +147,18 @@ class ViewA extends ko.ViewModel {
 					vm.employees(employees);
 				}
 			});
+	}
+
+	public showDiaLog() {
+		const vm = this;
+
+		vm.$window
+			.modal('/view/kmp/001/d/index.xhtml')
+			.then(() => {
+
+			});
+		console.log("Hello world!");
+
 	}
 }
 
