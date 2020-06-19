@@ -1,0 +1,22 @@
+.ksu-001-a {
+	padding: 5px 15px 15px 15px;
+}
+
+.ksu-001-a .target-organization {
+	padding-bottom: 5px;
+	border-bottom: 2px solid #ccc;
+}
+
+.ksu-001-a .target-organization .organization-name {
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.ksu-001-a .target-organization .left-area,
+.ksu-001-a .target-organization .right-area {
+	width: 50%;
+}
+
+.ksu-001-a .target-organization .right-area {
+	text-align: right;
+}
