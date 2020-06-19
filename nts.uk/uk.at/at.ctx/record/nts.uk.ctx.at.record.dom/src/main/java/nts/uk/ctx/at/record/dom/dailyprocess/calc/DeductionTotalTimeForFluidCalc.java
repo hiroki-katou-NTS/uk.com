@@ -314,9 +314,6 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.rounding
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction)
-					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
-					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
-					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
 					  ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
@@ -329,9 +326,6 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.rounding
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction)
-					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)
-					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, false)
-					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
 					  ,deductionItem.getWorkingBreakAtr()
 					  ,deductionItem.getGoOutReason()
 					  ,deductionItem.getBreakAtr()
@@ -347,9 +341,6 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.rounding
 					 ,deductionItem.recordedTimeSheet
 					 ,deductionItem.deductionTimeSheet
-					 ,deductionItem.bonusPayTimeSheet
-					 ,deductionItem.specBonusPayTimesheet
-					 ,deductionItem.midNightTimeSheet
 					 ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)

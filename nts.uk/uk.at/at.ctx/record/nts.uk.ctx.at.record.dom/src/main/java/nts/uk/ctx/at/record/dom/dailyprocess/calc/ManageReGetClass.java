@@ -205,8 +205,6 @@ public class ManageReGetClass {
 		}
 	}
 	
-	//AddSetting
-	
 	/**
 	 * 休暇加算時間設定を取得する
 	 * @return 休暇加算時間設定

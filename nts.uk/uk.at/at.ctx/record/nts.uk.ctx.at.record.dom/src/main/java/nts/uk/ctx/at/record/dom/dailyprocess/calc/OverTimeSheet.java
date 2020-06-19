@@ -873,7 +873,3 @@ public class OverTimeSheet {
 		return Optional.of(new TimeSpanForDailyCalc(start, end));
 	}
 }
-
-class ReturnValueForCreateAsFlow {
-	AttendanceTime timeVacationAdditionRemainingTime;
-}

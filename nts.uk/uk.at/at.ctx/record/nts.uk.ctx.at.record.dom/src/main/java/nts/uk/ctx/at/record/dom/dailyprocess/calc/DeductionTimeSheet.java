@@ -268,7 +268,6 @@ public class DeductionTimeSheet {
 					/* ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む */
 					sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(duplicateGoOutSheet.get(),
 							timeSheet.rounding, timeSheet.recordedTimeSheet, timeSheet.deductionTimeSheet,
-							timeSheet.bonusPayTimeSheet, timeSheet.specBonusPayTimesheet, timeSheet.midNightTimeSheet,
 							timeSheet.getWorkingBreakAtr(),
 							timeSheet.getGoOutReason(), timeSheet.getBreakAtr(), 
 							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
@@ -286,8 +285,7 @@ public class DeductionTimeSheet {
 						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 								tc,
 								timeSheet.getRounding(), timeSheet.recordedTimeSheet, timeSheet.deductionTimeSheet,
-								timeSheet.bonusPayTimeSheet, timeSheet.specBonusPayTimesheet,
-								timeSheet.midNightTimeSheet, timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
+								timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
 								timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 					});
 				}
@@ -773,9 +771,6 @@ public class DeductionTimeSheet {
 																							  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
-																							  new ArrayList<>(),
-																							  new ArrayList<>(),
-																							  Optional.empty(),
 																							  WorkingBreakTimeAtr.NOTWORKING,
 																							  Finally.empty(),
 																							  Finally.empty(),
@@ -789,9 +784,6 @@ public class DeductionTimeSheet {
 																							  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
-																							  new ArrayList<>(),
-																							  new ArrayList<>(),
-																							  Optional.empty(),
 																							  WorkingBreakTimeAtr.NOTWORKING,
 																							  Finally.empty(),
 																							  Finally.empty(),

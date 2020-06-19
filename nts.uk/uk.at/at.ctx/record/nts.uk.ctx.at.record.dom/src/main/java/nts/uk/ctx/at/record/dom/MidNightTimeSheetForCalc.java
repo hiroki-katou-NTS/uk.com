@@ -28,9 +28,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 
-	public MidNightTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding, List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
-			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
-		super(timeSheet, rounding, recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+	public MidNightTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding, List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets) {
+		super(timeSheet, rounding, recorddeductionSheets,deductionSheets);
 	}
 	
 	
@@ -38,10 +37,7 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		return new MidNightTimeSheetForCalc(new TimeSpanForDailyCalc(timeSpan.getStart(), timeSpan.getEnd()),
 											this.rounding,
 											this.recordedTimeSheet,
-											this.deductionTimeSheet,
-											this.bonusPayTimeSheet,
-											this.specBonusPayTimesheet,
-											this.midNightTimeSheet);
+											this.deductionTimeSheet);
 	}
 	
 	
@@ -72,11 +68,8 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	public Optional<MidNightTimeSheetForCalc> reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
 		List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Appropriate);
 		List<TimeSheetOfDeductionItem> recordTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Deduction);
-		List<BonusPayTimeSheetForCalc>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
-		Optional<MidNightTimeSheetForCalc>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 		TimeSpanForDailyCalc renewSpan = decisionNewSpan(this.timeSheet,baseTime,isDateBefore);
-		return Optional.of(new MidNightTimeSheetForCalc(renewSpan,this.rounding,deductionTimeSheets,recordTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
+		return Optional.of(new MidNightTimeSheetForCalc(renewSpan,this.rounding,deductionTimeSheets,recordTimeSheets));
 	}
 	
 	
@@ -91,10 +84,7 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		return new MidNightTimeSheetForCalc(new TimeSpanForDailyCalc(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd()),
 											timeRoundingSetting, 
 											Collections.emptyList(), 
-											Collections.emptyList(), 
-											Collections.emptyList(), 
-											Collections.emptyList(), 
-											Optional.empty());
+											Collections.emptyList());
 	}
 	
 	/**
@@ -109,10 +99,7 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 			return Optional.of(new MidNightTimeSheetForCalc(dupTimeSpan.get(), 
 											this.rounding, 
 											this.recordedTimeSheet, 
-											this.deductionTimeSheet, 
-											this.bonusPayTimeSheet, 
-											this.specBonusPayTimesheet, 
-											this.midNightTimeSheet));
+											this.deductionTimeSheet));
 		}
 		else {
 			return Optional.empty();
@@ -120,11 +107,12 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	public MidNightTimeSheetForCalc getTerminalMidnightTimeSheet() {
-		return this.midNightTimeSheet
-				.map(ts -> ts.getTerminalMidnightTimeSheet())
-				.orElse(this);
-	}
+//ichioka削除
+//	public MidNightTimeSheetForCalc getTerminalMidnightTimeSheet() {
+//		return this.midNightTimeSheet
+//				.map(ts -> ts.getTerminalMidnightTimeSheet())
+//				.orElse(this);
+//	}
 	
 	public AttendanceTime testSAIKI(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
 		//自分が持つ集計対象の時間帯の合計

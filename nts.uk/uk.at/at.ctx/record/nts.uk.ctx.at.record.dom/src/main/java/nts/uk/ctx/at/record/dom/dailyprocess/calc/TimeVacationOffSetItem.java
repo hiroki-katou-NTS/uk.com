@@ -46,11 +46,8 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 	 */
 	public TimeVacationOffSetItem(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
-		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
-				specifiedBonusPayTimeSheet, midNighttimeSheet);
+			List<TimeSheetOfDeductionItem> deductionTimeSheets) {
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
 	}
 
 	/*

@@ -1633,6 +1633,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				todayWorkType,
 				forDeductionTimeZones);
 		
+		if(lateDecisionClock.isPresent())
+			this.lateDecisionClock.add(lateDecisionClock.get());
+		
 		//遅刻時間帯の作成
 		this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).createLateTimeSheet(
 				timeLeavingWork,
@@ -1687,6 +1690,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				timeLeavingWork,
 				todayWorkType,
 				forDeductionTimeZones);
+		
+		if(leaveEarlyDecisionClock.isPresent())
+			this.leaveEarlyDecisionClock.add(leaveEarlyDecisionClock.get());
 		
 		//早退時間帯の作成
 		this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).createLeaveEarlyTimeSheet(
@@ -1775,7 +1781,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				creatingWithinWorkTimeSheet.getLateDecisionClock().isEmpty()
 					? Optional.empty()
 					: Optional.of(creatingWithinWorkTimeSheet.getLateDecisionClock().get(0)),
-				creatingWithinWorkTimeSheet.getLateDecisionClock().isEmpty()
+				creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock().isEmpty()
 					? Optional.empty()
 					: Optional.of(creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock().get(0)));
 		
@@ -2004,7 +2010,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			
 			//指定時刻が時間帯に含まれているか判断
 			if(frame.getTimeSheet().contains(endTime)) {
-				frame.changeEnd(endTime);
+				frame.shiftEnd(endTime);
 				frames.add(frame);
 				break;
 			}

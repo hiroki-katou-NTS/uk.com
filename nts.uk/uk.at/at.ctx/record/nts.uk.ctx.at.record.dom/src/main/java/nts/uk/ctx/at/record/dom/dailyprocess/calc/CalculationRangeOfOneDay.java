@@ -1023,16 +1023,17 @@ public class CalculationRangeOfOneDay {
 		//遅刻時間帯の計算
 		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>(timeLeavingForFlowWork);
 		timeLeavingForFlowWork.clear();
-		timeLeavingForFlowWork.addAll(calcLateTimeLeavingWorksWorks.stream()
-				.map(timeLeavingWork -> this.calcLateTimeSheet(
-						todayWorkType,
-						integrationOfWorkTime,
-						integrationOfDaily,
-						deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
-						personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-						timeLeavingWork,
-						creatingWithinWorkTimeSheet))
-				.collect(Collectors.toList()));
+		for(TimeLeavingWork timeLeavingWork : calcLateTimeLeavingWorksWorks) {
+			timeLeavingForFlowWork.add(
+					this.calcLateTimeSheet(
+							todayWorkType,
+							integrationOfWorkTime,
+							integrationOfDaily,
+							deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							timeLeavingWork,
+							creatingWithinWorkTimeSheet));
+		}
 		
 		//控除時間帯の取得
 		DeductionTimeSheet deductionTimeSheetCalcAfter = provisionalDeterminationOfDeductionTimeSheet(
@@ -1052,15 +1053,17 @@ public class CalculationRangeOfOneDay {
 		//早退時間帯の計算
 		List<TimeLeavingWork> calcLeaveEarlyTimeLeavingWorks = new ArrayList<>(timeLeavingForFlowWork);
 		timeLeavingForFlowWork.clear();
-		timeLeavingForFlowWork.addAll(calcLeaveEarlyTimeLeavingWorks.stream()
-				.map(timeLeavingWork -> this.calcLeaveEarlyTimeSheet(
-						todayWorkType,
-						integrationOfWorkTime,
-						deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
-						personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-						timeLeavingWork,
-						creatingWithinWorkTimeSheet))
-				.collect(Collectors.toList()));
+		
+		for(TimeLeavingWork timeLeavingWork : calcLeaveEarlyTimeLeavingWorks) {
+			timeLeavingForFlowWork.add(
+					this.calcLeaveEarlyTimeSheet(
+							todayWorkType,
+							integrationOfWorkTime,
+							deductionTimeSheetCalcBefore.getForDeductionTimeZoneList(),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							timeLeavingWork,
+							creatingWithinWorkTimeSheet));
+		}
 		
 		return deductionTimeSheetCalcAfter;
 	}
@@ -1109,7 +1112,7 @@ public class CalculationRangeOfOneDay {
 			return timeLeavingWork;
 		
 		//時間帯.出勤←流動勤務用出退勤.出勤
-		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).changeStart(
+		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftStart(
 				timeLeavingWork.getAttendanceStampTimeWithDay().get());
 		
 		return timeLeavingWork;
@@ -1149,7 +1152,7 @@ public class CalculationRangeOfOneDay {
 			return timeLeavingWork;
 		
 		//時間帯.退勤←流動勤務用出退勤.退勤
-		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).changeEnd(
+		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().get(timeLeavingWork.getWorkNo().v() - 1).shiftEnd(
 				timeLeavingWork.getleaveStampTimeWithDay().get());
 		
 		return timeLeavingWork;
@@ -1222,11 +1225,11 @@ public class CalculationRangeOfOneDay {
 				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()), 
 				calcRange, 
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
+				new ArrayList<>(),
+				new ArrayList<>(),
+				new ArrayList<>(),
 				Optional.empty(),
-				Collections.emptyList(),
+				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty());
 	}
@@ -1280,9 +1283,6 @@ public class CalculationRangeOfOneDay {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Optional.empty(),
 				WorkingBreakTimeAtr.WORKING,
 				Finally.empty(),
 				Finally.empty(),

@@ -60,15 +60,12 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 	 */
 	private TimeSheetOfDeductionItem(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			WorkingBreakTimeAtr workingBreakAtr,
 			Finally<GoingOutReason> goOutReason,
 			Finally<BreakClassification> breakAtr, Optional<ShortTimeSheetAtr> shortTimeSheetAtr,
 			DeductionClassification deductionAtr,Optional<ChildCareAtr> childCareAtr) {
-		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
-				specifiedBonusPayTimeSheet, midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
 		this.workingBreakAtr = workingBreakAtr;
 		this.goOutReason = goOutReason;
 		this.breakAtr = breakAtr;
@@ -90,9 +87,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 			,TimeRoundingSetting rounding
 			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
-			,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
-			,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
-			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 			,WorkingBreakTimeAtr workingBreakAtr
 			,Finally<GoingOutReason> goOutReason
 			,Finally<BreakClassification> breakAtr
@@ -105,9 +99,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 				,rounding
 				,recorddeductionTimeSheets
 				,deductionTimeSheets
-				,bonusPayTimeSheet
-				,specifiedBonusPayTimeSheet
-				,midNighttimeSheet
 				,workingBreakAtr
 				,goOutReason
 				,breakAtr
@@ -129,9 +120,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 											this.rounding,
 											this.recordedTimeSheet,
 											this.deductionTimeSheet,
-											this.bonusPayTimeSheet,
-											this.specBonusPayTimesheet,
-											this.midNightTimeSheet,
 											this.workingBreakAtr,
 											this.goOutReason,
 											this.breakAtr,
@@ -146,9 +134,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 					this.rounding,
 					this.recordedTimeSheet,
 					this.deductionTimeSheet,
-					this.bonusPayTimeSheet,
-					this.specBonusPayTimesheet,
-					this.midNightTimeSheet,
 					this.workingBreakAtr,
 					this.goOutReason,
 					this.breakAtr,
@@ -182,9 +167,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 											this.rounding, 
 											this.recordedTimeSheet,
 											this.deductionTimeSheet, 
-											this.bonusPayTimeSheet,
-											this.specBonusPayTimesheet, 
-											this.midNightTimeSheet,
 											this.workingBreakAtr,
 											this.goOutReason, 
 											this.breakAtr,
@@ -239,9 +221,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
-																	   , Collections.emptyList()
-																	   , Collections.emptyList()
-																	   , Optional.empty()
 																	   , this.workingBreakAtr
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
@@ -254,9 +233,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 							 , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 							 , Collections.emptyList()
 							 , Collections.emptyList()
-							 , Collections.emptyList()
-							 , Collections.emptyList()
-							 , Optional.empty()
 							 , this.workingBreakAtr
 							 , this.getGoOutReason()
 							 , this.breakAtr
@@ -273,9 +249,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
-																	   , Collections.emptyList()
-																	   , Collections.emptyList()
-																	   , Optional.empty()
 																	   , this.workingBreakAtr
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
@@ -288,9 +261,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 							 , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 							 , Collections.emptyList()
 							 , Collections.emptyList()
-							 , Collections.emptyList()
-							 , Collections.emptyList()
-							 , Optional.empty()
 							 , this.getWorkingBreakAtr()
 							 , this.getGoOutReason()
 							 , this.breakAtr
@@ -329,9 +299,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																		, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																		, new ArrayList<>()
 																		, new ArrayList<>()
-																		, new ArrayList<>()
-																		, new ArrayList<>()
-																		, Optional.empty()
 																		, compareTimeSheet.getWorkingBreakAtr()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
@@ -343,9 +310,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																		, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																		, new ArrayList<>()
 																		, new ArrayList<>()
-																		, new ArrayList<>()
-																		, new ArrayList<>()
-																		, Optional.empty()
 																		, compareTimeSheet.getWorkingBreakAtr()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
@@ -408,9 +372,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	, Collections.emptyList()
 																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Optional.empty()
 																	, compareTimeSheet.getWorkingBreakAtr()
 																	, compareTimeSheet.getGoOutReason()
 																	, compareTimeSheet.getBreakAtr()
@@ -422,9 +383,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	, Collections.emptyList()
 																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Optional.empty()
 																	, compareTimeSheet.getWorkingBreakAtr()
 																	, compareTimeSheet.getGoOutReason()
 																	, compareTimeSheet.getBreakAtr()
@@ -449,9 +407,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	, Collections.emptyList()
 																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Optional.empty()
 																	, this.getWorkingBreakAtr()
 																	, this.getGoOutReason()
 																	, this.getBreakAtr()
@@ -463,9 +418,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 																	, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	, Collections.emptyList()
 																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Collections.emptyList()
-																	, Optional.empty()
 																	, this.getWorkingBreakAtr()
 																	, this.getGoOutReason()
 																	, this.getBreakAtr()
@@ -553,17 +505,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 	public TimeSheetOfDeductionItem reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
 			List<TimeSheetOfDeductionItem>  recorddeductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Appropriate);
 			List<TimeSheetOfDeductionItem>  deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore,DeductionAtr.Deduction);
-			List<BonusPayTimeSheetForCalc>  bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
-			Optional<MidNightTimeSheetForCalc>     midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 			TimeSpanForDailyCalc renewSpan = decisionNewSpan(this.getTimeSheet(),baseTime,isDateBefore);
 			return new TimeSheetOfDeductionItem(renewSpan,
 												this.rounding,
 												recorddeductionTimeSheets,
 												deductionTimeSheets,
-												bonusPayTimeSheet,
-												specifiedBonusPayTimeSheet,
-												midNighttimeSheet,
 												this.workingBreakAtr,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
 	}
 	
@@ -571,7 +517,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 	 * 法定内区分を法定外にして自分自身を作り直す
 	 */
 	public TimeSheetOfDeductionItem createWithExcessAtr(){
-		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.rounding,this.recordedTimeSheet,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.workingBreakAtr,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
+		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.rounding,this.recordedTimeSheet,this.deductionTimeSheet,this.workingBreakAtr,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr,this.childCareAtr);
 	}
 	
 	/**
@@ -842,9 +788,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem{
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				  Collections.emptyList(),
 				  Collections.emptyList(),
-				  Collections.emptyList(),
-				  Collections.emptyList(),
-				  Optional.empty(),
 				  WorkingBreakTimeAtr.NOTWORKING,
 				  Finally.empty(),
 				  Finally.of(BreakClassification.BREAK),

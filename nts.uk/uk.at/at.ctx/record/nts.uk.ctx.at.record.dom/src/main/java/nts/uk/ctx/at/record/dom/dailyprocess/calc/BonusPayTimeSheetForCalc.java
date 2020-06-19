@@ -32,11 +32,9 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 	 */ 
 	public BonusPayTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			RaisingSalaryTimeItemNo raiseSalaryTimeItemNo) {
-		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
-				specifiedBonusPayTimeSheet, midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
 		this.raiseSalaryTimeItemNo = raiseSalaryTimeItemNo;
 	}
 	
@@ -50,9 +48,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											new TimeRoundingSetting(bonusPayTimeSheet.getRoundingTimeAtr().value,bonusPayTimeSheet.getRoundingAtr().value),
 											Collections.emptyList(),
 											Collections.emptyList(),
-											Collections.emptyList(),
-											Collections.emptyList(),
-											Optional.empty(),
 											new RaisingSalaryTimeItemNo(BigDecimal.valueOf((long)bonusPayTimeSheet.getTimeItemId())));
 	}
 	
@@ -65,9 +60,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											this.getRounding(),
 											Collections.emptyList(),
 											Collections.emptyList(),
-											Collections.emptyList(),
-											Collections.emptyList(),
-											Optional.empty(),
 											this.raiseSalaryTimeItemNo);
 	}
 
@@ -94,9 +86,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											this.rounding,
 											this.recordedTimeSheet,
 											this.deductionTimeSheet,
-											this.bonusPayTimeSheet,
-											this.specBonusPayTimesheet,
-											this.midNightTimeSheet,
 											this.getRaiseSalaryTimeItemNo()
 											);
 		}
@@ -106,9 +95,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 					this.rounding,
 					this.recordedTimeSheet,
 					this.deductionTimeSheet,
-					this.bonusPayTimeSheet,
-					this.specBonusPayTimesheet,
-					this.midNightTimeSheet,
 					this.getRaiseSalaryTimeItemNo()
 					);
 		}
