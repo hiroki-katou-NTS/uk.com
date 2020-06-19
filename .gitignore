@@ -38,7 +38,6 @@ nts.uk/uk.repo/*
 # add ignore file of mobile project
 **/.vscode/*
 **/node_modules/*
-**/package-lock.json
 **/vendor*
 **/bundles*
 **/main-server*
