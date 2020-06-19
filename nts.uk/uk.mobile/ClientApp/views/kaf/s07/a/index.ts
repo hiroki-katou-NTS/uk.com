@@ -99,8 +99,11 @@ export class KafS07AComponent extends Vue {
         this.app = new AppWorkChange(
             this.worktype.code + '  ' + this.worktype.name,
             this.worktime.code + '  ' + this.worktime.name,
-            this.valueWorkHours1.start  + ' ~ ' + this.valueWorkHours1.end,
-            this.valueWorkHours2.start + ' ~ ' + this.valueWorkHours2.end);
+            this.valueWorkHours1.start + ' ~ ' + this.valueWorkHours1.end,
+            this.valueWorkHours2.start + ' ~ ' + this.valueWorkHours2.end,
+            this.switchbox1 == 1,
+            this.switchbox2 == 1
+            );
 
         console.log(this.app);
     }

@@ -20,7 +20,9 @@ export class KafS07BComponent extends Vue {
         workType: '001 worktype',
         workTime: '002 worktime',
         workHours1: '08:30 ~ 17:30',
-        workHours2: '08:30 ~ 17:30'
+        workHours2: '08:30 ~ 17:30',
+        straight: true,
+        bounce: false
     };
     
 }

@@ -10,7 +10,7 @@ import { component, Prop } from '@app/core/component';
 })
 export class CmmS45ComponentsApp2Component extends Vue {
     public title: string = 'CmmS45ComponentsApp1';
-    @Prop({ default: () => ({ appWorkChange: new AppWorkChange('', '', '', '') }) })
+    @Prop({ default: () => ({ appWorkChange: new AppWorkChange('', '', '', '', true, true) }) })
     public readonly params: AppWorkChange;
     public $app() {
         return this.params;
@@ -29,10 +29,16 @@ export class AppWorkChange {
 
     public workHours2: String;
 
-    constructor(workType: String, workTime: String, workHours1: String, workHours2: String) {
+    public straight: boolean;
+
+    public bounce: boolean;
+
+    constructor(workType: String, workTime: String, workHours1: String, workHours2: String, straight: boolean, bounce: boolean) {
         this.workType = workType;
         this.workTime = workTime;
         this.workHours1 = workHours1;
         this.workHours2 = workHours2;
+        this.straight = straight;
+        this.bounce = bounce;
     }
 }

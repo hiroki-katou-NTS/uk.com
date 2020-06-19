@@ -33,11 +33,13 @@
     </div>
     <!-- B2_2 -->
     <div class="paddingSpan">
-      <span>項目移送</span>
+      <span v-if="$app().straight">{{'KAFS07_11' | i18n}}</span>
+      <span v-if="!$app().straight">{{'KAFS07_12' | i18n}}</span>
     </div>
     <!-- B2_3 -->
     <div class="paddingSpan">
-      <span>項目移送</span>
+      <span v-if="$app().bounce">{{'KAFS07_13' | i18n}}</span>
+      <span v-if="!$app().bounce">{{'KAFS07_14' | i18n}}</span>
     </div>
 
     <!-- B3_1 -->
