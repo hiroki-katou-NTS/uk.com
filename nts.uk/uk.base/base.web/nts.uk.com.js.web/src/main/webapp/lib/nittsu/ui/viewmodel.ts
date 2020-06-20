@@ -157,15 +157,31 @@ BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
 BaseViewModel.prototype.$user = __viewContext['user'];
 BaseViewModel.prototype.$program = __viewContext['program'];
 
-BaseViewModel.prototype.$date = Object.defineProperties({}, {
+const $date = {
+	diff: 0,
+	now() {
+		return Date.now()
+	},
+	today() {
+		return $date.now();
+	}
+};
+
+request.ajax('/server/time/now').then((time: string) => {
+	Object.defineProperty($date, 'diff', {
+		value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+	});
+})
+
+BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	now: {
 		value: function $now() {
-			return (nts.uk.time as any).now().toDate();
+			return moment().add($date.diff, 'ms').toDate();
 		}
 	},
 	today: {
 		value: function $today() {
-			return (nts.uk.time as any).today().toDate();
+			return moment($date.now()).startOf('day').toDate();
 		}
 	}
 });
