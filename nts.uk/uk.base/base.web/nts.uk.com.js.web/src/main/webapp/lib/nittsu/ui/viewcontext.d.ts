@@ -30,6 +30,8 @@ interface Messages { }
 
 declare function bean(): any;
 
+declare function handler(params: { virtual?: boolean; bindingName: string;	validatable?: boolean; }): any;
+
 declare function component(params: { name: string; template: string; }): any;
 
 interface KnockoutStatic {
