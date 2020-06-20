@@ -117,6 +117,18 @@ function component(options: { name: string; template: string; }): any {
 	}
 }
 
+function handler(params: { virtual?: boolean; bindingName: string;	validatable?: boolean; }) {
+    return function (constructor: { new(): KnockoutBindingHandler; }) {
+        ko.bindingHandlers[params.bindingName] = new constructor();
+        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+
+        // block rewrite binding
+        if (params.validatable) {
+            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
+        }
+    }
+}
+
 // create base viewmodel for all implement
 function BaseViewModel() { }
 
