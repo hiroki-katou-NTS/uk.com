@@ -317,13 +317,13 @@ class KDP001AViewModel extends ko.ViewModel {
 				case 1:
 				case 2:
 				case 4:
-					vm.openDialogB(result,data.buttonPositionNo);
+					vm.openDialogB(result, data.buttonPositionNo);
 					break;
 				case 3: {
 					if (vm.stampResultDisplay().notUseAttr === 1) {
-						vm.openDialogC(result,data.buttonPositionNo);
+						vm.openDialogC(result, data.buttonPositionNo);
 					} else {
-						vm.openDialogB(result,data.buttonPositionNo);
+						vm.openDialogB(result, data.buttonPositionNo);
 					}
 					break;
 				}
@@ -335,7 +335,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 	}
 
-	public openDialogB(dateParam,buttonDisNo) {
+	public openDialogB(dateParam, buttonDisNo) {
 
 		let vm = this;
 
@@ -374,7 +374,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 	}
 
-	public openDialogC(dateParam,buttonDisNo) {
+	public openDialogC(dateParam, buttonDisNo) {
 		let vm = this;
 
 		nts.uk.ui.windows.setShared('KDP010_2C', []);
@@ -451,7 +451,17 @@ class KDP001AViewModel extends ko.ViewModel {
 		return !vm.screenMode();
 	}
 
+	public getTextAlign(data: IStampInfoDisp) {
+		if (data.stampAtr === '出勤') {
+			return 'left';
+		}
 
+		if (data.stampAtr === '退勤') {
+			return 'right';
+		}
+
+		return 'center';
+	}
 
 }
 
