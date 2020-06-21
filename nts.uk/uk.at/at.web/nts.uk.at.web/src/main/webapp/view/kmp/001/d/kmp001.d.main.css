@@ -1,10 +1,7 @@
-.view-dialog ~ div {
-	padding: 10px;
-}
 
 .view-dialog .box {
 	height: 200px;
-	padding: 10px;
+	padding: 37px;
 	border: 1px solid black;
 }
 
@@ -13,10 +10,13 @@
 }
 
 .view-dialog .view-button {
+	padding-left: 70px;
 	float: left;
 }
 
 #button_decide {
 	height: 50px;
-	font-size: 25px
+	font-size: 25px;
+	padding-left: 10px;
+	padding-right: 10px;
 }

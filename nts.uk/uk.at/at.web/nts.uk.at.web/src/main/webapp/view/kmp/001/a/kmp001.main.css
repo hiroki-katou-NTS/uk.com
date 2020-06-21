@@ -28,16 +28,35 @@
 	margin-left: 50px;
 }
 
-.view-kmp .model-component table.layout-grid td {
+.view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
 }
 
 .view-kmp .model-component table td.label-column {
-	width: 260px;
+	width: 100px;
 }
 
-.view-kmp .model-component table td.label-column-a {
-	width: 160px;
+.view-kmp .model-component table td.label-column-a-left {
+	width: 120px;
+}
+
+.view-kmp .model-component table td.label-column-a-right {
+	width: 300px;
+}
+
+.view-kmp .model-component table td.label-column-left {
+	width: 180px;
+}
+
+.view-kmp .model-component table td.label-column-left ~ div {
+	font-size: 16px;
+}
+
+#info-employee  {
+	border: 1px solid;
+	padding: 10px;
+	padding-bottom: 60px;
+	width: 430px
 }
 
 .view-kmp .model-component table td.label-column button {
@@ -45,7 +64,7 @@
 }
 
 .view-kmp .model-component table td.data div {
-	font-size: 18px;
+	font-size: 16px;
 	float: left;
 }
 
@@ -53,4 +72,6 @@
 	margin-bottom: 10px;
 }
 
-
+#td-bottom{
+	margin-bottom: 15px;
+}

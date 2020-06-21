@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 const template = `
 <div class="sidebar-content-header">
@@ -39,41 +39,51 @@ const template = `
 			</table>
 		</div>
 	</div>
-	<div class="float-left model-component">
+	<div class="float-left model-component" id= "info-employee">
 		<table>
 			<tbody>
 				<tr>
-					<td class="label-column">
-						<div style="border: 0; font-size: 18px" data-bind="ntsFormLabel: { text: $i18n('KMP001_22') }"></div>
+					<td class="label-column-left">
+						<div id="td-bottom">
+							<div style="border: 0" data-bind="ntsFormLabel: { text: $i18n('KMP001_22') }"></div>
+						</div>
 					</td>
 					<td class="data">
-						<div>0000000000002</div>
+						<div id="td-bottom">0000000000002</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="label-column">
-						<div data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
-						<button data-bind="text: $i18n('KMP001_26')"></button>
+					<td class="label-column-left">
+						<div id="td-bottom">
+							<div id=" td-bottom" data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
+							<button id=" td-bottom" data-bind="text: $i18n('KMP001_26')"></button>
+						</div>
 					</td>
 					<td class="data">
-						<div>00000002</div>
-						<div style="margin-left: 10px">日通　社員2</div>
+						<div id="td-bottom">
+							<div id=" td-bottom">00000002</div>
+							<div id=" td-bottom" style="margin-left: 10px">日通　社員2</div>
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="label-column">
-						<div style="border: 0; font-size: 18px" data-bind="ntsFormLabel: { text: $i18n('KMP001_20') }"></div>
+					<td class="label-column-left">
+						<div id="td-bottom">
+							<div style="border: 0" data-bind="ntsFormLabel: { text: $i18n('KMP001_20') }"></div>
+						</div>
 					</td>
 					<td class="data">
-						<div>2000/01/01</div>
+						<div id="td-bottom">2000/01/01</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="label-column">
-						<div style="border: 0; font-size: 18px" data-bind="ntsFormLabel: { text: $i18n('KMP001_21') }"></div>
+					<td class="label-column-left">
+						<div id="td-bottom">
+							<div style="border: 0" data-bind="ntsFormLabel: { text: $i18n('KMP001_21') }"></div>
+						</div>
 					</td>
 					<td class="data">
-					<div>2000/01/01</div>
+					<div id="td-bottom">2000/01/01</div>
 					</td>
 				</tr>
 			</tbody>

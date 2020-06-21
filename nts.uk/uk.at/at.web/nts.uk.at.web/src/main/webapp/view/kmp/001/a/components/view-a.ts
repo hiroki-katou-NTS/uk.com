@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 const template = `
 <div id="com-ccg001"></div>
@@ -70,7 +70,7 @@ class ViewA extends ko.ViewModel {
 		$('#com-ccg001')
 			.ntsGroupComponent({
 				/** Common properties */
-				systemType: 1,
+				systemType: 2,
 				showEmployeeSelection: true,
 				showQuickSearchTab: true,
 				showAdvancedSearchTab: true,
@@ -139,7 +139,7 @@ class ViewA extends ko.ViewModel {
 								checked: false,
 								no: '000007'
 							}],
-							config: false
+							config: '○'
 						}));
 
 					// xu ly lay casc thong tin lien quan toi code o day
@@ -157,48 +157,49 @@ class ViewA extends ko.ViewModel {
 			.then(() => {
 
 			});
-		console.log("Hello world!");
-
 	}
 }
 
-const editorTemplate = `<table class="layout-grid">
-	<tbody>
-		<tr>
-			<td class="label-column-a">
-				<div data-bind="text: $i18n('KMP001_8')"></div>
-			</td>
-			<td>
-				<div data-bind="text: model.code"></div>
-			</td>
-		</tr>
-		<tr>
-			<td class="label-column-a">
-				<div data-bind="text: $component.$i18n('KMP001_9')"></div>
-			</td>
-			<td>
-				<div data-bind="text: model.name"></div>
-			</td>
-		</tr>
-		<tr>
-			<td class="label-column-a">
-			<div data-bind="text: $component.$i18n('KMP001_20')"></div>
-			</td>
-			<td>
-				<div data-bind="text: model.joinDate"></div>
-			</td>
-		</tr>
-		<tr>
-			<td class="label-column-a">
-				<div data-bind="text: $component.$i18n('KMP001_21')"></div>
-			</td>
-			<td>
-				<div data-bind="text: model.retireDate"></div>
-			</td>
-		</tr>
-	</tbody>
-</table>
-<div style="margin-top: 150px">
+const editorTemplate = `
+<div id= "info-employee">
+	<table class="layout-grid">
+		<tbody>
+			<tr>
+				<td class="label-column-a-left">
+					<div id="td-bottom" data-bind="text: $i18n('KMP001_8')"></div>
+				</td>
+				<td class="label-column-a-right">
+					<div id="td-bottom" data-bind="text: model.code"></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-column-a-left">
+					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
+				</td>
+				<td class="label-column-a-right">
+					<div id="td-bottom" data-bind="text: model.name"></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-column-a-left">
+					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_20')"></div>
+				</td>
+				<td class="label-column-a-right">
+					<div id="td-bottom" data-bind="text: model.joinDate"></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-column-a-left">
+					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_21')"></div>
+				</td>
+				<td class="label-column-a-right">
+					<div id="td-bottom" data-bind="text: model.retireDate"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div id= "info-employee" style="margin-top: 50px">
 	<table class="layout-grid">
 	<!-- ko if: !ko.toJS(model.cardNos).length -->
 	<tbody>
@@ -302,7 +303,7 @@ interface IModel {
 	joinDate: Date;
 	retireDate: Date;
 	cardNos: ICardNo[];
-	config: boolean;
+	config: string;
 }
 
 class CardNo {
@@ -335,7 +336,7 @@ class Model {
 
 	selectedCardNo: KnockoutObservable<number> = ko.observable(0);
 
-	config: KnockoutObservable<boolean> = ko.observable(false);
+	config: KnockoutObservable<string> = ko.observable('○');
 
 	constructor() {
 		const model = this;
