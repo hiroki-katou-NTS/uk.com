@@ -7,125 +7,105 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 314, height: 139 };</script>
-			<com:scriptfile set="IGNITE" />
+			<script>
+				var dialogSize = {
+					width : 314,
+					height : 139
+				};
+			</script>
+			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="kdp001.a.style.css" />
-			<com:scriptfile path="kdp001.a.start.js" />
-			<com:scriptfile path="kdp001.a.service.js" />
-			<com:scriptfile path="kdp001.a.vm.js" />
 		</ui:define>
-		<div data-bind="if:isWidget">
-			<ui:define name="content">
-				<div id="functions-area" class="functions-area-big">
-					<div
-						data-bind="style:'float':'left', 'margin-left': isScreenCD()?'0px':'30px' ">
-						<span class="label stamp-date-big"
-							data-bind="text:getSystemDate()"></span>
-					</div>
-					<div
-						data-bind="style:'float':'left', 'margin-left': isScreenCD()?'0px':'10px' ">
-						<span class="label stamp-time-big "
-							data-bind="text:getSystemTime()"></span>
-					</div>
+
+
+		<ui:define name="content">
+
+			<div id="functions-area"
+				data-bind="css: { 'functions-area-big': isWidget() ,'functions-area-small':!isWidget()  },style: { 'color':settingDateTimeColor().textColor,'background-color': settingDateTimeColor().backgroundColor}">
+				<div
+					data-bind=" style:{ 'float': 'left' , 'margin-left': isScreenCD() ? '0px' : '30px' }">
+					<span class="label stamp-date-big" data-bind="css: { 'stamp-date-big': isWidget() ,'stamp-date-small':!isWidget()  } ,text:getSystemDate()"></span>
 				</div>
-				<div id="contents-area" class="contents-area-big">
-					<div data-bind="if: isUsed" id="left-area">
+				<div
+					data-bind="style:{'float':'left', 'margin-left': isScreenCD() ? '10px' : '150px' }">
+					<span class="label "
+						data-bind="css: { 'stamp-time-big': isWidget() ,'stamp-time-small':!isWidget()  },text:getSystemTime()"></span>
+				</div>
+			</div>
+			<div id="contents-area" data-bind="css: { 'contents-area-big': isWidget() ,'contents-area-small':!isWidget()  }">
+					<div data-bind="if: usedSatus() === 0" id="left-area">
 						<!-- A2_1 -->
 						<div>
-							<com:ko-foreach bind="buttons()">
-								<button
-									data-bind="click:$parent.stamp,text:buttonDisSet.buttonNameSet.buttonName ,style: { 'color':buttonDisSet.buttonNameSet.textColor,'background-color': buttonDisSet.backGroundColor}"
-									class="button button-big"></button>
+							<com:ko-foreach bind="buttons">
+							<button
+								data-bind="css: {
+										'button-big': $vm.isWidget(),
+										'button-small' :!$vm.isWidget() },
+										enable:$vm.checkEnableButton($data),
+										click: function(data, event) { $vm.stamp($vm,data) }  ,
+										text: buttonDisSet.buttonNameSet.buttonName,
+										style: { 
+											'color': buttonDisSet.buttonNameSet.textColor,
+											'background-color': buttonDisSet.backGroundColor
+										}"
+								class="button "></button>
+						</com:ko-foreach>
+						</div>
+					</div>
+					<div data-bind="if:(stampDatas().length &amp;&amp; isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0) ,visible:isWidget() , css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } " id="right-area">
+					<table data-bind="visible:showTable" id="fixed-table">
+						<colgroup>
+							<col width="80px" />
+							<col width="80px" />
+							<col width="120px" />
+						</colgroup>
+						
+						<thead>
+						</thead>
+						<tbody>
+							<com:ko-foreach bind="stampDatas()">
+								<tr
+									data-bind="style:{'font-size': $vm.isWidget() ?'14px !important':'8px !important' }">
+									<td data-bind="text:$vm.convertToShortMDW(stampDatetime)"></td>
+									<td data-bind="text:$vm.getStampTime($data)"></td>
+									<td data-bind="text:stampAtr"></td>
+								</tr>
 							</com:ko-foreach>
-						</div>
-					</div>
-					<div data-bind="if: isUsed" id="right-area " class="right-area-big">
-						<table data-bind="visible:showTable" id="fixed-table">
-							<colgroup>
-								<col width="80px" />
-								<col width="80px" />
-								<col width="120px" />
-							</colgroup>
-							<thead>
-							</thead>
-							<tbody>
-								<com:ko-foreach bind="stampDatas()">
-									<tr>
-										<td data-bind="text:stampDateTime"></td>
-										<td
-											data-bind="if:stamp,text:stamp.relieve +' '+ stampDateTime"></td>
-										<td data-bind="ifnot:stamp"></td>
-										<td data-bind="text:stampDateTime"></td>
-										<td data-bind="text:stampAtr"></td>
-									</tr>
-								</com:ko-foreach>
-							</tbody>
-						</table>
-					</div>
-					<div data-bind="ifnot: isUsed">
-
-						<span class="label not_used_label-big">打刻を利用することができません</span>
-					</div>
+						</tbody>
+					</table>
 				</div>
-			</ui:define>
-		</div>
-		<div data-bind="ifnot:isWidget">
-			<ui:define name="content">
-				<div id="functions-area" class="functions-area-small">
-					<div style="float: left; margin-left: 30px;">
-						<span class="label stamp-date-small"
-							data-bind="text:getSystemDate()"></span>
-					</div>
-					<div style="float: left; margin-left: 60px;">
-						<span class="label stamp-time-small"
-							data-bind="text:getSystemTime()"></span>
-					</div>
-				</div>
-				<div id="contents-area" class="contents-area-small">
-					<div data-bind="if: isUsed" id="left-area">
-						<!-- A2_1 -->
-						<div>
-							<com:ko-foreach bind="buttons()">
-								<button
-									data-bind="click:$parent.stamp,text:buttonDisSet.buttonNameSet.buttonName ,style: { 'color':buttonDisSet.buttonNameSet.textColor,'background-color': buttonDisSet.backGroundColor}"
-									class="button button-small"></button>
-							</com:ko-foreach>
-
-						</div>
-						<div class="div_link-small">
-							<a class="hyperlink hyperlink-small" href="#">#{i18n.getText('KDP001_4')}</a>
-						</div>
-					</div>
-					<div data-bind="if: isUsed" id="right-area">
-						<table data-bind="ifnot:isScreenCD" id="fixed-table">
-							<colgroup>
-								<col width="65px" />
+				
+				<div data-bind="if:( stampDatas().length &amp;&amp; !isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0)   ,visible:!isWidget(), css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } " id="right-area">
+					<table data-bind="visible:showTable" id="fixed-table">
+						<colgroup>
+							<col width="65px" />
 								<col width="65px" />
 								<col width="85px" />
-							</colgroup>
-							<thead>
-							</thead>
-							<tbody>
-								<com:ko-foreach bind="stampDatas()">
-									<tr>
-										<td data-bind="text:stampDateTime"></td>
-										<td
-											data-bind="if:stamp,text:stamp.relieve +' '+ stampDateTime"></td>
-										<td data-bind="ifnot:stamp"></td>
-										<td data-bind="text:stampDateTime"></td>
-										<td data-bind="text:stampAtr"></td>
-									</tr>
-								</com:ko-foreach>
-							</tbody>
-						</table>
-					</div>
-					<div data-bind="ifnot: isUsed">
-
-						<span class="label not_used_label-small">打刻を利用することができません</span>
+						</colgroup>
+						
+						<thead>
+						</thead>
+						<tbody>
+							<com:ko-foreach bind="stampDatas()">
+								<tr>
+									<td
+										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.convertToShortMDW(stampDatetime)"></td>
+									<td
+										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.getStampTime($data)"></td>
+									<td
+										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:stampAtr"></td>
+								</tr>
+							</com:ko-foreach>
+						</tbody>
+					</table>
+				</div>
+				
+					<div data-bind="if: usedSatus() !== 0">
+						<span class="label " data-bind="text:getNotUseMessage(),css: { 'not_used_label-big' : isWidget() , 'not_used_label-small' :!isWidget()  }" ></span>
 					</div>
 				</div>
-			</ui:define>
-		</div>
+		</ui:define>
+
 	</ui:composition>
 </body>
 </html>

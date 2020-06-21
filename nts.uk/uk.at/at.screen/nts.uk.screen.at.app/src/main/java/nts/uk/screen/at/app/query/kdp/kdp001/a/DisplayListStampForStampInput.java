@@ -1,13 +1,13 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,9 +23,10 @@ public class DisplayListStampForStampInput {
 	@Inject
 	private EmployeeStampDatasFinder finder;
 
-	public List<EmployeeStampInfo> getEmployeeStampData(DatePeriod period) {
+	public List<EmployeeStampInfoDto> getEmployeeStampData(DatePeriod period) {
 		String employeeId = AppContexts.user().employeeId();
-		List<EmployeeStampInfo> domains = finder.getEmployeeStampData(period, employeeId);
-		return domains;
+		return finder.getEmployeeStampData(period, employeeId).stream().map(x -> EmployeeStampInfoDto.fromDomain(x))
+				.collect(Collectors.toList());
+
 	}
 }

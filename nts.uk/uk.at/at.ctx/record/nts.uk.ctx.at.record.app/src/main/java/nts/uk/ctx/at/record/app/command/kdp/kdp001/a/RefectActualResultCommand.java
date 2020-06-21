@@ -33,7 +33,9 @@ public class RefectActualResultCommand {
 	private OvertimeDeclarationComamnd overtimeDeclaration;
 
 	public RefectActualResult toDomainValue() {
-		return new RefectActualResult(cardNumberSupport, new WorkLocationCD(workLocationCD),
-				new WorkTimeCode(workTimeCode), overtimeDeclaration.toDomainValue());
+		return new RefectActualResult(cardNumberSupport,
+				workLocationCD != null ? new WorkLocationCD(workLocationCD) : null,
+				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
+				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);
 	}
 }

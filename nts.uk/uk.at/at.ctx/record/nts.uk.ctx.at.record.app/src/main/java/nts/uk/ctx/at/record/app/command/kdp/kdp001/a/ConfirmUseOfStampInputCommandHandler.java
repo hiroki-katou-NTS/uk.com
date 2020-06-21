@@ -8,22 +8,32 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
@@ -56,12 +66,22 @@ public class ConfirmUseOfStampInputCommandHandler
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
+	
+	@Inject
+	private StampRecordRepository stampRecordRepo;
+	
+	@Inject
+	private StampDakokuRepository stampDakokuRepo;
+	
+	@Inject
+	private CreateDailyResultDomainService createDailyResultDomainSv;
 
 	@Override
 	protected ConfirmUseOfStampInputResult handle(CommandHandlerContext<ConfirmUseOfStampInputCommand> context) {
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
-				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub);
+				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
+				createDailyResultDomainSv);
 
 		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
 
@@ -99,7 +119,16 @@ public class ConfirmUseOfStampInputCommandHandler
 
 		@Inject
 		private EmployeeRecordAdapter sysEmpPub;
-
+		
+		@Inject
+		private StampRecordRepository stampRecordRepo;
+		
+		@Inject
+		private StampDakokuRepository stampDakokuRepo;
+		
+		@Inject
+		private CreateDailyResultDomainService createDailyResultDomainSv;
+		
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
 			return this.sysEmpPub.findBySidNotDel(sids);
@@ -133,6 +162,23 @@ public class ConfirmUseOfStampInputCommandHandler
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
 			return this.stampUsageRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public void insert(StampRecord stampRecord) {
+			this.stampRecordRepo.insert(stampRecord);
+		}
+
+		@Override
+		public void insert(Stamp stamp) {
+			this.stampDakokuRepo.insert(stamp);
+		}
+
+		@Override
+		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
+				Optional<ExecutionLog> executionLog) {
+			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr, companyId, empCalAndSumExecLogID, executionLog);
 		}
 
 	}

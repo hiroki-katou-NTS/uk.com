@@ -83,10 +83,12 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 		
 		List<ButtonSettings> buttonSettings = this.queryProxy().query(SELECT_STAMP_LAYOUT_DETAIL,KrcmtStampLayoutDetail.class).setParameter("companyId", comppanyID).getList()
 				
-				.stream().map(m -> new ButtonSettings(new ButtonPositionNo(m.pk.buttonPositionNo),
+				.stream().map(m ->new ButtonSettings(new ButtonPositionNo(m.pk.buttonPositionNo),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode(m.textColor), new ButtonName(m.buttonName)), new ColorCode(m.backGroundColor)),
 				new ButtonType(EnumAdaptor.valueOf(m.reservationArt, ReservationArt.class),
-						Optional.of(new StampType( m.changeHalfDay ==  0 ? false : true , Optional.of(EnumAdaptor.valueOf(m.goOutArt, GoingOutReason.class)),
+						Optional.of(new StampType( m.changeHalfDay ==  0 ? false : true ,
+								Optional.ofNullable(m.goOutArt == null ? null
+												: EnumAdaptor.valueOf(m.goOutArt, GoingOutReason.class)),
 								EnumAdaptor.valueOf(m.setPreClockArt, SetPreClockArt.class),
 								EnumAdaptor.valueOf(m.changeClockArt, ChangeClockArt.class),
 								EnumAdaptor.valueOf(m.changeCalArt, ChangeCalArt.class)))),

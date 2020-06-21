@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +42,9 @@ public class RetrieveNoStampCardRegisteredService {
 				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
 						&&  dateRecord.equals(dateStamp)
 						&& stampRecord.getStampDateTime().clockHourMinuteSecond().equals(stamp.getStampDateTime().clockHourMinuteSecond())) {
+					
 					datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
-							stampRecord, Optional.of(stamp)));
+							stampRecord.getStampArt(), Arrays.asList(stamp)));
 					break;
 				}
 			}

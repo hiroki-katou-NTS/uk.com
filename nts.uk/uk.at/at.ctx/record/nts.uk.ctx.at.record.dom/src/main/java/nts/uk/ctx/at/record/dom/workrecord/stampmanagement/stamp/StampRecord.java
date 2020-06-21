@@ -36,16 +36,10 @@ public class StampRecord implements DomainAggregate {
 	private final GeneralDateTime stampDateTime;
 
 	/**
-	 * 打刻区分
+	 * 	表示する打刻区分
 	 */
 	@Getter
-	private final boolean stampArt;
-
-	/**
-	 * 予約区分
-	 */
-	@Getter
-	private final ReservationArt revervationAtr;
+	private final String stampArt;
 
 	/**
 	 * 就業情報端末コード
