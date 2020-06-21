@@ -25,18 +25,22 @@ public class StampDataReflectProcessService {
 	// [1] 反映する
 	public static StampDataReflectResult reflect(Require require, Optional<String> employeeId, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
+		//$反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)		
 		Optional<GeneralDate> reflectDate = reflectDailyResult(require, employeeId, stamp);
-
-		Optional<AtomTask> atomTask = Optional.of(AtomTask.of(() -> {
+		// $AtomTask = AtomTask:
+		AtomTask atomTask = AtomTask.of(() -> {
+			// require.打刻記録を追加する(打刻記録)
 			require.insert(stampRecord);
+			//prv-1] 弁当を自動予約する(打刻)
 			automaticallyBook(stampRecord, stamp);
+			//if not 打刻.isEmpty
 			if (stamp.isPresent()) {
 				require.insert(stamp.get());
 			}
 
-		}));
-
-		return new StampDataReflectResult(reflectDate, atomTask.get());
+		});
+		// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
+		return new StampDataReflectResult(reflectDate, atomTask);
 	}
 
 	/**
@@ -56,6 +60,7 @@ public class StampDataReflectProcessService {
 		 * if(stamp.get().getType().checkBookAuto()) { //TODO chờ hàm gì đó được viết
 		 * bởi đội khác, để tạm là option return Optional.empty(); }
 		 */
+		
 		return Optional.empty();
 	}
 

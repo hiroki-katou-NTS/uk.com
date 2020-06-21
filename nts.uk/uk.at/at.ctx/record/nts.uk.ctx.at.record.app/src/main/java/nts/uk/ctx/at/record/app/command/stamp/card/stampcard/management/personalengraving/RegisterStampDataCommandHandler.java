@@ -15,6 +15,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -51,7 +52,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 
 		RegisterStampDataCommand cmd = context.getCommand();
 		String employeeId = AppContexts.user().employeeId();
-		
 		StampDataReflectResult result = CreateStampDataForEmployeesService.create(required, employeeId, cmd.retriveDateTime(),
 				cmd.toRelieve(), cmd.toButtonType(), Optional.ofNullable(cmd.toRefectActualResult()),
 				Optional.ofNullable(cmd.toGeoCoordinate()), Optional.ofNullable(cmd.toEmpInfoTerCode()));

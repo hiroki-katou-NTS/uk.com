@@ -28,10 +28,11 @@ public class StampCardEditing extends AggregateRoot {
 	 */
 
 	private StampCardDigitNumber digitsNumber;
+	
 	/**
 	 * 編集方法
 	 */
-	private StampCardEditMethod method;
+	private StampCardEditMethod stampMethod;
 
 	public static StampCardEditing createFromJavaType(String companyId, int digitsNumber, int method) {
 		return new StampCardEditing(companyId, new StampCardDigitNumber(digitsNumber),
@@ -57,7 +58,7 @@ public class StampCardEditing extends AggregateRoot {
 			return Optional.empty();
 		}
 		// @打刻カード編集方法.打刻カード番号を編集する(@桁数, $打刻カード番号)
-		return Optional.ofNullable(this.method.editCardNumber(String.valueOf(this.digitsNumber.v()), cardNumber));
+		return Optional.ofNullable(this.stampMethod.editCardNumber(String.valueOf(this.digitsNumber.v()), cardNumber));
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class StampCardEditing extends AggregateRoot {
 	public String editCardNumber(String cardNumber) {
 
 		// @打刻カード編集方法.打刻カード番号を編集する(@桁数, 編集前番号)
-		return this.method.editCardNumber(String.valueOf(this.digitsNumber.v()), cardNumber);
+		return this.stampMethod.editCardNumber(String.valueOf(this.digitsNumber.v()), cardNumber);
 
 	}
 

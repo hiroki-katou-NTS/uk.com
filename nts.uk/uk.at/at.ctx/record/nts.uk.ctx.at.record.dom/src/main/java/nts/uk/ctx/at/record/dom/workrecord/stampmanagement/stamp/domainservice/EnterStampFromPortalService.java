@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -30,21 +29,25 @@ public class EnterStampFromPortalService {
 	 * [1] 作成する
 	 * 
 	 * @param require
-	 * @param 契約コード    contractCode
-	 * @param 社員ID     employeeID
-	 * @param 打刻日時     datetime
-	 * @param ボタン位置NO  buttonPositionNo
-	 * @param 実績への反映内容 refActualResults
+	 * @param 契約コード
+	 *            contractCode
+	 * @param 社員ID
+	 *            employeeID
+	 * @param 打刻日時
+	 *            stampDatetime
+	 * @param ボタン位置NO
+	 *            buttonPositionNo
+	 * @param 実績への反映内容
+	 *            refActualResults
 	 * @return 打刻入力結果
 	 * 
 	 *         ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
-			GeneralDateTime datetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
+	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+			GeneralDateTime stampDatetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
 
 		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
-		Optional<PortalStampSettings> settingStampPotal = require
-				.getPortalStampSettings(AppContexts.user().companyId());
+		Optional<PortalStampSettings> settingStampPotal = require.getPortalStampSetting();
 
 		if (!settingStampPotal.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -62,14 +65,14 @@ public class EnterStampFromPortalService {
 
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, NULLL, 打刻日時, $打刻する方法,
 		// $ボタン詳細設定.ボタン種類, 実績への反映内容, NULL)
-		return CreateStampDataForEmployeesService.create(require, contractCode.v(), employeeID, null, datetime, relieve,
-				settingButton.get().getButtonType(), refActualResults, null);
+		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, null, stampDatetime,
+				relieve, settingButton.get().getButtonType(), refActualResults, null);
 	}
 
 	public static interface Require extends CreateStampDataForEmployeesService.Require {
 
 		// [R-1] ポータルの打刻設定を取得する
-		Optional<PortalStampSettings> getPortalStampSettings(String comppanyID);
+		Optional<PortalStampSettings> getPortalStampSetting();
 	}
 
 }

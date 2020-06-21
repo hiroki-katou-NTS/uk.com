@@ -17,10 +17,11 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPersonalStampService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
@@ -29,95 +30,105 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
- * @author tutk
+ * @author chungnt
  *
  */
 @RunWith(JMockit.class)
-public class EnterStampFromPersonalStampServiceTest {
-	
+public class EnterStampFromSmartPhoneServiceTest {
+
 	@Injectable
-	private Require require;
+	private nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService.Require require;
 
 	/**
-	 * require.getStampSet(); isPresent()
-	 * result : BusinessException("Msg_1632");
+	 * require.getSmartphoneStampSetting() isPresent()
+	 * resutl : BusinessException("Msg_1632")
 	 */
 	@Test
-	public void test_stampSettingPerOpt_null() {
-		String contractCode = "DUMMY";
+	public void test_settingSmartPhoneStampOpt_null() {
+
+		ContractCode contractCode = new ContractCode("DUMMY");
 		String employeeId = "DUMMY";
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		
 		new Expectations() {
-			{
-				require.getStampSet();
-			}
-		};
-		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
-				null));
-	}
+		{
+			require.getSmartphoneStampSetting();
+		}
+	};
 	
+	NtsAssert.businessException("Msg_1632",
+			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+					dateTime, stampButton,
+					Optional.empty(), null));
+	
+	}
+
 	/**
-	 * $ボタン詳細設定 = $個人利用の打刻設定.ボタン詳細設定を取得する(ページNO, ボタン位置NO)
-	 * buttonSet : isPresent()
-	 * result : BusinessException("Msg_1632");
+	 *  $ボタン詳細設定 = $スマホ打刻の打刻設定.ボタン詳細設定を取得する(打刻ボタン) == null
+	 * resutl : BusinessException("Msg_1632")
 	 */
 	@Test
-	public void test_buttonSet_null() {
-		String contractCode = "DUMMY";
+	public void test_buttonSettingOpt_null() {
+
+		ContractCode contractCode = new ContractCode("DUMMY");
 		String employeeId = "DUMMY";
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
+		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new ResultDisplayTime(1));
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();
-		
-		StampSettingPerson stampSettingPerson = new StampSettingPerson("DUMMY", 
-				true, 
-				new StampingScreenSet(HistoryDisplayMethod.DISPLAY, new CorrectionInterval(1), new ColorSetting(new ColorCode("DUMMY"), new ColorCode("DUMMY")), new ResultDisplayTime(1)), 
-				stampPageLayouts, 
-				null);
+		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true);
 		
 		new Expectations() {
-			{
-				require.getStampSet();
-				result = Optional.of(stampSettingPerson);
-			}
-		};
-		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
-				null));
+		{
+			require.getSmartphoneStampSetting();
+			result = Optional.of(settingsSmartphoneStamp);
+		}
+	};
+	
+	NtsAssert.businessException("Msg_1632",
+			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+					dateTime, stampButton,
+					Optional.of(geoCoordinate), null));
+	
 	}
 	
+	
 	/**
-	 * return CreateStampDataForEmployeesService.create(require, new
-	 * ContractCode(contractCode), employeeId, null, stmapDateTime, relieve,
-	 * buttonSet.get().getButtonType(), refActualResults, null);
+	 *  $打刻する方法 = 打刻する方法#打刻する方法(ID認証, スマホ打刻)
 	 */
 	@Test
 	public void test() {
-		String contractCode = "DUMMY";
+
+		ContractCode contractCode = new ContractCode("DUMMY");
 		String employeeId = "DUMMY";
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
+		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
+		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new ResultDisplayTime(1));
+		
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();
 		List<ButtonSettings> lstButtonSet = new ArrayList<>();
 
@@ -143,35 +154,30 @@ public class EnterStampFromPersonalStampServiceTest {
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,
 				lstButtonSet));
 		
-		StampSettingPerson stampSettingPerson = new StampSettingPerson("DUMMY", 
-				true, 
-				new StampingScreenSet(HistoryDisplayMethod.DISPLAY, new CorrectionInterval(1), new ColorSetting(new ColorCode("DUMMY"), new ColorCode("DUMMY")), new ResultDisplayTime(1)), 
-				stampPageLayouts, 
-				null);
+		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true);
 		
 		new Expectations() {
-			{
-				require.getStampSet();
-				result = Optional.of(stampSettingPerson);
-			}
-		};
-		
-		AtomTask atomTask = AtomTask.of(() -> {});// dummy
-		StampCardCreateResult stampCardCreateResult = new StampCardCreateResult("1", Optional.of(atomTask));
-		
-		new MockUp<AutoCreateStampCardNumberService>() {
-			@Mock
-			public Optional<StampCardCreateResult> create(AutoCreateStampCardNumberService.Require require,
-					String employeeID, StampMeans stampMeanss) {
-				return Optional.of(stampCardCreateResult);
-			}
-		};
-		
-		TimeStampInputResult timeStampInputResult = EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
-				null);
-		
-		assertThat(timeStampInputResult.stampDataReflectResult.getReflectDate()).isEmpty();
-	}
+		{
+			require.getSmartphoneStampSetting();
+			result = Optional.of(settingsSmartphoneStamp);
+		}
+	};
 	
+	AtomTask atomTask = AtomTask.of(() -> {});// dummy
+	StampCardCreateResult stampCardCreateResult = new StampCardCreateResult("1", Optional.of(atomTask));
+	
+	new MockUp<AutoCreateStampCardNumberService>() {
+		@Mock
+		public Optional<StampCardCreateResult> create(AutoCreateStampCardNumberService.Require require,
+				String employeeID, StampMeans stampMeanss) {
+			return Optional.of(stampCardCreateResult);
+		}
+	};
+	
+	TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+					dateTime, stampButton,
+					Optional.of(geoCoordinate), null);
+	
+	assertThat(timeStampInputResult.stampDataReflectResult.getReflectDate()).isEmpty();
+	}
 }
-

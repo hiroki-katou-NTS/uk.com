@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
@@ -43,6 +44,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class StampSettingPersonHelper {
 	
+	public static StampSettingPerson DUMMY_LIST_NULL = new StampSettingPerson(
+			"000000000000-0001", 
+			true, 
+			StampScreen.DUMMY, 
+			new ArrayList<>(), null);
+	
 	public static StampSettingPerson DUMMY = new StampSettingPerson(
 			"000000000000-0001", 
 			true, 
@@ -54,6 +61,17 @@ public class StampSettingPersonHelper {
 			false, 
 			StampScreen.DUMMY, 
 			Arrays.asList(Layout.DUMMY), null);
+	
+	public static List<StampCard> getListStampCard() {
+		List<StampCard> stampCards = new ArrayList<>();
+		
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		
+		return stampCards;
+	}
 	
 	public static class StampScreen {
 		

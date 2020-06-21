@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -51,27 +50,23 @@ public class GetListStampEmployeeService {
 	 * [prv-1] 社員の打刻情報を作成する
 	 * 
 	 * @param listStampRecord
+	 *            打刻記録リスト
 	 * @param listStamp
-	 * @return 打刻一覧
+	 *            打刻リスト
+	 * @return List<表示する打刻情報>
 	 */
 	private static List<StampInfoDisp> createEmpStampInfo(List<StampRecord> listStampRecord, List<Stamp> listStamp) {
-		List<StampInfoDisp> datas = new ArrayList<>();
-		for (StampRecord stampRecord : listStampRecord) {
-			List<Stamp> correctStamps = new ArrayList<Stamp>();
+		// $打刻記録 in 打刻記録リスト :
+		return listStampRecord.stream().map(rc -> {
+			// $対象打刻 = $打刻 in 打刻リスト :find $打刻記録.打刻カード番号 = $打刻.打刻カード番号 AND
+			// $打刻記録.打刻日時 = $打刻.打刻日時
+			List<Stamp> stamps = listStamp.stream().filter(s -> rc.getStampDateTime().equals(s.getStampDateTime())
+					&& rc.getStampNumber().equals(s.getCardNumber())).collect(Collectors.toList());
+			// map 表示する打刻情報#打刻区分を作成する($打刻記録.打刻カード番号, $打刻記録.打刻日時, $打刻記録.表示する打刻区分,
+			// $対象打刻)
+			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamps);
+		}).collect(Collectors.toList());
 
-			for (Stamp stamp : listStamp) {
-				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
-						&& stampRecord.getStampDateTime().equals(stamp.getStampDateTime())) {
-					correctStamps.add(stamp);
-				}
-			}
-
-			datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
-					stampRecord.getStampArt(), correctStamps));
-
-		}
-
-		return datas;
 	}
 
 	public static interface Require extends GetEmpStampDataService.Require {

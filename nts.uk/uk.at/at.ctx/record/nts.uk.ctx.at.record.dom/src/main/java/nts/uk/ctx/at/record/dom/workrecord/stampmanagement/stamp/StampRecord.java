@@ -9,7 +9,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 
 /**
  * @author ThanhNX
@@ -34,12 +33,12 @@ public class StampRecord implements DomainAggregate {
 	 */
 	@Getter
 	private final GeneralDateTime stampDateTime;
-
+	
 	/**
 	 * 	表示する打刻区分
 	 */
 	@Getter
-	private final String stampArt;
+	private final StampTypeDisplay stampTypeDisplay;
 
 	/**
 	 * 就業情報端末コード
@@ -48,11 +47,11 @@ public class StampRecord implements DomainAggregate {
 	private final Optional<EmpInfoTerminalCode> empInfoTerCode;
 
 	/**
-	 * [C-0] 打刻記録(契約コード, 打刻カード番号, 打刻日時, 打刻区分, 予約区分, 就業情報端末コード)
+	 * [C-0] 打刻記録(契約コード, 打刻カード番号, 	日時, 表示する打刻区分, Optional<就業情報端末コード>)
+	 * @param contractCode
 	 * @param stampNumber
 	 * @param stampDateTime
-	 * @param stampArt
-	 * @param revervationAtr
+	 * @param stampTypeDisplay
 	 * @param empInfoTerCode
 	 */
 

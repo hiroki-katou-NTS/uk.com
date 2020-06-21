@@ -11,8 +11,10 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateListCommandHandler;
@@ -51,8 +53,9 @@ implements PeregUpdateListCommandHandler<UpdateStampCardCommand>{
 					errorExceptionLst.add(new MyCustomizeException("Msg_1106", Arrays.asList(command.getEmployeeId())));
 				}else {
 					// update domain
-					StampCard stampCard = StampCard.createFromJavaType(command.getStampNumberId(), command.getEmployeeId(),
-							command.getStampNumber(), GeneralDate.today(), AppContexts.user().contractCode());
+					StampCard stampCard = new StampCard(new ContractCode(AppContexts.user().contractCode()),
+							new StampNumber(command.getStampNumber()), command.getEmployeeId(), GeneralDate.today(),
+							command.getStampNumberId());
 
 					updateLst.add(stampCard);
 				}

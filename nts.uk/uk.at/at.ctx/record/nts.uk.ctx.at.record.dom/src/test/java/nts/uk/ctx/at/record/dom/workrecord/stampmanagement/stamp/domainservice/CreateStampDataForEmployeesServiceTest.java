@@ -14,12 +14,13 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
@@ -40,21 +41,24 @@ public class CreateStampDataForEmployeesServiceTest {
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_1() {
+		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
 		String employeeId = "employeeId";//dummy
-		GeneralDateTime datetime = GeneralDateTime.now();//dummy
+		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		Optional<RefectActualResult> refActualResults = Optional.of(StampHelper.getRefectActualResultDefault());//dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());//dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode =Optional.of(new EmpInfoTerminalCode(1234));//dummy
+		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
 		
 		new Expectations() {
 			{
 				require.getListStampCard(employeeId);
 			}
 		};
-		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(require, employeeId,
-				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode));
+		
+		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(
+				require, contractCd, employeeId, stampNumber, stampDateTime,
+				relieve, buttonType, refActualResults, stampLocationInfor));
 	}
 	
 	/**
@@ -65,13 +69,16 @@ public class CreateStampDataForEmployeesServiceTest {
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_2() {
+		
+		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
 		String employeeId = "employeeId";//dummy
-		GeneralDateTime datetime = GeneralDateTime.now();//dummy
+		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		Optional<RefectActualResult> refActualResults = Optional.of(StampHelper.getRefectActualResultDefault());////dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());//dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode =Optional.of(new EmpInfoTerminalCode(1234));//dummy
+		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
+		
 		
 		new Expectations() {
 			{
@@ -84,11 +91,15 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
-				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
-		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		
+		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+				require, contractCd, employeeId, stampNumber, stampDateTime,
+				relieve, buttonType, refActualResults, stampLocationInfor);
+		
+		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
+		
 		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getAtomTask(),
+				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
 				any -> require.insert((StampRecord) any.get()),
 				any -> require.insert((Stamp) any.get())
 		);
@@ -102,13 +113,15 @@ public class CreateStampDataForEmployeesServiceTest {
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_3() {
+		
+		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
 		String employeeId = "employeeId";//dummy
-		GeneralDateTime datetime = GeneralDateTime.now();//dummy
+		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
 		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		Optional<RefectActualResult> refActualResults = Optional.of(StampHelper.getRefectActualResultDefault());
-		Optional<GeoCoordinate> positionInfo = Optional.empty();
-		Optional<EmpInfoTerminalCode> empInfoTerCode =Optional.of(new EmpInfoTerminalCode(1234));//dummy
+		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(null, false));//dummy
 		
 		new Expectations() {
 			{
@@ -121,11 +134,15 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
-				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
-		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		
+		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+				require, contractCd, employeeId, stampNumber, stampDateTime,
+				relieve, buttonType, refActualResults, stampLocationInfor);
+		
+		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
+		
 		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getAtomTask(),
+				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
 				any -> require.insert((StampRecord) any.get()),
 				any -> require.insert((Stamp) any.get())
 		);
@@ -139,13 +156,15 @@ public class CreateStampDataForEmployeesServiceTest {
 	 */
 	@Test
 	public void testCreateStampDataForEmployee_4() {
+		
+		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
 		String employeeId = "employeeId";//dummy
-		GeneralDateTime datetime = GeneralDateTime.now();//dummy
+		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
-		ButtonType buttonType = DomainServiceHeplper.getButtonTypeHaveStampTypeNull();
-		Optional<RefectActualResult> refActualResults = Optional.of(StampHelper.getRefectActualResultDefault());//dummy
-		Optional<GeoCoordinate> positionInfo = Optional.of(StampHelper.getGeoCoordinateDefault());//dummy
-		Optional<EmpInfoTerminalCode> empInfoTerCode =Optional.of(new EmpInfoTerminalCode(1234));//dummy
+		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
+		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+		Optional<StampLocationInfor> stampLocationInfor = Optional.ofNullable(new StampLocationInfor(StampHelper.getGeoCoordinateDefault(), false));//dummy
 		
 		new Expectations() {
 			{
@@ -158,11 +177,14 @@ public class CreateStampDataForEmployeesServiceTest {
 								GeneralDate.today().addDays(-3)));
 			}
 		};
-		StampDataReflectResult stampDataReflectResult = CreateStampDataForEmployeesService.create(require, employeeId,
-				datetime, relieve, buttonType, refActualResults, positionInfo, empInfoTerCode);
-		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
+		
+		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+				require, contractCd, employeeId, stampNumber, stampDateTime,
+				relieve, buttonType, refActualResults, stampLocationInfor);
+		
+		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
 		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getAtomTask(),
+				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
 				any -> require.insert((StampRecord) any.get())
 		);
 	}

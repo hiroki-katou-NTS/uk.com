@@ -4,7 +4,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardDigitNumber;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcardedit.KrcmtEditingCards;
@@ -13,23 +16,15 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcardedit.KrcmtEditingCards;
 public class StampCardEditingRepoImpl extends JpaRepository implements StampCardEditingRepo {
 
 	@Override
-	public Optional<StampCardEditing> get(String companyId) {
-		Optional<KrcmtEditingCards> editCardEnt = this.queryProxy().find(companyId, KrcmtEditingCards.class);
-		if (!editCardEnt.isPresent()) {
-			return Optional.empty();
-		}
-		KrcmtEditingCards ent = editCardEnt.get();
-		return Optional.of(StampCardEditing.createFromJavaType(companyId, ent.numberOfDigits, ent.editingMethod));
-	}
-
-	@Override
-	public StampCardEditing getStampCardEditing(String companyId) {
-		Optional<KrcmtEditingCards> editCardEnt = this.queryProxy().find(companyId, KrcmtEditingCards.class);
-		if (!editCardEnt.isPresent()) {
+	public StampCardEditing get(String companyId) {
+		
+		Optional<StampCardEditing> StampCardEditingOpt= this.queryProxy().find(companyId, KrcmtEditingCards.class).map(x -> toDomain(x));
+		if(!StampCardEditingOpt.isPresent()){
+			
 			return null;
 		}
-		KrcmtEditingCards ent = editCardEnt.get();
-		return StampCardEditing.createFromJavaType(companyId, ent.numberOfDigits, ent.editingMethod);
+		 
+		 return StampCardEditingOpt.get();
 	}
 
 	
@@ -48,10 +43,17 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 		
 	}
 	
+	private StampCardEditing toDomain(KrcmtEditingCards ent) {
+
+		return new StampCardEditing(ent.cid, new StampCardDigitNumber(ent.numberOfDigits),
+				EnumAdaptor.valueOf(ent.editingMethod, StampCardEditMethod.class));
+	}
+	
+	
 	
 	public KrcmtEditingCards toEntity(StampCardEditing domain, KrcmtEditingCards  entity) {
 		entity.cid = domain.getCompanyId();
-		entity.editingMethod = domain.getMethod() == null ? 0 : domain.getMethod().value;
+		entity.editingMethod = domain.getStampMethod() == null ? 0 : domain.getStampMethod().value;
 		entity.numberOfDigits = domain.getDigitsNumber() == null ? 0 : domain.getDigitsNumber().v();
 		return entity;
 	}

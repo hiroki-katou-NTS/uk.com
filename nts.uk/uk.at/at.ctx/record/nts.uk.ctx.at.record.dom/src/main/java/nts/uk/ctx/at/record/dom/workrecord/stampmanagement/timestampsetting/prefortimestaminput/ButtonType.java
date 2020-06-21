@@ -35,38 +35,28 @@ public class ButtonType implements DomainValue{
 	public boolean checkStampType(){
 		return this.getStampType().isPresent();	
 	}
-	
 	/**
 	 * [2] 表示する打刻区分を取得する
 	 * 
 	 * @return string
 	 */
-	
-	public String getMarkingtoDisplay() {
+	public String getStampTypeDisplay() {
 		// if @打刻種類.isEmpty
-
-		if (!this.getStampType().isPresent()) {
-			// return @予約区分
+		if (!stampType.isPresent()) {
+			// return @予約区分 ←EnumのNameを返す
 			return this.reservationArt.nameId;
 		}
-
 		// $表示する打刻種類 = @打刻種類.表示する打刻区分を作成する()
 
-		String stampTypeName = this.stampType.get().createStampTypeDisplay();
+		String stampTypeDisplay = stampType.get().createStampTypeDisplay();
 
 		// if @予約区分 == なし
 		if (this.reservationArt.equals(ReservationArt.NONE)) {
 			// return $表示する打刻種類
-			return stampTypeName;
+			return stampTypeDisplay;
+		} else {
+			// $表示する打刻種類 + '+' +打刻記録.予約区分 ←EnumのName
+			return stampTypeDisplay + ReservationArt.CANCEL_RESERVATION.nameId;
 		}
-
-//		if @予約区分 == なし		 return $表示する打刻種類 + '+' +打刻記録.予約区分　←EnumのName			
-		if (this.reservationArt.equals(ReservationArt.NONE)) {
-			// return $表示する打刻種類
-			return stampTypeName + '+' + "";
-			// khong hieu dieu kien, khong hieu loai enum gi
-		}
-		return "";
-
 	}
 }
