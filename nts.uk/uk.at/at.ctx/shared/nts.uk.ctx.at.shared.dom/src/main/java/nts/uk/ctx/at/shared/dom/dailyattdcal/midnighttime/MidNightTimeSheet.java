@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.daily.midnight;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

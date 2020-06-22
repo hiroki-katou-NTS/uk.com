@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.FluidFixedAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 //import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.FluidFixedAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.SpecBonusPayTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
@@ -525,15 +525,15 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	
 	
 	public TimeWithDayAttr start() {
-		return ((CalculationTimeSheet)this).calcrange.getStart();
+		return ((CalculationTimeSheet)this).getCalcrange().getStart();
 	}
 	
 	public TimeWithDayAttr end() {
-		return ((CalculationTimeSheet)this).calcrange.getEnd();
+		return ((CalculationTimeSheet)this).getCalcrange().getEnd();
 	}
 	
 	public boolean contains(TimeWithDayAttr baseTime) {
-		return ((CalculationTimeSheet)this).calcrange.contains(baseTime);
+		return ((CalculationTimeSheet)this).getCalcrange().contains(baseTime);
 	}
 	
 	

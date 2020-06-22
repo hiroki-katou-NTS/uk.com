@@ -16,7 +16,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 <<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 >>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.shr.infra.data.entity.UkJpaEntity;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 
 /**
  * 法定外残業深夜時間

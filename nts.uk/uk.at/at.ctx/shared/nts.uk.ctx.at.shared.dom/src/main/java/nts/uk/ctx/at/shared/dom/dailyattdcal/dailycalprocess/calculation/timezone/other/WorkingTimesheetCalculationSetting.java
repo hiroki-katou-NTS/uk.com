@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.calculationattribute;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other;
 
 /**
  * 就業時間帯自動計算区分

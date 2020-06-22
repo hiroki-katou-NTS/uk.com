@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.record.dom.daily.bonuspaytime;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 
 /**
  * 加給時間

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.raisesalarytime;
 //import java.math.BigDecimal;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.someitems.RaisingSalaryTimeItemNo;
 
 /**
  * 加給時間

@@ -2,9 +2,9 @@ package nts.uk.ctx.at.record.dom.daily.midnight;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 
 /**
  * 所定内深夜時間
