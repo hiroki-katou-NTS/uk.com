@@ -8,13 +8,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
         
         application: KnockoutObservable<Application>;
         appWorkChange: KnockoutObservable<AppWorkChange>;
-        commonSetting: any;
+        appDispInfoStartupOutput: any;
     
         created(params: any) {
             const vm = this;
             vm.application = ko.observable(new Application("", 1, 2, ""));
-            vm.appWorkChange = ko.observable(new AppWorkChange(100, 200));      
-            vm.commonSetting = ko.observable(CommonProcess.initCommonSetting());
+            vm.appWorkChange = ko.observable(new AppWorkChange(100, 200));
+            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
         }
     
         mounted() {
@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                 empLst: [],
                 dateLst: []    
             }).done((successData: any) => {
-                vm.commonSetting(successData.appDispInfoStartupOutput);
+                vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
             });
         }
         
