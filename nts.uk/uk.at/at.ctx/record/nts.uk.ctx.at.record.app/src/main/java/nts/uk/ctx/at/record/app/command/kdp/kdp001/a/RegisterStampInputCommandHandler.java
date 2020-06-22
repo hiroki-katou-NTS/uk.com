@@ -105,9 +105,11 @@ public class RegisterStampInputCommandHandler
 		// not 打刻入力結果 empty
 		Optional<AtomTask> atomInput = inputResult.getAt();
 
-		transaction.execute(() -> {
-			atomInput.get().run();
-		});
+		if (atomInput.isPresent()) {
+			transaction.execute(() -> {
+				atomInput.get().run();
+			});
+		}
 
 		if (inputResult.getStampDataReflectResult() == null) {
 			return null;
