@@ -104,7 +104,7 @@ class ViewBComponent extends ko.ViewModel {
 	public params!: Params;
 
 	public items: KnockoutObservableArray<any> = ko.observableArray([
-		{ code: '001', code1: '001',  name: '○', startDate: '2000/01/01', endDate: '2000/01/01'},
+		{ code: '001', code1: '001',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '002', code1: '002',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '003', code1: '003', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
 		{ code: '004', code1: '004', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },

@@ -12,11 +12,10 @@ const template = `
 				<tbody>
 					<tr>
 						<td>
-							<div data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
+							<div data-bind="ntsFormLabel: { text: $i18n('KMP001_14'), required: true }"></div>
 						</td>
 						<td>
 							<div style="margin-left: 20px" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
-								required: required,
 								enable: enable, 
 								showNextPrevious: true,
 								value: dateValue, 

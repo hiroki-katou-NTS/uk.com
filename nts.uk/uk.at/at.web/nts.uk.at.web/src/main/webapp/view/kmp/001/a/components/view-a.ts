@@ -12,7 +12,7 @@ const template = `
 <div class="view-kmp">
 	<div class="list-component float-left viewa">
 		<div class="caret-right caret-background bg-green" style="padding: 10px;">
-			<table id="can-id-de-lam-gi" data-bind="ntsGridList: {
+			<table id="list_employee" data-bind="ntsGridList: {
 						height: 300,
 						options: employees,
 						optionsValue: 'code',
@@ -20,7 +20,7 @@ const template = `
 				            { headerText: $i18n('KMP001_8'), prop: 'code', width: 100 },
 				            { headerText: $i18n('KMP001_9'), prop: 'name', width: 130 },
 				            { headerText: $i18n('KMP001_10'), prop: 'joinDate', width: 80 },
-	 						{ headerText: $i18n('KMP001_11'), prop: 'config', width: 70 }
+	 						{ headerText: $i18n('KMP001_11'), prop: 'config', width: 70, template: '<div style=\\'text-align: center\\'>$\{config}</div>' }
 				        ],
 						multiple: false,
 						enable: true,
@@ -75,10 +75,11 @@ class ViewA extends ko.ViewModel {
 				showQuickSearchTab: true,
 				showAdvancedSearchTab: true,
 				showBaseDate: true,
-				showClosure: true,
-				showAllClosure: true,
-				showPeriod: true,
-				periodFormatYM: false,
+				showClosure: false,
+				showAllClosure: false,
+				showPeriod: false,
+				periodFormatYM: true,
+				maxPeriodRange: 'oneMonth',
 
 				/** Required parameter */
 				baseDate: ko.observable(moment().format(dataFormate)),
@@ -103,13 +104,13 @@ class ViewA extends ko.ViewModel {
 				showWorkplace: true,
 				showClassification: true,
 				showJobTitle: true,
-				showWorktype: true,
+				showWorktype: false,
 				isMutipleCheck: true,
 
 				/**
 				* Self-defined function: Return data from CCG001
 				* @param: data: the data return from CCG001
-				*/
+				*/			
 				returnDataFromCcg001: function(data: any) {
 					const employees = data.listEmployee
 						.map(m => ({
@@ -143,6 +144,8 @@ class ViewA extends ko.ViewModel {
 						}));
 
 					// xu ly lay casc thong tin lien quan toi code o day
+					
+					debugger;
 
 					vm.employees(employees);
 				}
