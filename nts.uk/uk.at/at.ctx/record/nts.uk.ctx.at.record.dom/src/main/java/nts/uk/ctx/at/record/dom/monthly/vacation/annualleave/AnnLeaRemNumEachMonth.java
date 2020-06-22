@@ -50,6 +50,8 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	/** 付与区分 */
 	private boolean grantAtr;
 	
+	
+	
 	/**
 	 * コンストラクタ
 	 * @param employeeId 社員ID

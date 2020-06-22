@@ -14,7 +14,7 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 	/** 使用日数 */
 	private AnnualLeaveUsedDays usedDays;
 	/** 使用時間 */
-	private Optional<TimeAnnualLeaveUsedTime> usedTime;
+	private Optional<AnnualLeaveUsedTime> usedTime;
 	
 	/**
 	 * コンストラクタ
@@ -33,7 +33,7 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 	 */
 	public static AnnualLeaveUsedNumber of(
 			AnnualLeaveUsedDays usedDays,
-			Optional<TimeAnnualLeaveUsedTime> usedTime){
+			Optional<AnnualLeaveUsedTime> usedTime){
 		
 		AnnualLeaveUsedNumber domain = new AnnualLeaveUsedNumber();
 		domain.usedDays = usedDays;
@@ -55,4 +55,17 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	/**
+	 * 日数を使用日数に加算する
+	 */
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber){
+		this.usedDays.addUsedDays(usedNumber.getUsedDays().getUsedDayNumber().v());
+		if (this.usedTime.isPresent()){
+			this.usedTime.get().getUsedTime().addMinutes(
+					usedNumber.getUsedTime().get().getUsedTime().v());
+		}
+	}
+	
 }
+

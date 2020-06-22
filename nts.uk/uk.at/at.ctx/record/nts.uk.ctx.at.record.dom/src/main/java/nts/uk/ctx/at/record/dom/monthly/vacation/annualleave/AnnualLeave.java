@@ -21,7 +21,7 @@ public class AnnualLeave implements Cloneable {
 	/** 使用数 */
 	private AnnualLeaveUsedInfo usedNumberInfo;
 	/** 残数 */
-	private AnnualLeaveRemainingNumber remainingNumberInfo;
+	private AnnualLeaveRemainingNumberInfo remainingNumberInfo;
 	
 //	/** 残数付与前 */
 //	private AnnualLeaveRemainingNumber remainingNumberBeforeGrant;
@@ -34,7 +34,7 @@ public class AnnualLeave implements Cloneable {
 	public AnnualLeave(){
 		
 		this.usedNumberInfo = new AnnualLeaveUsedInfo();
-		this.remainingNumberInfo = new AnnualLeaveRemainingNumber();
+		this.remainingNumberInfo = new AnnualLeaveRemainingNumberInfo();
 //		this.remainingNumberBeforeGrant = new AnnualLeaveRemainingNumber();
 //		this.remainingNumberAfterGrant = Optional.empty();
 	}
@@ -48,12 +48,12 @@ public class AnnualLeave implements Cloneable {
 	 * @return 実年休
 	 */
 	public static AnnualLeave of(
-			AnnualLeaveUsedInfo usedNumber,
-			AnnualLeaveRemainingNumber remainingNumber){
+			AnnualLeaveUsedInfo usedNumberInfo,
+			AnnualLeaveRemainingNumberInfo remainingNumberInfo){
 		
 		AnnualLeave domain = new AnnualLeave();
-		domain.usedNumberInfo = usedNumber;
-		domain.remainingNumberInfo = remainingNumber;
+		domain.usedNumberInfo = usedNumberInfo;
+		domain.remainingNumberInfo = remainingNumberInfo;
 //		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
 //		domain.remainingNumberAfterGrant = remainingNumberAfterGrant;
 		return domain;
@@ -80,22 +80,22 @@ public class AnnualLeave implements Cloneable {
 	public void createRemainingNumberFromGrantRemaining(
 			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
-		// 年休付与残数データから残数を作成
-		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
-		
-		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
-			
-			// 残数付与後　←　残数
-			this.remainingNumberAfterGrant = Optional.of(this.remainingNumberInfo.clone());
-		}
-		else {
-			
-			// 残数付与前　←　残数
-			this.remainingNumberBeforeGrant = this.remainingNumberInfo.clone();
-		}
-		
-		
+		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
+//		
+//		// 年休付与残数データから残数を作成
+//		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
+//		
+//		// 「付与後フラグ」をチェック
+//		if (afterGrantAtr){
+//			
+//			// 残数付与後　←　残数
+//			this.remainingNumberAfterGrant = Optional.of(this.remainingNumberInfo.clone());
+//		}
+//		else {
+//			
+//			// 残数付与前　←　残数
+//			this.remainingNumberBeforeGrant = this.remainingNumberInfo.clone();
+//		}
 	}
 	
 	/**
@@ -103,21 +103,23 @@ public class AnnualLeave implements Cloneable {
 	 * @param days 日数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
-	public void addUsedNumber(double days, boolean afterGrantAtr){
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber, boolean afterGrantAtr){
 	
-		// 使用数．使用日数．使用日数に加算
-		this.usedNumberInfo.getUsedDays().addUsedDays(days);
+		this.usedNumberInfo.addUsedNumber(usedNumber, afterGrantAtr);
 		
-		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
-		
-			// 使用数．使用日数．使用日数付与後に加算
-			this.usedNumberInfo.getUsedDays().addUsedDaysAfterGrant(days);
-		}
-		else {
-			
-			// 使用数．使用日数．使用日数付与前に加算
-			this.usedNumberInfo.getUsedDays().addUsedDaysBeforeGrant(days);
-		}
+//		// 使用数．使用日数．使用日数に加算
+//		this.usedNumberInfo.getUsedDays().addUsedDays(days);
+//		
+//		// 「付与後フラグ」をチェック
+//		if (afterGrantAtr){
+//		
+//			// 使用数．使用日数．使用日数付与後に加算
+//			this.usedNumberInfo.getUsedDays().addUsedDaysAfterGrant(days);
+//		}
+//		else {
+//			
+//			// 使用数．使用日数．使用日数付与前に加算
+//			this.usedNumberInfo.getUsedDays().addUsedDaysBeforeGrant(days);
+//		}
 	}
 }
