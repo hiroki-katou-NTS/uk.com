@@ -8,8 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
-			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.component1.js" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/a/kaf007.a.vm.js" />
@@ -19,16 +18,12 @@
 				<button class="proceed" data-bind="click: register">Register</button>
 			</div>
 			<div id="contents-area">
-				<div data-bind="component: { name: 'kaf000-a-component1', 
+				<div data-bind="component: { name: 'kaf000-component1', 
 											params: {
 												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
+												commonSetting: commonSetting
 											} }"></div>
 				<div data-bind="component: { name: 'kaf007-share', params: appWorkChange }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component3', 
-											params: {
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
