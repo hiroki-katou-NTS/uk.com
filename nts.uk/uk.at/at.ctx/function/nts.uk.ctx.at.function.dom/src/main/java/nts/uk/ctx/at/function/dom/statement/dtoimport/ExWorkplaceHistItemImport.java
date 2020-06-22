@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport;
+package nts.uk.ctx.at.function.dom.statement.dtoimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,12 +7,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter	
-public class ExJobTitleHistItemImport {
+@Getter
+public class ExWorkplaceHistItemImport {
 
 	private String historyId;
 	
 	private DatePeriod period;
 	
-	private String jobTitleId;
+	private String workplaceId;
 }

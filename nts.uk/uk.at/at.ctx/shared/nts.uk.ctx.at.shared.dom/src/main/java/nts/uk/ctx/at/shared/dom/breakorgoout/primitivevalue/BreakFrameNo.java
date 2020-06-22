@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue;
+package nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
