@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -64,6 +65,23 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		if(domain != null){
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setDate(domain.getYmd());
+			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getTime().getActualWorkingTimeOfDaily()));
+			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setBudgetTimeVariance(getAttendanceTime(domain.getTime().getBudgetTimeVariance()));
+			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getTime().getMedicalCareTime()));
+			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getTime().getWorkScheduleTimeOfDaily()));
+			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getTime().getStayingTime()));
+			items.setUnemployedTime(getAttendanceTime(domain.getTime().getUnEmployedTime()));
+			items.exsistData();
+		}
+		return items;
+	}
+	
+	public static AttendanceTimeDailyPerformDto getDto(String employeeID,GeneralDate ymd,AttendanceTimeOfDailyAttendance domain) {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		if(domain != null){
+			items.setEmployeeID(employeeID);
+			items.setDate(ymd);
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
 			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setBudgetTimeVariance(getAttendanceTime(domain.getBudgetTimeVariance()));
@@ -118,10 +136,11 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new AttendanceTimeOfDailyPerformance(emp, date,
+				new AttendanceTimeOfDailyAttendance(
 				scheduleTime == null ? WorkScheduleTimeOfDaily.defaultValue() : scheduleTime.toDomain(), 
 				actualWorkTime == null ? ActualWorkingTimeOfDaily.defaultValue() : actualWorkTime.toDomain(),
 				stayingTime == null ? StayingTimeDto.defaultDomain() : stayingTime.toDomain(), 
 				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
-				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime));
+				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime)));
 	}
 }

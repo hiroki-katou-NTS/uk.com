@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -18,7 +17,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -46,6 +47,21 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setWorkTimes(domain.getAttendance().getWorkTimes() != null ? domain.getAttendance().getWorkTimes().v() : null);
+			dto.setWorkAndLeave(ConvertHelper.mapTo(domain.getAttendance().getTimeLeavingWorks(),
+					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getLeaveStamp().orElse(null)))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static TimeLeavingOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd,TimeLeavingOfDailyAttd domain) {
+		TimeLeavingOfDailyPerformanceDto dto = new TimeLeavingOfDailyPerformanceDto();
+		if (domain != null) {
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setWorkTimes(domain.getWorkTimes() != null ? domain.getWorkTimes().v() : null);
 			dto.setWorkAndLeave(ConvertHelper.mapTo(domain.getTimeLeavingWorks(),
 					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(),

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,15 +13,16 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -59,6 +61,22 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
+			dto.setAttr(x.getTimeZone().getBreakType() == null ? 0 : x.getTimeZone().getBreakType().value);
+			dto.setTimeZone(ConvertHelper.mapTo(x.getTimeZone().getBreakTimeSheets(), 
+													(c) -> new TimeSheetDto(
+														c.getBreakFrameNo().v().intValue(),
+														getTimeStamp(c.getStartTime()),
+														getTimeStamp(c.getEndTime()),
+														c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static BreakTimeDailyDto getDto(String employeeID,GeneralDate ymd,BreakTimeOfDailyAttd x) {
+		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+		if(x != null){
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
 													(c) -> new TimeSheetDto(
@@ -121,7 +139,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	}
 	
 	private BreakTimeSheet toTimeSheet(TimeSheetDto d){
-		return new BreakTimeSheet(new BreakFrameNo(d.getNo()),
+		return new BreakTimeSheet(new BreakFrameNo(new BigDecimal(d.getNo())),
 				createWorkStamp(d.getStart()),
 				createWorkStamp(d.getEnd()),
 				new AttendanceTime(d.getBreakTime()));

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 @Data
@@ -52,13 +53,28 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 	public static AttendanceLeavingGateOfDailyDto getDto(AttendanceLeavingGateOfDaily domain){
 		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();
 		if (domain != null) {
-			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
+			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getTimeZone().getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
 											TimeStampDto.createTimeStamp(c.getAttendance().orElse(null)),
 											TimeStampDto.createTimeStamp(c.getLeaving().orElse(null)),
 											0)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static AttendanceLeavingGateOfDailyDto getDto(String employeeID,GeneralDate ymd,AttendanceLeavingGateOfDailyAttd domain){
+		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();
+		if (domain != null) {
+			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
+					(c) -> new TimeSheetDto(c.getWorkNo().v(),
+											TimeStampDto.createTimeStamp(c.getAttendance().orElse(null)),
+											TimeStampDto.createTimeStamp(c.getLeaving().orElse(null)),
+											0)));
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.exsistData();
 		}
 		return dto;

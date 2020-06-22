@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -54,6 +55,17 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
+			dto.setRemark(x.getRemarks().getRemarks().v());
+			dto.setNo(x.getRemarks().getRemarkNo());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
+		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+		if(x != null){
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setRemark(x.getRemarks().v());
 			dto.setNo(x.getRemarkNo());
 			dto.exsistData();

@@ -6,14 +6,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -69,6 +70,21 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
+			result.setDivergenceTime(getDivergence(domain.getCalcategory().getDivergenceTime()));
+			result.setFlexExcessTime(newAutoCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime()));
+			result.setHolidayTimeSetting(newAutoCalcHolidaySetting(domain.getCalcategory().getHolidayTimeSetting()));
+			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getCalcategory().getLeaveEarlySetting()));
+			result.setOvertimeSetting(getOverTimeSetting(domain.getCalcategory().getOvertimeSetting()));
+			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain.getCalcategory().getRasingSalarySetting()));
+			result.exsistData();
+		}
+		return result;
+	}
+	public static CalcAttrOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd, CalAttrOfDailyAttd domain) {
+		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
+		if (domain != null) {
+			result.setEmployeeId(employeeID);
+			result.setYmd(ymd);
 			result.setDivergenceTime(getDivergence(domain.getDivergenceTime()));
 			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime().getFlexOtTime()));
 			result.setHolidayTimeSetting(newAutoCalcHolidaySetting(domain.getHolidayTimeSetting()));

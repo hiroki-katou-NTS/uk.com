@@ -151,28 +151,30 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
 		if(domain != null){
-			dto.setEmployeeId(domain.getWorkInformation().getEmployeeId());
-			dto.setDate(domain.getWorkInformation().getYmd());
-			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(domain.getWorkInformation()));
-			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain.getCalAttr()));
-			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));
-			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
+			String employeeId = domain.getEmployeeId();
+			GeneralDate ymd = domain.getYmd();
+			dto.setEmployeeId(employeeId);
+			dto.setDate(ymd);
+			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(employeeId,ymd,domain.getWorkInformation()));
+			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(employeeId,ymd,domain.getCalAttr()));
+			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(employeeId,ymd,domain.getAffiliationInfor()));
+//			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
 			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
-			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(o)));
-			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(b)).collect(Collectors.toList()));
-			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(a)));
-			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
-			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(a)));
-			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(s)));
-			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(s)));
-			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(a)));
-			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(a)));
-			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
-			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(t)));
-			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(pc)));
-			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList()));
+			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
+			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)).collect(Collectors.toList()));
+			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
+//			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
+			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
+			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(employeeId,ymd,s)));
+			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(employeeId,ymd,s)));
+			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(employeeId,ymd,a)));
+			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(employeeId,ymd,a)));
+			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
+			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
+			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
+			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -181,28 +183,30 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	public static DailyRecordDto from(IntegrationOfDaily domain, Map<Integer, OptionalItem> master){
 		DailyRecordDto dto = new DailyRecordDto();
 		if(domain != null){
-			dto.setEmployeeId(domain.getWorkInformation().getEmployeeId());
-			dto.setDate(domain.getWorkInformation().getYmd());
-			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(domain.getWorkInformation()));
-			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain.getCalAttr()));
-			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));
-			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
+			String employeeId = domain.getEmployeeId();
+			GeneralDate ymd = domain.getYmd();
+			dto.setEmployeeId(employeeId);
+			dto.setDate(ymd);
+			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(employeeId,ymd,domain.getWorkInformation()));
+			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(employeeId,ymd,domain.getCalAttr()));
+			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(employeeId,ymd,domain.getAffiliationInfor()));
+//			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
 			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
-			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(o)));
-			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(b)).collect(Collectors.toList()));
-			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(a)));
-			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
-			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(a)));
-			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(s)));
-			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(s)));
-			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(a)));
-			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(a, master)));
-			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
-			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(t)));
-			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(pc)));
-			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList()));
+			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
+			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)).collect(Collectors.toList()));
+			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
+//			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
+			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
+			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(employeeId,ymd,s)));
+			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(employeeId,ymd,s)));
+			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(employeeId,ymd,a)));
+			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(employeeId,ymd,a,master)));
+			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
+			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
+			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
+			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -427,24 +431,23 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
 		return new IntegrationOfDaily(
-				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
-				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
-				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
-				this.businessType.map(b -> b.toDomain(employeeId, date)),
-				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
+				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date).getWorkInformation(), 
+				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date).getCalcategory(), 
+				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date).getAffiliationInfor(),
+				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date).getTimeZone()),
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
-				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
-				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
-				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
-				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
-				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
-				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
-				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
-				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
-				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
+				this.outingTime.map(ot -> ot.toDomain(employeeId, date).getOutingTime()),
+				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date).getTimeZone()).collect(Collectors.toList()),
+				this.attendanceTime.map(at -> at.toDomain(employeeId, date).getTime()),
+//				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
+				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date).getAttendance()),
+				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date).getTimeZone()),
+				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date).getSpecificDay()),
+				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date).getTimeZone()),
+				this.optionalItem.map(oi -> oi.toDomain(employeeId, date).getAnyItem()),
+				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date).getEditState()).collect(Collectors.toList()),
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date).getAttendance()),
+				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date).getRemarks()).collect(Collectors.toList())
 				);
 	}
 

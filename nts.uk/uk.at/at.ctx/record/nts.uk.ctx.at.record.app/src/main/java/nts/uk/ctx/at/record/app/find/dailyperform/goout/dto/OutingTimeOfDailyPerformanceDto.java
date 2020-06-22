@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
@@ -43,6 +44,23 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTime().getOutingTimeSheets(),
+					(c) -> new OutingTimeZoneDto(
+							c.getOutingFrameNo().v(),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
+							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
+							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static OutingTimeOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd,OutingTimeOfDailyAttd domain) {
+		OutingTimeOfDailyPerformanceDto dto = new OutingTimeOfDailyPerformanceDto();
+		if (domain != null) {
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),

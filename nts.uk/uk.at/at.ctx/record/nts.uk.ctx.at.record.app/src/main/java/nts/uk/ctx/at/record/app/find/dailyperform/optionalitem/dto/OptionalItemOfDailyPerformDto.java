@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -41,12 +42,27 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
 		return getDto(domain, null);
 	}
+	public static OptionalItemOfDailyPerformDto getDto(String employeeID,GeneralDate ymd,AnyItemValueOfDailyAttd domain) {
+		return getDto(employeeID,ymd,domain, null);
+	}
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain, Map<Integer, OptionalItem> master) {
 		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
 		if (domain != null) {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getAnyItem().getItems(), (c) -> 
+							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static OptionalItemOfDailyPerformDto getDto(String employeeID,GeneralDate ymd,AnyItemValueOfDailyAttd domain, Map<Integer, OptionalItem> master) {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+		if (domain != null) {
+			dto.setDate(ymd);
+			dto.setEmployeeId(employeeID);
 			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
 							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
 			dto.exsistData();
@@ -59,7 +75,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getAnyItem().getItems(), (c) -> 
 							OptionalItemValueDto.from(c, getAttrFromMasterWith(master, c))));
 			dto.exsistData();
 		}

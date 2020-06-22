@@ -8,22 +8,12 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
@@ -38,12 +28,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDa
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 日別勤怠(Work)
@@ -144,8 +128,8 @@ public class IntegrationOfDaily {
 	private Optional<AnyItemValueOfDailyAttd> anyItemValue;
 	
 	//日別実績の作業別勤怠時間
-	private Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork;
-	//作業別勤怠時間: 日別勤怠の作業別勤怠時間  - dang k tim thay
+//	private Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork;
+	//作業別勤怠時間: 日別勤怠の作業別勤怠時間  - 
 		
 	//日別実績のPCログオン情報 (old)
 //	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
@@ -158,10 +142,10 @@ public class IntegrationOfDaily {
 	@Setter
 	private List<RemarksOfDailyAttd> remarks;
 	
-	//応援時刻: 日別勤怠の応援作業時間帯 -- cái gì đây
+	//応援時刻: 日別勤怠の応援作業時間帯 
 	
-	/**日別実績の勤務種別*/ // cái gì đây
-	private Optional<WorkTypeOfDailyPerformance> businessType;
+	/**日別実績の勤務種別*/ 
+//	private Optional<WorkTypeOfDailyPerformance> businessType;
 	
 
 	
@@ -171,13 +155,11 @@ public class IntegrationOfDaily {
 	 * @param workInformation 日別実績の勤務情報
 	 * @param calAttr 日別実績の計算区分
 	 * @param affiliationInfor 日別実績の所属情報
-	 * @param businessType 日別実績の勤務種別
 	 * @param pcLogOnInfo 日別実績のPCログオン情報
 	 * @param employeeError 社員の日別実績エラー一覧
 	 * @param outingTime 日別実績の外出時間帯
 	 * @param breakTime 日別実績の休憩時間帯
 	 * @param attendanceTimeOfDailyPerformance 日別実績の勤怠時間
-	 * @param attendancetimeByWork 日別実績の作業別勤怠時間
 	 * @param attendanceLeave 日別実績の出退勤
 	 * @param shortTime 日別実績の短時間勤務時間帯
 	 * @param specDateAttr 日別実績の特定日区分
@@ -186,20 +168,19 @@ public class IntegrationOfDaily {
 	 * @param editState 日別実績の編集状態
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
-	public IntegrationOfDaily(WorkInfoOfDailyPerformance workInformation, CalAttrOfDailyPerformance calAttr,
-			AffiliationInforOfDailyPerfor affiliationInfor, Optional<WorkTypeOfDailyPerformance> businessType,
-			Optional<PCLogOnInfoOfDaily> pcLogOnInfo,
-			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyPerformance> outingTime,
-			List<BreakTimeOfDailyPerformance> breakTime,
-			Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance,
-			Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork,
-			Optional<TimeLeavingOfDailyAttd> attendanceLeave, Optional<ShortTimeOfDailyAttd> shortTime,
+	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, CalAttrOfDailyAttd calAttr,
+			AffiliationInforOfDailyAttd affiliationInfor,
+			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
+			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyAttd> outingTime,
+			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
+			Optional<ShortTimeOfDailyAttd> shortTime,
 			Optional<SpecificDateAttrOfDailyAttd> specDateAttr,
 			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate, Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, Optional<TemporaryTimeOfDailyAttd> tempTime,
 			List<RemarksOfDailyAttd> remarks) {
 		super();
-		this.businessType = businessType;
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
 		this.affiliationInfor = affiliationInfor;
@@ -213,44 +194,6 @@ public class IntegrationOfDaily {
 		this.outingTime = outingTime;
 		this.breakTime = breakTime;
 		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
-		this.attendancetimeByWork = attendancetimeByWork;
-		this.attendanceLeave = attendanceLeave;
-		this.shortTime = shortTime;
-		this.specDateAttr = specDateAttr;
-		this.attendanceLeavingGate = attendanceLeavingGate;
-		this.anyItemValue = anyItemValue;
-		this.editState = editState;
-		this.tempTime = tempTime;
-		this.remarks = remarks;
-	}
-	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, CalAttrOfDailyAttd calAttr,
-			AffiliationInforOfDailyAttd affiliationInfor, Optional<WorkTypeOfDailyPerformance> businessType,
-			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
-			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
-			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
-			Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork,
-			Optional<TimeLeavingOfDailyPerformance> attendanceLeave, Optional<ShortTimeOfDailyPerformance> shortTime,
-			Optional<SpecificDateAttrOfDailyPerfor> specDateAttr,
-			Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate, Optional<AnyItemValueOfDaily> anyItemValue,
-			List<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime,
-			List<RemarksOfDailyPerform> remarks) {
-		super();
-		this.businessType = businessType;
-		this.workInformation = workInformation;
-		this.calAttr = calAttr;
-		this.affiliationInfor = affiliationInfor;
-		this.pcLogOnInfo = pcLogOnInfo;
-		if(employeeError != null) {
-			this.employeeError = new ArrayList<>(employeeError);
-		}
-		else {
-			this.employeeError = Collections.emptyList();
-		}
-		this.outingTime = outingTime;
-		this.breakTime = breakTime;
-		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
-		this.attendancetimeByWork = attendancetimeByWork;
 		this.attendanceLeave = attendanceLeave;
 		this.shortTime = shortTime;
 		this.specDateAttr = specDateAttr;
@@ -262,6 +205,9 @@ public class IntegrationOfDaily {
 	}
 	
 	
+	
+
+
 	/**
 	 * 残業時間実績超過の取得
 	 * @param attendanceItemConverter 

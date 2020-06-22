@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -48,7 +49,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	public static PCLogOnInforOfDailyPerformDto from(PCLogOnInfoOfDaily domain){
 		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
 		if (domain != null) {
-			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
+			dto.setLogonTime(ConvertHelper.mapTo(domain.getTimeZone().getLogOnInfo(),
 					(c) -> new LogonInfoDto(
 								c.getWorkNo() == null ? null : c.getWorkNo().v(),
 								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
@@ -56,6 +57,22 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static PCLogOnInforOfDailyPerformDto from(String employeeID,GeneralDate ymd,PCLogOnInfoOfDailyAttd domain){
+		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
+		if (domain != null) {
+			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
+					(c) -> new LogonInfoDto(
+								c.getWorkNo() == null ? null : c.getWorkNo().v(),
+								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
+								c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null
+					)));
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.exsistData();
 		}
 		return dto;

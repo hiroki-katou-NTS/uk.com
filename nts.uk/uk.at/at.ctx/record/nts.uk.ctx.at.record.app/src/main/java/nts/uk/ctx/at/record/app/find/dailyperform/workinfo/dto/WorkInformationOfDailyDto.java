@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -18,7 +17,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
 
 /** 日別実績の勤務情報 */
 @Data
@@ -64,6 +65,25 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (workInfo != null) {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
+			result.setActualWorkInfo(createWorkInfo(workInfo.getWorkInformation().getRecordInfo()));
+			result.setBackStraightAtr(workInfo.getWorkInformation().getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getWorkInformation().getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getWorkInformation().getGoStraightAtr().value);
+			result.setPlanWorkInfo(createWorkInfo(workInfo.getWorkInformation().getScheduleInfo()));
+			
+			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getWorkInformation().getScheduleTimeSheets()));
+			result.setDayOfWeek(workInfo.getWorkInformation().getDayOfWeek().value);
+			result.setVersion(workInfo.getVersion());
+			result.exsistData();
+		}
+		return result;
+	}
+	
+	public static WorkInformationOfDailyDto getDto(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
+		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
+		if (workInfo != null) {
+			result.setEmployeeId(employeeId);
+			result.setDate(ymd);
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
 			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState().value);
@@ -72,7 +92,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
-			result.setVersion(workInfo.getVersion());
 			result.exsistData();
 		}
 		return result;

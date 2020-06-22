@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -48,6 +49,22 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if (domain != null) {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
+			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getTimeZone().getShortWorkingTimeSheets(),
+					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
+														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
+														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
+														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
+														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+			result.exsistData();
+		}
+		return result;
+	}
+	public static ShortTimeOfDailyDto getDto(String employeeID,GeneralDate ymd,ShortTimeOfDailyAttd domain){
+		ShortTimeOfDailyDto result = new ShortTimeOfDailyDto();
+		if (domain != null) {
+			result.setEmployeeId(employeeID);
+			result.setYmd(ymd);
 			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getShortWorkingTimeSheets(),
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
