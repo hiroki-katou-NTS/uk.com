@@ -3,20 +3,92 @@
 }
 
 .ksu-001-a .target-organization {
+	width: 100%;
+	display: inline-flex;
 	padding-bottom: 5px;
 	border-bottom: 2px solid #ccc;
 }
 
 .ksu-001-a .target-organization .organization-name {
-	display: inline-block;
 	margin-left: 15px;
+	display: inline-block;
 }
 
 .ksu-001-a .target-organization .left-area,
 .ksu-001-a .target-organization .right-area {
 	width: 50%;
+	box-sizing: border-box;	
 }
 
 .ksu-001-a .target-organization .right-area {
 	text-align: right;
+}
+
+#functions-area>div {
+	display: inline-block;
+}
+
+#contents-area .ksu-popup,
+#functions-area .ksu-popup {
+	display: none;
+	position: fixed;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+#contents-area .ksu-popup.show,
+#functions-area .ksu-popup.show {
+	z-index: 9999;
+	display: block;
+}
+
+#contents-area .ksu-popup button,
+#functions-area .ksu-popup button {
+	vertical-align: middle;
+}
+
+
+#contents-area .ksu-popup .group,
+#contents-area .ksu-popup .row:not(:last-child),
+#functions-area .ksu-popup .group,
+#functions-area .ksu-popup .row:not(:last-child) {
+	padding-bottom: 10px;
+}
+
+#contents-area .ksu-popup .row button+div.text,
+#functions-area .ksu-popup .row button+div.text {
+	padding-left: 10px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#functions-area .margin-0,
+#contents-area .margin-0 {
+	margin: 0;
+}
+
+#functions-area .vacation-status button,
+#functions-area .setting-menu button {
+	min-width: 110px;
+}
+
+.ml-4 {
+	margin-left: 40px !important;
+}
+
+.ml-5 {
+	margin-left: 50px !important;
+}
+
+.d-inline {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.btn-show-use-guide {
+	width: 36px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAIAAABL1vtsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA9SURBVDhPY6jffh8P+g8B9+vxoFEjEGjUCASihhFQRRQAahhxavYsPAii6OzdNXjQqBEINGoEAlFsxN01AO3HaP0byGxEAAAAAElFTkSuQmCC');
 }

@@ -1,26 +1,27 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-const template = `
-	<div class="left-area">		
+const targetTemplate = `
+	<div class="left-area d-inline">		
 		<button data-bind="text: $i18n('KSU001_37')" />
 		<div class="organization-name" data-bind="text: 'Organization Name'"></div>
 	</div>
-	<div class="right-area">
-		<button data-bind="text: $i18n('KSU001_67')" />
+	<div class="right-area d-inline">
+		<button class="d-inline" data-bind="text: $i18n('KSU001_67')" />
+		<div class="d-inline" data-bind="component: { name: 'ksu-use-guide' }, popper: true"></div>
 	</div>
 `;
 
 @component({
 	name: 'ksu-target-organization',
-	template
+	template: targetTemplate
 })
 class KSU001ATargetOrganizationComponent extends ko.ViewModel {
-	created() {		
+	created() {
 	}
-	
+
 	mounted() {
 		const vm = this;
-		
+
 		$(vm.$el).addClass('target-organization');
 	}
 }

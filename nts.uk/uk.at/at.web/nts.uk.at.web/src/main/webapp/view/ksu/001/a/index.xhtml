@@ -10,13 +10,18 @@
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./style.css" />
+			<com:scriptfile path="./bindings/popup.js" />
+			<com:scriptfile path="./components/work-hope.js" />
+			<com:scriptfile path="./components/vacation-status.js" />
+			<com:scriptfile path="./components/setting-menu.js" />
+			<com:scriptfile path="./components/use-guide.js" />
 			<com:scriptfile path="./components/toolbar.js" />
 			<com:scriptfile path="./components/target-organization.js" />
 			<com:scriptfile path="./viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div data-bind="component: { name: 'ksu-toolbar' }"></div>
-			<div class="ksu-001-a">
+			<div id="functions-area" data-bind="component: { name: 'ksu-toolbar' }"></div>
+			<div id="contents-area" class="ksu-001-a">
 				<div data-bind="component: { name: 'ksu-target-organization' }"></div>
 			</div>
 		</ui:define>
