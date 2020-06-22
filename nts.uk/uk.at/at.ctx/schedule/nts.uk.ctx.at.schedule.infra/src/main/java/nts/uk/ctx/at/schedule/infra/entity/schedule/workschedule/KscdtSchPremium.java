@@ -9,33 +9,29 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 勤務予定の出退勤時刻
+ * 勤務予定の割増時間
  * UKDesign.データベース.ER図.就業.勤務予定.勤務予定.勤務予定
- * @author HieuLt
+ * @author kingo
  *
  */
 @Entity
 @NoArgsConstructor
-@Table(name="KSCDT_SCH_ATD_LVW_TIME")
-public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
+@Table(name="KSCDT_SCH_PREMIUM")
+public class KscdtSchPremium extends ContractUkJpaEntity{
 	
 	@EmbeddedId
-	public KscdtSchAtdLvwTimePK pk;
-
+	public KscdtSchPremiumPK pk;
 	/** 会社ID **/
 	@Column(name = "CID")
 	public String cid;
 	
-	/** 出勤時刻 **/
-	@Column(name = "ATD_CLOCK")
-	public int atdClock;
-	
-	/** 退勤時刻**/
-	@Column(name = "LWK_CLOCK")
-	public int lwkClock;
+	/** 割増時間 **/
+	@Column(name = "PREMIUM_TIME")
+	public int premiumTime;
+
 	@Override
 	protected Object getKey() {
-
 		return this.pk;
 	}
+
 }

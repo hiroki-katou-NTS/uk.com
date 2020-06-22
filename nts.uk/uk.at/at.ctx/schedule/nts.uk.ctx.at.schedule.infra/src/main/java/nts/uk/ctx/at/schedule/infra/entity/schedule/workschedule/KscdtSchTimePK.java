@@ -20,10 +20,10 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KscdtSchAtdLvwTimePK implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+public class KscdtSchTimePK implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	/** 社員ID **/
 	@Basic(optional = false)
 	@NotNull
@@ -35,10 +35,5 @@ public class KscdtSchAtdLvwTimePK implements Serializable{
 	@NotNull
 	@Column(name = "YMD")
 	public GeneralDate ymd;
-	
-	/** 勤務NO **/
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "WORK_NO")
-	public int workNo;
+
 }

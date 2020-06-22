@@ -16,11 +16,13 @@ import nts.arc.time.GeneralDate;
  * @author HieuLt
  *
  */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KscdtSchAtdLvwTimePK implements Serializable{
+public class KscdtSchBonusPayPK implements Serializable {
+
 	
 	private static final long serialVersionUID = 1L;
 
@@ -36,9 +38,16 @@ public class KscdtSchAtdLvwTimePK implements Serializable{
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 	
-	/** 勤務NO **/
+	/**BONUSPAY_TYPE**/
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WORK_NO")
-	public int workNo;
+	@Column(name = "BONUSPAY_TYPE")
+	public int bonuspayType;
+	
+	/** 事前申請時間 **/
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "FRAME_NO")
+	public int frameNo;
+	
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.calendar.DateInMonth;
 
 /**
@@ -11,7 +12,7 @@ import nts.arc.time.calendar.DateInMonth;
  *
  */
 @AllArgsConstructor
-public class WorkScheDisplaySetting {
+public class WorkScheDisplaySetting implements DomainAggregate {
 	@Getter
 	/** 会社ID **/ 
 	private final String companyID;
