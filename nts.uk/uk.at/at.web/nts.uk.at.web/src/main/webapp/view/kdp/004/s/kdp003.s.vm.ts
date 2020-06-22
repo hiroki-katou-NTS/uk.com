@@ -96,13 +96,13 @@ module kdp003.s.vm {
             let sid = __viewContext.user.employeeId;
             service.getAllStampingResult(sid).done(function(data) {
                 _.forEach(data, (a) => {
-                    let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampDate', 'stampTime'], ['desc', 'desc']);
+                    let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampDate', 'stampTime'], ['asc', 'asc']);
                     _.forEach(items, (sr) => {
                         self.listStampRecord.push(sr);
                     });
                 });
                 if (_.size(self.listStampRecord()) > 0) {
-                    self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampDate', 'stampTime'], ['desc', 'desc']));
+                    self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampDate', 'stampTime'], ['asc', 'asc']));
                     _.forEach(self.listStampRecord(), (sr) => {
                         let changeClockArtDisplay = "<div class='full-width' style='text-align: center'> " + sr.stampArtName + " </div>";
                         if (sr.changeClockArt == 0) {

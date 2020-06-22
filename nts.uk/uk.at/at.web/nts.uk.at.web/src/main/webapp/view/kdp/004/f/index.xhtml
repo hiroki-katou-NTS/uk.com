@@ -13,6 +13,10 @@
 					height : 280
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.company.dom.company.CompanyCode
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdp003.f.style.css" />
 			<com:scriptfile path="kdp003.f.service.js" />
@@ -49,9 +53,10 @@
 						<tr style="height: 50px" data-bind="visible : inputCompanyCodeMode ">
 							<td><div id = 'f1_11' data-bind="text: '#{i18n.getText('KDP003_3')}'"></div></td>
 							<td id = 'f1_3' class="pad_5" style="padding-left: 10px"><div>
-									<input tabindex="2" id="employee-code-inp"
+									<input tabindex="2" id="employee-code-inp-1"
 										data-bind="ntsTextEditor: {
 										name: '',
+										constraint: 'CompanyCode',
 										value: inputCompanyCode ,
 										required: false,
 										option: {textmode: 'text',width: '115px'},
@@ -70,9 +75,10 @@
 						<tr style="height: 45px" data-bind="visible : selectIdMode ">
 							<td><div id = 'f2_1' data-bind="text: '#{i18n.getText('KDP003_4')}'"></div></td>
 							<td id = 'f2_2' class="pad_5" style="padding-left: 10px"><div>
-									<input tabindex="2" id="employee-code-inp"
+									<input tabindex="2" id="employee-code-inp-2"
 										data-bind="ntsTextEditor: {
 										name: '',
+										constraint: 'EmployeeCode',
 										value: employeeCodeInput ,
 										required: false,
 										option: {textmode: 'text',width: '230px'},
@@ -102,7 +108,7 @@
 								</div></td>
 						</tr>
 					</table>
-					<div style = "margin-top: 10px">
+					<div  id="f20" style = "margin-top: 10px">
 						<button tabindex="5" id='f20_1' style="width : 180px" class="proceed x-large" data-bind="click: submitLogin">#{i18n.getText('KDP003_6')}</button>
 						<button tabindex="5" id='f20_2' style="margin-left: 120px; width : 100px" class="large" data-bind="click: cancelLogin">#{i18n.getText('KDP003_7')}</button>
 					</div>

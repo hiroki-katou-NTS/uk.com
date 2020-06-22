@@ -31,6 +31,15 @@ module kdp003.k.vm {
 
         constructor() {
             let self = this;
+            
+            var currentDialog = nts.uk.ui.windows.getSelf();
+            if (self.singleSelectMode()) {
+                currentDialog.setWidth(510);
+                $("#tree-grid").css("width", "455px");
+            } else if (self.multipleSelectMode()) {
+                currentDialog.setWidth(575);
+                $("#tree-grid").css("width", "520px");
+            }
 
             self.baseDate = ko.observable(new Date());
             self.multiSelectedId = ko.observableArray([]);
@@ -56,7 +65,6 @@ module kdp003.k.vm {
             self.jsonData = ko.observable('');
             self.rowSelected = ko.observable(new RowSelection('', ''));
             self.isBindingTreeGrid = ko.observable(true);
-            
         }
         
         selectWorkPlace() {
@@ -142,7 +150,6 @@ module kdp003.k.vm {
     export class RowSelection {
         workplaceId: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
-
         constructor(workplaceId: string, workplaceCode: string) {
             let self = this;
             self.workplaceId = ko.observable(workplaceId);

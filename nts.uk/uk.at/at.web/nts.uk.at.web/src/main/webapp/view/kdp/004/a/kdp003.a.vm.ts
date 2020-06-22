@@ -43,16 +43,21 @@ module nts.uk.at.view.kdp003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 console.log('start ' + infoAdministrator);
+                
+                
+                
+                /*dfd.resolve();
                 if (infoAdministrator) {
                     self.administratorMode = true;
                 } else {
                     self.administratorMode = false;
-                    subModal('/view/kdp/004/f/index.xhtml', { title: '' }).onClosed(() => {
-                        dfd.resolve();
+                    subModal('/view/kdp/004/k/index.xhtml', { title: '' }).onClosed(() => {
+                        
                     });
-                }
-
-                /*service.startPage().done((res: IStartPage) => {
+                };*/
+                
+                
+                service.startPage().done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res));
@@ -70,7 +75,7 @@ module nts.uk.at.view.kdp003.a {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
-                    });*/
+                    })
 
                 return dfd.promise();
             }
