@@ -9,7 +9,7 @@ public class StampCardTest {
 
 	@Test
 	public void getter() {
-		StampCard stampCard = new StampCard("DUMMY", new ContractCode("DUMMY"), new StampNumber("DUMMY"), "DUMMY", GeneralDate.today());
+		StampCard stampCard = new StampCard( new ContractCode("DUMMY"), new StampNumber("DUMMY"), "DUMMY", GeneralDate.today(), "DUMMY");
 		NtsAssert.invokeGetters(stampCard);
 	}
 

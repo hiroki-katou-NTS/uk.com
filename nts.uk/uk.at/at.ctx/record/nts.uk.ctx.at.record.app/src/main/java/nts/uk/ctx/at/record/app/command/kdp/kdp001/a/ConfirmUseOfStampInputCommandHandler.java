@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
@@ -66,13 +67,13 @@ public class ConfirmUseOfStampInputCommandHandler
 
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
-	
+
 	@Inject
 	private StampRecordRepository stampRecordRepo;
-	
+
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
-	
+
 	@Inject
 	private CreateDailyResultDomainService createDailyResultDomainSv;
 
@@ -119,16 +120,16 @@ public class ConfirmUseOfStampInputCommandHandler
 
 		@Inject
 		private EmployeeRecordAdapter sysEmpPub;
-		
+
 		@Inject
 		private StampRecordRepository stampRecordRepo;
-		
+
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
-		
+
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
-		
+
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
 			return this.sysEmpPub.findBySidNotDel(sids);
@@ -141,12 +142,7 @@ public class ConfirmUseOfStampInputCommandHandler
 
 		@Override
 		public Optional<StampCardEditing> get(String companyId) {
-			return this.stampCardEditRepo.get(companyId);
-		}
-
-		@Override
-		public Optional<StampCard> get(String contractCode, String stampNumber) {
-			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
+			return Optional.ofNullable(this.stampCardEditRepo.get(companyId));
 		}
 
 		@Override
@@ -178,7 +174,14 @@ public class ConfirmUseOfStampInputCommandHandler
 		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
 				Optional<ExecutionLog> executionLog) {
-			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr, companyId, empCalAndSumExecLogID, executionLog);
+			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
+					companyId, empCalAndSumExecLogID, executionLog);
+		}
+
+		@Override
+		public Optional<Stamp> get(String contractCode, String stampNumber) {
+
+			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
 		}
 
 	}

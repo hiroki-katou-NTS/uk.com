@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,8 +10,11 @@ import nts.arc.time.GeneralDate;
  *
  */
 @AllArgsConstructor
+@Data
 public class RegisterStampInputResult {
-
-	private Optional<GeneralDate> reflectDate;
+	/**
+	 * 反映対象日
+	 */
+	private GeneralDate reflectDate;
 
 }

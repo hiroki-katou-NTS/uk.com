@@ -51,7 +51,11 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStamp s "
 			+ " where s.contractCd = :contractCode" + " and s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
-
+	
+	private static final String GET_STAMP_RECORD_BY_NUMBER = "select s from KrcdtStamp s "
+			+ " where s.contractCd = :contractCode" + " and s.pk.cardNumber = :cardNumbers " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+	
+	
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
 			+ " where k.cardNo is NULL " +" and s.contractCd = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
@@ -292,6 +296,13 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				.getList(x -> toDomainVer3(x)));
 		});
 		return data;
+	}
+
+	@Override
+	public Optional<Stamp> get(String contractCode, StampNumber stampNumber) {
+		
+		return this.queryProxy().query(GET_STAMP_RECORD_BY_NUMBER, KrcdtStamp.class).setParameter("contractCode", contractCode)
+				.setParameter("cardNumbers", stampNumber).getSingle(x -> toDomain(x));
 	}
 
 }

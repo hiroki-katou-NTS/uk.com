@@ -26,6 +26,11 @@ const notUseMessage = [
 	{ text: "Msg_1645", value: 2 },
 	{ text: "Msg_1619", value: 3 }
 ]
+
+const Mode = {
+	Personal: 1, // 個人
+	Shared: 2  // 共有 
+}
 @bean()
 class KDP001AViewModel extends ko.ViewModel {
 
@@ -194,22 +199,24 @@ class KDP001AViewModel extends ko.ViewModel {
 							vm.systemDate(moment.utc());
 
 							this.$ajax(requestUrl.getStampToSuppress).then((data) => {
+
 								vm.buttonSetting(new StampToSuppress(data));
 								vm.countTime(0);
 							});
 
 							console.log('Reset Time');
 						} else {
+
 							vm.systemDate(vm.systemDate().add(1, 'seconds'));
 							vm.countTime(vm.countTime() + 1);
 							console.log('Add Time: ' + vm.countTime());
+
 						}
 					}, 1000);
 				}
 			});
 
 			let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
-
 
 			vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
 
@@ -234,11 +241,21 @@ class KDP001AViewModel extends ko.ViewModel {
 
 				}
 			});
+			vm.getStampToSuppress();
 
-			this.$ajax(requestUrl.getStampToSuppress).then((data) => {
-				vm.buttonSetting(new StampToSuppress(data));
-			});
 		});
+	}
+
+	public getStampToSuppress() {
+		let vm = this;
+		this.$ajax(requestUrl.getStampToSuppress).then((data) => {
+			vm.buttonSetting(new StampToSuppress(data));
+		});
+	}
+
+	public toTopPage() {
+		let vm = this;
+		vm.$jump("/view/ccg/008/a/index.xhtml");
 	}
 
 	public checkEnableButton(data: IButtonSettingsDto) {
@@ -306,7 +323,7 @@ class KDP001AViewModel extends ko.ViewModel {
 	}
 
 	public stamp(vm, data) {
-		
+
 		let cmd: IRegisterStampInputCommand = {
 			datetime: vm.systemDate(),
 			buttonPositionNo: data.buttonPositionNo,
@@ -319,44 +336,110 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		};
 
-		if (data.buttonPositionNo != 3 && data.buttonPositionNo != 4) {
-			this.$ajax(requestUrl.registerStampInput, cmd).then(() => {
 
-			});
-		} else {
+		this.$ajax(requestUrl.registerStampInput, cmd).then((result) => {
 			switch (data.buttonPositionNo) {
 				case 3:
-					vm.openDialogC();
+					vm.openDialogC(result);
 					break;
 				case 4:
-					vm.openDialogB();
+					vm.openDialogB(result);
 					break;
 			}
+		});
 
-		}
+
+
+
 
 	}
 
-	public openDialogB() {
+	public openDialogB(dateParam) {
 
 		let vm = this;
 
+		nts.uk.ui.windows.setShared("infoEmpToScreenB", {
+			employeeId: vm.$user.employeeId,
+			employeeCode: vm.$user.employeeCode,
+			mode: Mode.Personal,
+		});
 		nts.uk.ui.windows.sub.modal('/view/cps/002/b/index.xhtml').onClosed(function(): any {
-			vm.$ajax(requestUrl.getEmployeeStampData).then((data) => {
-				vm.stampDatas(data.listStampInfoDisp);
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 4 }).then((res) => {
+				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
+					vm.$window.storage('KDP010_2T', res);
+
+					vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+
+						vm.$window.storage('KDP010_T')
+							.then((returnData: any) => {
+								if (!returnData.isClose && returnData.errorDate) {
+
+									let transfer = returnData.btn.transfer;
+									nts.uk.request.jump(returnData.btn.screen, transfer);
+								}
+							});
+						vm.reLoadStampDatas();
+						vm.getStampToSuppress();
+					});
+				} else {
+					vm.reLoadStampDatas();
+					vm.getStampToSuppress();
+				}
 			});
 		});
 	}
 
-	public openDialogC() {
+	public openDialogC(dateParam) {
 		let vm = this;
 
-		nts.uk.ui.windows.sub.modal('/view/cps/002/c/index.xhtml').onClosed(function(): any {
-			vm.$ajax(requestUrl.getEmployeeStampData).then((data) => {
-				vm.stampDatas(data.listStampInfoDisp);
+		nts.uk.ui.windows.setShared('KDP010_2C', dateParam);
 
+		nts.uk.ui.windows.setShared("infoEmpToScreenB", {
+			employeeId: vm.$user.employeeId,
+			employeeCode: vm.$user.employeeCode,
+			mode: Mode.Personal,
+		});
+
+		vm.$window.modal('/view/cps/002/c/index.xhtml').then(function(): any {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 3 }).then((res) => {
+				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+
+					vm.$window.storage('KDP010_2T', res);
+
+					vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+
+						vm.$window.storage('KDP010_T')
+							.then((returnData: any) => {
+								if (!returnData.isClose && returnData.errorDate) {
+
+									let transfer = returnData.btn.transfer;
+									nts.uk.request.jump(returnData.btn.screen, transfer);
+								}
+							});
+						vm.reLoadStampDatas();
+						vm.getStampToSuppress();
+					});
+				} else {
+					vm.reLoadStampDatas();
+					vm.getStampToSuppress();
+				}
 			});
+
+
+
+		});
+	}
+
+	public reLoadStampDatas() {
+		let vm = this;
+		let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
+		vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
+			let items = _.flatMap(data, 'listStampInfoDisp');
+
+			items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
+
+			vm.stampDatas(items || []);
 		});
 	}
 

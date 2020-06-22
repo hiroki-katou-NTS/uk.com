@@ -7,8 +7,10 @@ import java.util.Optional;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 
 /**
  * @author sonnlb
@@ -118,7 +120,7 @@ public class AutoCreateStampCardNumberService {
 		}
 		// $登録済カード = require.打刻カードを取得する(契約コード, $打刻カード番号)
 
-		Optional<StampCard> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
+		Optional<Stamp> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
 
 		// if not $登録済カード.isEmpty
 		if (stampOpt.isPresent()) {

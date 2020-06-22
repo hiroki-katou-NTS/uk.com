@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,6 +134,8 @@ public class CreateStampDataForEmployeesService {
 		 */
 		List<StampCard> getListStampCard(String sid);
 	}
+
+	
 
 	
 

@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.assertj.core.util.Arrays;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;

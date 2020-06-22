@@ -9,15 +9,21 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
+import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -39,8 +45,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
@@ -84,6 +93,12 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	private PortalStampSettingsRepository portalStampSettingsrepo;
+	
+	@Inject
+	private StampUsageRepository stampUsageRepo;
+
+	@Inject
+	private CreateDailyResultDomainService createDailyResultDomainSv;
 
 	// 
 	public KDP002AStartPageOutput getSettings() {
@@ -91,7 +106,8 @@ public class StampSettingsEmbossFinder {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
-		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampCardRepo);
+		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampUsageRepo,
+				stampCardRepo, stampRecordRepo, stampDakokuRepo, createDailyResultDomainSv);
 		
 		//TODO: Chungnt
 //		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
@@ -266,7 +282,19 @@ public class StampSettingsEmbossFinder {
 	private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
 		
 		@Inject
+		private StampUsageRepository stampUsageRepo;
+		
+		@Inject
 		private StampCardRepository stampCardRepo;
+		
+		@Inject
+		private StampRecordRepository stampRecordRepo;
+
+		@Inject
+		private StampDakokuRepository stampDakokuRepo;
+
+		@Inject
+		private CreateDailyResultDomainService createDailyResultDomainSv;
 		
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -289,18 +317,37 @@ public class StampSettingsEmbossFinder {
 		}
 
 		@Override
-		public Optional<StampCard> get(String contractCode, String stampNumber) {
-			return null;
-		}
-
-		@Override
 		public void add(StampCard domain) {
 			
 		}
 
 		@Override
 		public Optional<SettingsUsingEmbossing> get() {
-			return null;
+			return this.stampUsageRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public void insert(StampRecord stampRecord) {
+			this.stampRecordRepo.insert(stampRecord);
+			
+		}
+
+		@Override
+		public void insert(Stamp stamp) {
+			this.stampDakokuRepo.insert(stamp);
+		}
+
+		@Override
+		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
+				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
+				Optional<ExecutionLog> executionLog) {
+			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
+					companyId, empCalAndSumExecLogID, executionLog);
+		}
+
+		@Override
+		public Optional<Stamp> get(String contractCode, String stampNumber) {
+			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
 		}
 		
 	}

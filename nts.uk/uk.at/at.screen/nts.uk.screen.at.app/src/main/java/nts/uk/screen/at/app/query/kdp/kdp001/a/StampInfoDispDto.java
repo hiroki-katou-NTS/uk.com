@@ -37,6 +37,6 @@ public class StampInfoDispDto {
 		
 		return new StampInfoDispDto(domain.getStampNumber() != null ? domain.getStampNumber().v() : null,
 				domain.getStampDatetime(), domain.getStampAtr(),
-				domain.getStamp().isPresent() ? StampInfoDto.fromDomain(domain.getStamp().get()) : null);
+				!domain.getStamp().isEmpty() ? StampInfoDto.fromDomain(domain.getStamp().get(0)) : null);
 	}
 }

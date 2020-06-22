@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
@@ -23,16 +24,21 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateDailyResultsStamps;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPortalService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStamping;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
@@ -74,6 +80,9 @@ public class RegisterStampInputCommandHandler
 
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
+	
+	@Inject
+	private CreateDailyResultsStamps createDailyStamp;
 
 	@Override
 	protected RegisterStampInputResult handle(CommandHandlerContext<RegisterStampInputCommand> context) {
@@ -120,7 +129,39 @@ public class RegisterStampInputCommandHandler
 			atomResult.run();
 		});
 
-		return new RegisterStampInputResult(inputResult.getStampDataReflectResult().getReflectDate());
+		Optional<GeneralDate> refDateOpt = inputResult.getStampDataReflectResult().getReflectDate();
+		
+		CreateDailyResultsStampsRequireImpl resultStampRequire =  new CreateDailyResultsStampsRequireImpl();
+		
+		this.createDailyStamp.create(resultStampRequire, AppContexts.user().companyId(), employeeID,
+				Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
+		
+		return new RegisterStampInputResult(refDateOpt.isPresent() ? refDateOpt.get() : null);
+	}
+	
+	
+	@AllArgsConstructor
+	private class CreateDailyResultsStampsRequireImpl implements CreateDailyResultsStamps.Require{
+		@Override
+		public List<ErrorMessageInfo> getListError(String companyID, String employeeId, DatePeriod period,
+				int reCreateAtr, int i, EmpCalAndSumExeLog empCalAndSumExeLog, int i1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void insert(TopPageAlarmStamping domain) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
 	}
 
 	@AllArgsConstructor
@@ -165,11 +206,6 @@ public class RegisterStampInputCommandHandler
 		}
 
 		@Override
-		public Optional<StampCard> get(String contractCode, String stampNumber) {
-			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
-		}
-
-		@Override
 		public void add(StampCard domain) {
 			this.stampCardRepo.add(domain);
 		}
@@ -193,14 +229,19 @@ public class RegisterStampInputCommandHandler
 		}
 
 		@Override
-		public Optional<PortalStampSettings> getPortalStampSettings(String comppanyID) {
-			return this.settingRepo.get(comppanyID);
+		public Optional<StampCardEditing> get(String companyId) {
+			return Optional.ofNullable(this.stampCardEditRepo.get(companyId));
+
 		}
 
 		@Override
-		public Optional<StampCardEditing> get(String companyId) {
-			return this.stampCardEditRepo.get(companyId);
+		public Optional<PortalStampSettings> getPortalStampSetting() {
+			return this.settingRepo.get(AppContexts.user().companyId());
+		}
 
+		@Override
+		public Optional<Stamp> get(String contractCode, String stampNumber) {
+			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
 		}
 
 	}
