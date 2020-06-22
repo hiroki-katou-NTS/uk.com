@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
+import { KDL002Component } from '../../../kdl/002';
 import {
     KafS00AComponent,
     KafS00BComponent,
@@ -15,24 +16,27 @@ import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
     validations: {
         valueWorkHours1: {
             timeRange: true,
-            require: true
+            required: true
         },
         valueWorkHours2: {
             timeRange: true,
-            require: true
+            required: true
         }
     },
     constraints: [],
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
-        'kafs00-c': KafS00CComponent
+        'kafs00-c': KafS00CComponent,
+        'worktype': KDL002Component
     }
 })
 export class KafS07AComponent extends Vue {
     public title: string = 'KafS07A';
 
     public app: AppWorkChange;
+
+    public mode: String = 'create';
 
     public worktype: Work = new Work();
 
@@ -103,10 +107,60 @@ export class KafS07AComponent extends Vue {
             this.valueWorkHours2.start + ' ~ ' + this.valueWorkHours2.end,
             this.switchbox1 == 1,
             this.switchbox2 == 1
-            );
+        );
 
         console.log(this.app);
     }
+
+    // visible/ invisible
+    // A2_1
+
+    // A4_3  「勤務変更申請の表示情報．就業時間帯の必須区分」が「必須」または「任意」
+    public isDisplay1() {
+        return true;
+
+    }
+    // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
+    public isDisplay2() {
+        return true;
+
+    }
+    // A6_1 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
+    public isDisplay3() {
+        return true;
+    }
+
+    // 「勤務変更申請の表示情報．勤務変更申請設定．勤務時間の初期表示」が「空白」 => clear data
+    // 「勤務変更申請の表示情報．勤務変更申請設定．勤務時間の初期表示」が「定時」=> transfer from data
+    public isDisplay4() {
+        return true;
+
+    }
+    // Display error message
+    // UI処理【1】
+    public isDisplay5() {
+        return true;
+
+    }
+    // handle message dialog
+
+    public openKDL002() {
+        this.$modal(
+            'worktype',
+            {
+                seledtedWkTypeCDs: ['001', '02', '03'],
+                selectedWorkTypeCD: '001',
+                seledtedWkTimeCDs: ['112', '001', '13'],
+                selectedWorkTimeCD: '001',
+                isSelectWorkTime: true,
+            }
+        ).then((data: any) => {
+            
+        }).catch((res: any) => {
+            this.$modal.error({ messageId: res.messageId });
+        });
+    }
+
 }
 export class Work {
     public code: String = '';
@@ -115,6 +169,13 @@ export class Work {
 
     }
 
+}
+// data that is fetched server 
+export class Model extends AppWorkChange {
+
+    constructor(workType: String, workTime: String, workHours1: String, workHours2: String, straight: boolean, bounce: boolean) {
+        super(workType, workTime, workHours1, workHours2, straight, bounce);
+    }
 }
 
 const API = {

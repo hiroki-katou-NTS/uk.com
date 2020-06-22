@@ -18,7 +18,19 @@ export class CmmS45ComponentsApp2Component extends Vue {
     public created(params: any) {
         // this.params = params;
     }
+    // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする ※1
+    // @Watch
+    public isDisplay1() {
+        return true;
+    }
+    // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
+    // @Watch
+    public isDisplay2() {
+        return true;
+    }
+
 }
+// dto 
 export class AppWorkChange {
 
     public workType: String;

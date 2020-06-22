@@ -29,21 +29,19 @@
       <div class="card-body">
         <!-- A4_2 -->
         <span class="textSize">{{'KAFS07_3' | i18n}}</span>
-        <button type="button" class="btn btn-selection mt-2 mb-2">
+        <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
           <!-- A4_2_1 -->
           <span class="badge badge-secondary textSize">{{worktype.code}}</span>
-          <!-- A4_2_2 -->
           <span>{{worktype.name}}</span>
         </button>
 
         <!-- A4_3 -->
         <span class="textSize">{{'KAFS07_4' | i18n}}</span>
-        <button type="button" class="btn btn-selection mt-2 mb-2">
+        <button type="button" v-bind:enable="isDisplay1()" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
           <!-- A4_3_1 -->
           <span class="badge badge-secondary textSize">{{worktime.code}}</span>
-          <!-- A4_3_2 -->
           <span>{{worktime.name}}</span>
-          <!-- A4_3_3 -->
+          <!-- A4_3_2 -->
           <span class="d-block mt-1">09:30~17:30</span>
         </button>
       </div>
@@ -68,11 +66,11 @@
 
     <div class="card card-label">
       <!-- A6_1 -->
-      <div class="card-header uk-bg-accordion">
+      <div v-if="isDisplay3()" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_6' | i18n}}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div class="card-body">
+      <div v-if="isDisplay3()" v-bind:enable="isDisplay1()" class="card-body">
           <nts-time-range-input v-model="valueWorkHours1"/>
       </div>
     </div>
@@ -80,16 +78,20 @@
 
     <div class="card card-label">
       <!-- A7_1 -->
-      <div class="card-header uk-bg-accordion">
+      <div v-if="isDisplay2()" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_7' | i18n}}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div class="card-body">
+      <!-- A7_2 -->
+      <div v-if="isDisplay2()" v-bind:enable="isDisplay3()" class="card-body">
           <nts-time-range-input v-model="valueWorkHours2"/>
       </div>
     </div>
     <!-- display text by  ※1-->
-    <button type="button" class="btn btn-primary btn-block">{{'KAFS07_8' | i18n}}</button>
+    <!-- 画面モード = 新規モード -->
+    <button v-if="mode == 'create'" type="button" class="btn btn-primary btn-block">{{'KAFS07_8' | i18n}}</button>
+    <!-- 画面モード = 編集モード -->
+    <button v-else type="button" class="btn btn-primary btn-block">{{'KAFS07_16' | i18n}}</button>
 
 
 
