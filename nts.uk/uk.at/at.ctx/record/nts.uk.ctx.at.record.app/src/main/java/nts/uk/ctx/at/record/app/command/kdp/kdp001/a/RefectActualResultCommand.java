@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -10,6 +12,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  * @author sonnlb
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
 public class RefectActualResultCommand {
 	@Getter
 	private String cardNumberSupport;

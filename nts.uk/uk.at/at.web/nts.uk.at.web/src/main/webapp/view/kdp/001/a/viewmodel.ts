@@ -220,7 +220,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 			vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
 
-				let items = _.flatMap(data, 'listStampInfoDisp');
+				let items = nts.uk.util.flatArray(data, 'listStampInfoDisp');
 
 				items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
 
@@ -393,12 +393,13 @@ class KDP001AViewModel extends ko.ViewModel {
 	public openDialogC(dateParam) {
 		let vm = this;
 
-		nts.uk.ui.windows.setShared('KDP010_2C', dateParam);
+		nts.uk.ui.windows.setShared('KDP010_2C', []);
 
-		nts.uk.ui.windows.setShared("infoEmpToScreenB", {
+		nts.uk.ui.windows.setShared("infoEmpToScreenC", {
 			employeeId: vm.$user.employeeId,
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
+			stampDate: dateParam
 		});
 
 		vm.$window.modal('/view/cps/002/c/index.xhtml').then(function(): any {
@@ -435,7 +436,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		let vm = this;
 		let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
 		vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
-			let items = _.flatMap(data, 'listStampInfoDisp');
+			let items = nts.uk.util.flatArray(data, 'listStampInfoDisp');
 
 			items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
 

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -9,6 +11,8 @@ import nts.arc.time.GeneralDateTime;
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterStampInputCommand {
 	/**
 	 * 打刻日時
