@@ -156,13 +156,15 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				stamp.getLocationInfor().isPresent()
-						? new BigDecimal( stamp.getLocationInfor().get().getPositionInfor().getLongitude())
+				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
+						? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude())
 						: null,
-				stamp.getLocationInfor().isPresent()
+				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
 						? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude())
 						: null,
-				stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
+				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
+						? stamp.getLocationInfor().get().isOutsideAreaAtr()
+						: null);
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
