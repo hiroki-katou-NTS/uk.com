@@ -223,12 +223,6 @@ public class RegisterStampInputCommandHandler
 		}
 
 		@Override
-		public Optional<StampCardEditing> get(String companyId) {
-			return Optional.ofNullable(this.stampCardEditRepo.get(companyId));
-
-		}
-
-		@Override
 		public Optional<PortalStampSettings> getPortalStampSetting() {
 			return this.settingRepo.get(AppContexts.user().companyId());
 		}
@@ -236,6 +230,13 @@ public class RegisterStampInputCommandHandler
 		@Override
 		public Optional<Stamp> get(String contractCode, String stampNumber) {
 			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		}
+
+		@Override
+		public Optional<StampCardEditing> get(String companyId) {
+
+			StampCardEditing stampCardEdit = this.stampCardEditRepo.get(companyId);
+			return Optional.ofNullable(stampCardEdit);
 		}
 
 	}
