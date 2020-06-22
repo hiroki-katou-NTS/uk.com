@@ -85,9 +85,20 @@ public class RouteConfirmStatusPhases {
 			int basePhaseOrder,
 			List<AppPhaseConfirm> confirmPhases) {
 		
-		return confirmPhases.stream()
-				.filter(p -> p.getPhaseOrder() < basePhaseOrder)
+		Integer maxConfirmPhase = confirmPhases.stream().mapToInt(x -> x.getPhaseOrder())
+				.max().orElse(0);
+		if(basePhaseOrder > maxConfirmPhase + 1) {
+			return false;
+		}
+		
+		List<AppPhaseConfirm> below = confirmPhases.stream()
+				.filter(p -> p.getPhaseOrder() < basePhaseOrder).collect(Collectors.toList());
+		
+		boolean approved = below.stream()
 				.allMatch(p -> p.getAppPhaseAtr() == ApprovalBehaviorAtr.APPROVED);
+		
+		return approved;
+				
 	}
 	
 	/**
@@ -98,7 +109,7 @@ public class RouteConfirmStatusPhases {
 	public boolean canApprove(String approverId, List<String> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId))
+				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
 				.anyMatch(p -> p.canApprove(approverId, representRequesterIds));
 	}
 	
@@ -117,11 +128,18 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedBy(String approverId) {
+	public boolean hasApprovedBy(String approverId, List<String> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId))
-				.anyMatch(p -> p.hasApprovedBy(approverId));
+				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
+				.anyMatch(p -> p.hasApprovedBy(approverId) || p.hasApprovedBy(representRequesterIds));
+	}
+	
+	public boolean hasApproved(String approverId, List<String> representRequesterIds) {
+		return phases.stream()
+				.filter(x -> x.isInProgress())
+				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
+				.anyMatch(p -> p.hasApproved());
 	}
 	
 	/**
