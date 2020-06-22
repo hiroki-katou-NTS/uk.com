@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStamping;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStampingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
@@ -83,6 +84,9 @@ public class RegisterStampInputCommandHandler
 
 	@Inject
 	private StampCardEditingRepo stampCardEditRepo;
+	
+	@Inject
+	private TopPageAlarmStampingRepository topPageRepo;
 
 	@Override
 	protected RegisterStampInputResult handle(CommandHandlerContext<RegisterStampInputCommand> context) {
@@ -134,7 +138,7 @@ public class RegisterStampInputCommandHandler
 		Optional<GeneralDate> refDateOpt = inputResult.getStampDataReflectResult().getReflectDate();
 		
 		//打刻入力から日別実績を作成する (Tạo thực tế hàng ngày từ input check tay)
-		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl();
+		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl(topPageRepo);
 
 		CreateDailyResultsStamps.create(resultStampRequire, AppContexts.user().companyId(), employeeID,
 				Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
@@ -147,6 +151,9 @@ public class RegisterStampInputCommandHandler
 	
 	@AllArgsConstructor
 	private class CreateDailyResultsStampsRequireImpl implements CreateDailyResultsStamps.Require {
+		
+		@Inject
+		private TopPageAlarmStampingRepository topPageRepo;
 
 		@Override
 		public List<ErrorMessageInfo> getListError(String companyID, String employeeId, DatePeriod period,
@@ -157,8 +164,7 @@ public class RegisterStampInputCommandHandler
 
 		@Override
 		public void insert(TopPageAlarmStamping domain) {
-			// TODO Auto-generated method stub
-
+			this.topPageRepo.insert(domain);
 		}
 
 		@Override

@@ -2,7 +2,7 @@
 
 .button-big {
 	width: 65px;
-	height: 75px;
+	height: 80px;
 	text-align: center;
 	vertical-align: middle;
 	white-space: normal;
@@ -66,8 +66,10 @@
 }
 
 .button-small {
-	width: 35px;
-	height: 35px;
+	min-width: 35px;
+	min-height: 45px;
+	max-width: 45px;
+    max-height: 50px;
 	text-align: center;
 	vertical-align: middle;
 	white-space: normal;
@@ -122,4 +124,9 @@
 	background-color: #d9d9d9 !important;
 	cursor: default !important;
 	color: #888888 !important;
+}
+
+.notUsed{
+	background-color: #0033cc !important;
+	color: #ffffff !important;
 }

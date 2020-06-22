@@ -31,6 +31,11 @@ const Mode = {
 	Personal: 1, // 個人
 	Shared: 2  // 共有 
 }
+
+const daysColor = [
+	{ day: 0, color: '#FF0000' },
+	{ day: 6, color: '#0000FF' }
+]
 @bean()
 class KDP001AViewModel extends ko.ViewModel {
 
@@ -194,6 +199,15 @@ class KDP001AViewModel extends ko.ViewModel {
 		}).always(() => {
 			this.$blockui("clear");
 		});
+	}
+
+	public getDateColor(data: IStampInfoDisp) {
+
+		let day = moment.utc(data.stampDatetime).day(),
+
+			dayColor = _.find(daysColor, ['day', day]);
+
+		return dayColor ? dayColor.color : '#000000';
 	}
 
 	public getStampToSuppress() {

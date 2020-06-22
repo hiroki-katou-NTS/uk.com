@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.toppagealarm.KrcdtTopAlStamp;
@@ -9,7 +11,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.toppagealarm
  * @author chungnt
  *
  */
-
+@Stateless
 public class JpaTopPageAlarmStampingRepository extends JpaRepository implements TopPageAlarmStampingRepository {
 
 	/**

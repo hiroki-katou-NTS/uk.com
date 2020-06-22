@@ -21,7 +21,7 @@
 		<ui:define name="content">
 
 			<div id="functions-area"
-				data-bind="css: { 'functions-area-big': isWidget() ,'functions-area-small':!isWidget()  },style: { 'color':settingDateTimeColor().textColor,'background-color': settingDateTimeColor().backgroundColor}">
+				data-bind="css: {'notUsed':usedSatus() !== 0, 'functions-area-big': isWidget() ,'functions-area-small':!isWidget()  },style: { 'color':settingDateTimeColor().textColor,'background-color': settingDateTimeColor().backgroundColor}">
 				<div
 					data-bind=" style:{ 'float': 'left' , 'margin-left': isScreenCD() ? '0px' : '30px' }">
 					<span class="label stamp-date-big"
@@ -52,10 +52,10 @@
 										}"
 								class="button "></button>
 						</com:ko-foreach>
-						<div style="line-height: 6px; margin-left: 8px;"
+						<!-- <div style="line-height: 6px; margin-left: 8px;"
 							data-bind="if: !isWidget()">
 							<a class="hyperlink hyperlink-small" data-bind="click: toTopPage">#{i18n.getText('KDP001_4')}</a>
-						</div>
+						</div> -->
 					</div>
 				</div>
 				<div
@@ -99,7 +99,7 @@
 							<com:ko-foreach bind="stampDatas">
 								<tr>
 									<td
-										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.convertToShortMDW($data)"></td>
+										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' ,'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
 									<td
 										data-bind="style:{'font-size': $vm.isWidget() ?'14px':'8px' },text:$vm.getStampTime($data)"></td>
 									<td
