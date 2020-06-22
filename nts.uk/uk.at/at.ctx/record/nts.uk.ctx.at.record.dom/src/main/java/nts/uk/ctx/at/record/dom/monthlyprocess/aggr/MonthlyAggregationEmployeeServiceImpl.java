@@ -245,15 +245,15 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
-				continue;
-			}
+//			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
+//				continue;
+//			}
             LockStatus lockStatus = LockStatus.UNLOCK;
             //「ロック中の計算/集計する」の値をチェックする
             if(isCalWhenLock ==null || isCalWhenLock ==false ) {
                 //
                 lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
-                        criteriaDate, closureData.getClosureId().value, PerformanceType.MONTHLY);
+                		datePeriod.end(), closureData.getClosureId().value, PerformanceType.MONTHLY);
             }
             if(lockStatus == LockStatus.LOCK) {
                 continue;
