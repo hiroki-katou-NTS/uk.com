@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,12 +32,19 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateDailyResultsStamps;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPortalService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStamping;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
@@ -124,41 +133,40 @@ public class RegisterStampInputCommandHandler
 
 		Optional<GeneralDate> refDateOpt = inputResult.getStampDataReflectResult().getReflectDate();
 		
-		/*
-		 * CreateDailyResultsStampsRequireImpl resultStampRequire = new
-		 * CreateDailyResultsStampsRequireImpl();
-		 */
+		//打刻入力から日別実績を作成する (Tạo thực tế hàng ngày từ input check tay)
+		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl();
+
+		CreateDailyResultsStamps.create(resultStampRequire, AppContexts.user().companyId(), employeeID,
+				Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
 		
-		/*
-		 * CreateDailyResultsStamps.create(resultStampRequire,
-		 * AppContexts.user().companyId(), employeeID,
-		 * Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
-		 */
 		
 		return new RegisterStampInputResult(refDateOpt.isPresent() ? refDateOpt.get() : null);
 	}
 	
 	
-	/*
-	 * @AllArgsConstructor private class CreateDailyResultsStampsRequireImpl
-	 * implements CreateDailyResultsStamps.Require{
-	 * 
-	 * @Override public List<ErrorMessageInfo> getListError(String companyID, String
-	 * employeeId, DatePeriod period, int reCreateAtr, int i, EmpCalAndSumExeLog
-	 * empCalAndSumExeLog, int i1) { // TODO Auto-generated method stub return null;
-	 * }
-	 * 
-	 * @Override public List<String> getListEmpID(String companyID, GeneralDate
-	 * referenceDate) { // TODO Auto-generated method stub return null; }
-	 * 
-	 * @Override public void insert(TopPageAlarmStamping domain) { // TODO
-	 * Auto-generated method stub
-	 * 
-	 * }
-	 * 
-	 * 
-	 * }
-	 */
+	
+	@AllArgsConstructor
+	private class CreateDailyResultsStampsRequireImpl implements CreateDailyResultsStamps.Require {
+
+		@Override
+		public List<ErrorMessageInfo> getListError(String companyID, String employeeId, DatePeriod period,
+				int reCreateAtr, int i, EmpCalAndSumExeLog empCalAndSumExeLog, int i1) {
+			return Arrays.asList(new ErrorMessageInfo(companyID, employeeId, period.start(),
+					ExecutionContent.DAILY_CALCULATION, new ErrMessageResource("Test"), new ErrMessageContent("Test")));
+		}
+
+		@Override
+		public void insert(TopPageAlarmStamping domain) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+			return Arrays.asList(AppContexts.user().employeeId());
+		}
+
+	}
 
 	@AllArgsConstructor
 	private class EnterStampFromPortalServiceRequireImpl implements EnterStampFromPortalService.Require {

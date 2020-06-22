@@ -63,9 +63,11 @@ public class DisplayScreenStampingResultFinder {
 				//// Get distinct WorkLocationCD
 				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
-					if(!item.getStamp().isEmpty()) {
+					if (!item.getStamp().isEmpty()) {
 						val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkLocationCD();
-						listWorkLocationCode.add(workLocationCD.get().v());						
+						if (workLocationCD.isPresent()) {
+							listWorkLocationCode.add(workLocationCD.get().v());
+						}
 					}
 				}
 
@@ -84,13 +86,16 @@ public class DisplayScreenStampingResultFinder {
 				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp()
 						.get(0);
 				if(!info.getStamp().isEmpty()) {
-					val workLocationCode = info
-							.getStamp()
-							.get(0).getRefActualResults().getWorkLocationCD()
-							.get();
-					val optWorkLocation = listWorkLocation.stream()
-							.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+					val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkLocationCD();
+					if(workLocationCD.isPresent()) {
+						val workLocationCode = workLocationCD.get();
+
+						val optWorkLocation = listWorkLocation.stream()
+								.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+						workLocationName = (optWorkLocation.isPresent())
+								? optWorkLocation.get().getWorkLocationName().v()
+								: "";
+					}
 				}
 			}
 			

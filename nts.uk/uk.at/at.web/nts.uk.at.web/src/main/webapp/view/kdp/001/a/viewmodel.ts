@@ -36,63 +36,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
 	screenMode: KnockoutObservable<any> = ko.observable();
-	stampDatas: KnockoutObservableArray<IStampInfoDisp> = ko.observableArray([
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 1, name: '指認証打刻' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 2, name: 'ICカード打刻' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 3, name: '個人打刻' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 4, name: 'ポータル打刻' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 5, name: 'リコー複写機打刻' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 6, name: 'スマホ打刻 ' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 7, name: 'テキスト受入' } }
-			}
-		},
-		{
-			stampDatetime: moment.utc().toDate(),
-			stampAtr: '予約',
-			stamp: {
-				relieve: { stampMeans: { value: 8, name: '氏名選択' } }
-			}
-		}]);
+	stampDatas: KnockoutObservableArray<IStampInfoDisp> = ko.observableArray([]);
 	usedSatus: KnockoutObservable<number> = ko.observable(0);
 	settingDateTimeColor: KnockoutObservable<any> = ko.observable({
 		textColor: '#ccccff',
@@ -162,13 +106,13 @@ class KDP001AViewModel extends ko.ViewModel {
 		let urlParam: string = url.split("=")[1];
 
 		vm.screenMode(!!urlParam ? urlParam : null);
-
+		this.$blockui("invisible");
 		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: 4 }).then((result) => {
-
+			this.$blockui("clear");
 			vm.usedSatus(result.used);
 			vm.systemDate(moment.utc(result.systemDate));
 
-
+			this.$blockui("invisible");
 			vm.$ajax(requestUrl.getSettingStampInput).then((setting: IStampSetting) => {
 
 				if (!!setting) {
@@ -201,26 +145,28 @@ class KDP001AViewModel extends ko.ViewModel {
 							this.$ajax(requestUrl.getStampToSuppress).then((data) => {
 
 								vm.buttonSetting(new StampToSuppress(data));
+
+							}).always(() => {
 								vm.countTime(0);
 							});
 
-							console.log('Reset Time');
 						} else {
 
 							vm.systemDate(vm.systemDate().add(1, 'seconds'));
 							vm.countTime(vm.countTime() + 1);
-							console.log('Add Time: ' + vm.countTime());
 
 						}
 					}, 1000);
 				}
-			});
+			}).always(() => {
+				this.$blockui("clear");
+			});;
 
 			let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
-
+			this.$blockui("invisible");
 			vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
-
-				let items = nts.uk.util.flatArray(data, 'listStampInfoDisp');
+				this.$blockui("clear");
+				let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
 				items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
 
@@ -240,22 +186,28 @@ class KDP001AViewModel extends ko.ViewModel {
 					}
 
 				}
-			});
+			}).always(() => {
+				this.$blockui("clear");
+			});;
 			vm.getStampToSuppress();
 
+		}).always(() => {
+			this.$blockui("clear");
 		});
 	}
 
 	public getStampToSuppress() {
 		let vm = this;
+		vm.$blockui("invisible");
 		this.$ajax(requestUrl.getStampToSuppress).then((data) => {
+			vm.$blockui("clear");
 			vm.buttonSetting(new StampToSuppress(data));
 		});
 	}
 
 	public toTopPage() {
 		let vm = this;
-		vm.$jump("/view/ccg/008/a/index.xhtml");
+		vm.$jump('com', '/view/ccg/008/a/index.xhtml');
 	}
 
 	public checkEnableButton(data: IButtonSettingsDto) {
@@ -287,10 +239,6 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	}
 
-	mounted() {
-		const vm = this;
-	}
-
 	public getStampTime(data: IStampInfoDisp) {
 		let vm = this,
 			character = '';
@@ -304,8 +252,9 @@ class KDP001AViewModel extends ko.ViewModel {
 		return character + ' ' + moment.utc(data.stampDatetime).format("HH:mm");
 	}
 
-	public convertToShortMDW(date: Date) {
-		return date ? moment.utc(date).format("MM/DD(ddd)") : '';
+	public convertToShortMDW(data: IStampInfoDisp) {
+
+		return _.has(data, 'stampDatetime') ? moment.utc(data.stampDatetime).format("MM/DD(ddd)") : '';
 	}
 
 	public getSystemDate() {
@@ -322,7 +271,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		return time;
 	}
 
-	public stamp(vm, data) {
+	public stamp(vm: KDP001AViewModel, data) {
 
 		let cmd: IRegisterStampInputCommand = {
 			datetime: vm.systemDate(),
@@ -336,9 +285,14 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		};
 
-
+		this.$blockui("invisible");
 		this.$ajax(requestUrl.registerStampInput, cmd).then((result) => {
 			switch (data.buttonPositionNo) {
+				case 1:
+				case 2:
+					vm.reLoadStampDatas();
+					vm.getStampToSuppress();
+					break;
 				case 3:
 					vm.openDialogC(result);
 					break;
@@ -346,12 +300,11 @@ class KDP001AViewModel extends ko.ViewModel {
 					vm.openDialogB(result);
 					break;
 			}
+		}).fail((error) => {
+			this.$dialog.alert({ messageId: error.messageId });
+		}).always(() => {
+			this.$blockui("clear");
 		});
-
-
-
-
-
 	}
 
 	public openDialogB(dateParam) {
@@ -363,7 +316,8 @@ class KDP001AViewModel extends ko.ViewModel {
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
 		});
-		nts.uk.ui.windows.sub.modal('/view/cps/002/b/index.xhtml').onClosed(function(): any {
+		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
+			vm.$blockui("invisible");
 			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 4 }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
@@ -386,6 +340,8 @@ class KDP001AViewModel extends ko.ViewModel {
 					vm.reLoadStampDatas();
 					vm.getStampToSuppress();
 				}
+			}).always(() => {
+				vm.$blockui("hide");
 			});
 		});
 	}
@@ -402,7 +358,8 @@ class KDP001AViewModel extends ko.ViewModel {
 			stampDate: dateParam
 		});
 
-		vm.$window.modal('/view/cps/002/c/index.xhtml').then(function(): any {
+		vm.$window.modal('/view/kdp/002/c/index.xhtml').then(function(): any {
+			vm.$blockui("invisible");
 			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 3 }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
@@ -425,23 +382,26 @@ class KDP001AViewModel extends ko.ViewModel {
 					vm.reLoadStampDatas();
 					vm.getStampToSuppress();
 				}
+			}).always(() => {
+				vm.$blockui("clear");
 			});
-
-
-
 		});
 	}
 
 	public reLoadStampDatas() {
 		let vm = this;
 		let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
+		vm.$blockui("invisible");
 		vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
-			let items = nts.uk.util.flatArray(data, 'listStampInfoDisp');
+			vm.$blockui("clear");
+			let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
 			items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
 
 			vm.stampDatas(items || []);
-		});
+		}).always(() => {
+			vm.$blockui("clear");
+		});;
 	}
 
 	public isScreenCD() {
@@ -489,16 +449,16 @@ interface IStampToSuppress {
 
 class StampToSuppress {
 
-	goingToWork: KnockoutObservable<boolean> = ko.observable(false);
-	departure: KnockoutObservable<boolean> = ko.observable(false);
-	goOut: KnockoutObservable<boolean> = ko.observable(false);
-	turnBack: KnockoutObservable<boolean> = ko.observable(false);
+	goingToWork: KnockoutObservable<boolean> = ko.observable(true);
+	departure: KnockoutObservable<boolean> = ko.observable(true);
+	goOut: KnockoutObservable<boolean> = ko.observable(true);
+	turnBack: KnockoutObservable<boolean> = ko.observable(true);
 	constructor(data?) {
 		if (data) {
-			this.goingToWork(data.goingToWork || false);
-			this.goOut(data.goOut || false);
-			this.departure(data.departure || false);
-			this.turnBack(data.turnBack || false);
+			this.goingToWork(data.goingToWork || true);
+			this.goOut(data.goOut || true);
+			this.departure(data.departure || true);
+			this.turnBack(data.turnBack || true);
 		}
 	}
 
