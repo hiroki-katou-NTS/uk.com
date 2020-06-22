@@ -7,9 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
-import nts.uk.ctx.at.shared.dom.statement.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.statement.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.statement.dtoimport.ExWorkplaceHistItemImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
 import nts.arc.time.calendar.period.DatePeriod;

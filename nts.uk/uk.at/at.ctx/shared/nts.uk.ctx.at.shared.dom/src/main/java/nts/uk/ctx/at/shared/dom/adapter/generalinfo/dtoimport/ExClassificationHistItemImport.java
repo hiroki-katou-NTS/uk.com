@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport;
+package nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,12 +8,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ExEmploymentHistItemImport {
-	
+public class ExClassificationHistItemImport {
+
 	private String historyId;
 	
 	private DatePeriod period;
 	
-	private String employmentCode;
-
+	private String classificationCode;
 }

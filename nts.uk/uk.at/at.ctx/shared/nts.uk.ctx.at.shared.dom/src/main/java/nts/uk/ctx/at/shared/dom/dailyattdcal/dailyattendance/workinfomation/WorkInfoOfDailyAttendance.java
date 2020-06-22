@@ -27,13 +27,17 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	// 計算状態
 	private CalculationState calculationState;
+	@Setter
 	// 直行区分
 	private NotUseAttribute goStraightAtr;
+	@Setter
 	// 直帰区分
 	private NotUseAttribute backStraightAtr;
+	@Setter
 	// 曜日
 	private DayOfWeek dayOfWeek;
 	// 勤務予定時間帯
+	@Setter
 	private List<ScheduleTimeSheet> scheduleTimeSheets;
 	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,

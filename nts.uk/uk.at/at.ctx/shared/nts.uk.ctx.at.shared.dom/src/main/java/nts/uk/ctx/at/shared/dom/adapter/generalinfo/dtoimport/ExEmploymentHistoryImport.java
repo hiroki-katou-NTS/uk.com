@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport;
+package nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport;
 
 import java.util.List;
 
@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ExWorkPlaceHistoryImport {
-	
+public class ExEmploymentHistoryImport {
+
 	private String employeeId;
 	
-	private List<ExWorkplaceHistItemImport> workplaceItems;
-
+	private List<ExEmploymentHistItemImport> employmentItems;
 }

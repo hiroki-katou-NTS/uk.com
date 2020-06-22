@@ -2,9 +2,12 @@ package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -43,7 +46,18 @@ import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecomm
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExClassificationHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExClassificationHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
@@ -94,6 +108,9 @@ public class ScheduleCreatorExecutionTransaction {
 	
 	@Inject
 	private CorrectWorkSchedule correctWorkSchedule;
+	
+	@Inject
+	private ReflectWorkInforDomainService inforDomainService; 
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -669,8 +686,19 @@ public class ScheduleCreatorExecutionTransaction {
 			// 勤務予定のデータをコンバーターに入れる - chưa làm đợi sử lý trên (TKT-TQP)
 			WorkSchedule workSchedule = correctWorkSchedule.correctWorkSchedule(
 					createScheduleOneDate.getWorkSchedule(), result.getWorkingCondition().getEmployeeId(), result.getErrorLog().getDate());
-			
+
+			EmployeeGeneralInfoImport generalInfoImport = new EmployeeGeneralInfoImport(
+					masterCache.getEmpGeneralInfo().getEmploymentDto().stream().map(mapper -> new ExEmploymentHistoryImport(mapper.getEmployeeId(), mapper.getEmploymentItems().stream()
+							.map(x -> new ExEmploymentHistItemImport(x.getHistoryId(), x.getPeriod(), x.getEmploymentCode())).collect(Collectors.toList()))).collect(Collectors.toList()), 
+					masterCache.getEmpGeneralInfo().getClassificationDto().stream().map(mapper -> new ExClassificationHistoryImport(mapper.getEmployeeId(), mapper.getClassificationItems().stream()
+							.map(x -> new ExClassificationHistItemImport(x.getHistoryId(), x.getPeriod(), x.getClassificationCode())).collect(Collectors.toList()))).collect(Collectors.toList()),
+					masterCache.getEmpGeneralInfo().getJobTitleDto().stream().map(mapper -> new ExJobTitleHistoryImport(mapper.getEmployeeId(), mapper.getJobTitleItems().stream()
+							.map(x -> new ExJobTitleHistItemImport(x.getHistoryId(), x.getPeriod(), x.getJobTitleId())).collect(Collectors.toList()))).collect(Collectors.toList()),
+					masterCache.getEmpGeneralInfo().getWorkplaceDto().stream().map(mapper -> new ExWorkPlaceHistoryImport(mapper.getEmployeeId(), mapper.getWorkplaceItems().stream()
+							.map(x -> new ExWorkplaceHistItemImport(x.getHistoryId(), x.getPeriod(), x.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList()));
 			// 所属情報を反映する - chưa tìm thấy nên chưa làm (TKT-TQP)
+			AffiliationInforState inforState =  inforDomainService.createAffiliationInforState(command.getCompanyId(), 
+					command.getEmployeeId(), dateInPeriod, null, generalInfoImport);
 			
 			ReflectAffiliationInformation affiliationInformation = new ReflectAffiliationInformation();
 			// Outputを確認する

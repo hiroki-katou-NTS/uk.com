@@ -14,12 +14,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.command.processexecution.ApprovalPeriodByEmp;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.RequestPeriodChangeService;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
-import nts.uk.ctx.at.shared.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -63,7 +63,7 @@ public class CalPeriodTransferAndWorktype {
 		List<ApprovalPeriodByEmp> listApprovalPeriodByEmp = new ArrayList<>();
 		List<BusinessTypeOfEmpDto> listBusinessTypeOfEmpDto = new ArrayList<>();
 		
-		List<nts.uk.ctx.at.shared.dom.statement.dtoimport.ExWorkPlaceHistoryImport> listExWorkPlaceHistoryImport = new ArrayList<>();
+		List<nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport> listExWorkPlaceHistoryImport = new ArrayList<>();
 
 		// INPUT．「異動時に再作成」をチェックする
 		if (isTransfer) {
@@ -100,7 +100,7 @@ public class CalPeriodTransferAndWorktype {
 			List<DatePeriod> dataWorkplace = new ArrayList<>();
 			if (isTransfer) {
 				List<ExWorkplaceHistItemImported> workplaceItems = new ArrayList<>();
-				for(nts.uk.ctx.at.shared.dom.statement.dtoimport.ExWorkPlaceHistoryImport data :listExWorkPlaceHistoryImport ) {
+				for(nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport data :listExWorkPlaceHistoryImport ) {
 					if(data.getEmployeeId().equals(empId)) {
 						workplaceItems = data.getWorkplaceItems().stream()
 								.map(c -> new ExWorkplaceHistItemImported(c.getHistoryId(), c.getPeriod(), c.getWorkplaceId()))

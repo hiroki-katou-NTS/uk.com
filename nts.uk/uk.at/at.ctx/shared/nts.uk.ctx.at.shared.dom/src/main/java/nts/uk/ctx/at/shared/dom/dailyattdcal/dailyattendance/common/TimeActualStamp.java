@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 //import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -34,7 +33,7 @@ public class TimeActualStamp {
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime()!=null?this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime):null,
-				  								  this.actualStamp.isPresent() && this.actualStamp.get().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
+				  								  this.actualStamp.isPresent() && this.actualStamp.get().getTimeDay().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
 				  								  this.actualStamp.isPresent() && this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
 				  								  this.actualStamp.isPresent() ? this.actualStamp.get().getStampSourceInfo():TimeChangeMeans.STAMP_LEAKAGE_CORRECTION);
 
