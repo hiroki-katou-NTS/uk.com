@@ -731,7 +731,7 @@ public class OverTimeSheet {
 		}
 		
 		//時間休暇溢れ分の割り当て
-		OverTimeSheet.allocateOverflowTimeVacation(
+		List<OverTimeFrameTimeSheetForCalc> afterAllocateVacation = OverTimeSheet.allocateOverflowTimeVacation(
 				integrationOfWorkTime.getFlowWorkSetting().get(),
 				personDailySetting.getAddSetting(),
 				createdWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
@@ -740,27 +740,27 @@ public class OverTimeSheet {
 				overTimeFrameTimeSheets);
 		
 		//変形基準内残業を分割
-		OverTimeFrameTimeSheetForCalc.dicisionCalcVariableWork(
+		List<OverTimeFrameTimeSheetForCalc> afterVariableWork = OverTimeFrameTimeSheetForCalc.dicisionCalcVariableWork(
 				companyCommonSetting,
 				personDailySetting,
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				overTimeFrameTimeSheets);
+				afterAllocateVacation);
 		
 		//法定内残業分割処理
-		overTimeFrameTimeSheets = OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
+		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
 				companyCommonSetting,
 				personDailySetting,
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				overTimeFrameTimeSheets,
+				afterVariableWork,
 				createdWithinWorkTimeSheet);
 		
-		return Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overTimeFrameTimeSheets, new SubHolOccurrenceInfo()));
+		return Optional.of(new OverTimeSheet(new RaisingSalaryTime(), afterCalcStatutoryOverTimeWork, new SubHolOccurrenceInfo()));
 	}
 	
 	/**
@@ -772,7 +772,7 @@ public class OverTimeSheet {
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 * @param overTimeframeTimeSheets 残業枠時間帯(WORK)
 	 */
-	private static void allocateOverflowTimeVacation(
+	private static List<OverTimeFrameTimeSheetForCalc> allocateOverflowTimeVacation(
 			FlowWorkSetting flowWorkSetting,
 			AddSetting addSetting,
 			AttendanceTime timeVacationAdditionRemainingTime,
@@ -781,9 +781,12 @@ public class OverTimeSheet {
 			List<OverTimeFrameTimeSheetForCalc> overTimeframeTimeSheets) {
 		
 		//input.休暇使用合計残時間未割当のチェック
-		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) return;
+		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO))
+			return overTimeframeTimeSheets;
+		
 		//割増計算方法をチェック
-		if(addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium).isCalclationByActualTime()) return;
+		if(addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium).isCalclationByActualTime())
+			return overTimeframeTimeSheets;
 		
 		if(!overTimeframeTimeSheets.isEmpty()){
 			overTimeframeTimeSheets.sort((f,s) -> s.getOverTimeWorkSheetNo().compareTo(f.getOverTimeWorkSheetNo()));
@@ -794,7 +797,8 @@ public class OverTimeSheet {
 					autoCalcSet);
 		}
 		
-		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) return;
+		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO))
+			return overTimeframeTimeSheets;
 		
 		//勤務した残業時間帯以降に割り当てる
 		overTimeframeTimeSheets.addAll(
@@ -803,6 +807,8 @@ public class OverTimeSheet {
 					timeVacationAdditionRemainingTime,
 					overTimeStartTime,
 					flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone()));
+		
+		return overTimeframeTimeSheets;
 	}
 	
 	/**
