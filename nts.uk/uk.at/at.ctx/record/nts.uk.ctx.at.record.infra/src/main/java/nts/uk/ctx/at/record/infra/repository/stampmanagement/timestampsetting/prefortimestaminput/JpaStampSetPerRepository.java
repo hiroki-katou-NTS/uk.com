@@ -112,7 +112,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void insertPage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId));
+		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
 		if(oldData.isPresent()){
-			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
+			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId, 1);
 			oldData.get().pageName = newData.pageName;
 			oldData.get().buttonLayoutType = newData.buttonLayoutType;
 			oldData.get().pageComment = newData.pageComment;

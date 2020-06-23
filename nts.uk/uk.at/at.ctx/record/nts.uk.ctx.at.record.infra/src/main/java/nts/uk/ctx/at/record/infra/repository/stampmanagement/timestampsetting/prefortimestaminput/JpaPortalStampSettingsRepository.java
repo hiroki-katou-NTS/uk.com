@@ -105,10 +105,10 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 		
 		KrcmtSrampPortal entity = new KrcmtSrampPortal();
 		entity.cid = domain.getCid();
-		entity.correctionInterval = domain.getDisplaySettingsStampScreen().getServerCorrectionInterval().v();
+		entity.correctionInterval = domain.getDisplaySettingsStampScreen().getCorrectionInterval().v();
 		entity.resultDispayTime = domain.getDisplaySettingsStampScreen().getResultDisplayTime().v();
 		entity.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
-		entity.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackgroundColor().v();
+		entity.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		entity.buttonEmphasisArt = domain.getSuppressStampBtn() ? 1 : 0;
 		entity.toppageLinkArt = domain.getUseTopMenuLink() ? 1 : 0;
 												

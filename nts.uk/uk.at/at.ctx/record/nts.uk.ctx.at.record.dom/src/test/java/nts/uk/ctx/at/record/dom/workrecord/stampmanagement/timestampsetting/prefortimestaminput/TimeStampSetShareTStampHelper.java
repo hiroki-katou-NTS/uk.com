@@ -15,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class TimeStampSetShareTStampHelper {
 
-	public static TimeStampSetShareTStamp getDefault() {
+	public static StampSetCommunal getDefault() {
 		
 		List<StampPageLayout> lstStampPageLayout = new ArrayList<>();
 		List<ButtonSettings> lstButtonSet = new ArrayList<>();
@@ -49,13 +49,13 @@ public class TimeStampSetShareTStampHelper {
 				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
 				new ResultDisplayTime(1));
 		
-		TimeStampSetShareTStamp setShareTStamp = new TimeStampSetShareTStamp(
+		StampSetCommunal setShareTStamp = new StampSetCommunal(
 				"000-0000000001", 
 				displaySetStampScreen, 
 				lstStampPageLayout, 
 				true, 
 				false, 
-				NotUseAtr.USE, 
+				true, 
 				Optional.empty());
 		
 		return setShareTStamp;

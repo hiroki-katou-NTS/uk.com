@@ -8,8 +8,13 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -53,9 +58,29 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	@Column(name ="COMMENT_COLOR")
 	public String commentColor;
 	
+	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @JoinTable(name = "KRCMT_STAMP_LAYOUT_DETAIL")
+	public List<KrcmtStampLayoutDetail> lstButtonSet;
+	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", referencedColumnName = "'0'", insertable = false, updatable = false)
+    })
+	public KrcmtStampCommunal krcmtStampCommunal;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public StampPageLayout toDomain(){
+		return new StampPageLayout(
+				new PageNo(pk.pageNo), 
+				new StampPageName(this.pageName), 
+				new StampPageComment(new PageComment(this.pageComment), new ColorCode(this.commentColor)), 
+				EnumAdaptor.valueOf(this.buttonLayoutType, ButtonLayoutType.class), 
+				lstButtonSet.stream().map(mapper->mapper.toDomain()).collect(Collectors.toList()));
 	}
 	
 	public KrcmtStampPageLayout(KrcmtStampPageLayoutPk pk, String pageName, int buttonLayoutType, String pageComment,
@@ -69,22 +94,9 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 		this.lstButtonSet = lstButtonSet;
 	}
 	
-	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JoinTable(name = "KRCMT_STAMP_LAYOUT_DETAIL")
-	public List<KrcmtStampLayoutDetail> lstButtonSet;
-	
-	public StampPageLayout toDomain(){
-		return new StampPageLayout(
-				new PageNo(pk.pageNo), 
-				new StampPageName(this.pageName), 
-				new StampPageComment(new PageComment(this.pageComment), new ColorCode(this.commentColor)), 
-				EnumAdaptor.valueOf(this.buttonLayoutType, ButtonLayoutType.class), 
-				lstButtonSet.stream().map(mapper->mapper.toDomain()).collect(Collectors.toList()));
-	}
-	
-	public static KrcmtStampPageLayout toEntity(StampPageLayout pageLayout, String companyId){
+	public static KrcmtStampPageLayout toEntity(StampPageLayout pageLayout, String companyId, int stampMeans){
 		return new KrcmtStampPageLayout(
-				new KrcmtStampPageLayoutPk(companyId, 1, pageLayout.getPageNo().v()), 
+				new KrcmtStampPageLayoutPk(companyId, stampMeans, pageLayout.getPageNo().v()), 
 				pageLayout.getStampPageName().v(), 
 				pageLayout.getButtonLayoutType().value, 
 				pageLayout.getStampPageComment().getPageComment().v(), 

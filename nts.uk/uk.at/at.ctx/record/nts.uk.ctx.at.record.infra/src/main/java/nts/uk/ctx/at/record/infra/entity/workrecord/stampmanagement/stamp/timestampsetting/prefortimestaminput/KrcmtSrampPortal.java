@@ -82,10 +82,10 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	}
 	
 	public void update(PortalStampSettings domain) {
-		this.correctionInterval = domain.getDisplaySettingsStampScreen().getServerCorrectionInterval().v();
+		this.correctionInterval = domain.getDisplaySettingsStampScreen().getCorrectionInterval().v();
 		this.resultDispayTime = domain.getDisplaySettingsStampScreen().getResultDisplayTime().v();
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
-		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackgroundColor().v();
+		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		this.buttonEmphasisArt = domain.getSuppressStampBtn() ? 1 : 0;
 		this.toppageLinkArt = domain.getUseTopMenuLink() ? 1 : 0;
 	}

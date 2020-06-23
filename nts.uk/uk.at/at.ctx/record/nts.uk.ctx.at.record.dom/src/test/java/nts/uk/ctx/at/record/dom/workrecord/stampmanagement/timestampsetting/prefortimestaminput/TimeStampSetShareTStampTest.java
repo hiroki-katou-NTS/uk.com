@@ -20,13 +20,13 @@ public class TimeStampSetShareTStampTest {
 
 	@Test
 	public void getter() {
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 		NtsAssert.invokeGetters(setShareTStamp);
 	}
 
 	@Test
 	public void testStampPageLayoutNull() {
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 
 		StampButton stampButton = new StampButton(new PageNo(2), new ButtonPositionNo(2));
 		Optional<ButtonSettings> optional = setShareTStamp.getDetailButtonSettings(stampButton);
@@ -37,7 +37,7 @@ public class TimeStampSetShareTStampTest {
 	@Test
 	public void testStampPageLayout() {
 
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		Optional<ButtonSettings> optional = setShareTStamp.getDetailButtonSettings(stampButton);
@@ -52,7 +52,7 @@ public class TimeStampSetShareTStampTest {
 	
 	@Test 
 	public void testInsert() {
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(2, 2);
 		
 		setShareTStamp.addPage(pageLayout);
@@ -61,7 +61,7 @@ public class TimeStampSetShareTStampTest {
 	
 	@Test
 	public void update_succes() {
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(1, 1);
 
 		setShareTStamp.updatePage(pageLayout);
@@ -70,7 +70,7 @@ public class TimeStampSetShareTStampTest {
 
 	@Test
 	public void delete() {
-		TimeStampSetShareTStamp setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal setShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 
 		setShareTStamp.deletePage(new PageNo(1));
 		assertThat(setShareTStamp.getLstStampPageLayout()).isEmpty();

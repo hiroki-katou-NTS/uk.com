@@ -8,25 +8,25 @@ import java.util.Optional;
  * @author chungnt
  *
  */
-public interface TimeStampSetShareTStampRepository {
+public interface StampSetCommunalRepository {
 	
 	/**
 	 * 	[1]  insert(共有打刻の打刻設定)
 	 * @param domain
 	 */
-	public void insert(TimeStampSetShareTStamp domain);
+	public void insert(StampSetCommunal domain);
 
 	/**
 	 * 	[2]  update(共有打刻の打刻設定)
 	 * @param domain
 	 */
-	public void update(TimeStampSetShareTStamp domain);
+	public void update(StampSetCommunal domain);
 
 	/**
 	 * 	[3]  取得する
 	 * @param comppanyID
 	 * @return
 	 */
-	public Optional<TimeStampSetShareTStamp> get(String comppanyID);
+	public Optional<StampSetCommunal> get(String comppanyID);
 
 }
