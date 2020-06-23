@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 
 //	/**
@@ -33,6 +35,24 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 	
 	public static AnnualLeaveUndigestNumber createFromJavaType(double days, Integer minutes) {
 		return new AnnualLeaveUndigestNumber(days, minutes);
+	}
+	
+	@Override
+	public AnnualLeaveUndigestNumber clone() {
+		AnnualLeaveUndigestNumber cloned;
+		try {
+			int int_minutes = 0;
+			if ( this.minutes.isPresent() ){
+				int_minutes = minutes.get().v();
+			}
+			
+			cloned = AnnualLeaveUndigestNumber.createFromJavaType(
+					days.v(), int_minutes);
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUndigestNumber clone error.");
+		}
+		return cloned;
 	}
 	
 }

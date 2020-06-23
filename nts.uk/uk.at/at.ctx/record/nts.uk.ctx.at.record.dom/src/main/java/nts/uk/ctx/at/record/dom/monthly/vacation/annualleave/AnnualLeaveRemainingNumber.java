@@ -23,8 +23,10 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	/** 合計残日数 */
 	@Setter
 	private AnnualLeaveRemainingDayNumber totalRemainingDays;
+	
 	/** 合計残時間 */
 	private Optional<RemainingMinutes> totalRemainingTime;
+	
 	/** 明細 */
 	private List<AnnualLeaveRemainingDetail> details;
 	
@@ -123,5 +125,22 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 */
 	public void setDaysOfAllDetail(Double days){
 		for (val detail : this.details) detail.setDays(new AnnualLeaveRemainingDayNumber(days));
+	}
+	
+	/**
+	 * 残数がマイナスかチェックしてマイナスのときにはtrueを返す
+	 * @return
+	 */
+	public boolean isMinus(){
+		if ( totalRemainingDays.v() < 0.0 ){
+			return true;
+		}
+		if ( totalRemainingTime.isPresent() ){
+			if ( this.totalRemainingDays.v() == 0.0 
+				&& this.totalRemainingTime.get().v() < 0 ){
+				return true;
+			}
+		}
+		return false;
 	}
 }

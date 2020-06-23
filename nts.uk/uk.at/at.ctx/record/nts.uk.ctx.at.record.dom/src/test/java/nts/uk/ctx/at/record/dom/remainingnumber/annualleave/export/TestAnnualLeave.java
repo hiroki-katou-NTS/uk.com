@@ -226,8 +226,10 @@ public class TestAnnualLeave {
 		String ss;
 		
 		/** 年休情報（期間終了日時点） */
-		double result_totalRemainingDays = -9999.999;
-		int result_totalRemainingTime = -99999;
+		double result_remainingDaysBeforeGrant = -9999.999;
+		int result_remainingTimeBeforeGrant = -99999;
+		double result_remainingDaysTotal = -9999.999;
+		int result_remainingTimeTotal = -99999;
 		String item;
 		
 		AnnualLeaveInfo asOfPeriodEnd = aggrResultOfAnnualLeave.getAsOfPeriodEnd();
@@ -244,27 +246,42 @@ public class TestAnnualLeave {
 				if ( annualLeave != null ){
 					// 残数付与前
 					nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber remainingNumberBeforeGrant 
-						= annualLeave.getRemainingNumberBeforeGrant();
+						= annualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 					
-					// 使用日数
-					result_totalRemainingDays = remainingNumberBeforeGrant.getTotalRemainingDays().v();
+					if ( remainingNumberBeforeGrant != null ){
+						// 使用日数
+						result_remainingDaysBeforeGrant = remainingNumberBeforeGrant.getTotalRemainingDays().v();
+						
+						// 使用時間
+						if ( remainingNumberBeforeGrant.getTotalRemainingTime().isPresent() ){
+							result_remainingTimeBeforeGrant = remainingNumberBeforeGrant.getTotalRemainingTime().get().v();
+						}
+					}
 					
-					// 使用時間
-					if ( remainingNumberBeforeGrant.getTotalRemainingTime().isPresent() ){
-						result_totalRemainingTime = remainingNumberBeforeGrant.getTotalRemainingTime().get().v();
+					// 合計
+					nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber remainingNumberTotal 
+						= annualLeave.getRemainingNumberInfo().getRemainingNumber();
+					
+					if ( remainingNumberTotal != null ){
+						// 使用日数
+						result_remainingDaysTotal = remainingNumberTotal.getTotalRemainingDays().v();
+						
+						// 使用時間
+						if ( remainingNumberTotal.getTotalRemainingTime().isPresent() ){
+							result_remainingTimeTotal = remainingNumberTotal.getTotalRemainingTime().get().v();
+						}
 					}
 				}
 			}
 		}
 		
-		assert_double(testCase, "残数年休マイナスあり使用数付与前使用日数", result_totalRemainingDays, t_result);
-		assert_integer(testCase, "残数年休マイナスあり使用数付与前使用時間", result_totalRemainingTime, t_result);
+		assert_double(testCase, "残数年休マイナスあり使用数付与前使用日数", result_remainingDaysBeforeGrant, t_result);
+		assert_integer(testCase, "残数年休マイナスあり使用数付与前使用時間", result_remainingTimeBeforeGrant, t_result);
+		
+		assert_double(testCase, "残数年休マイナスあり使用数合計使用日数", result_remainingDaysTotal, t_result);
+		assert_integer(testCase, "残数年休マイナスあり使用数合計使用時間", result_remainingTimeTotal, t_result);
 		
 		
-		
-//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与前使用時間");
-//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数合計使用日数");
-//		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数合計使用時間");
 //		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数使用回数");
 //		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与後使用日数");
 //		ss = t_result.getMapStringData().get("残数年休マイナスあり使用数付与後使用時間");

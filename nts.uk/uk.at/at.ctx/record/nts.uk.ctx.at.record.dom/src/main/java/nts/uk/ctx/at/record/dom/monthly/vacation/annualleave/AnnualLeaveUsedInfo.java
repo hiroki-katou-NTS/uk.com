@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import java.util.Optional;
 
+import lombok.val;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
@@ -74,7 +76,6 @@ public class AnnualLeaveUsedInfo implements Cloneable {
 			} else {
 				this.usedNumberAfterGrantOpt = Optional.of(usedNumber.clone());
 			}
-			
 		}
 		else {
 			
@@ -84,4 +85,19 @@ public class AnnualLeaveUsedInfo implements Cloneable {
 		}
 	}
 	
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		usedNumberBeforeGrant = usedNumber.clone();
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		usedNumberAfterGrantOpt = Optional.of(usedNumber.clone());
+	}
 }

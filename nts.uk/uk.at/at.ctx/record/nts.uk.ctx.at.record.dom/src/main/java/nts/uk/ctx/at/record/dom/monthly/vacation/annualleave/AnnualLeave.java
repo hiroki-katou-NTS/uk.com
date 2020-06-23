@@ -122,4 +122,22 @@ public class AnnualLeave implements Cloneable {
 //			this.usedNumberInfo.getUsedDays().addUsedDaysBeforeGrant(days);
 //		}
 	}
+	
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		this.usedNumberInfo.saveStateBeforeGrant();
+		this.remainingNumberInfo.saveStateBeforeGrant();
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		this.usedNumberInfo.saveStateAfterGrant();
+		this.remainingNumberInfo.saveStateAfterGrant();
+	}
 }

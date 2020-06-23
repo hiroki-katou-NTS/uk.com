@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 
 /**
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualL
  * @author masaaki_jinno
  *
  */
+@Getter
 public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 合計 */
@@ -45,7 +47,6 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 		}
 	}
 	
-	
 	/**
 	 * クローン
 	 */
@@ -67,6 +68,22 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 			throw new RuntimeException("AnnualLeaveRemainingInfo clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		remainingNumberBeforeGrant = remainingNumber.clone();
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
 	}
 	
 }

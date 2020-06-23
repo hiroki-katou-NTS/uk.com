@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRate
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -159,7 +158,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(), 
-				realAnnualLeave == null ? new RealAnnualLeave() : realAnnualLeave.toRealDomain(),
+				realAnnualLeave == null ? new AnnualLeave() : annualLeave.toDomain(),
 				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()), 
 				Optional.of(realHalfDayAnnualLeave == null ? new HalfDayAnnualLeave() : realHalfDayAnnualLeave.toDomain()), 
 				Optional.of(annualLeaveGrant == null ? new AnnualLeaveGrant() : annualLeaveGrant.toDomain()),
