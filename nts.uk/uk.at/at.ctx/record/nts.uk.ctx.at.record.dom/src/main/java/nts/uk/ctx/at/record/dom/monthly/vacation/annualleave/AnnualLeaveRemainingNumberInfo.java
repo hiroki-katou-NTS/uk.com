@@ -23,6 +23,13 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 	/** 付与後 */
 	private Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrantOpt;
 	
+	/** コンストラクタ  */
+	public AnnualLeaveRemainingNumberInfo(){
+		this.remainingNumber = new AnnualLeaveRemainingNumber();
+		this.remainingNumberBeforeGrant = new AnnualLeaveRemainingNumber();
+		this.remainingNumberAfterGrantOpt = Optional.empty();
+	}
+	
 	/**
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
@@ -43,7 +50,7 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 		else {
 			
 			// 残数付与前　←　残数
-			this.remainingNumberBeforeGrant = this.remainingNumberBeforeGrant.clone();
+			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
 		}
 	}
 	

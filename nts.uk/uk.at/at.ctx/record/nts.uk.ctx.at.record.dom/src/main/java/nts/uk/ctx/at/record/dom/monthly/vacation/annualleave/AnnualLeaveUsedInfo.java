@@ -30,6 +30,16 @@ public class AnnualLeaveUsedInfo implements Cloneable {
 	/** 付与後 */
 	private Optional<AnnualLeaveUsedNumber> usedNumberAfterGrantOpt;
 	
+	/** コンストラクタ */
+	public AnnualLeaveUsedInfo(){
+		usedNumberBeforeGrant = new AnnualLeaveUsedNumber();
+		usedNumber = new AnnualLeaveUsedNumber();
+		annualLeaveUsedTimes = new UsedTimes(0);
+		annualLeaveUsedDayTimes = new UsedTimes(0);
+		usedNumberAfterGrantOpt = Optional.empty();
+	}
+	
+	
 	/**
 	 * クローン
 	 */

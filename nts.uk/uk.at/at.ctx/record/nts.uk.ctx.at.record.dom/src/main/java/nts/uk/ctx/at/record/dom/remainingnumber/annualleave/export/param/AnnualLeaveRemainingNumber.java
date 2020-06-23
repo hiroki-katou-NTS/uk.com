@@ -37,6 +37,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	public AnnualLeaveRemainingNumber(){
 		
 		this.annualLeaveNoMinus = new AnnualLeave();
+		this.annualLeaveWithMinus = new AnnualLeave();
 		this.halfDayAnnualLeaveNoMinus = Optional.empty();
 		this.halfDayAnnualLeaveWithMinus = Optional.empty();
 		this.timeAnnualLeaveNoMinus = Optional.empty();
