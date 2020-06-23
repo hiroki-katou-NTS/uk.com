@@ -11,13 +11,13 @@ import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
@@ -539,7 +539,7 @@ public abstract class CalculationTimeSheet {
 	 * @param calcAtrOfDaily　日別実績の計算区分
 	 * @return 加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr) {
+	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyAttd calcAtrOfDaily,BonusPayAtr bonusPayAtr) {
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(BonusPayTimeSheetForCalc bonusPaySheet : this.bonusPayTimeSheet){
 			AttendanceTime calcTime = raisingAutoCalcSet.isRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime(DeductionAtr.Deduction): new AttendanceTime(0);
@@ -550,7 +550,7 @@ public abstract class CalculationTimeSheet {
 												 ,TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?time:new AttendanceTime(0),actualWorkAtr.isWithinWorkTime()?calcTime:new AttendanceTime(0))
 												 ,TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):time,actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):calcTime)));
 		}
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
+		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().isRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
 			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
 										   tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}
@@ -564,7 +564,7 @@ public abstract class CalculationTimeSheet {
 	 * @param calcAtrOfDaily　日別実績の計算区分
 	 * @return 加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
+	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyAttd calcAtrOfDaily,BonusPayAtr bonusPayAtr){
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(SpecBonusPayTimeSheetForCalc bonusPaySheet : this.specBonusPayTimesheet){
 			AttendanceTime calcTime = raisingAutoCalcSet.isSpecificRaisingSalaryCalcAtr()?bonusPaySheet.calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);
@@ -574,7 +574,7 @@ public abstract class CalculationTimeSheet {
 					 ,TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?time:new AttendanceTime(0),actualWorkAtr.isWithinWorkTime()?calcTime:new AttendanceTime(0))
 					 ,TimeWithCalculation.createTimeWithCalculation(actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):time,actualWorkAtr.isWithinWorkTime()?new AttendanceTime(0):calcTime)));
 		}
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
+		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
 			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
 										   tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}

@@ -23,9 +23,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
@@ -39,6 +36,9 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.OutingTimeOfDaily;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

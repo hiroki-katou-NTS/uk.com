@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfHalfWork;
 
 /**
  * 控除時間

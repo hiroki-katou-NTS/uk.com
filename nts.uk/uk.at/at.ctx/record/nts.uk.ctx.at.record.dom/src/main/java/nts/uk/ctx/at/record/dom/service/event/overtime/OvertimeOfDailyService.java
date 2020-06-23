@@ -9,12 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
@@ -23,6 +17,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Stateless
 public class OvertimeOfDailyService {

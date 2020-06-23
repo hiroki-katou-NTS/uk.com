@@ -10,14 +10,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
-import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
@@ -27,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCa
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
@@ -37,7 +31,14 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkSc
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -119,7 +120,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			VacationClass vacation, WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			List<DivergenceTime> divergenceTimeList,
+			List<DivergenceTimeRoot> divergenceTimeList,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 			ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred,
@@ -251,7 +252,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			HolidayCalcMethodSet holidayCalcMethodSet, Optional<WorkTimezoneCommonSet> commonSetting,
 			ManageReGetClass recordReGetClass, List<PersonnelCostSettingImport> personalSetting) {
 		// 乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
+		List<DivergenceTimeRoot> divergenceTimeList = companyCommonSetting.getDivergenceTime();
 		if (calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = calcResultIntegrationOfDaily
@@ -437,7 +438,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				VacationClass vacation, WorkType workType,
 				Optional<SettingOfFlexWork> flexCalcMethod,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 				List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTime> divergenceTimeList,
+				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTimeRoot> divergenceTimeList,
 				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 				ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
 				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode) {

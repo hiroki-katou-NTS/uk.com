@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;

@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeErrorCancelMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeName;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeUseSet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceType;
 
 /**
  * The Class JpaDivergenceTimeRepositoryGetMemento.

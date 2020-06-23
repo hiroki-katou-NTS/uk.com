@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 日別勤怠の出退勤
@@ -26,5 +28,9 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		super();
 		this.timeLeavingWorks = timeLeavingWorks;
 		this.workTimes = workTimes;
+	}
+	
+	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
+		return this.getTimeLeavingWorks().stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
 	}
 }

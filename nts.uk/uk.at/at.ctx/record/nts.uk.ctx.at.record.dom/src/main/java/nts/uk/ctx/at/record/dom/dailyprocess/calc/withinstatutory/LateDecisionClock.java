@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;

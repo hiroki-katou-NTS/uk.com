@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other;
 
-import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 
 /**
  * 計算区分取得用のロジック
@@ -16,7 +16,7 @@ public class GetCalcAtr {
 	 * @param actualAtr 実働時間帯区分
 	 * @return
 	 */
-	public static boolean isCalc(boolean calcAtr,CalAttrOfDailyPerformance calcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, ActualWorkTimeSheetAtr actualAtr) {
+	public static boolean isCalc(boolean calcAtr,CalAttrOfDailyAttd calcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, ActualWorkTimeSheetAtr actualAtr) {
 		if(calcAtr) {
 			return bonusPayAutoCalcSet.getCalcAtr(actualAtr, calcSet);
 		}

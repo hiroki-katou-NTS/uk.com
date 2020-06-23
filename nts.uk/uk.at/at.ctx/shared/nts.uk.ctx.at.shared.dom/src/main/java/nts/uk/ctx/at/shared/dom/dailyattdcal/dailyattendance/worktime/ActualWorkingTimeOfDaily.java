@@ -10,17 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
-import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -28,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
@@ -35,6 +25,16 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedEr
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -243,7 +242,7 @@ public class ActualWorkingTimeOfDaily {
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTime> divergenceTimeList,CalAttrOfDailyPerformance calcAtrOfDaily,
+			List<DivergenceTimeRoot> divergenceTimeList,CalAttrOfDailyPerformance calcAtrOfDaily,
 			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		
 		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList,calcAtrOfDaily,breakTimeSheets,calcResultOotsuka,workTimeSetting,workType);
@@ -260,9 +259,10 @@ public class ActualWorkingTimeOfDaily {
 	 * @param optional 就業時間帯(マスタ)側の休憩時間帯 
 	 * @return
 	 */
-	private static List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>   calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,List<DivergenceTime> divergenceTimeList,
-			 																								CalAttrOfDailyPerformance calcAtrOfDaily,Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka,
-			 																								Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
+	private static List<DivergenceTime> calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
+			List<DivergenceTimeRoot> divergenceTimeList, CalAttrOfDailyPerformance calcAtrOfDaily,
+			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka,
+									Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		if(integrationOfDailyInDto == null
 			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance() == null
@@ -270,7 +270,7 @@ public class ActualWorkingTimeOfDaily {
 			|| integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() == null)
 			return Collections.emptyList();
 		
-		List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divergenceTime = new ArrayList<>();
+		List<DivergenceTime> divergenceTime = new ArrayList<>();
 		
 		DivergenceTimeOfDaily div_time = integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime();
 		for(int i=0 ; i<10 ;i++) {
@@ -279,7 +279,7 @@ public class ActualWorkingTimeOfDaily {
 			
 			int div_index = i+1;
 			if(div_time != null) {
-				List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> obj
+				List<DivergenceTime> obj
 					= div_time.getDivergenceTime().stream().filter(c->c.getDivTimeId()==div_index).collect(Collectors.toList());
 				
 				if(!obj.isEmpty()) {
@@ -289,7 +289,7 @@ public class ActualWorkingTimeOfDaily {
 					
 			}
 			
-			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime obj = new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(
+			DivergenceTime obj = new DivergenceTime(
 					new AttendanceTimeOfExistMinus(0),
 					new AttendanceTimeOfExistMinus(0),
 					new AttendanceTimeOfExistMinus(0),
@@ -300,13 +300,13 @@ public class ActualWorkingTimeOfDaily {
 			divergenceTime.add(obj);
 		}
 		//自動計算設定で使用しないであれば空を戻す
-		if(!calcAtrOfDaily.getDivergenceTime().getDivergenceTime().isUse())
+		if(!calcAtrOfDaily.getCalcategory().getDivergenceTime().getDivergenceTime().isUse())
 			return divergenceTime;
 		
 		val divergenceTimeInIntegrationOfDaily = new DivergenceTimeOfDaily(divergenceTime);
-		val returnList = new ArrayList<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime>(); 
+		val returnList = new ArrayList<DivergenceTime>(); 
 		//乖離時間算出のアルゴリズム実装
-		for(DivergenceTime divergenceTimeClass : divergenceTimeList) {
+		for(DivergenceTimeRoot divergenceTimeClass : divergenceTimeList) {
 			if(divergenceTimeClass.getDivTimeUseSet().isUse()) {
 				divergenceTimeInIntegrationOfDaily.getDivergenceTime().stream()
 										.filter(tc -> tc.getDivTimeId() == divergenceTimeClass.getDivergenceTimeNo())
@@ -320,7 +320,7 @@ public class ActualWorkingTimeOfDaily {
 											else {
 												totalTime = calcDivergenceNo8910(tdi,integrationOfDailyInDto,breakTimeSheets,calcResultOotsuka,workTimeSetting,workType);
 											}
-											returnList.add(new nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime(new AttendanceTimeOfExistMinus(totalTime - deductionTime), 
+											returnList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(totalTime - deductionTime), 
 													tdi.getDeductionTime(), 
 													new AttendanceTimeOfExistMinus(totalTime), 
 													tdi.getDivTimeId(), 
@@ -454,7 +454,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param breakList 就業時間帯側の休憩リスト
 	 * @param breakOfDaily 
 	 */
-	public static int calcDivergenceNo8910(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, 
+	public static int calcDivergenceNo8910(DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, 
 										   TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		//実績がそもそも存在しない(不正)の場合
 		if(!integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()
@@ -654,9 +654,13 @@ public class ActualWorkingTimeOfDaily {
 					//出退勤取得
 					TimeSpanForCalc attendanceLeave = new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0));
 					if(integrationOfDailyInDto.getAttendanceLeave().isPresent()) {
-						val attendanceTimeByWorkNo = integrationOfDailyInDto.getAttendanceLeave().get().getAttendanceLeavingWork(1);
-						if(attendanceTimeByWorkNo.isPresent()) {
-							attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
+//						val attendanceTimeByWorkNo = integrationOfDailyInDto.getAttendanceLeave().get().getAttendanceLeavingWork(1);
+//						if(attendanceTimeByWorkNo.isPresent()) {
+//							attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
+//						}
+						val attendanceTimeByWorkNo = integrationOfDailyInDto.getAttendanceLeave().get().getTimeLeavingWorks();
+						if(!attendanceTimeByWorkNo.isEmpty()) {
+							attendanceLeave = attendanceTimeByWorkNo.get(0).getTimespan();
 						}
 					}
 					
@@ -693,7 +697,7 @@ public class ActualWorkingTimeOfDaily {
 		//休憩終了 <= 退勤
 		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
 			Optional<BreakTimeSheet> equalTimeSheet = Optional.empty();
-			for(BreakTimeOfDailyPerformance masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
+			for(BreakTimeOfDailyAttd masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
 				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
 					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
 																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)

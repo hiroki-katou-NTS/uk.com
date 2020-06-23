@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 //import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 
 /** 
  * 日別勤怠の滞在時間 (new)
@@ -75,9 +75,9 @@ public class StayingTimeOfDaily {
 	 * @param calculateOfTotalConstraintTime
 	 * @return
 	 */
-	public static AttendanceTime calcStayingTimeOfDaily(Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily,
-			   											Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily,
-			   											Optional<TimeLeavingOfDailyPerformance> attendanceLeave,
+	public static AttendanceTime calcStayingTimeOfDaily(Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGateOfDaily,
+			   											Optional<PCLogOnInfoOfDailyAttd> pCLogOnInfoOfDaily,
+			   											Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 			   											CalculateOfTotalConstraintTime calculateOfTotalConstraintTime) {
 		return calculateOfTotalConstraintTime.calcCalculateOfTotalConstraintTime(attendanceLeavingGateOfDaily,pCLogOnInfoOfDaily,attendanceLeave);
 	}

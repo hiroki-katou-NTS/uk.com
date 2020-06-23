@@ -27,31 +27,16 @@ import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
-import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -82,13 +67,32 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.Time
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.TimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfEachPremiumHalfWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfHalfWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.HolidayTimesheetCalculationSetting;
@@ -1211,7 +1215,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return recordReGetClass.getIntegrationOfDaily();
 
 		// 乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = companyCommonSetting.getDivergenceTime();
+		List<DivergenceTimeRoot> divergenceTimeList = companyCommonSetting.getDivergenceTime();
 
 		// スケジュール側の補正
 		Optional<PredetermineTimeSetForCalc> schePred = Optional.empty();

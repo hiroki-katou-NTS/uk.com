@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

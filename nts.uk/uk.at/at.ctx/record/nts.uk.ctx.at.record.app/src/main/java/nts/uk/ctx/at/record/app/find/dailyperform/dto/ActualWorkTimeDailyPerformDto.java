@@ -7,11 +7,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -23,6 +18,11 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.Premium
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ConstraintTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTimeOfDaily;
 
 /** 日別実績の勤務実績時間 */
 @Data

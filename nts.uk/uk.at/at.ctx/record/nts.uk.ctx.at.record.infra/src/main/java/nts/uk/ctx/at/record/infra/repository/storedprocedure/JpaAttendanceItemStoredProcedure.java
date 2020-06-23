@@ -10,8 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcedureFactory;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
 
 @Stateless

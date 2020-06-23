@@ -8,18 +8,18 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
@@ -46,7 +46,7 @@ public class ManagePerCompanySet {
 	CompensatoryLeaveComSetting compensatoryLeaveComSet;
 	
 	//乖離時間
-	List<DivergenceTime> divergenceTime;
+	List<DivergenceTimeRoot> divergenceTime;
 	
 	//エラーアラームマスタ
 	List<ErrorAlarmWorkRecord> errorAlarm; 
@@ -86,7 +86,7 @@ public class ManagePerCompanySet {
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
 			CompensatoryLeaveComSetting compensatoryLeaveComSet,
-			List<DivergenceTime> divergenceTime,
+			List<DivergenceTimeRoot> divergenceTime,
 			List<ErrorAlarmWorkRecord> errorAlarm,
 			Optional<BPUnitUseSetting> bpUnitSetting,
 			List<OptionalItem> optionalItems,

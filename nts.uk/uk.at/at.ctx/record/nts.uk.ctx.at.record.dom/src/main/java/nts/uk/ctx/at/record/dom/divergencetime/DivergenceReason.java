@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceReasonContent;
 /**
  * 乖離時間 - 選択肢
  *
