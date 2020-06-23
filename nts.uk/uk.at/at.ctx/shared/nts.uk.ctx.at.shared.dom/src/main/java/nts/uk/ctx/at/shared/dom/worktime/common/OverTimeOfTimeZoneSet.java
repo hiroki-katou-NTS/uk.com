@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The work timezone no. */
@@ -127,21 +124,5 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject implements Clone
 			throw new RuntimeException("OverTimeOfTimeZoneSet clone error.");
 		}
 		return cloned;
-	}
-	
-	/**
-	 * 流動残業時間帯から残業時間の時間帯設定へ変換する（いずれ削除予定。@AllArgsConstructorもこのメソッドの為に追加。）
-	 * @param flowOTTimezone 流動残業時間帯
-	 * @return 残業時間の時間帯設定
-	 */
-	public static OverTimeOfTimeZoneSet convertOverTimeOfTimeZoneSet(FlowOTTimezone flowOTTimezone) {
-		return new OverTimeOfTimeZoneSet(
-				new EmTimezoneNo(flowOTTimezone.getWorktimeNo()),
-				flowOTTimezone.isRestrictTime(),
-				false,
-				null,
-				new OTFrameNo(flowOTTimezone.getOTFrameNo().v().intValue()),
-				new OTFrameNo(flowOTTimezone.getInLegalOTFrameNo().v().intValue()),
-				flowOTTimezone.getSettlementOrder());
 	}
 }

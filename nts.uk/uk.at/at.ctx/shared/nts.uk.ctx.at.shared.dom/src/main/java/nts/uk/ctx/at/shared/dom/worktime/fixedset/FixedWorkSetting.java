@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -252,6 +253,17 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			throw new RuntimeException("FixedWorkSetting clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return Map<就業時間帯No, 法定内の残業枠No>
+	 */
+	public Map<EmTimezoneNo, OverTimeFrameNo> getLegalOverTimeFrameNoMap(WorkType workType) {
+		return this.getOverTimeOfTimeZoneSet(workType).stream()
+				//就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toMap(k->k.getWorkTimezoneNo(), v->new OverTimeFrameNo(v.getLegalOTframeNo().v())));
 	}
 	
 	/**

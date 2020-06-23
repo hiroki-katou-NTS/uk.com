@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
@@ -282,6 +284,21 @@ public class IntegrationOfWorkTime {
 			case FIXED:				return this.fixedWorkSetting.get().getFixedWorkRestSetting().getCommonRestSet();
 			case FLEX:				return this.flexWorkSetting.get().getRestSetting().getCommonRestSetting();
 			case FLOW:				return this.flowWorkSetting.get().getRestSetting().getCommonRestSetting();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
+	}
+	
+	/**
+	 * 就業時間帯Noと法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return Map<就業時間帯No, 法定内の残業枠No>
+	 */
+	public Map<EmTimezoneNo, OverTimeFrameNo> getLegalOverTimeFrameNoMap(WorkType workType) {
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return this.fixedWorkSetting.get().getLegalOverTimeFrameNoMap(workType);
+			case FLEX:				return Collections.emptyMap();
+			case FLOW:				return this.flowWorkSetting.get().getLegalOverTimeFrameNoMap();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}

@@ -5,10 +5,13 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -226,5 +229,15 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 			return this.offdayWorkTimezone.getRestTimeZone();
 		}
 		return this.halfDayWorkTimezone.getRestTimezone();
+	}
+	
+	/**
+	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
+	 * @return Map<就業時間帯No, 法定内の残業枠No>
+	 */
+	public Map<EmTimezoneNo, OverTimeFrameNo> getLegalOverTimeFrameNoMap() {
+		return this.getHalfDayWorkTimezoneLstOTTimezone().stream()
+				//就業時間帯の残業枠はOvertimeWorkFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
 	}
 }

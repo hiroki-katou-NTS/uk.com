@@ -739,21 +739,15 @@ public class OverTimeSheet {
 				integrationOfDaily.getCalAttr().getOvertimeSetting(),
 				overTimeFrameTimeSheets);
 		
-		//流動勤務の「流動残業時間帯」を固定勤務の「残業時間の時間帯設定」へ変換
-		List<OverTimeOfTimeZoneSet> overTimeHourSetList = integrationOfWorkTime.getFlowWorkSetting().get().getHalfDayWorkTimezoneLstOTTimezone().stream()
-				.map(OTTimezone -> OverTimeOfTimeZoneSet.convertOverTimeOfTimeZoneSet(OTTimezone))
-				.collect(Collectors.toList());
-		
 		//変形基準内残業を分割
 		OverTimeFrameTimeSheetForCalc.dicisionCalcVariableWork(
-				overTimeFrameTimeSheets,
-				predetermineTimeSetForCalc.getAdditionSet().getPredTime(),
-				integrationOfDaily.getCalAttr().getOvertimeSetting(),
-				personDailySetting.getPersonInfo().getLaborSystem(),
-				companyCommonSetting.getDeformLaborOT().isLegalOtCalc(),
-				overTimeHourSetList,//固定勤務の「残業時間の時間帯設定」、流動の「流動残業時間帯」から変換した。
-				personDailySetting.getDailyUnit(),
-				personDailySetting.getAddSetting().getVacationCalcMethodSet());
+				companyCommonSetting,
+				personDailySetting,
+				todayWorkType,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				predetermineTimeSetForCalc,
+				overTimeFrameTimeSheets);
 		
 		//法定内残業分割処理
 		overTimeFrameTimeSheets = OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
