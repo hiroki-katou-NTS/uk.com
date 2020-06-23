@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
  * 年休残数情報
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualL
  *
  */
 @Getter
+@AllArgsConstructor
 public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 合計 */
