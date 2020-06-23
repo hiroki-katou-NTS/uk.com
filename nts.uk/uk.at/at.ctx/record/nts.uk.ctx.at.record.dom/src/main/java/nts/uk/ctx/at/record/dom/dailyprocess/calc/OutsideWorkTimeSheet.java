@@ -154,8 +154,8 @@ public class OutsideWorkTimeSheet {
 			}
 		}
 		return new OutsideWorkTimeSheet(
-				Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overTimeWorkFrameTimeSheet, new SubHolOccurrenceInfo())),
-				Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheetForCalc, new SubHolOccurrenceInfo())));
+				Optional.of(new OverTimeSheet(overTimeWorkFrameTimeSheet)),
+				Optional.of(new HolidayWorkTimeSheet(holidayWorkFrameTimeSheetForCalc)));
 	}
 	
 	/**
@@ -234,8 +234,8 @@ public class OutsideWorkTimeSheet {
 				companyCommonSetting.getZeroTime().get());
 		
 		return new OutsideWorkTimeSheet(
-				Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overDayEnd.getOverTimeList(), new SubHolOccurrenceInfo())),
-				Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(), overDayEnd.getHolList(), new SubHolOccurrenceInfo())));
+				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
+				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
 	}
 	
 	
@@ -285,7 +285,7 @@ public class OutsideWorkTimeSheet {
 				companyCommonSetting.getZeroTime().get());
 		
 		return new OutsideWorkTimeSheet(
-				Optional.of(new OverTimeSheet(new RaisingSalaryTime(), overDayEnd.getOverTimeList(), new SubHolOccurrenceInfo())),
-				Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(), overDayEnd.getHolList(), new SubHolOccurrenceInfo())));
+				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
+				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
 	}
 }

@@ -357,7 +357,7 @@ public class CalculationRangeOfOneDay {
 				}
 				//残業追加
 				else {
-					OverTimeSheet overTimeSheet = new OverTimeSheet(new RaisingSalaryTime(), overTimeFrame, new SubHolOccurrenceInfo());
+					OverTimeSheet overTimeSheet = new OverTimeSheet(overTimeFrame);
 					
 					this.outsideWorkTimeSheet = Finally.of(
 							new OutsideWorkTimeSheet(Optional.of(overTimeSheet), this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
@@ -365,8 +365,8 @@ public class CalculationRangeOfOneDay {
 			}
 			//法定外インスタンス作成
 			else {
-				OverTimeSheet overTimeSheet = new OverTimeSheet(new RaisingSalaryTime(), overTimeFrame, new SubHolOccurrenceInfo());
-				HolidayWorkTimeSheet holidayWorkTimeSheet = new HolidayWorkTimeSheet(new RaisingSalaryTime(), Collections.emptyList(), new SubHolOccurrenceInfo());
+				OverTimeSheet overTimeSheet = new OverTimeSheet(overTimeFrame);
+				HolidayWorkTimeSheet holidayWorkTimeSheet = new HolidayWorkTimeSheet(Collections.emptyList());
 				
 				this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(Optional.of(overTimeSheet), Optional.of(holidayWorkTimeSheet)));
 			}

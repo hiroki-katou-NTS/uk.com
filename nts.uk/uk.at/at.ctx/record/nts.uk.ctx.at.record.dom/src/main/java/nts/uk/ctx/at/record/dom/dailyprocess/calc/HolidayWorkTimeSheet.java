@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
@@ -18,13 +17,10 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
-import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -44,23 +40,16 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class HolidayWorkTimeSheet{
-	//加給時間
-	private RaisingSalaryTime raisingSalaryTime;
 	//休出枠時間帯
 	private List<HolidayWorkFrameTimeSheetForCalc> workHolidayTime;
-	//代休発生情報
-	private SubHolOccurrenceInfo subOccurrenceInfo;
 	
 
 	/**
 	* Constructor 
  	*/
-	public HolidayWorkTimeSheet(RaisingSalaryTime raisingSalaryTime, List<HolidayWorkFrameTimeSheetForCalc> workHolidayTime,
-								SubHolOccurrenceInfo subOccurrenceInfo) {
+	public HolidayWorkTimeSheet(List<HolidayWorkFrameTimeSheetForCalc> workHolidayTime) {
 		super();
-		this.raisingSalaryTime = raisingSalaryTime;
 		this.workHolidayTime = workHolidayTime;
-		this.subOccurrenceInfo = subOccurrenceInfo;
 	}
 		
 	/**
@@ -596,7 +585,7 @@ public class HolidayWorkTimeSheet{
 					midNightTimeSheet,
 					processingTimezone));
 		}
-		return new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo());
+		return new HolidayWorkTimeSheet(holidayWorkFrameTimeSheets);
 	}
 	
 	/**
@@ -646,6 +635,6 @@ public class HolidayWorkTimeSheet{
 					companyCommonSetting.midNightTimeSheet,
 					processingTimezone));
 		}
-		return new HolidayWorkTimeSheet(new RaisingSalaryTime(), holidayWorkFrameTimeSheets, new SubHolOccurrenceInfo());
+		return new HolidayWorkTimeSheet(holidayWorkFrameTimeSheets);
 	}
 }
