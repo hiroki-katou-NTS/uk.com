@@ -102,7 +102,7 @@ public class CreateStampDataForEmployeesService {
 		//	if 打刻する方法.打刻手段 == ICカード
 		if(stampMeans.equals(StampMeans.IC_CARD)){
 			//return 打刻カード作成結果#打刻カード作成結果($打刻カード, empty)
-			return new StampCardCreateResult(stampNumber.get().v(), null);
+			return new StampCardCreateResult(stampNumber.get().v(), Optional.ofNullable(null));
 		}
 		//$打刻カードリスト = require.打刻カード番号を取得する(社員ID)
 		List<StampCard> listStampCard = require.getListStampCard(employeeId);
@@ -112,7 +112,7 @@ public class CreateStampDataForEmployeesService {
 			
 			Optional<StampNumber> stampNumberOpt =  listStampCard.stream().map(x-> x.getStampNumber()).findFirst();
 			//	return 打刻カード作成結果#打刻カード作成結果($打刻カード, empty)	
-			return new StampCardCreateResult(stampNumberOpt.get().v(), null);
+			return new StampCardCreateResult(stampNumberOpt.get().v(), Optional.ofNullable(null) );
 		}
 		//	$打刻カード作成結果 = 打刻カード番号を自動作成する#作成する(require, 社員ID, 打刻手段)	
 		Optional<StampCardCreateResult> 	stampCardCreateResultOpt = AutoCreateStampCardNumberService.create(require, employeeId, stampMeans);

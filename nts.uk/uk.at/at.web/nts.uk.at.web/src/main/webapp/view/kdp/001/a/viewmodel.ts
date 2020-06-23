@@ -50,6 +50,11 @@ class KDP001AViewModel extends ko.ViewModel {
 	countTime: KnockoutObservable<number> = ko.observable(0);
 	settingCountTime: KnockoutObservable<number> = ko.observable(60);
 	buttonSetting: KnockoutObservable<StampToSuppress> = ko.observable(new StampToSuppress());
+	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
+		companyId: "000000000000-000",
+		displayItemId: [653, 651, 652],
+		notUseAttr: 0
+	});
 	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
 		{
 			buttonPositionNo: 1,
@@ -101,6 +106,11 @@ class KDP001AViewModel extends ko.ViewModel {
 		}
 	]);
 
+	constructor() {
+		super();
+		let vm = this;
+	}
+
 
 
 	created(params: any) {
@@ -135,6 +145,10 @@ class KDP001AViewModel extends ko.ViewModel {
 
 					vm.buttons(buttons);
 
+					if (_.has(setting, 'stampResultDisplayDto')) {
+						vm.stampResultDisplay(setting.stampResultDisplayDto);
+					}
+
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.settingDateTimeColor')) {
 						vm.settingDateTimeColor(setting.portalStampSettings.displaySettingsStampScreen.settingDateTimeColor);
 					}
@@ -167,17 +181,16 @@ class KDP001AViewModel extends ko.ViewModel {
 				this.$blockui("clear");
 			});;
 
-			let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
 			this.$blockui("invisible");
-			vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
+			vm.$ajax(requestUrl.getEmployeeStampData).then((data: Array<Array<IStampInfoDisp>>) => {
 				this.$blockui("clear");
 				let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
-				items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
+				items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 				vm.stampDatas(items || []);
 
-				if (vm.stampDatas().length && !vm.isScreenCD()) {
+				if (data.length && !vm.isScreenCD()) {
 
 					if (vm.screenMode() == 'a' || vm.screenMode() == 'b') {
 
@@ -189,7 +202,6 @@ class KDP001AViewModel extends ko.ViewModel {
 							$("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
 						}
 					}
-
 				}
 			}).always(() => {
 				this.$blockui("clear");
@@ -304,15 +316,17 @@ class KDP001AViewModel extends ko.ViewModel {
 			switch (data.buttonPositionNo) {
 				case 1:
 				case 2:
-					vm.reLoadStampDatas();
-					vm.getStampToSuppress();
-					break;
-				case 3:
-					vm.openDialogC(result);
-					break;
 				case 4:
-					vm.openDialogB(result);
+					vm.openDialogB(result,data.buttonPositionNo);
 					break;
+				case 3: {
+					if (vm.stampResultDisplay().notUseAttr === 1) {
+						vm.openDialogC(result,data.buttonPositionNo);
+					} else {
+						vm.openDialogB(result,data.buttonPositionNo);
+					}
+					break;
+				}
 			}
 		}).fail((error) => {
 			this.$dialog.alert({ messageId: error.messageId });
@@ -321,7 +335,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 	}
 
-	public openDialogB(dateParam) {
+	public openDialogB(dateParam,buttonDisNo) {
 
 		let vm = this;
 
@@ -332,7 +346,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 4 }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -360,7 +374,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 	}
 
-	public openDialogC(dateParam) {
+	public openDialogC(dateParam,buttonDisNo) {
 		let vm = this;
 
 		nts.uk.ui.windows.setShared('KDP010_2C', []);
@@ -374,7 +388,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		vm.$window.modal('/view/kdp/002/c/index.xhtml').then(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: 3 }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 4, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -404,13 +418,12 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public reLoadStampDatas() {
 		let vm = this;
-		let query = { startDate: moment().utc().add(-3, 'days').format("YYYY/MM/DD"), endDate: moment().utc().format("YYYY/MM/DD") };
 		vm.$blockui("invisible");
-		vm.$ajax(requestUrl.getEmployeeStampData, query).then((data: Array<Array<IStampInfoDisp>>) => {
+		vm.$ajax(requestUrl.getEmployeeStampData).then((data: Array<Array<IStampInfoDisp>>) => {
 			vm.$blockui("clear");
 			let items = _.flatMap(data, 'listStampInfoDisp') as any[];
 
-			items = _.sortBy(items, [function(o) { return moment.utc(o.stampDatetime); }]).reverse();
+			items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 			vm.stampDatas(items || []);
 		}).always(() => {
@@ -478,8 +491,15 @@ class StampToSuppress {
 
 }
 
+interface IStampResultDisplay {
+	companyId: string;
+	displayItemId: Array<number>;
+	notUseAttr: number
+}
+
 interface IStampSetting {
 	portalStampSettings: IPortalStampSettingsDto;
+	stampResultDisplayDto: IStampResultDisplay;
 }
 
 interface IPortalStampSettingsDto {
