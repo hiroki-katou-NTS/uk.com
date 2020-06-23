@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.find.login.dto;
+package nts.uk.screen.at.app.query.kdp.kdp003.f;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StampCompany {
+public class GetListCompanyHasStampedDto {
 
 	private String companyCode;      // 会社コード
 	private String companyName;      // 会社名

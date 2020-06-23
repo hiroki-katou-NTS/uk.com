@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.app.find.login;
+package nts.uk.screen.at.app.query.kdp.kdp003.f;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,20 +9,18 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.login.dto.StampCompany;
-
 /**
  * @author laitv
  * 打刻入力のログイン設定を取得する
  *
  */
 @Stateless
-public class LoginSettingsForTimeStampInput {
+public class GetLoginSettingsStampInput {
 	
 	@Inject
-	private CompaniesHaveBeenStampedFinder comHaveBeenStampedFinder;
+	private GetListCompanyHasStamped comHaveBeenStampedFinder;
 	
-	public List<StampCompany> getLoginSettingsForTimeStampInput(){
+	public List<GetListCompanyHasStampedDto> getLoginSettingsForTimeStampInput(){
 		
 		return comHaveBeenStampedFinder.getListOfCompaniesHaveBeenStamped(Optional.empty());
 		
