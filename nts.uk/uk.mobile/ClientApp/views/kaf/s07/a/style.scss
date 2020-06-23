@@ -4,3 +4,22 @@
 .textSize {
     font-size: 0.8em;
 }
+.iconWarn {
+    float:left; 
+    margin: 9px;
+}
+.error {
+    background-color:#F8D7DA; 
+    border: 1px solid red; 
+    height: 35px !important; 
+    text-align: center;  
+    display: block;
+    justify-content: center;
+    align-items: center; 
+    padding:0px
+}
+.contentError {
+    float:left; 
+    padding-top:6px; 
+    color:#78252C
+}

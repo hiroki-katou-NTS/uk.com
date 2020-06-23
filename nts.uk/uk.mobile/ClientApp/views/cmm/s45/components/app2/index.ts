@@ -32,7 +32,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
 }
 // dto 
 export class AppWorkChange {
-
+    
     public workType: String;
 
     public workTime: String;

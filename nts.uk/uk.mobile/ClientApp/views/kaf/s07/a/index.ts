@@ -34,13 +34,14 @@ import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
 export class KafS07AComponent extends Vue {
     public title: string = 'KafS07A';
 
+    // data that is fetched from server 
     public app: AppWorkChange;
 
     public mode: String = 'create';
 
     public worktype: Work = new Work();
 
-    public worktime: Work = new Work();
+    public worktime: WorkTime = new WorkTime();
 
     public switchbox1: number = 1;
 
@@ -97,9 +98,14 @@ export class KafS07AComponent extends Vue {
     }
 
     public register() {
-        let self = this;
-        console.log(self.application);
+        console.log(this.application);
         // check validation 
+        this.$validate();
+        if (!this.$valid) {
+            window.scrollTo(500, 0);
+            
+            return;
+        }
         this.app = new AppWorkChange(
             this.worktype.code + '  ' + this.worktype.name,
             this.worktime.code + '  ' + this.worktime.name,
@@ -154,8 +160,14 @@ export class KafS07AComponent extends Vue {
                 selectedWorkTimeCD: '001',
                 isSelectWorkTime: true,
             }
-        ).then((data: any) => {
-            
+        ).then((f: any) => {
+            if (f) {
+                this.worktype.code = f.selectedWorkType.workTypeCode;
+                this.worktype.name = f.selectedWorkType.name;
+                this.worktime.code = f.selectedWorkTime.code;
+                this.worktime.name = f.selectedWorkTime.name;
+                this.worktime.time = f.selectedWorkTime.workTime1;
+            }
         }).catch((res: any) => {
             this.$modal.error({ messageId: res.messageId });
         });
@@ -170,7 +182,14 @@ export class Work {
     }
 
 }
-// data that is fetched server 
+export class WorkTime extends Work {
+    public time: String = '09:30 ~ 17:30';
+    constructor() {
+        super();
+    }
+}
+// data that is fetched from server 
+
 export class Model extends AppWorkChange {
 
     constructor(workType: String, workTime: String, workHours1: String, workHours2: String, straight: boolean, bounce: boolean) {

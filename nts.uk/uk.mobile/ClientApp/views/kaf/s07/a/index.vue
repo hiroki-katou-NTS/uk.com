@@ -1,5 +1,5 @@
 <template>
-<div class="kafs07a">
+  <div class="kafs07a">
     <!-- <div>
         <kafs00-a v-if="true" v-bind:params="{application: application}" /> 
     </div>
@@ -18,9 +18,18 @@
             appDispInfoStartupOutput: appDispInfoStartupOutput
         }" />    
     </div>
-    <button type="button" class="btn btn-success" v-on:click="register">Register</button> -->
+    <button type="button" class="btn btn-success" v-on:click="register">Register</button>-->
 
-     <div class="card card-label">
+    <div v-if="!$valid" class="alert error">
+      <img
+        class="iconWarn"
+        src="https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
+        width="16"
+        height="16"
+      />
+      <div class="contentError">{{'KAFS07_1'| i18n}}</div>
+    </div>
+    <div class="card card-label">
       <!-- A4_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS07_2' | i18n}}</span>
@@ -37,12 +46,17 @@
 
         <!-- A4_3 -->
         <span class="textSize">{{'KAFS07_4' | i18n}}</span>
-        <button type="button" v-bind:enable="isDisplay1()" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
+        <button
+          type="button"
+          v-bind:enable="isDisplay1()"
+          class="btn btn-selection mt-2 mb-2"
+          v-on:click="openKDL002()"
+        >
           <!-- A4_3_1 -->
           <span class="badge badge-secondary textSize">{{worktime.code}}</span>
           <span>{{worktime.name}}</span>
           <!-- A4_3_2 -->
-          <span class="d-block mt-1">09:30~17:30</span>
+          <span class="d-block mt-1">{{worktime.time}}</span>
         </button>
       </div>
     </div>
@@ -63,7 +77,6 @@
       </div>
     </div>
 
-
     <div class="card card-label">
       <!-- A6_1 -->
       <div v-if="isDisplay3()" class="card-header uk-bg-accordion">
@@ -71,10 +84,9 @@
         <span class="badge badge-warning">必須</span>
       </div>
       <div v-if="isDisplay3()" v-bind:enable="isDisplay1()" class="card-body">
-          <nts-time-range-input v-model="valueWorkHours1"/>
+        <nts-time-range-input v-model="valueWorkHours1" />
       </div>
     </div>
-
 
     <div class="card card-label">
       <!-- A7_1 -->
@@ -84,16 +96,25 @@
       </div>
       <!-- A7_2 -->
       <div v-if="isDisplay2()" v-bind:enable="isDisplay3()" class="card-body">
-          <nts-time-range-input v-model="valueWorkHours2"/>
+        <nts-time-range-input v-model="valueWorkHours2" />
       </div>
     </div>
+    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
-    <button v-if="mode == 'create'" type="button" class="btn btn-primary btn-block">{{'KAFS07_8' | i18n}}</button>
+    <button
+      v-if="mode == 'create'"
+      type="button"
+      class="btn btn-primary btn-block"
+      v-on:click="register()"
+    >{{'KAFS07_8' | i18n}}</button>
     <!-- 画面モード = 編集モード -->
-    <button v-else type="button" class="btn btn-primary btn-block">{{'KAFS07_16' | i18n}}</button>
-
-
-
-</div>
+    <button
+      v-else
+      type="button"
+      class="btn btn-primary btn-block"
+      v-on:click="register()"
+    >{{'KAFS07_16' | i18n}}</button>
+  </div>
 </template>
