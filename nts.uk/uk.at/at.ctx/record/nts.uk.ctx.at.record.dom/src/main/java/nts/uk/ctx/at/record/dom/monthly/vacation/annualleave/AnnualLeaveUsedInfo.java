@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author masaaki_jinno
  *
  */
+@Getter
 public class AnnualLeaveUsedInfo implements Cloneable {
 
 	/** 付与前 */
