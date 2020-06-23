@@ -50,17 +50,3 @@ module nts.uk.at.view.kdp.share {
         }
     }
 }
-
-// ko.components.register('stamp-clock', {
-//     viewModel: nts.uk.at.view.kdp.share.StampClock, template: `
-//     <div id="stamp-header">
-//         <div class="panel" id="stamp-date"
-//             data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-//         <span id="stamp-date-text" data-bind="text: displayDate"></span>
-//         </div>
-//             <div class="panel" id="stamp-time"
-//             data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-//             <span id="stamp-time-text" data-bind="text: displayTime"></span>
-//         </div>
-//     </div>
-// `});

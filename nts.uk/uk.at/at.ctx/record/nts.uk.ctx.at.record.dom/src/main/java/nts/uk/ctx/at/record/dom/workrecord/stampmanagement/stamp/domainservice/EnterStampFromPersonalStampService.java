@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -53,8 +52,8 @@ public class EnterStampFromPersonalStampService {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, empty, 打刻日時, $打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)	
-		// TODO: Chungnt Gọi đến DS của anh Sơn
-		return null;
+		return CreateStampDataForEmployeesService.create(require, new ContractCode(contractCode), employeeId, null, stmapDateTime,
+				relieve, buttonSet.get().getButtonType(), refActualResults, null);
 	}
 
 	public static interface Require extends CreateStampDataForEmployeesService.Require {

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -12,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -22,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.ポータル打刻から打刻を入力する.ポータル打刻から打刻を入力する
  *
  */
+@Stateless
 public class EnterStampFromPortalService {
 	/**
 	 * [1] 作成する
@@ -32,7 +34,7 @@ public class EnterStampFromPortalService {
 	 * @param 社員ID
 	 *            employeeID
 	 * @param 打刻日時
-	 *            datetime
+	 *            stampDatetime
 	 * @param ボタン位置NO
 	 *            buttonPositionNo
 	 * @param 実績への反映内容
@@ -41,11 +43,11 @@ public class EnterStampFromPortalService {
 	 * 
 	 *         ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	public TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
-			GeneralDateTime datetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
+	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+			GeneralDateTime stampDatetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
 
 		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
-		Optional<PortalStampSettings> settingStampPotal = require.get(AppContexts.user().companyId());
+		Optional<PortalStampSettings> settingStampPotal = require.getPortalStampSetting();
 
 		if (!settingStampPotal.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -63,14 +65,14 @@ public class EnterStampFromPortalService {
 
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, NULLL, 打刻日時, $打刻する方法,
 		// $ボタン詳細設定.ボタン種類, 実績への反映内容, NULL)
-		//TODO: Chungnt Gọi đến DS của anh Sơn :D
-		return null;
+		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, null, stampDatetime,
+				relieve, settingButton.get().getButtonType(), refActualResults, null);
 	}
 
-	public static interface Require {
+	public static interface Require extends CreateStampDataForEmployeesService.Require {
 
 		// [R-1] ポータルの打刻設定を取得する
-		Optional<PortalStampSettings> get(String comppanyID);
+		Optional<PortalStampSettings> getPortalStampSetting();
 	}
 
 }

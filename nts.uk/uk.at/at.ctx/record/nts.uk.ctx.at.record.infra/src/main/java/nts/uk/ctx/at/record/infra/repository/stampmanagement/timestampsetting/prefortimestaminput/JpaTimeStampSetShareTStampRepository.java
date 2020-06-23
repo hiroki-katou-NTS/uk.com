@@ -61,7 +61,7 @@ public class JpaTimeStampSetShareTStampRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public Optional<TimeStampSetShareTStamp> get(String comppanyID) {
+	public Optional<TimeStampSetShareTStamp> gets(String comppanyID) {
 		
 		Optional<KrcmtStampCommunal> entityOpt = this.queryProxy().find(comppanyID,
 				KrcmtStampCommunal.class);

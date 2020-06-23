@@ -16,13 +16,27 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public class AgeementTimeCommonSetting {
 
 	private BasicAgreementSettingsGetter basicSetGetter;
-	
+	/**
+	 * 社員の年月日の労働条件項目
+	 */
 	private Map<String, Map<GeneralDate, WorkingConditionItem>> workCondition;
-	
+	/**
+	 * ３６協定基本設定
+	 * @param companyId
+	 * @param employeeId
+	 * @param criteria
+	 * @param workingSystem
+	 * @return
+	 */
 	public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteria, WorkingSystem workingSystem){
 		return basicSetGetter.getBasicSet(companyId, employeeId, criteria, workingSystem);
 	}
-	
+	/**
+	 * 
+	 * @param empId
+	 * @param criteria
+	 * @return
+	 */
 	public Optional<WorkingConditionItem> getWorkCondition(String empId, GeneralDate criteria) {
 		if(workCondition.containsKey(empId)){
 			if(workCondition.get(empId).containsKey(criteria)){

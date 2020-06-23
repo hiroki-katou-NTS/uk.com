@@ -6,6 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.p
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
@@ -22,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author laitv
  *
  */
+@Stateless
 public class JpaSetSmartphoneStampRepository  extends JpaRepository implements SettingsSmartphoneStampRepository  {
 
 	@Override

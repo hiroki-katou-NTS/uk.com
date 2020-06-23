@@ -14,11 +14,11 @@ public class TopPageArmDetailTest {
 
 	@Test
 	public void getters() {
-		TopPageArmDetail topPageArmDetail = new TopPageArmDetail("DUMMY",
+		TopPageAlarmDetail topPageAlarmDetail = new TopPageAlarmDetail("DUMMY",
 				1, //dummy
 				"DUMMY");
 		
-		NtsAssert.invokeGetters(topPageArmDetail);
+		NtsAssert.invokeGetters(topPageAlarmDetail);
 	}
 
 }

@@ -133,7 +133,15 @@ public class TotalProcessAnnualHoliday {
 		
 		return listValueExtractAlarm;
 	}
-
+	/**
+	 * 年休の集計処理
+	 * @param companyID
+	 * @param alCheckConByCategories
+	 * @param employees
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> totalProcessAnnualHolidayV2(String companyID, List<AlarmCheckConditionByCategory> alCheckConByCategories ,List<EmployeeSearchDto> employees, 
 		Consumer<Integer> counter, Supplier<Boolean> shouldStop){
@@ -144,6 +152,7 @@ public class TotalProcessAnnualHoliday {
 			return Collections.emptyList();
 		}
 		for(AlarmCheckConditionByCategory alCheckConByCategory : alCheckConByCategories) {
+			//年休アラーム条件
 			AnnualHolidayAlarmCondition annualHolidayAlarmCondition = (AnnualHolidayAlarmCondition) alCheckConByCategory.getExtractionCondition();
 			//年休使用義務チェック条件.年休使用義務日数
 			YearlyUsageObDay yearlyUsageObDay = annualHolidayAlarmCondition.getAlarmCheckConAgr().getUsageObliDay();
@@ -158,9 +167,11 @@ public class TotalProcessAnnualHoliday {
 					continue;
 				
 				//ドメインモデル「年休付与残数データ」を取得
-				List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData =  annLeaGrantRemDataRepository.findByCheckState(employee.getId(),LeaveExpirationStatus.AVAILABLE.value);
+				List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData =  annLeaGrantRemDataRepository.findByCheckState(employee.getId(),
+						LeaveExpirationStatus.AVAILABLE.value);
 				//sort
-				List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingDataSort = listAnnualLeaveGrantRemainingData.stream().sorted((x,y) -> x.getGrantDate().compareTo(y.getGrantDate()))
+				List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingDataSort = listAnnualLeaveGrantRemainingData.stream()
+						.sorted((x,y) -> x.getGrantDate().compareTo(y.getGrantDate()))
 						.collect(Collectors.toList());
 				// create obligedAnnualLeaveUse
 				ObligedAnnualLeaveUse obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(

@@ -61,4 +61,24 @@ public class TimeStampSetShareTStampHelper {
 		return setShareTStamp;
 	}
 	
+public static TimeStampSetShareTStamp get_list_empty() {
+		
+		List<StampPageLayout> lstStampPageLayout = new ArrayList<>();
+		
+		DisplaySettingsStampScreen displaySetStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
+				new ResultDisplayTime(1));
+		
+		TimeStampSetShareTStamp setShareTStamp = new TimeStampSetShareTStamp(
+				"000-0000000001", 
+				displaySetStampScreen, 
+				lstStampPageLayout, 
+				true, 
+				false, 
+				NotUseAtr.USE, 
+				Optional.empty());
+		
+		return setShareTStamp;
+	}
+	
 }

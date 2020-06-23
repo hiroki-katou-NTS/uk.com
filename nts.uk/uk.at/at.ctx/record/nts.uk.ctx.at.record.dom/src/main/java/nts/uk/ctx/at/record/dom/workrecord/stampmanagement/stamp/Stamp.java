@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
@@ -17,8 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author tutk
  *
  */
-
-
+@AllArgsConstructor
 public class Stamp implements DomainAggregate {
 
 	/**
@@ -75,22 +75,6 @@ public class Stamp implements DomainAggregate {
 	@Getter
 	private Optional<AttendanceTime> attendanceTime = Optional.empty();
 
-	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, boolean reflectedCategory,
-			StampLocationInfor locationInfor) {
-		super();
-		//ver2　属性追加 Cái constructor này là class trước ver2 đã có mà cái này là sai thiết kế bây giờ
-		this.contractCode = contractCode; 
-		
-		this.cardNumber = cardNumber;
-		this.stampDateTime = stampDateTime;
-		this.relieve = relieve;
-		this.type = type;
-		this.refActualResults = refActualResults;
-		this.reflectedCategory = reflectedCategory;
-		this.locationInfor = Optional.ofNullable(locationInfor);
-	}
-
 	/**
 	 * [C-1] 初回打刻データを作成する
 	 * @param contractCode
@@ -102,7 +86,7 @@ public class Stamp implements DomainAggregate {
 	 * @param locationInfor
 	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, StampLocationInfor locationInfor) {
+			StampType type, RefectActualResult refActualResults, Optional<StampLocationInfor> locationInfor) {
 		super();
 		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
@@ -111,7 +95,7 @@ public class Stamp implements DomainAggregate {
 		this.type = type;
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = false;
-		this.locationInfor = Optional.ofNullable(locationInfor);
+		this.locationInfor = locationInfor;
 	}
 
 	public void setAttendanceTime(AttendanceTime attendanceTime) {

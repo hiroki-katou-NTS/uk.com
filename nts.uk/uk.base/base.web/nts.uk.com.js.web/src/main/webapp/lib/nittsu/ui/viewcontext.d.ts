@@ -35,6 +35,7 @@ declare function component(params: { name: string; template: string; }): any;
 interface KnockoutStatic {
     ViewModel: {
         new(): {
+			$el: HTMLElement;
             readonly $user: {
                 readonly contractCode: string;
                 readonly companyId: string;
