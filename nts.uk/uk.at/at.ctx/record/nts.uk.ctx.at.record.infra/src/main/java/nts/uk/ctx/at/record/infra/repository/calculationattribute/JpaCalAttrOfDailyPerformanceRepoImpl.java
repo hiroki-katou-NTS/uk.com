@@ -26,13 +26,14 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalculationSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalculationSetPK;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstFlexAutoCalSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstHolAutoCalSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstOtAutoCalSet;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -131,13 +132,13 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	@Override
-	public void update(CalAttrOfDailyPerformance domain) {
+	public void update(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day) {
 		KrcstDaiCalculationSet calc = this.queryProxy()
-				.find(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()),
+				.find(new KrcstDaiCalculationSetPK(employeeId, day),
 						KrcstDaiCalculationSet.class)
 				.orElse(null);
 		if (calc == null) {
-			add(domain);
+			this.add(domain, employeeId, day);
 		} else {
 			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
 					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
@@ -168,7 +169,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	@Override
-	public void add(CalAttrOfDailyPerformance domain) {
+	public void add(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day) {
 		KrcstFlexAutoCalSet flexCalc = new KrcstFlexAutoCalSet(IdentifierUtil.randomUniqueId());
 		setFlexCalcSetting(domain.getFlexExcessTime().getFlexOtTime(), flexCalc);
 
@@ -179,7 +180,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		setOvertimeCalcSetting(domain.getOvertimeSetting(), overtimeCalc);
 
 		KrcstDaiCalculationSet calcSet = new KrcstDaiCalculationSet(
-				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
+				new KrcstDaiCalculationSetPK(employeeId, day));
 		if (domain.getRasingSalarySetting() != null) {
 			calcSet.bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
 			calcSet.bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;

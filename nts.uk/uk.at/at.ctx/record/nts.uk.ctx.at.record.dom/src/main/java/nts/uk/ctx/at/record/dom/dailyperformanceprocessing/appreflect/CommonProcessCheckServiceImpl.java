@@ -189,7 +189,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		} else {
 			breakTimeRepo.update(commonPara.getIntegrationOfDaily().getBreakTime());	
 		}
-		commonPara.getIntegrationOfDaily().getAttendanceLeave().ifPresent(a -> timeLeavingOfDaily.updateFlush(a));
+		commonPara.getIntegrationOfDaily().getAttendanceLeave().ifPresent(a -> timeLeavingOfDaily.updateFlush(a, commonPara.getSid(), commonPara.getYmd()));
 		workRepository.updateByKeyFlush(x.getWorkInformation());
 		timeAndAnyItemUpService.addAndUpdate(lstCal);
 		dailyReposiroty.addAndUpdate(commonPara.getIntegrationOfDaily().getEditState());

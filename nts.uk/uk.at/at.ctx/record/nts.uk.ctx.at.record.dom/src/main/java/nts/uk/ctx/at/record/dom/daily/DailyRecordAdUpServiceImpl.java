@@ -15,8 +15,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
@@ -25,7 +23,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
@@ -39,7 +36,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.divergencetime.service.DivTimeSysFixedCheckService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
@@ -49,11 +45,15 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -131,17 +131,17 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpAffilicationInfo(AffiliationInforOfDailyPerfor affiliationInfor) {
-		if(affInfoRepo.findByKey(affiliationInfor.getEmployeeId(), affiliationInfor.getYmd()).isPresent()) {
-			affInfoRepo.updateByKey(affiliationInfor);
+	public void adUpAffilicationInfo(AffiliationInforOfDailyAttd affiliationInfor, String employeeID, GeneralDate day) {
+		if(affInfoRepo.findByKey(employeeID, day).isPresent()) {
+			affInfoRepo.updateByKey(affiliationInfor, employeeID, day);
 		}else {
-			affInfoRepo.add(affiliationInfor);
+			affInfoRepo.add(affiliationInfor, employeeID, day);
 		}
 	}
 
 	@Override
-	public void adUpCalAttr(CalAttrOfDailyPerformance calAttr) {
-		calAttrRepo.update(calAttr);
+	public void adUpCalAttr(CalAttrOfDailyAttd calAttr, String employeeId, GeneralDate day) {
+		calAttrRepo.update(calAttr, employeeId, day);
 	}
 
 	@Override
@@ -156,13 +156,13 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
+	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyAttd> attendanceLeave, String employeeId, GeneralDate day) {
 		if (!attendanceLeave.isPresent())
 			return;
-		if(timeLeavingRepo.findByKey(attendanceLeave.get().getEmployeeId(), attendanceLeave.get().getYmd()).isPresent()) {
-			timeLeavingRepo.update(attendanceLeave.get());
+		if(timeLeavingRepo.findByKey(employeeId, day).isPresent()) {
+			timeLeavingRepo.update(attendanceLeave.get(), employeeId, day);
 		}else {
-			timeLeavingRepo.insert(attendanceLeave.get());
+			timeLeavingRepo.insert(attendanceLeave.get(), employeeId, day);
 		}
 
 	}
@@ -214,10 +214,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpSpecificDate(Optional<SpecificDateAttrOfDailyPerfor> specDateAttr) {
+	public void adUpSpecificDate(Optional<SpecificDateAttrOfDailyAttd> specDateAttr, String employeeId, GeneralDate day) {
 		if (!specDateAttr.isPresent())
 			return;
-		specificDateAttrRepo.update(specDateAttr.get());
+		specificDateAttrRepo.update(specDateAttr.get(), employeeId, day);
 
 	}
 
@@ -300,8 +300,8 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSet.isPresent() ? approvalSet : approvalSettingRepo.findByCompanyId(companyId);
 		
 		domainDaily.forEach(record ->{
-			divTimeSysFixedCheckService.removeconfirm(companyId, record.getWorkInformation().getEmployeeId(),
-					record.getWorkInformation().getYmd(), record.getEmployeeError(), iPUSOptTemp, approvalSetTemp);
+			divTimeSysFixedCheckService.removeconfirm(companyId, record.getEmployeeId(),
+					record.getYmd(), record.getEmployeeError(), iPUSOptTemp, approvalSetTemp);
 		});
 	}
 

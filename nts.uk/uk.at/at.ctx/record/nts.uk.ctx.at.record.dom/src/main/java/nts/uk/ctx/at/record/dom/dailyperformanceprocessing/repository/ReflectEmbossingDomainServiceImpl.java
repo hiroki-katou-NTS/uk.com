@@ -42,6 +42,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
@@ -55,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Wo
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 //import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.repository.TempWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -105,8 +107,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private ManageWorkTemporaryRepository temporaryWorkManageRepo;
 
 	@Override
-	public ReflectStampOutput reflectStamp(WorkInfoOfDailyPerformance WorkInfo,
-			TimeLeavingOfDailyPerformance timeDailyPer, List<Stamp> lstStamp, StampReflectRangeOutput s,
+	public ReflectStampOutput reflectStamp(WorkInfoOfDailyAttendance WorkInfo,
+			TimeLeavingOfDailyAttd timeDailyPer, List<Stamp> lstStamp, StampReflectRangeOutput s,
 			GeneralDate date, String employeeId, String companyId) {
 		List<Stamp> stamps = new ArrayList<Stamp>();
 
@@ -2481,7 +2483,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	}
 
 	private TimeLeavingOfDailyPerformance reflectActualTimeOrAttendence(List<Stamp> stamps,
-			WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeDailyPer, GeneralDate date,
+			WorkInfoOfDailyAttendance WorkInfo, TimeLeavingOfDailyAttd timeDailyPer, GeneralDate date,
 			String employeeId, Stamp x, String attendanceClass, String actualStampClass, int worktNo,
 			String companyId) {
 		TimePrintDestinationOutput timePrintDestinationOutput = new TimePrintDestinationOutput();
@@ -2491,8 +2493,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// khởi tạo đối tượng mới
 		WorkStamp stampOrActualStamp = null;
 		TimeActualStamp timeActualStamp = null;
-		if (timeDailyPer != null && timeDailyPer.getAttendance().getTimeLeavingWorks() != null
-				&& !timeDailyPer.getAttendance().getTimeLeavingWorks().isEmpty()) {
+		if (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null
+				&& !timeDailyPer.getTimeLeavingWorks().isEmpty()) {
 			timeActualStamp = this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass);
 			checkTimeLeavingWorkExist = this.checkTimeLeavingWorkExist(timeDailyPer, worktNo, attendanceClass);
 			if (timeActualStamp != null && "実打刻".equals(actualStampClass)) {
@@ -2572,8 +2574,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// timePrintDestinationCopy
 					if ("打刻".equals(actualStampClass)) {
 
-						RoundingSet roudingTime = WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null
-								? this.getRoudingTime(companyId, WorkInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+						RoundingSet roudingTime = WorkInfo.getScheduleInfo().getWorkTimeCode() != null
+								? this.getRoudingTime(companyId, WorkInfo.getScheduleInfo().getWorkTimeCode().v(),
 										"退勤".equals(attendanceClass) ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 								: null;
 						InstantRounding instantRounding = null;
@@ -2634,8 +2636,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// update data TimeLeavingOfDailyPerformance
 
 		if (isNullStampOrActualStamp && isNullTimeActualStamp && !checkTimeLeavingWorkExist) {
-			List<TimeLeavingWork> lstTimeLeave = (timeDailyPer != null && timeDailyPer.getAttendance().getTimeLeavingWorks() != null)
-					? timeDailyPer.getAttendance().getTimeLeavingWorks() : new ArrayList<TimeLeavingWork>();
+			List<TimeLeavingWork> lstTimeLeave = (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null)
+					? timeDailyPer.getTimeLeavingWorks() : new ArrayList<TimeLeavingWork>();
 
 			if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
 				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo),
@@ -2671,7 +2673,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 			return new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(worktNo), lstTimeLeave, date);
 		} else {
-			List<TimeLeavingWork> timeLeavingWorks = timeDailyPer.getAttendance().getTimeLeavingWorks();
+			List<TimeLeavingWork> timeLeavingWorks = timeDailyPer.getTimeLeavingWorks();
 			int size = timeLeavingWorks.size();
 			for (int i = 0; i < size; i++) {
 				TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
@@ -2819,9 +2821,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //		return null;
 //	}
 
-	private TimeActualStamp getTimeActualStamp(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo,
+	private TimeActualStamp getTimeActualStamp(TimeLeavingOfDailyAttd timeDailyPer, int worktNo,
 			String attendanceClass) {
-		List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getAttendance().getTimeLeavingWorks();
+		List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
 		int n = lstTimeLeavingWork.size();
 		for (int i = 0; i < n; i++) {
 			TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);

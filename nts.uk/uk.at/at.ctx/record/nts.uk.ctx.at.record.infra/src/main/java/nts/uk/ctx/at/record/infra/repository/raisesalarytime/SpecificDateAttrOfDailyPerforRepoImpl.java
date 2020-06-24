@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayCla;
 import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayClaPK;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -48,8 +49,8 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	}
 
 	@Override
-	public void update(SpecificDateAttrOfDailyPerfor domain) {
-		List<KrcdtDaiSpeDayCla> entities = findEntities(domain.getEmployeeId(), domain.getYmd()).getList();
+	public void update(SpecificDateAttrOfDailyAttd domain, String employeeId, GeneralDate day) {
+		List<KrcdtDaiSpeDayCla> entities = findEntities(employeeId, day).getList();
 		domain.getSpecificDateAttrSheets().stream().forEach(c -> {
 			KrcdtDaiSpeDayCla current = entities.stream()
 					.filter(x -> x.krcdtDaiSpeDayClaPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
@@ -57,7 +58,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 			if (current != null) {
 				current.tobeSpeDay = c.getSpecificDateAttr().value;
 			} else {
-				entities.add(newEntities(domain.getEmployeeId(), domain.getYmd(), c));
+				entities.add(newEntities(employeeId, day, c));
 			}
 		});
 		commandProxy().updateAll(entities);
@@ -65,7 +66,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void add(SpecificDateAttrOfDailyPerfor domain) {
-		List<KrcdtDaiSpeDayCla> entities = domain.getSpecificDateAttrSheets().stream()
+		List<KrcdtDaiSpeDayCla> entities = domain.getSpecificDay().getSpecificDateAttrSheets().stream()
 				.map(c -> newEntities(domain.getEmployeeId(), domain.getYmd(), c)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
 	}

@@ -10,6 +10,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 public interface ReflectBreakTimeOfDailyDomainService {
@@ -19,8 +21,8 @@ public interface ReflectBreakTimeOfDailyDomainService {
 	
 		//就業時間帯の休憩時間帯を日別実績に写す
 	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
-			WorkInfoOfDailyPerformance WorkInfo);
+			String empCalAndSumExecLogID, TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance,
+			WorkInfoOfDailyAttendance WorkInfo);
 
 	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance WorkInfo);

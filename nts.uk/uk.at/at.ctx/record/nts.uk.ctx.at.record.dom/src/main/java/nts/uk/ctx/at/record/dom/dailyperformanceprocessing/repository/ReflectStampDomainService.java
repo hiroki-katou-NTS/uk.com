@@ -4,11 +4,15 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
@@ -27,19 +31,19 @@ public interface ReflectStampDomainService {
 	// empCalAndSumExecLogID,
 	// ExecutionType reCreateAttr);
 	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			Optional<CalAttrOfDailyPerformance> calcOfDaily,
-			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			WorkInfoOfDailyAttendance workInfoOfDailyPerformance,
+			TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
+			Optional<CalAttrOfDailyAttd> calcOfDaily,
+			Optional<AffiliationInforOfDailyAttd> affInfoOfDaily,
 			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
 
 	// 2.打刻を取得して反映する 
 	// fixbug 105926
 	// class acquireReflectEmbossing gan giong class reflectStampInfo
 	public NewReflectStampOutput acquireReflectEmbossing(String companyID, String employeeID,
-			GeneralDate processingDate, Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			Optional<CalAttrOfDailyPerformance> calcOfDaily,
-			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			GeneralDate processingDate, Optional<WorkInfoOfDailyAttendance> workInfoOfDailyPerformance,
+			TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
+			Optional<CalAttrOfDailyAttd> calcOfDaily,
+			Optional<AffiliationInforOfDailyAttd> affInfoOfDaily,
 			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag);
 }

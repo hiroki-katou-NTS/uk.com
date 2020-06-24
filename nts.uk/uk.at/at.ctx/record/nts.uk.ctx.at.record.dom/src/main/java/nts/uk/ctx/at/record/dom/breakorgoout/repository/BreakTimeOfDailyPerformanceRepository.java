@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface BreakTimeOfDailyPerformanceRepository {
@@ -20,7 +21,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
-	void insert(BreakTimeOfDailyPerformance breakTimes);
+	void insert(BreakTimeOfDailyAttd breakTimes, String employeeID, GeneralDate day);
 	
 	void insert(List<BreakTimeOfDailyPerformance> breakTimes);
 	
@@ -32,7 +33,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType);
 	
-	void updateForEachOfType(BreakTimeOfDailyPerformance breakTime);
+	void updateForEachOfType(BreakTimeOfDailyAttd breakTime,String employeeID, GeneralDate day);
 	
 	void updateNotDelete(List<BreakTimeOfDailyPerformance> breakTimes);
 }

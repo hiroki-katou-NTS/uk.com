@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTimePK;
 import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -175,7 +176,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
-	public void insert(BreakTimeOfDailyPerformance breakTimes) {
+	public void insert(BreakTimeOfDailyAttd breakTimes, String employeeID, GeneralDate day) {
 //		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
 //		this.getEntityManager().flush();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
@@ -183,8 +184,8 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			Statement statementI = con.createStatement();
 			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
 				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
-						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
-						+ breakTimes.getYmd() + "' , "
+						+ "VALUES( '" + employeeID + "' , '"
+						+ day + "' , "
 						+ breakTimes.getBreakType().value + " , "
 						+ breakTimeSheet.getBreakFrameNo().v() + " , "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
@@ -430,15 +431,15 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		}
     }
 	@Override
-	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
+	public void updateForEachOfType(BreakTimeOfDailyAttd breakTime,String employeeID, GeneralDate day) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			for(BreakTimeSheet breakTimeSheet : breakTime.getBreakTimeSheets()){
 			
 				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , END_STAMP_TIME = "
-						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + breakTime.getEmployeeId()
-						+ "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = "
+						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + employeeID
+						+ "' AND YMD = '" + day + "'" + " AND BREAK_TYPE = "
 						+ breakTime.getBreakType().value + " AND BREAK_FRAME_NO = "
 						+ breakTimeSheet.getBreakFrameNo().v();
 				Statement statementU = con.createStatement();

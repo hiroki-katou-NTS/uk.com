@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -75,14 +76,14 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
+	public void add(AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, String employeeID, GeneralDate day) {
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
-					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
-					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
+					+ "VALUES( '" + employeeID + "' , '"
+					+ day + "' , '"
 					+ affiliationInforOfDailyPerfor.getEmploymentCode().v() + "' , '"
 					+ affiliationInforOfDailyPerfor.getJobTitleID() + "' , '"
 					+ affiliationInforOfDailyPerfor.getClsCode().v() + "' , '"
@@ -102,14 +103,14 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null
-				? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
-		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null
-				: affiliationInforOfDailyPerfor.getClsCode().v();
-		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null
-				: affiliationInforOfDailyPerfor.getEmploymentCode().v();
-		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
-		entity.workplaceID = affiliationInforOfDailyPerfor.getWplID();
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null
+				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() : null;
+		entity.classificationCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode() == null ? null
+				: affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v();
+		entity.employmentCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode() == null ? null
+				: affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v();
+		entity.jobtitleID = affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID();
+		entity.workplaceID = affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID();
 
 		return entity;
 	}
@@ -146,7 +147,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void updateByKey(AffiliationInforOfDailyPerfor domain) {
+	public void updateByKey(AffiliationInforOfDailyAttd domain, String employeeID, GeneralDate day) {
 		// Optional<KrcdtDaiAffiliationInf> dataOpt =
 		// this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
 		// .setParameter("employeeId", domain.getEmployeeId())
@@ -173,7 +174,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
 				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
 				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
-				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
+				+ employeeID + "' AND YMD = '" + day + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {

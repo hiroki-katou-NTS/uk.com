@@ -2,7 +2,9 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
  *
  */
 @Getter
+@NoArgsConstructor
 public class WorkInfoOfDailyAttendance implements DomainObject {
 
 	@Setter

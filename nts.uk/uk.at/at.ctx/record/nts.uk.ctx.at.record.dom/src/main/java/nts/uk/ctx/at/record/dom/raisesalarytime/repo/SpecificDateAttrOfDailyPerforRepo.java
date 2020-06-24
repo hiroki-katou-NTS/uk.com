@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 
 public interface SpecificDateAttrOfDailyPerforRepo {
 
@@ -18,7 +19,7 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 	
 	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
-	public void update(SpecificDateAttrOfDailyPerfor domain);
+	public void update(SpecificDateAttrOfDailyAttd domain, String employeeId, GeneralDate day);
 
 	public void add(SpecificDateAttrOfDailyPerfor domain);
 	

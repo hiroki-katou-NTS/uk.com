@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
 /**
@@ -27,7 +28,7 @@ public class ReflectStampOutput {
 	OutingTimeOfDailyPerformance outingTimeOfDailyPerformance;
 	TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 	List<Stamp> lstStamp;
-	TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance;
+	TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance;
 	AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily;
 	PCLogOnInfoOfDaily pcLogOnInfoOfDaily;
 	ShortTimeOfDailyPerformance shortTimeOfDailyPerformance;
