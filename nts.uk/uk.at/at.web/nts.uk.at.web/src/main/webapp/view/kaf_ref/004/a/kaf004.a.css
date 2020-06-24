@@ -1,0 +1,13 @@
+.content-right {
+    margin: 10px;
+}
+
+.fixed-flex-layout {
+    padding: 10px;
+}
+
+.block-right {
+    display: inline-block;
+    float: right;
+    margin-left: 10px;
+}
