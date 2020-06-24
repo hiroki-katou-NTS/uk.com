@@ -36,10 +36,10 @@ public class TimeStampDto implements ItemConst {
 	private int stampSourceInfo;
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null || c.getTimeWithDay() == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
+		return c == null || c.getTimeDay().getTimeWithDay() == null ? null : new TimeStampDto(c.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 												c.getAfterRoundingTime().valueAsMinutes(),
 												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
-												c.getStampSourceInfo().value);
+												c.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value);
 	}
 	
 	@Override
@@ -58,44 +58,22 @@ public class TimeStampDto implements ItemConst {
 	public TimeChangeMeans stampInfo(){
 		switch (stampSourceInfo) {
 		case 0:
-			return TimeChangeMeans.TIME_RECORDER;
+			return TimeChangeMeans.REAL_STAMP;
 		case 1:
-			return TimeChangeMeans.STAMP_APPLICATION;
+			return TimeChangeMeans.APPLICATION;
 		case 2:
-			return TimeChangeMeans.STAMP_APPLICATION_NR;
+			return TimeChangeMeans.DIRECT_BOUNCE;
 		case 3:
-			return TimeChangeMeans.GO_STRAIGHT;
+			return TimeChangeMeans.DIRECT_BOUNCE_APPLICATION;
 		case 4:
-			return TimeChangeMeans.GO_STRAIGHT_APPLICATION;
+			return TimeChangeMeans.HAND_CORRECTION_PERSON;
 		case 5:
-			return TimeChangeMeans.GO_STRAIGHT_APPLICATION_BUTTON;
+			return TimeChangeMeans.HAND_CORRECTION_OTHERS;
 		case 6:
-			return TimeChangeMeans.HAND_CORRECTION_BY_MYSELF;
+			return TimeChangeMeans.AUTOMATIC_SET;
 		case 7:
-			return TimeChangeMeans.HAND_CORRECTION_BY_ANOTHER;
-		case 8:
-			return TimeChangeMeans.STAMP_AUTO_SET_PERSONAL_INFO;
-		case 9:
-			return TimeChangeMeans.CORRECTION_RECORD_SET;
-		case 10:
-			return TimeChangeMeans.TIME_RECORDER_ID_INPUT;
-		case 11:
-			return TimeChangeMeans.WEB_STAMP_INPUT;
-		case 12:
-			return TimeChangeMeans.TIME_RECORDER_MAGNET_CARD;
-		case 13:
-			return TimeChangeMeans.TIME_RECORDER_Ic_CARD;
-		case 14:
-			return TimeChangeMeans.TIME_RECORDER_FINGER_STAMP;
-		case 15:
-			return TimeChangeMeans.MOBILE_STAMP;
-		case 16:
-			return TimeChangeMeans.MOBILE_STAMP_OUTSIDE;
-		case 17:
-			return TimeChangeMeans.STAMP_LEAKAGE_CORRECTION;
-		case 18:
 		default:
-			return TimeChangeMeans.SPR;
+			return TimeChangeMeans.SPR_COOPERATION;
 		}
 	}
 }

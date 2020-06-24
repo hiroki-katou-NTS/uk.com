@@ -456,7 +456,7 @@ public class TotalWorkingTime {
 		}else {
 			//遅刻（時間帯から計算）
 			if(recordClass.getCalculationRangeOfOneDay() != null
-			   && recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork() != null) {
+			   && recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getAttendanceLeavingWork() != null) {
 				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getAttendance().getTimeLeavingWorks())
 					lateTime.add(LateTimeOfDaily.calcLateTime(recordClass.getCalculationRangeOfOneDay(), work.getWorkNo(),recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()));
 				//早退（時間帯から計算）
