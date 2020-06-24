@@ -8,8 +8,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
@@ -326,8 +324,8 @@ public class ManageReGetClass {
 	/**
 	 * 会社共通で使いまわしをする設定をこのクラスにも設定する
 	 */
-	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany, ManagePerPersonDailySet managePerPerson) {
-		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
+	public void setCompanyCommonSetting(Optional<HolidayAddtionSet> holidayAdditionPerCompany , ManagePerPersonDailySet managePerPerson) {
+		this.holidayAddtionSet = holidayAdditionPerCompany;
 		this.dailyUnit = managePerPerson.getDailyUnit();
 	}
 

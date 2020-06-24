@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 
 /**
  * ドメインサービス：日別計算のエラーチェック処理
