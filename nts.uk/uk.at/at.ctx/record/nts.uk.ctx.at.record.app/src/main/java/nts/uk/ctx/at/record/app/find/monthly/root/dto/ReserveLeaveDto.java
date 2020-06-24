@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayUsedNumberDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.RsvLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
@@ -30,15 +30,15 @@ public class ReserveLeaveDto implements ItemConst {
 
 	/** 残数 */
 	@AttendanceItemLayout(jpPropertyName = REMAIN, layout = LAYOUT_B)
-	private CommonLeaveRemainingNumberDto remainingNumber;
+	private RsvLeaveRemainingNumberDto remainingNumber;
 
 	/** 残数付与前 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_C)
-	private CommonLeaveRemainingNumberDto remainingNumberBeforeGrant;
+	private RsvLeaveRemainingNumberDto remainingNumberBeforeGrant;
 
 	/** 残数付与後 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
-	private CommonLeaveRemainingNumberDto remainingNumberAfterGrant;
+	private RsvLeaveRemainingNumberDto remainingNumberAfterGrant;
 
 	/** 未消化数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -48,9 +48,9 @@ public class ReserveLeaveDto implements ItemConst {
 	public static ReserveLeaveDto from(ReserveLeave domain) {
 		return domain == null ? null : new ReserveLeaveDto(
 						DayUsedNumberDto.from(domain.getUsedNumber()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
 						domain.getUndigestedNumber().getUndigestedDays().v());
 	}
 
@@ -66,9 +66,9 @@ public class ReserveLeaveDto implements ItemConst {
 	public static ReserveLeaveDto from(RealReserveLeave domain) {
 		return domain == null ? null : new ReserveLeaveDto(
 						DayUsedNumberDto.from(domain.getUsedNumber()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
-						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
 						0);
 	}
 

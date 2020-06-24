@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,17 +32,10 @@ public class AnnualLeaveUsedDaysDto implements ItemConst {
 	private Double usedDaysAfterGrant;
 
 	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDays domain) {
-		return domain == null ? null : new AnnualLeaveUsedDaysDto(
-									domain.getUsedDays().v(), 
-									domain.getUsedDaysBeforeGrant().v(),
-									domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+		return domain == null ? null : new AnnualLeaveUsedDaysDto(domain.getUsedDayNumber().v(), 0, null);
 	}
 	
 	public AnnualLeaveUsedDays toDomain() {
-		return AnnualLeaveUsedDays.of(
-								new AnnualLeaveUsedDayNumber(usedDays), 
-								new AnnualLeaveUsedDayNumber(usedDaysBeforeGrant), 
-								Optional.ofNullable(usedDaysAfterGrant == null 
-										? null : new AnnualLeaveUsedDayNumber(usedDaysAfterGrant)));
+		return AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(usedDays));
 	}
 }

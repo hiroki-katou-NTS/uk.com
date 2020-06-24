@@ -49,7 +49,8 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	private AnnualLeaveAttdRateDays attendanceRateDays;
 	/** 付与区分 */
 	private boolean grantAtr;
-	
+	/** 未消化 */
+	private AnnualLeaveUndigestedNumber undigestedNumber;
 	
 	
 	/**
@@ -82,6 +83,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		this.realMaxRemainingTime = Optional.empty();
 		this.attendanceRateDays = new AnnualLeaveAttdRateDays();
 		this.grantAtr = false;
+		this.undigestedNumber = new AnnualLeaveUndigestedNumber();
 	}
 	
 	/**
@@ -118,7 +120,8 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 			Optional<AnnualLeaveMaxRemainingTime> maxRemainingTime,
 			Optional<AnnualLeaveMaxRemainingTime> realMaxRemainingTime,
 			AnnualLeaveAttdRateDays attendanceRateDays,
-			boolean grantAtr){
+			boolean grantAtr,
+			AnnualLeaveUndigestedNumber undigestedNumber){
 		
 		AnnLeaRemNumEachMonth domain = new AnnLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
@@ -133,6 +136,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		domain.realMaxRemainingTime = realMaxRemainingTime;
 		domain.attendanceRateDays = attendanceRateDays;
 		domain.grantAtr = grantAtr;
+		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
 }

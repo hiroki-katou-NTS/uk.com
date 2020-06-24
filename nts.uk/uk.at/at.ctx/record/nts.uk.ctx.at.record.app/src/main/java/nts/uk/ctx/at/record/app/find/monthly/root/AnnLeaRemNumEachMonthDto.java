@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveAttdRateDaysDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveGrantDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveUndigestedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.HalfDayAnnualLeaveDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -107,6 +109,11 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
 
+	/** 付与区分 */
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_K)
+	@AttendanceItemValue(type = ValueType.FLAG)
+	private AnnualLeaveUndigestedNumberDto undigestedNumber;
+	
 	@Override
 	public String employeeId() {
 		return this.employeeId;
@@ -130,6 +137,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			dto.setRealMaxRemainingTime(TimeUsedNumberDto.from(domain.getRealMaxRemainingTime().orElse(null)));
 			dto.setAttendanceRateDays(AnnualLeaveAttdRateDaysDto.from(domain.getAttendanceRateDays()));
 			dto.setGrantAtr(domain.isGrantAtr());
+			dto.setUndigestedNumber(AnnualLeaveUndigestedNumberDto.from(domain.getUndigestedNumber()));
 			dto.exsistData();
 		}
 		return dto;
@@ -164,7 +172,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 				Optional.of(annualLeaveGrant == null ? new AnnualLeaveGrant() : annualLeaveGrant.toDomain()),
 				Optional.of(maxRemainingTime == null ? new AnnualLeaveMaxRemainingTime()  : maxRemainingTime.toMaxRemainingTimeDomain()), 
 				Optional.of(realMaxRemainingTime == null ? new AnnualLeaveMaxRemainingTime() : realMaxRemainingTime.toMaxRemainingTimeDomain()),
-				attendanceRateDays == null ? new AnnualLeaveAttdRateDays() : attendanceRateDays.toAttdRateDaysDomain(), grantAtr);
+				attendanceRateDays == null ? new AnnualLeaveAttdRateDays() : attendanceRateDays.toAttdRateDaysDomain(), grantAtr,
+				undigestedNumber == null ? new AnnualLeaveUndigestedNumber() : undigestedNumber.toDomain());
 	}
 
 	@Override
