@@ -140,7 +140,7 @@ public class GetStampTypeToSuppressService {
 		}
 		return listStamp;
 	}
-
+	
 	/**
 	 * [prv-4] 抑制する打刻を判断する
 	 * 
@@ -149,28 +149,29 @@ public class GetStampTypeToSuppressService {
 	 */
 	private static StampToSuppress judgmentStampToSuppress(List<Stamp> listStamp) {
 
-		if (listStamp.isEmpty()) {
+		Optional<Stamp> oStamp = listStamp.stream()
+				.filter(c -> c.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK
+						|| c.getType().getChangeClockArt() == ChangeClockArt.GO_OUT
+						|| c.getType().getChangeClockArt() == ChangeClockArt.RETURN
+						|| c.getType().getChangeClockArt() == ChangeClockArt.WORKING_OUT)
+				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime()))
+				.findFirst();
+		
+		if(!oStamp.isPresent()) {
 			return StampToSuppress.highlightAttendance();
 		}
-
-		boolean checkIsWork = listStamp.stream()
-				.anyMatch(c -> c.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK);
-
-		Optional<Stamp> stamp = listStamp.stream()
-				.filter(c -> c.getType().getChangeClockArt() == ChangeClockArt.GO_OUT
-						|| c.getType().getChangeClockArt() == ChangeClockArt.RETURN)
-				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime())).findFirst();
-		boolean checkGoOut = false;
-		if(stamp.isPresent()) {
-			checkGoOut = stamp.get().getType().getChangeClockArt() == ChangeClockArt.GO_OUT;
+		
+		Stamp stamp = oStamp.get();
+		
+		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK || stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN) {
+			return new StampToSuppress(true, false, false, true);
+		}
+		
+		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT) {
+			return new StampToSuppress(true, true, true, false);
 		}
 
-		boolean goingToWork = checkIsWork; // 出勤
-		boolean departure = !checkIsWork; // 退勤
-		boolean goOut = !(checkIsWork && !checkGoOut); // 外出
-		boolean turnBack = !(checkIsWork && checkGoOut); // 戻り
-
-		return new StampToSuppress(goingToWork, departure, goOut, turnBack);
+		return new StampToSuppress(true, true, true, true);
 	}
 
 	public static interface Require extends GetEmpStampDataService.Require {
