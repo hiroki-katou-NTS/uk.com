@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 @NoArgsConstructor
 @Data
 //遅刻早退取消申請起動時の表示情報
-public class ArrivedLateLeaveEarlyOutput {
+public class ArrivedLateLeaveEarlyInfoOutput {
 //	取り消す初期情報
 	private List<LateOrEarlyInfo> earlyInfos;
 	// now, this is not completed so do not use it
