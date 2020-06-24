@@ -300,7 +300,7 @@ class KDP001AViewModel extends ko.ViewModel {
 	public stamp(vm: KDP001AViewModel, data) {
 
 		let cmd: IRegisterStampInputCommand = {
-			datetime: vm.systemDate(),
+			datetime: vm.systemDate().format('YYYY/MM/DD HH:mm:ss'),
 			buttonPositionNo: data.buttonPositionNo,
 			refActualResults: {
 				cardNumberSupport: null,
