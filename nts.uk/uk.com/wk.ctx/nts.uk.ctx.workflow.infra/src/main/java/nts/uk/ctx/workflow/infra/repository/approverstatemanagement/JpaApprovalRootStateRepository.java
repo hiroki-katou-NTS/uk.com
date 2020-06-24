@@ -671,7 +671,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
 				+ 	"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, "
 				+ 	"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, "
-				+   "approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE  "
+				+   "approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE, approver.APPROVER_LIST_ORDER  "
 				+ "FROM WWFDT_APPROVAL_ROOT_STATE root "
 				+ "LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID "
 				+ "LEFT JOIN WWFDT_APPROVER_STATE approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER "
