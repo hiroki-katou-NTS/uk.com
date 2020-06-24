@@ -1,22 +1,22 @@
 <div>
 	<div class="table">
-		<div class="cell" data-bind="ntsFormLabel:{}">App Date</div>
+		<div class="cell" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_49')"></div>
 		<div class="cell">
-			<div data-bind="ntsDatePicker: {name: $i18n('KAF005_33'),
+			<div data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
 											required:true, 
-											value: $component.appDate, 
+											value: appDate, 
 											dateFormat: 'YYYY/MM/DD'}, 
 											acceptJapaneseCalendar: true">
 			</div>
 		</div>
 	</div>
 	<div class="table">
-		<div class="cell" data-bind="ntsFormLabel:{}">Pre Post Atr</div>
+		<div class="cell" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_46')"></div>
 		<div class="cell">
 			<div data-bind="ntsSwitchButton: {
 						options: ko.observableArray([
-                                { prePostCode: 0, prePostName: function() { return $i18n('KAF009_9'); } },
-                                { prePostCode: 1, prePostName: function() { return $i18n('KAF009_10'); } }
+                                { prePostCode: 0, prePostName: function() { return $i18n('KAF000_47'); } },
+                                { prePostCode: 1, prePostName: function() { return $i18n('KAF000_48'); } }
                                 ]),
 						optionsValue: 'prePostCode',
 						optionsText: 'prePostName',

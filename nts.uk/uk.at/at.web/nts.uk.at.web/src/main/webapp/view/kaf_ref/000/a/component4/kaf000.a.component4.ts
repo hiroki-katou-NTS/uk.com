@@ -1,10 +1,10 @@
-module nts.uk.at.view.kaf000_ref.a.component3.viewmodel {
+module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
 
     @component({
-        name: 'kaf000-a-component3',
-        template: '/nts.uk.at.web/view/kaf_ref/000/a/component3/index.html'
+        name: 'kaf000-a-component4',
+        template: '/nts.uk.at.web/view/kaf_ref/000/a/component4/index.html'
     })
-    class Kaf000AComponent3ViewModel extends ko.ViewModel {
+    class Kaf000AComponent4ViewModel extends ko.ViewModel {
         prePostAtr: KnockoutObservable<number>;
         appType: number;
         appDate: KnockoutObservable<any>;
