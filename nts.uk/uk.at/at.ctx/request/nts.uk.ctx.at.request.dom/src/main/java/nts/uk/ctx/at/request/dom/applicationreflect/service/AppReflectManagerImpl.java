@@ -27,7 +27,7 @@ import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -155,7 +155,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		//申請を取得 (lấy đơn)
 		switch (appInfor.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			if(appInfor.getPrePostAtr() != PrePostAtr.PREDICT) {
+			if(appInfor.getPrePostAtr() != PrePostAtr_Old.PREDICT) {
 				return;
 			}
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getAppOvertimeFrame(appInfor.getCompanyID(), appInfor.getAppID());
@@ -273,7 +273,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			//事前チェック処理
 			ScheAndRecordIsReflect checkReflectResult = checkReflect.appReflectProcessRecord(appInfor, execuTionType, loopDate);
 			//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
-			if(appInfor.getPrePostAtr() == PrePostAtr.PREDICT
+			if(appInfor.getPrePostAtr() == PrePostAtr_Old.PREDICT
 					&& checkReflectResult.isScheReflect()) {
 				scheReflect.workscheReflect(appPara);
 			} else {

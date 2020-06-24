@@ -23,7 +23,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -284,7 +284,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public boolean displayDivergenceReasonInput(PrePostAtr prePostAtr, UseAtr divergenceReasonInputAtr) {
+	public boolean displayDivergenceReasonInput(PrePostAtr_Old prePostAtr, UseAtr divergenceReasonInputAtr) {
 		// Input．乖離理由入力区分チェック
 		if (divergenceReasonInputAtr == UseAtr.USE) {
 			return true;
@@ -293,10 +293,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr prePostAtr,
+	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr_Old prePostAtr,
 			UseAtr divergenceReasonFormAtr, ApplicationType appType) {
 		// 事前事後区分チェック
-		if (prePostAtr == PrePostAtr.PREDICT) {
+		if (prePostAtr == PrePostAtr_Old.PREDICT) {
 			return Collections.emptyList();
 		}
 		// Input．.乖離理由定型区分チェック
@@ -526,7 +526,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 */
 	@Override
 	public ColorConfirmResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs,
+			GeneralDateTime inputDate, PrePostAtr_Old prePostAtr, int attendanceId, List<OverTimeInput> overtimeInputs,
 			String employeeID) {
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
@@ -541,7 +541,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
+				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
@@ -602,9 +602,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 * 
 	 * @return True：チェックをする, False：チェックをしない
 	 */
-	private boolean confirmCheck(String companyId, PrePostAtr prePostAtr) {
+	private boolean confirmCheck(String companyId, PrePostAtr_Old prePostAtr) {
 		// 事前事後区分チェック
-		if (prePostAtr.equals(PrePostAtr.PREDICT)) {
+		if (prePostAtr.equals(PrePostAtr_Old.PREDICT)) {
 			return false;
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得
@@ -630,7 +630,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	 */
 	@Override
 	public ColorConfirmResult preApplicationExceededCheck010(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId,
+			GeneralDateTime inputDate, PrePostAtr_Old prePostAtr, int attendanceId,
 			List<HolidayWorkInput> holidayWorkInputs, String employeeID) {
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
@@ -648,7 +648,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
+				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
@@ -904,7 +904,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	// 03-02-1_チェック条件
 	@Override
 	public boolean checkCodition(int prePostAtr, String companyID, boolean isCalculator) {
-		if (prePostAtr == PrePostAtr.POSTERIOR.value) {
+		if (prePostAtr == PrePostAtr_Old.POSTERIOR.value) {
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository
 					.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 			if (overtimeRestAppCommonSetting.isPresent()) {
@@ -990,7 +990,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 							&& overtimeInputCaculation.getResultCaculation() > 0) {
 						// 03-01_事前申請超過チェック
 						ColorConfirmResult colorConfirmResult = this.preApplicationExceededCheck(companyID, appDate,
-								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 								overtimeInputCaculation.getAttendanceID(), overtimeSixProcess.convert(overtimeInput),
 								employeeID);
 						if (colorConfirmResult.isConfirm()) {
@@ -1041,7 +1041,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					} else if (entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0) {
 						// 03-01_事前申請超過チェック
 						ColorConfirmResult colorConfirmResult = this.preApplicationExceededCheck010(companyID, appDate,
-								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 								AttendanceType.BREAKTIME.value, holidaySixProcess.convert(breakTime), employeeID);
 						if (colorConfirmResult.isConfirm()) {
 							return colorConfirmResult;
@@ -1089,7 +1089,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					} else if (entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0) {
 						// 03-01_事前申請超過チェック
 						ColorConfirmResult colorConfirmResult = this.preApplicationExceededCheck010(companyID, appDate,
-								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+								inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 								AttendanceType.BREAKTIME.value, holidaySixProcess.convert(breakTime), employeeID);
 						if (colorConfirmResult.isConfirm()) {
 							return colorConfirmResult;
@@ -1190,9 +1190,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public UseAtr preAppSetCheck(PrePostAtr prePostAtr, UseAtr preExcessDisplaySetting) {
+	public UseAtr preAppSetCheck(PrePostAtr_Old prePostAtr, UseAtr preExcessDisplaySetting) {
 		// Input．事前事後区分をチェック
-		if(prePostAtr == PrePostAtr.PREDICT){
+		if(prePostAtr == PrePostAtr_Old.PREDICT){
 			return UseAtr.NOTUSE;
 		}
 		// Input．事前超過表示設定をチェック
@@ -1200,9 +1200,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr) {
+	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr_Old prePostAtr) {
 		// Input．事前事後区分チェック
-		if(prePostAtr == PrePostAtr.PREDICT){
+		if(prePostAtr == PrePostAtr_Old.PREDICT){
 			return AppDateContradictionAtr.NOTCHECK;
 		}
 		// Input．実績超過区分チェック

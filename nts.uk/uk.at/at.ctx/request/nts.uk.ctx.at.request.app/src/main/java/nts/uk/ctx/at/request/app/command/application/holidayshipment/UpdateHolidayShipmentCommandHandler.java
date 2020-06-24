@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
@@ -155,7 +155,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
 			ApplicationType appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
-				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 				Long.valueOf(appVer), wkTypeCD, wkTimeCD);
 
 	}

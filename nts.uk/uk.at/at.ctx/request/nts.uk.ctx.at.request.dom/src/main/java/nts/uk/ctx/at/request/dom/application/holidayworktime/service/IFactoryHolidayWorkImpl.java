@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -34,7 +34,7 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 						0L, 
 						companyId, 
 						appID,
-						EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+						EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
 						GeneralDateTime.now(), 
 						applicantSID,
 						new AppReason(Strings.EMPTY), 

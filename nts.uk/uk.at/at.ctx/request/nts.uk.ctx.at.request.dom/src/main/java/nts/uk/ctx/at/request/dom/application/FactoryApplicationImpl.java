@@ -23,7 +23,7 @@ public class FactoryApplicationImpl implements IFactoryApplication{
 		String applicantSID = AppContexts.user().employeeId();
 
 		Application_New app = new Application_New(0L, companyId, appID,
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), GeneralDateTime.now(), applicantSID,
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), GeneralDateTime.now(), applicantSID,
 				new AppReason(Strings.EMPTY), applicationDate, new AppReason(applicationReason),
 				appType, employeeID, Optional.of(startDate),
 				Optional.ofNullable(endDate), ReflectionInformation_New.firstCreate());

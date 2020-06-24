@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
@@ -255,7 +255,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			List<Application_New> lstApp = appForSid.get(sid);
 			lstApp = lstApp.stream().sorted((a,b) -> a.getInputDate().compareTo(b.getInputDate())).collect(Collectors.toList());
 			lstApp.stream().forEach(app -> {
-				if((app.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
+				if((app.getPrePostAtr().equals(PrePostAtr_Old.PREDICT)&&
 						app.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
 					|| app.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
 					|| app.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)

@@ -25,7 +25,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -160,7 +160,7 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 			if (app == null)
 				return false;
 			return app.getAppDate().equals(appDate) && app.getEmployeeID().equals(employeeID)
-					&& app.getPrePostAtr().equals(PrePostAtr.PREDICT);
+					&& app.getPrePostAtr().equals(PrePostAtr_Old.PREDICT);
 		}).collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(resultList)) {
 			return Optional.empty();

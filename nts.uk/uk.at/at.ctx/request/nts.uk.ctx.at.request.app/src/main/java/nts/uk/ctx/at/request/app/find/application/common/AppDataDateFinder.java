@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -83,7 +83,7 @@ public class AppDataDateFinder {
         AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, appGeneralDate); 
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		ApplicationDto_New applicationDto = null;
-		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
+		PrePostAtr_Old defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
 		if(Strings.isNotBlank(appID)){
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(

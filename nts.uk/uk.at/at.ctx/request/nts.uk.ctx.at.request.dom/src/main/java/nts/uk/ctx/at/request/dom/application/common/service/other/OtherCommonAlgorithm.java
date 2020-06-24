@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -41,7 +41,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appDate
 	 * @return enum PrePostAtr
 	 */
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate,int overTimeAtr);
+	public PrePostAtr_Old preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate,int overTimeAtr);
 	/**
 	 * 4.社員の当月の期間を算出する
 	 * @param companyId 会社ID
@@ -165,7 +165,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr_Old prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

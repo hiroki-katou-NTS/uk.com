@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -249,7 +249,7 @@ public class AppWorkChangeFinder {
 				appCommand.getVersion(), 
 				companyId, 
 				appID,
-				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
+				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr_Old.class), 
 				GeneralDateTime.now(), 
 				appCommand.getEnteredPersonSID(), 
 				new AppReason(Strings.EMPTY), 

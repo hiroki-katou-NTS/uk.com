@@ -31,7 +31,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -600,7 +600,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 					Optional.ofNullable(x.getGeneralDateTime("REFLECT_PLAN_TIME")),
 					Optional.ofNullable(x.getGeneralDateTime("REFLECT_PER_TIME")));
 			return new Application_New(x.getLong("EXCLUS_VER"), x.getString("CID"), x.getString("APP_ID"),
-					EnumAdaptor.valueOf(x.getInt("PRE_POST_ATR"), PrePostAtr.class), x.getGeneralDateTime("INPUT_DATE"),
+					EnumAdaptor.valueOf(x.getInt("PRE_POST_ATR"), PrePostAtr_Old.class), x.getGeneralDateTime("INPUT_DATE"),
 					x.getString("ENTERED_PERSON_SID"), new AppReason(x.getString("REASON_REVERSION")),
 					x.getGeneralDate("APP_DATE"), new AppReason(x.getString("APP_REASON")),
 					EnumAdaptor.valueOf(x.getInt("APP_TYPE"), ApplicationType.class), x.getString("APPLICANTS_SID"),

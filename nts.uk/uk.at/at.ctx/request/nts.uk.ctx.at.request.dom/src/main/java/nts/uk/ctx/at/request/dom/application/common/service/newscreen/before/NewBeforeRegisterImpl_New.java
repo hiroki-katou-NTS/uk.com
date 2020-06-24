@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
@@ -177,7 +177,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
             if(lstDateHd != null && lstDateHd.contains(loopDate)){
                 continue;
             }
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT) && application.isAppOverTime()){
 				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
@@ -250,7 +250,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -269,7 +269,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		
 		// 事前事後区分(input)をチェックする
-		if(postAtr.equals(PrePostAtr.POSTERIOR)){
+		if(postAtr.equals(PrePostAtr_Old.POSTERIOR)){
 			// ドメインモデル「事後の受付制限」．未来日許可しないをチェックする
 			if (!appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.ALLOW)) {
 				return;
@@ -439,7 +439,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
             if(lstDateHd != null && lstDateHd.contains(loopDate)){
                 continue;
             }
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT) && application.isAppOverTime()){
 				// アルゴリズム「6.確定チェック（事前残業申請用）」を実施する
 				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{

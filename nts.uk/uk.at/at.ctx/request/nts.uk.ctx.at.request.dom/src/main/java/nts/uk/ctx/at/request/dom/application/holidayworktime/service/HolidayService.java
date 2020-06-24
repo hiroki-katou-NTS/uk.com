@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -116,7 +116,7 @@ public interface HolidayService {
 	 * @return
 	 */
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate, GeneralDate baseDate, 
-			PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
+			PrePostAtr_Old prePostAtr, AppEmploymentSetting appEmploymentSetting, List<WorkTimeSetting> workTimeLst, 
 			ApprovalFunctionSetting approvalFunctionSet, RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst);
 	
 	/**

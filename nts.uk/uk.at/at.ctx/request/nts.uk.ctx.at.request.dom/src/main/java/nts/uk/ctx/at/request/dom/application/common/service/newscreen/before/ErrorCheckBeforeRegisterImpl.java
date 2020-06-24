@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
@@ -38,7 +38,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 03-02_実績超過チェック
 	 */
 	@Override
-	public void OvercountCheck(String companyId, GeneralDate appDate, PrePostAtr prePostAtr) {
+	public void OvercountCheck(String companyId, GeneralDate appDate, PrePostAtr_Old prePostAtr) {
 		// 当日の場合
 		GeneralDate systemDate = GeneralDate.today();
 		// 1. チェック条件
@@ -73,12 +73,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 */
 	@Override
 	public OvertimeCheckResult preliminaryDenialCheck(String companyId, String employeeID, GeneralDate appDate, GeneralDateTime inputDate,
-			PrePostAtr prePostAtr,int appType) {
+			PrePostAtr_Old prePostAtr,int appType) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				appType, PrePostAtr.PREDICT.value);
+				appType, PrePostAtr_Old.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}
@@ -111,9 +111,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 * 
 	 * @return True：チェックをする, False：チェックをしない
 	 */
-	private boolean confirmCheck(String companyId, PrePostAtr prePostAtr) {
+	private boolean confirmCheck(String companyId, PrePostAtr_Old prePostAtr) {
 		// 事前事後区分チェック
-		if (prePostAtr.equals(PrePostAtr.PREDICT)) {
+		if (prePostAtr.equals(PrePostAtr_Old.PREDICT)) {
 			return false;
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDa
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingDataDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
@@ -153,7 +153,7 @@ public class CheckBeforeRegisterOvertime {
 						0))
 				.collect(Collectors.toList());
 		PreActualColorResult preActualColorResult = null;
-		if(app.getPrePostAtr()==PrePostAtr.POSTERIOR) {
+		if(app.getPrePostAtr()==PrePostAtr_Old.POSTERIOR) {
 			UseAtr preExcessDisplaySetting = overtimeRestAppCommonSetting.getPreExcessDisplaySetting();
 			AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSetting.getPerformanceExcessAtr();
 			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )

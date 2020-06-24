@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -83,7 +83,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		appReason = typicalReason + displayReason;
 		
 		Application_New updateApp = new Application_New(0L, companyId, command.goBackCommand.getAppID(),
-				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),
+				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),
 				command.appCommand.getInputDate(), command.appCommand.getEnteredPersonSID(),
 				new AppReason(command.appCommand.getReversionReason()), command.appCommand.getApplicationDate(),
 				new AppReason(appReason),

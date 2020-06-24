@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -584,7 +584,7 @@ public class HolidayServiceImpl implements HolidayService {
 				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 		List<DivergenceReason> divergenceReasonLst = commonOvertimeHoliday.getDivergenceReasonForm(
 				companyID, 
-				PrePostAtr.POSTERIOR, 
+				PrePostAtr_Old.POSTERIOR, 
 				overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(), 
 				ApplicationType.BREAK_TIME_APPLICATION);
 		
@@ -599,7 +599,7 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	@Override
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate,
-			GeneralDate baseDate, PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting,
+			GeneralDate baseDate, PrePostAtr_Old prePostAtr, AppEmploymentSetting appEmploymentSetting,
 			List<WorkTimeSetting> workTimeLst, ApprovalFunctionSetting approvalFunctionSet,
 			RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst) {
 		HdWorkDispInfoWithDateOutput result = new HdWorkDispInfoWithDateOutput();
@@ -933,7 +933,7 @@ public class HolidayServiceImpl implements HolidayService {
 			agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().get());
 		}
 		// 取得した「申請」．事前事後区分をチェックする
-		if(appHolidayWork.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
+		if(appHolidayWork.getApplication().getPrePostAtr() == PrePostAtr_Old.POSTERIOR) {
 			List<DeductionTime> deductionTimeLst = appHolidayWork.getHolidayWorkInputs().stream()
 					.filter(x -> x.getAttendanceType() == AttendanceType.RESTTIME)
 					.map(x -> new DeductionTime(new TimeWithDayAttr(x.getStartTime().v()), new TimeWithDayAttr(x.getEndTime().v())))
@@ -994,7 +994,7 @@ public class HolidayServiceImpl implements HolidayService {
 					overtimeRestAppCommonSet.getPreExcessDisplaySetting(), 
 					overtimeRestAppCommonSet.getPerformanceExcessAtr(), 
 					ApplicationType.BREAK_TIME_APPLICATION, 
-					PrePostAtr.POSTERIOR, 
+					PrePostAtr_Old.POSTERIOR, 
 					Collections.emptyList(), 
 					holidayTimeLst,
 					preAppCheckResult.opAppBefore,

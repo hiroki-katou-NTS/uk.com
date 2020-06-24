@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettin
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
@@ -129,7 +129,7 @@ public class AppDispInfoWithDateDto {
 		output.setApprovalRootState(new ApprovalRootStateImport_New(
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		output.setErrorFlag(EnumAdaptor.valueOf(errorFlag, ErrorFlagImport.class));
-		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
+		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class));
 		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
 		output.setAchievementOutputLst(achievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		output.setAppDetailContentLst(appDetailContentLst);

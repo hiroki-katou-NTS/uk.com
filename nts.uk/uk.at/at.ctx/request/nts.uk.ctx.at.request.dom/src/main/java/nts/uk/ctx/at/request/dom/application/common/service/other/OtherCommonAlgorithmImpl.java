@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -231,12 +231,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 
 	@Override
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate,int overTimeAtr) {
+	public PrePostAtr_Old preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate,int overTimeAtr) {
 		GeneralDate systemDate = GeneralDate.today();
 		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
 				+ GeneralDateTime.now().localDateTime().getMinute();
 		String companyID = AppContexts.user().companyId();
-		PrePostAtr prePostAtr = null;
+		PrePostAtr_Old prePostAtr = null;
 		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
@@ -263,7 +263,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 //			}
 			if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
 				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-					prePostAtr = PrePostAtr.POSTERIOR;
+					prePostAtr = PrePostAtr_Old.POSTERIOR;
 				}else{
 					int resultCompare = 0;
 					if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
@@ -274,22 +274,22 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
 					}
 					if(resultCompare == 1) {
-						prePostAtr = PrePostAtr.POSTERIOR;
+						prePostAtr = PrePostAtr_Old.POSTERIOR;
 					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
-						prePostAtr = PrePostAtr.PREDICT;
+						prePostAtr = PrePostAtr_Old.PREDICT;
 					}
 				}
 			}else{
-				prePostAtr = PrePostAtr.POSTERIOR;
+				prePostAtr = PrePostAtr_Old.POSTERIOR;
 			}
 			
 		} else if(appDate.after(systemDate) ) {
 			//xin truoc 事前事後区分= 事前
-			prePostAtr = PrePostAtr.PREDICT;
+			prePostAtr = PrePostAtr_Old.PREDICT;
 			
 		} else if(appDate.before(systemDate)) { // if appDate < systemDate
 			//xin sau 事前事後区分= 事後
-			prePostAtr = PrePostAtr.POSTERIOR;
+			prePostAtr = PrePostAtr_Old.POSTERIOR;
 		}
 		
 			
@@ -635,12 +635,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
+	public AppOverTime getPreApplication(String employeeID, PrePostAtr_Old prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
 		String companyID =  AppContexts.user().companyId();
 		AppOverTime result = new AppOverTime();
-		if (prePostAtr == PrePostAtr.POSTERIOR) {
+		if (prePostAtr == PrePostAtr_Old.POSTERIOR) {
 			if(preDisplayAtr == UseAtr.USE){
-				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
+				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr_Old.PREDICT.value, appType.value);
 				if(!CollectionUtil.isEmpty(applicationLst)){
 					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
 					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());

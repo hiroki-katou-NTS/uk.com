@@ -22,7 +22,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -703,10 +703,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 
 		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
 				.collect(Collectors.toList());
 		List<ApplicationFullOutput> lstHdPost = lstAppFull.stream().filter(c -> c.getApplication().isAppHdWork())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
 				.collect(Collectors.toList());
 
 		// 事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
@@ -725,7 +725,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//ドメインモデル「申請」を取得する
 				//※2018/04/17
 				//複数存在する場合は、最後に新規登録された内容を対象とする
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
 						ApplicationType.OVER_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
@@ -805,7 +805,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//承認一覧表示設定.休出の事前申請
 			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
 				//ドメインモデル「申請」を取得する
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
 						ApplicationType.BREAK_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
@@ -1827,7 +1827,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				int detailSet = this.finddetailSet(lstMaster, appID);
 				AppOverTimeInfoFull overTime = this.find005(lstAppOt, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentOverTimeAf(overTime, detailSet, appReasonDisAtr, appReason,
 							subData);
 				} else {
@@ -1861,7 +1861,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			case BREAK_TIME_APPLICATION: {//休出時間申請
 				AppHolidayWorkFull hdWork = this.find010(ldtAppHdWork, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentHdWorkAf(hdWork, appReasonDisAtr, appReason, subData);
 				} else {
 					content = contentDtail.getContentHdWorkBf(hdWork, companyID, appID, appReasonDisAtr, appReason,

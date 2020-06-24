@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
@@ -469,7 +469,7 @@ public class AppHolidayWorkFinder {
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
 				ApplicationType.BREAK_TIME_APPLICATION, 
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 				breaktimeInputCaculations, 
 				otTimeLst, 
 				preAppCheckResult.opAppBefore, 

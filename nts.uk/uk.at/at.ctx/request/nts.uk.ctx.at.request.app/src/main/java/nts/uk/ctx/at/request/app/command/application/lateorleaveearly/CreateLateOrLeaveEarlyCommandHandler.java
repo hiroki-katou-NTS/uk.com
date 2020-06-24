@@ -16,7 +16,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -67,7 +67,7 @@ public class CreateLateOrLeaveEarlyCommandHandler
 		// アルゴリズム「遅刻早退申請理由登録内容生成」を実行する
 		String appReason = genReason(command.getReasonTemp(), command.getAppReason(), companyID);
 		Application_New application = Application_New.firstCreate(companyID,
-				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getApplicationDate(),
+				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr_Old.class), command.getApplicationDate(),
 				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, employeeID, new AppReason(appReason));
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(application,
 				command.getActualCancel(), command.getEarly1(), command.getEarlyTime1(), command.getLate1(),

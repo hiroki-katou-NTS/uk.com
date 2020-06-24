@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -233,15 +233,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// INPUT．申請対象日リストをチェックする
 			if(CollectionUtil.isEmpty(dateLst)) {
 				// OUTPUT．「事前事後区分」=事前
-				output.setPrePostAtr(PrePostAtr.PREDICT);
+				output.setPrePostAtr(PrePostAtr_Old.PREDICT);
 			} else  {
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
+				PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
 				output.setPrePostAtr(prePostAtrJudgment);
 			}
 		} else {
 			// 申請表示情報(基準日関係あり)．事前事後区分=INPUT．事前事後区分の初期表示
-			output.setPrePostAtr(EnumAdaptor.valueOf(initValueAtr.value, PrePostAtr.class));
+			output.setPrePostAtr(EnumAdaptor.valueOf(initValueAtr.value, PrePostAtr_Old.class));
 		}
 		dateLst = dateLst.stream().filter(x -> x != null).collect(Collectors.toList());
 		// 実績内容の取得
