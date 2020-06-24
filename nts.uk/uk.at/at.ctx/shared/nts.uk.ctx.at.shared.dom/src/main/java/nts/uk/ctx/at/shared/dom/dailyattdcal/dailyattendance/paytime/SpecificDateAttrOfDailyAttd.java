@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,7 @@ public class SpecificDateAttrOfDailyAttd implements DomainObject {
 		this.specificDateAttrSheets = specificDateAttrSheets;
 	}
 	
+	public List<SpecificDateItemNo> getUseNo(){
+		return this.specificDateAttrSheets.stream().filter(tc -> tc.getSpecificDateAttr().isUse()).map(ts -> ts.getSpecificDateItemNo()).collect(Collectors.toList());
+	}
 }

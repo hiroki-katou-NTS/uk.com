@@ -456,11 +456,11 @@ public class TotalWorkingTime {
 		}else {
 			//遅刻（時間帯から計算）
 			if(recordClass.getCalculationRangeOfOneDay() != null
-			   && recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getAttendanceLeavingWork() != null) {
-				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getAttendance().getTimeLeavingWorks())
+			   && recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork() != null) {
+				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks())
 					lateTime.add(LateTimeOfDaily.calcLateTime(recordClass.getCalculationRangeOfOneDay(), work.getWorkNo(),recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()));
 				//早退（時間帯から計算）
-				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getAttendance().getTimeLeavingWorks())
+				for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks())
 					leaveEarlyTime.add(LeaveEarlyTimeOfDaily.calcLeaveEarlyTime(recordClass.getCalculationRangeOfOneDay(), work.getWorkNo(),recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()));
 			}
 		}
@@ -542,7 +542,7 @@ public class TotalWorkingTime {
 	private static int workCounter(CalculationRangeOfOneDay oneDay) {
 		int workCount = 0;
 		if(oneDay != null && oneDay.getAttendanceLeavingWork() != null) {
-			workCount = oneDay.getAttendanceLeavingWork().getAttendance().getTimeLeavingWorks().stream()
+			workCount = oneDay.getAttendanceLeavingWork().getTimeLeavingWorks().stream()
 																   .filter(tc -> 
 																   		tc.getAttendanceStamp() != null
 																   	&&  tc.getAttendanceStamp().isPresent()

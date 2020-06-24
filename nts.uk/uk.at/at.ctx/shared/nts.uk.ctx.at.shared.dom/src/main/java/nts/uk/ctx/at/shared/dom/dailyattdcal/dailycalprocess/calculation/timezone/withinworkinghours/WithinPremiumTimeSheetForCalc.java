@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;

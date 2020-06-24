@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 
 /**
  * 日別勤怠の休憩時間帯
@@ -23,6 +25,14 @@ public class BreakTimeOfDailyAttd implements DomainObject {
 		super();
 		this.breakType = breakType;
 		this.breakTimeSheets = breakTimeSheets;
+	}
+	
+	/**
+	 * 休憩時間帯を全て控除項目の時間帯に変換する(パラメータ固定)
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
+		return this.breakTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
 	}
 	
 }

@@ -13,6 +13,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
@@ -43,7 +44,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	@Override
 	public WorkType getOotsukaWorkType(WorkType workType,
 									   Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
-									   TimeLeavingOfDailyPerformance attendanceLeaving,
+									   TimeLeavingOfDailyAttd attendanceLeaving,
 									   HolidayCalculation holidayCalculation) {
 		if(decisionOotsukaMode(workType,calcMethodOfFixWork,attendanceLeaving,holidayCalculation)) {
 			return createOotsukaWorkType(workType);
@@ -156,7 +157,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	@Override
 	public boolean decisionOotsukaMode(WorkType workType,
 										Optional<FixedWorkCalcSetting> calcMethodOfFixWork,
-										TimeLeavingOfDailyPerformance attendanceLeaving, HolidayCalculation holidayCalculation) {
+										TimeLeavingOfDailyAttd attendanceLeaving, HolidayCalculation holidayCalculation) {
 		//勤務計算をする　＆＆　打刻漏れをしていない
 		if(decisionAbleCalc(workType,calcMethodOfFixWork,holidayCalculation) && !attendanceLeaving.isLeakageStamp()) {
 			return true;
@@ -292,7 +293,7 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 		}
 		return map;
 	}
-	
+
 //	@Override
 //	/**
 //	 * 大塚IWカスタマイズ(打刻用)
