@@ -26,7 +26,11 @@ public class WorkScheManaStatusService {
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
 	public static Map<ScheManaStatuTempo, Optional<WorkSchedule>> getScheduleManagement(Require require,
+<<<<<<< HEAD
 			List<String> lstEmployeeID, DatePeriod datePeriod) {
+=======
+			List<String> lstEmployeeID) {
+>>>>>>> pj/at/dev/team_C/Schedule_Ver1_1
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		return map;
 	}
