@@ -61,7 +61,7 @@ public class TimeStampSetShareTStampHelper {
 		return setShareTStamp;
 	}
 	
-public static TimeStampSetShareTStamp get_list_empty() {
+public static StampSetCommunal get_list_empty() {
 		
 		List<StampPageLayout> lstStampPageLayout = new ArrayList<>();
 		
@@ -69,13 +69,13 @@ public static TimeStampSetShareTStamp get_list_empty() {
 				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
 				new ResultDisplayTime(1));
 		
-		TimeStampSetShareTStamp setShareTStamp = new TimeStampSetShareTStamp(
+		StampSetCommunal setShareTStamp = new StampSetCommunal(
 				"000-0000000001", 
 				displaySetStampScreen, 
 				lstStampPageLayout, 
 				true, 
 				false, 
-				NotUseAtr.USE, 
+				true, 
 				Optional.empty());
 		
 		return setShareTStamp;

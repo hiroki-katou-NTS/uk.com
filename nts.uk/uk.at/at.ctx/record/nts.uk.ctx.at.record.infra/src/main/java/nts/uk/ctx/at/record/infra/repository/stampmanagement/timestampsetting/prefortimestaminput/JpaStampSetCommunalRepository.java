@@ -33,7 +33,7 @@ public class JpaStampSetCommunalRepository extends JpaRepository implements Stam
 	}
 
 	@Override
-	public Optional<StampSetCommunal> get(String comppanyID) {
+	public Optional<StampSetCommunal> gets(String comppanyID) {
 		Optional<KrcmtStampCommunal> entity = this.queryProxy().find(comppanyID, KrcmtStampCommunal.class);
 		if (!entity.isPresent()) {
 			return Optional.empty();

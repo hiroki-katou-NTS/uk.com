@@ -82,7 +82,7 @@ public class GetStampTypeToSuppressService {
 				return false;
 			}
 			// return $スマホ打刻の打刻設定.打刻ボタンを抑制する
-			return optSettingsSmartphoneStamp.get().getSuppressStampBtn();
+			return optSettingsSmartphoneStamp.get().isSuppressStampBtn();
 		}
 		// if 打刻手段 = ポータル打刻
 		if (stampMeans.equals(StampMeans.PORTAL)) {
