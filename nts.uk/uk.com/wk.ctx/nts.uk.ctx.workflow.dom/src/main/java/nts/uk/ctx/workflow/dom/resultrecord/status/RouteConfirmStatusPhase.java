@@ -67,6 +67,10 @@ public class RouteConfirmStatusPhase {
 		return frames.isApprover(approverId);
 	}
 	
+	public boolean isApprover(List<String> approverIds) {
+		return frames.isApprover(approverIds);
+	}
+	
 	/**
 	 * 指定した承認者は承認ができるか
 	 * @param approverId
@@ -96,6 +100,10 @@ public class RouteConfirmStatusPhase {
 	public boolean hasApprovedBy(String approverId) {
 		return (frames.hasApprovedBy(approverId))
 				|| frames.hasApprovedByRepresenter(approverId);
+	}
+	
+	public boolean hasApprovedBy(List<String> approverId) {
+		return (frames.hasApprovedBy(approverId));
 	}
 	
 	/**

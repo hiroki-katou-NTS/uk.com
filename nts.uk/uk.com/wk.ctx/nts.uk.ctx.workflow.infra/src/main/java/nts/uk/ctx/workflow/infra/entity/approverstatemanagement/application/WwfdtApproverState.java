@@ -48,6 +48,9 @@ public class WwfdtApproverState extends UkJpaEntity {
 	/**対象日*/
 	@Column(name="APP_DATE")
 	public GeneralDate appDate;
+	/**順序*/
+	@Column(name="APPROVER_LIST_ORDER")
+	public Integer approverInListOrder;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
@@ -75,6 +78,7 @@ public class WwfdtApproverState extends UkJpaEntity {
 				.approvalDate(approverInfo.getApprovalDate())
 				.approvalReason(approverInfo.getApprovalReason())
 				.appDate(frame.getAppDate())
+				.approverInListOrder(approverInfo.getApproverInListOrder())
 				.build();
 	}
 	
