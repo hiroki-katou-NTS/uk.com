@@ -573,8 +573,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		if(CollectionUtil.isEmpty(approverInfoAfterLst)) {
 			return Collections.emptyList();
 		}
-		for(int i = 0; i < approverInfoAfterLst.size(); i ++) {
-			LevelApproverInfo approverInfo = approverInfoAfterLst.get(i);
+		for(LevelApproverInfo approverInfo : approverInfoAfterLst) {
 			// 承認代行情報の取得処理(xử lý lấy thông tin đại diện approve)
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(
 					companyID, 
@@ -585,7 +584,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					representerID = approvalRepresenterOutput.getListAgent().get(0);
 				}
 				// Output．承認者一覧に取得した承認者の代行情報リストを追加(Them list thông tin đại diện của người approve đã lấy vào Output.ApproverList)
-				result.add(new LevelApproverInfo(approverInfo.getApproverID(), representerID, i));
+				result.add(new LevelApproverInfo(approverInfo.getApproverID(), representerID, approverInfo.getApproverInListOrder()));
 			}
 		}
 		// ドメインモデル「承認設定」．本人による承認をチェックする(Check domain「承認設定」. 本人による承認 )
@@ -595,7 +594,15 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<LevelApproverInfo> listDeleteApprover = result.stream().filter(x -> x.getApproverID().equals(employeeID)).collect(Collectors.toList());
 			result.removeAll(listDeleteApprover);
 		}
-		return result;
+		if(CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+		List<LevelApproverInfo> result2 = new ArrayList<>();
+		for(int i = 0; i < result.size(); i++) {
+			LevelApproverInfo approverInfo = result.get(i);
+			result2.add(new LevelApproverInfo(approverInfo.getApproverID(), approverInfo.getAgentID(), i + 1));
+		}
+		return result2;
 	}
 
 	@Override
