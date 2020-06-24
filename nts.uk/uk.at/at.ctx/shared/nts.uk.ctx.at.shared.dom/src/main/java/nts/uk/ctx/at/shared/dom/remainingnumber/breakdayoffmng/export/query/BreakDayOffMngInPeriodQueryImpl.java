@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
@@ -22,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -41,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQuery{
 	@Inject
@@ -60,8 +62,12 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	private ClosureService closureService;
 	@Inject
 	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private NumberRemainVacationLeaveRangeProcess numRemVacLeavRangeProcess;
+	
 	@Override
-	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
+	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriodOld(BreakDayOffRemainMngParam inputParam) {
 		List<BreakDayOffDetail> lstDetailData = new ArrayList<>();
 		CarryForwardDayTimes calcCarryForwardDays = new CarryForwardDayTimes(0.0, 0);
 		//パラメータ「前回代休の集計結果」をチェックする
@@ -130,6 +136,13 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		return outputData;
 	}
 
+	@Override
+	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
+		getBreakDayOffMngInPeriodOld(inputParam);
+		SubstituteHolidayAggrResult result = numRemVacLeavRangeProcess.getBreakDayOffMngInPeriod(inputParam.convert());
+		return result.convert();
+	}
+	
 	@Override
 	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid, GeneralDate startDate) {
 		List<BreakDayOffDetail> lstOutputData = new ArrayList<>();
