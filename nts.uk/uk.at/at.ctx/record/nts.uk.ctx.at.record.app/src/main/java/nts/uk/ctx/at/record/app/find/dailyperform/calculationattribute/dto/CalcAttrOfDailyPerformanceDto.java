@@ -163,7 +163,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public CalAttrOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+	public CalAttrOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 
 		if(!this.isHaveData()) {
 			return null;
@@ -174,7 +174,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new CalAttrOfDailyPerformance(
+		CalAttrOfDailyPerformance domain =  new CalAttrOfDailyPerformance(
 				employeeId,  date, 
 				new AutoCalFlexOvertimeSetting(newAutoCalcSetting(this.flexExcessTime)),
 				createAutoCalcRaisingSalarySetting(),
@@ -183,6 +183,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 				createAutoCalcLeaveSetting(),
 				new AutoCalcSetOfDivergenceTime(this.divergenceTime == DivergenceTimeAttr.USE.value 
 					? DivergenceTimeAttr.USE : DivergenceTimeAttr.NOT_USE));
+		return domain.getCalcategory();
 	}
 
 	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {

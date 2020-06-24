@@ -46,8 +46,9 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public RemarksOfDailyPerform toDomain(String employeeId, GeneralDate date) {
-		return new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
+	public RemarksOfDailyAttd toDomain(String employeeId, GeneralDate date) {
+		RemarksOfDailyPerform domain = new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
+		return domain.getRemarks();
 	}
 
 	public static RemarksOfDailyDto getDto(RemarksOfDailyPerform x) {

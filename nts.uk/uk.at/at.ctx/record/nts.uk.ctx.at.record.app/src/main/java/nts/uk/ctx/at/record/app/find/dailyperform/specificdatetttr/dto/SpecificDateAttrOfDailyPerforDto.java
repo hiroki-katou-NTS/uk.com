@@ -89,7 +89,7 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public SpecificDateAttrOfDailyPerfor toDomain(String emp, GeneralDate date) {
+	public SpecificDateAttrOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -99,11 +99,12 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new SpecificDateAttrOfDailyPerfor(emp,
+		SpecificDateAttrOfDailyPerfor domain = new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getNo()),
 								c.getSpecificDate() == SpecificDateAttr.NOT_USE.value 
 										? SpecificDateAttr.NOT_USE : SpecificDateAttr.USE)),
 						date);
+		return domain.getSpecificDay();
 	}
 }

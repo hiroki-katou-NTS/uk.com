@@ -87,7 +87,7 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public EditStateOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+	public EditStateOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -97,7 +97,8 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date, state());
+		EditStateOfDailyPerformance domain =  new EditStateOfDailyPerformance(employeeId, attendanceItemId, date, state());
+		return domain.getEditState();
 	}
 	
 	public EditStateSetting state(){

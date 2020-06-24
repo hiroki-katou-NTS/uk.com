@@ -168,17 +168,21 @@ public class IntegrationOfDaily {
 	 * @param editState 日別実績の編集状態
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
-	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, CalAttrOfDailyAttd calAttr,
+	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, 
+			CalAttrOfDailyAttd calAttr,
 			AffiliationInforOfDailyAttd affiliationInfor,
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
-			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyAttd> outingTime,
+			List<EmployeeDailyPerError> employeeError,
+			Optional<OutingTimeOfDailyAttd> outingTime,
 			List<BreakTimeOfDailyAttd> breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
 			Optional<SpecificDateAttrOfDailyAttd> specDateAttr,
-			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate, Optional<AnyItemValueOfDailyAttd> anyItemValue,
-			List<EditStateOfDailyAttd> editState, Optional<TemporaryTimeOfDailyAttd> tempTime,
+			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate,
+			Optional<AnyItemValueOfDailyAttd> anyItemValue,
+			List<EditStateOfDailyAttd> editState, 
+			Optional<TemporaryTimeOfDailyAttd> tempTime,
 			List<RemarksOfDailyAttd> remarks) {
 		super();
 		this.workInformation = workInformation;

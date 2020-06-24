@@ -431,23 +431,23 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
 		return new IntegrationOfDaily(
-				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date).getWorkInformation(), 
-				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date).getCalcategory(), 
-				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date).getAffiliationInfor(),
-				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date).getTimeZone()),
+				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
+				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
+				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
+				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.outingTime.map(ot -> ot.toDomain(employeeId, date).getOutingTime()),
-				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date).getTimeZone()).collect(Collectors.toList()),
-				this.attendanceTime.map(at -> at.toDomain(employeeId, date).getTime()),
+				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
+				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
 //				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
-				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date).getAttendance()),
-				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date).getTimeZone()),
-				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date).getSpecificDay()),
-				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date).getTimeZone()),
-				this.optionalItem.map(oi -> oi.toDomain(employeeId, date).getAnyItem()),
-				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date).getEditState()).collect(Collectors.toList()),
-				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date).getAttendance()),
-				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date).getRemarks()).collect(Collectors.toList())
+				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
+				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
+				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
+				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
+				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
+				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
+				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
 				);
 	}
 

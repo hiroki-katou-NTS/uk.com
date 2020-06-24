@@ -96,7 +96,7 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 	
 	@Override
-	public TimeLeavingOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public TimeLeavingOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -106,8 +106,9 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
+		TimeLeavingOfDailyPerformance domain =  new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
 				ConvertHelper.mapTo(workAndLeave, c -> WorkLeaveTimeDto.toDomain(c)), date);
+		return domain.getAttendance();
 	}
 
 	private int toWorkTime() {

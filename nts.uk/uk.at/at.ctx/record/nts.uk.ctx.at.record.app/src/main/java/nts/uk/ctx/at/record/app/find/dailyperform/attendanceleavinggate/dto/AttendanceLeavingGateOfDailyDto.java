@@ -91,7 +91,7 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AttendanceLeavingGateOfDaily toDomain(String employeeId, GeneralDate ymd) {
+	public AttendanceLeavingGateOfDailyAttd toDomain(String employeeId, GeneralDate ymd) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -101,9 +101,10 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if (ymd == null) {
 			ymd = this.workingDate();
 		}
-		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
+		AttendanceLeavingGateOfDaily domain =  new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getNo()),
 													TimeStampDto.toDomain(c.getStart()),
 													TimeStampDto.toDomain(c.getEnd()))));
+		return domain.getTimeZone();
 	}
 }

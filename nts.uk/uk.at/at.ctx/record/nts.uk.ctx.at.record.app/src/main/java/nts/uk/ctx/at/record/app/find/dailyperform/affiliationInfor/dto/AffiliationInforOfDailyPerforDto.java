@@ -109,7 +109,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AffiliationInforOfDailyPerfor toDomain(String employeeId, GeneralDate date) {
+	public AffiliationInforOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -119,9 +119,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
+		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
 												employeeId, this.jobId, this.workplaceID, date,
 												new ClassificationCode(this.classificationCode),
 												new BonusPaySettingCode(this.subscriptionCode));
+		return domain.getAffiliationInfor();
 	}
 }

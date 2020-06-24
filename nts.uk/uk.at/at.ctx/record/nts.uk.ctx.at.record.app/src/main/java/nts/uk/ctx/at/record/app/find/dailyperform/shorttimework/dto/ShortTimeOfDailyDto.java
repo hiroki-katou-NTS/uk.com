@@ -101,7 +101,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public ShortTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public ShortTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -111,7 +111,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new ShortTimeOfDailyPerformance(emp, toTimeSheetDomain(), date);
+		ShortTimeOfDailyPerformance domain = new ShortTimeOfDailyPerformance(emp, toTimeSheetDomain(), date);
+		return domain.getTimeZone();
 	}
 	
 	private List<ShortWorkingTimeSheet> toTimeSheetDomain() {

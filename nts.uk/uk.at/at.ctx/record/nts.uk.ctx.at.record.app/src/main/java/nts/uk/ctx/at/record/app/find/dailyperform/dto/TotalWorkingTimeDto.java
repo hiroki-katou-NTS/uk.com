@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.T
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
 
 
 /** 日別実績の総労働時間 */
