@@ -125,7 +125,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: 4 }).then((result) => {
 			this.$blockui("clear");
 			vm.usedSatus(result.used);
-			vm.systemDate(moment.utc(result.systemDate));
+			vm.systemDate(moment(vm.$date.now()));
 
 			this.$blockui("invisible");
 			vm.$ajax(requestUrl.getSettingStampInput).then((setting: IStampSetting) => {
@@ -159,7 +159,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 					setInterval(() => {
 						if (vm.countTime() == vm.settingCountTime()) {
-							vm.systemDate(moment.utc());
+							vm.systemDate(moment(vm.$date.now()));
 
 							this.$ajax(requestUrl.getStampToSuppress).then((data) => {
 
