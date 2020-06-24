@@ -426,6 +426,20 @@ class KDP001AViewModel extends ko.ViewModel {
 			items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 			vm.stampDatas(items || []);
+			
+			if (items.length==1 && !vm.isScreenCD()) {
+
+					if (vm.screenMode() == 'a' || vm.screenMode() == 'b') {
+
+						$("#fixed-table").ntsFixedTable({ height: 53, width: 215 });
+					} else {
+
+						if (!vm.screenMode()) {
+
+							$("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
+						}
+					}
+				}
 		}).always(() => {
 			vm.$blockui("clear");
 		});;
