@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -168,6 +169,12 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	@Override
 	public boolean checkExistsByCd(String companyId, String shiftMaterCode) {
 		return getByShiftMaterCd(companyId, shiftMaterCode).isPresent();
+	}
+
+	@Override
+	public List<ShiftMaster> getbyCidAndWorkInfo(String cid, List<WorkInformation> workInfos) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
