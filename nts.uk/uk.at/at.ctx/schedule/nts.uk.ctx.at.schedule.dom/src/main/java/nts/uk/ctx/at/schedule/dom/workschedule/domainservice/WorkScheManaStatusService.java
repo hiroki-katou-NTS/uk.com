@@ -25,8 +25,8 @@ public class WorkScheManaStatusService {
 	 * @param lstEmployeeID
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
-	public Map<ScheManaStatuTempo, Optional<WorkSchedule>> getScheduleManagement(Require require,
-			List<String> lstEmployeeID) {
+	public static Map<ScheManaStatuTempo, Optional<WorkSchedule>> getScheduleManagement(Require require,
+			List<String> lstEmployeeID, DatePeriod datePeriod) {
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		return map;
 	}
@@ -37,7 +37,7 @@ public class WorkScheManaStatusService {
 	 * @param datePeriod
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
-	private Map<ScheManaStatuTempo, Optional<WorkSchedule>> getByEmployee(String employeeID, DatePeriod datePeriod) {
+	private Map<ScheManaStatuTempo, Optional<WorkSchedule>> getByEmployee(Require require, String employeeID, DatePeriod datePeriod) {
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		return map;
 	}
