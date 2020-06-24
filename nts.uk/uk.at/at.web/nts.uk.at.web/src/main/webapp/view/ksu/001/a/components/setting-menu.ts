@@ -23,7 +23,7 @@ const settingMenuTemplate = `
 	template: settingMenuTemplate
 })
 class KSU001ASettingMenuComponent extends ko.ViewModel {
-	groups: IGroups[] = [{
+	groups: GroupButton[] = [{
 		label: 'KSU001_23',
 		buttons: [{
 			btnText: 'KSU001_24',
@@ -59,12 +59,12 @@ class KSU001ASettingMenuComponent extends ko.ViewModel {
 	}
 }
 
-interface IButton {
+interface Button {
 	btnText: string;
 	lblText: string;
 }
 
-interface IGroup {
+interface GroupButton {
 	label: string;
-	buttons: IButton[];
+	buttons: Button[];
 }

@@ -6,7 +6,8 @@ const targetTemplate = `
 		<div class="organization-name" data-bind="text: 'Organization Name'"></div>
 	</div>
 	<div class="right-area d-inline">
-		<button class="d-inline" data-bind="text: $i18n('KSU001_67')" />
+		<div class="d-inline" data-bind="component: { name: 'ksu-setting-period' }"></div>
+		<div class="d-inline" data-bind="component: { name: 'ksu-setting-display'}, popper: true"></div>
 		<div class="d-inline" data-bind="component: { name: 'ksu-use-guide' }, popper: true"></div>
 	</div>
 `;

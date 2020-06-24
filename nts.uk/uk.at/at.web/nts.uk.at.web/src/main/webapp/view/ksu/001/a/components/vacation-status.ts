@@ -3,26 +3,37 @@
 const vacationStatusTemplate = `
 	<button class="ksu-popup-toggle" data-bind="text: $i18n('KSU001_10')"></button>
 	<div class="ksu-popup bg-yellow vacation-status">
-		<div class="group">
-			<div class="row">
-				<button data-bind="text: $i18n('Com_CompensationHoliday')" class="margin-0" auto-close="true"></button>
-				<button data-bind="text: $i18n('Com_PaidHoliday')" auto-close="true"></button>
-				<button data-bind="text: $i18n('Com_ExsessHoliday')" auto-close="true"></button>
-			</div>
-			<div class="row">
-				<button data-bind="text: $i18n('Com_SubstituteHoliday')" class="margin-0" auto-close="true"></button>
-				<button data-bind="text: $i18n('Com_FundedPaidHoliday')" auto-close="true"></button>
-				<button data-bind="text: $i18n('KSU001_29')" auto-close="true"></button>
+		<div class="group" data-bind="foreach: _.chunk(models, 3)">
+			<div class="row" data-bind="foreach: $data">
+				<button data-bind="text: $component.$i18n(text), css: { 'margin-0': $index() === 0 }" auto-close="true"></button>
 			</div>
 		</div>
 	</div>
 `;
+
+interface VacationButton {
+	text: string;
+}
 
 @component({
 	name: 'ksu-vacation-status',
 	template: vacationStatusTemplate
 })
 class KSU001AVacationStatusComponent extends ko.ViewModel {
+	models: VacationButton[] = [{
+		text: 'Com_CompensationHoliday'
+	}, {
+		text: 'Com_PaidHoliday'
+	}, {
+		text: 'Com_ExsessHoliday'
+	}, {
+		text: 'Com_SubstituteHoliday'
+	}, {
+		text: 'Com_FundedPaidHoliday'
+	}, {
+		text: 'KSU001_29'
+	}];
+	
 	created() {
 	}
 
