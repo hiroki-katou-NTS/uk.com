@@ -11,7 +11,6 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
-
 public interface ShareEmploymentAdapter {
 
 	/**
@@ -22,22 +21,29 @@ public interface ShareEmploymentAdapter {
 	 */
 	// RequestList #89
 	List<EmpCdNameImport> findAll(String companyId);
-	
+
 	/**
 	 * Find by emp codes.
 	 *
 	 * @param companyId the company id
-	 * @param empCodes the emp codes
+	 * @param empCodes  the emp codes
 	 * @return the list
 	 */
-	Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate);
+	Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
+			GeneralDate baseDate);
+
 	/**
 	 * 社員ID（List）と指定期間から社員の雇用履歴を取得
-	 * @param sids 社員IDリスト
-	 * @param datePeriod　期間	
+	 * 
+	 * @param sids       社員IDリスト
+	 * @param datePeriod 期間
 	 * @return
 	 */
-	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> sids , DatePeriod datePeriod);
-	
-	public Map<String, BsEmploymentHistoryImport> findEmpHistoryVer2(String companyId, List<String> lstSID, GeneralDate baseDate);
+	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> sids, DatePeriod datePeriod);
+
+	public Map<String, BsEmploymentHistoryImport> findEmpHistoryVer2(String companyId, List<String> lstSID,
+			GeneralDate baseDate);
+
+	// RequestList326
+	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId);
 }
