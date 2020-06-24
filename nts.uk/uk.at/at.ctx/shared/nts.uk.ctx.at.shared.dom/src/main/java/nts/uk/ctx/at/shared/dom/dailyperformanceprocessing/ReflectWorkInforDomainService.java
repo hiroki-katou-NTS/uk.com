@@ -6,18 +6,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
-import nts.uk.ctx.at.shared.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**

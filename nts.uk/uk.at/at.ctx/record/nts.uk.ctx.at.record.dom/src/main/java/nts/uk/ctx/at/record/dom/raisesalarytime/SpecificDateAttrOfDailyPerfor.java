@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.raisesalarytime;
+package nts.uk.ctx.at.record.dom.raisesalarytime;
 
 import java.util.List;
 import java.util.stream.Collectors;

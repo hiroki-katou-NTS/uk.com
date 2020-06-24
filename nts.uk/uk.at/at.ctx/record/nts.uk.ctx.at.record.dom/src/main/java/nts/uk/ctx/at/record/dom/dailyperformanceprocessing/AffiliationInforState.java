@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
 
 
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 
 

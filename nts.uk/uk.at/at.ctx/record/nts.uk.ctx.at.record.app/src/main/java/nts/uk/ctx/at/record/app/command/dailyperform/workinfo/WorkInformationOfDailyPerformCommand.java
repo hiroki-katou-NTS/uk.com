@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
 
 public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand {
 

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 
 //勤務情報を変更する

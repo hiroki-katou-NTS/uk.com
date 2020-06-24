@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.calculationattribute;
+package nts.uk.ctx.at.record.dom.calculationattribute;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

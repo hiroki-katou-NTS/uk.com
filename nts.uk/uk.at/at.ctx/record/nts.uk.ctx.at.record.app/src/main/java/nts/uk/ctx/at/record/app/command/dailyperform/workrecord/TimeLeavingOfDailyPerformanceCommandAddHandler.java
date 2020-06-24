@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.worktime.TimeLeavingOfDailyPerformance;
 
 @Stateless
 public class TimeLeavingOfDailyPerformanceCommandAddHandler extends CommandFacade<TimeLeavingOfDailyPerformanceCommand> {

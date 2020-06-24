@@ -9,8 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-<<<<<<< HEAD
-import nts.uk.ctx.at.shared.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.primitivevalue.ClassificationCode;
 =======
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;

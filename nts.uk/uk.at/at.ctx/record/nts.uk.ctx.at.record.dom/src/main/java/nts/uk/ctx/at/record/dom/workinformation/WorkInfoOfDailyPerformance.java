@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workingcondition;
+package nts.uk.ctx.at.record.dom.workinformation;
 
 import java.util.List;
 import java.util.Optional;
