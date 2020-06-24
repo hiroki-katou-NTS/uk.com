@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing;
 
 
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 
 
@@ -21,10 +21,10 @@ public class AffiliationInforState {
 
 	List<ErrMessageInfo> errMesInfos;
 	
-	Optional<AffiliationInforOfDailyPerfor> affiliationInforOfDailyPerfor;
+	Optional<AffiliationInforOfDailyAttd> affiliationInforOfDailyPerfor;
 
 	public AffiliationInforState(List<ErrMessageInfo> errMesInfos,
-			Optional<AffiliationInforOfDailyPerfor> affiliationInforOfDailyPerfor) {
+			Optional<AffiliationInforOfDailyAttd> affiliationInforOfDailyPerfor) {
 		super();
 		this.errMesInfos = errMesInfos;
 		this.affiliationInforOfDailyPerfor = affiliationInforOfDailyPerfor;

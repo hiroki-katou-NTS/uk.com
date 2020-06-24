@@ -123,7 +123,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
+	public AnyItemValueOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if (!this.isHaveData()) {
 			return null;
 		}
@@ -134,8 +134,9 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		optionalItems.removeIf(item -> item == null || !item.isHaveData());
-		return new AnyItemValueOfDaily(employeeId, date,
+		AnyItemValueOfDaily domain =  new AnyItemValueOfDaily(employeeId, date,
 				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
+		return domain.getAnyItem();
 	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {

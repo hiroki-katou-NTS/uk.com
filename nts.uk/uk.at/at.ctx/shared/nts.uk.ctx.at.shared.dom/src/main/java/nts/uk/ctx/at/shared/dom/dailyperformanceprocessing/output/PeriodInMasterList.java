@@ -1,11 +1,10 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output;
 
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 
 /**
  * 期間内マスタ一覧

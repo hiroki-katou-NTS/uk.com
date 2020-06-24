@@ -91,7 +91,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public PCLogOnInfoOfDaily toDomain(String employeeId, GeneralDate date) {
+	public PCLogOnInfoOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -101,9 +101,10 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
+		PCLogOnInfoOfDaily domain = new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
 							c -> new LogOnInfo(new PCLogOnNo(c.getNo()),
 								toWorkStamp(c.getLogOff()), toWorkStamp(c.getLogOn()))));
+		return domain.getTimeZone();
 	}
 
 	private TimeWithDayAttr toWorkStamp(Integer time){

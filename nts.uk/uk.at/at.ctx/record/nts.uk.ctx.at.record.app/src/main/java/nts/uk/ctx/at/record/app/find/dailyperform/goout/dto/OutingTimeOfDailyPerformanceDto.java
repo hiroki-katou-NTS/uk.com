@@ -98,7 +98,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 
 	@Override
-	public OutingTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public OutingTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -108,10 +108,11 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
+		OutingTimeOfDailyPerformance domain =  new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
 											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
 													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
+		return domain.getOutingTime();
 	}
 
 	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {

@@ -121,7 +121,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+	public WorkInfoOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
 		if (!this.isHaveData()) {
 			return null;
 		}
@@ -141,7 +141,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 						(c) -> c.getLeave() != null && c.getWorking() != null));
 		domain.setVersion(this.version);
 		
-		return domain;
+		return domain.getWorkInformation();
 	}
 	
 	

@@ -125,7 +125,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 	}
 	
 	@Override
-	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public AttendanceTimeOfDailyAttendance toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -135,12 +135,13 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AttendanceTimeOfDailyPerformance(emp, date,
+		AttendanceTimeOfDailyPerformance domain =  new AttendanceTimeOfDailyPerformance(emp, date,
 				new AttendanceTimeOfDailyAttendance(
 				scheduleTime == null ? WorkScheduleTimeOfDaily.defaultValue() : scheduleTime.toDomain(), 
 				actualWorkTime == null ? ActualWorkingTimeOfDaily.defaultValue() : actualWorkTime.toDomain(),
 				stayingTime == null ? StayingTimeDto.defaultDomain() : stayingTime.toDomain(), 
 				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
 				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime)));
+		return domain.getTime();
 	}
 }

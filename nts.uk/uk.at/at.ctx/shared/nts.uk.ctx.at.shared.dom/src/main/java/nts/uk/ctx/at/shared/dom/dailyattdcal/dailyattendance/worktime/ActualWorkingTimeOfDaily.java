@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
@@ -242,7 +242,7 @@ public class ActualWorkingTimeOfDaily {
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTimeRoot> divergenceTimeList,CalAttrOfDailyPerformance calcAtrOfDaily,
+			List<DivergenceTimeRoot> divergenceTimeList,CalAttrOfDailyAttd calcAtrOfDaily,
 			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		
 		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList,calcAtrOfDaily,breakTimeSheets,calcResultOotsuka,workTimeSetting,workType);
@@ -260,7 +260,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @return
 	 */
 	private static List<DivergenceTime> calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			List<DivergenceTimeRoot> divergenceTimeList, CalAttrOfDailyPerformance calcAtrOfDaily,
+			List<DivergenceTimeRoot> divergenceTimeList, CalAttrOfDailyAttd calcAtrOfDaily,
 			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka,
 									Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
@@ -300,7 +300,7 @@ public class ActualWorkingTimeOfDaily {
 			divergenceTime.add(obj);
 		}
 		//自動計算設定で使用しないであれば空を戻す
-		if(!calcAtrOfDaily.getCalcategory().getDivergenceTime().getDivergenceTime().isUse())
+		if(!calcAtrOfDaily.getDivergenceTime().getDivergenceTime().isUse())
 			return divergenceTime;
 		
 		val divergenceTimeInIntegrationOfDaily = new DivergenceTimeOfDaily(divergenceTime);

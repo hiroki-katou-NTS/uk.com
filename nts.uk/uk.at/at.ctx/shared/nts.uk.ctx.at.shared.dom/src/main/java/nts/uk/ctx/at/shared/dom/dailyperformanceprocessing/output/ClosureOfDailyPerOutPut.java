@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output;
 
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 
 @Getter
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 @NoArgsConstructor
 public class ClosureOfDailyPerOutPut {
 	
-	private WorkInfoOfDailyPerformance workInfoOfDailyPerformance;
+	private WorkInfoOfDailyAttendance workInfoOfDailyPerformance;
 	
 	private List<ErrMessageInfo> errMesInfos;
 

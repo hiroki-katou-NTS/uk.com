@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
-import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -118,7 +116,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	}
 	
 	@Override
-	public BreakTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public BreakTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -129,10 +127,11 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		
-		return new BreakTimeOfDailyPerformance(emp,
+		BreakTimeOfDailyPerformance domain =  new BreakTimeOfDailyPerformance(emp,
 					attr == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
 					timeZone.stream().filter(c -> judgNotNull(c)).map(c -> toTimeSheet(c)).collect(Collectors.toList()),
 					date);
+		return domain.getTimeZone();
 	}
 	
 	private boolean judgNotNull(TimeSheetDto d){
@@ -140,7 +139,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	}
 	
 	private BreakTimeSheet toTimeSheet(TimeSheetDto d){
-		return new BreakTimeSheet(new BreakFrameNo(new BigDecimal(d.getNo())),
+		return new BreakTimeSheet(new BreakFrameNo(d.getNo()),
 				createWorkStamp(d.getStart()),
 				createWorkStamp(d.getEnd()),
 				new AttendanceTime(d.getBreakTime()));

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
+package nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository;
 
 /**
  * 再作成フラグ
