@@ -492,10 +492,10 @@ class StampToSuppress {
 	turnBack: KnockoutObservable<boolean> = ko.observable(true);
 	constructor(data?) {
 		if (data) {
-			this.goingToWork(data.goingToWork || true);
-			this.goOut(data.goOut || true);
-			this.departure(data.departure || true);
-			this.turnBack(data.turnBack || true);
+			this.goingToWork(!!data.goingToWork ? data.goingToWork : false);
+			this.goOut(!!data.goOut ? data.goOut : false);
+			this.departure(!!data.departure ? data.departure : false);
+			this.turnBack(!!data.turnBack ? data.turnBack : false);
 		}
 	}
 
