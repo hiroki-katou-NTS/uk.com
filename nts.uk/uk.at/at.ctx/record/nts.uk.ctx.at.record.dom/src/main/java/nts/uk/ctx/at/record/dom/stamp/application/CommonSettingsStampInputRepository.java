@@ -1,8 +1,6 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
+package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.Optional;
-
-import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 
 /**
  * 打刻入力の共通設定Repository

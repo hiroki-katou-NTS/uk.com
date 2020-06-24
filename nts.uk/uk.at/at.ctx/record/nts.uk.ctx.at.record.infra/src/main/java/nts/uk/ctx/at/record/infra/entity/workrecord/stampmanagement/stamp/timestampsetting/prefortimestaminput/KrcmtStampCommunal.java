@@ -100,7 +100,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "AUTHC_FAIL_CNT")
 	public Integer authcFailCnt;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcctOtkVacationCk")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtStampCommunal")
 	public List<KrcmtStampPageLayout> krcmtStampCommunal;
 	
 	@Override

@@ -56,14 +56,14 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	@Column(name ="COMMENT_COLOR")
 	public String commentColor;
 	
-	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcctStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = KrcmtStampLayoutDetail.class, mappedBy = "krcmtStampPageLayout", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JoinTable(name = "KRCMT_STAMP_LAYOUT_DETAIL")
 	public List<KrcmtStampLayoutDetail> lstButtonSet;
 	
 	@ManyToOne
     @JoinColumns({
     	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-    	@JoinColumn(name = "STAMP_MEANS", referencedColumnName = "'0'", insertable = false, updatable = false)
+    	@JoinColumn(name = "'0'", referencedColumnName = "STAMP_MEANS", insertable = false, updatable = false)
     })
 	public KrcmtStampCommunal krcmtStampCommunal;
 	

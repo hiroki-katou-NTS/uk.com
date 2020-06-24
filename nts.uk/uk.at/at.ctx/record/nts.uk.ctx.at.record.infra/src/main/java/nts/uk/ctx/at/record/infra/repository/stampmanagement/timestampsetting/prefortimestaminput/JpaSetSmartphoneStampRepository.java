@@ -77,7 +77,7 @@ public class JpaSetSmartphoneStampRepository  extends JpaRepository implements S
 				: (domain.getDisplaySettingsStamScreen().getSettingDateTimeColor() == null ? ""
 						: (domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackGroundColor() == null ? ""
 								: domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackGroundColor().v()));
-		entity.btnEmphasisArt = domain.getSuppressStampBtn();
+		entity.btnEmphasisArt = domain.isSuppressStampBtn();
 		
 		return entity;
 	}

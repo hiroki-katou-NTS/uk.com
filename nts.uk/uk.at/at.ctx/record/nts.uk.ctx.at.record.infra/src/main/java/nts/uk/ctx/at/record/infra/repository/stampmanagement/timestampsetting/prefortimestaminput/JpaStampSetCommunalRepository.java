@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.p
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
@@ -28,7 +26,10 @@ public class JpaStampSetCommunalRepository extends JpaRepository implements Stam
 
 	@Override
 	public void update(StampSetCommunal domain) {
-		this.commandProxy().update(KrcmtStampCommunal.toEntity(domain));
+		Optional<KrcmtStampCommunal> entity = this.queryProxy().find(domain.getCid(), KrcmtStampCommunal.class);
+		if (!entity.isPresent()) {
+			this.commandProxy().update(KrcmtStampCommunal.toEntity(domain));
+		}
 	}
 
 	@Override

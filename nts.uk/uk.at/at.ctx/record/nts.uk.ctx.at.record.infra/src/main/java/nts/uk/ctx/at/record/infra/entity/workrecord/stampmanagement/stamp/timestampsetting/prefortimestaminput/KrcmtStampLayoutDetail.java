@@ -136,7 +136,7 @@ private static final long serialVersionUID = 1L;
     	@PrimaryKeyJoinColumn(name = "STAMP_MEANS", referencedColumnName = "STAMP_MEANS"),
     	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
     })
-	public KrcmtStampPageLayout krcctStampPageLayout;
+	public KrcmtStampPageLayout krcmtStampPageLayout;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
