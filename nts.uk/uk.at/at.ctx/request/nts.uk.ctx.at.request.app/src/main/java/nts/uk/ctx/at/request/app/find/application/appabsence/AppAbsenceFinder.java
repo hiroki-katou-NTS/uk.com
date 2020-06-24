@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUs
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
@@ -137,7 +137,7 @@ public class AppAbsenceFinder {
 		// 申請共通の起動処理
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
-				ApplicationType.ABSENCE_APPLICATION, 
+				ApplicationType_Old.ABSENCE_APPLICATION, 
 				employeeIDs, 
 				dateLst, 
 				true);
@@ -264,7 +264,7 @@ public class AppAbsenceFinder {
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
-				ApplicationType.ABSENCE_APPLICATION, 
+				ApplicationType_Old.ABSENCE_APPLICATION, 
 				appDispInfoNoDateOutput,
 				appDispInfoWithDateOutput);
 		// INPUT．「休暇申請起動時の表示情報」を更新する
@@ -625,7 +625,7 @@ public class AppAbsenceFinder {
 		}
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				param.getApplicationCommand().getPrePostAtr(), appReason, appReason,
-				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
+				ApplicationType_Old.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
 		AppForSpecLeave specHd = null;
 		AppForSpecLeaveCmd appForSpecLeaveCmd = param.getAppAbsenceCommand().getAppForSpecLeave();
 		if(param.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){

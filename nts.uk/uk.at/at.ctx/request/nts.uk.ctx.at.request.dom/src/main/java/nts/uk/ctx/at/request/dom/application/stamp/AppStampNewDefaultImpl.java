@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -57,7 +57,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 															companyID, 
 															employeeID, 
 															EmploymentRootAtr.APPLICATION.value,
-															ApplicationType.STAMP_APPLICATION, 
+															ApplicationType_Old.STAMP_APPLICATION, 
 															appDate);
 		appStampNewPreOutput.appStampSetOutput = appStampCommonDomainService.appStampSet(companyID);
 		appStampNewPreOutput.employeeName = appStampCommonDomainService.getEmployeeName(employeeID);

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.find.setting.company.request.applicationsettin
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -66,6 +66,6 @@ public class AppTypeSettingDto {
 				sendMailWhenApproval, 
 				sendMailWhenRegister, 
 				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class), 
-				EnumAdaptor.valueOf(appType, ApplicationType.class));
+				EnumAdaptor.valueOf(appType, ApplicationType_Old.class));
 	}
 }

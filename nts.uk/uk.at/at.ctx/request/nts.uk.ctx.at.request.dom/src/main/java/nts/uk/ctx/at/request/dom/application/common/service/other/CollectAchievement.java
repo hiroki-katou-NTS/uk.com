@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 
 /**
@@ -31,7 +31,7 @@ public interface CollectAchievement {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<AchievementOutput> getAchievementContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
+	public List<AchievementOutput> getAchievementContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType_Old appType);
 	
 	/**
 	 * 事前内容の取得
@@ -41,6 +41,6 @@ public interface CollectAchievement {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
+	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType_Old appType);
 	
 }

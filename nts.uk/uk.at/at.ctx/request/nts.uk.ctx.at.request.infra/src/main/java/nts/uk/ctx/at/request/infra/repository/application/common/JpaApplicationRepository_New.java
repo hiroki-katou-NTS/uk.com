@@ -28,7 +28,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -603,7 +603,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 					EnumAdaptor.valueOf(x.getInt("PRE_POST_ATR"), PrePostAtr_Old.class), x.getGeneralDateTime("INPUT_DATE"),
 					x.getString("ENTERED_PERSON_SID"), new AppReason(x.getString("REASON_REVERSION")),
 					x.getGeneralDate("APP_DATE"), new AppReason(x.getString("APP_REASON")),
-					EnumAdaptor.valueOf(x.getInt("APP_TYPE"), ApplicationType.class), x.getString("APPLICANTS_SID"),
+					EnumAdaptor.valueOf(x.getInt("APP_TYPE"), ApplicationType_Old.class), x.getString("APPLICANTS_SID"),
 					Optional.ofNullable(x.getGeneralDate("APP_START_DATE")),
 					Optional.ofNullable(x.getGeneralDate("APP_END_DATE")), reflectInfor);
 		});

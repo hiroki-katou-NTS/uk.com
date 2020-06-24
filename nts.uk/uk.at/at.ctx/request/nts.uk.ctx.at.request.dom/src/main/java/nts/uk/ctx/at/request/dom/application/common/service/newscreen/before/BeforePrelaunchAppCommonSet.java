@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 
 /**
@@ -19,6 +19,6 @@ public interface BeforePrelaunchAppCommonSet {
 	 * @param targetApp
 	 * @param appDate
 	 */
-	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate);
+	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType_Old targetApp, GeneralDate appDate);
 	
 }

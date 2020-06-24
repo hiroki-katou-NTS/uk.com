@@ -15,7 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -56,7 +56,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
@@ -83,7 +83,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		
 		// 申請
 		Application_New app = iFactoryApplication.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), appReason, 
-				appReason, ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
+				appReason, ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(

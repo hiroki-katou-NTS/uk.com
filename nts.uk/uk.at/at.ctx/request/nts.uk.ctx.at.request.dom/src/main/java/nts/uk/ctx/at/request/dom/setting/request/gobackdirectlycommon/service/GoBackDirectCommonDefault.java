@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
@@ -51,7 +51,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 				companyID, 
 				SID, 
 				1, 
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
+				ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION, 
 				appDate);
 		//アルゴリズム「直行直帰基本データ」を実行する 
 		GoBackDirectBasicData dataSetting = new GoBackDirectBasicData();
@@ -64,7 +64,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		dataSetting.setEmployeeName(employeeName);
 		dataSetting.setSID(SID);
 		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
+		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
 		dataSetting.setListAppReason(listReason);
 		dataSetting.setAppCommonSettingOutput(appCommonSetting);
 		/*// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
@@ -88,7 +88,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 			dataSetting.setDutiesMulti(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting,ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting,ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value);
 		dataSetting.setWorkingData(workingData);
 		
 		return dataSetting;

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.request.application.apptypediscreteset
 import javax.enterprise.inject.Model;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
@@ -30,7 +30,7 @@ public class AppTypeDiscreteSetting {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	/**
 	 * 事前事後区分の初期表示
 	 */
@@ -80,7 +80,7 @@ public class AppTypeDiscreteSetting {
 	 */
 	private AllowAtr retrictPostAllowFutureFlg;
 
-	public AppTypeDiscreteSetting(String companyID, ApplicationType appType, InitValueAtr prePostInitFlg,
+	public AppTypeDiscreteSetting(String companyID, ApplicationType_Old appType, InitValueAtr prePostInitFlg,
 			AppCanAtr prePostCanChangeFlg, DisplayAtr typicalReasonDisplayFlg, AppCanAtr sendMailWhenApprovalFlg,
 			AppCanAtr sendMailWhenRegisterFlg, AppDisplayAtr displayReasonFlg, CheckMethod retrictPreMethodFlg,
 			UseAtr retrictPreUseFlg, RetrictDay retrictPreDay, RetrictPreTimeDay retrictPreTimeDay,

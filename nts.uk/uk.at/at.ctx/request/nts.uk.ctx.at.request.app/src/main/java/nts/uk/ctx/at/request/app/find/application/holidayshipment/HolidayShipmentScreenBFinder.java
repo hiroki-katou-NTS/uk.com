@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absencelea
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
@@ -95,7 +95,7 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
 
-	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+	private static final ApplicationType_Old APP_TYPE = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
 	 * find by Id

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
@@ -82,7 +82,7 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 							new ApplicationUseSetting(
 									new AppUseSetRemark(x.memo), 
 									UseAtr.toEnum(x.useAtr), 
-									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
+									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType_Old.class)), 
 							Optional.of(new ApplicationDetailSetting(
 									x.breakInputFieldDisFlg == 1? true : false, 
 									x.breakTimeDisFlg == 1? true : false, 

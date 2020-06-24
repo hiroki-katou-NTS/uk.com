@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
 /**
@@ -49,7 +49,7 @@ public class AppTypeSetting extends DomainObject {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 	
 	public static AppTypeSetting toDomain(Integer displayInitialSegment, Integer canClassificationChange, 
@@ -63,7 +63,7 @@ public class AppTypeSetting extends DomainObject {
 				sendMailWhenApproval == 1 ? true : false, 
 				sendMailWhenRegister == 1 ? true : false, 
 				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class), 
-				EnumAdaptor.valueOf(appType, ApplicationType.class));
+				EnumAdaptor.valueOf(appType, ApplicationType_Old.class));
 	}
 	
 }

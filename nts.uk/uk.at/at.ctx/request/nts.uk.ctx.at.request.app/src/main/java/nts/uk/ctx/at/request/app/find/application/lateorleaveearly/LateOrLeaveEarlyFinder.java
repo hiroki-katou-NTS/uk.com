@@ -11,7 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -68,25 +68,25 @@ public class LateOrLeaveEarlyFinder {
 		String employeeID = AppContexts.user().employeeId();
 		String applicantName = "";
 	
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
 		
 		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyID, 
 				employeeID, 
 				EmploymentRootAtr.APPLICATION, 
-				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, 
+				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION, 
 				appCommonSettingOutput.generalDate, 
 				appID, 
 				true);
 		startupErrorCheckService.startupErrorCheck(
 				appCommonSettingOutput.generalDate, 
-				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value,
+				ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value,
 				approvalRootPattern.getApprovalRootContentImport());
 		
 		/** ドメインモデル「申請定型理由」を取得 (Lấy 「申請定型理由」) */
 		
-		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		
 		/** ドメインモデル「複数回勤務」を取得 (Lấy 「複数回勤務」) */
 		

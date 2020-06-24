@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 
@@ -103,7 +103,7 @@ public class AppEmploymentSettingDto {
 					
 					listWTOAH.stream().map(x -> new WorkTypeObjAppHoliday(
 							x.getWorkTypeList(),
-							EnumAdaptor.valueOf(x.getAppType(), ApplicationType.class),
+							EnumAdaptor.valueOf(x.getAppType(), ApplicationType_Old.class),
 							x.getWorkTypeSetDisplayFlg(),
 							x.getHolidayAppType() == 9 ? null : x.getHolidayAppType(),
 							x.getHolidayTypeUseFlg(),
@@ -118,7 +118,7 @@ public class AppEmploymentSettingDto {
 					
 					listWTOAH.stream().map(x -> new WorkTypeObjAppHoliday(
 							x.getWorkTypeList(),
-							EnumAdaptor.valueOf(x.getAppType(), ApplicationType.class),
+							EnumAdaptor.valueOf(x.getAppType(), ApplicationType_Old.class),
 							x.getWorkTypeSetDisplayFlg(),
 							x.getHolidayAppType() == 9 ? null : x.getHolidayAppType(),
 							x.getHolidayTypeUseFlg(),

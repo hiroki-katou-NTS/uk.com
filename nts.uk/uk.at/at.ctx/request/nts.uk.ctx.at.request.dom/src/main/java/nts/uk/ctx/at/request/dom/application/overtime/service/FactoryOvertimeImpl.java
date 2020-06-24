@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
@@ -41,7 +41,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 				new AppReason(Strings.EMPTY), 
 				applicationDate, 
 				new AppReason(applicationReason),
-				ApplicationType.OVER_TIME_APPLICATION, 
+				ApplicationType_Old.OVER_TIME_APPLICATION, 
 				employeeID, Optional.of(applicationDate),
 				Optional.of(applicationDate), 
 				ReflectionInformation_New.firstCreate());

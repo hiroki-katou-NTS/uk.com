@@ -12,7 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -65,7 +65,7 @@ public class ApproveHolidayShipmentCommandHandler
 		if(output.getOutputMode()==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 					companyID, 
-					ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).get();
+					ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).get();
 				
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;

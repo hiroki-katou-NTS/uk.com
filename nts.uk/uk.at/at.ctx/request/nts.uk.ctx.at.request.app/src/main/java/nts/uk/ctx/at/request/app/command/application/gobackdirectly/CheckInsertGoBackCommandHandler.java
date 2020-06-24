@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -29,7 +29,7 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				companyId, 
 				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),  
 				command.appCommand.getApplicationDate(),
-				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
+				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType_Old.class), 
 				command.appCommand.getEnteredPersonSID(),
 				new AppReason(command.appCommand.getApplicationReason()));
 		// get new GoBack Direct Item

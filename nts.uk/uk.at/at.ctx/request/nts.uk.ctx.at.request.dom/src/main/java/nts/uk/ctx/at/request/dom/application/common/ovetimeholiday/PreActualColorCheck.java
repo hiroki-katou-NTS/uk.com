@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -31,7 +31,7 @@ public interface PreActualColorCheck {
 	 * @return 
 	 */
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr_Old prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
+			ApplicationType_Old appType, PrePostAtr_Old prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
 	/**
@@ -42,7 +42,7 @@ public interface PreActualColorCheck {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType);
+	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType);
 	
 	/**
 	 * 07-02_実績取得・状態チェック
@@ -56,7 +56,7 @@ public interface PreActualColorCheck {
 	 * @param calStampMiss 退勤打刻漏れ補正設定
 	 * @return
 	 */
-	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, 
+	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType, 
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst);
 	
 	/**
@@ -75,7 +75,7 @@ public interface PreActualColorCheck {
 	 * @param screenWorkType 画面勤務種類
 	 * @return
 	 */
-	public JudgmentWorkTypeResult judgmentWorkTypeChange(String companyID, ApplicationType appType, String actualWorkType, String screenWorkType);
+	public JudgmentWorkTypeResult judgmentWorkTypeChange(String companyID, ApplicationType_Old appType, String actualWorkType, String screenWorkType);
 	
 	/**
 	 * 07-02-2-3_就業時間帯変更の判定
@@ -137,7 +137,7 @@ public interface PreActualColorCheck {
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param opAppBefore 事前申請
 	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
+	public void preAppErrorCheck(ApplicationType_Old appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック

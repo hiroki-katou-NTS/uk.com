@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -55,7 +55,7 @@ public interface NewBeforeRegister_New {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr);
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType_Old appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr);
 	
 	/**
 	 * 3.確定チェック

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
@@ -53,7 +53,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 時間外表示区分
 	 * @return
 	 */
-	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
+	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType_Old appType);
 
 	/**
 	 * 01-04_加給時間を取得
@@ -82,7 +82,7 @@ public interface CommonOvertimeHoliday {
 	 * @return
 	 */
 	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr_Old prePostAtr, 
-			UseAtr divergenceReasonFormAtr, ApplicationType appType);
+			UseAtr divergenceReasonFormAtr, ApplicationType_Old appType);
 	
 	/**
 	 * 01-13_事前事後区分を取得
@@ -94,7 +94,7 @@ public interface CommonOvertimeHoliday {
 	 * @param displayPrePostFlg 事前事後区分表示
 	 * @return
 	 */
-	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType appType, Integer uiType,
+	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType_Old appType, Integer uiType,
 			OverTimeAtr overtimeAtr, GeneralDate appDate, AppDisplayAtr displayPrePostFlg);
 	
 	/**
@@ -105,7 +105,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public boolean getRestTime(String companyID, UseAtr timeCalUse, Boolean breakInputFieldDisp, ApplicationType appType);
+	public boolean getRestTime(String companyID, UseAtr timeCalUse, Boolean breakInputFieldDisp, ApplicationType_Old appType);
 	
 	/**
 	 * 03-08_申請日の矛盾チェック
@@ -116,7 +116,7 @@ public interface CommonOvertimeHoliday {
 	 * @param appDateContradictionAtr 申請日矛盾区分
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType, AppDateContradictionAtr appDateContradictionAtr);
 	
 	/**
 	 * 01-14_勤務時間取得
@@ -132,7 +132,7 @@ public interface CommonOvertimeHoliday {
 	 * @return
 	 */
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
-			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
+			ApplicationType_Old appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 03-01_事前申請超過チェック

@@ -11,7 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
@@ -67,7 +67,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	}
 
 	@Override
-	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
+	public ApplicationReason findApplicationReason(String companyID, ApplicationType_Old applicationType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

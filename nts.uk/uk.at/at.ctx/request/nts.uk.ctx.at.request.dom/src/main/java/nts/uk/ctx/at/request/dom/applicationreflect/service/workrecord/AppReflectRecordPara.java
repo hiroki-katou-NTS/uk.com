@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 @Getter
 public class AppReflectRecordPara {
 	// 申請種類
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 	private PrePostAtr_Old prePosAtr;
 	/**

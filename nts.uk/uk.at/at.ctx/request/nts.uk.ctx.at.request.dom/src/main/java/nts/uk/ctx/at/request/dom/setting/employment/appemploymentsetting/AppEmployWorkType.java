@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 
 /**
  * @author loivt
@@ -27,7 +27,7 @@ public class AppEmployWorkType {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	/**
 	 * 休暇申請種類, 振休振出区分
 	 */
@@ -40,7 +40,7 @@ public class AppEmployWorkType {
 	public static AppEmployWorkType createSimpleFromJavaType(String companyID, String employmentCode, int appType, int holidayOrPauseType, String workTypeCode){
 		return new AppEmployWorkType(companyID,
 				employmentCode,
-				EnumAdaptor.valueOf(appType,ApplicationType.class),
+				EnumAdaptor.valueOf(appType,ApplicationType_Old.class),
 				holidayOrPauseType,
 				workTypeCode);
 	}

@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
@@ -40,9 +40,9 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 				.getList(entity -> convertToDomain(entity));
 		List<DivergenceReason> dataTmp = divergenceReasons.stream().filter(x -> x.getReasonTypeItem().getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
 		ReasonTypeItem reasonTypeItem = new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.NOTDEFAULT);
-		DivergenceReason firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),reasonTypeItem);
+		DivergenceReason firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType_Old.class),reasonTypeItem);
 		if(CollectionUtil.isEmpty(dataTmp)) {
-			firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.DEFAULT));
+			firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType_Old.class),new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.DEFAULT));
 		}
 		divergenceReasons.sort((a,b) -> Integer.compare(a.getReasonTypeItem().getDispOrder(),b.getReasonTypeItem().getDispOrder()));
 		divergenceReasons.add(0, firstData);

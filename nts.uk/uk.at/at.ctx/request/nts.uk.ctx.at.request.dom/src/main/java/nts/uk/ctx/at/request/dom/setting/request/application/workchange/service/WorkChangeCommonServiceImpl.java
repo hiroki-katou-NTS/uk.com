@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
@@ -43,7 +43,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds, GeneralDate appDate) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyId,
-				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, appDate);
+				sId, 1, ApplicationType_Old.WORK_CHANGE_APPLICATION, appDate);
 
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		/*ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
@@ -72,7 +72,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting,ApplicationType.WORK_CHANGE_APPLICATION.value);
+		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting,ApplicationType_Old.WORK_CHANGE_APPLICATION.value);
 		wcBasicData.setWorkingData(workingData);
 		
 		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
@@ -97,7 +97,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 
 		// ドメインモデル「申請定型理由」を取得
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
-				ApplicationType.WORK_CHANGE_APPLICATION.value);
+				ApplicationType_Old.WORK_CHANGE_APPLICATION.value);
 		wcBasicData.setListAppReason(listReason);
 
 		// 勤務変更申請基本データ

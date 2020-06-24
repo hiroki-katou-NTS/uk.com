@@ -13,7 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -85,7 +85,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 
-	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType hdType) {
+	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType_Old hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
 	}
 	
@@ -95,7 +95,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 共通申請
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				employeeIDLst, 
 				dateLst, 
 				true);
@@ -142,7 +142,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		}
 		// INPUT．「雇用別申請承認設定．申請別対象勤務種類」を確認する
 		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findAny();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findAny();
 		if(!opWorkTypeObjAppHoliday.isPresent()) {
 			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
@@ -246,7 +246,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst,
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
 				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
 		// 「勤務変更申請の表示情報」を更新する

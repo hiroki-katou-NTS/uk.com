@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDi
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
@@ -135,7 +135,7 @@ public class AppWorkChangeFinder {
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
@@ -162,7 +162,7 @@ public class AppWorkChangeFinder {
 		
 		// 申請
 		Application_New app = iFactoryApplication.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), appReason, 
-				appReason, ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
+				appReason, ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
@@ -213,7 +213,7 @@ public class AppWorkChangeFinder {
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		if(outputMode==OutputMode.EDITMODE){
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
@@ -255,7 +255,7 @@ public class AppWorkChangeFinder {
 				new AppReason(Strings.EMPTY), 
 				appCommand.getStartDate(),
 				new AppReason(appReason),
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
 				Optional.of(appCommand.getStartDate()),
 				Optional.of(appCommand.getEndDate()), 

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -60,12 +60,12 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application_New);
 			if((application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT)&&
-					application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
-				|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
-				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
+					application.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION))
+				|| application.getAppType().equals(ApplicationType_Old.BREAK_TIME_APPLICATION)
+				|| application.getAppType().equals(ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION)
+				|| application.getAppType().equals(ApplicationType_Old.WORK_CHANGE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType_Old.ABSENCE_APPLICATION)
+				|| application.getAppType().equals(ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION)){
 				InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 				GeneralDate startDate = application.getStartDate().isPresent() ? application.getStartDate().get() : application.getAppDate();
 				GeneralDate endDate = application.getEndDate().isPresent() ? application.getEndDate().get() : application.getAppDate();

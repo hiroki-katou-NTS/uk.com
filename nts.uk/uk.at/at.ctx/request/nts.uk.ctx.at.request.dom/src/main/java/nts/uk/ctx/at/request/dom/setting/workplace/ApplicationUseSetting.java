@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.workplace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 
 /**
@@ -28,5 +28,5 @@ public class ApplicationUseSetting extends DomainObject {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 }

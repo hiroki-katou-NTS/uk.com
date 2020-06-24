@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
@@ -192,7 +192,7 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 				new ApplicationUseSetting(
 						new AppUseSetRemark(this.memo), 
 						UseAtr.toEnum(this.useAtr), 
-						EnumAdaptor.valueOf(this.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
+						EnumAdaptor.valueOf(this.krqstWpAppConfigDetailPK.appType, ApplicationType_Old.class)), 
 				Optional.of(new ApplicationDetailSetting(
 						this.breakInputFieldDisFlg == 1? true : false, 
 						this.breakTimeDisFlg == 1? true : false, 

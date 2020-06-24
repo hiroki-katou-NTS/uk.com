@@ -9,6 +9,6 @@ public interface ApplicationApprovalService_New {
 	
 	public void insert(Application_New application);
 	
-	public void delete(String companyID, String appID, Long version, ApplicationType appType);
+	public void delete(String companyID, String appID, Long version, ApplicationType_Old appType);
 	
 }

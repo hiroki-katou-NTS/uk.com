@@ -13,7 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -91,7 +91,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	private HolidayShipmentService holidayShipmentService;
 
 	@Override
-	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType) {
+	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType) {
 		// 申請者情報を取得する
 		List<EmployeeInfoImport> employeeInfoLst = this.getEmployeeInfoLst(applicantLst);
 		// 申請承認設定を取得する
@@ -124,7 +124,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType appType,
+	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType_Old appType,
 			List<GeneralDate> dateLst, AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// 基準日=INPUT．「申請対象日リスト」の1個目
@@ -138,7 +138,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			}
 		}
 		// INPUT．申請種類をチェックする
-		if(appType == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && !CollectionUtil.isEmpty(dateLst)) {
+		if(appType == ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION && !CollectionUtil.isEmpty(dateLst)) {
 			// 基準申請日の決定
 			GeneralDate recDate = dateLst.size() >= 1 ? dateLst.get(0) : null;
 			GeneralDate absDate = dateLst.size() >= 2 ? dateLst.get(1) : null;
@@ -201,7 +201,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp) {
+	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType_Old targetApp) {
 		// [No.571]職場の上位職場を基準職場を含めて取得する
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, date);
 		for(String workPlaceID : workPlaceIDs) {
@@ -219,14 +219,14 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public ApprovalRootContentImport_New getApprovalRoot(String companyID, String employeeID, EmploymentRootAtr rootAtr,
-			ApplicationType appType, GeneralDate appDate) {
+			ApplicationType_Old appType, GeneralDate appDate) {
 		// 1-4.新規画面起動時の承認ルート取得パターン
 		return collectApprovalRootPatternService.getgetApprovalRootPatternNew(companyID, employeeID, rootAtr, appType, appDate);
 	}
 
 	@Override
 	public AppDispInfoWithDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID,
-			List<GeneralDate> dateLst, ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitialAtr initValueAtr) {
+			List<GeneralDate> dateLst, ApplicationType_Old appType, DisplayAtr prePostAtrDisp, PrePostInitialAtr initValueAtr) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// INPUT．事前事後区分表示をチェックする
 		if(prePostAtrDisp == DisplayAtr.NOT_DISPLAY) {
@@ -254,7 +254,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType,
+	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType_Old appType,
 			List<String> applicantLst, List<GeneralDate> dateLst, boolean mode) {
 		// 申請表示情報(基準日関係なし)を取得する
 		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
@@ -268,7 +268,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
+			ApplicationType_Old appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する

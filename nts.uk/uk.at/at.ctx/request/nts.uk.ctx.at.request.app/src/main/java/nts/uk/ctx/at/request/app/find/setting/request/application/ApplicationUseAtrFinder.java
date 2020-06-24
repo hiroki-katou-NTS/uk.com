@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -74,7 +74,7 @@ public class ApplicationUseAtrFinder {
 		//職場IDから申請承認設定情報取得
 		List<ApprovalFunctionSetting> lstSet = repoAppLst.detailSetKAF022(companyId, workplaceID, GeneralDate.today());
 		
-		lstResult = lstSet.stream().filter(c -> !c.getAppUseSetting().getAppType().equals(ApplicationType.APPLICATION_36))
+		lstResult = lstSet.stream().filter(c -> !c.getAppUseSetting().getAppType().equals(ApplicationType_Old.APPLICATION_36))
 				.map(c -> new AppUseAtrDto(c.getAppUseSetting().getAppType().value, c.getAppUseSetting().getUserAtr().value))
 				.collect(Collectors.toList());
 		Collections.sort(lstResult, Comparator.comparing(AppUseAtrDto::getAppType));

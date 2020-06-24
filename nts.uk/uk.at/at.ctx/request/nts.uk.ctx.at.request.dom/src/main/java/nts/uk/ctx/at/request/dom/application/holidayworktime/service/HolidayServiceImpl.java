@@ -19,7 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -553,7 +553,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// 起動時の申請表示情報を取得する
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart( 
 				companyID, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				employeeIDLst, 
 				dateLst, 
 				true);
@@ -564,7 +564,7 @@ public class HolidayServiceImpl implements HolidayService {
 		Optional<AgreeOverTimeOutput> opAgreeOverTimeOutput = commonOvertimeHoliday.getAgreementTime(
 				companyID,
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
-				ApplicationType.BREAK_TIME_APPLICATION);
+				ApplicationType_Old.BREAK_TIME_APPLICATION);
 		// 1-1.休日出勤申請（新規）起動時初期データを取得する
 		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = this.initDataNew(
 				companyID, 
@@ -581,12 +581,12 @@ public class HolidayServiceImpl implements HolidayService {
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		// 01-08_乖離定型理由を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 		List<DivergenceReason> divergenceReasonLst = commonOvertimeHoliday.getDivergenceReasonForm(
 				companyID, 
 				PrePostAtr_Old.POSTERIOR, 
 				overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(), 
-				ApplicationType.BREAK_TIME_APPLICATION);
+				ApplicationType_Old.BREAK_TIME_APPLICATION);
 		
 		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		result.setWithdrawalAppSet(withdrawalAppSet);
@@ -627,7 +627,7 @@ public class HolidayServiceImpl implements HolidayService {
 				appDate.orElse(null),
 				approvalFunctionSet.getApplicationDetailSetting().get().getTimeCalUse(),
 				approvalFunctionSet.getApplicationDetailSetting().get().getAtworkTimeBeginDisp(),
-				ApplicationType.BREAK_TIME_APPLICATION,
+				ApplicationType_Old.BREAK_TIME_APPLICATION,
 				initWorkTypeWorkTime.getWorkTimeCD(),
 				Optional.empty(),
 				Optional.empty(),
@@ -635,7 +635,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// 01-01_休憩時間を取得する
 		HdWorkBreakTimeSetOutput hdWorkBreakTimeSetOutput = this.getBreakTime(
 				companyID, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				initWorkTypeWorkTime.getWorkTypeCD(), 
 				initWorkTypeWorkTime.getWorkTimeCD(), 
 				Optional.empty(), 
@@ -658,7 +658,7 @@ public class HolidayServiceImpl implements HolidayService {
 					companyID, 
 					employeeID, 
 					appDate.get(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
+					ApplicationType_Old.BREAK_TIME_APPLICATION, 
 					initWorkTypeWorkTime.getWorkTypeCD(), 
 					initWorkTypeWorkTime.getWorkTimeCD(), 
 					withdrawalAppSet.getOverrideSet(), 
@@ -686,7 +686,7 @@ public class HolidayServiceImpl implements HolidayService {
 		}
 		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
 		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny();
+				.filter(x -> x.getAppType() == ApplicationType_Old.BREAK_TIME_APPLICATION).findAny();
 		if(!opWorkTypeObjAppHoliday.isPresent()) {
 			// ドメインモデル「勤務種類」を取得して返す
 			return workTypeRepository.findNotDeprecated(companyID);
@@ -723,7 +723,7 @@ public class HolidayServiceImpl implements HolidayService {
 		return result;
 	}
 	@Override
-	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType appType, String workTypeCD,
+	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType_Old appType, String workTypeCD,
 			String workTimeCD, Optional<TimeWithDayAttr> startTime, Optional<TimeWithDayAttr> endTime,
 			UseAtr timeCalUse, Boolean breakTimeDisp) {
 		HdWorkBreakTimeSetOutput result = new HdWorkBreakTimeSetOutput(false, Collections.emptyList());
@@ -732,7 +732,7 @@ public class HolidayServiceImpl implements HolidayService {
 				companyID,
 				timeCalUse,
 				breakTimeDisp,
-				ApplicationType.BREAK_TIME_APPLICATION);
+				ApplicationType_Old.BREAK_TIME_APPLICATION);
 		result.setDisplayRestTime(displayRestTime);
 		// 休憩時間帯表示区分をチェック 
 		if(displayRestTime) {
@@ -764,7 +764,7 @@ public class HolidayServiceImpl implements HolidayService {
 				application.getEmployeeID(), 
 				application.getAppDate(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(), 
-			 	ApplicationType.BREAK_TIME_APPLICATION, 
+			 	ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				application, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeCalUse(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeInputUse(), 
@@ -785,7 +785,7 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Override
 	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate,
-			GeneralDate baseDate, ApplicationType appType, Application_New application, UseAtr timeCalUse,
+			GeneralDate baseDate, ApplicationType_Old appType, Application_New application, UseAtr timeCalUse,
 			UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, boolean mode,
 			List<AchievementOutput> achievementOutputLst, List<AppDetailContent> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
 			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
@@ -806,13 +806,13 @@ public class HolidayServiceImpl implements HolidayService {
 					companyID, 
 					application.getEmployeeID(), 
 					application.getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION);
+					ApplicationType_Old.BREAK_TIME_APPLICATION);
 			// 07-02_実績取得・状態チェック
 			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
 					companyID, 
 					application.getEmployeeID(), 
 					application.getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
+					ApplicationType_Old.BREAK_TIME_APPLICATION, 
 					holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(), 
 					holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v(), 
 					appHdWorkDispInfoOutput.getWithdrawalAppSet().getOverrideSet(), 
@@ -840,7 +840,7 @@ public class HolidayServiceImpl implements HolidayService {
 			preActualColorResult = preActualColorCheck.preActualColorCheck(
 					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPreExcessDisplaySetting(), 
 					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPerformanceExcessAtr(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
+					ApplicationType_Old.BREAK_TIME_APPLICATION, 
 					application.getPrePostAtr(), 
 					Collections.emptyList(), 
 					holidayTimeLst,
@@ -879,7 +879,7 @@ public class HolidayServiceImpl implements HolidayService {
 					companyID, 
 					application.getEmployeeID(), 
 					application.getAppDate(),
-					ApplicationType.BREAK_TIME_APPLICATION,
+					ApplicationType_Old.BREAK_TIME_APPLICATION,
 					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getAppDateContradictionAtr());
 			outputLst.addAll(outputLst3);
 			
@@ -913,7 +913,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// ドメインモデル「休出申請設定」を取得する
 		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
 		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value).get();
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType_Old.BREAK_TIME_APPLICATION.value).get();
 		// 申請表示情報(基準日関係あり)．事前事後区分=取得した「申請」．事前事後区分
 		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setPrePostAtr(appHolidayWork.getApplication().getPrePostAtr());
 		// 01-03_休出時間枠を取得
@@ -943,7 +943,7 @@ public class HolidayServiceImpl implements HolidayService {
 					companyID, 
 					appHolidayWork.getApplication().getEmployeeID(), 
 					appHolidayWork.getApplication().getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION);
+					ApplicationType_Old.BREAK_TIME_APPLICATION);
 			ActualStatusCheckResult actualStatusCheckResult = null;
 			// 取得した「申請詳細画面情報」．利用者をチェックする
 			User user = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser();
@@ -953,7 +953,7 @@ public class HolidayServiceImpl implements HolidayService {
 						companyID, 
 						appHolidayWork.getApplication().getEmployeeID(), 
 						appHolidayWork.getApplication().getAppDate(), 
-						ApplicationType.BREAK_TIME_APPLICATION, 
+						ApplicationType_Old.BREAK_TIME_APPLICATION, 
 						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
 						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
 						OverrideSet.TIME_OUT_PRIORITY, 
@@ -965,7 +965,7 @@ public class HolidayServiceImpl implements HolidayService {
 						companyID, 
 						appHolidayWork.getApplication().getEmployeeID(), 
 						appHolidayWork.getApplication().getAppDate(), 
-						ApplicationType.BREAK_TIME_APPLICATION, 
+						ApplicationType_Old.BREAK_TIME_APPLICATION, 
 						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
 						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
 						withdrawalAppSet.getOverrideSet(), 
@@ -993,7 +993,7 @@ public class HolidayServiceImpl implements HolidayService {
 			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
 					overtimeRestAppCommonSet.getPreExcessDisplaySetting(), 
 					overtimeRestAppCommonSet.getPerformanceExcessAtr(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
+					ApplicationType_Old.BREAK_TIME_APPLICATION, 
 					PrePostAtr_Old.POSTERIOR, 
 					Collections.emptyList(), 
 					holidayTimeLst,
@@ -1081,7 +1081,7 @@ public class HolidayServiceImpl implements HolidayService {
 				application.getEmployeeID(), 
 				application.getAppDate(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(), 
-			 	ApplicationType.BREAK_TIME_APPLICATION, 
+			 	ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				application, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeCalUse(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeInputUse(), 

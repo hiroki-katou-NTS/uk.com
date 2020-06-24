@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
@@ -74,7 +74,7 @@ public class ApprovalFunctionSettingDto {
 				new ApplicationUseSetting(
 					new AppUseSetRemark(approvalFunctionSettingDto.getMemo()),
 					EnumAdaptor.valueOf(approvalFunctionSettingDto.getUseAtr(), UseAtr.class),
-					EnumAdaptor.valueOf(approvalFunctionSettingDto.getAppType(), ApplicationType.class)),
+					EnumAdaptor.valueOf(approvalFunctionSettingDto.getAppType(), ApplicationType_Old.class)),
 				Optional.of(new ApplicationDetailSetting(
 					new Boolean(approvalFunctionSettingDto.getBreakInputFieldDisFlg() != 0),
 					new Boolean(approvalFunctionSettingDto.getBreakTimeDisFlg() != 0),

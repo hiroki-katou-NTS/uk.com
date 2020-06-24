@@ -12,7 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -148,7 +148,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	
 
 	private void validateReason(String companyID,String reason) {
-		ApplicationType appType= ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
+		ApplicationType_Old appType= ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION;
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();

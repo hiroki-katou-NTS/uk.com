@@ -16,7 +16,7 @@ public class FactoryApplicationImpl implements IFactoryApplication{
 
 	@Override
 	public Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr,
-			String appReasonID, String applicationReason, ApplicationType appType,GeneralDate startDate,GeneralDate endDate,String employeeID) {
+			String appReasonID, String applicationReason, ApplicationType_Old appType,GeneralDate startDate,GeneralDate endDate,String employeeID) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請者

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.find.setting.applicationreason;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
@@ -58,7 +58,7 @@ public class ApplicationReasonDto {
 	public ApplicationReason toDomain() {
 		return new ApplicationReason(
 				companyId, 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType_Old.class), 
 				reasonID, 
 				dispOrder, 
 				new ReasonTemp(reasonTemp), 

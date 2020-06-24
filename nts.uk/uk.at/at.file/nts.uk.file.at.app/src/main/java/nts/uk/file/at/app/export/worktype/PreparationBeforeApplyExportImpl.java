@@ -1,7 +1,7 @@
 package nts.uk.file.at.app.export.worktype;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -154,7 +154,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
     private  List<MasterData> putDatasA6(List<Object[]> export ) {
         List<MasterData> datasA6 = new ArrayList<>();
-        EnumSet.allOf(ApplicationType.class)
+        EnumSet.allOf(ApplicationType_Old.class)
                 .forEach(i -> {
                     String appName = getValueA6(i, export);
                     if (appName != null) {
@@ -562,7 +562,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return value.toString();
     }
 
-    private String getValueA6(ApplicationType appType, List<Object[]> obj){
+    private String getValueA6(ApplicationType_Old appType, List<Object[]> obj){
          Optional<Object[]> temp = obj.stream().filter(i -> i[36] != null ? appType.value == ((BigDecimal) i[36]).intValue() : appType.value == -1).findFirst();
          if(temp.isPresent()) {
              return temp.get()[37] != null ? temp.get()[37].toString() + TextResource.localize("KAF022_653") : "";
@@ -570,8 +570,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return null;
     }
 
-    private boolean getTextA6(ApplicationType appType){
-        return (appType == ApplicationType.OVER_TIME_APPLICATION);
+    private boolean getTextA6(ApplicationType_Old appType){
+        return (appType == ApplicationType_Old.OVER_TIME_APPLICATION);
     }
 
     private String getTextA4(int i){

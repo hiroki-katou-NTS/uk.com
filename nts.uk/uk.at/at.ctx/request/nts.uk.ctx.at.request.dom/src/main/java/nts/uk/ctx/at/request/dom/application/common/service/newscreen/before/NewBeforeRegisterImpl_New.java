@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -250,7 +250,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr){
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType_Old appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr){
 		/*ログイン者のパスワードレベルが０の場合、チェックしない
 		ロールが決まったら、要追加*/
 		// if(passwordLevel!=0) return;
@@ -264,7 +264,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
 		if(requestSetting.isPresent()){
-			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+			receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		

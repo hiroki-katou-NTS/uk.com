@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -61,7 +61,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		if(outputMode==OutputMode.EDITMODE){
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
@@ -103,7 +103,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				new AppReason(Strings.EMPTY), 
 				appCommand.getStartDate(),
 				new AppReason(appReason),
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
 				Optional.of(appCommand.getStartDate()),
 				Optional.of(appCommand.getEndDate()), 

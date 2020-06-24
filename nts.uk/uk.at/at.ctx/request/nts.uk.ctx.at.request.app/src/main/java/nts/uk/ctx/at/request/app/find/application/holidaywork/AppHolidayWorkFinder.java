@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispI
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
@@ -225,7 +225,7 @@ public class AppHolidayWorkFinder {
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst,
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				appDispInfoNoDateOutput,
 				appDispInfoWithDateOutput);
 		// 「休日出勤申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」
@@ -251,13 +251,13 @@ public class AppHolidayWorkFinder {
 				companyID, 
 				appDispInfoNoDateOutput.getEmployeeInfoLst().get(0).getSid(), 
 				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.BREAK_TIME_APPLICATION);
+				ApplicationType_Old.BREAK_TIME_APPLICATION);
 		// 07-02_実績取得・状態チェック
 		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
 				companyID, 
 				appDispInfoNoDateOutput.getEmployeeInfoLst().get(0).getSid(), 
 				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				hdWorkDispInfoWithDateOutput.getWorkTypeCD(), 
 				hdWorkDispInfoWithDateOutput.getWorkTimeCD(), 
 				withdrawalAppSet.getOverrideSet(), 
@@ -443,7 +443,7 @@ public class AppHolidayWorkFinder {
 				.map(x -> OvertimeColorCheck.createApp(x.getAttendanceID(), x.getFrameNo(), x.getApplicationTime()))
 				.collect(Collectors.toList());
 		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value).get();
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType_Old.BREAK_TIME_APPLICATION.value).get();
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.getPreExcessDisplaySetting();
 		AppDateContradictionAtr performanceExcessAtr = overtimeRestAppCommonSet.getPerformanceExcessAtr();
 		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
@@ -452,13 +452,13 @@ public class AppHolidayWorkFinder {
 				companyID, 
 				employeeID, 
 				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.BREAK_TIME_APPLICATION);
+				ApplicationType_Old.BREAK_TIME_APPLICATION);
 		// 07-02_実績取得・状態チェック
 		ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
 				companyID, 
 				employeeID, 
 				GeneralDate.fromString(appDate, DATE_FORMAT), 
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				workTypeCD, 
 				workTimeCD, 
 				withdrawalAppSet.getOverrideSet(), 
@@ -468,7 +468,7 @@ public class AppHolidayWorkFinder {
 		PreActualColorResult preActualColorResult =	preActualColorCheck.preActualColorCheck(
 				preExcessDisplaySetting, 
 				performanceExcessAtr, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
 				breaktimeInputCaculations, 
 				otTimeLst, 
@@ -635,7 +635,7 @@ public class AppHolidayWorkFinder {
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
-				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+				1, EnumAdaptor.valueOf(ApplicationType_Old.BREAK_TIME_APPLICATION.value, ApplicationType_Old.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
@@ -645,7 +645,7 @@ public class AppHolidayWorkFinder {
 				appDate == null ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
 				approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse(),
 				approvalFunctionSetting.getApplicationDetailSetting().get().getAtworkTimeBeginDisp(),
-				ApplicationType.BREAK_TIME_APPLICATION, 
+				ApplicationType_Old.BREAK_TIME_APPLICATION, 
 				siftCD, 
 				Optional.empty(),
 				Optional.empty(), 
@@ -682,16 +682,16 @@ public class AppHolidayWorkFinder {
 				
 				if (user == User.APPLICANT_APPROVER || user == User.APPLICANT) {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
-							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
+							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType_Old.BREAK_TIME_APPLICATION, workTypeCD,
 							siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()), deductionTimeLst);
 				} else {
 					actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
-							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
+							GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType_Old.BREAK_TIME_APPLICATION, workTypeCD,
 							siftCD, OverrideSet.TIME_OUT_PRIORITY, Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeLst);
 				}			
 			} else {
 				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(companyID, employeeID,
-						GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.BREAK_TIME_APPLICATION, workTypeCD,
+						GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType_Old.BREAK_TIME_APPLICATION, workTypeCD,
 						siftCD, withdrawalAppSet.getOverrideSet(), Optional.of(withdrawalAppSet.getCalStampMiss()), deductionTimeLst);
 			}
 			

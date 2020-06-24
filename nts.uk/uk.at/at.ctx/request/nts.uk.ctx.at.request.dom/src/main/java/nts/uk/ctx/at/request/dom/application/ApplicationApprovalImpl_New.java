@@ -74,7 +74,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	public void insert(Application_New application) {
 		String companyID = AppContexts.user().companyId();
 		applicationRepository.insert(application);
-		if(application.getAppType() != ApplicationType.ABSENCE_APPLICATION) {
+		if(application.getAppType() != ApplicationType_Old.ABSENCE_APPLICATION) {
 			BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
 					.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
 			GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate();
@@ -84,7 +84,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	}
 
 	@Override
-	public void delete(String companyID, String appID, Long version, ApplicationType appType) {
+	public void delete(String companyID, String appID, Long version, ApplicationType_Old appType) {
 		switch (appType) {
 		case STAMP_APPLICATION:
 			appStampRepository.delete(companyID, appID);

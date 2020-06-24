@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -241,7 +241,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID,
-			ApplicationType appType) {
+			ApplicationType_Old appType) {
 		Optional<AgreeOverTimeOutput> opAgreeOverTimeOutput = Optional.empty();
 		// 時間外表示区分チェック(check 時間外表示区分)
 		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository
@@ -294,7 +294,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr_Old prePostAtr,
-			UseAtr divergenceReasonFormAtr, ApplicationType appType) {
+			UseAtr divergenceReasonFormAtr, ApplicationType_Old appType) {
 		// 事前事後区分チェック
 		if (prePostAtr == PrePostAtr_Old.PREDICT) {
 			return Collections.emptyList();
@@ -308,7 +308,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	}
 
 	@Override
-	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType appType, Integer uiType,
+	public DisplayPrePost getDisplayPrePost(String companyID, ApplicationType_Old appType, Integer uiType,
 			OverTimeAtr overtimeAtr, GeneralDate appDate, AppDisplayAtr displayPrePostFlg) {
 		DisplayPrePost result = new DisplayPrePost();
 		// Input．事前事後区分表示チェック
@@ -333,7 +333,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public boolean getRestTime(String companyID, UseAtr timeCalUse, Boolean breakInputFieldDisp,
-			ApplicationType appType) {
+			ApplicationType_Old appType) {
 		// 時刻計算利用チェック
 		if (timeCalUse == UseAtr.NOTUSE) {
 			return false;
@@ -344,7 +344,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate,
-			ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr) {
+			ApplicationType_Old appType, AppDateContradictionAtr appDateContradictionAtr) {
 		// Input．申請日矛盾区分をチェックする
 		if (appDateContradictionAtr == AppDateContradictionAtr.NOTCHECK) {
 			return Collections.emptyList();
@@ -359,7 +359,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		boolean checked = false;
 		// Input．申請種類をチェック
-		if (appType == ApplicationType.OVER_TIME_APPLICATION) {
+		if (appType == ApplicationType_Old.OVER_TIME_APPLICATION) {
 			// アルゴリズム「03-08_01 残業申請の勤務種類矛盾チェック」を実行する
 			checked = this.checkOverTime(workType);
 		} else {
@@ -437,13 +437,13 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
-			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting) {
+			ApplicationType_Old appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting) {
 		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
 		Integer startTime1 = null;
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
-		if (timeCalUse == UseAtr.NOTUSE && appType == ApplicationType.OVER_TIME_APPLICATION) {
+		if (timeCalUse == UseAtr.NOTUSE && appType == ApplicationType_Old.OVER_TIME_APPLICATION) {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 		recordWorkDisplay = UseAtr.USE;
@@ -541,7 +541,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
+				ApplicationType_Old.OVER_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
@@ -609,7 +609,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType_Old.OVER_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する
 			if (overtimeRestAppCommonSet.get().getPreExcessDisplaySetting().equals(UseAtr.USE)) {
@@ -639,7 +639,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// String EmployeeId = AppContexts.user().employeeId();
 		// チェック条件を確認
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 		UseAtr preExcessDisplaySetting = overtimeRestAppCommonSet.get().getPreExcessDisplaySetting();
 		if (this.preAppSetCheck(prePostAtr, preExcessDisplaySetting)==UseAtr.NOTUSE) {
 			result.setErrorCode(0);
@@ -648,7 +648,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, employeeID, appDate,
-				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
+				ApplicationType_Old.BREAK_TIME_APPLICATION.value, PrePostAtr_Old.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
@@ -728,7 +728,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 				}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+				ApplicationType_Old.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
@@ -774,7 +774,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 				}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
-				employeeId, appDate, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+				employeeId, appDate, ApplicationType_Old.OVER_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
@@ -820,7 +820,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					return new AppTimeItem(x.getApptime(), x.getFrameNo());
 				}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
-				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+				ApplicationType_Old.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
@@ -866,7 +866,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 					return new AppTimeItem(x.getApptime(), x.getFrameNo());
 				}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
-				employeeId, appDate, ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+				employeeId, appDate, ApplicationType_Old.BREAK_TIME_APPLICATION, appTimeItems);
 		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
 		if (result.getErrorFlg().size() > 0) {
 			BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
@@ -906,7 +906,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	public boolean checkCodition(int prePostAtr, String companyID, boolean isCalculator) {
 		if (prePostAtr == PrePostAtr_Old.POSTERIOR.value) {
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository
-					.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+					.getOvertimeRestAppCommonSetting(companyID, ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 			if (overtimeRestAppCommonSetting.isPresent()) {
 				if (isCalculator) {
 					// ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
@@ -1282,10 +1282,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// Input．実績超過区分をチェック
 		if(performanceExcessAtr == AppDateContradictionAtr.CHECKREGISTER) {
 			// Output．エラー情報　＝　確認メッセージ（Msg_423）
-			outputLst.add(new ConfirmMsgOutput("Msg_423", Arrays.asList(ApplicationType.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録してもよろしいですか？")));
+			outputLst.add(new ConfirmMsgOutput("Msg_423", Arrays.asList(ApplicationType_Old.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録してもよろしいですか？")));
 			return outputLst;
 		}
 		// エラーメッセージ（Msg_1565）を表示する
-		throw new BusinessException("Msg_423", ApplicationType.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録できません。");
+		throw new BusinessException("Msg_423", ApplicationType_Old.BREAK_TIME_APPLICATION.nameId, paramMsg, "登録できません。");
 	}
 }

@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -54,10 +54,10 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
 		List<Application_New> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value,
-				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+				ApplicationType_Old.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
 		//条件を元に、ドメインモデル「休日出勤申請」を取得する
 		List<Application_New> appHdw = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value,
-				ApplicationType.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+				ApplicationType_Old.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
 		List<String> lstIdOt = new ArrayList<>();
 		List<String> lstIdHdw = new ArrayList<>();
 		Map<GeneralDate, String> mapAppOt = new HashMap<>();

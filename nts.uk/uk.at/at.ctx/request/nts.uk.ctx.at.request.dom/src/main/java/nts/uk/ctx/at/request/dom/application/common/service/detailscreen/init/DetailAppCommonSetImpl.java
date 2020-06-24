@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 //import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
@@ -76,7 +76,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 起動時の申請表示情報を取得する
-		ApplicationType appType = detailScreenAppData.getApplication().getAppType();
+		ApplicationType_Old appType = detailScreenAppData.getApplication().getAppType();
 		List<String> applicantLst = Arrays.asList(detailScreenAppData.getApplication().getEmployeeID());
 		GeneralDate startDate = detailScreenAppData.getApplication().getStartDate().orElse(detailScreenAppData.getApplication().getAppDate());
 		GeneralDate endDate = detailScreenAppData.getApplication().getEndDate().orElse(detailScreenAppData.getApplication().getAppDate());

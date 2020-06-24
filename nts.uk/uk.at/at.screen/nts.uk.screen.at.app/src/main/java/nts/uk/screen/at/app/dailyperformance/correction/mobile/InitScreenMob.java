@@ -519,7 +519,7 @@ public class InitScreenMob {
 			if (disableSignMap != null) {
 				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
 						|| x.getReflectState() == ReflectedState_New.REMAND.value)
-						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
+						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType_Old.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
 				} else {

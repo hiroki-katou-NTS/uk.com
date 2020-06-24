@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -128,7 +128,7 @@ public class ApplicationDto_New {
 				new AppReason(appDto.getReversionReason()), 
 				GeneralDate.fromString(appDto.getApplicationDate(), DATE_FORMAT),
 				new AppReason(appDto.getApplicationReason()),
-				EnumAdaptor.valueOf(appDto.getApplicationType(), ApplicationType.class), 
+				EnumAdaptor.valueOf(appDto.getApplicationType(), ApplicationType_Old.class), 
 				appDto.getApplicantSID(),
 				Optional.ofNullable((GeneralDate.fromString(appDto.getStartDate(), DATE_FORMAT))),
 				Optional.ofNullable((GeneralDate.fromString(appDto.getEndDate(), DATE_FORMAT))), 

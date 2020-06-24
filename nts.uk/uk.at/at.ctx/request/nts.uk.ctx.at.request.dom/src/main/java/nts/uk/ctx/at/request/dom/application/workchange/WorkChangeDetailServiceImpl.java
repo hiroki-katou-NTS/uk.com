@@ -11,7 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
@@ -141,9 +141,9 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		GeneralDate appDate = application.getAppDate();
 		String sID = application.getEmployeeID();
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(cid,
-				sID, 1, ApplicationType.WORK_CHANGE_APPLICATION, appDate);
+				sID, 1, ApplicationType_Old.WORK_CHANGE_APPLICATION, appDate);
 		//勤務就業ダイアログ用データ取得
-		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType_Old.WORK_CHANGE_APPLICATION.value);
 		//就業時間帯の必須チェック
 //		SetupType setupType = this.bacsicService
 //				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());

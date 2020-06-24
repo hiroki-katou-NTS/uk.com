@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -132,7 +132,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 			if(overtimeRestAppCommonSet.isPresent() && overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
 				List<Application_New> application = this.applicationRepository.getApp(employeeId,
 						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr_Old.PREDICT.value,
-						ApplicationType.BREAK_TIME_APPLICATION.value);
+						ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 				if(!CollectionUtil.isEmpty(application)){
 					result.setAppDate(application.get(0).getAppDate());
 					Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository

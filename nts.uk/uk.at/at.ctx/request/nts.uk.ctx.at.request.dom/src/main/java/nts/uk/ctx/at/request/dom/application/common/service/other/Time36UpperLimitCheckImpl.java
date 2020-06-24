@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreePeriodYMDExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
@@ -100,7 +100,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyID, String employeeID, GeneralDate appDate,
-			ApplicationType appType, List<AppTimeItem> appTimeItems) {
+			ApplicationType_Old appType, List<AppTimeItem> appTimeItems) {
 		List<Time36ErrorOutput> errorFlg = new ArrayList<Time36ErrorOutput>();
 		// 「時間外時間の詳細」をクリア
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
@@ -130,7 +130,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
 	@Override
 	public Time36UpperLimitCheckResult checkUpdate(String companyID, Optional<AppOvertimeDetail> appOvertimeDetailOpt,
-			String employeeID, GeneralDate appDate, ApplicationType appType, List<AppTimeItem> appTimeItems) {
+			String employeeID, GeneralDate appDate, ApplicationType_Old appType, List<AppTimeItem> appTimeItems) {
 		
 		List<Time36ErrorOutput> errorFlg = new ArrayList<Time36ErrorOutput>();
 
@@ -192,7 +192,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	// 時間外時間の詳細を作成
 	private AppOvertimeDetail createAppOvertimeDetail(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate,
-			ApplicationType appType, List<AppTimeItem> appTimeItems){
+			ApplicationType_Old appType, List<AppTimeItem> appTimeItems){
 		String companyID = appOvertimeDetail.getCid();
 		String employmentCD = StringUtils.EMPTY;
 		// 社員所属雇用履歴を取得
@@ -261,7 +261,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 登録不可３６協定チェック区分を取得
-	private Time36AgreeCheckRegister getTime36AgreeCheckRegister(String companyID, ApplicationType appType){
+	private Time36AgreeCheckRegister getTime36AgreeCheckRegister(String companyID, ApplicationType_Old appType){
 		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyID, appType.value);
 		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
@@ -269,7 +269,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	}
 	
 	// 画面から36協定対象時間を取得
-	private void getTime36FromScreen(AppOvertimeDetail appOvertimeDetail, ApplicationType appType, List<AppTimeItem> appTimeItems){
+	private void getTime36FromScreen(AppOvertimeDetail appOvertimeDetail, ApplicationType_Old appType, List<AppTimeItem> appTimeItems){
 		String companyID = appOvertimeDetail.getCid();
 		Integer appTime = 0;
 		Integer appUpperLimitTime = 0;
@@ -278,10 +278,10 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		// 36協定対象項目一覧を取得
 		Time36AgreementTargetItem targetItem = outsideOTSettingService.getTime36AgreementTargetItem(companyID);
 		// INPUT．残業休出区分をチェックする
-		if (ApplicationType.OVER_TIME_APPLICATION.equals(appType)) {
+		if (ApplicationType_Old.OVER_TIME_APPLICATION.equals(appType)) {
 			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
 			appTime = this.calcOvertimeAppTime(appTimeItems, targetItem);
-		} else if (ApplicationType.BREAK_TIME_APPLICATION.equals(appType)) {
+		} else if (ApplicationType_Old.BREAK_TIME_APPLICATION.equals(appType)) {
 			// INPUT．時間外時間一覧の36協定時間対象の枠を合計する
 			appTime = this.calcBreakAppTime(appTimeItems, targetItem);
 			// 法定内休出の勤怠項目IDを全て取得

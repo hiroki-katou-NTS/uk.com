@@ -16,7 +16,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -63,7 +63,7 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		
 		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.BREAK_TIME_APPLICATION).findFirst().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;

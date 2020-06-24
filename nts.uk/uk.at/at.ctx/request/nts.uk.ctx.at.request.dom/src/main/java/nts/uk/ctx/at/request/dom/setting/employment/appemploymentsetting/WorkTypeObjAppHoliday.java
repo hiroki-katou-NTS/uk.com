@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class WorkTypeObjAppHoliday {
 	List<String> workTypeList;
 	
 //	申請種類
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 //	表示する勤務種類を設定する
 	private Boolean workTypeSetDisplayFlg;
@@ -32,7 +32,7 @@ public class WorkTypeObjAppHoliday {
 //	振休振出区分
 	private Optional<BreakOrRestTime> swingOutAtr;
 	
-	public WorkTypeObjAppHoliday(List<String> lstWorkType, ApplicationType appType, boolean workTypeSetDisplayFlg,
+	public WorkTypeObjAppHoliday(List<String> lstWorkType, ApplicationType_Old appType, boolean workTypeSetDisplayFlg,
 			Integer holidayOrPauseType, boolean holidayTypeUseFlg, Integer swingout) {
 		this.workTypeList = lstWorkType;
 		this.appType = appType;

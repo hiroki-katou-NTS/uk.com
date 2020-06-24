@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateF
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
@@ -83,7 +83,7 @@ public class AppDataDateFinder {
         AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, appGeneralDate); 
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		ApplicationDto_New applicationDto = null;
-		PrePostAtr_Old defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
+		PrePostAtr_Old defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), appGeneralDate,0);
 		if(Strings.isNotBlank(appID)){
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(
@@ -97,7 +97,7 @@ public class AppDataDateFinder {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), 
 					appGeneralDate,
 					appID,
 					false).getApprovalRootContentImport();
@@ -130,7 +130,7 @@ public class AppDataDateFinder {
 						companyID, 
 						employeeID, 
 						EmploymentRootAtr.APPLICATION, 
-						EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+						EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), 
 						appGeneralDate,
 						appID,
 						true).getApprovalRootContentImport();
