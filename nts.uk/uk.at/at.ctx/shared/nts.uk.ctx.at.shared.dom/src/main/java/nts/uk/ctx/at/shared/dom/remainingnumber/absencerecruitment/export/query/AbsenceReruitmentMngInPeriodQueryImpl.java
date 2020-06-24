@@ -14,11 +14,9 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -43,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentMngInPeriodQuery{
@@ -62,11 +61,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	private AbsenceTenProcess absenceTenProcess;
 	@Inject
 	private CompanyAdapter companyAdapter;
-	
-	@Inject 
-	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
 	@Override
-	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriodOld(AbsRecMngInPeriodParamInput paramInput) {
+	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		List<AbsRecDetailPara> lstAbsRec = new ArrayList<>();
 		ResultAndError carryForwardDays = new ResultAndError(0.0, false);
 		//パラメータ「前回振休の集計結果」をチェックする
@@ -123,10 +119,6 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		return outputData;
 	}
 
-	@Override
-	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
-		return numberCompensatoryLeavePeriodProcess.process(paramInput.convert()).convert();
-	}
 	@Override
 	public List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid, GeneralDate ymd) {
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();

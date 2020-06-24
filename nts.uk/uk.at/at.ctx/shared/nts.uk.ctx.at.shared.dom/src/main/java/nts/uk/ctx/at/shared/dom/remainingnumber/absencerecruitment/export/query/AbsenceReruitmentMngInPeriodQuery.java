@@ -15,14 +15,7 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * Requestlist204 期間内の振出振休残数を取得する
 	 * @return
 	 */
-	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriodOld(AbsRecMngInPeriodParamInput paramInput);
-	
-	/**
-	 * Requestlist204 期間内の振出振休残数を取得する refactor 
-	 * @return
-	 */
 	AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput);
-	
 	/**
 	 * 1.未相殺の振休(確定)を取得する
 	 * @param sid

@@ -372,7 +372,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・上書きフラグ＝false
 			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriodOld(paramInput);
+			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
 			subVacaRemain = subVaca.getRemainDays();//残日数
 		}

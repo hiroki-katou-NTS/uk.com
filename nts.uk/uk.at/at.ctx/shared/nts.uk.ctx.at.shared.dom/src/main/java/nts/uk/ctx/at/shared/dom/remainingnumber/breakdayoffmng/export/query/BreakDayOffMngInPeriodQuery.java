@@ -17,17 +17,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param inputParam
 	 * @return
 	 */
-	BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriodOld(BreakDayOffRemainMngParam inputParam);
-	
-	/**
-	 * RequestList203: 期間内の休出代休残数を取得する Refactor
-	 * 
-	 * @param inputParam
-	 * @return
-	 */
 	BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam);
-	
-	
 	/**
 	 * 1.未相殺の代休(確定)を取得する
 	 * @param sid
