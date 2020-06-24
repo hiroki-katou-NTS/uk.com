@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -363,29 +363,29 @@ public class ApplicationListForScreen {
 				// outputパラメータに打刻申請のモード別の値をセットする
 				result.add(new AppWithDetailExportDto(
 						ApplicationType_Old.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_GO_OUT_PERMIT.name + ")", 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")", 
 						null,
-						StampRequestMode.STAMP_GO_OUT_PERMIT.value));
+						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
 				result.add(new AppWithDetailExportDto(
 						ApplicationType_Old.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_WORK.name + ")", 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")", 
 						null,
-						StampRequestMode.STAMP_WORK.value));
+						StampRequestMode_Old.STAMP_WORK.value));
 				result.add(new AppWithDetailExportDto(
 						ApplicationType_Old.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_CANCEL.name + ")", 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")", 
 						null,
-						StampRequestMode.STAMP_CANCEL.value));
+						StampRequestMode_Old.STAMP_CANCEL.value));
 				result.add(new AppWithDetailExportDto(
 						ApplicationType_Old.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_ONLINE_RECORD.name + ")", 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")", 
 						null,
-						StampRequestMode.STAMP_ONLINE_RECORD.value));
+						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
 				result.add(new AppWithDetailExportDto(
 						ApplicationType_Old.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.OTHER.name + ")", 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")", 
 						null,
-						StampRequestMode.OTHER.value));
+						StampRequestMode_Old.OTHER.value));
 			} else {
 				// outputパラメータに値をセットする
 				result.add(new AppWithDetailExportDto(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));

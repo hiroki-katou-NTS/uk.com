@@ -83,7 +83,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -1126,7 +1126,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ドメインモデル「打刻申請」を取得する
 		AppStamp stamp = repoAppStamp.findByAppID(cId, application.getAppID());
 		// 打刻取消の場合
-		if (!StampRequestMode.STAMP_CANCEL.equals(stamp.getStampRequestMode())) {
+		if (!StampRequestMode_Old.STAMP_CANCEL.equals(stamp.getStampRequestMode())) {
 			return null;
 		}
 		// アルゴリズム「実績の取得」を実行する

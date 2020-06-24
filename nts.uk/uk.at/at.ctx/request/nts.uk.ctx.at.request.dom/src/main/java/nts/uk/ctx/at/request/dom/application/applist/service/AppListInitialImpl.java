@@ -64,7 +64,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
@@ -1000,7 +1000,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
 		// get domain 打刻申請
 		AppStamp stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if (!stamp.getStampRequestMode().equals(StampRequestMode.STAMP_CANCEL)) {
+		if (!stamp.getStampRequestMode().equals(StampRequestMode_Old.STAMP_CANCEL)) {
 			return null;
 		}
 		// アルゴリズム「実績の取得」を実行する - 13/KAF

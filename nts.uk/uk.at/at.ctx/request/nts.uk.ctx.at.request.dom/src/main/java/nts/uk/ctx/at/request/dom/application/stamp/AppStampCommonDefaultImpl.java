@@ -108,7 +108,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	}
 	
 	@Override
-	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode stampRequestMode){
+	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode_Old stampRequestMode){
 		List<AttendanceResultImport> attendanceResultLst = new ArrayList<>();
 		List<Integer> itemIDGoout = Arrays.asList(
 				86,87,88,89,90,
