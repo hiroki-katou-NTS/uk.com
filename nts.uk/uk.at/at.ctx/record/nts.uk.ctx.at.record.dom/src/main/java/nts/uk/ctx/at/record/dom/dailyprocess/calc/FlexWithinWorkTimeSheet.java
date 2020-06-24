@@ -436,11 +436,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		//フレックス時間の計算
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(
 				calcMethod,
-				new HolidayCalcMethodSet(
-						new PremiumHolidayCalcMethod(
-								addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
-								addSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-						addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday()),
+				addSetting.getVacationCalcMethodSet().getWorkTimeDeductFlexTime(),
 				flexAutoCalcAtr,
 				workType,
 				flexCalcMethod,
@@ -450,13 +446,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				statutoryDivision,
 				siftCode,
 				autoCalcOfLeaveEarlySetting,
-				new WorkFlexAdditionSet(
-						addSetting.getCompanyId(),
-						new HolidayCalcMethodSet(
-								new PremiumHolidayCalcMethod(
-										addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
-										addSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-								addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday())),
+				addSetting.getWorkTimeDeductFlexTime(),
 				holidayAddtionSet,
 				flexUpper,
 				preFlexTime,
@@ -570,8 +560,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													   ).getWorkTime();
 		//休暇加算のマスタを見る
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(calcMethod, 
-																 new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), addSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-																		 addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday()), //ichioka見直し　通常渡す意味 就業時間の実働でNEWする意味
+																 addSetting.getVacationCalcMethodSet().getWorkTimeDeductFlexTime(),
 																 flexAutoCalcAtr, 
 																 workType, 
 																 flexCalcMethod, 
@@ -581,7 +570,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 																 statutoryDivision, 
 																 siftCode, 
 																 autoCalcOfLeaveEarlySetting,
-																 addSetting,
+																 addSetting.getWorkTimeDeductFlexTime(),
 																 holidayAddtionSet, 
 																 flexUpper,
 																 preFlexTime,
