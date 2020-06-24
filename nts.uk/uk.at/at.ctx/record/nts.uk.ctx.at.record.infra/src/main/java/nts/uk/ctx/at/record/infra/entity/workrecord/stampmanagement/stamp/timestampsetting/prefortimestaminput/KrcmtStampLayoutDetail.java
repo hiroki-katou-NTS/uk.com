@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -107,6 +109,21 @@ private static final long serialVersionUID = 1L;
 	@Column(name ="AUDIO_TYPE")
 	public int aidioType;
 	
+	@ManyToOne
+    @PrimaryKeyJoinColumns({
+    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+    	@PrimaryKeyJoinColumn(name = "STAMP_MEANS", referencedColumnName = "STAMP_MEANS"),
+    	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
+    })
+	public KrcmtStampPageLayout krcmtStampPageLayout;
+	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", referencedColumnName = "4", insertable = false, updatable = false)
+    })
+	public KrcmtSrampPortal krcmtSrampPortal;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -129,14 +146,6 @@ private static final long serialVersionUID = 1L;
 		this.backGroundColor = backGroundColor;
 		this.aidioType = aidioType;
 	}
-	
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-    	@PrimaryKeyJoinColumn(name = "STAMP_MEANS", referencedColumnName = "STAMP_MEANS"),
-    	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
-    })
-	public KrcmtStampPageLayout krcmtStampPageLayout;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;

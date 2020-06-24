@@ -31,19 +31,16 @@ public class PortalStampSettings  implements DomainAggregate{
 	private List<ButtonSettings> buttonSettings;
 	
 	// 打刻ボタンを抑制する
-	private Boolean suppressStampBtn;
+	private boolean buttonEmphasisArt;
 	
 	// トップメニューリンク利用する
-	private Boolean useTopMenuLink;
+	private boolean toppageLinkArt;
 	
 	// [C-0] ポータルの打刻設定(会社ID, 打刻画面の表示設定, 打刻ボタン設定, 打刻ボタンを抑制する,トップメニューリンク利用する)																							
 	
 	// [1] ボタン詳細設定を取得する
 	public Optional<ButtonSettings> getDetailButtonSettings(ButtonPositionNo buttonPositionNo) {
-		
 		return this.buttonSettings.stream().filter(it -> it.getButtonPositionNo().equals(buttonPositionNo)).findFirst();
-
-		
 	}
 	
 }

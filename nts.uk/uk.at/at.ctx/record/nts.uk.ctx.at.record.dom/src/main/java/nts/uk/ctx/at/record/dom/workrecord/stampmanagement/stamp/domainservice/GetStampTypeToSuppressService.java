@@ -93,7 +93,7 @@ public class GetStampTypeToSuppressService {
 				return false;
 			}
 			// return $個人利用の打刻設定.打刻ボタンを抑制する
-			return optPotalSetting.get().getSuppressStampBtn();
+			return optPotalSetting.get().isButtonEmphasisArt();
 		}
 
 		return false;
