@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
@@ -335,5 +336,20 @@ public class IntegrationOfWorkTime {
 				return this.flexWorkSetting.get().getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones();
 		}
 		return Collections.emptyList();
+	}
+	
+	/**
+	 * 休憩打刻の時刻管理設定区分を取得する
+	 * 固定勤務は「時刻管理する」を返す。（リファクタ以前と同じ動作にするため）
+	 * @return 休憩打刻の時刻管理設定区分
+	 */
+	public RestClockManageAtr getRestClockManageAtr() {
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return RestClockManageAtr.IS_CLOCK_MANAGE;
+			case FLEX:				return this.flexWorkSetting.get().getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr();
+			case FLOW:				return this.flowWorkSetting.get().getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
 	}
 }

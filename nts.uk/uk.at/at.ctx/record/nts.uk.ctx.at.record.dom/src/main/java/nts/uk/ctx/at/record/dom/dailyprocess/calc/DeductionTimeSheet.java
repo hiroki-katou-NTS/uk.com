@@ -149,7 +149,7 @@ public class DeductionTimeSheet {
 		/* 重複部分補正処理 */
 		useDedTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet).reCreate(
 				integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
-				integrationOfWorkTime.getFlowWorkRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
+				integrationOfWorkTime.getRestClockManageAtr(),
 				integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 
 		/* 控除でない外出削除 */
