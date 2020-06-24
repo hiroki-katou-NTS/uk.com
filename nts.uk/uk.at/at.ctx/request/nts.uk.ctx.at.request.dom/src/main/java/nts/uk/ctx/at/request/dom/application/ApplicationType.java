@@ -39,7 +39,7 @@ public enum ApplicationType {
 	/**
 	 * 6: 休出時間申請
 	 */
-	BREAK_TIME_APPLICATION(6, "休出時間申請"),
+	LEAVE_TIME_APPLICATION(6, "休出時間申請"),
 	
 	/**
 	 * 7: 打刻申請
