@@ -1,24 +1,8 @@
 <template>
   <div class="kafs07a">
-    <!-- <div>
-        <kafs00-a v-if="true" v-bind:params="{application: application}" /> 
-    </div>
     <div>
-        <kafs00-b v-if="true" v-bind:params="{
-            application: application, 
-            appDispInfoStartupOutput: appDispInfoStartupOutput
-        }" /> 
+      <kafs00-a v-if="true" v-bind:params="{application: application}" />
     </div>
-    <div style="border: 1px solid red">
-        KAF007 content
-    </div>
-    <div>
-        <kafs00-c v-if="true" v-bind:params="{
-            application: application,
-            appDispInfoStartupOutput: appDispInfoStartupOutput
-        }" />    
-    </div>
-    <button type="button" class="btn btn-success" v-on:click="register">Register</button>-->
 
     <div v-if="!$valid" class="alert error">
       <img
@@ -29,6 +13,16 @@
       />
       <div class="contentError">{{'KAFS07_1'| i18n}}</div>
     </div>
+    <div>
+      <kafs00-b
+        v-if="true"
+        v-bind:params="{
+            application: application, 
+            appDispInfoStartupOutput: appDispInfoStartupOutput
+        }"
+      />
+    </div>
+
     <div class="card card-label">
       <!-- A4_1 -->
       <div class="card-header uk-bg-accordion">
@@ -99,8 +93,15 @@
         <nts-time-range-input v-model="valueWorkHours2" />
       </div>
     </div>
-    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-
+    <div>
+      <kafs00-c
+        v-if="true"
+        v-bind:params="{
+            application: application,
+            appDispInfoStartupOutput: appDispInfoStartupOutput
+        }"
+      />
+    </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
     <button

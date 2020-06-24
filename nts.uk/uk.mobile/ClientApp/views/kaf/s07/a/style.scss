@@ -6,20 +6,22 @@
 }
 .iconWarn {
     float:left; 
-    margin: 9px;
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-right: 6px;
 }
 .error {
     background-color:#F8D7DA; 
     border: 1px solid red; 
-    height: 35px !important; 
     text-align: center;  
     display: block;
     justify-content: center;
-    align-items: center; 
-    padding:0px
+    align-items: left; 
+    padding:0px;
+    height: auto;
 }
 .contentError {
-    float:left; 
-    padding-top:6px; 
+    text-align: left;
+    padding: 4px; 
     color:#78252C
 }
