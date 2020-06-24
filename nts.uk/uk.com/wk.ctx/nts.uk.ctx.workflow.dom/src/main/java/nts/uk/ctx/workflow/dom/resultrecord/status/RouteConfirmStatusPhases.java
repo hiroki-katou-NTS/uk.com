@@ -42,7 +42,7 @@ public class RouteConfirmStatusPhases {
 					}
 					
 					// 第1フェーズで後ろが全て未承認、または前フェーズが全て承認済みなら、最中
-					if (phaseOrder == 1
+					if (phaseOrder == 1 || instancePhases.size() == 1
 							|| hasAllPhaseConfirmedBefore(phaseOrder, confirmPhases)) {
 						return RouteConfirmStatusPhase.inProgress(
 								instance.getApprovalForm(), instance.getListAppFrame(), confirmedFrames);
