@@ -31,12 +31,6 @@ public class RegisterOfCancelWorkConfirmationTest {
 	@Injectable
 	private Require require;
 	
-	@Test
-	public void getters() {
-		RegisterOfCancelWorkConfirmation cancelWorkConfirmation = new RegisterOfCancelWorkConfirmation();
-		NtsAssert.invokeGetters(cancelWorkConfirmation);
-	}
-	
 	/**
 	 * whetherToCancel = true
 	 * 

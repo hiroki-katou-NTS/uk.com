@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.adapter.holidaymanagement;
 
+import java.util.Optional;
+
 import nts.arc.time.YearMonth;
 
 /**
@@ -23,4 +25,7 @@ public interface CompanyAdapter {
 	 */
 	// RequestList557
 	YearMonth getYearMonthFromCalenderYM(String companyId, YearMonth yearMonth);
+	
+	
+	Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
 }

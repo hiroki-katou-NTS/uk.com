@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -55,9 +56,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_2() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 			}
 		};
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
@@ -77,9 +79,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_3() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY_buttonEmphasisArt_false);
 			}
 		};
@@ -104,9 +107,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_4() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -129,9 +133,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_5() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -159,9 +164,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_6() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -193,9 +199,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_7() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -232,9 +239,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_8() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -275,9 +283,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_9() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -333,9 +342,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_10() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -389,9 +399,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_11() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -445,9 +456,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_12() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -501,9 +513,10 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_13() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
+		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet();
+				require.getStampSet(companyId);
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,

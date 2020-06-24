@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
@@ -46,7 +48,7 @@ public class EnterStampForSharedStampService {
 			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , RefectActualResult refActualResult) {
 		
 		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
-		Optional<StampSetCommunal> setShareTStamp = require.get(AppContexts.user().companyId());
+		Optional<StampSetCommunal> setShareTStamp = require.gets(AppContexts.user().companyId());
 		
 		if (!setShareTStamp.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -60,19 +62,18 @@ public class EnterStampForSharedStampService {
 		}
 		
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, 打刻カード番号, 打刻日時, 打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)
-		//TODO Chungnt: Đợi 社員の打刻データを作成する của anh Sơn
-		
-		return null;
-			
+		return CreateStampDataForEmployeesService.create(require, new ContractCode(conteactCode), employeeID,
+				StampNumber, stmapDateTime, relieve, buttonSetting.get().getButtonType(), refActualResult, null);
+	
 	}
 	
-	public static interface Require {
+	public static interface Require extends CreateStampDataForEmployeesService.Require{
 		/** 
 		 * [R-1] 共有打刻の打刻設定を取得する
 		 * 
 		 * 	共有打刻の打刻設定Repository.取得する()										
 		 */
-		Optional<StampSetCommunal> get(String comppanyID);
+		Optional<StampSetCommunal> gets(String comppanyID);
 	}
 
 }

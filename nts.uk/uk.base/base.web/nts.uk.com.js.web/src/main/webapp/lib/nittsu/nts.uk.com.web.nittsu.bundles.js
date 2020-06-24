@@ -47403,9 +47403,9 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
             return null;
         });
     }
-}, $storage = function (params) {
+}, $storage = function ($data) {
     if (arguments.length === 1) {
-        return $storeSession(OPENWD, params);
+        return $storeSession(OPENWD, $data);
     }
     else if (arguments.length === 0) {
         return $.Deferred().resolve()
@@ -47429,6 +47429,7 @@ function bean() {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -47449,7 +47450,7 @@ function component(options) {
                 ko.components.register(options.name, {
                     template: template,
                     viewModel: {
-                        createViewModel: function ($params, __) {
+                        createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
                             // hook to created function
                             if ($created && _.isFunction($created)) {
@@ -47458,6 +47459,7 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                _.extend($viewModel, { $el: $el.element });
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
@@ -47503,15 +47505,29 @@ BaseViewModel.prototype.$ajax = request.ajax;
 BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
 BaseViewModel.prototype.$user = __viewContext['user'];
 BaseViewModel.prototype.$program = __viewContext['program'];
-BaseViewModel.prototype.$date = Object.defineProperties({}, {
+var $date = {
+    diff: 0,
+    now: function () {
+        return Date.now();
+    },
+    today: function () {
+        return $date.now();
+    }
+};
+request.ajax('/server/time/now').then(function (time) {
+    Object.defineProperty($date, 'diff', {
+        value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+    });
+});
+BaseViewModel.prototype.$date = Object.defineProperties($date, {
     now: {
         value: function $now() {
-            return nts.uk.time.now().toDate();
+            return moment().add($date.diff, 'ms').toDate();
         }
     },
     today: {
         value: function $today() {
-            return nts.uk.time.today().toDate();
+            return moment($date.now()).startOf('day').toDate();
         }
     }
 });

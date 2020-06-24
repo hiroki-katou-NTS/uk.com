@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm;
 /**
  * 中止フラグ
- * @author yennth
+ * @author chungnt
  *
  */
 public enum IsCancelled {

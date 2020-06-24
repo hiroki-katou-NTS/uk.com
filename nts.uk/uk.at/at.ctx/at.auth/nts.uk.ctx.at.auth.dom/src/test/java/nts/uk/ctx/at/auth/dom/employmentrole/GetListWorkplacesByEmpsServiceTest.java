@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.GetListWorkplacesByEmpsService.Require;
@@ -30,6 +31,12 @@ public class GetListWorkplacesByEmpsServiceTest {
 
 	@Injectable
 	private Require require;
+	
+	@Test
+	public void gettes() {
+		GetListWorkplacesByEmpsService getListWorkplacesByEmpsService = new GetListWorkplacesByEmpsService();
+		NtsAssert.invokeGetters(getListWorkplacesByEmpsService);
+	}
 	
 	/**
 	 *  [prv-1] 全締から職場確定できる職場を取得する

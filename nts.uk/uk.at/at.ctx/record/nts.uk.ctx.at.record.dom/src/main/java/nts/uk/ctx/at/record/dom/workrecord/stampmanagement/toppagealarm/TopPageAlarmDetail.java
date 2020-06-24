@@ -12,7 +12,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TopPageArmDetail {
+public class TopPageAlarmDetail {
 	
 	/** エラーメッセージ */
 	private final String errorMessage;

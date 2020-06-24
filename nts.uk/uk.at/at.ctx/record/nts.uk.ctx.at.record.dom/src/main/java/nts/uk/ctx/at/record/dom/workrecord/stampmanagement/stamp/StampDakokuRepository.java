@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
+/**
+ * 打刻Repository
+ */
 public interface StampDakokuRepository {
 
 	/**
@@ -54,4 +58,6 @@ public interface StampDakokuRepository {
 	public List<Stamp> getByDateperiod(String companyId,DatePeriod period);
 	
 	public List<Stamp> getByCardAndPeriod(String companyId,List<String> listCard,DatePeriod period);
+	
+	public Optional<Stamp> get(String contractCode, StampNumber stampNumber);
 }

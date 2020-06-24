@@ -60,7 +60,7 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 			}
 		};
 		
-		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isTrue();
+		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isFalse();
 	}
 
 	/**

@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -32,22 +30,16 @@ public class RetrieveNoStampCardRegisteredService {
 	 */
 	private static List<StampInfoDisp> createStampInfoDisplay(List<StampRecord> listStampRecord,
 			List<Stamp> listStamp) {
-		List<StampInfoDisp> datas = new ArrayList<>();
-		for (StampRecord stampRecord : listStampRecord) {
-			for (Stamp stamp : listStamp) {
-				GeneralDate dateRecord = GeneralDate.ymd(stampRecord.getStampDateTime().year(),
-						stampRecord.getStampDateTime().month(), stampRecord.getStampDateTime().day());
-				GeneralDate dateStamp = GeneralDate.ymd(stamp.getStampDateTime().year(),stamp.getStampDateTime().month(), stamp.getStampDateTime().day());
-				if (stampRecord.getStampNumber().equals(stamp.getCardNumber())
-						&&  dateRecord.equals(dateStamp)
-						&& stampRecord.getStampDateTime().clockHourMinuteSecond().equals(stamp.getStampDateTime().clockHourMinuteSecond())) {
-					datas.add(new StampInfoDisp(stampRecord.getStampNumber(), stampRecord.getStampDateTime(),
-							stampRecord, Optional.of(stamp)));
-					break;
-				}
-			}
-		}
-		return datas;
+		// $打刻記録 in 打刻記録リスト
+		return listStampRecord.stream().map(rc -> {
+			// $対象打刻 = $打刻 in 打刻リスト : find $打刻記録.打刻カード番号 = $打刻.打刻カード番号 AND
+			// $打刻記録.打刻日時 = $打刻.打刻日時
+			List<Stamp> stamps = listStamp.stream().filter(s -> rc.getStampDateTime().equals(s.getStampDateTime())
+					&& rc.getStampNumber().equals(s.getCardNumber())).collect(Collectors.toList());
+			// map 表示する打刻情報#打刻区分を作成する($打刻記録.打刻カード番号, $打刻記録.打刻日時, $打刻記録.表示する打刻区分,
+			// $対象打刻)
+			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamps);
+		}).collect(Collectors.toList());
 
 	}
 

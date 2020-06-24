@@ -14,7 +14,12 @@ public interface WorkInformationRepository {
 	Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd);
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-	
+	/**
+	 * List＜社員ID＞、基準日から日別実績の勤務情報を取得する
+	 * @param employeeIds
+	 * @param datePeriod
+	 * @return
+	 */
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod);
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod);

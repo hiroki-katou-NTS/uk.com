@@ -32,7 +32,7 @@ public class KrcdtTopAlStampPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "SID_TGT")
-	public String sid_tgt;
+	public String sidTgt;
 	
 	/**
 	 *  実行完了日時

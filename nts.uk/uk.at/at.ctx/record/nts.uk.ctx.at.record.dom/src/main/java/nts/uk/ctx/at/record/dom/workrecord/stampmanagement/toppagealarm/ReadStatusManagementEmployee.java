@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Getter;
  */
 
 @Getter
+@AllArgsConstructor
 public class ReadStatusManagementEmployee extends ValueObject {
 
 	/**
