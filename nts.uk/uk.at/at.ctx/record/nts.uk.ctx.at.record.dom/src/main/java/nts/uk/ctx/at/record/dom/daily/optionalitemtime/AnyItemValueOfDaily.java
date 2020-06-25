@@ -69,7 +69,7 @@ public class AnyItemValueOfDaily {
     											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt, 
     											   		  Optional<DailyStoredProcessResult> resultProcedure) {
     	
-    	Optional<AnyItemValueOfDaily> dailyAnyItem = dailyRecordDto.get().anyItems();
+    	Optional<AnyItemValueOfDailyAttd> dailyAnyItem = dailyRecordDto.get().anyItems();
         //任意項目分ループ
         List<CalcResultOfAnyItem> anyItemList = new ArrayList<>();
         
@@ -105,7 +105,7 @@ public class AnyItemValueOfDaily {
         	
             //計算した(calcResult)値を Converter内へ格納
         	if(dailyAnyItem.isPresent()) {
-        		List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
+        		List<AnyItemValue> forcsItem = dailyAnyItem.get().getItems();
         		Optional<AnyItemValue> getAnyItem = storedValue.isPresent() ? 
         												storedValue : 
         												forcsItem.stream().filter(tc -> tc.getItemNo().v().equals(optionalItem.getOptionalItemNo().v())).findFirst();
@@ -128,9 +128,9 @@ public class AnyItemValueOfDaily {
         														 calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
         														 calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
         		}     
-            	dailyAnyItem.get().items = forcsItem;
+            	dailyAnyItem.get().setItems(forcsItem);
             	//
-            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
+            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(employeeId,ymd,dailyAnyItem.get()));
         	}
         }
         
@@ -138,7 +138,7 @@ public class AnyItemValueOfDaily {
         
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
-        	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
+        	result.getAnyItem().getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
 					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
 					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
 					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));

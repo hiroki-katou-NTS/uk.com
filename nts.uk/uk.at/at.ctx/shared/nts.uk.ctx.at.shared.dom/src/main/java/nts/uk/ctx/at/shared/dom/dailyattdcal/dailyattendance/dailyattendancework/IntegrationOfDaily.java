@@ -39,9 +39,11 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.Attendance
 @Getter
 public class IntegrationOfDaily {
 	//社員ID
+	@Setter
 	private String employeeId;
 	
 	//年月日
+	@Setter
 	private GeneralDate ymd;
 	
 	//日別実績の勤務情報  (old)
@@ -206,9 +208,6 @@ public class IntegrationOfDaily {
 		this.tempTime = tempTime;
 		this.remarks = remarks;
 	}
-	
-	
-	
 
 
 	/**

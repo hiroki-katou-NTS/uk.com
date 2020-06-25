@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
@@ -75,5 +76,12 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			return this.getActualWorkingTimeOfDaily().requestCheckError(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
 		return returnErrorItem;
+	}
+	
+	public AttendanceTimeOfDailyAttendance inssertActualWorkingTimeOfDaily(ActualWorkingTimeOfDaily time) {
+		return new AttendanceTimeOfDailyAttendance (
+						this.workScheduleTimeOfDaily, time, this.stayingTime, this.budgetTimeVariance,
+						this.unEmployedTime
+				); 
 	}
 }
