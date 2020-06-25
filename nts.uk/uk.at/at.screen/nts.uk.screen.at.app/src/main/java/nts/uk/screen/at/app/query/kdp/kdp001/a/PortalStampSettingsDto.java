@@ -38,6 +38,6 @@ public class PortalStampSettingsDto {
 
 		return new PortalStampSettingsDto(portalStampSettings.getCid(),
 				DisplaySettingsStampScreenDto.fromDomain(portalStampSettings.getDisplaySettingsStampScreen()),
-				buttonSettings, portalStampSettings.getSuppressStampBtn(), portalStampSettings.getUseTopMenuLink());
+				buttonSettings, portalStampSettings.isButtonEmphasisArt(), portalStampSettings.isToppageLinkArt());
 	}
 }

@@ -125,7 +125,7 @@ public class GetSettingStampInput {
 			}
 			StampToSuppress stampToSuppress = null;
 
-			if (settingOpt.get().getSuppressStampBtn() == true) {
+			if (settingOpt.get().isButtonEmphasisArt()) {
 				GetStampTypeToSuppressServiceRequireImpl stampTypeRequire = new GetStampTypeToSuppressServiceRequireImpl(
 						stampSetPerRepo, settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo,
 						stampRepo, stampCardRepo, preRepo, workingService);

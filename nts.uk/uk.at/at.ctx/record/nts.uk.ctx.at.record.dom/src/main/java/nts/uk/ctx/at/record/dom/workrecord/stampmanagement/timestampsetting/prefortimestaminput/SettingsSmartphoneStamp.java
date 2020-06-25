@@ -34,7 +34,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	
 	// 打刻ボタンを抑制する
 	@Getter
-	private Boolean suppressStampBtn;	
+	private boolean suppressStampBtn;	
 	
 	// [1] ボタン詳細設定を取得する																							
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {

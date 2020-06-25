@@ -7,6 +7,9 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -107,13 +110,28 @@ private static final long serialVersionUID = 1L;
 	@Column(name ="AUDIO_TYPE")
 	public int aidioType;
 	
+	@ManyToOne
+    @PrimaryKeyJoinColumns({
+    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+    	@PrimaryKeyJoinColumn(name = "STAMP_MEANS", referencedColumnName = "STAMP_MEANS"),
+    	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
+    })
+	public KrcmtStampPageLayout krcmtStampPageLayout;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    })
+	public KrcmtSrampPortal krcmtSrampPortal;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 	
 	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
-			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
+			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
 		this.pk = pk;
@@ -130,14 +148,6 @@ private static final long serialVersionUID = 1L;
 		this.aidioType = aidioType;
 	}
 	
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-    	@PrimaryKeyJoinColumn(name = "STAMP_MEANS", referencedColumnName = "STAMP_MEANS"),
-    	@PrimaryKeyJoinColumn(name = "PAGE_NO", referencedColumnName = "PAGE_NO")
-    })
-	public KrcmtStampPageLayout krcctStampPageLayout;
-	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
 		if(!(changeHalfDay == null && goOutArt == null && setPreClockArt == null && changeClockArt == null && changeCalArt == null)) {
@@ -151,7 +161,7 @@ private static final long serialVersionUID = 1L;
 		 
 		
 		ButtonType buttonType = new ButtonType(
-				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.of(stampType));
+				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.ofNullable(stampType));
 		
 		return new ButtonSettings(
 				new ButtonPositionNo(pk.buttonPositionNo), 
@@ -218,8 +228,14 @@ private static final long serialVersionUID = 1L;
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v()
 						: null,
-				settings.getButtonType().getReservationArt().value, changeClockArt, changeCalArt, setPreClockArt,
-				changeHalfDay, goOutArt, settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
-				settings.getButtonDisSet().getBackGroundColor().v(), settings.getAudioType().value);
+				settings.getButtonType().getReservationArt().value
+				, changeClockArt
+				, changeCalArt
+				, setPreClockArt
+				,changeHalfDay
+				, goOutArt
+				, settings.getButtonDisSet().getButtonNameSet().getTextColor().v()
+				,settings.getButtonDisSet().getBackGroundColor().v()
+				, settings.getAudioType().value);
 	}
 }

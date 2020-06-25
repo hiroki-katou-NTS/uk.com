@@ -43,7 +43,7 @@
 								data-bind="css: {
 										'button-big': $vm.isWidget(),
 										'button-small' :!$vm.isWidget() },
-										enable:$vm.checkEnableButton($data),
+										enable:true,
 										click: function(data, event) { $vm.stamp($vm,data) }  ,
 										text: buttonDisSet.buttonNameSet.buttonName,
 										style: { 

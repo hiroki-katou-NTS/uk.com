@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * AR: 共有打刻の打刻設定 
@@ -20,7 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 @AllArgsConstructor
-public class TimeStampSetShareTStamp implements DomainAggregate {
+public class StampSetCommunal implements DomainAggregate {
 
 	// 会社ID
 	private final String cid;
@@ -32,16 +31,16 @@ public class TimeStampSetShareTStamp implements DomainAggregate {
 	private List<StampPageLayout> lstStampPageLayout;
 	
 	// 氏名選択利用する
-	private Boolean  useSelectName;
+	private boolean nameSelectArt;
 	
 	// パスワード入力が必須か
-	private Boolean passwordInputReq;
+	private boolean passwordRequiredArt;
 	
 	// 社員コード認証利用するか
-	private NotUseAtr useEmpCodeToAuthen;
+	private boolean employeeAuthcUseArt;
 	
 	// 指認証失敗回数
-	private Optional<NumberAuthenfailures> numberAuthenfailures;
+	private Optional<NumberAuthenfailures> authcFailCnt;
 	
 	// [1] ボタン詳細設定を取得する
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {

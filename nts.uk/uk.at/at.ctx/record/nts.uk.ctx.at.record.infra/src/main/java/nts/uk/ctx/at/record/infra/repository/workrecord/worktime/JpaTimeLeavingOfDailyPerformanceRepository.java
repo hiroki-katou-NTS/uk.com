@@ -191,8 +191,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceActualS.getAfterRoundingTime().valueAsMinutes();
 					krcdtTimeLeavingWork.attendanceActualTime = attendanceActualS.getTimeWithDay() == null ? null
 							: attendanceActualS.getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode().isPresent()
-							? null : attendanceActualS.getLocationCode().get().v();
+					if (attendanceActualS.getLocationCode() != null) {
+						krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode()
+								.isPresent() ? null : attendanceActualS.getLocationCode().get().v();
+					} else {
+						krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
+					}
 					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getStampSourceInfo() == null ? 0
 							: attendanceActualS.getStampSourceInfo().value;
 				} else {
@@ -206,8 +210,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							: attendanceS.getAfterRoundingTime().valueAsMinutes();
 					krcdtTimeLeavingWork.attendanceStampTime = attendanceS.getTimeWithDay() == null ? null
 							: attendanceS.getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent() ? null
-							: attendanceS.getLocationCode().get().v();
+					if (attendanceS.getLocationCode() != null) {
+						krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent()
+								? null
+								: attendanceS.getLocationCode().get().v();
+					}else {
+						krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
+					}
 					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getStampSourceInfo() == null ? 0
 							: attendanceS.getStampSourceInfo().value;
 				} else {
@@ -227,8 +236,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							: as.getAfterRoundingTime().valueAsMinutes();
 					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeWithDay() == null ? null
 							: as.getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
-							: as.getLocationCode().get().v();
+					if (as.getLocationCode() != null) {
+						krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
+								: as.getLocationCode().get().v();
+					} else {
+						krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
+					}
 					krcdtTimeLeavingWork.leaveActualSourceInfo = as.getStampSourceInfo() == null ? 0
 							: as.getStampSourceInfo().value;
 				} else {
@@ -242,8 +255,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							: s.getAfterRoundingTime().valueAsMinutes();
 					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeWithDay() == null ? null
 							: s.getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
-							: s.getLocationCode().get().v();
+					if (s.getLocationCode() != null) {
+						krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
+								: s.getLocationCode().get().v();
+					} else {
+						krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
+					}
 					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s.getStampSourceInfo() == null ? 0
 							: s.getStampSourceInfo().value;
 				} else {
