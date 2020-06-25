@@ -55,5 +55,13 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.scheduleTimeSheets = scheduleTimeSheets;
 	}
 	
+	/**
+	 * 計算ステータスの変更
+	 * @param state 計算ステータス
+	 */
+	public void changeCalcState(CalculationState state) {
+		this.setCalculationState(state);
+	}
+	
 	
 }
