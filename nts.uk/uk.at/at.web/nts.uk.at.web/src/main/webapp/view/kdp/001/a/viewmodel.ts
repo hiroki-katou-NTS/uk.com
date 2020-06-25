@@ -49,6 +49,7 @@ class KDP001AViewModel extends ko.ViewModel {
 	});
 	countTime: KnockoutObservable<number> = ko.observable(0);
 	settingCountTime: KnockoutObservable<number> = ko.observable(60);
+	resultDisplayTime: KnockoutObservable<number> = ko.observable(10);
 	buttonSetting: KnockoutObservable<StampToSuppress> = ko.observable(new StampToSuppress());
 	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
 		companyId: "000000000000-000",
@@ -153,9 +154,15 @@ class KDP001AViewModel extends ko.ViewModel {
 						vm.settingDateTimeColor(setting.portalStampSettings.displaySettingsStampScreen.settingDateTimeColor);
 					}
 
+					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval')) {
+						vm.settingCountTime(setting.portalStampSettings.displaySettingsStampScreen.serverCorrectionInterval);
+					}
+					
 					if (_.has(setting, 'portalStampSettings.displaySettingsStampScreen.resultDisplayTime')) {
 						vm.settingCountTime(setting.portalStampSettings.displaySettingsStampScreen.resultDisplayTime);
 					}
+					
+					
 
 					setInterval(() => {
 						if (vm.countTime() == vm.settingCountTime()) {
@@ -190,7 +197,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 				vm.stampDatas(items || []);
 
-				if (data.length && !vm.isScreenCD()) {
+				if (!vm.isScreenCD()) {
 
 					if (vm.screenMode() == 'a' || vm.screenMode() == 'b') {
 
@@ -338,6 +345,7 @@ class KDP001AViewModel extends ko.ViewModel {
 	public openDialogB(dateParam, buttonDisNo) {
 
 		let vm = this;
+		nts.uk.ui.windows.setShared("resultDisplayTime", vm.resultDisplayTime());
 
 		nts.uk.ui.windows.setShared("infoEmpToScreenB", {
 			employeeId: vm.$user.employeeId,
@@ -426,20 +434,7 @@ class KDP001AViewModel extends ko.ViewModel {
 			items = _.orderBy(items, ['stampDatetime'], ['desc']);
 
 			vm.stampDatas(items || []);
-			
-			if (items.length==1 && !vm.isScreenCD()) {
 
-					if (vm.screenMode() == 'a' || vm.screenMode() == 'b') {
-
-						$("#fixed-table").ntsFixedTable({ height: 53, width: 215 });
-					} else {
-
-						if (!vm.screenMode()) {
-
-							$("#fixed-table").ntsFixedTable({ height: 89, width: 280 });
-						}
-					}
-				}
 		}).always(() => {
 			vm.$blockui("clear");
 		});;
