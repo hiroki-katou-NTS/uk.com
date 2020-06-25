@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
@@ -47,7 +49,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.service.output.LevelOutput;
 import nts.uk.ctx.workflow.dom.service.output.LevelOutput.LevelInforOutput;
@@ -266,7 +267,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 	
 	@Override
-	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr) {
+	public List<String> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr) {
 		// アルゴリズム「指定職位の本務兼務社員を取得」を実行する
 		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId, baseDate);
 		if(CollectionUtil.isEmpty(employeeList)) {
@@ -279,21 +280,21 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			employeeList.removeIf(x -> x.isConcurrent());
 		}
 		
-		List<ApproverInfo> approvers = new ArrayList<>();
+		List<String> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			if(systemAtr==SystemAtr.WORK) {
 				// 所属職場を取得する
 				String paramID = wkApproverAdapter.getWorkplaceIDByEmpDate(emp.getEmployeeId(), baseDate);
 				if(paramID.equals(wkpId)) {
 					// 所属職場は職場ID（申請本人の所属職場）と一致するかチェックする(check workplaceID lay duoc co trung voi nguoi viet don hay khong)
-					approvers.add(ApproverInfo.create(emp));
+					approvers.add(emp.getEmployeeId());
 				}
 			} else {
 				// 社員と基準日から所属職場履歴項目を取得する
 				String paramID = wkApproverAdapter.getDepartmentIDByEmpDate(emp.getEmployeeId(), baseDate);
 				if(paramID.equals(wkpId)) {
 					// 取得した承認者の部門をチェック
-					approvers.add(ApproverInfo.create(emp));
+					approvers.add(emp.getEmployeeId());
 				}
 			}
 		}
@@ -310,7 +311,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							ApprovalBehaviorAtr.UNAPPROVED, 
 							"", 
 							null, 
-							"")).collect(Collectors.toList());
+							"", 
+							approverInfo.getApproverInListOrder())).collect(Collectors.toList());
 				return ApprovalFrame.convert(
 						levelApproverList.getOrder(), 
 						levelApproverList.isComfirmAtr() ? 1 : 0, 
@@ -350,7 +352,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 								ApprovalBehaviorAtr.UNAPPROVED, 
 								"", 
 								null, 
-								"");
+								"",
+								1);
 							return ApprovalFrame.convert(
 									levelApproverList.getOrder(), 
 									levelApproverList.isComfirmAtr() ? 1 : 0, 
@@ -367,7 +370,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							ApprovalBehaviorAtr.UNAPPROVED, 
 							"", 
 							null, 
-							"");
+							"",
+							1);
 					resultApprovalFrame.add(ApprovalFrame.convert(
 								i + 1, 
 								filterLevelApproverList.get(0).isComfirmAtr() ? 1 : 0, 
@@ -414,15 +418,18 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						"", 
 						approver.getConfirmPerson().value!=0?true:false, 
 						new ArrayList<>());
-				List<ApproverInfo> approverInfoLst = new ArrayList<>();
+				List<LevelApproverInfo> approverInfoLst = new ArrayList<>();
 				// ループ中の承認フェーズ．承認者指定区分をチェック(Check ApprovalPhase.ApproverSettingAtr đang loop)
 				if(approvalPhase.getApprovalAtr()==ApprovalAtr.PERSON) {
-					approverInfoLst.add(new ApproverInfo(
+					/*approverInfoLst.add(new ApproverInfo(
 							"", 
 							approver.getEmployeeId(), 
 							approver.getApproverOrder(), 
 							approver.getConfirmPerson().value!=0?true:false, 
-							""));
+							""));*/
+					approverInfoLst.add(new LevelApproverInfo(
+							approver.getEmployeeId(), 
+							"", 1));
 				} else {
 					// 社員IDと基準日から職位情報を取得(Lấy thông tin position từ EmployeeID và BaseDate)
 					JobTitleImport jobOfEmp = syJobTitleAdapter.findJobTitleBySid(employeeID, baseDate);
@@ -480,9 +487,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID,
+	public List<LevelApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID,
 			Optional<Integer> opDispOrder, String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove) {
-		List<ApproverInfo> result = new ArrayList<>();
+		List<LevelApproverInfo> result = new ArrayList<>();
 		// 承認者Gコードから職位情報を取得(Lấy thông tin position từ ApproverGCode)
 		List<String> jobIDLst = syJobTitleAdapter.getJobIDFromGroup(companyID, approverGroupCD);
 		// 取得したList＜職位ID＞をループ(Loop List<PositionID> đã lấy)
@@ -496,14 +503,22 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 			}
 			// 6.職場に指定する職位の対象者を取得する(getPersonByWorkplacePosition)
-			List<ApproverInfo> approverInfoLoopLst = this.getPersonByWorkplacePosition(
+			List<String> approverInfoLoopLst = this.getPersonByWorkplacePosition(
 					companyID, 
 					Strings.isNotBlank(specWkpId) ? specWkpId : paramID, 
 					baseDate, 
 					jobID,
 					systemAtr);
+			// 社員ID(List)から個人社員基本情報を取得
+			List<EmpInfoImport> empInfoImportLst = employeeAdapter.getEmpInfo(approverInfoLoopLst);
+			empInfoImportLst.sort(Comparator.comparing(EmpInfoImport::getEmployeeCode));
 			// 承認者リストに取得した承認者を追加(THêm Approver đã lấy vào ApproverList)
-			result.addAll(approverInfoLoopLst);
+			for(int i = 0; i < empInfoImportLst.size(); i++) {
+				result.add(new LevelApproverInfo(
+						empInfoImportLst.get(i).getEmployeeId(), 
+						"", 
+						i+1));
+			}
 		}
 		return result;
 	}
@@ -550,26 +565,26 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	}
 
 	@Override
-	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID) {
+	public List<LevelApproverInfo> adjustApprover(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID) {
 		List<LevelApproverInfo> result = new ArrayList<>();
 		// 指定社員が基準日に承認権限を持っているかチェック
-		List<ApproverInfo> approverInfoAfterLst = this.checkApproverAuthor(approverInfoLst, baseDate, companyID);
+		List<LevelApproverInfo> approverInfoAfterLst = this.checkApproverAuthor(approverInfoLst, baseDate, companyID);
 		// 取得した承認者リストをチェック(Check ApproverList đã lấy)
 		if(CollectionUtil.isEmpty(approverInfoAfterLst)) {
 			return Collections.emptyList();
 		}
-		for(ApproverInfo approverInfo : approverInfoAfterLst) {
+		for(LevelApproverInfo approverInfo : approverInfoAfterLst) {
 			// 承認代行情報の取得処理(xử lý lấy thông tin đại diện approve)
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(
 					companyID, 
-					Arrays.asList(approverInfo.getSid()));
+					Arrays.asList(approverInfo.getApproverID()));
 			if(!approvalRepresenterOutput.getListApprovalAgentInfor().get(0).isPass()) {
 				String representerID = "";
 				if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())) {
 					representerID = approvalRepresenterOutput.getListAgent().get(0);
 				}
 				// Output．承認者一覧に取得した承認者の代行情報リストを追加(Them list thông tin đại diện của người approve đã lấy vào Output.ApproverList)
-				result.add(new LevelApproverInfo(approverInfo.getSid(), representerID));
+				result.add(new LevelApproverInfo(approverInfo.getApproverID(), representerID, approverInfo.getApproverInListOrder()));
 			}
 		}
 		// ドメインモデル「承認設定」．本人による承認をチェックする(Check domain「承認設定」. 本人による承認 )
@@ -579,16 +594,24 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<LevelApproverInfo> listDeleteApprover = result.stream().filter(x -> x.getApproverID().equals(employeeID)).collect(Collectors.toList());
 			result.removeAll(listDeleteApprover);
 		}
-		return result;
+		if(CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+		List<LevelApproverInfo> result2 = new ArrayList<>();
+		for(int i = 0; i < result.size(); i++) {
+			LevelApproverInfo approverInfo = result.get(i);
+			result2.add(new LevelApproverInfo(approverInfo.getApproverID(), approverInfo.getAgentID(), i + 1));
+		}
+		return result2;
 	}
 
 	@Override
-	public List<ApproverInfo> checkApproverAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
-		List<ApproverInfo> removeLst = new ArrayList<>();
+	public List<LevelApproverInfo> checkApproverAuthor(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
+		List<LevelApproverInfo> removeLst = new ArrayList<>();
 		// 承認者リストをループ(Loop ApproverList)
-		for(ApproverInfo approverInfo : approverInfoLst) {
+		for(LevelApproverInfo approverInfo : approverInfoLst) {
 			// 指定社員が基準日に承認権限を持っているかチェックする(Check xem employee chỉ định có quyền approve ở thời điểm baseDate hay ko)
-			boolean canApproval = employeeAdapter.canApprovalOnBaseDate(companyID, approverInfo.getSid(), baseDate);
+			boolean canApproval = employeeAdapter.canApprovalOnBaseDate(companyID, approverInfo.getApproverID(), baseDate);
 			// 取得した権限状態をチェック(Check trạng thái quyền hạn đã lấy)
 			if(canApproval) {
 				continue;
@@ -613,7 +636,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		}
 		// 上位職場・部門を探す
 		List<String> upperIDLst = this.getUpperID(companyID, employeeID, baseDate, systemAtr);
-		List<ApproverInfo> approverInfoLst = new ArrayList<>();
+		List<LevelApproverInfo> approverInfoLst = new ArrayList<>();
 		for(String loopID : upperIDLst) {
 			for(String approverGroupCD : approverGroupCDLst) {
 				// 承認者グループから承認者を取得(Lấy Approver từ ApproverGroup)

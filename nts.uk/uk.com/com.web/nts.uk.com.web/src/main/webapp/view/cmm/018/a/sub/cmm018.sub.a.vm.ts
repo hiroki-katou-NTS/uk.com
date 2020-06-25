@@ -197,7 +197,19 @@ module nts.uk.com.view.cmm018.a.sub {
                         }],
                         columnResized: function(event, ui) {
                             if (ui.columnKey === "appName") {
-                                uk.localStorage.setItem("AppName_CMM018", ui.newWidth);
+                                
+                                if (rootType == vmbase.RootType.COMPANY) {
+//                                    company
+                                    uk.localStorage.setItem("AppName_CMM018_A", ui.newWidth);
+                                }
+                                else if (rootType == vmbase.RootType.WORKPLACE) {
+//                                    workplace
+                                    uk.localStorage.setItem("AppName_CMM018_B", ui.newWidth);
+                                    
+                                }else {
+//                                    person
+                                    uk.localStorage.setItem("AppName_CMM018_C", ui.newWidth);
+                                } 
                             }
                            
                         }
@@ -217,7 +229,20 @@ module nts.uk.com.view.cmm018.a.sub {
             });
                 
             setTimeout(() => {
-                let width = uk.localStorage.getItem("AppName_CMM018");
+                let width;
+                
+                if (rootType == vmbase.RootType.COMPANY) {
+    //                  company
+                   width = uk.localStorage.getItem("AppName_CMM018_A");
+                }
+                else if (rootType == vmbase.RootType.WORKPLACE) {
+                   width = uk.localStorage.getItem("AppName_CMM018_B");
+                      
+                }else {
+                   width = uk.localStorage.getItem("AppName_CMM018_C");
+                } 
+                // set width column クリア #110014
+                $(self.gridName).igGridResizing("resize", "deleteRoot", 75);
                 if (width.isPresent()) {
                     $(self.gridName).igGridResizing("resize", "appName", Number(width.get()));
                 }else {
