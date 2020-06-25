@@ -103,7 +103,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
 				domain.isButtonEmphasisArt() ? 1 : 0, 
 				domain.isToppageLinkArt() ? 1 : 0, 
-				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 1/*confirm with amid-mizutani, Vu Tuan is 1*/)).collect(Collectors.toList()));
+				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 1/*confirm with amid-mizutani, Vu Tuan is 1*/,4)).collect(Collectors.toList()));
 	}
 	
 	public PortalStampSettings toDomain(){

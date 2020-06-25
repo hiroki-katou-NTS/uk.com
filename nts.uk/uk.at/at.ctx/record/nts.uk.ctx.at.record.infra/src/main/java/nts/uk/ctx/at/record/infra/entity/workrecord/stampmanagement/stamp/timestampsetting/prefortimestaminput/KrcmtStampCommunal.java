@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.eclipse.persistence.annotations.Customizer;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
@@ -33,8 +35,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="KRCMT_STAMP_COMMUNAL")
+@Customizer(KrcmtStampCommunalCustomizer.class)
 public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializable {
-private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * 会社ID									

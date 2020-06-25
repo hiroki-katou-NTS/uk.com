@@ -62,8 +62,8 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	
 	@ManyToOne
     @JoinColumns({
-    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-    	@JoinColumn(name = "STAMP_MEANS", referencedColumnName = "0", insertable = false, updatable = false)
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
     })
 	public KrcmtStampCommunal krcmtStampCommunal;
 	
@@ -99,7 +99,7 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 				pageLayout.getButtonLayoutType().value, 
 				pageLayout.getStampPageComment().getPageComment().v(), 
 				pageLayout.getStampPageComment().getCommentColor().v(), 
-				pageLayout.getLstButtonSet().stream().map(mapper->KrcmtStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v())).collect(Collectors.toList()));
+				pageLayout.getLstButtonSet().stream().map(mapper->KrcmtStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v(),stampMeans)).collect(Collectors.toList()));
 	}
 
 }

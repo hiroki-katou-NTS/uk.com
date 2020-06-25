@@ -120,8 +120,8 @@ private static final long serialVersionUID = 1L;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-    	@JoinColumn(name = "CID", insertable = false, updatable = false),
-    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    	@JoinColumn(name = "CID", insertable = false,  updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false,  updatable = false)
     })
 	public KrcmtSrampPortal krcmtSrampPortal;
 	
@@ -196,7 +196,7 @@ private static final long serialVersionUID = 1L;
 //								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,
 //				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
 //=======
-	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo) {
+	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
 		Integer changeClockArt = null, changeCalArt = null, setPreClockArt = null, changeHalfDay = null,
 				goOutArt = null;
 
@@ -223,7 +223,7 @@ private static final long serialVersionUID = 1L;
 		}
 
 		return new KrcmtStampLayoutDetail(
-				new KrcmtStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()),
+				new KrcmtStampLayoutDetailPk(companyId, stampMeans, pageNo, settings.getButtonPositionNo().v()),
 				settings.getUsrArt().value,
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v()
