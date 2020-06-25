@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="./components/tab-panel.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="kdp004.a.style.css" />
+		</ui:define>
+
+
+		<ui:define name="content">
+
+			<div id="functions-area"></div>
+			<div id="contents-area">
+
+				<div id="main-content">
+					<div id="layouts"
+						class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
+						<div
+							data-bind="component: { name: 'kdp-tab-panel', params: tabs }">
+						</div>
+						<com:ko-if bind="tabs.selected() === '1'">
+							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								Tab 1 selected</div>
+						</com:ko-if>
+						<com:ko-if bind="tabs.selected() === '2'">
+							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								Tab 2 selected</div>
+						</com:ko-if>
+						<com:ko-if bind="tabs.selected() === '3'">
+							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								Tab 3 selected</div>
+						</com:ko-if>
+						<com:ko-if bind="tabs.selected() === '4'">
+							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								Tab 4 selected</div>
+						</com:ko-if>
+						<com:ko-if bind="tabs.selected() === '5'">
+							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								Tab 5 selected</div>
+						</com:ko-if>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>
