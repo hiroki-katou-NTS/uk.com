@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -147,8 +147,8 @@ public class KrqdtApplication_New extends UkJpaEntity {
 	
 	private ReflectionInformation_New toReflectionInformationDomain(){
 		return ReflectionInformation_New.builder()
-					.stateReflection(EnumAdaptor.valueOf(this.stateReflection, ReflectedState_New.class))
-					.stateReflectionReal(EnumAdaptor.valueOf(this.stateReflectionReal, ReflectedState_New.class))
+					.stateReflection(EnumAdaptor.valueOf(this.stateReflection, ReflectedState.class))
+					.stateReflectionReal(EnumAdaptor.valueOf(this.stateReflectionReal, ReflectedState.class))
 					.forcedReflection(EnumAdaptor.valueOf(this.forcedReflection, DisabledSegment_New.class))
 					.forcedReflectionReal(EnumAdaptor.valueOf(this.forcedReflectionReal, DisabledSegment_New.class))
 					.notReason(Optional.ofNullable(this.notReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))

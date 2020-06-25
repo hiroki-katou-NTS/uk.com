@@ -18,7 +18,7 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
@@ -117,9 +117,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
 				//Imported（承認申請）「差し戻し反映情報更新」-(Update thông tin phản ánh trả về) - RequestList No.481
 				//「反映情報」．実績反映状態を「差し戻し」にする
-				application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
+				application.getReflectionInformation().setStateReflectionReal(ReflectedState.REMAND);
 				//「反映情報」．予定反映状態を「差し戻し」にする
-				application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
+				application.getReflectionInformation().setStateReflection(ReflectedState.REMAND);
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
 				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)

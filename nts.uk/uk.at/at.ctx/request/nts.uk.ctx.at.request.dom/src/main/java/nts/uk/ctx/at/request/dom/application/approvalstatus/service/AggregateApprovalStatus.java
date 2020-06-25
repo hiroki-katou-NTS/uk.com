@@ -13,7 +13,7 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
@@ -39,7 +39,7 @@ public class AggregateApprovalStatus {
 	}
 
 	
-	private List<ReflectedState_New> aggregate(String companyId, ApprovalStatusEmployeeOutput appSttEmployee) {
+	private List<ReflectedState> aggregate(String companyId, ApprovalStatusEmployeeOutput appSttEmployee) {
 
 		val applications = this.applicationRepository.getListAppBySID(
 				companyId, appSttEmployee.getSid(),
@@ -52,7 +52,7 @@ public class AggregateApprovalStatus {
 	}
 
 
-	private ApprovalSttAppOutput aggregateStates(WorkplaceInfor workplace, List<ReflectedState_New> states) {
+	private ApprovalSttAppOutput aggregateStates(WorkplaceInfor workplace, List<ReflectedState> states) {
 		
 		int numApproved = 0;		// 承認済み
 		int numNotApproved = 0;		// 未承認

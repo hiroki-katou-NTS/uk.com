@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 //import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 //import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -74,9 +74,9 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		String reflectAppId = "";
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState.WAITREFLECTION);
 			//予定反映状態 = 反映状態．反映待ち
-			application.getReflectionInformation().setStateReflection(ReflectedState_New.WAITREFLECTION);
+			application.getReflectionInformation().setStateReflection(ReflectedState.WAITREFLECTION);
 			applicationRepository.update(application);
 			reflectAppId = application.getAppID();
 //			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
@@ -90,7 +90,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 //			}
 		} else {
 			// ドメインモデル「申請」と紐付き「反映情報」．実績反映状態 = 反映状態．未反映
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState.NOTREFLECTED);
 			applicationRepository.update(application);
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();

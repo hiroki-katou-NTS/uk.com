@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
@@ -199,14 +199,14 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		// 実行種別を確認
 		if(exeType == ExecutionTypeExImport.NORMAL_EXECUTION) {
 			//反映待ちの申請を取得
-			lstRecordStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState_New.WAITREFLECTION.value);			 
+			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);			 
 		} else {
 			//反映済みも含めて申請を取得
-			lstRecordStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstRecordStatus.add(ReflectedState_New.REFLECTED.value);
-			lstScheStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState_New.REFLECTED.value);
+			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstRecordStatus.add(ReflectedState.REFLECTED.value);
+			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstScheStatus.add(ReflectedState.REFLECTED.value);
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
 		//申請日でソートする		

@@ -59,7 +59,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
@@ -430,8 +430,8 @@ public class DPCorrectionProcessorMob {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState_New.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedState.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedState.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType_Old.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);

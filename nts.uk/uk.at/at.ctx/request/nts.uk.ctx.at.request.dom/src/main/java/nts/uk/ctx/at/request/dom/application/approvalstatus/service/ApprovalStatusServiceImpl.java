@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -352,20 +352,20 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		for (ApplicationApprContent appContent : listAppContent) {
 			Application_New app = appContent.getApplication();
 			// 申請.反映情報.実績反映状態
-			ReflectedState_New reflectState = app.getReflectionInformation().getStateReflectionReal();
-			if (!ReflectedState_New.WAITCANCEL.equals(reflectState)
-					|| !ReflectedState_New.CANCELED.equals(reflectState)) {
+			ReflectedState reflectState = app.getReflectionInformation().getStateReflectionReal();
+			if (!ReflectedState.WAITCANCEL.equals(reflectState)
+					|| !ReflectedState.CANCELED.equals(reflectState)) {
 				numOfApp++;
-				if (ReflectedState_New.NOTREFLECTED.equals(reflectState)
-						|| ReflectedState_New.REMAND.equals(reflectState)) {
+				if (ReflectedState.NOTREFLECTED.equals(reflectState)
+						|| ReflectedState.REMAND.equals(reflectState)) {
 					numOfUnapproval++;
 					numOfUnreflected++;
-				} else if (ReflectedState_New.WAITREFLECTION.equals(reflectState)) {
+				} else if (ReflectedState.WAITREFLECTION.equals(reflectState)) {
 					approvedNumOfCase++;
 					numOfUnreflected++;
-				} else if (ReflectedState_New.DENIAL.equals(reflectState)) {
+				} else if (ReflectedState.DENIAL.equals(reflectState)) {
 					numOfDenials++;
-				} else if (ReflectedState_New.REFLECTED.equals(reflectState)) {
+				} else if (ReflectedState.REFLECTED.equals(reflectState)) {
 					approvedNumOfCase++;
 				}
 			}
@@ -818,7 +818,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<DailyStatus> listDailyStatus = new ArrayList<>();
 		for (Application_New app : listApprovalContent) {
 			DailyStatus dailyStatus = new DailyStatus();
-			ReflectedState_New reflectedState = app.getReflectionInformation().getStateReflectionReal();
+			ReflectedState reflectedState = app.getReflectionInformation().getStateReflectionReal();
 			Integer symbol = null;
 			switch (reflectedState) {
 			case REFLECTED:

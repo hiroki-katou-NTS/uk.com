@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
@@ -47,7 +47,7 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 		Map<String, AppOverTime> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr_Old.POSTERIOR.value, 
-				ApplicationType_Old.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+				ApplicationType_Old.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
 		List<String> lstId = new ArrayList<>();
 		Map<GeneralDate, String> mapApp = new HashMap<>();
 		//※同じ申請日の残業申請が２件あった場合、入力日が後のもの（latest）だけSetする

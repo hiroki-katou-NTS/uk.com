@@ -28,7 +28,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -191,27 +191,27 @@ public class OptionalWidgetKtgFinder {
 					//lấy theo request list của anh hiếu. chỉ khác tham số đầu vào.
 					//・反映状態　　＝　「反映済み」または「反映待ち」(「反映済み」 OR 「反映待ち」)
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState_New.REFLECTED.value);
-					reflected.add(ReflectedState_New.WAITREFLECTION.value);
+					reflected.add(ReflectedState.REFLECTED.value);
+					reflected.add(ReflectedState.WAITREFLECTION.value);
 					dto.setApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					//sử lý 04
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState_New.NOTREFLECTED.value);
+					reflected.add(ReflectedState.NOTREFLECTED.value);
 					//reflected.add(ReflectedState_New.REMAND.value); // redmine update tài liệu 108908
 					dto.setUnApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					//sử lý 05
 					//・反映状態　　＝　「否認」
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState_New.DENIAL.value);
+					reflected.add(ReflectedState.DENIAL.value);
 					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
 					//sử lý 06
 					//・反映状態　　＝　「差戻し」
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState_New.REMAND.value);
+					reflected.add(ReflectedState.REMAND.value);
 					dto.setRemand(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					//sử lý 07

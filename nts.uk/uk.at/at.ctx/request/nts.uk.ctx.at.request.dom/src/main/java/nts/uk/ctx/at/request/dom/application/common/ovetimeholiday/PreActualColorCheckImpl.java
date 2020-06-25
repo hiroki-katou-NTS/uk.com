@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -118,10 +118,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		}
 		preAppCheckResult.opAppBefore = opAppBefore;
 		Application_New appBefore = opAppBefore.get();
-		ReflectedState_New refPlan = appBefore.getReflectionInformation()
+		ReflectedState refPlan = appBefore.getReflectionInformation()
 				.getStateReflectionReal();
 		// 事前申請否認チェック
-		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
+		if (refPlan.equals(ReflectedState.DENIAL) || refPlan.equals(ReflectedState.REMAND)) {
 			preAppCheckResult.beforeAppStatus = true;
 			return preAppCheckResult;
 		}

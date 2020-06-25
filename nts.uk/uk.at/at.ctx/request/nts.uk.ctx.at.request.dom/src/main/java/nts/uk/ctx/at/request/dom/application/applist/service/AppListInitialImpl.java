@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
@@ -733,7 +733,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
 					reasonAppPre = lstAppPre.get(0).getAppReason().v();
 					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-							.equals(ReflectedState_New.DENIAL)) {
+							.equals(ReflectedState.DENIAL)) {
 						checkColor = new CheckColorTime(appID, 1);
 					} else {
 						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
@@ -814,7 +814,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 							lstWkTime);
 					reasonAppPre = lstAppPre.get(0).getAppReason().v();
 					if (lstAppPre.get(0).getReflectionInformation().getStateReflectionReal()
-							.equals(ReflectedState_New.DENIAL)) {
+							.equals(ReflectedState.DENIAL)) {
 						checkColor = new CheckColorTime(appID, 1);
 					} else {
 						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(),
@@ -1258,7 +1258,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	private PhaseFrameStatus check3(AppListExtractCondition param, ApplicationFullOutput appFull) {
 		String sID = AppContexts.user().employeeId();
-		ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
+		ReflectedState state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
 		List<PhaseFrameStatus> statusApr = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
 		List<PhaseFrameStatus> statusOK = new ArrayList<>();
 		for(PhaseFrameStatus status: statusApr) {
@@ -1270,7 +1270,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if (status.getPhaseOrder().intValue() < phaseMin) continue;
 			
 			// 申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
-			if (param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)
+			if (param.isUnapprovalStatus() && state.equals(ReflectedState.NOTREFLECTED)
 					|| param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)) {
 				if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 						&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
@@ -1279,8 +1279,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			// 申請一覧共通設定.承認状況＿承認がチェックあり(True)の場合 - A4_1_2: check
 			if (param.isApprovalStatus()) {
-				if ((state.equals(ReflectedState_New.NOTREFLECTED) || state.equals(ReflectedState_New.WAITREFLECTION)
-						|| state.equals(ReflectedState_New.REFLECTED))
+				if ((state.equals(ReflectedState.NOTREFLECTED) || state.equals(ReflectedState.WAITREFLECTION)
+						|| state.equals(ReflectedState.REFLECTED))
 						&& ((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
 								|| (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)))) {
@@ -1288,7 +1288,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 			// 申請一覧共通設定.承認状況＿否認がチェックあり(True)の場合 - A4_1_3: check
-			if (param.isDenialStatus() && state.equals(ReflectedState_New.DENIAL)) {
+			if (param.isDenialStatus() && state.equals(ReflectedState.DENIAL)) {
 				check = true;
 			}
 			// 申請一覧共通設定.承認状況＿代行承認済がチェックあり(True)の場合 - A4_1_4: check
@@ -1302,14 +1302,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	
 			}
 			// 申請一覧共通設定.承認状況＿差戻がチェックあり(True)の場合 - A4_1_5: check
-			if (param.isRemandStatus() && state.equals(ReflectedState_New.NOTREFLECTED)) {
+			if (param.isRemandStatus() && state.equals(ReflectedState.NOTREFLECTED)) {
 				if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)) {
 					check = true;
 				}
 			}
 			// 申請一覧共通設定.承認状況＿取消がチェックあり(True)の場合 - A4_1_6: check
 			if (param.isCancelStatus()
-					&& (state.equals(ReflectedState_New.CANCELED) || state.equals(ReflectedState_New.WAITCANCEL))) {// 反映状態.実績反映状態 ＝ 取消または取消待ち
+					&& (state.equals(ReflectedState.CANCELED) || state.equals(ReflectedState.WAITCANCEL))) {// 反映状態.実績反映状態 ＝ 取消または取消待ち
 				check = true;
 			}
 			if (check) {//条件 bo sung: phase truoc do phai duoc approval thi moi hien thi don
@@ -1387,7 +1387,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param agentId
 	 * @return
 	 */
-	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId, String sIdLogin) {
+	private int calApplication(ReflectedState appStatus, PhaseFrameStatus status, String agentId, String sIdLogin) {
 		if (agentId != null) {// ※ログイン者 ＝代行者の場合
 			if (agentId.equals(sIdLogin)) {
 				return this.calAppAgent(appStatus, status);
@@ -1404,7 +1404,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param status
 	 * @return
 	 */
-	private int calAppAproval(ReflectedState_New appStatus, PhaseFrameStatus status) {
+	private int calAppAproval(ReflectedState appStatus, PhaseFrameStatus status) {
 		switch (appStatus.value) {
 		case 0:// APP: 未反映 - NOTREFLECTED
 			if (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)) {//Phase: 未承認
@@ -1512,7 +1512,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param status
 	 * @return
 	 */
-	private int calAppAgent(ReflectedState_New appStatus, PhaseFrameStatus status) {
+	private int calAppAgent(ReflectedState appStatus, PhaseFrameStatus status) {
 		switch (appStatus.value) {
 		case 0://APP: 未反映 - NOTREFLECTED
 				//Phase: 未承認

@@ -32,7 +32,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -902,9 +902,9 @@ public class SaveHolidayShipmentCommandHandler
 		// ドメインモデル「申請」を取得する
 		List<Application_New> sameDateApps = appRepo
 				.getApp(sID, appDate, prePostAtr, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).stream()
-				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
-						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
-						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
+				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState.CANCELED)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState.WAITCANCEL)
+						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState.DENIAL))
 				.collect(Collectors.toList());
 
 		boolean isAppSameDateExists = !CollectionUtil.isEmpty(sameDateApps);

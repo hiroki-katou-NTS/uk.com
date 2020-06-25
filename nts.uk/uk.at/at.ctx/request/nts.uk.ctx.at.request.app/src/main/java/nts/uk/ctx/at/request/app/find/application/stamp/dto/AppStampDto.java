@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 /**
  * 
@@ -63,7 +63,7 @@ public class AppStampDto {
 				employeeName,
 				inputEmpName,
 				appStamp.getApplication_New().getInputDate().toString("yyyy/MM/dd"),
-				appStamp.getApplication_New().getReflectionInformation().getStateReflectionReal()==ReflectedState_New.REFLECTED?true:false);
+				appStamp.getApplication_New().getReflectionInformation().getStateReflectionReal()==ReflectedState.REFLECTED?true:false);
 	}
 }
 

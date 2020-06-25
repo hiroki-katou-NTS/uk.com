@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -52,7 +52,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID, employeeID, memo);
 		if(releaseFlg.equals(Boolean.TRUE)){
 			isProcessDone = true;
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.DENIAL);
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState.DENIAL);
 			applicationRepository.updateWithVersion(application);
 			
 			// 暫定データの登録

@@ -109,7 +109,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 				if(optapplicationLeaveApp.isPresent()){
 					Application_New applicationLeaveApp = optapplicationLeaveApp.get();
 					applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
-					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState.NOTREFLECTED);
 					applicationRepository.update(applicationLeaveApp);
 				}
 				this.brkOffSupChangeMngRepository.remove(appID, brOptional.get().getAbsenceLeaveAppID());

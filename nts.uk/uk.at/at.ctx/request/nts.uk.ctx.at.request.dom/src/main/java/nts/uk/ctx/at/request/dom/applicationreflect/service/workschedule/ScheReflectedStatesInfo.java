@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 @AllArgsConstructor
 @Getter
 @Setter
 public class ScheReflectedStatesInfo {
 	/** 反映状態	 */
-	private ReflectedState_New reflectedSate;
+	private ReflectedState reflectedSate;
 	/** 反映不可理由	 */
 	private ReasonNotReflect_New notReflectReson;
 }

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -288,12 +288,12 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 		}
 		if(isSche) {
-			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
+			appInfor.getReflectionInformation().setStateReflection(ReflectedState.REFLECTED);
 			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));	
 			appInfor.getReflectionInformation().setDateTimeReflection(Optional.of(GeneralDateTime.now()));
 		}
 		if(isRecord) {
-			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
+			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
 			appInfor.getReflectionInformation().setDateTimeReflectionReal(Optional.of(GeneralDateTime.now()));
 			
@@ -475,7 +475,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 						appOvertimeInfor.getOverTimeShiftNight(),
 						appOvertimeInfor.getFlexExessTime(),
 						appOvertimeInfor.getOverTimeAtr(),
-						(appInfor.getAppReason() == null || appInfor.getReflectionInformation().getStateReflectionReal() == ReflectedState_New.REFLECTED) ? "" : appInfor.getAppReason().v()); 
+						(appInfor.getAppReason() == null || appInfor.getReflectionInformation().getStateReflectionReal() == ReflectedState.REFLECTED) ? "" : appInfor.getAppReason().v()); 
 		overTimeTmp = new OvertimeReflectPara(appInfor.getEmployeeID(), 
 				appInfor.getAppDate(), 
 				reflectSetting.isZangyouRecordReflect(),

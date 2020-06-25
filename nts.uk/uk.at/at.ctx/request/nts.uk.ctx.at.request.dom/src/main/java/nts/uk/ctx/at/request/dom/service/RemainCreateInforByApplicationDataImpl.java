@@ -15,7 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -66,8 +66,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
 		
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application_New> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);
@@ -75,8 +75,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, List<GeneralDate> dates) {
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application_New> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);

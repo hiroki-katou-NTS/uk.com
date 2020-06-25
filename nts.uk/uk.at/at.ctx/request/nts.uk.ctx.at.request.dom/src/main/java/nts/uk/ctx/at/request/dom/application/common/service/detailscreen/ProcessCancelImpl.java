@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class ProcessCancelImpl implements ProcessCancel {
 		Application_New app = appRepo.findByID(companyID, appID).get();
 		app.setVersion(version);
 		//change ReflectPlanPerState = WAITCANCEL
-		app.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITCANCEL);
+		app.getReflectionInformation().setStateReflectionReal(ReflectedState.WAITCANCEL);
 		//update application
 		appRepo.updateWithVersion(app);
 	}

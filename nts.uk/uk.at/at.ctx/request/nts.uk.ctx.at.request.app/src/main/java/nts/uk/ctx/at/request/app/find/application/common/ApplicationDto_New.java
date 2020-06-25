@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 
 /**
@@ -134,9 +134,9 @@ public class ApplicationDto_New {
 				Optional.ofNullable((GeneralDate.fromString(appDto.getEndDate(), DATE_FORMAT))), 
 				ReflectionInformation_New.builder()
 						.stateReflection(
-								EnumAdaptor.valueOf(appDto.getReflectPlanState(), ReflectedState_New.class))
+								EnumAdaptor.valueOf(appDto.getReflectPlanState(), ReflectedState.class))
 						.stateReflectionReal(
-								EnumAdaptor.valueOf(appDto.getReflectPerState(), ReflectedState_New.class))
+								EnumAdaptor.valueOf(appDto.getReflectPerState(), ReflectedState.class))
 						.forcedReflection(
 								EnumAdaptor.valueOf(appDto.getReflectPlanEnforce(), DisabledSegment_New.class))
 						.forcedReflectionReal(

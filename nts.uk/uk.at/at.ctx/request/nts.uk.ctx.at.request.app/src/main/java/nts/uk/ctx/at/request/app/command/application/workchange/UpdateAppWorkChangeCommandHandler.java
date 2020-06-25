@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -109,9 +109,9 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				Optional.of(appCommand.getEndDate()), 
 				ReflectionInformation_New.builder()
 						.stateReflection(
-								EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectedState_New.class))
+								EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectedState.class))
 						.stateReflectionReal(
-								EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectedState_New.class))
+								EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectedState.class))
 						.forcedReflection(
 								EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(), DisabledSegment_New.class))
 						.forcedReflectionReal(
