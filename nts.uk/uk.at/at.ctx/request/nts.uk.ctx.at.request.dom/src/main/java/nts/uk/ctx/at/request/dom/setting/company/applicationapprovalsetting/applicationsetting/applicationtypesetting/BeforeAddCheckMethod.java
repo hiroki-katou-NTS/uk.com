@@ -1,15 +1,14 @@
-package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
+package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
+ * refactor 4
  * 事前受付チェック方法
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
-@Getter
 public enum BeforeAddCheckMethod {
 	
 	/**
