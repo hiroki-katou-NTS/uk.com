@@ -46,47 +46,47 @@ public class GoBackApplicationDomainService {
 	 */
 	public InforGoBackCommonDirectOutput getInfoOutput(String companyId, List<String> sIDs, List<String> appDates,
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
-		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
-		List<GeneralDate> lstDate = new ArrayList<>();
-		if (!CollectionUtil.isEmpty(appDates)) {
-			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
-					.collect(Collectors.toList()));
-		}
-		String employeeId = CollectionUtil.isEmpty(sIDs) ? "" : sIDs.get(0);
-		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
-		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
-//		AppDispInfoStartupOutput appDispInfoStartupOutputTemp = appDispInfoStartupOutput;
-		AppEmploymentSetting appEmployment = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
-		List<WorkTimeSetting> lstWts = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst();
-//		直行直帰申請起動時初期データを取得する
-		InforGoBackDirectOutput inforGoBackDirectOutput = this.getInforGoBackDirect(companyId, employeeId, appDate, baseDate, appEmployment, lstWts);
+//		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
+//		List<GeneralDate> lstDate = new ArrayList<>();
+//		if (!CollectionUtil.isEmpty(appDates)) {
+//			lstDate.addAll(appDates.stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd"))
+//					.collect(Collectors.toList()));
+//		}
+//		String employeeId = CollectionUtil.isEmpty(sIDs) ? "" : sIDs.get(0);
+//		GeneralDate appDate = CollectionUtil.isEmpty(lstDate) ? null : lstDate.get(0);
+//		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
+////		AppDispInfoStartupOutput appDispInfoStartupOutputTemp = appDispInfoStartupOutput;
+//		AppEmploymentSetting appEmployment = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
+//		List<WorkTimeSetting> lstWts = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst();
+////		直行直帰申請起動時初期データを取得する
+//		InforGoBackDirectOutput inforGoBackDirectOutput = this.getInforGoBackDirect(companyId, employeeId, appDate, baseDate, appEmployment, lstWts);
+//		
+//		output.setLstWorkType(inforGoBackDirectOutput.getLstWorkType());
+//		output.setWorkType(inforGoBackDirectOutput.getWorkType());
+//		output.setWorkTime(inforGoBackDirectOutput.getWorkTime());
+//		// エラー情報をチェックする(Check ErrorInfo)
+//		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorFlag() != ErrorFlagImport.NO_ERROR) {
+//			// handle error message
+//		} else {
+//			// ドメインモデル「直行直帰申請共通設定」より取得する
+//			// change  old reflect domain ->
+//			Optional<GoBackDirectlyCommonSetting> gbdcs = backDirectlyCommonSettingRepository.findByCompanyID(companyId);
+//			if (gbdcs.isPresent()) {
+//				output.setGobackDirectCommon(gbdcs.get());
+//			}
+//			output.setAppDispInfoStartup(appDispInfoStartupOutput);
+//		}
+//
+//		//new mode GoBack = null
+//		// new Domain GoBackApplication
+//		int mode = 0;
+//		Optional<GoBackDirectly> gbdOptional = Optional.ofNullable(null);
+//		if (mode == 1) {
+//			// get domain
+//		}
+//		output.setGoBackDirectly(gbdOptional);
 		
-		output.setLstWorkType(inforGoBackDirectOutput.getLstWorkType());
-		output.setWorkType(inforGoBackDirectOutput.getWorkType());
-		output.setWorkTime(inforGoBackDirectOutput.getWorkTime());
-		// エラー情報をチェックする(Check ErrorInfo)
-		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getErrorFlag() != ErrorFlagImport.NO_ERROR) {
-			// handle error message
-		} else {
-			// ドメインモデル「直行直帰申請共通設定」より取得する
-			// change  old reflect domain ->
-			Optional<GoBackDirectlyCommonSetting> gbdcs = backDirectlyCommonSettingRepository.findByCompanyID(companyId);
-			if (gbdcs.isPresent()) {
-				output.setGobackDirectCommon(gbdcs.get());
-			}
-			output.setAppDispInfoStartup(appDispInfoStartupOutput);
-		}
-
-		//new mode GoBack = null
-		// new Domain GoBackApplication
-		int mode = 0;
-		Optional<GoBackDirectly> gbdOptional = Optional.ofNullable(null);
-		if (mode == 1) {
-			// get domain
-		}
-		output.setGoBackDirectly(gbdOptional);
-		
-		return output;
+		return null;
 	}
 	public InforGoBackDirectOutput getInforGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
 			AppEmploymentSetting appEmployment, List<WorkTimeSetting> lstWts) {

@@ -15,7 +15,18 @@ import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 
 @Getter
 @Setter
+//直行直帰申請
 public class GoBackAplication extends Application_New {
+	
+//	直帰区分
+	private EnumConstant straightDistinction;
+//	直行区分
+	private EnumConstant straightLine;
+//	勤務を変更する
+	private Optional<EnumConstant> isChangedWork;
+//	勤務情報
+	private Optional<DataWork> dataWork;
+	
 	public GoBackAplication(Long version, String companyID, String appID, PrePostAtr prePostAtr,
 			GeneralDateTime inputDate, String enteredPersonID, AppReason reversionReason, GeneralDate appDate,
 			AppReason appReason, ApplicationType appType, String employeeID, Optional<GeneralDate> startDate,
@@ -23,14 +34,7 @@ public class GoBackAplication extends Application_New {
 		super(version, companyID, appID, prePostAtr, inputDate, enteredPersonID, reversionReason, appDate, appReason, appType,
 				employeeID, startDate, endDate, reflectionInformation);
 	}
-//	直帰区分
-	private EnumConstant straightDistinction;
-//	直行区分
-	private EnumConstant straightLine;
-//	勤務を変更する
-	private Optional<EnumConstant> isChangedWork;
-	
-	private Optional<DataWork> dataWork;
+
 	
 //	申請内容
 	public String getContent() {

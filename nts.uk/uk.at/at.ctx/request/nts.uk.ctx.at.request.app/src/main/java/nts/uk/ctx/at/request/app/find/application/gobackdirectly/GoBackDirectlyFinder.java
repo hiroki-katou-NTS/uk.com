@@ -253,7 +253,8 @@ public class GoBackDirectlyFinder {
 				);
 		nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput output = goBackApplicationDomainService.getInfoOutput(companyID, sIds, appDates, appDispInfoStartupOutput);
 		
-		return InforGoBackCommonDirectDto.convertDto(output);
+//		return InforGoBackCommonDirectDto.convertDto(output);
+		return null;
 	}
 
 }

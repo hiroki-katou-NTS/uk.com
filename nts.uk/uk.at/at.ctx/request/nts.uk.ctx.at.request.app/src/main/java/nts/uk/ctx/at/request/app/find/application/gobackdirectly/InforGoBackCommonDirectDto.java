@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 @Data
 @AllArgsConstructor
@@ -15,28 +17,26 @@ import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 //直行直帰申請起動時の表示情報
 public class InforGoBackCommonDirectDto {
 //	勤務種類初期選択
-	private nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType workType;
+	private InforWorkType workType;
 //	就業時間帯初期選択
-	private nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime workTime;
+	private InforWorkTime workTime;
 //	申請表示情報
-	private AppDispInfoStartupDto appDispInfoStartupDto;
-//	直行直帰申請共通設定
-	private GoBackDirectlyCommonSettingDto gobackDirectCommonDto;
+	private AppDispInfoStartupDto appDispInfoStartup;
+//	直行直帰申請の反映
+	private GoBackReflectDto goBackReflect;
 //	勤務種類リスト
 	private List<WorkTypeDto> lstWorkType;
 //	直行直帰申請
-	private GoBackDirectlyDto goBackDirectly;
+	private GoBackAplicationDto goBackApplication;
 	
-	public static InforGoBackCommonDirectDto convertDto(nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput output) {
+	public static InforGoBackCommonDirectDto convertDto(InforGoBackCommonDirectOutput value) {
 		return new InforGoBackCommonDirectDto(
-					output.getWorkType(),
-					output.getWorkTime(),
-					AppDispInfoStartupDto.fromDomain(output.getAppDispInfoStartup()),
-					GoBackDirectlyCommonSettingDto.convertToDto(output.getGobackDirectCommon()),
-					output.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()),
-					output.getGoBackDirectly().isPresent() ? GoBackDirectlyDto.convertToDto(output.getGoBackDirectly().get()): null
-				)
-		;
+				value.getWorkType(),
+				value.getWorkTime(),
+				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartup()),
+				GoBackReflectDto.convertDto(value.getGoBackReflect()),
+				value.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()),
+				value.getGoBackApplication().isPresent() ? GoBackAplicationDto.convertDto(value.getGoBackApplication().get()) : null);
 	}
 	
 }
