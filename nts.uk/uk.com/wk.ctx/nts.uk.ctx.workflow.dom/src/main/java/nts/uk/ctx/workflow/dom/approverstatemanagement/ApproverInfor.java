@@ -30,6 +30,8 @@ public class ApproverInfor extends DomainObject {
 	/**理由*/
 	private String approvalReason;
 	
+	private Integer approverInListOrder;
+	
 	public static ApproverInfor createFromFirst(ApproverInfor approverInfo){
 			return ApproverInfor.builder()
 					.approverID(approverInfo.getApproverID())
@@ -37,13 +39,14 @@ public class ApproverInfor extends DomainObject {
 					.agentID(approverInfo.getAgentID())
 					.approvalDate(approverInfo.getApprovalDate())
 					.approvalReason(approverInfo.getApprovalReason())
+					.approverInListOrder(approverInfo.getApproverInListOrder())
 					.build();
 	}
 	public static ApproverInfor convert(String approverID,
-			int approvalAtr, String agentID, GeneralDate approvalDate, String approvalReason){
+			int approvalAtr, String agentID, GeneralDate approvalDate, String approvalReason, Integer approverInListOrder){
 		return new  ApproverInfor (approverID,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
-				agentID, approvalDate, approvalReason);
+				agentID, approvalDate, approvalReason, approverInListOrder);
 	}
 	
 	public boolean isNotApproved() {
