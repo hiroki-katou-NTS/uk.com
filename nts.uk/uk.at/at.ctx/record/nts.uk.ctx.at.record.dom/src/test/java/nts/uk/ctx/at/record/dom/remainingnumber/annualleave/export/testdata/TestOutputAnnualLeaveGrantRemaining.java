@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CsvRecordLoader;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestDataCsvRecord;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TestDataCsvRe
  * @author masaaki_jinno
  *
  */
+@Getter
 public class TestOutputAnnualLeaveGrantRemaining {
 	
 	/** ケース番号 */
