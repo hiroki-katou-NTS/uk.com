@@ -29,7 +29,7 @@ public class ArrivedLateLeaveEarlyInfoDto {
 				value.getEarlyInfos().stream().map(item -> LateOrEarlyInfoDto.convertDto(item)).collect(Collectors.toList()),
 				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartupOutput()),
 				ArrivedLateLeaveEralySettingDto.convertDto(value.getArrivedLateLeaveEralySetting()),
-				value.getInfo(),
-				ArrivedLateLeaveEarlyDto.convertDto(value.getArrivedLateLeaveEarly()));
+				value.getInfo().isPresent() ? value.getInfo().get() : null,
+				value.getArrivedLateLeaveEarly().isPresent() ? ArrivedLateLeaveEarlyDto.convertDto(value.getArrivedLateLeaveEarly().get()): null );
 	}
 }

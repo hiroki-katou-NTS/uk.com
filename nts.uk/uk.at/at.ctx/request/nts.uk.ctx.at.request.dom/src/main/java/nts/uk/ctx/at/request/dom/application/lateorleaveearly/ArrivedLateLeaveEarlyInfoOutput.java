@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +22,8 @@ public class ArrivedLateLeaveEarlyInfoOutput {
 //	遅刻早退取消申請設定
 	private ArrivedLateLeaveEralySetting arrivedLateLeaveEralySetting;
 //	エアー情報
-	private Character info;
+	private Optional<Character> info;
 //	遅刻早退取消申請
-	private ArrivedLateLeaveEarly arrivedLateLeaveEarly;
+	private Optional<ArrivedLateLeaveEarly> arrivedLateLeaveEarly;
 	
 }
