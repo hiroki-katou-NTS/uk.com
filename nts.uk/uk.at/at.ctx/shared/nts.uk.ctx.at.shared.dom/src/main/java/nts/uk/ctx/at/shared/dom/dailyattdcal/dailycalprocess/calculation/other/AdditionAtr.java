@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.daily;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 
 public enum AdditionAtr {
 

@@ -3,10 +3,9 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.daily.AdditionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

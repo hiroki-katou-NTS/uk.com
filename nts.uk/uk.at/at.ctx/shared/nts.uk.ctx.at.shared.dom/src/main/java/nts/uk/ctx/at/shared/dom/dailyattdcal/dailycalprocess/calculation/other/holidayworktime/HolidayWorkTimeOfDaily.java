@@ -11,15 +11,15 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.AttendanceItemDictionaryForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
@@ -99,7 +99,7 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間に含まれている加給時間帯を計算する
 	 * @return　加給時間クラス
 	 */
-	public List<BonusPayTime> calcBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
+	public List<BonusPayTime> calcBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyAttd calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 //		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 //			//bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
@@ -111,7 +111,7 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間に含まれている特定日加給時間帯を計算する
 	 * @return　加給時間クラス
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
+	public List<BonusPayTime> calcSpecifiedBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyAttd calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 //		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 //			//bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));

@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;

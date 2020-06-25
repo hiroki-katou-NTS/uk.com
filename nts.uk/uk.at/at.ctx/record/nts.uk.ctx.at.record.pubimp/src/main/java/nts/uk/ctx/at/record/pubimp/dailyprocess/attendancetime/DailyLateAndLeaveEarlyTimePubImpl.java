@@ -39,11 +39,11 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 		val domains = attendanceTimeRepository.findByPeriodOrderByYmd(imp.getEmployeeId(), imp.getDaterange());
 		List<LateLeaveEarlyManage> lateLeaveEarlyManages = new ArrayList<>();
 		for(AttendanceTimeOfDailyPerformance nowDomain : domains) {
-			if(nowDomain != null && nowDomain.getActualWorkingTimeOfDaily() != null && nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+			if(nowDomain != null && nowDomain.getTime().getActualWorkingTimeOfDaily() != null && nowDomain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				boolean kt = false;
 				LateLeaveEarlyManage lateLeaveEarlyManage = new LateLeaveEarlyManage(nowDomain.getYmd(), false, false, false, false);
-				List<LateTimeOfDaily> lateTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
-				List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+				List<LateTimeOfDaily> lateTimeOfDailys = nowDomain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
+				List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDailys = nowDomain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
 				for (LateTimeOfDaily lateTimeOfDaily : lateTimeOfDailys) {
 					if(lateTimeOfDaily.getWorkNo().v()==1 && lateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLate1(true);

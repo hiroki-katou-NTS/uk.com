@@ -9,12 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.UseTimeAtr;
-import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
@@ -23,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalc
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
@@ -141,12 +136,12 @@ public class HolidayWorkTimeSheet{
 		//開始時刻のASC
 		//&& 普通残業を優先するであれば普通残業、早出残業順になるようにする
 		if(useSetting.get().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
-			return frameTimeSheets.stream().sorted((first,second) -> first.timeSheet.getStart().compareTo(second.timeSheet.getStart())).collect(Collectors.toList());
+			return frameTimeSheets.stream().sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getStart())).collect(Collectors.toList());
 		}
 		//一定時間
 		//開始時刻のDESC
 		else {
-			return frameTimeSheets.stream().sorted((first,second) -> second.timeSheet.getStart().compareTo(first.timeSheet.getStart())).collect(Collectors.toList());
+			return frameTimeSheets.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
 		}
 	}
 	

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationEmployeeInfoR;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFil
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckServicePub {
@@ -106,9 +106,9 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 							.targetDate(a.getYmd())
 							.errorAlarmID(c.getErrorAlarmId())
 							.businessTypeCode(bs.getWorkTypeCode().v())
-							.employmentCode(a.getEmploymentCode().v())
-							.jobTitleId(a.getJobTitleID())
-							.classificationCode(a.getClsCode().v())
+							.employmentCode(a.getAffiliationInfor().getEmploymentCode().v())
+							.jobTitleId(a.getAffiliationInfor().getJobTitleID())
+							.classificationCode(a.getAffiliationInfor().getClsCode().v())
 							.build();
 				}
 				return null;
@@ -135,17 +135,17 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 			}
 		}
 		if(isTrue(checkCondition.getFilterByEmployment())){
-			if(!checkCondition.getLstEmploymentCode().contains(affiliation.getEmploymentCode().v())){
+			if(!checkCondition.getLstEmploymentCode().contains(affiliation.getAffiliationInfor().getEmploymentCode().v())){
 				return false;
 			}
 		}
 		if(isTrue(checkCondition.getFilterByClassification())){
-			if(!checkCondition.getLstClassificationCode().contains(affiliation.getClsCode().v())){
+			if(!checkCondition.getLstClassificationCode().contains(affiliation.getAffiliationInfor().getClsCode().v())){
 				return false;
 			}
 		}
 		if(isTrue(checkCondition.getFilterByJobTitle())){
-			if(!checkCondition.getLstJobTitleId().contains(affiliation.getJobTitleID())){
+			if(!checkCondition.getLstJobTitleId().contains(affiliation.getAffiliationInfor().getJobTitleID())){
 				return false;
 			}
 		}
