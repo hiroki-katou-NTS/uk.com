@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -149,7 +149,7 @@ public class HdAppSetDto {
 				EnumAdaptor.valueOf(appDateContra, AppliedDate.class), 
 				new ObstacleName(yearResig), 
 				EnumAdaptor.valueOf(regisShortReser, UseAtr.class), 
-				EnumAdaptor.valueOf(hdType, HolidayAppType.class), 
+				EnumAdaptor.valueOf(hdType, HolidayApplicationType.class), 
 				EnumAdaptor.valueOf(displayUnselect, UseAtr.class),
 				EnumAdaptor.valueOf(dayDispSet, UseAtr.class));
 	}

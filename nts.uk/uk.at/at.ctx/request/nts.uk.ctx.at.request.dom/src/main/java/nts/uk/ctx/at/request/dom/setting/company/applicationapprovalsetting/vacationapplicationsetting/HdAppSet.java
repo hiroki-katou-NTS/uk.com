@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
 /**
  * 休暇申請設定
  * @author yennth
@@ -67,7 +67,7 @@ public class HdAppSet extends AggregateRoot {
 	// 積立年休残数不足登録できる
 	private UseAtr regisShortReser;
 	// 休暇種類
-	private HolidayAppType hdType;
+	private HolidayApplicationType hdType;
 	// 未選択を表示する
 	private UseAtr displayUnselect;
 	// 終日・半日選択表示区分
@@ -107,7 +107,7 @@ public class HdAppSet extends AggregateRoot {
 				EnumAdaptor.valueOf(appDateContra, AppliedDate.class), 
 				StringUtil.isNullOrEmpty(yearResig, true) ? null : new ObstacleName(yearResig), 
 				EnumAdaptor.valueOf(regisShortReser, UseAtr.class),
-				EnumAdaptor.valueOf(hdType, HolidayAppType.class),
+				EnumAdaptor.valueOf(hdType, HolidayApplicationType.class),
 				EnumAdaptor.valueOf(displayUnselect, UseAtr.class),
 				EnumAdaptor.valueOf(dayDispSet, UseAtr.class));
 	}

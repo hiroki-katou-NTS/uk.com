@@ -39,7 +39,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
@@ -234,7 +234,7 @@ public class AppAbsenceFinder {
 				param.getAppAbsenceStartInfoDto().toDomain(), 
 				param.isDisplayHalfDayValue(), 
 				param.getAlldayHalfDay(), 
-				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class));
+				EnumAdaptor.valueOf(param.getHolidayType(), HolidayApplicationType.class));
 		
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
@@ -279,7 +279,7 @@ public class AppAbsenceFinder {
 					appAbsenceStartInfoOutput, 
 					displayHalfDayValue, 
 					alldayHalfDay, 
-					holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType.class)));
+					holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType.class)));
 		}
 		// 各休暇の管理区分を取得する
 		CheckDispHolidayType checkDispHolidayType = absenseProcess.checkDisplayAppHdType(
@@ -329,7 +329,7 @@ public class AppAbsenceFinder {
 					appAbsenceStartInfoOutput, 
 					displayHalfDayValue, 
 					alldayHalfDay, 
-					EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
+					EnumAdaptor.valueOf(holidayType, HolidayApplicationType.class));
 		}
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
@@ -355,7 +355,7 @@ public class AppAbsenceFinder {
 				appAbsenceStartInfoOutput, 
 				param.isDisplayHalfDayValue(), 
 				param.getAlldayHalfDay(), 
-				Optional.of(EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class)));
+				Optional.of(EnumAdaptor.valueOf(param.getHolidayType(), HolidayApplicationType.class)));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 
@@ -378,7 +378,7 @@ public class AppAbsenceFinder {
 				appAbsenceStartInfoOutput, 
 				displayHalfDayValue, 
 				alldayHalfDay, 
-				holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, HolidayAppType.class)));
+				holidayType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayType, HolidayApplicationType.class)));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 
@@ -398,7 +398,7 @@ public class AppAbsenceFinder {
 		appAbsenceStartInfoOutput = absenseProcess.workTypeChangeProcess(
 				companyID, 
 				appAbsenceStartInfoOutput, 
-				EnumAdaptor.valueOf(param.getHolidayType(), HolidayAppType.class), 
+				EnumAdaptor.valueOf(param.getHolidayType(), HolidayApplicationType.class), 
 				Optional.ofNullable(param.getWorkTypeCode()));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
@@ -435,7 +435,7 @@ public class AppAbsenceFinder {
 				appAbsenceStartInfoOutput, 
 				workTypeCode, 
 				Optional.of(workTimeCode), 
-				EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
+				EnumAdaptor.valueOf(holidayType, HolidayApplicationType.class));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput).workTimeLst;
 	}
 
@@ -628,7 +628,7 @@ public class AppAbsenceFinder {
 				ApplicationType_Old.ABSENCE_APPLICATION, startDate, endDate, param.getApplicationCommand().getApplicantSID());
 		AppForSpecLeave specHd = null;
 		AppForSpecLeaveCmd appForSpecLeaveCmd = param.getAppAbsenceCommand().getAppForSpecLeave();
-		if(param.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
+		if(param.getAppAbsenceCommand().getHolidayAppType() == HolidayApplicationType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
 			specHd = AppForSpecLeave.createFromJavaType(appID, appForSpecLeaveCmd.isMournerFlag(), appForSpecLeaveCmd.getRelationshipCD(), appForSpecLeaveCmd.getRelationshipReason());
 		}
 		AppAbsence appAbsence = new AppAbsence(companyID,

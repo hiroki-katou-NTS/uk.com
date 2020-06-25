@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -26,7 +26,7 @@ public interface AppAbsenceThreeProcess {
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType,
 													String companyID,
 													String employeeID,
-													HolidayAppType holidayType,
+													HolidayApplicationType holidayType,
 													int alldayHalfDay,
 													boolean displayHalfDayValue,
 													Optional<HdAppSet> hdAppSet);
@@ -40,6 +40,6 @@ public interface AppAbsenceThreeProcess {
 	 * @param displayHalfDayValue 勤務種類組み合わせ全表示チェック
 	 * @return
 	 */
-	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType,String companyID,HolidayAppType holidayType,int alldayHalfDay, boolean displayHalfDayValue);
+	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType,String companyID,HolidayApplicationType holidayType,int alldayHalfDay, boolean displayHalfDayValue);
 
 }

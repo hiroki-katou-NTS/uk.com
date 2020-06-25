@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
@@ -35,7 +35,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	// 1.勤務種類を取得する（新規）
 	@Override
 	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType, String companyID,
-			String employeeID, HolidayAppType holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
+			String employeeID, HolidayApplicationType holidayType, int alldayHalfDay, boolean displayHalfDayValue,Optional<HdAppSet> hdAppSet) {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
 		List<WorkType> workTypes = this
@@ -57,7 +57,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 	//  2.勤務種類を取得する（詳細）
 	@Override
 	public List<WorkType> getWorkTypeDetails(AppEmploymentSetting appEmploymentWorkType, String companyID,
-			HolidayAppType holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
+			HolidayApplicationType holidayType,int alldayHalfDay, boolean displayHalfDayValue) {
 		List<WorkType> result = new ArrayList<>();
 		//ドメインモデル「休暇申請対象勤務種類」を取得する
 		List<String> lstWorkTypeCodes = new ArrayList<>();	

@@ -44,7 +44,7 @@ public class AppAbsence extends AggregateRoot implements AppDetailContent {
 	/**
 	 * 休暇種類
 	 */
-	private HolidayAppType holidayAppType;
+	private HolidayApplicationType holidayAppType;
 	/**
 	 * 勤務種類コード
 	 */
@@ -115,7 +115,7 @@ public class AppAbsence extends AggregateRoot implements AppDetailContent {
 			AppForSpecLeave appForSpecLeave){
 		this.companyID = companyID;
 		this.appID = appID;
-		this.holidayAppType = holidayAppType == null ? null : EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class);
+		this.holidayAppType = holidayAppType == null ? null : EnumAdaptor.valueOf(holidayAppType, HolidayApplicationType.class);
 		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 		this.workTimeCode = workTimeCode == null ?  null : new WorkTimeCode(workTimeCode);
 		this.halfDayFlg = halfDayFlg;
