@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
@@ -91,5 +93,10 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		}
 
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);
+	}
+	
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	public void timeLeavesChanged(String employeeId,GeneralDate ymd) {
+		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(this.timeLeavingWorks).build().toBePublished();
 	}
 }

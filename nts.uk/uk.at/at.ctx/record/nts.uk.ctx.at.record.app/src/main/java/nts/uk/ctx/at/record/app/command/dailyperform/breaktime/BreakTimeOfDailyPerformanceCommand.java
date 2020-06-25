@@ -26,9 +26,9 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	public void updateData(Object data) {
 		if(data != null){
 			BreakTimeOfDailyPerformance d = (BreakTimeOfDailyPerformance) data;
-			this.data.removeIf(br -> br.getBreakType() == d.getBreakType());
+			this.data.removeIf(br -> br.getTimeZone().getBreakType() == d.getTimeZone().getBreakType());
 			this.data.add(d);
-			this.data.sort((e1, e2) -> e1.getBreakType().value - e2.getBreakType().value);
+			this.data.sort((e1, e2) -> e1.getTimeZone().getBreakType().value - e2.getTimeZone().getBreakType().value);
 		}
 	}
 

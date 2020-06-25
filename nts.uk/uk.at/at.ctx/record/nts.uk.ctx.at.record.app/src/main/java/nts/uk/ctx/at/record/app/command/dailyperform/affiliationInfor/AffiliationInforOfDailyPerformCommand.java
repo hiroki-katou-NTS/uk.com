@@ -15,7 +15,7 @@ public class AffiliationInforOfDailyPerformCommand extends DailyWorkCommonComman
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? null : ((AffiliationInforOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate());
+		this.data = item == null || !item.isHaveData() ? null : new AffiliationInforOfDailyPerfor(getEmployeeId(), getWorkDate(),  ((AffiliationInforOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

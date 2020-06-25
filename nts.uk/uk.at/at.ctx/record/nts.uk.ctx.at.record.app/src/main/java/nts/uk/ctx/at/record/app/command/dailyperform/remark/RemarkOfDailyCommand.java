@@ -27,7 +27,7 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 	public void updateData(Object data) {
 		if(data != null){
 			RemarksOfDailyPerform d = (RemarksOfDailyPerform) data;
-			this.data.removeIf(br -> br.getRemarkNo() == d.getRemarkNo());
+			this.data.removeIf(br -> br.getRemarks().getRemarkNo() == d.getRemarks().getRemarkNo());
 			this.data.add(d);
 		}
 	}
