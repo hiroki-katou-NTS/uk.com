@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.resultrecord.status;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,10 @@ public class RouteConfirmStatusPhases {
 	private final List<RouteConfirmStatusPhase> phases;
 	
 	public static RouteConfirmStatusPhases create(List<AppPhaseConfirm> confirmPhases, List<AppPhaseInstance> instancePhases) {
+		
+		int phaseSize = instancePhases.size();
+		int minPhaseOrder = instancePhases.stream().collect(Collectors.minBy(Comparator.comparing(AppPhaseInstance::getPhaseOrder)))
+				.map(x -> x.getPhaseOrder()).orElse(0);
 		
 		// 前のフェーズから処理
 		List<RouteConfirmStatusPhase> phases = instancePhases.stream()
@@ -42,7 +47,7 @@ public class RouteConfirmStatusPhases {
 					}
 					
 					// 第1フェーズで後ろが全て未承認、または前フェーズが全て承認済みなら、最中
-					if (phaseOrder == 1 || instancePhases.size() == 1
+					if (phaseOrder == minPhaseOrder || phaseSize == 1
 							|| hasAllPhaseConfirmedBefore(phaseOrder, confirmPhases)) {
 						return RouteConfirmStatusPhase.inProgress(
 								instance.getApprovalForm(), instance.getListAppFrame(), confirmedFrames);
