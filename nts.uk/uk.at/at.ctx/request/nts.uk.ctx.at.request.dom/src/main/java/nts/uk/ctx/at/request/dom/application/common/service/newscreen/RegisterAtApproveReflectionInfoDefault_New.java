@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
@@ -57,7 +57,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 		if (approvalCompletionFlag.equals(Boolean.TRUE)) {
 			Application_New application_New = applicationRepository.findByID(application.getCompanyID(), application.getAppID()).get();
 			// 「反映情報」．実績反映状態を「反映待ち」にする
-			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState.WAITREFLECTION);
+			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.update(application_New);
 			if((application.getPrePostAtr().equals(PrePostAtr_Old.PREDICT)&&
 					application.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION))

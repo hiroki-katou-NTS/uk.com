@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -535,7 +535,7 @@ public class HolidayServiceImpl implements HolidayService {
 		// アルゴリズム「振休申請復活」を実行する (9.振休申請復活)
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		// 「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
-		application.getReflectionInformation().setStateReflectionReal(ReflectedState.NOTREFLECTED);
+		application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 		applicationRepository.update(application);
 		
 		// ドメインモデル「振休申請休出変更管理」を削除する

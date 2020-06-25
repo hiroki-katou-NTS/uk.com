@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
@@ -587,8 +587,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	private List<Application_New> entityToDomain(java.sql.PreparedStatement stmt) throws SQLException {
 		List<Application_New> resultListTmp = new NtsResultSet(stmt.executeQuery()).getList(x -> {
 			ReflectionInformation_New reflectInfor = new ReflectionInformation_New(
-					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_STATE"), ReflectedState.class),
-					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_STATE"), ReflectedState.class),
+					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_STATE"), ReflectedState_New.class),
+					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_STATE"), ReflectedState_New.class),
 					EnumAdaptor.valueOf(x.getInt("REFLECT_PLAN_ENFORCE_ATR"), DisabledSegment_New.class),
 					EnumAdaptor.valueOf(x.getInt("REFLECT_PER_ENFORCE_ATR"), DisabledSegment_New.class),
 					x.getInt("REFLECT_PLAN_SCHE_REASON") == null ? Optional.empty()

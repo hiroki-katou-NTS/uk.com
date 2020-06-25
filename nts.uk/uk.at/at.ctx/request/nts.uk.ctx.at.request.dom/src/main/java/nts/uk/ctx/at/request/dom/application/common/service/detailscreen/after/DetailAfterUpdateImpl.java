@@ -13,7 +13,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
@@ -56,7 +56,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		
 		// ドメインモデル「申請」と紐付き「承認フェーズ」「承認枠」「反映情報」をUpdateする
 		application_New.setReversionReason(new AppReason(""));
-		application_New.getReflectionInformation().setStateReflectionReal(ReflectedState.NOTREFLECTED);
+		application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 		applicationRepository.update(application_New);
 		
 		// 承認を行った承認者一覧に項目があるかチェックする

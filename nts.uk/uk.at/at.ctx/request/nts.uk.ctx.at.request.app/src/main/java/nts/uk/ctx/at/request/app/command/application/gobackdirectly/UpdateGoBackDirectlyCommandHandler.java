@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -92,9 +92,9 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 				Optional.of(command.appCommand.getEndDate()),
 				ReflectionInformation_New.builder()
 						.stateReflection(
-								EnumAdaptor.valueOf(command.appCommand.getReflectPlanState(), ReflectedState.class))
+								EnumAdaptor.valueOf(command.appCommand.getReflectPlanState(), ReflectedState_New.class))
 						.stateReflectionReal(
-								EnumAdaptor.valueOf(command.appCommand.getReflectPerState(), ReflectedState.class))
+								EnumAdaptor.valueOf(command.appCommand.getReflectPerState(), ReflectedState_New.class))
 						.forcedReflection(EnumAdaptor.valueOf(command.appCommand.getReflectPlanEnforce(),
 								DisabledSegment_New.class))
 						.forcedReflectionReal(EnumAdaptor.valueOf(command.appCommand.getReflectPerEnforce(),

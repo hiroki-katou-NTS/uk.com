@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
@@ -261,9 +261,9 @@ public class AppWorkChangeFinder {
 				Optional.of(appCommand.getEndDate()), 
 				ReflectionInformation_New.builder()
 						.stateReflection(
-								EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectedState.class))
+								EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectedState_New.class))
 						.stateReflectionReal(
-								EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectedState.class))
+								EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectedState_New.class))
 						.forcedReflection(
 								EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(), DisabledSegment_New.class))
 						.forcedReflectionReal(

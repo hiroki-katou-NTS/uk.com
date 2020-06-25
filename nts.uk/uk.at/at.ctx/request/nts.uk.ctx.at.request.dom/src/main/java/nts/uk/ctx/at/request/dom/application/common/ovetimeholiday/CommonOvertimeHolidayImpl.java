@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
@@ -548,8 +548,8 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// 事前申請否認チェック
 		// 否認以外：
 		// 反映情報.実績反映状態＝ 否認、差し戻し
-		ReflectedState refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
-		if (refPlan.equals(ReflectedState.DENIAL) || refPlan.equals(ReflectedState.REMAND)) {
+		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
+		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}
@@ -655,8 +655,8 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		// 事前申請否認チェック
 		// 否認以外：
 		// 反映情報.実績反映状態＝ 否認、差し戻し
-		ReflectedState refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
-		if (refPlan.equals(ReflectedState.DENIAL) || refPlan.equals(ReflectedState.REMAND)) {
+		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
+		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
 			return new ColorConfirmResult(true, 0, 0, "Msg_1508", Arrays.asList(employeeName), null, null);
 		}

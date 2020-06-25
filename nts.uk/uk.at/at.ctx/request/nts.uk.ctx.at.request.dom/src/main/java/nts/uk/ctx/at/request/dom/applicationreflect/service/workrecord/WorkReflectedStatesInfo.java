@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 /**
  * 勤務予定に反映の反映状態
  * @author dudt
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 @Getter
 public class WorkReflectedStatesInfo {
 	/** 反映状態	 */
-	private ReflectedState reflectedSate;
+	private ReflectedState_New reflectedSate;
 	/** 反映不可理由	 */
 	private ReasonNotReflectDaily_New notReflectReson;
 

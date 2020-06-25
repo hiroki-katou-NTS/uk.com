@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyAggregationProcessExport;
@@ -37,7 +37,7 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 	@Override
 	public List<DailyAggregationProcessExport> findByIDReflec(List<String> employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.getApplicationBySIDs(employeeID, startDate, endDate, ReflectedState.NOTREFLECTED);
+		return this.getApplicationBySIDs(employeeID, startDate, endDate, ReflectedState_New.NOTREFLECTED);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 	 * @return List<DailyAggregationProcessExport>
 	 */
 	private List<DailyAggregationProcessExport> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
-			GeneralDate endDate, ReflectedState stateReflectionReal) {
+			GeneralDate endDate, ReflectedState_New stateReflectionReal) {
 		List<Application_New> listApp = this.respo.getApplicationBySIDs(employeeID, startDate, endDate).stream()
 				.filter(x -> x.getReflectionInformation().getStateReflectionReal().value == stateReflectionReal.value)
 				.collect(Collectors.toList());

@@ -21,11 +21,11 @@ public class ReflectionInformation_New extends DomainObject {
 	
 	// 予定反映状態
 	@Setter
-	private ReflectedState stateReflection;
+	private ReflectedState_New stateReflection;
 	
 	// 実績反映状態
 	@Setter
-	private ReflectedState stateReflectionReal;
+	private ReflectedState_New stateReflectionReal;
 	
 	// 予定強制反映
 	private DisabledSegment_New forcedReflection;
@@ -51,8 +51,8 @@ public class ReflectionInformation_New extends DomainObject {
 	
 	public static ReflectionInformation_New firstCreate(){
 		return ReflectionInformation_New.builder()
-				.stateReflection(ReflectedState.NOTREFLECTED)
-				.stateReflectionReal(ReflectedState.NOTREFLECTED)
+				.stateReflection(ReflectedState_New.NOTREFLECTED)
+				.stateReflectionReal(ReflectedState_New.NOTREFLECTED)
 				.forcedReflection(DisabledSegment_New.NOTTODO)
 				.forcedReflectionReal(DisabledSegment_New.NOTTODO)
 				.notReason(Optional.empty())
