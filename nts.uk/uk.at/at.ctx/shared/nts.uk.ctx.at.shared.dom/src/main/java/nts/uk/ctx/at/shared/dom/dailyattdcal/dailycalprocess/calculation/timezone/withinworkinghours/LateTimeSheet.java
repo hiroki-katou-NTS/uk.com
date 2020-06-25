@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -106,8 +105,8 @@ public class LateTimeSheet{
 		TimeWithDayAttr attendance = null;
 		if(timeLeavingWork.getAttendanceStamp().isPresent()) {
 			if(timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}
@@ -207,8 +206,8 @@ public class LateTimeSheet{
 		TimeWithDayAttr attendance = null;
 		if(timeLeavingWork.getAttendanceStamp().isPresent()) {
 			if(timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}
