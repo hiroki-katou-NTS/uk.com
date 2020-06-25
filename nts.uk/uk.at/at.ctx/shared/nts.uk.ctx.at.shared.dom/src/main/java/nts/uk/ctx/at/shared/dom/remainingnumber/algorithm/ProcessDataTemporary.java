@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,22 +42,19 @@ public class ProcessDataTemporary {
 		}
 
 		if (param.isReplaceChk() && !param.getInterimMng().isEmpty() && !lstMngParam.isEmpty()) {
-			for (T mngReplace : lstMngParam) {
-				Optional<InterimRemain> interimInput = param.getInterimMng().stream()
-						.filter(z -> z.getRemainManaID().equals(mngReplace.getId())).findFirst();
-				if (interimInput.isPresent())
-					lstRemainResult.add(interimInput.get());
-				lstMngResult.add(mngReplace);
-				lstRemainResult.removeIf(x -> {
-					if (x.getYmd().equals(interimInput.get().getYmd())) {
-						lstMngResult.removeIf(y -> x.getRemainManaID().equals(y.getId()));
-						return true;
-					}
-					return false;
-				});
-
-			}
-
+			Map<String, T> mapMngParam = lstMngParam.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
+			param.getInterimMng().stream().filter(x -> mapMngParam.containsKey(x.getRemainManaID())).forEach(x -> {
+				lstRemainResult.removeIf(y -> {
+				if (y.getYmd().equals(x.getYmd())) {
+					lstMngResult.removeIf(z -> y.getRemainManaID().equals(z.getId()));
+					return true;
+				}
+				return false;
+			});
+			lstRemainResult.add(x);
+			lstMngResult.add(mapMngParam.get(x.getRemainManaID()));
+			});
+			
 		}
 
 	}
