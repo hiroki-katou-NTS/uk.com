@@ -1,15 +1,14 @@
-package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
+package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
+ * refactor 4
  * 申請受付制限日数
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
-@Getter
 public enum AppAcceptLimitDay {
 	
 	/**
