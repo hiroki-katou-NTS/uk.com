@@ -80,6 +80,11 @@ public class RouteConfirmStatusFrames {
 				.anyMatch(f -> f.isApprover(approverId) && f.hasApproved());
 	}
 	
+	public boolean hasApprovedBy(List<String> approverId) {
+		return frames.stream()
+				.anyMatch(f -> f.isApprover(approverId) && f.hasApproved());
+	}
+	
 	/**
 	 * 指定した社員はこの承認枠の承認者か
 	 * @param approverId

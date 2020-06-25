@@ -26,7 +26,7 @@
 							<com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
 								<com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
 								<tr>
-									<com:ko bind="$vm.getFrameIndex(loopPhase, loopFrame, loopApprover) == 0" tag="if">
+									<com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
 										<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }, 
 										text: $vm.getPhaseLabel(loopPhase.phaseOrder())" style="width: 111px;" class="bg-green"></td>
 									</com:ko>
