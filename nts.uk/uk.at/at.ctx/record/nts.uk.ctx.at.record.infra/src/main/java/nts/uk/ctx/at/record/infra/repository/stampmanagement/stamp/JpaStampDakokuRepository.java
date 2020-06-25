@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.log4j.spi.LocationInfo;
+
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -135,6 +137,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	private KrcdtStamp toEntity(Stamp stamp) {
 		String cid = AppContexts.user().companyId();
+		Optional<StampLocationInfor> LocationInfoOpt = stamp.getLocationInfor();
+		GeoCoordinate positionInfor = LocationInfoOpt.isPresent() ? LocationInfoOpt.get().getPositionInfor() : null;
 		return new KrcdtStamp(new KrcdtStampPk(stamp.getCardNumber().v(), stamp.getStampDateTime()), cid,
 				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeClockArt().value, stamp.getType().getChangeCalArt().value,
@@ -156,15 +160,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
-						? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude())
-						: null,
-				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
-						? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude())
-						: null,
-				stamp.getLocationInfor() != null && stamp.getLocationInfor().isPresent()
-						? stamp.getLocationInfor().get().isOutsideAreaAtr()
-						: null);
+				positionInfor != null ? new BigDecimal(positionInfor.getLongitude()) : null,
+				positionInfor != null ? new BigDecimal(positionInfor.getLatitude()) : null,
+				LocationInfoOpt.isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {

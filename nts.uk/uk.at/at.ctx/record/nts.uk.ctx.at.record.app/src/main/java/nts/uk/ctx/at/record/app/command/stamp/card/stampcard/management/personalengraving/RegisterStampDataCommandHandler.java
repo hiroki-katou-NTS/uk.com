@@ -84,6 +84,14 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 			});
 		}
 		
+		AtomTask ReflectResultAtomOpt = result.getStampDataReflectResult().getAtomTask();
+		
+		if (ReflectResultAtomOpt != null) {
+			transaction.execute(() -> {
+				ReflectResultAtomOpt.run();
+			});
+		}
+
 		return new RegisterStampDataResult(employeeId, result.getStampDataReflectResult().getReflectDate());
 	}
 

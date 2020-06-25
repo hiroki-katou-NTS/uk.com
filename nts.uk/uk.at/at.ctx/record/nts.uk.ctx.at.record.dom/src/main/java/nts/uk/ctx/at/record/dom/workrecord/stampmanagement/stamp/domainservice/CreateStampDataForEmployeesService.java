@@ -115,7 +115,8 @@ public class CreateStampDataForEmployeesService {
 			return new StampCardCreateResult(stampNumberOpt.get().v(), Optional.ofNullable(null) );
 		}
 		//	$打刻カード作成結果 = 打刻カード番号を自動作成する#作成する(require, 社員ID, 打刻手段)	
-		Optional<StampCardCreateResult> 	stampCardCreateResultOpt = AutoCreateStampCardNumberService.create(require, employeeId, stampMeans);
+		Optional<StampCardCreateResult> stampCardCreateResultOpt = AutoCreateStampCardNumberService.create(require,
+				employeeId, stampMeans);
 		
 		//	if $打刻カード作成結果.isEmpty	
 		if(!stampCardCreateResultOpt.isPresent()){
