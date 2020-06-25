@@ -12,14 +12,14 @@ import lombok.AllArgsConstructor;
 public enum BeforeAddCheckMethod {
 	
 	/**
-	 * 日数でチェック
-	 */
-	CHECK_IN_DAY(0, "日数でチェック"),
-	
-	/**
 	 * 時刻でチェック
 	 */
-	CHECK_IN_TIME(1, "時刻でチェック");
+	CHECK_IN_TIME(0, "時刻でチェック"),
+	
+	/**
+	 * 日数でチェック
+	 */
+	CHECK_IN_DAY(1, "日数でチェック");
 
 	public final Integer value;
 	
