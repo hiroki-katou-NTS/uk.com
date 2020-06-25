@@ -17,7 +17,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
@@ -234,21 +233,20 @@ public class TestAnnualLeave {
 			return;
 		}
 		
-		String ss;
 		
 		/** 年休情報（期間終了日時点） */
 		
 		// 残数年休マイナスあり使用数
 		{
 			// 付与前
-			double result_usedDaysBeforeGrant = -9999.999;
-			int result_usedTimeBeforeGrant = -99999;
+			double result_usedDaysBeforeGrant = 0.0;
+			int result_usedTimeBeforeGrant = 0;
 			// 合計
-			double result_usedDaysTotal = -9999.999;
-			int result_usedTimeTotal = -99999;
+			double result_usedDaysTotal = 0.0;
+			int result_usedTimeTotal = 0;
 			// 付与後
-			double result_usedDaysAfterGrant = -9999.999;
-			int result_usedTimeAfterGrant = -99999;
+			double result_usedDaysAfterGrant = 0.0;
+			int result_usedTimeAfterGrant = 0;
 			
 			// 年休情報
 			AnnualLeaveInfo asOfPeriodEnd = aggrResultOfAnnualLeave.getAsOfPeriodEnd();
@@ -332,14 +330,14 @@ public class TestAnnualLeave {
 		// 残数年休マイナスあり残数		
 		{
 			// 付与前
-			double result_remainingDaysBeforeGrant = -9999.999;
-			int result_remainingTimeBeforeGrant = -99999;
+			double result_remainingDaysBeforeGrant = 0.0;
+			int result_remainingTimeBeforeGrant = 0;
 			// 合計
-			double result_remainingDaysTotal = -9999.999;
-			int result_remainingTimeTotal = -99999;
+			double result_remainingDaysTotal = 0.0;
+			int result_remainingTimeTotal = 0;
 			// 付与後
-			double result_remainingDaysAfterGrant = -9999.999;
-			int result_remainingTimeAfterGrant = -99999;
+			double result_remainingDaysAfterGrant = 0.0;
+			int result_remainingTimeAfterGrant = 0;
 			
 			// 年休情報
 			AnnualLeaveInfo asOfPeriodEnd = aggrResultOfAnnualLeave.getAsOfPeriodEnd();
@@ -423,6 +421,11 @@ public class TestAnnualLeave {
 			
 		
 		
+		
+		
+		
+		
+		
 			
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用日数");
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用時間");
@@ -441,6 +444,11 @@ public class TestAnnualLeave {
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後合計残日数");
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後明細");
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし残数付与後合計残時間");
+		
+		
+		
+		
+		
 		
 //		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）使用数回数");
 //		ss = t_result.getMapStringData().get("残数半日年休（マイナスあり）使用数回数付与前");
