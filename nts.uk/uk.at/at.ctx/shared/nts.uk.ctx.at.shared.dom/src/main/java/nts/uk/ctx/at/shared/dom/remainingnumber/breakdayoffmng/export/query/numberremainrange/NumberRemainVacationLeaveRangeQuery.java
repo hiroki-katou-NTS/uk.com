@@ -48,7 +48,8 @@ public class NumberRemainVacationLeaveRangeQuery {
 					&& beforeResult.getNextDay().get().equals(inputParam.getDateData().start())) {
 				calcCarryForwardDays.setCarryForwardDays(beforeResult.getCarryoverDay().v());
 				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryoverTime().v());
-				result.setVacationDetails(beforeResult.getVacationDetails());
+				//result.setVacationDetails(beforeResult.getVacationDetails());
+				lstAccTemp.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
 			}
 		}
 		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
