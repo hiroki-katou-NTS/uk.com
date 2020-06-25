@@ -16,9 +16,9 @@ public interface CalAttrOfDailyPerformanceRepository {
 
 	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
-	public void update(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day);
+	public void update(CalAttrOfDailyPerformance domain);
 
-	public void add(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day);
+	public void add(CalAttrOfDailyPerformance domain);
 	
 	void deleteByKey(String employeeId, GeneralDate baseDate);
 }

@@ -8,41 +8,41 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 
 public interface DailyRecordAdUpService {
 	//ドメインモデル「日別実績の勤務情報」を更新する
 	public void adUpWorkInfo(WorkInfoOfDailyPerformance workInfo);
 	
 	//ドメインモデル「日別実績の所属情報」を更新する
-	public void adUpAffilicationInfo(AffiliationInforOfDailyAttd affiliationInfor, String employeeID, GeneralDate day);
+	public void adUpAffilicationInfo(AffiliationInforOfDailyPerfor affiliationInfor);
 	
 	//ドメインモデル「日別実績の計算区分」を更新する 
-	public void adUpCalAttr(CalAttrOfDailyAttd calAttr, String employeeId, GeneralDate day);
+	public void adUpCalAttr(CalAttrOfDailyPerformance calAttr);
 	
 	//ドメインモデル「日別実績の勤務種別」を更新する
 	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType);
 	
 	//ドメインモデル「日別実績の出退勤」を更新する 
-	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyAttd> attendanceLeave, String employeeId, GeneralDate day);
+	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave);
 	
 	//ドメインモデル「日別実績の休憩時間帯」を更新する
 	public void adUpBreakTime(List<BreakTimeOfDailyPerformance> breakTime);
@@ -63,7 +63,7 @@ public interface DailyRecordAdUpService {
 	public void adUpAttendanceTime(Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance);
 	
 	//ドメインモデル「日別実績の特定日区分」を更新する
-	public void adUpSpecificDate(Optional<SpecificDateAttrOfDailyAttd> specDateAttr, String employeeId, GeneralDate day);
+	public void adUpSpecificDate(Optional<SpecificDateAttrOfDailyPerfor> specDateAttr);
 	
 	// ドメインモデル「日別実績の編集状態」を更新する
 	public void adUpEditState(List<EditStateOfDailyPerformance> editState);

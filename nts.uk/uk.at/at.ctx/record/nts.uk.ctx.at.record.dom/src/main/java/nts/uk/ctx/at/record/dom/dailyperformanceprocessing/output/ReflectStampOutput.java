@@ -28,7 +28,7 @@ public class ReflectStampOutput {
 	OutingTimeOfDailyPerformance outingTimeOfDailyPerformance;
 	TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 	List<Stamp> lstStamp;
-	TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance;
+	TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance;
 	AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily;
 	PCLogOnInfoOfDaily pcLogOnInfoOfDaily;
 	ShortTimeOfDailyPerformance shortTimeOfDailyPerformance;

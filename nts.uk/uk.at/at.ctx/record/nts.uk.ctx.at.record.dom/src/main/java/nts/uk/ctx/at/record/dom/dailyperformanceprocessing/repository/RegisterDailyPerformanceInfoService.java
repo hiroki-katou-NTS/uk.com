@@ -12,16 +12,19 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
@@ -99,6 +102,9 @@ public class RegisterDailyPerformanceInfoService {
 			SpecificDateAttrOfDailyAttd specificDateAttrOfDailyPerfor,
 			CalAttrOfDailyAttd calAttrOfDailyPerformance, WorkTypeOfDailyPerformance workTypeOfDailyPerformance,
 			BreakTimeOfDailyAttd breakTimeOfDailyPerformance) {
+    	
+    	AffiliationInforOfDailyPerfor dailyPerfor = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor);
+    	SpecificDateAttrOfDailyPerfor attrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeID, day, specificDateAttrOfDailyPerfor);
 
 		// 登録する - register - activity ⑤社員の日別実績を作成する
 		// ドメインモデル「日別実績の勤務情報」を更新する - update
@@ -130,7 +136,7 @@ public class RegisterDailyPerformanceInfoService {
 //			} else {
 //				this.affiliationInforOfDailyPerforRepository.add(affiliationInforOfDailyPerfor);
 //			}
-			dailyRecordAdUpService.adUpAffilicationInfo(affiliationInforOfDailyPerfor, employeeID, day);
+			dailyRecordAdUpService.adUpAffilicationInfo(dailyPerfor);
 		}
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
@@ -152,18 +158,19 @@ public class RegisterDailyPerformanceInfoService {
 //			} else {
 //				this.specificDateAttrOfDailyPerforRepo.add(specificDateAttrOfDailyPerfor);
 //			}
-			dailyRecordAdUpService.adUpSpecificDate(Optional.of(specificDateAttrOfDailyPerfor), employeeID, day);
+			dailyRecordAdUpService.adUpSpecificDate(Optional.of(attrOfDailyPerfor));
 		}
 
 		// ドメインモデル「日別実績の計算区分」を更新する (Update 「日別実績の計算区分」)
 		// calAttrOfDailyPerformance - JDBC newwave
+		CalAttrOfDailyPerformance attrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, day, calAttrOfDailyPerformance);
 		if (calAttrOfDailyPerformance != null) {
 //			if (this.calAttrOfDailyPerformanceRepository.find(employeeID, day) != null) {
 //				this.calAttrOfDailyPerformanceRepository.update(calAttrOfDailyPerformance);
 //			} else {
 //				this.calAttrOfDailyPerformanceRepository.add(calAttrOfDailyPerformance);
 //			}
-			dailyRecordAdUpService.adUpCalAttr(calAttrOfDailyPerformance, employeeID, day);
+			dailyRecordAdUpService.adUpCalAttr(attrOfDailyPerformance);
 		}
 		
 		//ドメインモデル「日別実績の休憩時間帯」を更新する
@@ -204,14 +211,14 @@ public class RegisterDailyPerformanceInfoService {
 
 			// ドメインモデル「日別実績の出退勤」を更新する (Update 「日別実績の出退勤」) - JDBC only insert - tín
 			if (stampOutput.getTimeLeavingOfDailyPerformance() != null
-					&& stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks() != null
-					&& !stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks().isEmpty()) {
+					&& stampOutput.getTimeLeavingOfDailyPerformance().getAttendance().getTimeLeavingWorks() != null
+					&& !stampOutput.getTimeLeavingOfDailyPerformance().getAttendance().getTimeLeavingWorks().isEmpty()) {
 //				if (this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
 //					this.timeLeavingOfDailyPerformanceRepository.update(stampOutput.getTimeLeavingOfDailyPerformance());
 //				} else {
 //					this.timeLeavingOfDailyPerformanceRepository.insert(stampOutput.getTimeLeavingOfDailyPerformance());
 //				}
-				dailyRecordAdUpService.adUpTimeLeaving(Optional.of(stampOutput.getTimeLeavingOfDailyPerformance()), employeeID, day);
+				dailyRecordAdUpService.adUpTimeLeaving(Optional.of(stampOutput.getTimeLeavingOfDailyPerformance()));
 			}
 			
 			// ドメインモデル「日別実績の短時間勤務時間帯」を更新する - JDBC - newwave

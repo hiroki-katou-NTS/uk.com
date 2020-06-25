@@ -252,6 +252,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = null;
 		}
 
+		TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance);
 		// lstStamp is null -> has error
 		if (lstStamp != null) {
 
@@ -260,7 +261,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeID, companyID);
 			} else {
-				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+				reflectStamp.setTimeLeavingOfDailyPerformance(performance);
 			}
 
 			// 就業時間帯の休憩時間帯を日別実績に写す
@@ -279,9 +280,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				return newReflectStampOutput;
 			}
 			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
-
+			WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfoOfDailyPerformance);
 			// エラーチェック
-			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+			this.errorCheck(companyID, employeeID, processingDate, dailyPerformance,
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
 					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
 					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
@@ -293,6 +294,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		return newReflectStampOutput;
 	}
+
 
 	/*
 	 * 1日分の打刻反映範囲を取得
@@ -914,7 +916,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (lstStamp == null) {
 			reflectStamp = null;
 		}
-
+		TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeId, processingDate, timeLeavingOfDailyPerformance);
 		// lstStampItem is null -> has error
 		if (lstStamp != null) {
 
@@ -923,7 +925,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeId, companyId);
 			} else {
-				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+				reflectStamp.setTimeLeavingOfDailyPerformance(performance);
 			}
 			//set worktime default  
 			workInfoOfDailyPerformanceOpt.get().getRecordInfo().setWorkTimeCode(workTimeCodeDefault);
@@ -944,9 +946,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				return newReflectStampOutput;
 			}
 			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
-
+			Optional<WorkInfoOfDailyPerformance> optional = Optional.ofNullable(new WorkInfoOfDailyPerformance(employeeId, processingDate, workInfoOfDailyPerformanceOpt.get()));
 			// エラーチェック
-			this.errorCheck(companyId, employeeId, processingDate, workInfoOfDailyPerformanceOpt.get(),
+			this.errorCheck(companyId, employeeId, processingDate, optional.get(),
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
 					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
 					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
@@ -958,5 +960,4 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		return newReflectStampOutput;
 	}
-
 }

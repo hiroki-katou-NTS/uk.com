@@ -117,6 +117,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = null;
 		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = null;
 		PCLogOnInfoOfDaily pcLogOnInfoOfDaily = null;
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeId, date, WorkInfo);
 		if (lstStamp == null) {
 			return null;
 		}
@@ -141,7 +142,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								date);
 						if (timeOptional.isPresent()) {
 							TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -150,7 +151,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -163,15 +164,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeLeaving1 != null) {
 
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
-							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer1, date,
+							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer1.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -192,7 +193,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeOptional.isPresent()) {
 							TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -200,7 +201,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -212,7 +213,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeLeaving1 != null) {
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -220,7 +221,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -248,7 +249,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeOptional.isPresent()) {
 							TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -256,7 +257,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -268,7 +269,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeLeaving1 != null) {
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -276,7 +277,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 					if (timeLeavingOfDailyPerformance == null) {
@@ -295,7 +296,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeOptional.isPresent()) {
 							TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -303,7 +304,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -314,7 +315,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					worktNo = 2;
 					if (timeLeavingOfDailyPerformance == null) {
 						if (timeLeaving1 != null) {
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1, date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving1.getAttendance(), date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,
@@ -322,7 +323,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						}
 					} else {
 						timeLeavingOfDailyPerformance = this.reflectActualTimeOrAttendence(stamps, WorkInfo,
-								timeLeavingOfDailyPerformance, date, employeeId, x, attendanceClass, actualStampClass,
+								timeLeavingOfDailyPerformance.getAttendance(), date, employeeId, x, attendanceClass, actualStampClass,
 								worktNo, companyId);
 					}
 
@@ -351,7 +352,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						// ngoài))
 
 						String attendanceClass = "外出";
-						outingDailyPerformance = reflectTimeGoOutCheck(WorkInfo, attendanceClass, stamps, date,
+						outingDailyPerformance = reflectTimeGoOutCheck(dailyPerformance, attendanceClass, stamps, date,
 								employeeId, x, processTimeOutput, companyId, outingDailyPerformance);
 
 						// *7
@@ -361,7 +362,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						// 8* 戻り打刻を反映する (Phản ánh 戻り打刻 (THời điểm check quay
 						// về))
 						String attendanceClass = "戻り";
-						outingDailyPerformance = reflectTimeComeBackCheck(WorkInfo, attendanceClass, stamps, date,
+						outingDailyPerformance = reflectTimeComeBackCheck(dailyPerformance, attendanceClass, stamps, date,
 								employeeId, x, processTimeOutput, companyId, outingDailyPerformance);
 						// 8*
 					}
@@ -403,13 +404,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							if (x.getType().getChangeClockArt().value == 7) {
 								// 開始
 								String attendanceClass = "出勤";
-								temporaryPerformance = reflectTimeTemporaryStart(companyId, WorkInfo, attendanceClass,
+								temporaryPerformance = reflectTimeTemporaryStart(companyId, dailyPerformance, attendanceClass,
 										stamps, date, employeeId, x, processTimeOutput1, temporaryPerformance);
 
 							} else if (x.getType().getChangeClockArt().value == 9) {
 								String attendanceClass = "退勤";
 								// 終了
-								temporaryPerformance = reflectTimeTemporaryEnd(companyId, WorkInfo, attendanceClass,
+								temporaryPerformance = reflectTimeTemporaryEnd(companyId, dailyPerformance, attendanceClass,
 										stamps, date, employeeId, x, processTimeOutput1, temporaryPerformance);
 							}
 						}
@@ -430,14 +431,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 入退門を反映する
 
 					// 反映先を取得する
-
+					
 					// lay tu a nam tren chuyen xuong
 					AttendanceLeavingGateOfDaily attendanceLeavingGateOfDailyTemp = null;
 					if (attendanceLeavingGateOfDaily == null) {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDailyTemp, worktNo, inOrOutClass, x, stamps);
 					} else {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDaily, worktNo, inOrOutClass, x, stamps);
 					}
 
@@ -449,10 +450,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// lay tu a nam tren chuyen xuong
 					AttendanceLeavingGateOfDaily attendanceLeavingGateOfDailyTemp = null;
 					if (attendanceLeavingGateOfDaily == null) {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDailyTemp, worktNo, inOrOutClass, x, stamps);
 					} else {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDaily, worktNo, inOrOutClass, x, stamps);
 					}
 				}
@@ -469,10 +470,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// lay tu a nam tren chuyen xuong
 					AttendanceLeavingGateOfDaily attendanceLeavingGateOfDailyTemp = null;
 					if (attendanceLeavingGateOfDaily == null) {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDailyTemp, worktNo, inOrOutClass, x, stamps);
 					} else {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDaily, worktNo, inOrOutClass, x, stamps);
 					}
 
@@ -484,10 +485,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// fixed lay tu a nam tren chuyen xuong
 					AttendanceLeavingGateOfDaily attendanceLeavingGateOfDailyTemp = null;
 					if (attendanceLeavingGateOfDaily == null) {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDailyTemp, worktNo, inOrOutClass, x, stamps);
 					} else {
-						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, WorkInfo, date, employeeId,
+						attendanceLeavingGateOfDaily = reflectInOutCompany(companyId, dailyPerformance, date, employeeId,
 								attendanceLeavingGateOfDaily, worktNo, inOrOutClass, x, stamps);
 					}
 				}
@@ -510,10 +511,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// fixed lay tu a nam tren chuyen xuong
 					PCLogOnInfoOfDaily pcLogOnInfoOfDailyTemp = null;
 					if (pcLogOnInfoOfDaily == null) {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDailyTemp, worktNo,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDailyTemp, worktNo,
 								inOrOutClass, x, stamps);
 					} else {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
 								x, stamps);
 					}
 
@@ -525,10 +526,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// fixed lay tu a nam tren chuyen xuong
 					PCLogOnInfoOfDaily pcLogOnInfoOfDailyTemp = null;
 					if (pcLogOnInfoOfDaily == null) {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDailyTemp, worktNo,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDailyTemp, worktNo,
 								inOrOutClass, x, stamps);
 					} else {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
 								x, stamps);
 					}
 				}
@@ -551,10 +552,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// fixed lay tu a nam tren chuyen xuong
 					PCLogOnInfoOfDaily pcLogOnInfoOfDailyTemp = null;
 					if (pcLogOnInfoOfDaily == null) {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDailyTemp, worktNo,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDailyTemp, worktNo,
 								inOrOutClass, x, stamps);
 					} else {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
 								x, stamps);
 					}
 
@@ -566,10 +567,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// fixed lay tu a nam tren chuyen xuong
 					PCLogOnInfoOfDaily pcLogOnInfoOfDailyTemp = null;
 					if (pcLogOnInfoOfDaily == null) {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDailyTemp, worktNo,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDailyTemp, worktNo,
 								inOrOutClass, x, stamps);
 					} else {
-						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, WorkInfo, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
+						pcLogOnInfoOfDaily = reflectInOutPC(companyId, date, employeeId, dailyPerformance, pcLogOnInfoOfDaily, worktNo, inOrOutClass,
 								x, stamps);
 					}
 				}
@@ -593,10 +594,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				break;
 			}
 		}
+		TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeId, date, timeDailyPer);
 		if (isPassed) {
 			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
 		} else {
-			reflectStampOutput.setTimeLeavingOfDailyPerformance(timeDailyPer);
+			reflectStampOutput.setTimeLeavingOfDailyPerformance(performance);
 		}
 
 		return reflectStampOutput;
@@ -2496,7 +2498,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null
 				&& !timeDailyPer.getTimeLeavingWorks().isEmpty()) {
 			timeActualStamp = this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass);
-			checkTimeLeavingWorkExist = this.checkTimeLeavingWorkExist(timeDailyPer, worktNo, attendanceClass);
+			
+			TimeLeavingOfDailyPerformance dailyPerformance = new TimeLeavingOfDailyPerformance(employeeId, date, timeDailyPer);
+			checkTimeLeavingWorkExist = this.checkTimeLeavingWorkExist(dailyPerformance, worktNo, attendanceClass);
 			if (timeActualStamp != null && "実打刻".equals(actualStampClass)) {
 				stampOrActualStamp = (timeActualStamp.getActualStamp() != null
 						&& timeActualStamp.getActualStamp().isPresent()) ? timeActualStamp.getActualStamp().get()
@@ -2530,13 +2534,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (x.getType().getChangeCalArt().value != 0 && x.getType().getChangeHalfDay()
 				&& x.getType().getSetPreClockArt().value != 1 && x.getType().getSetPreClockArt().value != 2) {
 
+			WorkInfoOfDailyPerformance infoOfDailyPerformance = new WorkInfoOfDailyPerformance(employeeId, date, WorkInfo);
 			// 1* // Phán đoán điều kiện phản ảnh 出退勤 của 通常打刻
-			boolean checkReflectNormal = checkReflectNormal(WorkInfo, attendanceClass, x, timePrintDestinationOutput, date,
+			boolean checkReflectNormal = checkReflectNormal(infoOfDailyPerformance, attendanceClass, x, timePrintDestinationOutput, date,
 					employeeId, companyId);
 			// 1*
 			if (checkReflectNormal) {
 				// 2* check tay ngày nghỉ) worktype thay đổi
-				boolean checkHolidayChange = checkHolidayChange(WorkInfo, companyId);
+				boolean checkHolidayChange = checkHolidayChange(infoOfDailyPerformance, companyId);
 				// 2*
 				if (checkHolidayChange) {
 					// Phản ánh 時刻

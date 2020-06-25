@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
@@ -162,9 +161,9 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 					.getByExecutionContent(empCalAndSumExecLogID, 0);
 
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = workInfoOfDailyPerformance.get();
-			CalAttrOfDailyAttd calAttrOfDailyPerformance = null;
+			CalAttrOfDailyPerformance calAttrOfDailyPerformance = null;
 			AffiliationInforState affiliationInforState = null;
-			AffiliationInforOfDailyAttd affiliationInfor = null;
+			AffiliationInforOfDailyPerfor affiliationInfor = null;
 			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = null;
 			ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = null;
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
@@ -189,7 +188,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getClsCode(), 
 									affiliationInforOfDailyPerfor.get().getAffiliationInfor().getBonusPaySettingCode());
 							calAttrOfDailyPerformance = this.reflectWorkInforDomainService.reflectCalAttOfDaiPer(
-									companyID, employeeID, processingDate, affiliationInforOfDailyAttd,
+									companyID, employeeID, processingDate, affiliationInforOfDailyPerfor.get(),
 									periodInMasterList);
 
 						}

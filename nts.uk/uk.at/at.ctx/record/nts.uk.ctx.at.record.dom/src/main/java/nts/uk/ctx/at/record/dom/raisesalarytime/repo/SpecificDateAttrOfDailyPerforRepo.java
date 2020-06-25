@@ -19,7 +19,7 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 	
 	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
-	public void update(SpecificDateAttrOfDailyAttd domain, String employeeId, GeneralDate day);
+	public void update(SpecificDateAttrOfDailyPerfor domain);
 
 	public void add(SpecificDateAttrOfDailyPerfor domain);
 	

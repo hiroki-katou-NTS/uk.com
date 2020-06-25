@@ -13,7 +13,7 @@ public interface AffiliationInforOfDailyPerforRepository {
 	
 	void delete(String employeeId, GeneralDate ymd);
 	
-	void add(AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, String employeeID, GeneralDate day);
+	void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 	
 	Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd);
 	
@@ -21,5 +21,5 @@ public interface AffiliationInforOfDailyPerforRepository {
 	
 	List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
-	void updateByKey(AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, String employeeID, GeneralDate day);
+	void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 }

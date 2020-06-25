@@ -7,7 +7,6 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 
 public interface TimeLeavingOfDailyPerformanceRepository {
 	
@@ -23,9 +22,9 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	
-	void update(TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, String employeeId, GeneralDate day);
+	void update(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 
-	void insert(TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, String employeeId, GeneralDate day);
+	void insert(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 
-	void updateFlush(TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, String employeeId, GeneralDate day);
+	void updateFlush(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
 }
