@@ -5,8 +5,6 @@
 class KDP004AViewModel extends ko.ViewModel {
 	systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
 
-	pika: KnockoutObservable<any> = ko.observable('layout-1');
-
 	tabs = {
 		tabs: ko.observableArray([{
 			id: '1',
@@ -17,10 +15,10 @@ class KDP004AViewModel extends ko.ViewModel {
 		}, {
 			id: '3',
 			title: 'レイアウト3'
-		},{
+		}, {
 			id: '4',
 			title: 'レイアウト4'
-		},{
+		}, {
 			id: '5',
 			title: 'レイアウト5'
 		}]),
@@ -30,6 +28,19 @@ class KDP004AViewModel extends ko.ViewModel {
 	layoutsSetting: KnockoutObservable<any> = ko.observable(
 		{ layout1Title: ko.observable('layout-1'), layout1Visible: ko.observable(true) }
 	);
+
+	getSytemDate() {
+		let vm = this;
+		return vm.systemDate().format("YYYY/MM/DD(dddd)");
+
+	}
+	
+	
+
+	getSytemTime() {
+		let vm = this;
+		return vm.systemDate().format("HH:ss");
+	}
 
 	created(params: any) {
 		let vm = this;
