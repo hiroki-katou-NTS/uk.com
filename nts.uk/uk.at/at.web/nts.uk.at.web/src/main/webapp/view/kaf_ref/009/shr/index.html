@@ -3,14 +3,14 @@
 			<div class="table">
 				<div class="cell valign-top">
 					<div class="lblTitleKAF009"
-						data-bind="ntsFormLabel: {required:true}">text1</div>
+						data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: true,}">text2</div>
+						<div data-bind="ntsCheckBox: { checked: true, text: $i18n('KAF009_16')}"></div>
 					</div>
 					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: true,}">text3</div>
+						<div data-bind="ntsCheckBox: { checked: true, text: $i18n('KAF009_17')}"></div>
 					</div>
 					
 				</div>
@@ -19,19 +19,19 @@
 		<!--Work Change-->
 		<div class="valign-center control-group">
 			<div data-bind="if: true">
-				<div data-bind="ntsCheckBox: { checked: true }">ABCD</div>
+				<div data-bind="ntsCheckBox: { checked: true , text: $i18n('KAF009_21')}"></div>
 			</div>
-			<HR />
+			<HR class="hrStyle"/>
 			<div class="table clsWorkType" data-bind="if: true">
 				<div class="cell valign-center ">
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{ required: true }">$i18n('KAF009_22')</div>
+						data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
 					<BR />
 					<div class="valign-center control-group"
-						data-bind="ntsFormLabel:{ required: true }">$i18n('KAF009_23')</div>
+						data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
 				</div>
 				<div class="cell valign-center">
-					<button id="workSelect" data-bind=" click: openDialogKdl003" >$i18n('KAF009_24')</button>
+					<button id="workSelect" data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24')" ></button>
 				</div>
 				<div class="cell valign-center">
 					<label class="lblWorkTypeCd" data-bind="text: workTypeCode"></label>

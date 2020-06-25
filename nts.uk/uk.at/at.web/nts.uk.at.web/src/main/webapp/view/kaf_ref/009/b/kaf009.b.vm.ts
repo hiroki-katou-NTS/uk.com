@@ -1,10 +1,10 @@
-module nts.uk.at.view.kaf009_ref.a.viewmodel {
+module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     
     @bean()
-    class Kaf009AViewModel extends ko.ViewModel {
+    class Kaf009BViewModel extends ko.ViewModel {
         
         application: KnockoutObservable<Application>;
         model: KnockoutObservable<Model>;
