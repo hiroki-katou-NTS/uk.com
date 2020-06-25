@@ -5,7 +5,7 @@ const vacationStatusTemplate = `
 	<div class="ksu-popup bg-yellow vacation-status">
 		<div class="group" data-bind="foreach: _.chunk(models, 3)">
 			<div class="row" data-bind="foreach: $data">
-				<button data-bind="text: $component.$i18n(text), css: { 'margin-0': $index() === 0 }" auto-close="true"></button>
+				<button data-bind="text: $component.$i18n(text), css: { 'ml-0': $index() === 0 }" auto-close="true"></button>
 			</div>
 		</div>
 	</div>

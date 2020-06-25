@@ -6,52 +6,60 @@ const settingDisplayTemplate = `
 		<div class="group">
 			<table>
 				<tbody>
-					<tr class="row">
+					<tr>
 						<td class="">
-							<div class="d-inline title" data-bind="text: $component.$i18n('KSU001_42')"></div>
-							<div class="d-inline" data-bind="text: $component.$i18n('KSU001_69')"></div>
+							<div class="row">
+								<div class="d-inline title" data-bind="text: $component.$i18n('KSU001_42')"></div>
+								<div class="d-inline" data-bind="text: $component.$i18n('KSU001_69')"></div>
+							</div>
 						</td>
 						<td>
-							<div class="cf" data-bind="ntsSwitchButton: {
-								name: $component.$i18n('KSU001_42'),
-								options: [{
-									name: $component.$i18n('KSU001_43'),
-									code: '1'
-								}, {
-									name: $component.$i18n('KSU001_44'),
-									code: '2'
-								}, {
-									name: $component.$i18n('KSU001_45'),
-									code: '3'
-								}],
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: ko.observable('2'),
-								required: true,
-							}"></div>
-						</td>
-					</tr>
-					<tr class="row">
-						<td class="">
-							<div class="d-inline title" data-bind="text: $component.$i18n('KSU001_133')"></div>
-							<div class="d-inline" data-bind="text: $component.$i18n('KSU001_69')"></div>
-						</td>
-						<td>
-							<div class="cf"
-								data-bind="ntsSwitchButton: {
-									name: $component.$i18n('KSU001_133'),
+							<div class="row">
+								<div class="cf" data-bind="ntsSwitchButton: {
+									name: $component.$i18n('KSU001_42'),
 									options: [{
-										name: $component.$i18n('KSU001_135'),
+										name: $component.$i18n('KSU001_43'),
 										code: '1'
 									}, {
-										name: $component.$i18n('KSU001_136'),
+										name: $component.$i18n('KSU001_44'),
 										code: '2'
+									}, {
+										name: $component.$i18n('KSU001_45'),
+										code: '3'
 									}],
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: ko.observable('1'),
+									value: ko.observable('2'),
 									required: true,
 								}"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="">
+							<div class="row">
+								<div class="d-inline title" data-bind="text: $component.$i18n('KSU001_133')"></div>
+								<div class="d-inline" data-bind="text: $component.$i18n('KSU001_69')"></div>
+							</div>
+						</td>
+						<td>
+							<div class="row">
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+										name: $component.$i18n('KSU001_133'),
+										options: [{
+											name: $component.$i18n('KSU001_135'),
+											code: '1'
+										}, {
+											name: $component.$i18n('KSU001_136'),
+											code: '2'
+										}],
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: ko.observable('1'),
+										required: true,
+									}"></div>
+							</div>
 						</td>
 					</tr>
 					<tr>

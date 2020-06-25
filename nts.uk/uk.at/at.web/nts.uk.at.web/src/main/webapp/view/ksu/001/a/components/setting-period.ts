@@ -2,13 +2,13 @@
 
 const settingPeriodTemplate = `
 	<div class="d-inline">
-		<button class="btn-preview-period" data-bind="click: previewMonth, timeClick: -1"></button>
-		<span data-bind="date: range().start"></span>
-		<span data-bind="text: $component.$i18n('KSU001_66')"></span>
-		<span data-bind="date: range().end"></span>
-		<button class="btn-next-period" data-bind="click: nextMonth, timeClick: -1"></button>
+		<button class="d-inline btn-preview-period" data-bind="icon: 57, click: previewMonth, timeClick: -1"></button>
+		<span class="d-inline ml-1" data-bind="date: range().start"></span>
+		<span class="d-inline" data-bind="text: $component.$i18n('KSU001_66')"></span>
+		<span class="d-inline mr-1" data-bind="date: range().end"></span>
+		<button class="d-inline btn-next-period" data-bind="icon: 58, click: nextMonth, timeClick: -1"></button>
 	</div>
-	<div class="d-inline cf" data-bind="ntsSwitchButton: {
+	<div class="d-inline ml-3" data-bind="ntsSwitchButton: {
 		name: $component.$i18n('KSU001_38'),
 		options: [{
 			name: $component.$i18n('KSU001_39'),

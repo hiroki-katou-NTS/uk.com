@@ -10,6 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./style.css" />
+			<com:scriptfile path="./bindings/icon.js" />
 			<com:scriptfile path="./bindings/date.js" />
 			<com:scriptfile path="./bindings/popup.js" />
 			<com:scriptfile path="./components/work-hope.js" />
@@ -20,13 +21,16 @@
 			<com:scriptfile path="./components/use-guide.js" />
 			<com:scriptfile path="./components/toolbar.js" />
 			<com:scriptfile path="./components/target-organization.js" />
+			<com:scriptfile path="./components/mode-edit-action.js" />
+			<com:scriptfile path="./components/shift-pallet.js" />
+			<com:scriptfile path="./components/mode.js" />
 			<com:scriptfile path="./viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" data-bind="component: { name: 'ksu-toolbar' }"></div>
 			<div id="contents-area" class="ksu-001-a">
 				<div data-bind="component: { name: 'ksu-target-organization' }"></div>
-				
+				<div data-bind="component: { name: 'ksu-mode' }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

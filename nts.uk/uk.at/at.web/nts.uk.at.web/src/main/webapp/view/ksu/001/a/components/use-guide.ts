@@ -1,18 +1,19 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 const useGuideTemplate = `
-	<button class="ksu-popup-toggle btn-show-use-guide"></button>
-	<!-- <i data-bind="ntsIcon: { no: 139 }"></i> -->
+	<button class="ksu-popup-toggle btn-show-use-guide" data-bind="icon: 139"></button>
 	<div class="ksu-popup bg-yellow use-guide" data-bind="foreach: models">
 		<div class="group">
 			<div class="group-title" data-bind="text: $i18n(title)"></div>
 			<hr />
 			<table>
 				<tbody data-bind="foreach: _.chunk(colors, 3)">
-					<tr class="row" data-bind="foreach: $data">
+					<tr data-bind="foreach: $data">
 						<td class="guide">
-							<div class="color" data-bind="style: { 'background-color': color }"></div>
-							<div class="title" data-bind="text: $i18n(title)"></div>							
+							<div class="row">
+								<div class="color" data-bind="style: { 'background-color': color }"></div>
+								<div class="title" data-bind="text: $i18n(title)"></div>
+							</div>							
 						</td>
 					</tr>
 				</tbody>
@@ -28,7 +29,7 @@ interface Color {
 
 interface GroupColor {
 	title: string;
-	colors: IColor[];
+	colors: Color[];
 }
 
 @component({

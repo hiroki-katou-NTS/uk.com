@@ -11,7 +11,7 @@ const toolbarTemplate = `
 	<button data-bind="text: $i18n('KSU001_8')" />
 	<button data-bind="text: $i18n('KSU001_9')" />
 	<div data-bind="component: { name: 'ksu-vacation-status', params: {} }, popper: true"></div>
-	<button class="ml-4" data-bind="text: $i18n('KSU001_11')" />
+	<button class="ml-5" data-bind="text: $i18n('KSU001_11')" />
 	<div class="ml-4" data-bind="component: { name: 'ksu-setting-menu', params: {} }, popper: true"></div>
 `;
 
