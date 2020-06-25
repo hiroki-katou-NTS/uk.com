@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.p
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timest
  */
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaPortalStampSettingsRepository extends JpaRepository implements PortalStampSettingsRepository {
 
 	/**

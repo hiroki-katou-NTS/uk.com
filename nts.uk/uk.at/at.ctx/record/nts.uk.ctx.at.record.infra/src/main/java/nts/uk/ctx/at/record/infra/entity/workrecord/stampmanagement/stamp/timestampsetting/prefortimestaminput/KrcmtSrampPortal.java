@@ -12,7 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
+import org.eclipse.persistence.annotations.Customizer;
+
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
@@ -30,8 +31,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name="KRCMT_STAMP_PORTAL")
+@Customizer(KrcmtSrampPortalCustomizer.class)
 public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -85,9 +86,9 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtSrampPortal")
+	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL)
 	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.cid;
@@ -118,4 +119,19 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 				this.buttonEmphasisArt == 1, 
 				this.toppageLinkArt == 1);
 	}
+
+	public KrcmtSrampPortal(String cid, int correctionInterval, int resultDisplayTime, String textColor,
+			String backGroundColor, int buttonEmphasisArt, int toppageLinkArt,
+			List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail) {
+		super();
+		this.cid = cid;
+		this.correctionInterval = correctionInterval;
+		this.resultDisplayTime = resultDisplayTime;
+		this.textColor = textColor;
+		this.backGroundColor = backGroundColor;
+		this.buttonEmphasisArt = buttonEmphasisArt;
+		this.toppageLinkArt = toppageLinkArt;
+		this.krcmtStampLayoutDetail = krcmtStampLayoutDetail;
+	}
+	
 }
