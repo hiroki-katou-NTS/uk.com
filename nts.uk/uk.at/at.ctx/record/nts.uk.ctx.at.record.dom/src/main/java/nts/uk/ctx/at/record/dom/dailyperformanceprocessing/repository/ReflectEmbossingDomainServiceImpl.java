@@ -107,8 +107,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private ManageWorkTemporaryRepository temporaryWorkManageRepo;
 
 	@Override
-	public ReflectStampOutput reflectStamp(WorkInfoOfDailyAttendance WorkInfo,
-			TimeLeavingOfDailyAttd timeDailyPer, List<Stamp> lstStamp, StampReflectRangeOutput s,
+	public ReflectStampOutput reflectStamp(WorkInfoOfDailyPerformance WorkInfo,
+			TimeLeavingOfDailyPerformance timeDailyPer, List<Stamp> lstStamp, StampReflectRangeOutput s,
 			GeneralDate date, String employeeId, String companyId) {
 		List<Stamp> stamps = new ArrayList<Stamp>();
 
@@ -117,7 +117,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = null;
 		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = null;
 		PCLogOnInfoOfDaily pcLogOnInfoOfDaily = null;
-		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeId, date, WorkInfo);
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeId, date, WorkInfo.getWorkInformation());
 		if (lstStamp == null) {
 			return null;
 		}
@@ -142,7 +142,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 								date);
 						if (timeOptional.isPresent()) {
 							TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
-							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving.getAttendance(), date,
+							timeLeaving1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeLeaving, date,
 									employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
 						} else {
 							timeDailyPer1 = this.reflectActualTimeOrAttendence(stamps, WorkInfo, timeDailyPer, date,

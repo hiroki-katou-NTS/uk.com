@@ -20,7 +20,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -378,16 +377,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 //					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 //							.find(employeeId, day).get();
 					NewReflectStampOutput stampOutput = new NewReflectStampOutput();
-					if(workInfoOfDailyPerformance != null || workInfoOfDailyPerformance.getRecordInfo() !=null){
+					WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
+					if(workInfoOfDailyPerformance != null || dailyPerformance.getWorkInformation().getRecordInfo() !=null){
 						WorkStyle workStyle = basicScheduleService
 								.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 						if (workStyle != WorkStyle.ONE_DAY_REST) {
 							 stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
-			                         employeeId, day,workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
+			                         employeeId, day,dailyPerformance, null, empCalAndSumExecLogID,
 			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
 						}else {
 							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
-			                         employeeId, day, Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID, 
+			                         employeeId, day, Optional.of(dailyPerformance), null, empCalAndSumExecLogID, 
 			                         Optional.empty(), Optional.empty(), Optional.empty(),recreateFlag);
 						}
 					}
@@ -397,9 +397,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// stampOutput, null, workInfoOfDailyPerformance,
 					// null, null, null, null);
 					if (stampOutput.getErrMesInfos().isEmpty()) {
+						WorkInfoOfDailyPerformance performance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
 						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
 								day, stampOutput.getReflectStampOutput(), null,
-								existsDailyInfo ? null : workInfoOfDailyPerformance/* 既に勤務情報が存在する場合は更新しない */, null,
+								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */, null,
 								null, null, null);
 					} else {
 						stampOutput.getErrMesInfos().forEach(action -> {
@@ -481,18 +482,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					NewReflectStampOutput stampOutput = new NewReflectStampOutput();
 					stampOutput.setErrMesInfos(new ArrayList<>());
 					stampOutput.setReflectStampOutput(new ReflectStampOutput());
-					
-					if(workInfoOfDailyPerformance != null || workInfoOfDailyPerformance.getRecordInfo() !=null){
+					WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
+					if(workInfoOfDailyPerformance != null || dailyPerformance.getWorkInformation().getRecordInfo() !=null){
 						WorkStyle workStyle = basicScheduleService
 								.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
 						
 						if (workStyle != WorkStyle.ONE_DAY_REST) {
 							stampOutput = this.reflectStampDomainService.reflectStampInfo(companyId, employeeId,
-									day, workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
+									day, dailyPerformance, null, empCalAndSumExecLogID,
                             		Optional.empty(),Optional.empty(), Optional.empty(),recreateFlag);
 						}else {
 							 stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId,
-		                             employeeId, day, Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID,
+		                             employeeId, day, Optional.of(dailyPerformance), null, empCalAndSumExecLogID,
 		                             Optional.empty(),Optional.empty(), Optional.empty(),recreateFlag);
 						}
 					}
@@ -501,9 +502,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// stampOutput, null, workInfoOfDailyPerformance,
 					// null, null, null, null);
 					if (stampOutput.getErrMesInfos().isEmpty()) {
+						WorkInfoOfDailyPerformance performance = new WorkInfoOfDailyPerformance(employeeId, day, workInfoOfDailyPerformance);
 						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
 								day, stampOutput.getReflectStampOutput(), null,
-								existsDailyInfo ? null : workInfoOfDailyPerformance/* 既に勤務情報が存在する場合は更新しない */, null,
+								existsDailyInfo ? null : performance/* 既に勤務情報が存在する場合は更新しない */, null,
 								null, null, null);
 					} else {
 						stampOutput.getErrMesInfos().forEach(action -> {
@@ -1251,29 +1253,39 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 1日半日出勤・1日休日系の判定
 			WorkStyle workStyle = basicScheduleService
 					.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
+			
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(employeeID, day, workInfoOfDailyPerformanceUpdate);
+			CalAttrOfDailyPerformance calcOfDaily = new CalAttrOfDailyPerformance(employeeID, day, calAttrOfDailyPerformance);
+			AffiliationInforOfDailyPerfor affInfoOfDaily = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor);
+			
 			if (workStyle != WorkStyle.ONE_DAY_REST) {
 				TimeLeavingOfDailyAttd timeLeavingOptional = createStamp(companyId,
 						workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingPerformance, employeeID, day,
 						stampReflectionManagement);
+				TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(employeeID, day, timeLeavingOptional);
 				// check tay
 				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
-						workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
-						Optional.of(calAttrOfDailyPerformance), Optional.of(affiliationInforOfDailyPerfor),
+						workInfoOfDailyPerformance, timeLeavingOfDailyPerformance, empCalAndSumExecLogID,
+						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily),
                 		Optional.empty(),recreateFlag);
 			} else {
 				// fixbug 105926
 				stampOutput = this.reflectStampDomainServiceImpl.acquireReflectEmbossing(companyId, employeeID, day,
-						Optional.of(workInfoOfDailyPerformanceUpdate), null, empCalAndSumExecLogID,
-						Optional.of(calAttrOfDailyPerformance), Optional.of(affiliationInforOfDailyPerfor),
+						Optional.of(workInfoOfDailyPerformance), null, empCalAndSumExecLogID,
+						Optional.of(calcOfDaily), Optional.of(affInfoOfDaily),
                 		Optional.of(workTypeOfDailyPerformance),recreateFlag);
 			}
-
+			AffiliationInforOfDailyPerfor dailyAttd = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor);
+			WorkInfoOfDailyPerformance ofDailyPerformance = new WorkInfoOfDailyPerformance(employeeID, day, workInfoOfDailyPerformanceUpdate);
+			SpecificDateAttrOfDailyPerfor dailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeID, day, specificDateAttrOfDailyPerfor);
+			CalAttrOfDailyPerformance performance = new CalAttrOfDailyPerformance(employeeID, day, calAttrOfDailyPerformance);
+			
 			if (stampOutput.getErrMesInfos() == null || stampOutput.getErrMesInfos().isEmpty()) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
-						stampOutput.getReflectStampOutput(), affiliationInforOfDailyPerfor,
-						workInfoOfDailyPerformanceUpdate, specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance,
+						stampOutput.getReflectStampOutput(), dailyAttd,
+						ofDailyPerformance, dailyPerfor, performance,
 						workTypeOfDailyPerformance,
-						breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get().getTimeZone() : null);
+						breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get() : null);
 			} else {
 				stampOutput.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);

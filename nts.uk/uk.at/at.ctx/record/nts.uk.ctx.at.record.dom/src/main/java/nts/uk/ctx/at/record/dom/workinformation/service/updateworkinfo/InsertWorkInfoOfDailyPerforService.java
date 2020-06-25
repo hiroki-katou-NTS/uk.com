@@ -13,6 +13,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.Work
 public interface InsertWorkInfoOfDailyPerforService {
 
 	public void updateWorkInfoOfDailyPerforService(String companyId, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate);
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate);
 
 }

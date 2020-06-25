@@ -21,8 +21,8 @@ public interface ReflectBreakTimeOfDailyDomainService {
 	
 		//就業時間帯の休憩時間帯を日別実績に写す
 	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance,
-			WorkInfoOfDailyAttendance WorkInfo);
+			String empCalAndSumExecLogID, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
+			WorkInfoOfDailyPerformance WorkInfo);
 
 	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance WorkInfo);

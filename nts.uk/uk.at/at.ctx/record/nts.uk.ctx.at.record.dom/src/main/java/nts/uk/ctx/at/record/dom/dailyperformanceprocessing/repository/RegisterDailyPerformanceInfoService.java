@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.InsertWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -97,14 +99,14 @@ public class RegisterDailyPerformanceInfoService {
 	private StampDakokuRepository stampDakokuRepository;
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
-			ReflectStampOutput stampOutput, AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor,
-			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
-			SpecificDateAttrOfDailyAttd specificDateAttrOfDailyPerfor,
-			CalAttrOfDailyAttd calAttrOfDailyPerformance, WorkTypeOfDailyPerformance workTypeOfDailyPerformance,
-			BreakTimeOfDailyAttd breakTimeOfDailyPerformance) {
+			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
+			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor,
+			CalAttrOfDailyPerformance calAttrOfDailyPerformance, WorkTypeOfDailyPerformance workTypeOfDailyPerformance,
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
     	
-    	AffiliationInforOfDailyPerfor dailyPerfor = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor);
-    	SpecificDateAttrOfDailyPerfor attrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeID, day, specificDateAttrOfDailyPerfor);
+    	AffiliationInforOfDailyPerfor dailyPerfor = new AffiliationInforOfDailyPerfor(employeeID, day, affiliationInforOfDailyPerfor.getAffiliationInfor());
+    	SpecificDateAttrOfDailyPerfor attrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeID, day, specificDateAttrOfDailyPerfor.getSpecificDay());
 
 		// 登録する - register - activity ⑤社員の日別実績を作成する
 		// ドメインモデル「日別実績の勤務情報」を更新する - update
@@ -141,7 +143,7 @@ public class RegisterDailyPerformanceInfoService {
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
 		// BreakTimeOfDailyPerformance
-		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets().isEmpty()) {
 			if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 1).isPresent()) {
 				this.breakTimeOfDailyPerformanceRepository.updateForEachOfType(breakTimeOfDailyPerformance, employeeID, day);
 			} else {
@@ -163,7 +165,7 @@ public class RegisterDailyPerformanceInfoService {
 
 		// ドメインモデル「日別実績の計算区分」を更新する (Update 「日別実績の計算区分」)
 		// calAttrOfDailyPerformance - JDBC newwave
-		CalAttrOfDailyPerformance attrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, day, calAttrOfDailyPerformance);
+		CalAttrOfDailyPerformance attrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeID, day, calAttrOfDailyPerformance.getCalcategory());
 		if (calAttrOfDailyPerformance != null) {
 //			if (this.calAttrOfDailyPerformanceRepository.find(employeeID, day) != null) {
 //				this.calAttrOfDailyPerformanceRepository.update(calAttrOfDailyPerformance);
@@ -179,9 +181,9 @@ public class RegisterDailyPerformanceInfoService {
 			if (stampOutput.getBreakTimeOfDailyPerformance() != null
 					&& !stampOutput.getBreakTimeOfDailyPerformance().getTimeZone().getBreakTimeSheets().isEmpty()) {
 				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
-					this.breakTimeOfDailyPerformanceRepository.updateForEachOfType(stampOutput.getBreakTimeOfDailyPerformance().getTimeZone(), employeeID, day);
+					this.breakTimeOfDailyPerformanceRepository.updateForEachOfType(stampOutput.getBreakTimeOfDailyPerformance(), employeeID, day);
 				} else {
-					this.breakTimeOfDailyPerformanceRepository.insert(stampOutput.getBreakTimeOfDailyPerformance().getTimeZone(), employeeID, day);
+					this.breakTimeOfDailyPerformanceRepository.insert(stampOutput.getBreakTimeOfDailyPerformance(), employeeID, day);
 					//dailyRecordAdUpService.adUpBreakTime(Arrays.asList(stampOutput.getBreakTimeOfDailyPerformance()));
 				}
 				//dailyRecordAdUpService.adUpBreakTime(Arrays.asList(stampOutput.getBreakTimeOfDailyPerformance()));
