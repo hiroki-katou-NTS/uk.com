@@ -27,7 +27,7 @@ public class LateOrEarlyInfoDto {
 				lateOrEarlyInfo.getWorkNo(),
 				lateOrEarlyInfo.getIsActive(),
 				lateOrEarlyInfo.getIsIndicated(),
-				lateOrEarlyInfo.getCategory());
+				lateOrEarlyInfo.getCategory().value);
 				
 	}
 }

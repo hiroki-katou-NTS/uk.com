@@ -17,5 +17,5 @@ public class LateOrEarlyInfo {
 //	表示する
 	private Boolean isIndicated;
 //	遅刻早退区分
-	private int category;
+	private LateOrEarlyClassification category;
 }
