@@ -34,7 +34,7 @@ public class ArrivedLateLeaveEarly extends Application_New{
 	/*
 	 * 申請内容
 	 * */
-	public String conentApplication() {
+	public String contentApplication() {
 		return null;
 	}
 
