@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDateTime;
 
 /**
  * refactor 4
- * 日別勤怠の更新状態
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.日別勤怠の更新状態
  * @author Doan Duy Hung
  *
  */
