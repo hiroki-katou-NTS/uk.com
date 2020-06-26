@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class CommonSettingsStampInputTest {
 	
 		CommonSettingsStampInput commonSettingsStampInput = new CommonSettingsStampInput("companyId",
 				new ArrayList<String>(),
-				true, new MapAddress("Tokyo"));
+				true, Optional.of(new MapAddress("Tokyo")));
 		
 		NtsAssert.invokeGetters(commonSettingsStampInput);
 	

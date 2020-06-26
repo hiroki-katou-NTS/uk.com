@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySettingsStampScreenDto;
 
 @Getter
+@NoArgsConstructor
 public class SettingsSmartphoneStampDto {
 	
 	private String cid;
@@ -19,7 +22,10 @@ public class SettingsSmartphoneStampDto {
 	
 	private Boolean buttonEmphasisArt;	
 	
-	public SettingsSmartphoneStampDto(SettingsSmartphoneStamp domain) {
+	@Setter
+	private Boolean googleMap;
+	
+	public void settingsSmartphoneStamp(SettingsSmartphoneStamp domain) {
 		this.cid = domain.getCid(); 
 		this.displaySettingsStampScreen = DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()); 
 		this.pageLayoutSettings = domain.getPageLayoutSettings().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()); 

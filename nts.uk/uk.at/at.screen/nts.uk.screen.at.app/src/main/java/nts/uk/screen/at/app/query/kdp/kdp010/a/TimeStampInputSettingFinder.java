@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
@@ -28,6 +29,9 @@ public class TimeStampInputSettingFinder {
 	@Inject
 	private SettingsSmartphoneStampRepository SettingsSmartphoneStampRepo;
 	
+	@Inject
+	private CommonSettingsStampInputRepository commonSettingsStampInputRepo;
+	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
 	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
 		Optional<PortalStampSettings> domain = portalStampSettingsRepo.get(AppContexts.user().companyId());
@@ -49,12 +53,14 @@ public class TimeStampInputSettingFinder {
 	}
 	
 	/** 打刻の前準備(スマホ)の設定を取得する*/
-	public Optional<SettingsSmartphoneStampDto> getSettingsSmartphoneStamp() {
-		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(AppContexts.user().companyId());
+	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
+		SettingsSmartphoneStampDto result = new SettingsSmartphoneStampDto();
+		String cId = AppContexts.user().companyId();
+		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(cId);
+		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()));
 		if(domain.isPresent()) {
-			return Optional.of(new SettingsSmartphoneStampDto(domain.get()));
-		}else {
-			return Optional.empty();
+			result.settingsSmartphoneStamp(domain.get());
 		}
+		return result;
 	}
 }

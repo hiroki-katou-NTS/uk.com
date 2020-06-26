@@ -68,7 +68,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 			return Optional.empty();
 		}
 		
-		List<String> roles = this.queryProxy().query(SELECT_ALL_ROLES, KrcmtStampWkpSelectRole.class).getList().stream().map(r-> r.pk.roleId).collect(Collectors.toList());
+		List<String> roles = this.queryProxy().query(SELECT_ALL_ROLES, KrcmtStampWkpSelectRole.class)
+				.setParameter("companyId", comppanyID)
+				.getList().stream().map(r-> r.pk.roleId).collect(Collectors.toList());
 		
 		CommonSettingsStampInput domain = toDomain(entityOpt.get(), roles);
 		
@@ -81,20 +83,22 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		entity.cid = domain.getCompanyId();
 		entity.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class).getList()
+		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class)
+				.setParameter("companyId", domain.getCompanyId())
+				.getList()
 				.stream()
-				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.valueOf(dp.pk.getDAtdItemId()))).collect(Collectors.toList())
+				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.USE)).collect(Collectors.toList())
 				.stream().findFirst();
 		
 		
 		entity.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
-		entity.mapAddress = domain.getMapAddres().v();
+		domain.getMapAddres().ifPresent(c-> entity.mapAddress=c.v());
 		
 		return entity;
 	}
 	
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity, List<String> roles) {
-		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,new MapAddress(entity.mapAddress));
+		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,entity.mapAddress == null ?Optional.empty() : Optional.of(new MapAddress(entity.mapAddress)));
 	}
 
 }

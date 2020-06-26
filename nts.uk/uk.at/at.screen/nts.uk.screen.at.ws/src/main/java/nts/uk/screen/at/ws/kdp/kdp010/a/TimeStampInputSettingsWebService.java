@@ -34,7 +34,7 @@ public class TimeStampInputSettingsWebService extends WebService {
 	@POST
 	@Path("settingssmartphonestamp/get")
 	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
-		return timeStampInputSettingFinder.getSettingsSmartphoneStamp().orElse(null);
+		return timeStampInputSettingFinder.getSettingsSmartphoneStamp();
 	}
 }
 
