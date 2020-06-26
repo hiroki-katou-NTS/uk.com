@@ -13,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -70,6 +72,11 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
 	}
 	
 	public StampPageLayout toDomain(){

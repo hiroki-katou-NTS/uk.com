@@ -13,7 +13,7 @@ public class PortalStampSettingsCommandHandler {
 	private PortalStampSettingsRepository portalStampSettingsRepo;
 	
 	public void save(PortalStampSettingsCommand command) {
-		portalStampSettingsRepo.insert(command.toDomain());
+		portalStampSettingsRepo.save(command.toDomain());
 	}
 	
 }
