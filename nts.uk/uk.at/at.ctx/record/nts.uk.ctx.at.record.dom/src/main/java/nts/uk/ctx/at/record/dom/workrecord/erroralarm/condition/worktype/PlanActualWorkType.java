@@ -116,7 +116,7 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
 		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getRecordInfo().getWorkTypeCode().equals(workInfo.getScheduleInfo().getWorkTypeCode())){
+			if(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTypeCode())){
 				compareTypeError = WorkCheckResult.NOT_ERROR;
 			} else {
 				compareTypeError = WorkCheckResult.ERROR;
@@ -126,14 +126,14 @@ public class PlanActualWorkType extends WorkTypeCondition {
 		WorkCheckResult planCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypePlan != null) {
 			if(this.workTypePlan.isUse() && !this.workTypePlan.getLstWorkType().isEmpty()){
-				planCheck = this.workTypePlan.contains(workInfo.getScheduleInfo().getWorkTypeCode()) 
+				planCheck = this.workTypePlan.contains(workInfo.getWorkInformation().getScheduleInfo().getWorkTypeCode()) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}
 		WorkCheckResult actualCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeActual != null) {
 			if(this.workTypeActual.isUse() && !this.workTypeActual.getLstWorkType().isEmpty()){
-				actualCheck = this.workTypeActual.contains(workInfo.getRecordInfo().getWorkTypeCode()) 
+				actualCheck = this.workTypeActual.contains(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode()) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}

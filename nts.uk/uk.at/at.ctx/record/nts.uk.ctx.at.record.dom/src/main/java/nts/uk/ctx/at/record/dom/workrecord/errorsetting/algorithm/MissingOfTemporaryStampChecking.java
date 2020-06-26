@@ -31,8 +31,8 @@ public class MissingOfTemporaryStampChecking {
 		// processingDate);
 
 		if (temporaryTimeOfDailyPerformance != null
-				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				&& !temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class MissingOfTemporaryStampChecking {
 								attendanceItemIds.add(67);
 							}
 						} else {
-							TimeWithDayAttr attendanceTimeWithDay = attendanceWorkStamp.get().getTimeWithDay();
+							TimeWithDayAttr attendanceTimeWithDay =attendanceWorkStamp.get().getTimeDay().getTimeWithDay().isPresent()? attendanceWorkStamp.get().getTimeDay().getTimeWithDay().get():null;
 							if (attendanceTimeWithDay == null) {
 								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 									attendanceItemIds.add(51);
@@ -75,7 +75,7 @@ public class MissingOfTemporaryStampChecking {
 								attendanceItemIds.add(69);
 							}
 						} else {
-							TimeWithDayAttr leaveTimeWithDay = leaveWorkStamp.get().getTimeWithDay();
+							TimeWithDayAttr leaveTimeWithDay =leaveWorkStamp.get().getTimeDay().getTimeWithDay().isPresent()? leaveWorkStamp.get().getTimeDay().getTimeWithDay().get():null;
 							if (leaveTimeWithDay == null) {
 								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 									attendanceItemIds.add(53);

@@ -27,9 +27,9 @@ public class BreakTimeStampIncorrectOrderChecking {
 		// List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances =
 		// breakTimeOfDailyPerformanceRepository
 		// .findByKey(employeeId, processingDate);
-		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets().isEmpty()) {
 
-			List<BreakTimeSheet> newBreakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
+			List<BreakTimeSheet> newBreakTimeSheets = breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets();
 
 			List<BreakTimeSheet> breakTimeSheets = newBreakTimeSheets.stream()
 					.filter(item -> item.getStartTime() != null).collect(Collectors.toList());

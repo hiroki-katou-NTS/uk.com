@@ -38,9 +38,9 @@ public class HolidayStampCheck {
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
 			if (timeLeavingOfDailyPerformance != null
-					&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 				boolean errorBoolean = false;
-				for(TimeLeavingWork timeLeaving : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
+				for(TimeLeavingWork timeLeaving : timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks()) {
 					if ((timeLeaving != null
 					&& ((timeLeaving.getAttendanceStamp().isPresent()
 							&& timeLeaving.getAttendanceStamp().get().getStamp().isPresent())

@@ -28,9 +28,9 @@ public class DoubleStampAlgorithm {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 
-			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理

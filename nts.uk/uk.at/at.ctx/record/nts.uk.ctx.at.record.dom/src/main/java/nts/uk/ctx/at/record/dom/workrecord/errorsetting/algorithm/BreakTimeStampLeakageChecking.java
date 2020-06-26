@@ -27,8 +27,8 @@ public class BreakTimeStampLeakageChecking {
 		// breakTimeOfDailyPerformanceRepository.findByKey(employeeID,
 		// processingDate);
 
-		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
-			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets().isEmpty()) {
+			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets();
 
 			List<Integer> attendanceItemIDList = new ArrayList<>();
 
