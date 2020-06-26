@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
+package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
 import lombok.AllArgsConstructor;
 
