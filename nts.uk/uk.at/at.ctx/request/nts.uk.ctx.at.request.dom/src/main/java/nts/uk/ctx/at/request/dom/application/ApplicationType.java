@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 申請種類
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.申請種類
  * @author Doan Duy Hung
  *
  */
