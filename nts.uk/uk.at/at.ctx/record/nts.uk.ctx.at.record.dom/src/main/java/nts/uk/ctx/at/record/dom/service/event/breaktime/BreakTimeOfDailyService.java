@@ -62,7 +62,7 @@ public class BreakTimeOfDailyService {
 			Optional<WorkType> cachedWorkType, boolean directToDB) {
 
 		WorkInfoOfDailyPerformance wi = new WorkInfoOfDailyPerformance(working.getEmployeeId(), working.getYmd(),working.getWorkInformation());
-		if (wi == null) {
+		if (wi.getWorkInformation() == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
