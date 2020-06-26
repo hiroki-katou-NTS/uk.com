@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 事前事後区分初期値
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.事前事後区分初期値
  * @author Doan Duy Hung
  *
  */
