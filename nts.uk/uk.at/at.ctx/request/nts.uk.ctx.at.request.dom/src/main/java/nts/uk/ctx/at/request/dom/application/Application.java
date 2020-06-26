@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 
@@ -20,7 +20,7 @@ public class Application implements DomainAggregate {
 	/**
 	 * ID
 	 */
-	private String applicationID;
+	private String appID;
 	
 	/**
 	 * 事前事後区分
@@ -35,12 +35,12 @@ public class Application implements DomainAggregate {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType applicationType;
+	private ApplicationType appType;
 	
 	/**
 	 * 申請日
 	 */
-	private GeneralDate appDate;
+	private ApplicationDate appDate;
 	
 	/**
 	 * 入力者
@@ -50,7 +50,7 @@ public class Application implements DomainAggregate {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	
 	/**
 	 * 反映状態
@@ -70,12 +70,12 @@ public class Application implements DomainAggregate {
 	/**
 	 * 申請開始日
 	 */
-	private Optional<GeneralDate> opApplicationStartDate;
+	private Optional<ApplicationDate> opAppStartDate;
 	 
 	/**
 	 * 申請終了日
 	 */
-	private Optional<GeneralDate> opApplicationEndDate;
+	private Optional<ApplicationDate> opAppEndDate;
 	
 	/**
 	 * 申請理由
