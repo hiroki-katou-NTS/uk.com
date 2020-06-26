@@ -487,4 +487,5 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		
 		return null;
 	}
+	
 }
