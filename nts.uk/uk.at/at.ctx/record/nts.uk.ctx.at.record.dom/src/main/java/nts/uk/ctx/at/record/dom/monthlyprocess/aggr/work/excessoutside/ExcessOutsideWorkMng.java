@@ -177,7 +177,7 @@ public class ExcessOutsideWorkMng {
 	/**
 	 * 集計
 	 */
-	public void aggregateRequire(RequireM5 require, CacheCarrier cacheCarrier){
+	public void aggregate(RequireM5 require, CacheCarrier cacheCarrier){
 		// 労働制を確認する
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK || this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
@@ -939,7 +939,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 確認中年月の月別実績を確認する
 			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
-			attendanceTimes = require.attendanceTimeOfMonthlyByYmWithOrder(this.employeeId, settlementMonth);
+			attendanceTimes = require.attendanceTimeOfMonthly(this.employeeId, settlementMonth);
 			
 			// 取得した法令労働時間を法定労働時間累計に加算する
 			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth;
@@ -1283,7 +1283,7 @@ public class ExcessOutsideWorkMng {
 			else{		// 前月より前
 				
 				// ループ中の年月の「月別実績の勤怠時間」を取得する
-				val attendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(this.employeeId, indexYm);
+				val attendanceTimeList = require.attendanceTimeOfMonthly(this.employeeId, indexYm);
 				for (val attendanceTime : attendanceTimeList){
 					
 					// 「基準フレックス時間」に「時間外超過のフレックス時間」を加算する
@@ -1302,7 +1302,7 @@ public class ExcessOutsideWorkMng {
 	
 	public static interface RequireM0 {
 
-		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlyByYmWithOrder(String employeeId, YearMonth yearMonth);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
 	}
 
 	public static interface RequireM5 extends FlexTimeOfMonthly.RequireM6, 

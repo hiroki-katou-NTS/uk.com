@@ -17,6 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
@@ -291,7 +292,7 @@ public class MonAggrCompanySettings {
 		domain.formulaOrderList.addAll(require.formulaDispOrder(companyId));
 		
 		// 年休設定
-		domain.annualLeaveSet = require.annualPaidLeaveSet(companyId);
+		domain.annualLeaveSet = require.annualPaidLeaveSetting(companyId);
 
 		// 年休付与テーブル設定、勤続年数テーブル
 		val yearHolidays = require.grantHdTblSets(companyId);
@@ -299,11 +300,11 @@ public class MonAggrCompanySettings {
 			val yearHolidayCode = yearHoliday.getYearHolidayCode().v();
 			domain.grantHdTblSetMap.put(yearHolidayCode, yearHoliday);
 			domain.lengthServiceTblListMap.put(yearHolidayCode,
-					require.lengthServiceTbls(companyId, yearHolidayCode));
+					require.lengthServiceTbl(companyId, yearHolidayCode));
 		}
 		
 		// 積立年休設定
-		domain.retentionYearlySet = require.retentionYearlySet(companyId);
+		domain.retentionYearlySet = require.retentionYearlySetting(companyId);
 		
 		// 雇用積立年休設定
 		val emptYearlyRetentionSets = require.emptYearlyRetentionSet(companyId);
@@ -313,10 +314,10 @@ public class MonAggrCompanySettings {
 		}
 		
 		// 振休管理設定
-		domain.absSettingOpt = require.substVacationSet(companyId);
+		domain.absSettingOpt = require.comSubstVacation(companyId);
 		
 		// 代休管理設定
-		domain.dayOffSetting = require.compensatoryLeaveSet(companyId);
+		domain.dayOffSetting = require.compensatoryLeaveComSetting(companyId);
 		
 		// 実績ロック
 		val actualLocks = require.actualLocks(companyId);
@@ -356,7 +357,7 @@ public class MonAggrCompanySettings {
 	 */
 	private void loadSettingsForAgreementProc(RequireM5 require, String companyId) {
 		// 締め
-		val closures = require.closures(companyId);
+		val closures = require.closure(companyId);
 		for (val closure : closures){
 			val closureId = closure.getClosureId().value;
 			this.closureMap.putIfAbsent(closureId, closure);
@@ -419,11 +420,11 @@ public class MonAggrCompanySettings {
 		
 		// 労働時間と日数の設定の利用単位の設定
 		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
-		val usagaUnitSetOpt = require.laborTimeUsageSetting(companyId);
+		val usagaUnitSetOpt = require.usageUnitSetting(companyId);
 		if (usagaUnitSetOpt.isPresent()) this.usageUnitSet = usagaUnitSetOpt.get();
 		
 		// 会社別通常勤務労働時間
-		val comRegLaborTime = require.regularLaborTimeByComapany(companyId);
+		val comRegLaborTime = require.regularLaborTimeByCompany(companyId);
 		if (comRegLaborTime.isPresent()) this.comRegLaborTime = comRegLaborTime.get().getWorkingTimeSet();
 		
 		// 会社別変形労働労働時間
@@ -464,7 +465,7 @@ public class MonAggrCompanySettings {
 		this.flexShortageLimitOpt = require.flexShortageLimit(companyId);
 		
 		// 休暇加算設定
-		this.vacationAddSet = require.vacationAddSet(companyId);
+		this.vacationAddSet = GetVacationAddSet.get(require, companyId);
 		
 		// 時間外超過設定
 		val outsideOTSetOpt = require.outsideOTSetting(companyId);
@@ -496,7 +497,7 @@ public class MonAggrCompanySettings {
 		}
 		
 		// 回数集計
-		this.totalTimesList.addAll(require.allTotalTimes(companyId));
+		this.totalTimesList.addAll(require.totalTimes(companyId));
 		if (this.totalTimesList.size() <= 0){
 			this.errorInfos.put("020", new ErrMessageContent(TextResource.localize("Msg_1416")));
 		}
@@ -753,7 +754,7 @@ public class MonAggrCompanySettings {
 		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 	
-	public static interface RequireM5 {
+	public static interface RequireM5 extends GetVacationAddSet.RequireM1 {
 		
 		Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId);
 		
@@ -763,9 +764,9 @@ public class MonAggrCompanySettings {
 		
 		Map<String, AggregateRoot> holidayAddtionSets(String companyId);
 		
-		Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId);
+		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 		
-		Optional<ComRegularLaborTime> regularLaborTimeByComapany(String companyId);
+		Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId);
 		
 		Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId);
 		
@@ -783,17 +784,15 @@ public class MonAggrCompanySettings {
 		
 		Optional<FlexShortageLimit> flexShortageLimit(String companyId);
 		
-		VacationAddSet vacationAddSet(String companyId);
-		
 		Optional<OutsideOTSetting> outsideOTSetting(String companyId);
 		
 		Optional<RoundingSetOfMonthly> monthRoundingSet(String companyId);
 		
-		List<TotalTimes> allTotalTimes(String companyId);
+		List<TotalTimes> totalTimes(String companyId);
 		
 		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
 		
-		List<Closure> closures(String companyId);
+		List<Closure> closure(String companyId);
 	}
 	
 	public static interface RequireM6 extends RequireM5 {
@@ -808,19 +807,19 @@ public class MonAggrCompanySettings {
 		
 		List<FormulaDispOrder> formulaDispOrder(String companyId);
 		
-		AnnualPaidLeaveSetting annualPaidLeaveSet(String companyId);
+		AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId);
 		
 		List<GrantHdTblSet> grantHdTblSets(String companyId);
 		
-		List<LengthServiceTbl> lengthServiceTbls(String companyId, String yearHolidayCode);
+		List<LengthServiceTbl> lengthServiceTbl(String companyId, String yearHolidayCode);
 		
-		Optional<RetentionYearlySetting> retentionYearlySet(String companyId);
+		Optional<RetentionYearlySetting> retentionYearlySetting(String companyId);
 		
 		List<EmptYearlyRetentionSetting> emptYearlyRetentionSet(String companyId);
 		
-		Optional<ComSubstVacation> substVacationSet(String companyId);
+		Optional<ComSubstVacation> comSubstVacation(String companyId);
 		
-		CompensatoryLeaveComSetting compensatoryLeaveSet(String companyId);
+		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 		
 		List<ActualLock> actualLocks(String companyId);
 		

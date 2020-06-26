@@ -20,12 +20,15 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -127,7 +130,7 @@ public class ClosureService {
 		String companyId = loginUserContext.companyId();
 
 		// 「締め」をすべて取得する
-		val closures = require.allClosures(companyId);
+		val closures = require.closure(companyId);
 
 		for (val closure : closures) {
 
@@ -267,7 +270,7 @@ public class ClosureService {
 		
 		List<ClosureInfor> closureInfor = new ArrayList<>();
 
-		List<Closure> closureList = require.allClosures(companyId);
+		List<Closure> closureList = require.closure(companyId);
 
 		closureList.forEach(item -> {
 			// <<Public>> 当月の期間を算出する
@@ -334,7 +337,6 @@ public class ClosureService {
 		return optClosure.get();
 	}
 
-	
 	public static DatePeriod findClosurePeriod(RequireM3 require, CacheCarrier cacheCarrier, 
 			String employeeId, GeneralDate baseDate) {
 		// 社員に対応する処理締めを取得する.
@@ -347,7 +349,6 @@ public class ClosureService {
 		// 当月の期間を算出する.
 		return getClosurePeriod(require, closure.getClosureId().value, currentMonth.getProcessingYm());
 	}
-
 	
 	public static Closure getClosurByEmployment(RequireM1 require, String employmentCd) {
 		String companyId = AppContexts.user().companyId();
@@ -364,54 +365,53 @@ public class ClosureService {
 		
 		return optClosure.get();
 	}
-
 	
 	public static DatePeriod getClosurePeriod(Closure closure, YearMonth processYm) {
 		// 【処理概要】
-				// 当月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
-				val currentPeriods = closure.getPeriodByYearMonth(processYm);
-				if (currentPeriods.size() <= 0)
-					return null;
+		// 当月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+		val currentPeriods = closure.getPeriodByYearMonth(processYm);
+		if (currentPeriods.size() <= 0)
+			return null;
 
-				// 当月の期間が2つある時は、2つめを当月の期間とする （1つの時は、1つめを当月の期間とする）
-				val currentPeriod = currentPeriods.get(currentPeriods.size() - 1);
+		// 当月の期間が2つある時は、2つめを当月の期間とする （1つの時は、1つめを当月の期間とする）
+		val currentPeriod = currentPeriods.get(currentPeriods.size() - 1);
 
-				// 翌月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
-				val nextPeriods = closure.getPeriodByYearMonth(processYm.addMonths(1));
+		// 翌月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+		val nextPeriods = closure.getPeriodByYearMonth(processYm.addMonths(1));
 
-				// 締め変更により、変更前・後期間がある年月か確認する
-				// ※ 翌月の期間が2つ返ってくれば、翌月の1つめの期間が、当月の後期間に当たる （月度解釈のズレがある）
-				boolean isMultiPeriod = false;
-				if (nextPeriods.size() > 1)
-					isMultiPeriod = true;
+		// 締め変更により、変更前・後期間がある年月か確認する
+		// ※ 翌月の期間が2つ返ってくれば、翌月の1つめの期間が、当月の後期間に当たる （月度解釈のズレがある）
+		boolean isMultiPeriod = false;
+		if (nextPeriods.size() > 1)
+			isMultiPeriod = true;
 
-				if (isMultiPeriod) {
-					// 前・後期間のある月度の時
+		if (isMultiPeriod) {
+			// 前・後期間のある月度の時
 
-					val currentMonth = closure.getClosureMonth();
-					if (processYm.equals(currentMonth.getProcessingYm())) {
-						// 「締め．当月．処理当月」と同じ年月の時
+			val currentMonth = closure.getClosureMonth();
+			if (processYm.equals(currentMonth.getProcessingYm())) {
+				// 「締め．当月．処理当月」と同じ年月の時
 
-						if (currentMonth.getClosureClassification().isPresent()) {
-							if (currentMonth.getClosureClassification()
-									.get() == ClosureClassification.ClassificationClosingBefore) {
-								// 「締め．当月．締め日変更区分」＝「締め日変更前期間」の時 → 当月の期間を返す
-								return currentPeriod;
-							} else {
-								// 「締め．当月．締め日変更区分」＝「締め日変更後期間」の時 → 翌月の1つめの期間を返す
-								return nextPeriods.get(0);
-							}
-						} else {
-							// 「締め．当月．締め日変更区分」がない時 → 当月の期間を返す
-							return currentPeriod;
-						}
-					} else {
-						// 「締め．当月．処理当月」と異なる年月の時
+				if (currentMonth.getClosureClassification().isPresent()) {
+					if (currentMonth.getClosureClassification()
+							.get() == ClosureClassification.ClassificationClosingBefore) {
+						// 「締め．当月．締め日変更区分」＝「締め日変更前期間」の時 → 当月の期間を返す
 						return currentPeriod;
+					} else {
+						// 「締め．当月．締め日変更区分」＝「締め日変更後期間」の時 → 翌月の1つめの期間を返す
+						return nextPeriods.get(0);
 					}
+				} else {
+					// 「締め．当月．締め日変更区分」がない時 → 当月の期間を返す
+					return currentPeriod;
 				}
-				// 前・後期間のない月度の時 → 当月の期間を返す
+			} else {
+				// 「締め．当月．処理当月」と異なる年月の時
 				return currentPeriod;
+			}
+		}
+		// 前・後期間のない月度の時 → 当月の期間を返す
+		return currentPeriod;
 	}
 
 	/* (non-Javadoc)
@@ -432,7 +432,7 @@ public class ClosureService {
 				.collect(Collectors.toList());
 				
 		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
-		List<ClosureEmployment> closureEmploymentList= require.employmentClosures(companyId, empCds);
+		List<ClosureEmployment> closureEmploymentList= require.employmentClosure(companyId, empCds);
 		
 		if(CollectionUtil.isEmpty(closureEmploymentList)) {
 			return Collections.emptyList();
@@ -441,7 +441,7 @@ public class ClosureService {
 		List<Integer> closureIds = closureEmploymentList.stream().map(item -> item.getClosureId()).collect(Collectors.toList());
 		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
 		
-		return require.closures(companyId, closureIds);
+		return require.closure(companyId, closureIds);
 	}
 	
 	public static Map<String, Closure> getClosureByEmployees(RequireM7 require, CacheCarrier cacheCarrier, List<String> employeeIds, GeneralDate baseDate) {
@@ -459,7 +459,7 @@ public class ClosureService {
 				.collect(Collectors.toList());
 				
 		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
-		Map<String, Integer> closureEmploymentList= require.employmentClosures(companyId, empCds)
+		Map<String, Integer> closureEmploymentList= require.employmentClosure(companyId, empCds)
 				.stream().collect(Collectors.toMap(c -> c.getEmploymentCD(), c -> c.getClosureId()));
 		
 		if(closureEmploymentList.isEmpty()) {
@@ -467,7 +467,7 @@ public class ClosureService {
 		}
 		
 		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
-		Map<Integer, Closure> closureList = require.closures(companyId, new ArrayList<>(closureEmploymentList.values()))
+		Map<Integer, Closure> closureList = require.closure(companyId, new ArrayList<>(closureEmploymentList.values()))
 				.stream().collect(Collectors.toMap(c -> c.getClosureId().value, c -> c));
 		
 		return employmentHistList.stream().collect(Collectors.toMap(c -> c.getEmployeeId(), c -> {
@@ -499,7 +499,7 @@ public class ClosureService {
 	
 	public static interface RequireM2 {
 
-		List<Closure> allClosures(String companyId);
+		List<Closure> closure(String companyId);
 	}
 	
 	public static interface RequireM3 extends RequireM1 {
@@ -522,10 +522,98 @@ public class ClosureService {
 	
 	public static interface RequireM7 {
 		
-		List<Closure> closures(String companyId, List<Integer> closureIds);
+		List<Closure> closure(String companyId, List<Integer> closureIds);
 		
-		List<ClosureEmployment> employmentClosures(String companyId, List<String> employmentCDs);
+		List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs);
 		
 		List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
+	}
+	
+	public static RequireM2 createRequireM2(ClosureRepository closureRepo) {
+		
+		return new RequireM2() {
+
+			@Override
+			public List<Closure> closure(String companyId) {
+				return closureRepo.findAll(companyId);
+			}
+
+		};
+	}
+	
+	public static RequireM5 createRequireM5(ClosureRepository closureRepo) {
+		
+		return new RequireM5() {
+
+			@Override
+			public Optional<ClosureHistory> closureHistoryByYm(String companyId, int closureId, int yearMonth) {
+				return closureRepo.findBySelectedYearMonth(companyId, closureId, yearMonth);
+			}
+		};
+	}
+
+	public static RequireM1 createRequireM1(ClosureRepository closureRepo, 
+			ClosureEmploymentRepository closureEmploymentRepo) {
+		
+		return new RequireM1() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepo.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+		};
+	}
+	
+	public static RequireM3 createRequireM3(ClosureRepository closureRepo, 
+			ClosureEmploymentRepository closureEmploymentRepo,
+			ShareEmploymentAdapter shareEmploymentAdapter) {
+		
+		return new RequireM3() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepo.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
+	}
+	
+	public static RequireM7 createRequireM7(ClosureRepository closureRepo, 
+			ClosureEmploymentRepository closureEmploymentRepo,
+			ShareEmploymentAdapter shareEmploymentAdapter) {
+		
+		return new RequireM7() {
+			
+			@Override
+			public List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> sids,
+					DatePeriod datePeriod) {
+				return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+			}
+			
+			@Override
+			public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
+				return closureEmploymentRepo.findListEmployment(companyId, employmentCDs);
+			}
+			
+			@Override
+			public List<Closure> closure(String companyId, List<Integer> closureIds) {
+				return closureRepo.findByListId(companyId, closureIds);
+			}
+		};
 	}
 }

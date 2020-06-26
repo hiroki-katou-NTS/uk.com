@@ -30,8 +30,7 @@ public class GetDeforAggrSet {
 	 * @param comIrgSetOpt 変形労働会社別月別実績集計設定
 	 * @return 変形労働の法定内集計設定
 	 */
-	public static Optional<DeforWorkTimeAggrSet> deforWorkTimeAggrSet(
-			Require require, CacheCarrier cachecarrier, 
+	public static Optional<DeforWorkTimeAggrSet> deforWorkTimeAggrSet(RequireM1 require, CacheCarrier cachecarrier, 
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaDeforLaborMonthActCalSet> shaIrgSetOpt,
 			Optional<ComDeforLaborMonthActCalSet> comIrgSetOpt){
@@ -66,7 +65,7 @@ public class GetDeforAggrSet {
 		return Optional.empty();
 	}
 	
-	public static interface Require {
+	public static interface RequireM1 {
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, 
 				String employeeId, GeneralDate baseDate);

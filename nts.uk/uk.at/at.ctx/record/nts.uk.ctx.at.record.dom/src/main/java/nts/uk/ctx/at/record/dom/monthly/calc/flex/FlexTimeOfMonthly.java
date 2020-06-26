@@ -197,9 +197,9 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 戻り値：月別実績を集計する
 	 */
-	public AggregateMonthlyValue aggregateMonthly(
-			RequireM6 require, CacheCarrier cacheCarrier, String companyId, String employeeId, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod, WorkingSystem workingSystem,
+	public AggregateMonthlyValue aggregateMonthly(RequireM6 require, CacheCarrier cacheCarrier, String companyId, 
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, 
+			DatePeriod datePeriod, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr, Optional<Closure> closureOpt, FlexAggregateMethod flexAggregateMethod,
 			SettingRequiredByFlex settingsByFlex, AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			ExcessOutsideWorkMng excessOutsideWorkMng, int startWeekNo, MonAggrCompanySettings companySets,
@@ -512,7 +512,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 			// 前月の「月別実績の勤怠時間」を取得する
 			val prevYearMonth = yearMonth.previousMonth();
-			val prevAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, prevYearMonth);
+			val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, prevYearMonth);
 			
 			// 前月のフレックス不足時間を取得する　（開始日が最も大きい日のデータ）
 			// 前月のフレックス繰越不可時間を取得する
@@ -558,7 +558,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			
 			// 前月の「月別実績の勤怠時間」を取得する
 			val prevYearMonth = yearMonth.previousMonth();
-			val prevAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, prevYearMonth);
+			val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, prevYearMonth);
 
 			// 計算繰越時間を計算する
 			int calcCarryforwardMinutes = 0;		// 計算繰越時間
@@ -1468,7 +1468,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			if (indexYm.lessThan(yearMonth)){	// 当月以外
 				
 				// ループ中の年月の「月別実績の勤怠時間」を取得する
-				val prevAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, indexYm);
+				val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, indexYm);
 
 				// 「基準時間合計」に「基準時間」を加算する
 				if (!prevAttendanceTimeList.isEmpty()){
@@ -1552,7 +1552,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			if (indexYm.lessThan(yearMonth)){	// 前月以前
 				
 				// ループ中の年月の「月別実績の勤怠時間」を取得する
-				val prevAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, indexYm);
+				val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, indexYm);
 
 				// 休暇加算時間を取得する（過去分）
 				if (!prevAttendanceTimeList.isEmpty()){
@@ -1604,7 +1604,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			if (indexYm.lessThan(yearMonth)){	// 前月以前
 				
 				// ループ中の年月の「月別実績の勤怠時間」を取得する
-				val prevAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, indexYm);
+				val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, indexYm);
 
 				// 「特別休暇．使用時間」　→　使用時間
 				if (!prevAttendanceTimeList.isEmpty()){
@@ -1775,7 +1775,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 								
 								// 処理中の年月の翌月の「月別実績の勤怠時間」を取得する
 								val nextYearMonth = yearMonth.nextMonth();
-								val nextAttendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, nextYearMonth);
+								val nextAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, nextYearMonth);
 								if (!nextAttendanceTimeList.isEmpty()){
 									val nextAttendanceTime = nextAttendanceTimeList.get(nextAttendanceTimeList.size() - 1);
 									val nextAggrTime = nextAttendanceTime.getMonthlyCalculation().getAggregateTime();
@@ -2238,7 +2238,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 	public static interface RequireM3 {
 		
-		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlyByYmWithOrder(String employeeId, YearMonth yearMonth);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
 	}
 	
 	public static interface RequireM4 extends RequireM2, RequireM3 {

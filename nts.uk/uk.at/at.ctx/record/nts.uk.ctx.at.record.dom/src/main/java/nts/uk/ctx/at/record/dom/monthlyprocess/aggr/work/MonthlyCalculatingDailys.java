@@ -95,11 +95,8 @@ public class MonthlyCalculatingDailys {
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月の計算中の日別実績データ
 	 */
-	public static MonthlyCalculatingDailys loadData(
-			Require require, 
-			String employeeId,
-			DatePeriod period,
-			MonAggrEmployeeSettings settings){
+	public static MonthlyCalculatingDailys loadData(RequireM4 require, String employeeId,
+			DatePeriod period, MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
@@ -123,15 +120,10 @@ public class MonthlyCalculatingDailys {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月の計算中の日別実績データ
 	 */
-	public static MonthlyCalculatingDailys loadData(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			MonAggrEmployeeSettings settings){
+	public static MonthlyCalculatingDailys loadData(RequireM4 require, String employeeId, DatePeriod period,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys, MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
 		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(require, employeeId, period, settings);
@@ -153,15 +145,10 @@ public class MonthlyCalculatingDailys {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @param dailyWorksOpt 日別実績(WORK)リスト
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月の計算中の日別実績データ
 	 */
-	public static MonthlyCalculatingDailys loadData(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
-			MonAggrEmployeeSettings settings){
+	public static MonthlyCalculatingDailys loadData(RequireM4 require, String employeeId, DatePeriod period,
+			Optional<List<IntegrationOfDaily>> dailyWorksOpt, MonAggrEmployeeSettings settings){
 		
 		// 期間内の全データ読み込み
 		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(require, employeeId, period, settings);
@@ -279,7 +266,8 @@ public class MonthlyCalculatingDailys {
 	/**
 	 * 大塚カスタマイズ（試験日対応）
 	 */
-	private static AttendanceTimeOfDailyPerformance examDayTimeCorrect(AttendanceTimeOfDailyPerformance atTime, WorkInfoOfDailyPerformance workInfo) {
+	private static AttendanceTimeOfDailyPerformance examDayTimeCorrect(AttendanceTimeOfDailyPerformance atTime,
+			WorkInfoOfDailyPerformance workInfo) {
 		
 		if (workInfo.getRecordInfo().isExamWorkTime()) {
 			
@@ -335,19 +323,14 @@ public class MonthlyCalculatingDailys {
 	 * データ取得共通処理
 	 * @param employeeId 社員ID
 	 * @param period 期間
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
-	public void loadDataCommon(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			MonAggrEmployeeSettings settings){
+	public void loadDataCommon(RequireM1 require, String employeeId, DatePeriod period, MonAggrEmployeeSettings settings){
 		
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		
 		// データ取得共通処理　（36協定時間用）
-		this.loadDataCommonForAgreement(require, employeeId, period, settings);
+		this.loadDataCommonForAgreement(require, employeeId, period);
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
@@ -393,11 +376,11 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 年休付与残数データリスト
-		this.grantRemainingDatas = require.annLeaveRemains(employeeId).stream()
+		this.grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 積立年休付与残数データリスト
-		this.rsvGrantRemainingDatas = require.rsvLeaveRemains(employeeId, null).stream()
+		this.rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId, null).stream()
 						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		// 日別実績の勤務種別
@@ -412,14 +395,10 @@ public class MonthlyCalculatingDailys {
 	 * データ取得　（36協定時間用）
 	 * @param employeeId 社員ID
 	 * @param period 期間
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月の計算中の日別実績データ
 	 */
-	public static MonthlyCalculatingDailys loadDataForAgreement(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			MonAggrEmployeeSettings settings){
+	public static MonthlyCalculatingDailys loadDataForAgreement(RequireM3 require,
+			String employeeId, DatePeriod period, MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
@@ -433,7 +412,7 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(require, employeeId, period, settings);
+		result.loadDataCommonForAgreement(require, employeeId, period);
 		
 		return correctExamDayTime(result, settings);
 	}
@@ -443,14 +422,10 @@ public class MonthlyCalculatingDailys {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月の計算中の日別実績データ
 	 */
-	public static MonthlyCalculatingDailys loadDataForAgreement(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
+	public static MonthlyCalculatingDailys loadDataForAgreement(RequireM3 require, String employeeId,
+			DatePeriod period, List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			MonAggrEmployeeSettings settings){
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
@@ -470,7 +445,7 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// データ取得共通処理　（36協定時間用）
-		result.loadDataCommonForAgreement(require, employeeId, period, settings);
+		result.loadDataCommonForAgreement(require, employeeId, period);
 		
 		return correctExamDayTime(result, settings);
 	}
@@ -479,13 +454,8 @@ public class MonthlyCalculatingDailys {
 	 * データ取得共通処理　（36協定時間用）
 	 * @param employeeId 社員ID
 	 * @param period 期間
-	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
-	public void loadDataCommonForAgreement(
-			Require require,
-			String employeeId,
-			DatePeriod period,
-			MonAggrEmployeeSettings settings){
+	public void loadDataCommonForAgreement(RequireM2 require, String employeeId, DatePeriod period){
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
 		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
@@ -511,11 +481,20 @@ public class MonthlyCalculatingDailys {
 		}
 		return false;
 	}
-	
-	public static interface Require{
+
+	public static interface RequireM3 extends RequireM2 {
+
 		List<AttendanceTimeOfDailyPerformance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod);
+	}
+	
+	public static interface RequireM2 {
 		
 		List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod);
+	}
+	
+	public static interface RequireM4 extends RequireM1, RequireM3 {}
+	
+	public static interface RequireM1 extends RequireM2 {
 		
 		List<TimeLeavingOfDailyPerformance> dailyTimeLeavings(String employeeId, DatePeriod datePeriod);
 		
@@ -529,9 +508,9 @@ public class MonthlyCalculatingDailys {
 		
 		List<PCLogOnInfoOfDaily> dailyPcLogons(List<String> employeeId, DatePeriod baseDate);
 		
-		List<AnnualLeaveGrantRemainingData> annLeaveRemains(String employeeId);
+		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId);
 		
-		List<ReserveLeaveGrantRemainingData> rsvLeaveRemains(String employeeId, String cId);
+		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
 		
 		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod baseDate);
 	}

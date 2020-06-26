@@ -130,7 +130,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 				GeneralDate closureStart = null;	// 締め開始日
 				{
 					// 最新の締め終了日翌日を取得する
-					Optional<ClosureStatusManagement> sttMng = require.closureStatusManagement(employeeId);
+					Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
 					if (sttMng.isPresent()){
 						closureStart = sttMng.get().getPeriod().end().addDays(1);
 					}
@@ -309,7 +309,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	
 	public static interface RequireM2 extends GetClosureStartForEmployee.RequireM1, RequireM1 {  
 
-		Optional<ClosureStatusManagement> closureStatusManagement(String employeeId);
+		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 
 	}
 

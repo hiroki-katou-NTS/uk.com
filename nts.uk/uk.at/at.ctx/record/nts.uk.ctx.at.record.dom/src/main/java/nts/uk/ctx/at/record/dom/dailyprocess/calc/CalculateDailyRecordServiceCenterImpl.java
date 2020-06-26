@@ -16,7 +16,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
@@ -30,6 +32,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -50,10 +53,8 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -62,10 +63,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//リポジトリ：労働条件
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-
-	//リポジトリ；法定労働
-	@Inject
-	private DailyStatutoryLaborTime dailyStatutoryWorkingHours;
 	
 	//計算処理
 	@Inject
@@ -112,6 +109,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//計算式
 	@Inject
 	private FormulaRepository formulaRepository;
+	//計算式
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	/** リポジトリ：就業計算と集計実行ログ */
 	@Inject
@@ -472,7 +472,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				WorkingConditionItem workCondition = correctWorkCondition(record, nowWorkingItem);
 				
 				
-				DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(comanyId,
+				DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(requireService.createRequire(), new CacheCarrier(), comanyId,
 																		record.getAffiliationInfor().getEmploymentCode().toString(),
 																		record.getAffiliationInfor().getEmployeeId(),
 																		record.getAffiliationInfor().getYmd(),
@@ -649,7 +649,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			//nowIntegrationの労働制取得
 			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(integration.getAffiliationInfor().getYmd(),integration.getAffiliationInfor().getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
-				DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
+				DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(requireService.createRequire(), new CacheCarrier(), AppContexts.user().companyId(),
 																		integration.getAffiliationInfor().getEmploymentCode().toString(),
 																		integration.getAffiliationInfor().getEmployeeId(),
 																		integration.getAffiliationInfor().getYmd(),
@@ -668,6 +668,4 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		}
 		return returnList;
 	}
-
-
 }

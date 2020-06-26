@@ -72,7 +72,7 @@ public class DailyStatutoryLaborTime {
 
 		/* 労働時間と日数の設定の利用単位の設定 */
 		return getWorkingTimeSetting(require, cacheCarrier, companyId, employmentCd, employeeId, baseDate,
-				workingSystem, require.laborTimeUsageSetting(companyId));
+				workingSystem, require.usageUnitSetting(companyId));
 	}
 
 	public static Optional<WorkingTimeSetting> getWorkingTimeSetting(RequireM6 require, CacheCarrier cacheCarrier,
@@ -182,7 +182,7 @@ public class DailyStatutoryLaborTime {
 	
 	public static interface RequireM1 extends RequireM6 {
 		
-		Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId);
+		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 	}
 	
 	public static interface RequireM2 {

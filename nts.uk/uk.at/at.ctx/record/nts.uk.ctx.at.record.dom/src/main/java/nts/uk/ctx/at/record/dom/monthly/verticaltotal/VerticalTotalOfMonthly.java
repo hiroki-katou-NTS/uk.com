@@ -20,19 +20,9 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.Attendance
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -90,34 +80,16 @@ public class VerticalTotalOfMonthly implements Serializable{
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void verticalTotal(
+			RequireM1 require,
 			String companyId,
 			String employeeId,
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		val require = createRequireImpl(repositories);
-		verticalTotalRequire(require, companyId, employeeId, 
-				datePeriod, workingSystem, companySets, 
-				employeeSets, monthlyCalcDailys, repositories);
-	}
-	
-	public void verticalTotalRequire(
-			Require require,
-			String companyId,
-			String employeeId,
-			DatePeriod datePeriod,
-			WorkingSystem workingSystem,
-			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonthlyCalculatingDailys monthlyCalcDailys){
 		
 		// 集計結果の初期化
 		this.workTime = new WorkTimeOfMonthlyVT();
@@ -157,7 +129,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				if (workTypeCode != null){
-					workType = companySets.getWorkTypeMapRequire(require,workTypeCode.v(), repositories);
+					workType = companySets.getWorkTypeMap(require,workTypeCode.v());
 					if (workType != null){
 						
 						// 勤務種類を判断しカウント数を取得する
@@ -175,7 +147,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 				
 				// 計算用所定時間設定を確認する
 				if (workTimeCode != null){
-					predetermineTimeSet = companySets.getPredetemineTimeSetMapRequire(require, workTimeCode.v(), repositories);
+					predetermineTimeSet = companySets.getPredetemineTimeSetMap(require, workTimeCode.v());
 					if (predetermineTimeSet != null){
 						predTimeSetForCalc = PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet);
 					}
@@ -191,8 +163,8 @@ public class VerticalTotalOfMonthly implements Serializable{
 					val weekdayTime = workCategory.getWeekdayTime();
 					if (weekdayTime != null) {
 						if (weekdayTime.getWorkTimeCode().isPresent()) {
-							predTimeSetOnWeekday = companySets.getPredetemineTimeSetMapRequire(
-									require, weekdayTime.getWorkTimeCode().get().v(), repositories);
+							predTimeSetOnWeekday = companySets.getPredetemineTimeSetMap(
+									require, weekdayTime.getWorkTimeCode().get().v());
 						}
 					}
 				}
@@ -256,56 +228,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workClock.sum(target.workClock);
 	}
 	
-	public static interface Require extends MonAggrCompanySettings.Require{
+	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4, MonAggrCompanySettings.RequireM2 {
 
-	}
-
-	private Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
-		return new VerticalTotalOfMonthly.Require() {
-			@Override
-			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
-				return repositories.getWkpTransLaborTime().find(cid, wkpId);
-			}
-			@Override
-			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
-				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
-			}
-			@Override
-			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
-				return repositories.getEmpTransWorkTime().find(cid, emplId);
-			}
-			@Override
-			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
-				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
-			}
-			@Override
-			public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
-				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
-			}
-			@Override
-			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-				return repositories.getWorkType().findByPK(companyId, workTypeCd);
-			}
-			@Override
-			public Optional<WorkTimeSetting> findWorkTimeSettingByCode(String companyId, String workTimeCode) {
-				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
-			}
-			@Override
-			public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
-			}
-			@Override
-			public Optional<FlexWorkSetting> findFlexWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
-			}
-			@Override
-			public Optional<FixedWorkSetting> findFixedWorkSettingByKey(String companyId, String workTimeCode) {
-				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
-			}
-			@Override
-			public Optional<DiffTimeWorkSetting> findDiffTimeWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
-			}
-		};
 	}
 }

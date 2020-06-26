@@ -425,7 +425,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			GeneralDate closureStart = null;	// 締め開始日
 			{
 				// 最新の締め終了日翌日を取得する
-				Optional<ClosureStatusManagement> sttMng = require.closureStatusManagement(employeeId);
+				Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
 				if (sttMng.isPresent()){
 					closureStart = sttMng.get().getPeriod().end().addDays(1);
 					closureStartOpt = Optional.of(closureStart);
@@ -650,8 +650,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// その他モード
 			
 			// 「暫定年休管理データ」を取得する
-			val interimRemains = require.interimRemain(
-					employeeId, aggrPeriod, RemainType.ANNUAL);
+			val interimRemains = require.interimRemains(employeeId, aggrPeriod, RemainType.ANNUAL);
 			for (val master : interimRemains){
 				val tmpAnnualLeaveMngOpt = require.tmpAnnualHolidayMng(master.getRemainManaID());
 				if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
@@ -662,7 +661,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 年休フレックス補填分を暫定年休データに反映する
 			{
 				// 「月別実績の勤怠時間」を取得
-				val attendanceTimes = require.monthlyAttendanceTimes(employeeId, aggrPeriod);
+				val attendanceTimes = require.attendanceTimeOfMonthly(employeeId, aggrPeriod);
 				for (val attendanceTime : attendanceTimes){
 					
 					// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
@@ -819,11 +818,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 	public static interface RequireM2 {
 		
-		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
+		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 		
 		Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId);
 		
-		List<AttendanceTimeOfMonthly> monthlyAttendanceTimes(String employeeId, DatePeriod period);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period);
 	}
 	
 	public static interface RequireM3 extends RequireM2,
@@ -833,7 +832,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		
 		List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym);
 
-		Optional<ClosureStatusManagement> closureStatusManagement(String employeeId);
+		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 
 		Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId);
 		

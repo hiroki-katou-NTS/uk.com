@@ -13,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetti
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthStatutoryWorkingHourDeforWorker;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
@@ -114,9 +116,9 @@ public class LaborTimeSettingService {
 	
 	public static interface RequireM3 {
 		
-		Optional<ShainNormalSetting> statutoryWorkTimeSetByEmployment(String cid, String emplCode, int year);
+		Optional<EmpNormalSetting> statutoryWorkTimeSetByEmployment(String cid, String emplCode, int year);
 		
-		Optional<ShainDeforLaborSetting> statutoryDeforWorkTimeSetByEmployment(String cid, String emplCode, int year);
+		Optional<EmpDeforLaborSetting> statutoryDeforWorkTimeSetByEmployment(String cid, String emplCode, int year);
 	}
 
 	public static interface RequireM4 {

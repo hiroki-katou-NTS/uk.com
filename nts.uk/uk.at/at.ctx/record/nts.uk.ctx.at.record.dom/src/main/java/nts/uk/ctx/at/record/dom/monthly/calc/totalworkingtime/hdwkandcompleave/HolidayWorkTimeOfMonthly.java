@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
@@ -213,7 +213,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		// 休出・振替の処理順序を取得する
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
-		val holidayWorkAndTransferAtrs = require.holWorkAndTransferAtr(companyId, 
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(companyId, 
 																		companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
 																		false);
 		
@@ -659,8 +659,6 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	
 	public static interface RequireM3 extends RequireM1, RequireM2, MonAggrCompanySettings.RequireM3 {
 
-
-		List<HolidayWorkAndTransferAtr> holWorkAndTransferAtr(String cid, WorkTimezoneCommonSet workTimeZoneSet, boolean reverse);
 	}
 
 }

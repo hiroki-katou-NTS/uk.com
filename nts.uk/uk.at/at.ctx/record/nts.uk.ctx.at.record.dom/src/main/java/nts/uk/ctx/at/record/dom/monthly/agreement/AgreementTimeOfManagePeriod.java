@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -16,9 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
@@ -26,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 管理期間の36協定時間
@@ -111,45 +106,27 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 * @param criteriaDate 基準日
 	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月の計算
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(
+			RequireM2 require,
 			GeneralDate criteriaDate,
 			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation,
-			RepositoriesRequiredByMonthlyAggr repositories) {
-		
-		val require = new AgreementTimeOfManagePeriod.Require() {
-			@Override
-			public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
-					WorkingSystem workingSystem) {
-				return repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate, workingSystem);
-			}
-			@Override
-			public Optional<AgreementMonthSetting> findByKey(String employeeId, YearMonth yearMonth) {
-				return repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
-			}
-		};
-		aggregateRequire(require, criteriaDate, aggregateAtr, monthlyCalculation, repositories);
-	}
-	
-	public void aggregateRequire(
-			Require require,
-			GeneralDate criteriaDate,
-			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation,
-			RepositoriesRequiredByMonthlyAggr repositories) {
+			MonthlyCalculation monthlyCalculation) {
 
 		this.year = monthlyCalculation.getYear();
 		
 		// 36協定時間の作成
-		this.agreementTime.aggregate(criteriaDate, aggregateAtr, monthlyCalculation, repositories);
+		this.agreementTime.aggregate(require, criteriaDate, aggregateAtr, monthlyCalculation);
 		
 		// 36協定上限時間の作成
-		this.agreementMaxTime.aggregate(criteriaDate, aggregateAtr, monthlyCalculation, repositories);
+		this.agreementMaxTime.aggregate(require, criteriaDate, aggregateAtr, monthlyCalculation);
 	}
 	
-	public static interface Require extends AgreementTimeOfMonthly.Require{
+	public static interface RequireM2 extends AgreementTimeManage.RequireM2, AgreMaxTimeManage.RequireM1 {
+
+	}
+	
+	public static interface RequireM1 extends AgreementTimeManage.RequireM1 {
 
 	}
 	
@@ -160,20 +137,18 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 * @param aggregateAtr 集計区分
 	 * @param weeklyCalculation 週別の計算
 	 * @param companySets 月別集計で必要な会社別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateForWeek(
+	public void aggregateForWeek(RequireM1 require,
 			Year year,
 			GeneralDate criteriaDate,
 			MonthlyAggregateAtr aggregateAtr,
 			WeeklyCalculation weeklyCalculation,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 		
 		this.year = year;
 		
 		// 36協定時間の作成（週用）
-		this.agreementTime.aggregateForWeek(criteriaDate, aggregateAtr, weeklyCalculation, companySets, repositories);
+		this.agreementTime.aggregateForWeek(require, criteriaDate, aggregateAtr, weeklyCalculation, companySets);
 	}
 	
 	/**

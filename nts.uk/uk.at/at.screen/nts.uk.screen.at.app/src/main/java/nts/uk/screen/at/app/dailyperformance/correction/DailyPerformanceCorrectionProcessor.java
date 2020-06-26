@@ -31,8 +31,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -55,6 +57,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
@@ -154,7 +157,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcesso
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -166,9 +168,6 @@ public class DailyPerformanceCorrectionProcessor {
 
 	@Inject
 	private DailyPerformanceScreenRepo repo;
-
-	@Inject
-	private ClosureService closureService;
 
 	@Inject
 	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
@@ -237,10 +236,10 @@ public class DailyPerformanceCorrectionProcessor {
 	private FindClosureDateService findClosureService;
 	
 	@Inject
-	private GetClosurePeriod getClosurePeriod;
-	
-	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -999,7 +998,9 @@ public class DailyPerformanceCorrectionProcessor {
 		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
-				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
+				DatePeriod datePeriod = ClosureService.getClosurePeriod(
+						requireService.createRequire(),
+						x.getClosureId(),
 						new YearMonth(x.getClosureMonth()));
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
@@ -1853,8 +1854,9 @@ public class DailyPerformanceCorrectionProcessor {
 				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(),
 						yearMonthOpt.get().lastDateInMonth());
 				yearMonth = yearMonthOpt.get();
-				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empTarget, dateRefer, yearMonthOpt.get()));
+				lstClosurePeriod.addAll(GetClosurePeriod
+						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
+								empTarget, dateRefer, yearMonthOpt.get()));
 			} else {
 				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empTarget,
 						period.start());
@@ -1863,8 +1865,9 @@ public class DailyPerformanceCorrectionProcessor {
 						closurePeriodOpt.get().getYearMonth().month(),
 						closurePeriodOpt.get().getYearMonth().lastDateInMonth());
 				yearMonth = closurePeriodOpt.get().getYearMonth();
-				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
+				lstClosurePeriod.addAll(GetClosurePeriod
+						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
+								empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
 			}
 			if(lstClosurePeriod.isEmpty()) return null;
 			

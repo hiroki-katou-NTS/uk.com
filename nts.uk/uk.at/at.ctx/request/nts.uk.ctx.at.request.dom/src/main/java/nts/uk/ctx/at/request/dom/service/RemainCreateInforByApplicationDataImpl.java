@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.C
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -43,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
@@ -67,7 +67,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private IAppWorkChangeRepository workChangeRepos;
 	
 	@Override
-	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
 		
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
@@ -77,7 +77,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		return this.lstResult(cid, sid, lstAppData);
 	}
 	@Override
-	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, List<GeneralDate> dates) {
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates) {
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);

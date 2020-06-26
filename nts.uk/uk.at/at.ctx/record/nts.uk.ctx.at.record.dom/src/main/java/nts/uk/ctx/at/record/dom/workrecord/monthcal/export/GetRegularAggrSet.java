@@ -30,8 +30,7 @@ public class GetRegularAggrSet {
 	 * @param comRegSetOpt 通常勤務会社別月別実績集計設定
 	 * @return 通常勤務の法定内集計設定
 	 */
-	public static Optional<RegularWorkTimeAggrSet> regularWorkTimeAggrSet(
-			Require require, CacheCarrier cacheCarrier,
+	public static Optional<RegularWorkTimeAggrSet> regularWorkTimeAggrSet(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaRegulaMonthActCalSet> shaRegSetOpt,
 			Optional<ComRegulaMonthActCalSet> comRegSetOpt){
@@ -68,7 +67,7 @@ public class GetRegularAggrSet {
 		return Optional.empty();
 	}
 	
-	public static interface Require {
+	public static interface RequireM1 {
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, 
 				String employeeId, GeneralDate baseDate);

@@ -248,7 +248,7 @@ public class CalcAnnLeaAttendanceRate {
 		}
 		
 		// 「年休月別残数データ」を取得
-		val remainNums = require.monthAnnLeaRemain(employeeId, afterPeriod);
+		val remainNums = require.annLeaRemNumEachMonth(employeeId, afterPeriod);
 		for (val remainNum : remainNums){
 			val attendanceRateDays = remainNum.getAttendanceRateDays();
 			
@@ -345,7 +345,7 @@ public class CalcAnnLeaAttendanceRate {
 	
 	public static interface RequireM2 extends GetDaysForCalcAttdRate.RequireM1 {
 
-		List<AnnLeaRemNumEachMonth> monthAnnLeaRemain(String employeeId, DatePeriod closurePeriod);
+		List<AnnLeaRemNumEachMonth> annLeaRemNumEachMonth(String employeeId, DatePeriod closurePeriod);
 	}
 	
 	public static interface RequireM1 extends RequireM2 {

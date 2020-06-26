@@ -108,7 +108,7 @@ public class MonAggrEmployeeSettings {
 		List<String> employeeIds = new ArrayList<>(Arrays.asList(employeeId));
 		
 		// 社員
-		domain.employee = require.employeeInfo(employeeId);
+		domain.employee = require.employee(cacheCarrier, employeeId);
 		if (domain.employee == null){
 			domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
 			return domain;
@@ -177,7 +177,7 @@ public class MonAggrEmployeeSettings {
 		domain.closureStatusMngs = require.employeeClosureStatusManagements(employeeIds, period);
 		
 		// 「労働条件項目」を取得
-		List<WorkingConditionItem> workingConditionItems = require.workingConditionItems(employeeId, period);
+		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, period);
 		if (!workingConditionItems.isEmpty()){
 			// 同じ労働制の履歴を統合　と　「労働条件」の確認
 			domain.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
@@ -321,9 +321,9 @@ public class MonAggrEmployeeSettings {
 		
 		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
 		
-		EmployeeImport employeeInfo(String empId);
+		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
 		
-		List<WorkingConditionItem> workingConditionItems(String sId, DatePeriod datePeriod);
+		List<WorkingConditionItem> workingConditionItem(String sId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM1 {

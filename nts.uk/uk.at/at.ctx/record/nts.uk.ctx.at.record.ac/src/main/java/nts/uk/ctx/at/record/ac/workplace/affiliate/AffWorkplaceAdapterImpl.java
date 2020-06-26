@@ -79,7 +79,8 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	
 	@Override
 	public List<String> findAffiliatedWorkPlaceIdsToRootRequire(CacheCarrier cacheCarrier, String companyId,String employeeId, GeneralDate baseDate) {
-		return this.workplacePub.findWpkIdsBySidRequire(cacheCarrier, companyId ,employeeId, baseDate);
+		//Require対応まち
+		return this.workplacePub.findWpkIdsBySid(companyId ,employeeId, baseDate);
 	}
 	
 	@Override

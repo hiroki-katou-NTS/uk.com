@@ -35,23 +35,14 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetDeforAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetFlexAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetRegularAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -61,27 +52,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -91,13 +62,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -285,54 +249,24 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	/**
 	 * 集計準備
 	 * 
-	 * @param companyId
-	 *            会社ID
-	 * @param employeeId
-	 *            社員ID
-	 * @param yearMonth
-	 *            年月
-	 * @param closureId
-	 *            締めID
-	 * @param closureDate
-	 *            締め日付
-	 * @param procPeriod
-	 *            期間
-	 * @param workingConditionItem
-	 *            労働条件項目
-	 * @param startWeekNo
-	 *            開始週NO
-	 * @param companySets
-	 *            月別集計で必要な会社別設定
-	 * @param employeeSets
-	 *            月別集計で必要な社員別設定
-	 * @param monthlyCalcDailys
-	 *            月の計算中の日別実績データ
-	 * @param monthlyOldDatas
-	 *            集計前の月別実績データ
-	 * @param repositories
-	 *            月次集計が必要とするリポジトリ
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param procPeriod 期間
+	 * @param workingConditionItem 労働条件項目
+	 * @param startWeekNo 開始週NO
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param monthlyOldDatas 集計前の月別実績データ 
 	 */
-	public void prepareAggregation(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
-			ClosureDate closureDate, DatePeriod procPeriod, WorkingConditionItem workingConditionItem, int startWeekNo,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyOldDatas monthlyOldDatas,
-			RepositoriesRequiredByMonthlyAggr repositories) {
-
-		val require = createRequireImpl(repositories);
-
-		val cacheCarrier = new CacheCarrier();
-
-		prepareAggregationRequire(require, cacheCarrier, companyId, employeeId, yearMonth, closureId, closureDate,
-				procPeriod, workingConditionItem, startWeekNo, companySets, employeeSets, monthlyCalcDailys,
-				monthlyOldDatas, repositories);
-
-	}
-
-	public void prepareAggregationRequire(Require require, CacheCarrier cacheCarrier, String companyId,
+	public void prepareAggregation(RequireM5 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod procPeriod,
 			WorkingConditionItem workingConditionItem, int startWeekNo, MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets, MonthlyCalculatingDailys monthlyCalcDailys,
-			MonthlyOldDatas monthlyOldDatas, RepositoriesRequiredByMonthlyAggr repositories) {
+			MonthlyOldDatas monthlyOldDatas) {
 		this.companyId = companyId;
 		this.employeeId = employeeId;
 		this.yearMonth = yearMonth;
@@ -373,11 +307,14 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 「締め」 取得
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
 
+		val unitSetting = require.usageUnitSetting(companyId).get();
+		
 		// 通常勤務月別実績集計設定 （基準：期間終了日）
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK) {
-			val regularAggrSetOpt = repositories.getRegularAggrSet().getRequire(require, cacheCarrier,
-					companyId, this.employmentCd,
-					employeeId, procPeriod.end(), companySets, employeeSets);
+			val regularAggrSetOpt = GetRegularAggrSet.regularWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), unitSetting, 
+					employeeSets.getShaRegSetOpt(), companySets.getComRegSetOpt());
+			
 			if (!regularAggrSetOpt.isPresent()) {
 				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
 						new ErrMessageContent(TextResource.localize("Msg_1234"))));
@@ -388,10 +325,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// 変形労働月別実績集計設定 （基準：期間終了日）
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
-			val deforAggrSetOpt = repositories.getDeforAggrSet().getRequire(
-					require, cacheCarrier,
-					companyId, this.employmentCd, employeeId,
-					procPeriod.end(), companySets, employeeSets);
+			val deforAggrSetOpt = GetDeforAggrSet.deforWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), 
+					unitSetting, employeeSets.getShaIrgSetOpt(), companySets.getComIrgSetOpt());
+			
 			if (!deforAggrSetOpt.isPresent()) {
 				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
 						new ErrMessageContent(TextResource.localize("Msg_1234"))));
@@ -402,10 +339,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// フレックス月別実績集計設定 （基準：期間終了日）
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
-			val flexAggrSetOpt = repositories.getFlexAggrSet().getRequire(
-					require, cacheCarrier,
-					companyId, this.employmentCd, employeeId,
-					procPeriod.end(), companySets, employeeSets);
+			val flexAggrSetOpt = GetFlexAggrSet.flexWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), 
+					unitSetting, employeeSets.getShaFlexSetOpt(), companySets.getComFlexSetOpt());
+			
 			if (!flexAggrSetOpt.isPresent()) {
 				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
 						new ErrMessageContent(TextResource.localize("Msg_1234"))));
@@ -469,13 +406,13 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// 法定労働時間を取得する年月（年度＋月）を取得する （Redmine#106201）
 		// 暦上の年月を渡して、年度に沿った年月を取得する
-		YearMonth statYearMonth = repositories.getCompany().getYearMonthFromCalenderYM(cacheCarrier, companyId, yearMonth);
+		YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, yearMonth);
 
 		// 週間、月間法定・所定労働時間 取得
 		switch (this.workingSystem) {
 		case REGULAR_WORK:
 		case VARIABLE_WORKING_TIME_WORK:
-			val monAndWeekStatTimeOpt = repositories.getMonthlyStatutoryWorkingHours().getMonAndWeekStatutoryTimeRequire(
+			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
 					require, cacheCarrier,
 					companyId, this.employmentCd, employeeId, procPeriod.end(), statYearMonth, this.workingSystem);
 			if (!monAndWeekStatTimeOpt.isPresent()) {
@@ -493,7 +430,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			this.settingsByDefo.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(monthMinutes));
 			break;
 		case FLEX_TIME_WORK:
-			val flexMonAndWeekStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTimeRequire(
+			val flexMonAndWeekStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
 					require, cacheCarrier, companyId, this.employmentCd, employeeId, procPeriod.end(), statYearMonth);
 			int statMinutes = flexMonAndWeekStatTime.getStatutorySetting().v();
 			int predMinutes = flexMonAndWeekStatTime.getSpecifiedSetting().v();
@@ -511,7 +448,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			GeneralDate nextEndDate = procPeriod.end().addDays(31); // 翌月終了日を含む期間（月末対策のため、31日加算）
 			DatePeriod checkPeriod = new DatePeriod(procPeriod.start(), nextEndDate);
 			List<WorkingConditionItem> workingConditionItems = require
-					.getBySidAndPeriodOrderByStrD(employeeId, checkPeriod);
+					.workingConditionItem(employeeId, checkPeriod);
 			List<WorkingConditionItem> workConditions = workingConditionItems.stream()
 					.filter(x -> x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
 
@@ -522,7 +459,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// 社員のフレックス繰越上限時間（翌月繰越可能時間）を求める
 			CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId, procPeriod.end());
 			calcFlex.createWCItem(workConditions);
-			ConditionCalcResult conditionResult = repositories.getCheckBeforeCalcFlex().getConditionCalcFlexRequire(cacheCarrier,
+			ConditionCalcResult conditionResult = require.flexConditionCalcResult(cacheCarrier,
 					companyId, calcFlex);
 			long canNextCarryforwardSeconds = 0L;
 			try {
@@ -608,33 +545,16 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	/**
 	 * 履歴ごとに月別実績を集計する
 	 * 
-	 * @param aggrPeriod
-	 *            集計期間
-	 * @param aggrAtr
-	 *            集計区分
-	 * @param annualLeaveDeductDays
-	 *            年休控除日数
-	 * @param absenceDeductTime
-	 *            欠勤控除時間
-	 * @param flexSettleTime
-	 *            フレックス清算時間
-	 * @param repositories
-	 *            月次集計が必要とするリポジトリ
+	 * @param aggrPeriod 集計期間
+	 * @param aggrAtr 集計区分
+	 * @param annualLeaveDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
+	 * @param flexSettleTime フレックス清算時間
 	 */
-	public void aggregate(
-			DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
-			Optional<AttendanceTimeMonth> absenceDeductTime,
-			Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
-			RepositoriesRequiredByMonthlyAggr repositories){
-		val require = createRequireImpl(repositories);
-		aggregateRequire(require, aggrPeriod, aggrAtr, annualLeaveDeductDays, absenceDeductTime, flexSettleTime, repositories);
-	}
-	
-	public void aggregateRequire(Require require,
+	public void aggregate(RequireM4 require, CacheCarrier cacheCarrier,
 			DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
 			Optional<AttendanceDaysMonth> annualLeaveDeductDays, Optional<AttendanceTimeMonth> absenceDeductTime,
-			Optional<AttendanceTimeMonthWithMinus> flexSettleTime, RepositoriesRequiredByMonthlyAggr repositories) {
+			Optional<AttendanceTimeMonthWithMinus> flexSettleTime) {
 
 		// 集計結果 初期化
 		this.actualWorkingTime = new RegularAndIrregularTimeOfMonthly();
@@ -652,9 +572,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		ConcurrentStopwatches.start("12221:共有項目：");
 
 		// 共有項目を集計する
-		this.aggregateTime.aggregateSharedItemRequire(
+		this.aggregateTime.aggregateSharedItem(
 				require, aggrPeriod, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap(),
-				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap(), this.companySets, repositories);
+				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap(), this.companySets);
 
 		ConcurrentStopwatches.stop("12221:共有項目：");
 
@@ -665,10 +585,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12222:通常変形の月別実績：");
 
 			// 通常・変形労働勤務の月別実績を集計する
-			val aggrValue = this.actualWorkingTime.aggregateMonthlyRequire(require, this.companyId, this.employeeId, this.yearMonth,
+			val aggrValue = this.actualWorkingTime.aggregateMonthly(require, this.companyId, this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, aggrPeriod, this.workingSystem, this.closureOpt, aggrAtr,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime, null,
-					this.startWeekNo, this.companySets, this.employeeSets, this.monthlyCalculatingDailys, repositories);
+					this.startWeekNo, this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			this.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
 			this.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
 
@@ -676,10 +596,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12223:通常変形の月単位：");
 
 			// 通常・変形労働勤務の月単位の時間を集計する
-			this.actualWorkingTime.aggregateMonthlyHoursRequire(require, this.companyId, this.employeeId, this.yearMonth,
+			this.actualWorkingTime.aggregateMonthlyHours(require, this.companyId, this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, aggrPeriod, this.workingSystem, aggrAtr, this.isRetireMonth,
-					this.workplaceId, this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime,
-					repositories);
+					this.workplaceId, this.employmentCd, this.settingsByReg, this.settingsByDefo, this.aggregateTime);
 
 			ConcurrentStopwatches.stop("12223:通常変形の月単位：");
 		}
@@ -692,7 +611,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12222:フレックスの月別実績：");
 
 			// フレックス勤務の月別実績を集計する
-			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId, this.yearMonth,
+			val aggrValue = this.flexTime.aggregateMonthly(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth,
 					this.closureId, this.closureDate, aggrPeriod, this.workingSystem, aggrAtr, this.closureOpt,
 					flexAggrMethod, this.settingsByFlex, this.aggregateTime, null, this.startWeekNo, this.companySets,
 					this.employeeSets, this.monthlyCalculatingDailys);
@@ -703,9 +622,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12223:フレックスの月単位：");
 
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHoursRequire(require, this.companyId, this.employeeId, this.yearMonth, this.closureId,
-					aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.workplaceId, this.employmentCd,
-					this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime, repositories);
+			this.flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, 
+					this.closureId, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.workplaceId, 
+					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime);
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
 		}
@@ -748,7 +667,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
-		this.agreementTimeOfManagePeriod.aggregateRequire(require, aggrPeriod.end(), aggrAtr, this, repositories);
+		this.agreementTimeOfManagePeriod.aggregate(require, aggrPeriod.end(), aggrAtr, this);
 
 		ConcurrentStopwatches.stop("12227:管理期間の36協定：");
 
@@ -760,22 +679,17 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	/**
 	 * 総労働時間と36協定時間の再計算
 	 * 
-	 * @param aggrPeriod
-	 *            集計期間
-	 * @param aggrAtr
-	 *            集計区分
-	 * @param repositories
-	 *            月次集計が必要とするリポジトリ
+	 * @param aggrPeriod 集計期間
+	 * @param aggrAtr 集計区分
 	 */
-	public void recalcTotalAndAgreement(DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr,
-			RepositoriesRequiredByMonthlyAggr repositories) {
+	public void recalcTotalAndAgreement(RequireM3 require, DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr) {
 
 		// 総労働時間を計算
 		this.calcTotalWorkingTime();
 
 		// 管理期間の36協定時間の作成
 		this.agreementTimeOfManagePeriod = new AgreementTimeOfManagePeriod(this.employeeId, this.yearMonth);
-		this.agreementTimeOfManagePeriod.aggregate(aggrPeriod.end(), aggrAtr, this, repositories);
+		this.agreementTimeOfManagePeriod.aggregate(require, aggrPeriod.end(), aggrAtr, this);
 
 		// 月別実績の36協定へ値を移送
 		this.agreementTime = this.agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime();
@@ -881,70 +795,29 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	/**
 	 * 36協定時間の集計
 	 * 
-	 * @param companyId
-	 *            会社ID
-	 * @param employeeId
-	 *            社員ID
-	 * @param yearMonth
-	 *            年月
-	 * @param closureId
-	 *            締めID
-	 * @param closureDate
-	 *            締め日付
-	 * @param procPeriod
-	 *            期間
-	 * @param isRetireMonth
-	 *            退職月度かどうか
-	 * @param annualLeaveDeductDays
-	 *            年休控除日数
-	 * @param absenceDeductTime
-	 *            欠勤控除時間
-	 * @param flexSettleTime
-	 *            当月清算フレックス時間
-	 * @param companySets
-	 *            月別集計で必要な会社別設定
-	 * @param employeeSets
-	 *            月別集計で必要な社員別設定
-	 * @param monthlyCalcDailys
-	 *            月の計算中の日別実績データ
-	 * @param monthlyOldDatas
-	 *            集計前の月別実績データ
-	 * @param basicCalced
-	 *            月の計算結果（基本計算）
-	 * @param repositories
-	 *            月次集計が必要とするリポジトリ
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param procPeriod 期間
+	 * @param isRetireMonth 退職月度かどうか
+	 * @param annualLeaveDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
+	 * @param flexSettleTime 当月清算フレックス時間
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param monthlyOldDatas 集計前の月別実績データ
+	 * @param basicCalced 月の計算結果（基本計算）
 	 */
-	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTime(String companyId, String employeeId,
-			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod procPeriod,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays, Optional<AttendanceTimeMonth> absenceDeductTime,
-			Optional<AttendanceTimeMonthWithMinus> flexSettleTime, MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets, MonthlyCalculatingDailys monthlyCalcDailys,
-			MonthlyOldDatas monthlyOldDatas, Optional<MonthlyCalculation> basicCalced,
-			RepositoriesRequiredByMonthlyAggr repositories) {
-		
-		val require = createRequireImpl(repositories);
-
-		val cacheCarrier = new CacheCarrier();
-		return aggregateAgreementTimeRequire(require, cacheCarrier, companyId, 
-				employeeId, yearMonth, closureId, closureDate, procPeriod, 
-				annualLeaveDeductDays, absenceDeductTime, flexSettleTime, companySets, employeeSets, 
-				monthlyCalcDailys, monthlyOldDatas, basicCalced, repositories);
-	}
-
-	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTimeRequire(
-			Require require, CacheCarrier cacheCarrier,
-			String companyId, String employeeId,YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate,
-			DatePeriod procPeriod,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays,
-			Optional<AttendanceTimeMonth> absenceDeductTime,
-			Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
-			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			MonthlyOldDatas monthlyOldDatas,
-			Optional<MonthlyCalculation> basicCalced,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public Optional<AgreementTimeOfManagePeriod> aggregateAgreementTime(RequireM2 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId,YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			DatePeriod procPeriod, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
+			Optional<AttendanceTimeMonth> absenceDeductTime, Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyOldDatas monthlyOldDatas,
+			Optional<MonthlyCalculation> basicCalced){
 		
 		// 36協定運用設定を取得
 		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
@@ -960,7 +833,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		// 「労働条件項目」を取得
 		List<WorkingConditionItem> workingConditionItems = require
-				.getBySidAndPeriodOrderByStrD(employeeId, aggrPeriod.getPeriod());
+				.workingConditionItem(employeeId, aggrPeriod.getPeriod());
 		if (workingConditionItems.isEmpty()) {
 			this.errorInfos.add(
 					new MonthlyAggregationErrorInfo("006", new ErrMessageContent(TextResource.localize("Msg_430"))));
@@ -968,7 +841,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		}
 
 		// 同じ労働制の履歴を統合
-		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems, repositories);
+		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
 
 		// 項目の数だけループ
 		MonthlyCalculation agreementCalc = null;
@@ -1002,10 +875,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			} else {
 
 				// 集計準備
-				calcWork.prepareAggregationRequire(require, cacheCarrier, 
+				calcWork.prepareAggregation(require, cacheCarrier, 
 						companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
 						period, workingConditionItem, weekNo, companySets, employeeSets, monthlyCalcDailys,
-						monthlyOldDatas, repositories);
+						monthlyOldDatas);
 				if (calcWork.errorInfos.size() > 0) {
 					return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, calcWork.errorInfos));
 				}
@@ -1026,8 +899,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				}
 
 				// 履歴ごとに月別実績を集計する
-				calcWork.aggregateRequire(require, period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, annualLeaveDeductDays,
-						absenceDeductTime, flexSettleTime, repositories);
+				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, annualLeaveDeductDays,
+						absenceDeductTime, flexSettleTime);
 			}
 
 			// データを合算する
@@ -1054,9 +927,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	 *            日別実績の勤怠時間リスト
 	 * @return 労働条件項目リスト （統合後）
 	 */
-	private void IntegrateHistoryOfSameWorkSys(Require require,
-			List<WorkingConditionItem> target,
-			RepositoriesRequiredByMonthlyAggr repositories) {
+	private void IntegrateHistoryOfSameWorkSys(RequireM1 require,
+			List<WorkingConditionItem> target) {
 
 		this.workingConditionItems = new ArrayList<>();
 		this.workingConditions = new HashMap<>();
@@ -1067,7 +939,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// 要素[n]を取得
 			WorkingConditionItem startItem = itrTarget.next();
 			val startHistoryId = startItem.getHistoryId();
-			val startConditionOpt = require.getByHistoryId(startHistoryId);
+			val startConditionOpt = require.workingCondition(startHistoryId);
 			if (!startConditionOpt.isPresent())
 				continue;
 			val startCondition = startConditionOpt.get();
@@ -1097,7 +969,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				continue;
 			}
 			val endHistoryId = endItem.getHistoryId();
-			val endConditionOpt = require.getByHistoryId(endHistoryId);
+			val endConditionOpt = require.workingCondition(endHistoryId);
 			if (!endConditionOpt.isPresent())
 				continue;
 			;
@@ -1510,250 +1382,37 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.agreementTimeOfManagePeriod.sum(target.agreementTimeOfManagePeriod);
 	}
 
-	public static interface Require extends GetRegularAggrSet.Require, GetDeforAggrSet.Require,
-			GetFlexAggrSet.Require, MonthlyStatutoryWorkingHours.Require,
-			RegularAndIrregularTimeOfMonthly.Require, AgreementTimeOfManagePeriod.Require, FlexTimeOfMonthly.Require {
+	public static interface RequireM5 extends GetRegularAggrSet.RequireM1, RequireM0, 
+		GetDeforAggrSet.RequireM1, GetFlexAggrSet.RequireM1, MonthlyStatutoryWorkingHours.RequireM4,
+		MonthlyStatutoryWorkingHours.RequireM1{
+		
+		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
+		
+		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+		
+		ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId, CalcFlexChangeDto calc);
+	}
+	
+	public static interface RequireM4 extends RequireM3, AggregateTotalWorkingTime.RequireM3,
+		RegularAndIrregularTimeOfMonthly.RequireM3, RegularAndIrregularTimeOfMonthly.RequireM1,
+		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5 {
+	}
+	
+	public static interface RequireM3 extends AgreementTimeOfManagePeriod.RequireM2 {
+		
+	}
+	
+	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1 {
+	}
+	
+	public static interface RequireM1 {
 
-		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
-
-		Optional<WorkingCondition> getByHistoryId(String historyId);
+		Optional<WorkingCondition> workingCondition(String historyId);
 
 	}
+	
+	public static interface RequireM0 {
 
-	public Require createRequireImpl(RepositoriesRequiredByMonthlyAggr repositories) {
-		return new MonthlyCalculation.Require() {
-			@Override
-			public Optional<ShainNormalSetting> statutoryWorkTimeSetByEmployee(String cid, String empId, int year) {
-				return repositories.getShainNormalSettingRepository().find(cid, empId, year);
-			}
-
-			@Override
-			public Optional<ShainDeforLaborSetting> statutoryDeforWorkTimeSetByEmployee(String cid, String empId, int year) {
-				return repositories.getShainDeforLaborSettingRepository().find(cid, empId, year);
-			}
-
-			@Override
-			public Optional<WkpNormalSetting> statutoryWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
-				return repositories.getWkpNormalSettingRepository().find(cid, wkpId, year);
-			}
-
-			@Override
-			public Optional<WkpDeforLaborSetting> statutoryDeforWorkTimeSetByWorkplace(String cid, String wkpId, int year) {
-				return repositories.getWkpDeforLaborSettingRepository().find(cid, wkpId, year);
-			}
-
-			@Override
-			public Optional<EmpNormalSetting> statutoryWorkTimeSetByEmployment(String cid, String emplCode, int year) {
-				return repositories.getEmpNormalSettingRepository().find(cid, emplCode, year);
-			}
-
-			@Override
-			public Optional<EmpDeforLaborSetting> statutoryDeforWorkTimeSetByEmployment(String cid, String emplCode, int year) {
-				return repositories.getEmpDeforLaborSettingRepository().find(cid, emplCode, year);
-			}
-
-			@Override
-			public Optional<ComNormalSetting> statutoryWorkTimeSetByCompany(String companyId, int year) {
-				return repositories.getComNormalSettingRepository().find(companyId, year);
-			}
-
-			@Override
-			public Optional<ComDeforLaborSetting> statutoryDeforWorkTimeSetByCompany(String companyId, int year) {
-				return repositories.getComDeforLaborSettingRepository().find(companyId, year);
-			}
-
-			@Override
-			public Optional<ShainFlexSetting> flexSettingByEmployee(String cid, String empId, int year) {
-				return repositories.getShainFlexSettingRepository().find(cid, empId, year);
-			}
-
-			@Override
-			public Optional<EmpFlexSetting> flexSettingByEmployment(String cid, String emplCode, int year) {
-				return repositories.getEmpFlexSettingRepository().find(cid, emplCode, year);
-			}
-
-			@Override
-			public Optional<ComFlexSetting> flexSettingByCompany(String companyId, int year) {
-				return repositories.getComFlexSettingRepository().find(companyId, year);
-			}
-			
-			@Override
-			public Optional<WkpFlexSetting> flexSettingByWorkplace(String cid, String wkpId, int year) {
-				return repositories.getWkpFlexSettingRepository().find(cid, wkpId, year);
-			}
-
-			@Override
-			public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId) {
-				return repositories.getWkpFlexMonthActCalSetRepository().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode) {
-				return repositories.getEmpFlexMonthActCalSetRepository().find(cid, empCode);
-			}
-
-			@Override
-			public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
-				return repositories.getWkpDeforLaborMonthActCalSetRepository().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(String cid, String empCode) {
-				return repositories.getEmpDeforLaborMonthActCalSetRepository().find(cid, empCode);
-			}
-
-			@Override
-			public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId) {
-				return repositories.getWkpRegulaMonthActCalSetRepository().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode) {
-				return repositories.getEmpRegulaMonthActCalSetRepository().find(cid, empCode);
-			}
-
-			@Override
-			public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
-				return repositories.getWorkingConditionItem().getBySidAndPeriodOrderByStrD(employeeId, datePeriod);
-			}
-
-			@Override
-			public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-				return repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, baseDate);
-			}
-
-			@Override
-			public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlyByYmWithOrder(String employeeId,
-					YearMonth yearMonth) {
-				return repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			}
-
-			@Override
-			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-				return repositories.getWorkType().findByPK(companyId, workTypeCd);
-			}
-
-			@Override
-			public Optional<WkpRegularLaborTime> findWkpRegularLaborTime(String cid, String wkpId) {
-				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<EmpRegularLaborTime> findEmpRegularLaborTimeById(String cid, String employmentCode) {
-				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
-			}
-
-			@Override
-			public Optional<WkpTransLaborTime> findWkpTransLaborTime(String cid, String wkpId) {
-				return repositories.getWkpTransLaborTime().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<EmpTransLaborTime> findEmpTransLaborTime(String cid, String emplId) {
-				return repositories.getEmpTransWorkTime().find(cid, emplId);
-			}
-
-			@Override
-			public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
-					WorkingSystem workingSystem) {
-				return repositories.getAgreementDomainService().getBasicSet(companyId, employeeId, criteriaDate,
-						workingSystem).getBasicAgreementSetting();
-			}
-
-			@Override
-			public Optional<AgreementMonthSetting> findByKey(String employeeId, YearMonth yearMonth) {
-				return repositories.getAgreementMonthSet().findByKey(employeeId, yearMonth);
-			}
-
-			@Override
-			public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode) {
-				return repositories.getPredetermineTimeSet().findByWorkTimeCode(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<EmpRegularLaborTime> regularLaborTimeByEmployment(String cid, String employmentCode) {
-				return repositories.getEmpRegularWorkTime().findById(cid, employmentCode);
-			}
-
-			@Override
-			public Optional<ComTransLaborTime> transLaborTimeByCompany(String companyId) {
-				return repositories.getComTransLaborTime().find(companyId);
-			}
-
-			@Override
-			public Optional<ComRegularLaborTime> regularLaborTimeByCompany(String companyId) {
-				return repositories.getComRegularLaborTime().find(companyId);
-			}
-
-			@Override
-			public Optional<ShainRegularLaborTime> regularLaborTimeByEmployee(String Cid, String EmpId) {
-				return repositories.getShainRegularWorkTime().find(Cid, EmpId);
-			}
-
-			@Override
-			public Optional<ShainTransLaborTime> transLaborTimeByEmployee(String cid, String empId) {
-				return repositories.getShainTransLaborTime().find(cid, empId);
-			}
-
-			@Override
-			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
-				return repositories.getWorkTimeSetRepository().findByCode(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getFlowWorkSetRepository().find(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getFlexWorkSetRepository().find(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getFixedWorkSetRepository().findByKey(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
-				return repositories.getDiffWorkSetRepository().find(companyId, workTimeCode);
-			}
-
-			@Override
-			public Optional<WorkingCondition> getByHistoryId(String historyId) {
-				return repositories.getWorkingCondition().getByHistoryId(historyId);
-			}
-
-			@Override
-			public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return repositories.getAffWorkplace().findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-
-			@Override
-			public Optional<EmpTransLaborTime> transLaborTimeByEmployment(String cid, String emplId) {
-
-				return repositories.getEmpTransWorkTime().find(cid, emplId);
-			}
-
-			@Override
-			public Optional<WkpRegularLaborTime> regularLaborTimeByWorkplace(String cid, String wkpId) {
-
-				return repositories.getWkpRegularLaborTime().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<WkpTransLaborTime> transLaborTimeByWorkplace(String cid, String wkpId) {
-				
-				return repositories.getWkpTransLaborTime().find(cid, wkpId);
-			}
-
-			@Override
-			public Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId) {
-				
-				return repositories.getUsageUnitSetRepo().findByCompany(companyId);
-			}
-		}
+		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
 	}
 }

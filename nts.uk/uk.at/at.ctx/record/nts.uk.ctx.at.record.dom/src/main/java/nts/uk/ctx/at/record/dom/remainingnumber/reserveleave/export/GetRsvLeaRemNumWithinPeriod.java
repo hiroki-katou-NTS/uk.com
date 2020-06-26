@@ -206,7 +206,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			GeneralDate closureStart = null;	// 締め開始日
 			{
 				// 最新の締め終了日翌日を取得する
-				Optional<ClosureStatusManagement> sttMng = require.closureStatusManagement(param.getEmployeeId());
+				Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(param.getEmployeeId());
 				if (sttMng.isPresent()){
 					closureStart = sttMng.get().getPeriod().end().addDays(1);
 					closureStartOpt = Optional.of(closureStart);
@@ -555,7 +555,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// その他モード
 			
 			// 「暫定積立年休管理データ」を取得する
-			val interimRemains = require.interimRemain(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
+			val interimRemains = require.interimRemains(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
 			for (val interimRemain : interimRemains){
 				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getRemainManaID());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
@@ -591,7 +591,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	
 	public static interface RequireM1 {
 
-		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
+		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
 		Optional<TmpResereLeaveMng> tmpResereLeaveMng(String resereMngId);
 	}
@@ -601,7 +601,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	
 	public static interface RequireM3 extends GetClosureStartForEmployee.RequireM1 {
 
-		Optional<ClosureStatusManagement> closureStatusManagement(String employeeId);
+		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 	
 	public static interface RequireM4 extends RequireM3, RequireM2, RequireM1, ReserveLeaveInfo.RequireM1 {
@@ -609,8 +609,6 @@ public class GetRsvLeaRemNumWithinPeriod {
 		AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 
 		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
-
-		Optional<ClosureStatusManagement> closureStatusManagement(String employeeId);
 	}
 
 }

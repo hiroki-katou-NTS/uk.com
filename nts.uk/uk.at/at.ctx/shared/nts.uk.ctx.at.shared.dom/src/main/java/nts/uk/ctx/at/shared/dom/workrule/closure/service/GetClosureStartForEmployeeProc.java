@@ -47,7 +47,7 @@ public class GetClosureStartForEmployeeProc {
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
 		DatePeriod empPeriod = new DatePeriod(checkStart, GeneralDate.max());	// チェック開始日～最大年月日
-		List<SharedSidPeriodDateEmploymentImport> employmentList = require.employmentHistories(cacheCarrier, employeeIds, empPeriod);
+		List<SharedSidPeriodDateEmploymentImport> employmentList = require.employmentHistory(cacheCarrier, employeeIds, empPeriod);
 		if (employmentList == null) return Optional.empty();
 		if (employmentList.size() == 0) return Optional.empty();
 		List<AffPeriodEmpCodeImport> empCodeList = employmentList.get(0).getAffPeriodEmpCodeExports();
@@ -159,7 +159,7 @@ public class GetClosureStartForEmployeeProc {
 		
 		Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD);
 		
-		List<SharedSidPeriodDateEmploymentImport> employmentHistories(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
+		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
 		
 	}
 	

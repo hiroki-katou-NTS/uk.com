@@ -54,7 +54,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		Map<String, List<NextAnnualLeaveGrant>> result = new HashMap<>();
 		Set<String> grantTableCodeSet = annualLeaveEmpBasicInfoMap.values().stream()
 				.map(i -> i.getGrantRule().getGrantTableCode().v()).collect(Collectors.toSet());
-		Map<String, List<LengthServiceTbl>> lengthServiceTblMap = require.lengthServiceTbls(companyId,
+		Map<String, List<LengthServiceTbl>> lengthServiceTblMap = require.lengthServiceTbl(companyId,
 				new ArrayList<>(grantTableCodeSet));
 		Map<String, GrantHdTblSet> grantHdTblSetMap = require.grantHdTblSets(companyId).stream()
 				.filter(i -> grantTableCodeSet.contains(i.getYearHolidayCode().v()))
@@ -331,7 +331,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	
 	public static interface RequireM1 {
 		
-		Map<String, List<LengthServiceTbl>> lengthServiceTbls(String companyId, List<String> yearHolidayCode);
+		Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode);
 		
 		List<GrantHdTblSet> grantHdTblSets(String companyId);
 		

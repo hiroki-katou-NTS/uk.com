@@ -6,7 +6,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -18,17 +20,19 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 @Stateless
 public class GetWeekStartImpl implements GetWeekStart {
 
-	/** 日の法定労働時間 */
-	@Inject
-	private DailyStatutoryLaborTime dailyStatutoryWorkingHours;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	/** 週開始を取得する */
 	@Override
 	public Optional<WeekStart> algorithm(String companyId, String employmentCd, String employeeId,
 				GeneralDate baseDate, WorkingSystem workingSystem) {
-		
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+	
 		// 時間設定を取得
-		val workTimeSetOpt = this.dailyStatutoryWorkingHours.getWorkingTimeSetting(
+		val workTimeSetOpt = DailyStatutoryLaborTime.getWorkingTimeSetting(
+				require, cacheCarrier,
 				companyId, employmentCd, employeeId, baseDate, workingSystem);
 		if (!workTimeSetOpt.isPresent()) return Optional.empty();
 		

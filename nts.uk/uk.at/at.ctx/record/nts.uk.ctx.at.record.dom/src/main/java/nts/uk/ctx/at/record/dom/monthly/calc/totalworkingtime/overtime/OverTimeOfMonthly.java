@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 
 /**
@@ -210,7 +210,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		// 残業・振替の処理順序を取得する
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
-		val overTimeAndTransferAtrs = require.otAndTransferAtr(companyId, 
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companyId, 
 																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
 																false);
 		
@@ -675,8 +675,6 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		}
 	}
 	public static interface RequireM1 extends RequireM2, MonAggrCompanySettings.RequireM3 {
-
-		List<OverTimeAndTransferAtr> otAndTransferAtr(String cid, WorkTimezoneCommonSet workTimeZoneSet, boolean reverse);
 	}
 	
 	public static interface RequireM2 extends MonAggrCompanySettings.RequireM1 {

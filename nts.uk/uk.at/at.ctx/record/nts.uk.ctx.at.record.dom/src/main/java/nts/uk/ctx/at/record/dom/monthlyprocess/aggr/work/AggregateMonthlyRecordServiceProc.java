@@ -22,11 +22,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -38,7 +35,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
-import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
@@ -63,136 +59,55 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResu
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRateImpl;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriodImpl;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQueryImpl;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateDataImpl;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQueryImpl;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementServiceImpl;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -204,33 +119,6 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Getter
 /* @Slf4j */
 public class AggregateMonthlyRecordServiceProc {
-
-	/** 月別集計が必要とするリポジトリ */
-	private RepositoriesRequiredByMonthlyAggr repositories;
-	/** 月次処理用の暫定残数管理データを作成する */
-	private InterimRemainOffMonthProcess interimRemOffMonth;
-	/** 残数作成元情報を作成する */
-	private RemainNumberCreateInformation remNumCreateInfo;
-	/** 指定期間の暫定残数管理データを作成する */
-	private InterimRemainOffPeriodCreateData periodCreateData;
-	/** 暫定年休管理データを作成する */
-	private CreateInterimAnnualMngData createInterimAnnual;
-	/** 期間中の年休積休残数を取得 */
-	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
-	/** 出勤率計算用日数を取得する */
-	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
-	/** 期間内の振出振休残数を取得する */
-	private AbsenceReruitmentMngInPeriodQuery absenceRecruitMng;
-	/** 期間内の休出代休残数を取得する */
-	private BreakDayOffMngInPeriodQuery breakDayoffMng;
-	/** 特別休暇 */
-	private SpecialHolidayRepository specialHolidayRepo;
-	/** 期間内の特別休暇残を集計する */
-	private SpecialLeaveManagementService specialLeaveMng;
-	/** 休暇残数エラーから月別残数エラー一覧を作成する */
-	private CreatePerErrorsFromLeaveErrors createPerErrorFromLeaveErrors;
-	/** 月別実績の編集状態 */
-	private EditStateOfMonthlyPerRepository editStateRepo;
 
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -283,31 +171,9 @@ public class AggregateMonthlyRecordServiceProc {
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
 	/** 並列処理用 */
-	private ManagedExecutorService executerService;
+//	private ManagedExecutorService executerService;
 
-	public AggregateMonthlyRecordServiceProc(RepositoriesRequiredByMonthlyAggr repositories,
-			InterimRemainOffMonthProcess interimRemOffMonth, RemainNumberCreateInformation remNumCreateInfo,
-			InterimRemainOffPeriodCreateData periodCreateData, CreateInterimAnnualMngData createInterimAnnual,
-			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
-			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng, BreakDayOffMngInPeriodQuery breakDayoffMng,
-			GetDaysForCalcAttdRate getDaysForCalcAttdRate, SpecialHolidayRepository specialHolidayRepo,
-			SpecialLeaveManagementService specialLeaveMng, CreatePerErrorsFromLeaveErrors createPerErrorFromLeaveErrors,
-			EditStateOfMonthlyPerRepository editStateRepo, ManagedExecutorService executerService) {
-
-		this.repositories = repositories;
-		this.interimRemOffMonth = interimRemOffMonth;
-		this.remNumCreateInfo = remNumCreateInfo;
-		this.periodCreateData = periodCreateData;
-		this.createInterimAnnual = createInterimAnnual;
-		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
-		this.absenceRecruitMng = absenceRecruitMng;
-		this.breakDayoffMng = breakDayoffMng;
-		this.getDaysForCalcAttdRate = getDaysForCalcAttdRate;
-		this.specialHolidayRepo = specialHolidayRepo;
-		this.specialLeaveMng = specialLeaveMng;
-		this.createPerErrorFromLeaveErrors = createPerErrorFromLeaveErrors;
-		this.editStateRepo = editStateRepo;
-		this.executerService = executerService;
+	public AggregateMonthlyRecordServiceProc() {
 	}
 
 	/**
@@ -329,7 +195,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param remainingProcAtr 残数処理フラグ
 	 * @return 集計結果
 	 */
-	public AggregateMonthlyRecordValue aggregate(Require require, CacheCarrier cacheCarrier, String companyId,
+	public AggregateMonthlyRecordValue aggregate(RequireM15 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult, Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt,
 			Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffResultOpt,
@@ -387,7 +253,7 @@ public class AggregateMonthlyRecordServiceProc {
 				closureId, closureDate, monthlyWorkOpt);
 
 		// 「労働条件項目」を取得
-		List<WorkingConditionItem> workingConditionItems = require.workConditionItems(employeeId, monthPeriod);
+		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, monthPeriod);
 		if (workingConditionItems.isEmpty()) {
 			this.aggregateResult.addErrorInfos("001", new ErrMessageContent(TextResource.localize("Msg_430")));
 			return this.aggregateResult;
@@ -423,8 +289,8 @@ public class AggregateMonthlyRecordServiceProc {
 			};
 
 			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-				this.executerService
-						.submit(AsyncTask.builder().withContexts().threadName("Aggregation").build(asyncAggregation));
+				require.getExecutorService().submit(AsyncTask.builder().withContexts()
+						.threadName("Aggregation").build(asyncAggregation));
 			} else {
 				// バッチなどの場合は非同期にせずそのまま実行
 				asyncAggregation.run();
@@ -448,17 +314,17 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 月別実績の編集状態 取得
-		this.editStates = require.findByClosure(this.employeeId, this.yearMonth, this.closureId, this.closureDate);
+		this.editStates = require.monthEditStates(this.employeeId, this.yearMonth, this.closureId, this.closureDate);
 
 		if (this.aggregateResult.getAttendanceTime().isPresent()) {
 			AttendanceTimeOfMonthly attendanceTime = this.aggregateResult.getAttendanceTime().get();
 
 			// 手修正された項目を元に戻す （勤怠時間用）
-			attendanceTime = this.undoRetouchValuesForAttendanceTime(attendanceTime, this.monthlyOldDatas);
+			attendanceTime = this.undoRetouchValuesForAttendanceTime(require, attendanceTime, this.monthlyOldDatas);
 
 			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch) {
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
+				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(require, attendanceTime)));
 			}
 		}
 
@@ -474,10 +340,10 @@ public class AggregateMonthlyRecordServiceProc {
 		{
 			// 36協定時間の集計
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
-			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTimeRequire(require, cacheCarrier,
+			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod,
 					Optional.empty(), Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
-					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
+					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced);
 			if (agreementTimeOpt.isPresent()) {
 				val agreementTime = agreementTimeOpt.get();
 				this.aggregateResult.getAgreementTimeList().add(agreementTime);
@@ -503,14 +369,13 @@ public class AggregateMonthlyRecordServiceProc {
 					DatePeriod prevPeriod = new DatePeriod(prevStart, prevEnd);
 
 					// 36協定時間の集計
-					MonthlyOldDatas prevOldDatas = MonthlyOldDatas.loadData(employeeId, prevYM, closureId, closureDate,
-							Optional.empty(), this.repositories);
+					MonthlyOldDatas prevOldDatas = MonthlyOldDatas.loadData(require, employeeId, prevYM, closureId, closureDate,
+							Optional.empty());
 					MonthlyCalculation prevCalculationForAgreement = new MonthlyCalculation();
-					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTimeRequire(require,
+					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTime(require,
 							cacheCarrier, this.companyId, this.employeeId, prevYM, this.closureId, this.closureDate,
 							prevPeriod, Optional.empty(), Optional.empty(), Optional.empty(), this.companySets,
-							this.employeeSets, this.monthlyCalculatingDailys, prevOldDatas, Optional.empty(),
-							this.repositories);
+							this.employeeSets, this.monthlyCalculatingDailys, prevOldDatas, Optional.empty());
 					if (prevAgreTimeOpt.isPresent()) {
 						val prevAgreTime = prevAgreTimeOpt.get();
 						this.aggregateResult.getAgreementTimeList().add(prevAgreTime);
@@ -524,13 +389,13 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 大塚カスタマイズの集計
 		Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue = this
-				.aggregateCustomizeForOtsuka(cacheCarrier, this.yearMonth, this.closureId, this.companySets);
+				.aggregateCustomizeForOtsuka(require, cacheCarrier, this.yearMonth, this.closureId, this.companySets);
 
 		// 月別実績の任意項目を集計
-		this.aggregateAnyItem(monthPeriod, anyItemCustomizeValue);
+		this.aggregateAnyItem(require, monthPeriod, anyItemCustomizeValue);
 
 		// 手修正された項目を元に戻す （任意項目用）
-		this.undoRetouchValuesForAnyItems(this.monthlyOldDatas);
+		this.undoRetouchValuesForAnyItems(require, this.monthlyOldDatas);
 
 		ConcurrentStopwatches.stop("12500:任意項目：");
 		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
@@ -553,7 +418,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * 
 	 * @param monthPeriod
 	 */
-	private void aggregationProcess(Require require, CacheCarrier cacheCarrier, DatePeriod monthPeriod) {
+	private void aggregationProcess(RequireM13 require, CacheCarrier cacheCarrier, DatePeriod monthPeriod) {
 		ConcurrentStopwatches.stop("12100:集計期間ごと準備：");
 
 		// 項目の数だけループ
@@ -627,7 +492,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param remainingProcAtr
 	 *            残数処理フラグ
 	 */
-	private void remainingProcess(Require require, CacheCarrier cacheCarrier, DatePeriod monthPeriod,
+	private void remainingProcess(RequireM8 require, CacheCarrier cacheCarrier, DatePeriod monthPeriod,
 			DatePeriod datePeriod, Boolean remainingProcAtr) {
 
 		ConcurrentStopwatches.start("12400:残数処理：");
@@ -666,7 +531,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            労働条件項目リスト （統合前）
 	 * @return 労働条件項目リスト （統合後）
 	 */
-	private void IntegrateHistoryOfSameWorkSys(Require require, List<WorkingConditionItem> target) {
+	private void IntegrateHistoryOfSameWorkSys(RequireM14 require, List<WorkingConditionItem> target) {
 
 		this.workingConditionItems = new ArrayList<>();
 		this.workingConditions = new HashMap<>();
@@ -677,7 +542,7 @@ public class AggregateMonthlyRecordServiceProc {
 			// 要素[n]を取得
 			WorkingConditionItem startItem = itrTarget.next();
 			val startHistoryId = startItem.getHistoryId();
-			val startConditionOpt = require.getByHistoryId(startHistoryId);
+			val startConditionOpt = require.workingCondition(startHistoryId);
 			if (!startConditionOpt.isPresent())
 				continue;
 			val startCondition = startConditionOpt.get();
@@ -707,7 +572,7 @@ public class AggregateMonthlyRecordServiceProc {
 				continue;
 			}
 			val endHistoryId = endItem.getHistoryId();
-			val endConditionOpt = require.getByHistoryId(endHistoryId);
+			val endConditionOpt = require.workingCondition(endHistoryId);
 			if (!endConditionOpt.isPresent())
 				continue;
 			;
@@ -729,7 +594,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            労働条件項目
 	 * @return 月別実績の勤怠時間
 	 */
-	private AggregateAttendanceTimeValue aggregateAttendanceTime(Require require, CacheCarrier cacheCarrier,
+	private AggregateAttendanceTimeValue aggregateAttendanceTime(RequireM13 require, CacheCarrier cacheCarrier,
 			DatePeriod datePeriod, WorkingConditionItem workingConditionItem) {
 
 		AggregateAttendanceTimeValue result = new AggregateAttendanceTimeValue();
@@ -746,9 +611,9 @@ public class AggregateMonthlyRecordServiceProc {
 		// 月別実績の勤怠時間 初期設定
 		val attendanceTime = new AttendanceTimeOfMonthly(this.employeeId, this.yearMonth, this.closureId,
 				this.closureDate, datePeriod);
-		attendanceTime.prepareAggregationRequire(require, cacheCarrier, this.companyId, datePeriod,
+		attendanceTime.prepareAggregation(require, cacheCarrier, this.companyId, datePeriod,
 				workingConditionItem, startWeekNo, this.companySets, this.employeeSets, this.monthlyCalculatingDailys,
-				this.monthlyOldDatas, this.repositories);
+				this.monthlyOldDatas);
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 		if (monthlyCalculation.getErrorInfos().size() > 0) {
 			for (val errorInfo : monthlyCalculation.getErrorInfos()) {
@@ -761,8 +626,8 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.start("12220:月の計算：");
 
 		// 月の計算
-		monthlyCalculation.aggregateRequire(require, datePeriod, MonthlyAggregateAtr.MONTHLY, Optional.empty(),
-				Optional.empty(), Optional.empty(), this.repositories);
+		monthlyCalculation.aggregate(require, cacheCarrier, datePeriod, MonthlyAggregateAtr.MONTHLY, Optional.empty(),
+				Optional.empty(), Optional.empty());
 
 		ConcurrentStopwatches.stop("12220:月の計算：");
 		ConcurrentStopwatches.start("12230:縦計：");
@@ -775,15 +640,14 @@ public class AggregateMonthlyRecordServiceProc {
 
 				// 週の縦計
 				val verticalTotalWeek = attendanceTimeWeek.getVerticalTotal();
-				verticalTotalWeek.verticalTotalRequire(require, this.companyId, this.employeeId, weekPeriod,
-						workingSystem, this.companySets, this.employeeSets, this.monthlyCalculatingDailys,
-						this.repositories);
+				verticalTotalWeek.verticalTotal(require, this.companyId, this.employeeId, weekPeriod,
+						workingSystem, this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			}
 
 			// 月の縦計
 			val verticalTotal = attendanceTime.getVerticalTotal();
-			verticalTotal.verticalTotalRequire(require, this.companyId, this.employeeId, datePeriod, workingSystem,
-					this.companySets, this.employeeSets, this.monthlyCalculatingDailys, this.repositories);
+			verticalTotal.verticalTotal(require, this.companyId, this.employeeId, datePeriod, workingSystem,
+					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 		}
 
 		ConcurrentStopwatches.stop("12230:縦計：");
@@ -791,7 +655,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 時間外超過
 		ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
-		excessOutsideWorkMng.aggregateRequire(require, cacheCarrier, this.repositories);
+		excessOutsideWorkMng.aggregate(require, cacheCarrier);
 		if (excessOutsideWorkMng.getErrorInfos().size() > 0) {
 			for (val errorInfo : excessOutsideWorkMng.getErrorInfos()) {
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -810,8 +674,8 @@ public class AggregateMonthlyRecordServiceProc {
 
 				// 週の回数集計
 				val totalCountWeek = attendanceTimeWeek.getTotalCount();
-				totalCountWeek.totalizeRequire(require, this.companyId, this.employeeId, weekPeriod, this.companySets,
-						this.monthlyCalculatingDailys, this.repositories);
+				totalCountWeek.totalize(require, this.companyId, this.employeeId, weekPeriod, this.companySets,
+						this.monthlyCalculatingDailys);
 				if (totalCountWeek.getErrorInfos().size() > 0) {
 					for (val errorInfo : totalCountWeek.getErrorInfos()) {
 						this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -821,8 +685,8 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 月の回数集計
 			val totalCount = attendanceTime.getTotalCount();
-			totalCount.totalizeRequire(require, this.companyId, this.employeeId, datePeriod, this.companySets,
-					this.monthlyCalculatingDailys, this.repositories);
+			totalCount.totalize(require, this.companyId, this.employeeId, datePeriod, this.companySets,
+					this.monthlyCalculatingDailys);
 			if (totalCount.getErrorInfos().size() > 0) {
 				for (val errorInfo : totalCount.getErrorInfos()) {
 					this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -852,7 +716,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param anyItemCustomizeValue
 	 *            任意項目カスタマイズ値
 	 */
-	private void aggregateAnyItem(DatePeriod monthPeriod,
+	private void aggregateAnyItem(RequireM12 require, DatePeriod monthPeriod,
 			Map<Integer, Map<Integer, AnyItemAggrResult>> anyItemCustomizeValue) {
 
 		// 週単位の期間を取得
@@ -861,7 +725,7 @@ public class AggregateMonthlyRecordServiceProc {
 			AttendanceTimeOfWeekly attendanceTimeWeek = itrWeeks.next();
 
 			// 週ごとの集計
-			val weekResults = this.aggregateAnyItemPeriod(attendanceTimeWeek.getPeriod(), true,
+			val weekResults = this.aggregateAnyItemPeriod(require, attendanceTimeWeek.getPeriod(), true,
 					anyItemCustomizeValue.get(attendanceTimeWeek.getWeekNo()));
 			for (val weekResult : weekResults.values()) {
 				attendanceTimeWeek.getAnyItem().getAnyItemValues().put(weekResult.getOptionalItemNo(),
@@ -872,7 +736,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 月ごとの集計
-		val monthResults = this.aggregateAnyItemPeriod(monthPeriod, false, anyItemCustomizeValue.get(0));
+		val monthResults = this.aggregateAnyItemPeriod(require, monthPeriod, false, anyItemCustomizeValue.get(0));
 		for (val monthResult : monthResults.values()) {
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId,
 					this.closureDate, monthResult));
@@ -890,7 +754,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            月別集計で必要な会社別設定
 	 * @return 任意項目カスタマイズ値
 	 */
-	private Map<Integer, Map<Integer, AnyItemAggrResult>> aggregateCustomizeForOtsuka(CacheCarrier cacheCarrier,
+	private Map<Integer, Map<Integer, AnyItemAggrResult>> aggregateCustomizeForOtsuka(RequireM11 require, CacheCarrier cacheCarrier,
 			YearMonth yearMonth, ClosureId closureId, MonAggrCompanySettings companySets) {
 
 		// 任意項目カスタマイズ値 ※ 最初のInteger=0（月結果）、1～（各週結果（週No））
@@ -898,7 +762,7 @@ public class AggregateMonthlyRecordServiceProc {
 		results.put(0, new HashMap<>()); // 月結果
 
 		// 月ごとの集計
-		AnyItemAggrResult monthResult = this.getPredWorkingDays(cacheCarrier, yearMonth, closureId, companySets);
+		AnyItemAggrResult monthResult = this.getPredWorkingDays(require, cacheCarrier, yearMonth, closureId, companySets);
 		results.get(0).putIfAbsent(monthResult.getOptionalItemNo(), monthResult);
 
 		// 任意項目カスタマイズ値を返す
@@ -916,7 +780,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            任意項目カスタマイズ値
 	 * @return 任意項目集計結果
 	 */
-	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(DatePeriod period, boolean isWeek,
+	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(RequireM12 require, DatePeriod period, boolean isWeek,
 			Map<Integer, AnyItemAggrResult> anyItemCustomizeValue) {
 
 		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
@@ -977,8 +841,8 @@ public class AggregateMonthlyRecordServiceProc {
 					val attendanceTime = this.aggregateResult.getAttendanceTime().get();
 
 					// 月別実績 計算処理
-					result = AnyItemAggrResult.calcFromMonthly(optionalItemNo, optionalItem, attendanceTime, anyItems,
-							this.companySets, this.repositories);
+					result = AnyItemAggrResult.calcFromMonthly(require, optionalItemNo, optionalItem, attendanceTime, anyItems,
+							this.companySets);
 				}
 				results.put(optionalItemNo, result);
 				anyItems.add(
@@ -1009,8 +873,8 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            月別集計で必要な会社別設定
 	 * @return 任意項目集計結果
 	 */
-	private AnyItemAggrResult getPredWorkingDays(CacheCarrier cacheCarrier, YearMonth yearMonth, ClosureId closureId,
-			MonAggrCompanySettings companySets) {
+	private AnyItemAggrResult getPredWorkingDays(RequireM11 require, CacheCarrier cacheCarrier,
+			YearMonth yearMonth, ClosureId closureId, MonAggrCompanySettings companySets) {
 
 		AnyItemAggrResult emptyResult = AnyItemAggrResult.of(69, null, new AnyTimesMonth(0.0), null);
 
@@ -1040,8 +904,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// RQ608：指定期間の所定労働日数を取得する(大塚用)
-		double predWorkingDays = this.repositories.getPredWorkingDaysAdaptor()
-				.byPeriod(cacheCarrier, period, this.companySets.getAllWorkTypeMap()).v();
+		double predWorkingDays = require.monthAttendanceDays(cacheCarrier, period, this.companySets.getAllWorkTypeMap()).v();
 
 		// 任意項目69へ格納
 		return AnyItemAggrResult.of(69, null, new AnyTimesMonth(predWorkingDays), null);
@@ -1088,8 +951,8 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            集計前の月別実績データ
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly undoRetouchValuesForAttendanceTime(AttendanceTimeOfMonthly attendanceTime,
-			MonthlyOldDatas monthlyOldDatas) {
+	private AttendanceTimeOfMonthly undoRetouchValuesForAttendanceTime(RequireM10 require, 
+			AttendanceTimeOfMonthly attendanceTime, MonthlyOldDatas monthlyOldDatas) {
 
 		this.isRetouch = false;
 
@@ -1097,7 +960,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val oldDataOpt = monthlyOldDatas.getAttendanceTime();
 		if (!oldDataOpt.isPresent())
 			return attendanceTime;
-		val oldConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldConverter = require.createMonthlyConverter();
 		MonthlyRecordToAttendanceItemConverter oldItemConvert = oldConverter.withAttendanceTime(oldDataOpt.get());
 		if (monthlyOldDatas.getAnnualLeaveRemain().isPresent()) {
 			oldItemConvert = oldItemConvert.withAnnLeave(monthlyOldDatas.getAnnualLeaveRemain().get());
@@ -1114,7 +977,7 @@ public class AggregateMonthlyRecordServiceProc {
 		oldItemConvert = oldItemConvert.withSpecialLeave(monthlyOldDatas.getSpecialLeaveRemainList());
 
 		// 計算後データを確認
-		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val monthlyConverter = require.createMonthlyConverter();
 		MonthlyRecordToAttendanceItemConverter convert = monthlyConverter.withAttendanceTime(attendanceTime);
 		if (this.aggregateResult.getAnnLeaRemNumEachMonthList().size() > 0) {
 			convert = convert.withAnnLeave(this.aggregateResult.getAnnLeaRemNumEachMonthList().get(0));
@@ -1193,7 +1056,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            月別実績の勤怠時間
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
+	private AttendanceTimeOfMonthly recalcAttendanceTime(RequireM9 require, AttendanceTimeOfMonthly attendanceTime) {
 
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 
@@ -1204,8 +1067,7 @@ public class AggregateMonthlyRecordServiceProc {
 		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
 
 		// 総労働時間と36協定時間の再計算
-		monthlyCalculation.recalcTotalAndAgreement(attendanceTime.getDatePeriod(), MonthlyAggregateAtr.MONTHLY,
-				this.repositories);
+		monthlyCalculation.recalcTotalAndAgreement(require, attendanceTime.getDatePeriod(), MonthlyAggregateAtr.MONTHLY);
 
 		return attendanceTime;
 	}
@@ -1216,7 +1078,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param monthlyOldDatas
 	 *            集計前の月別実績データ
 	 */
-	private void undoRetouchValuesForAnyItems(MonthlyOldDatas monthlyOldDatas) {
+	private void undoRetouchValuesForAnyItems(RequireM10 require, MonthlyOldDatas monthlyOldDatas) {
 
 		this.isRetouch = false;
 
@@ -1224,11 +1086,11 @@ public class AggregateMonthlyRecordServiceProc {
 		val oldDataList = monthlyOldDatas.getAnyItemList();
 		if (oldDataList.size() == 0)
 			return;
-		val oldConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val oldConverter = require.createMonthlyConverter();
 		val oldItemConvert = oldConverter.withAnyItem(oldDataList);
 
 		// 計算後データを確認
-		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
+		val monthlyConverter = require.createMonthlyConverter();
 		MonthlyRecordToAttendanceItemConverter convert = monthlyConverter
 				.withAttendanceTime(this.aggregateResult.getAttendanceTime().get());
 		convert = convert.withAnyItem(this.aggregateResult.getAnyItemList());
@@ -1266,7 +1128,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param isCalcAttendanceRate
 	 *            出勤率計算フラグ
 	 */
-	private void remainingProcess(Require require, CacheCarrier cacheCarrier, DatePeriod period,
+	private void remainingProcess(RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
 		ConcurrentStopwatches.start("12405:暫定データ作成：");
@@ -1307,7 +1169,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param period
 	 *            期間
 	 */
-	public void createDailyInterimRemainMngs(Require require, CacheCarrier cacheCarrier, DatePeriod period) {
+	public void createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
 
 		// 【参考：旧処理】 月次処理用の暫定残数管理データを作成する
 		// this.dailyInterimRemainMngs =
@@ -1315,7 +1177,7 @@ public class AggregateMonthlyRecordServiceProc {
 		// this.companyId, this.employeeId, period);
 
 		// 残数作成元情報(実績)を作成する
-		List<RecordRemainCreateInfor> recordRemains = this.remNumCreateInfo.createRemainInfor(
+		List<RecordRemainCreateInfor> recordRemains = RemainNumberCreateInformation.createRemainInfor(
 				new ArrayList<>(this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values()),
 				new ArrayList<>(this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().values()));
 
@@ -1324,7 +1186,7 @@ public class AggregateMonthlyRecordServiceProc {
 				this.employeeId, period, recordRemains, Collections.emptyList(), Collections.emptyList(), false);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(this.companyId,
 				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting());
-		this.dailyInterimRemainMngs = this.periodCreateData.createInterimRemainDataMngRequire(require, cacheCarrier,
+		this.dailyInterimRemainMngs = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(require, cacheCarrier,
 				inputPara, comHolidaySetting);
 
 		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
@@ -1333,14 +1195,11 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 年休、積休
 	 * 
-	 * @param period
-	 *            期間
-	 * @param interimRemainMngMode
-	 *            暫定残数データ管理モード
-	 * @param isCalcAttendanceRate
-	 *            出勤率計算フラグ
+	 * @param period 期間
+	 * @param interimRemainMngMode 暫定残数データ管理モード
+	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 */
-	private void annualAndReserveLeaveRemain(Require require, CacheCarrier cacheCarrier, DatePeriod period,
+	private void annualAndReserveLeaveRemain(RequireM6 require, CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
 		// 暫定残数データを年休・積立年休に絞り込む
@@ -1369,8 +1228,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.aggregateResult.getAttendanceTime().isPresent()) {
 
 			// 年休控除日数分の年休暫定残数データを作成する
-			val compensFlexWorkOpt = this.createInterimAnnual
-					.ofCompensFlexToWork(this.aggregateResult.getAttendanceTime().get(), period.end());
+			val compensFlexWorkOpt = CreateInterimAnnualMngData.ofCompensFlexToWork(
+					this.aggregateResult.getAttendanceTime().get(), period.end());
 			if (compensFlexWorkOpt.isPresent()) {
 				tmpAnnualLeaveMngs.add(compensFlexWorkOpt.get());
 				isOverWriteAnnual = true;
@@ -1382,14 +1241,13 @@ public class AggregateMonthlyRecordServiceProc {
 		if (interimRemainMngMode == InterimRemainMngMode.MONTHLY) {
 
 			// 日別実績から出勤率計算用日数を取得 （月別集計用）
-			daysForCalcAttdRate = this.getDaysForCalcAttdRate.algorithm(require,
-					this.companyId, this.employeeId, period, this.companySets, this.monthlyCalculatingDailys,
-					this.repositories);
+			daysForCalcAttdRate = GetDaysForCalcAttdRate.algorithm(require, this.companyId,
+					this.employeeId, period, this.companySets, this.monthlyCalculatingDailys);
 		}
 
 		// 期間中の年休積休残数を取得
-		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(this.companyId, this.employeeId, period,
-				interimRemainMngMode,
+		val aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier, 
+				this.companyId, this.employeeId, period, interimRemainMngMode,
 				// period.end(), true, isCalcAttendanceRate,
 				period.end(), false, isCalcAttendanceRate, Optional.of(isOverWriteAnnual),
 				Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs), Optional.of(false),
@@ -1420,7 +1278,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 年休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors()
-					.addAll(this.createPerErrorFromLeaveErrors.fromAnnualLeave(this.employeeId, this.yearMonth,
+					.addAll(CreatePerErrorsFromLeaveErrors.fromAnnualLeave(this.employeeId, this.yearMonth,
 							this.closureId, this.closureDate,
 							aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()));
 		}
@@ -1444,7 +1302,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 積立年休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors()
-					.addAll(this.createPerErrorFromLeaveErrors.fromReserveLeave(this.employeeId, this.yearMonth,
+					.addAll(CreatePerErrorsFromLeaveErrors.fromReserveLeave(this.employeeId, this.yearMonth,
 							this.closureId, this.closureDate,
 							aggrResult.getReserveLeave().get().getReserveLeaveErrors()));
 		}
@@ -1456,12 +1314,10 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 振休
 	 * 
-	 * @param period
-	 *            期間
-	 * @param interimRemainMngMode
-	 *            暫定残数データ管理モード
+	 * @param period 期間
+	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-	private void absenceLeaveRemain(Require require, CacheCarrier cacheCarrier, DatePeriod period,
+	private void absenceLeaveRemain(RequireM5 require, CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode) {
 
 		// 暫定残数データを振休・振出に絞り込む
@@ -1488,7 +1344,7 @@ public class AggregateMonthlyRecordServiceProc {
 		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(this.companyId, this.employeeId,
 				period, period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY), this.isOverWriteRemain,
 				useAbsMng, interimMng, useRecMng, this.prevAbsRecResultOpt, Optional.empty(), Optional.empty());
-		val aggrResult = this.absenceRecruitMng.getAbsRecMngInPeriodRequire(require, cacheCarrier, paramInput);
+		val aggrResult = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
 		if (aggrResult != null) {
 
 			// 振休月別残数データを更新
@@ -1503,7 +1359,7 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.getAbsenceLeaveRemainList().add(absLeaRemNum);
 
 			// 振休エラーから月別残数エラー一覧を作成する
-			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromPause(this.employeeId,
+			this.aggregateResult.getPerErrors().addAll(CreatePerErrorsFromLeaveErrors.fromPause(this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrResult.getPError()));
 
 			// 集計結果を前回集計結果に引き継ぐ
@@ -1514,12 +1370,10 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 代休
 	 * 
-	 * @param period
-	 *            期間
-	 * @param interimRemainMngMode
-	 *            暫定残数データ管理モード
+	 * @param period 期間
+	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-	private void dayoffRemain(Require require, CacheCarrier cacheCarrier, DatePeriod period,
+	private void dayoffRemain(RequireM4 require, CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode) {
 
 		// 暫定残数データを休出・代休に絞り込む
@@ -1546,7 +1400,7 @@ public class AggregateMonthlyRecordServiceProc {
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(this.companyId, this.employeeId, period,
 				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), this.isOverWriteRemain,
 				interimMng, breakMng, dayOffMng, this.prevBreakDayOffResultOpt, Optional.empty(), Optional.empty());
-		val aggrResult = this.breakDayoffMng.getBreakDayOffMngInPeriodRequire(require, cacheCarrier, inputParam);
+		val aggrResult = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
 		if (aggrResult != null) {
 
 			// 代休月別残数データを更新
@@ -1566,7 +1420,7 @@ public class AggregateMonthlyRecordServiceProc {
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
 
 			// 代休エラーから月別残数エラー一覧を作成する
-			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromDayOff(this.employeeId,
+			this.aggregateResult.getPerErrors().addAll(CreatePerErrorsFromLeaveErrors.fromDayOff(this.employeeId,
 					this.yearMonth, this.closureId, this.closureDate, aggrResult.getLstError()));
 
 			// 集計結果を前回集計結果に引き継ぐ
@@ -1577,12 +1431,10 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 特別休暇
 	 * 
-	 * @param period
-	 *            期間
-	 * @param interimRemainMngMode
-	 *            暫定残数データ管理モード
+	 * @param period 期間
+	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-	private void specialLeaveRemain(Require require, CacheCarrier cacheCarrier, DatePeriod period,
+	private void specialLeaveRemain(RequireM3 require, CacheCarrier cacheCarrier, DatePeriod period,
 			InterimRemainMngMode interimRemainMngMode) {
 
 		// 暫定残数データを特別休暇に絞り込む
@@ -1598,7 +1450,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 「特別休暇」を取得する
-		val specialHolidays = require.findSpecialHolidayByCompanyId(this.companyId);
+		val specialHolidays = require.specialHoliday(this.companyId);
 		for (val specialHoliday : specialHolidays) {
 			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
@@ -1616,8 +1468,8 @@ public class AggregateMonthlyRecordServiceProc {
 					// period.end(), specialLeaveCode, true,
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
 					this.isOverWriteRemain, interimMng, interimSpecialData, prevSpecialLeaveResult);
-			InPeriodOfSpecialLeaveResultInfor aggrResult = this.specialLeaveMng
-					.complileInPeriodOfSpecialLeaveRequire(require, cacheCarrier, param);
+			InPeriodOfSpecialLeaveResultInfor aggrResult = SpecialLeaveManagementService
+					.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);
 			InPeriodOfSpecialLeave inPeriod = aggrResult.getAggSpecialLeaveResult();
 
 			// マイナスなしの残数・使用数を計算
@@ -1631,7 +1483,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 特別休暇エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors()
-					.addAll(this.createPerErrorFromLeaveErrors.fromSpecialLeave(this.employeeId, this.yearMonth,
+					.addAll(CreatePerErrorsFromLeaveErrors.fromSpecialLeave(this.employeeId, this.yearMonth,
 							this.closureId, this.closureDate, specialLeaveCode, inPeriod.getLstError()));
 
 			// 集計結果を前回集計結果に引き継ぐ
@@ -1693,7 +1545,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            期間
 	 * @return 月別実績の所属情報
 	 */
-	private AffiliationInfoOfMonthly createAffiliationInfo(Require require, DatePeriod datePeriod) {
+	private AffiliationInfoOfMonthly createAffiliationInfo(RequireM2 require, DatePeriod datePeriod) {
 
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(this.employeeId);
@@ -1703,7 +1555,7 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())) {
 			isExistStartWorkInfo = true;
 		}
-		val firstInfoOfDailyList = require.findAffiliations(employeeIds, datePeriod);
+		val firstInfoOfDailyList = require.dailyAffiliationInfors(employeeIds, datePeriod);
 		firstInfoOfDailyList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		if (firstInfoOfDailyList.size() <= 0) {
 			if (isExistStartWorkInfo) {
@@ -1714,7 +1566,7 @@ public class AggregateMonthlyRecordServiceProc {
 			return null;
 		}
 		val firstInfoOfDaily = firstInfoOfDailyList.get(0);
-		val firstWorkTypeOfDailyList = require.findWorkTypes(employeeIds, datePeriod);
+		val firstWorkTypeOfDailyList = require.dailyWorkTypes(employeeIds, datePeriod);
 		firstWorkTypeOfDailyList.sort((a, b) -> a.getDate().compareTo(b.getDate()));
 		if (firstWorkTypeOfDailyList.size() <= 0) {
 			if (isExistStartWorkInfo) {
@@ -1740,7 +1592,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 
 		// 月末の所属情報を取得
-		val lastInfoOfDailyOpt = require.findAffiliationByKey(this.employeeId, datePeriod.end());
+		val lastInfoOfDailyOpt = require.dailyAffiliationInfor(this.employeeId, datePeriod.end());
 		if (!lastInfoOfDailyOpt.isPresent()) {
 			// val errorInfo = new MonthlyAggregationErrorInfo(
 			// "004", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1753,7 +1605,7 @@ public class AggregateMonthlyRecordServiceProc {
 					firstInfo, firstInfo);
 		}
 		val lastInfoOfDaily = lastInfoOfDailyOpt.get();
-		val lastWorkTypeOfDailyOpt = require.findWorkTypeByKey(this.employeeId, datePeriod.end());
+		val lastWorkTypeOfDailyOpt = require.dailyWorkType(this.employeeId, datePeriod.end());
 		if (!lastWorkTypeOfDailyOpt.isPresent()) {
 			// val errorInfo = new MonthlyAggregationErrorInfo(
 			// "004", new ErrMessageContent(TextResource.localize("Msg_1157")));
@@ -1797,27 +1649,76 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 	}
 
-	public static interface Require extends MonthlyCalculatingDailys.Require, MonthlyOldDatas.Require,
-			AttendanceTimeOfMonthly.Require, VerticalTotalOfMonthly.Require, TotalCountByPeriod.Require,
-			MonthlyCalculation.Require, InterimRemainOffPeriodCreateDataImpl.Require,
-			AbsenceReruitmentMngInPeriodQueryImpl.Require,
-			BreakDayOffMngInPeriodQueryImpl.Require {
-
-		List<WorkingConditionItem> workConditionItems(String employeeId, DatePeriod datePeriod);
-
-		Optional<WorkingCondition> getByHistoryId(String historyId);
-
-		Optional<AffiliationInforOfDailyPerfor> findAffiliationByKey(String employeeId, GeneralDate ymd);
+	public static interface RequireM13 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
+		MonthlyCalculation.RequireM4, VerticalTotalOfMonthly.RequireM1, ExcessOutsideWorkMng.RequireM5 {
 		
-		List<AffiliationInforOfDailyPerfor> findAffiliations(List<String> employeeId, DatePeriod ymd);
-
-		Optional<WorkTypeOfDailyPerformance> findWorkTypeByKey(String employeeId, GeneralDate processingDate);
+	}
+	
+	public static interface RequireM2 { 
 		
-		List<WorkTypeOfDailyPerformance> findWorkTypes(List<String> employeeId, DatePeriod ymd);
+		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod ymd);
+		
+		Optional<WorkTypeOfDailyPerformance> dailyWorkType(String employeeId, GeneralDate ymd);
 
-		List<SpecialHoliday> findSpecialHolidayByCompanyId(String companyId);
+		Optional<AffiliationInforOfDailyPerfor> dailyAffiliationInfor(String employeeId, GeneralDate ymd);
+		
+		List<AffiliationInforOfDailyPerfor> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd);
+		
+	}
 
-		List<EditStateOfMonthlyPerformance> findByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public static interface RequireM11 {
+		
+		AttendanceDaysMonth monthAttendanceDays(CacheCarrier cacheCarrier, DatePeriod period, Map<String, WorkType> workTypeMap);
+	}
+	
+	public static interface RequireM12 extends AnyItemAggrResult.RequireM1 {
+		
+	}
+	
+	public static interface RequireM10 {
+		
+		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
+	}
+	
+	public static interface RequireM9 extends MonthlyCalculation.RequireM3 {
+		
+	}
+	
+	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3 {
+	}
+	
+	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {
+	}
+	
+	public static interface RequireM6 extends GetDaysForCalcAttdRate.RequireM2,
+		GetAnnAndRsvRemNumWithinPeriod.RequireM2 {
+	}
+	
+	public static interface RequireM5 extends AbsenceReruitmentMngInPeriodQuery.RequireM10 {
+	}
+	
+	public static interface RequireM4 extends BreakDayOffMngInPeriodQuery.RequireM10 {
+	}
+	
+	public static interface RequireM3 extends SpecialLeaveManagementService.RequireM5 {
+		
+		List<SpecialHoliday> specialHoliday(String companyId);
+	}
+	
+	public static interface RequireM14 {
+		
+		Optional<WorkingCondition> workingCondition(String historyId);
+	}
+	
+	public static interface RequireM15 extends MonthlyCalculatingDailys.RequireM4, RequireM13,
+		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10, RequireM9,
+		MonthlyCalculation.RequireM2, RequireM11, RequireM12 {
+
+		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
+
+		List<EditStateOfMonthlyPerformance> monthEditStates(String employeeId, YearMonth yearMonth, ClosureId closureId,
 				ClosureDate closureDate);
+		
+		ManagedExecutorService getExecutorService();
 	}
 }

@@ -93,7 +93,7 @@ public class MonthlyStatutoryWorkingHours {
 			String employmentCd, String empId, GeneralDate baseDate, YearMonth ym, WorkingSystem workingSystem){
 		
 		/*労働時間と日数の設定の利用単位の設定*/
-		val usageUnitSetting = require.laborTimeUsageSetting(cid);
+		val usageUnitSetting = require.usageUnitSetting(cid);
 		if (!usageUnitSetting.isPresent()) {
 			return new ArrayList<>();
 		}
@@ -131,7 +131,7 @@ public class MonthlyStatutoryWorkingHours {
 			CacheCarrier cacheCarrier, String cid, String employmentCd, 
 			String employeeId, GeneralDate baseDate, YearMonth ym) {
 		
-		return require.laborTimeUsageSetting(cid).flatMap(usageUnitSetting -> {/*労働時間と日数の設定の利用単位の設定*/
+		return require.usageUnitSetting(cid).flatMap(usageUnitSetting -> {/*労働時間と日数の設定の利用単位の設定*/
 			if(usageUnitSetting.isEmployee()) {//社員の労働時間を管理する場合
 				val result =  internalGetFlexSet(() -> 
 					require.flexSettingByEmployee(cid, employeeId, ym.year()).orElse(null));
@@ -177,9 +177,7 @@ public class MonthlyStatutoryWorkingHours {
 		return Optional.empty();
 	}
 	
-	public static interface RequireM1 {
-		
-		Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId);
+	public static interface RequireM1 extends RequireM0 {
 		
 		Optional<ShainFlexSetting> flexSettingByEmployee(String cid, String empId, int year);
 
@@ -195,10 +193,13 @@ public class MonthlyStatutoryWorkingHours {
 	public static interface RequireM2 extends LaborTimeSettingService.RequireM1,
 												LaborTimeSettingService.RequireM2, 
 												LaborTimeSettingService.RequireM3, 
-												LaborTimeSettingService.RequireM4{
-
-		Optional<UsageUnitSetting> laborTimeUsageSetting(String companyId);
+												LaborTimeSettingService.RequireM4,
+												RequireM0 {
+	}
+	
+	private static interface RequireM0 {
 		
+		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 	}
 	
 	public static interface RequireM3 extends DailyStatutoryLaborTime.RequireM1 {} 

@@ -12,15 +12,27 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.DayNumberOfGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
@@ -35,6 +47,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOver;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
@@ -303,7 +319,7 @@ public class SpecialLeaveManagementService {
 			//}
 		} else {
 			//ドメインモデル「特別休暇暫定データ」を取得する
-			List<InterimRemain> lstInterimMngTmp = require.interimRemain(param.getSid(),
+			List<InterimRemain> lstInterimMngTmp = require.interimRemains(param.getSid(),
 					param.getDateData(), RemainType.SPECIAL);
 			lstInterimMngTmp.stream().forEach(a -> {
 				List<InterimSpecialHolidayMng> lstSpecialData = require.interimSpecialHolidayMng(a.getRemainManaID())
@@ -1090,7 +1106,7 @@ public class SpecialLeaveManagementService {
 	
 	public static interface RequireM2 { 
 
-		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
+		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
 		List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId);
 	}
@@ -1112,5 +1128,90 @@ public class SpecialLeaveManagementService {
 
 		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use);
 		
+	}
+
+	public static RequireM5 createRequireM5(SpecialLeaveGrantRepository specialLeaveGrantRepo,
+			ShareEmploymentAdapter shareEmploymentAdapter, EmpEmployeeAdapter empEmployeeAdapter,
+			GrantDateTblRepository grantDateTblRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo,
+			SpecialHolidayRepository specialHolidayRepo, InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
+			InterimRemainRepository interimRemainRepo, SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo) {
+		
+		return new RequireM5() {
+			
+			@Override
+			public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+				return specialLeaveGrantRepo.getBySpecialId(specialId);
+			}
+			
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+			
+			@Override
+			public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+				return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+			}
+			
+			@Override
+			public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+					List<String> employeeIds, DatePeriod datePeriod) {
+				return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+			}
+			
+			@Override
+			public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+				return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
+			}
+			
+			@Override
+			public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
+				return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
+			}
+			
+			@Override
+			public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+				return annLeaEmpBasicInfoRepo.get(employeeId);
+			}
+			
+			@Override
+			public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
+					List<String> sids, DatePeriod datePeriod) {
+				return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
+			}
+			
+			@Override
+			public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
+				return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
+			}
+			
+			@Override
+			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+					DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+				return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
+			}
+			
+			@Override
+			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+					LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+				return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
+			}
+			
+			@Override
+			public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+				return interimSpecialHolidayMngRepo.findById(mngId);
+			}
+			
+			@Override
+			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
+				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+			}
+			
+			@Override
+			public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+				return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+			}
+		};
 	}
 }

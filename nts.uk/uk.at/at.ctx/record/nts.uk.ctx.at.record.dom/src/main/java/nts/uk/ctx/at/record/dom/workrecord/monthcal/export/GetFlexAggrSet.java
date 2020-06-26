@@ -3,29 +3,15 @@ package nts.uk.ctx.at.record.dom.workrecord.monthcal.export;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 
 /**
  * 実装：集計設定の取得（フレックス）
@@ -44,8 +30,7 @@ public class GetFlexAggrSet {
 	 * @param comFlexSetOpt フレックス会社別月別実績集計設定
 	 * @return フレックスの法定内集計設定
 	 */
-	public static Optional<FlexMonthWorkTimeAggrSet> flexWorkTimeAggrSet(
-			Require require, CacheCarrier cacheCarrier,
+	public static Optional<FlexMonthWorkTimeAggrSet> flexWorkTimeAggrSet(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
 			UsageUnitSetting usageUnitSet, Optional<ShaFlexMonthActCalSet> shaFlexSetOpt,
 			Optional<ComFlexMonthActCalSet> comFlexSetOpt){
@@ -80,7 +65,7 @@ public class GetFlexAggrSet {
 		return Optional.empty();
 	}
 	
-	public static interface Require {
+	public static interface RequireM1 {
 		
 		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, 
 				String employeeId, GeneralDate baseDate);

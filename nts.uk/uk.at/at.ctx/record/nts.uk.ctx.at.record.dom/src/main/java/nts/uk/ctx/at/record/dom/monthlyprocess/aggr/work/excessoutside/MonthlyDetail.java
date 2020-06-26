@@ -39,7 +39,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -175,7 +176,7 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = require.holWorkAndTransferAtr(companySets.getCompanyId(), 
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(companySets.getCompanyId(), 
 																		companySets.getWorkTimeCommonSetMap(require, workTimeCode),
 																		true);
 		
@@ -297,7 +298,7 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = require.otAndTransferAtr(companySets.getCompanyId(), 
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
 																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
 																true);
 		
@@ -632,7 +633,7 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = require.holWorkAndTransferAtr(
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(
 				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(require, workTimeCode), true);
 		
 		// 休出・振替のループ
@@ -754,7 +755,7 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = require.otAndTransferAtr(companySets.getCompanyId(), 
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
 																	companySets.getWorkTimeCommonSetMap(require, workTimeCode),
 																	true);
 		
@@ -1029,13 +1030,9 @@ public class MonthlyDetail {
 	}
 	
 	public static interface RequireM1 extends MonAggrCompanySettings.RequireM3 {
-		
-		List<HolidayWorkAndTransferAtr> holWorkAndTransferAtr(String cid, WorkTimezoneCommonSet workTimeZoneSet, boolean reverse);
 	}
 	
 	public static interface RequireM2 extends MonAggrCompanySettings.RequireM3 {
-		
-		List<OverTimeAndTransferAtr> otAndTransferAtr(String cid, WorkTimezoneCommonSet workTimeZoneSet, boolean reverse);
 	}
 	
 	public static interface RequireM3 extends RequireM1, RequireM2 {

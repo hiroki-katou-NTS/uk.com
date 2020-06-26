@@ -577,7 +577,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		// 開始月～前月までの変形期間繰越時間を集計する
 		for (val pastYearMonth : pastYearMonths){
-			val attendanceTimeList = require.attendanceTimeOfMonthlyByYmWithOrder(employeeId, pastYearMonth);
+			val attendanceTimeList = require.attendanceTimeOfMonthly(employeeId, pastYearMonth);
 			for (val attendanceTime : attendanceTimeList){
 				val actualWorkingTime = attendanceTime.getMonthlyCalculation().getActualWorkingTime();
 				val irregularWorkingTime = actualWorkingTime.getIrregularWorkingTime();
@@ -614,7 +614,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	
 	public static interface RequireM1 {
 
-		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlyByYmWithOrder(String employeeId, YearMonth yearMonth);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
 	}
 
 	public static interface RequireM2 extends AggregateTotalWorkingTime.RequireM3, 

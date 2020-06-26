@@ -42,10 +42,6 @@ public class ShClosurePubImpl implements ShClosurePub {
 	@Inject
 	private ClosureRepository closureRepo;
 
-	/** The Closure service. */
-	@Inject
-	private ClosureService closureService;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,7 +65,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
 
 		// Return
 		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
@@ -124,7 +120,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		optClosures.forEach(closure -> {
 			// Get Processing Ym 処理年月
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = closureService.getClosurePeriod(closure, processingYm);
+			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closure, processingYm);
 			resultExport.put(closure.getClosureId().value, closurePeriod);
 		});
 
