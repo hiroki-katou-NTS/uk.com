@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprov
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 
@@ -22,7 +22,7 @@ public class JpaDisplayReasonRepository implements DisplayReasonRepository {
 	}
 
 	@Override
-	public DisplayReason findByHolidayAppType(String companyID, HolidayApplicationType holidayAppType) {
+	public DisplayReason findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

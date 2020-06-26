@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
@@ -137,7 +137,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		repoAppAbsence.updateAbsence(appAbsence);
 		AppForSpecLeaveCmd appForSpecLeaveCmd = command.getAppAbsenceCommand().getAppForSpecLeave();
 		//TH don nghi ngay dac biet
-		if(command.getAppAbsenceCommand().getHolidayAppType() == HolidayApplicationType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){//TH update
+		if(command.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){//TH update
 			AppForSpecLeave specHd = AppForSpecLeave.createFromJavaType(
 					command.getApplicationCommand().getApplicationID(), 
 					appForSpecLeaveCmd.isMournerFlag(), 

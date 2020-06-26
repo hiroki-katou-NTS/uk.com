@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 休暇申請の種類
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.休暇申請.休暇申請の種類
  * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
-public enum HolidayApplicationType {
+public enum HolidayAppType {
 	/**
 	 * 年次有休
 	 */

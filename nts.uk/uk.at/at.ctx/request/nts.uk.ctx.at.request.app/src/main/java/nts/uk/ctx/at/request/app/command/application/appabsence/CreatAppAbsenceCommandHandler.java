@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
@@ -108,7 +108,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				ApplicationType_Old.ABSENCE_APPLICATION, startDate, endDate, command.getApplicationCommand().getApplicantSID());
 		AppForSpecLeave specHd = null;
 		AppForSpecLeaveCmd appForSpecLeaveCmd = command.getAppAbsenceCommand().getAppForSpecLeave();
-		if(command.getAppAbsenceCommand().getHolidayAppType() == HolidayApplicationType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
+		if(command.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
 			specHd = AppForSpecLeave.createFromJavaType(appID, appForSpecLeaveCmd.isMournerFlag(), appForSpecLeaveCmd.getRelationshipCD(), appForSpecLeaveCmd.getRelationshipReason());
 		}
 		AppAbsence appAbsence = new AppAbsence(companyID,

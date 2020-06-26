@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
@@ -123,7 +123,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput workTimesChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD, 
-			Optional<String> workTimeCD, HolidayApplicationType holidayType);
+			Optional<String> workTimeCD, HolidayAppType holidayType);
 	
 	/**
 	 * 勤務種類変更時処理
@@ -133,7 +133,7 @@ public interface AbsenceServiceProcess {
 	 * @param workTypeCD 勤務種類コード<Optional>
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayApplicationType holidayType, 
+	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, 
 			Optional<String> workTypeCD);
 	
 	/**
@@ -146,7 +146,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
-			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayApplicationType holidayType);
+			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType);
 	
 	/**
 	 * 終日半日休暇変更時処理
@@ -158,7 +158,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
-			boolean displayHalfDayValue, Integer alldayHalfDay, Optional<HolidayApplicationType> holidayType);
+			boolean displayHalfDayValue, Integer alldayHalfDay, Optional<HolidayAppType> holidayType);
 	
 	/**
 	 * 登録前のエラーチェック処理
@@ -196,7 +196,7 @@ public interface AbsenceServiceProcess {
 	 * @param holidayType 休暇種類 
 	 */
 	public void checkRemainVacation(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
-			HdAppSet hdAppSet, HolidayApplicationType holidayType);
+			HdAppSet hdAppSet, HolidayAppType holidayType);
 	
 	/**
 	 * 休暇種類共通エラーチェック
@@ -208,7 +208,7 @@ public interface AbsenceServiceProcess {
 	 * @param alldayHalfDay 終日半日休暇区分
 	 */
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, AppAbsence appAbsence, GeneralDate closureStartDate,
-			HdAppSet hdAppSet, HolidayApplicationType holidayType, Integer alldayHalfDay, boolean mode);
+			HdAppSet hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode);
 	
 	/**
 	 * 年休のチェック処理
@@ -279,7 +279,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> errorCheckByHolidayType(boolean mode, String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate,
-			HolidayApplicationType holidayType, String workTypeCD, List<GeneralDate> holidayDateLst, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Optional<Boolean> mournerAtr);
+			HolidayAppType holidayType, String workTypeCD, List<GeneralDate> holidayDateLst, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Optional<Boolean> mournerAtr);
 	
 	/**
 	 * 休暇申請登録時チェック処理
@@ -295,7 +295,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
-			HolidayApplicationType holidayType, String workTypeCD, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
+			HolidayAppType holidayType, String workTypeCD, Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr);
 	
 	/**
 	 * 勤務種類・就業時間帯情報を取得する

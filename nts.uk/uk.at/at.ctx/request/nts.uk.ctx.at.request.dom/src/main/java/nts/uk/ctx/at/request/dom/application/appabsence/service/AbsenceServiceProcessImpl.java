@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
@@ -182,7 +182,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				approvalRootState.getListApprovalPhaseState());
 		// insert Absence
 		this.appAbsenceRepository.insertAbsence(domain);
-		if(domain.getHolidayAppType().equals(HolidayApplicationType.SPECIAL_HOLIDAY) && domain.getAppForSpecLeave() != null){
+		if(domain.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY) && domain.getAppForSpecLeave() != null){
 			repoSpecLeave.addSpecHd(domain.getAppForSpecLeave());
 		}
 		
@@ -512,7 +512,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public AppAbsenceStartInfoOutput workTimesChangeProcess(String companyID,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD, Optional<String> workTimeCD, HolidayApplicationType holidayType) {
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD, Optional<String> workTimeCD, HolidayAppType holidayType) {
 		// INPUT．「休暇申請起動時の表示情報．勤務時間帯一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTimeLst(new ArrayList<>());
 		// INPUT．「休暇申請起動時の表示情報．選択中の就業時間帯」を更新する
@@ -524,7 +524,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			return appAbsenceStartInfoOutput;
 		}
 		// INPUT．「休暇種類」をチェックする(Check HolidayType được chọn)
-		if (holidayType != null && holidayType == HolidayApplicationType.DIGESTION_TIME) {
+		if (holidayType != null && holidayType == HolidayAppType.DIGESTION_TIME) {
 			// アルゴリズム「必要な時間を算出する」を実行する(Thực hiện [Tính toán thời gian cần thiết])
 			// 9.必要な時間を算出する
 			// pending / chưa đối ứng
@@ -567,7 +567,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayApplicationType holidayType, Optional<String> workTypeCD) {
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, Optional<String> workTypeCD) {
 		// INPUT．「休暇申請起動時の表示情報．選択中の勤務種類」にセットする
 		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypeCD);
 		// 就業時間帯の表示制御フラグを確認する
@@ -578,7 +578,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// 返ってきた「就業時間帯表示フラグ」を「休暇申請起動時の表示情報」にセットする
 		appAbsenceStartInfoOutput.setWorkHoursDisp(controlDispWorkingHours);
 		// INPUT．「休暇種類」をチェックする
-		if(holidayType == HolidayApplicationType.SPECIAL_HOLIDAY) {
+		if(holidayType == HolidayAppType.SPECIAL_HOLIDAY) {
 			// 特別休暇の上限情報取得する
 			appAbsenceStartInfoOutput = this.getSpecAbsenceUpperLimit(companyID, appAbsenceStartInfoOutput, workTypeCD);
 		}
@@ -600,7 +600,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
-			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayApplicationType holidayType) {
+			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
 		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
 
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
@@ -637,7 +637,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, boolean displayHalfDayValue, Integer alldayHalfDay,
-			Optional<HolidayApplicationType> holidayType) {
+			Optional<HolidayAppType> holidayType) {
 		// INPUT．「休暇種類」を確認する
 		if(holidayType.isPresent()) {
 			// 休暇種類変更時処理
@@ -799,7 +799,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public void checkRemainVacation(String companyID, AppAbsence appAbsence,
-			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayApplicationType holidayType) {
+			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType) {
 		/**	・代休チェック区分 - HolidayType: 1*/
 		boolean chkSubHoliday = false;
 		/**	・振休チェック区分  - HolidayType: 7*/
@@ -815,10 +815,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		/**	・超休チェック区分*/
 		boolean chkSuperBreak = true;
 		
-		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayApplicationType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
-		chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayApplicationType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
-		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayApplicationType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
-		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayApplicationType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
+		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
+		chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
+		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
+		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
 		
 		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
 		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
@@ -902,7 +902,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, AppAbsence appAbsence,
-			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayApplicationType holidayType, Integer alldayHalfDay, boolean mode) {
+			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 申請日の矛盾チェック
 		List<ConfirmMsgOutput> confirmMsgLst1 = this.inconsistencyCheck(
@@ -1002,7 +1002,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> errorCheckByHolidayType(boolean mode, String companyID, String employeeID,
-			GeneralDate startDate, GeneralDate endDate, HolidayApplicationType holidayType, String workTypeCD, List<GeneralDate> holidayDateLst,
+			GeneralDate startDate, GeneralDate endDate, HolidayAppType holidayType, String workTypeCD, List<GeneralDate> holidayDateLst,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Optional<Boolean> mournerAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		switch (holidayType) {
@@ -1045,7 +1045,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public List<ConfirmMsgOutput> checkAppAbsenceRegister(boolean mode, String companyID, AppAbsence appAbsence,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayApplicationType holidayType, String workTypeCD,
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, String workTypeCD,
 			Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 社員の当月の期間を算出する

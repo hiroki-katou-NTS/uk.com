@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 
 /**
@@ -40,6 +40,6 @@ public class DisplayReason implements DomainAggregate {
 	/**
 	 * 休暇申請の種類
 	 */
-	private Optional<HolidayApplicationType> holidayAppType;
+	private Optional<HolidayAppType> holidayAppType;
 	
 }
