@@ -11,13 +11,13 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class PortalStampSettingsFinder {
+public class TimeStampInputSettingFinder {
 
 	@Inject
 	private PortalStampSettingsRepository portalStampSettingsRepo;
 	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
-	public Optional<PortalStampSettingsDto> get() {
+	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
 		Optional<PortalStampSettings> domain = portalStampSettingsRepo.get(AppContexts.user().companyId());
 		if(domain.isPresent()) {
 			return Optional.of(PortalStampSettingsDto.fromDomain(domain.get()));

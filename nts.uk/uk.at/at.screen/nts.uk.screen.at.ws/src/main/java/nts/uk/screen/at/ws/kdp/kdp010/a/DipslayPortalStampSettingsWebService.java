@@ -7,20 +7,20 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
-import nts.uk.screen.at.app.query.kdp.kdp010.a.PortalStampSettingsFinder;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.TimeStampInputSettingFinder;
 
-@Path("at/record/stamp/portalstampsettings")
+@Path("at/record/stamp/timestampinputsetting")
 @Produces("application/json")
 public class DipslayPortalStampSettingsWebService extends WebService {
 
 	@Inject
-	private PortalStampSettingsFinder portalStampSettingsFinder;
+	private TimeStampInputSettingFinder portalStampSettingsFinder;
 	
 	/**打刻の前準備(ポータル)を表示する  */
 	@POST
-	@Path("get")
+	@Path("portalstampsettings/get")
 	public PortalStampSettingsDto getEmployeeStampData() {
-		return portalStampSettingsFinder.get().orElse(null);
+		return portalStampSettingsFinder.getPortalStampSettings().orElse(null);
 	}
 }
 
