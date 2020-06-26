@@ -28,7 +28,7 @@
 
 		<ui:define name="content">
 			<div id="content-area" class="cf">
-				<div class="cf floatoneline">
+				<div class="cf floatoneline" data-bind="visible : showSelectEmpComponent ">
 					<select-employee-by-name params="input: input , callback: seletedEmployee"></select-employee-by-name>
 				</div>
 				

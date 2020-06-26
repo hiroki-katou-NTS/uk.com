@@ -35,30 +35,27 @@ module kdp003.f.vm {
         oneCompanyRegistered: KnockoutObservable<boolean> = ko.observable(true);
         companyCdAndName: KnockoutObservable<string> = ko.observable('companyCdAndName');
 
+        
         // trường hợp select vào label [ 一覧にない社員で打刻する ] PA4 trong component chọn employee
-        selectIdMode: KnockoutObservable<boolean> = ko.observable(false);
+        selectIdMode: KnockoutObservable<boolean> = ko.observable(true);
         employeeCodeInput: KnockoutObservable<string> = ko.observable('employeeCode');
 
         // trường hợp chọn nhân viên trong list nhân viên PA5.
-        selectNameMode: KnockoutObservable<boolean> = ko.observable(true);
+        selectNameMode: KnockoutObservable<boolean> = ko.observable(false);
         employeeCodeView: KnockoutObservable<string> = ko.observable('employeeCode đây');
 
         // lấy setting trong domain 共有打刻の打刻設定
-        isPasswordRequired: KnockoutObservable<boolean> = ko.observable(false);
+        isPasswordRequired: KnockoutObservable<boolean> = ko.observable(true);
         password: KnockoutObservable<string> = ko.observable('');
 
 
         constructor() {
             let self = this;
-
-            if (self.modeAdmin) { }
-            else if (self.modeEmployee) { }
-
+            
             if (!self.isPasswordRequired()) {
                 var currentDialog = nts.uk.ui.windows.getSelf();
                 currentDialog.setHeight(230);
-                $("#f20").css("margin-top","14px");
-
+                $("#f20").css("margin-top", "14px");
             }
 
         }
@@ -67,6 +64,68 @@ module kdp003.f.vm {
             let self = this,
                 dfd = $.Deferred();
 
+            if (self.modeAdmin) {
+                
+                
+                
+            } else if (self.modeEmployee) {
+
+
+
+            }
+
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        getLogginSetting(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            if (self.modeAdmin) {
+                service.getLogginSetting().done(function(data) {
+                    if (_.size(data) == 1) {
+                        self.oneCompanyRegistered(true);
+                        self.selectCompFromListMode(false);
+                        self.inputCompanyCodeMode(false);
+
+                    } else if (_.size(data) > 1) {
+                        self.oneCompanyRegistered(false);
+                        self.selectCompFromListMode(true);
+                        self.inputCompanyCodeMode(false);
+                    }
+                    
+                    self.selectIdMode(true);
+                    self.selectNameMode(false);
+                    self.isPasswordRequired(true);
+
+                });
+
+            } else if (self.modeEmployee) {
+                let employeeSelected = nts.uk.ui.windows.getShared('fromScreenBToFScreen');
+                self.oneCompanyRegistered(true);
+                self.selectCompFromListMode(false);
+                self.inputCompanyCodeMode(false);
+                
+                if(employeeSelected){
+                    self.selectIdMode(false);
+                    self.selectNameMode(true);
+                    
+                    
+                }else {
+                    self.selectIdMode(true);
+                    self.selectNameMode(false);
+                    
+                }
+                
+                
+
+            } else if (self.modeFingerVein) {
+                
+            
+            }
+
+
+            
             dfd.resolve();
             return dfd.promise();
         }

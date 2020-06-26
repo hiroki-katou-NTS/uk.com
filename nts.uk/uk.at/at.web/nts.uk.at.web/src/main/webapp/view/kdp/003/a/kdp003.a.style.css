@@ -1,93 +1,116 @@
-html{
-  overflow: hidden;
-}
-#content-area {
-  overflow-y: scroll;
-}
-#kdp002a{
-  width: 1200px;
-  min-width: 150vmin;
-}
-#genText {
-  margin-left: 20px;
+html {
+	overflow: hidden;
 }
 
-#stamp-input {
-  min-width: 63vmin;
+#content-area {
+	overflow-y: scroll;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #stamp-info {
-  min-width: 37vmin;
+	min-width: 0px !important;
+	display: none !important;
 }
-#stamp-desc{
-  height: 73px;
-  width: 73vmin;
-  font-size: 1.5vmin;
-  padding: 0 0 0 0.5vmin;
-  word-break: break-word;
-  word-wrap: break-word;
+
+#genText {
+	margin-left: 20px;
+}
+
+#stamp-input {
+	min-width: 63vmin;
+}
+
+#stamp-info {
+	min-width: 37vmin;
+}
+
+#stamp-desc {
+	height: 73px;
+	width: 73vmin;
+	font-size: 1.5vmin;
+	padding: 0 0 0 0.5vmin;
+	word-break: break-word;
+	word-wrap: break-word;
 }
 
 #stamp-date {
-  text-align: center;
+	text-align: center;
 }
 
 #stamp-time {
-  text-align: center;
-  margin-top: 10px;
+	text-align: center;
+	margin-top: 10px;
 }
+
 #stamp-header {
-  padding: 10px;
+	padding: 10px;
 }
+
 #stamp-header .panel {
-  padding: 0px;
+	padding: 0px;
 }
+
 #stamp-date-text {
-  font-size: 5vmin !important;
+	font-size: 5vmin !important;
 }
+
 #stamp-time-text {
-  font-size: 10vmin !important;
+	font-size: 10vmin !important;
+	padding-left: 157px;
+	/* padding-left: 150px; truong hop dung component */
 }
-.full-width{
-  width: 100%;
+
+.full-width {
+	width: 100%;
 }
 
 #stamp-history-tbl #tbl-header, #tbl-header-time {
-  border: 1px solid #CCC;
-  background-color: #CFF1A5;
-  padding: 5px 0 5px 5px;
-  text-align: center;
+	border: 1px solid #CCC;
+	background-color: #CFF1A5;
+	padding: 5px 0 5px 5px;
+	text-align: center;
 }
 
 #tbl-header {
-  font-weight: bold;
+	font-weight: bold;
 }
-.inline-bl{
-  display: inline-block;
-  width: 30px;
+
+.inline-bl {
+	display: inline-block;
+	width: 30px;
 }
-.ui-widget.ui-tabs > .ui-tabs-nav > li {
-  max-width: 22vmin;
+
+.ui-widget.ui-tabs>.ui-tabs-nav>li {
+	max-width: 22vmin;
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-  width: 10.4vmin;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  font-size: 1.7vmin;
-}
-#stamp-history-tbl th {
-  text-align: center;
-}
-#time-card-list td {
-  text-align: center;
+	width: 10.4vmin;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: center;
+	font-size: 1.7vmin;
 }
 
-#tab-1, #tab-2, #tab-3, #tab-4, #tab-5{
-  min-width: 63vmin;
+#stamp-history-tbl th {
+	text-align: center;
+}
+
+#time-card-list td {
+	text-align: center;
+}
+
+#tab-1, #tab-2, #tab-3, #tab-4, #tab-5 {
+	min-width: 63vmin;
 }
 
 .floatoneline {
-	float: left;  
+	float: left;
+}
+
+#kdp002a {
+	width: 720px !important;
+	min-width: 720px !important;
 }

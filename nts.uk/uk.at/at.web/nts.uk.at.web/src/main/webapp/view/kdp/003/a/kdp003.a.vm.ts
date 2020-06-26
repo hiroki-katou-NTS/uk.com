@@ -27,8 +27,10 @@ module nts.uk.at.view.kdp003.a {
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
             serverTime: KnockoutObservable<any> = ko.observable('');
+            showSelectEmpComponent: KnockoutObservable<boolean> = ko.observable(true);
             input: any;
-            administratorMode: boolean;
+            firstLogin: boolean;
+            employeeSelected : any;
 
             constructor() {
                 let self = this;
@@ -36,7 +38,9 @@ module nts.uk.at.view.kdp003.a {
             }
 
             public seletedEmployee(data): void {
+                let self = this;
                 console.log(data);
+                self.employeeSelected =  data;
             }
 
             public startPage(infoAdministrator): JQueryPromise<void> {
@@ -45,18 +49,18 @@ module nts.uk.at.view.kdp003.a {
                 console.log('start ' + infoAdministrator);
                 
                 
-                
-                /*dfd.resolve();
                 if (infoAdministrator) {
-                    self.administratorMode = true;
+                    self.firstLogin = false;
                 } else {
-                    self.administratorMode = false;
-                    subModal('/view/kdp/004/k/index.xhtml', { title: '' }).onClosed(() => {
+                    self.firstLogin = true;
+                    
+                    subModal('/view/kdp/003/f/index.xhtml', { title: '' }).onClosed(() => {
                         
                     });
-                };*/
+                };
+                dfd.resolve();
                 
-                
+                /*nts.uk.ui.block.grayout();
                 service.startPage().done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
@@ -70,14 +74,35 @@ module nts.uk.at.view.kdp003.a {
                         self.stampResultDisplay(res.stampResultDisplay);
                         // add correction interval
                         self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
+                        self.setWidth();
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
-                    })
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });*/
 
                 return dfd.promise();
+            }
+            
+            public setWidth(){
+                let self = this;
+                if(!self.showSelectEmpComponent()){
+                    $("#tab-1").css("min-width", "945px");
+                    $("#tab-2").css("min-width", "945px");
+                    $("#tab-3").css("min-width", "945px");
+                    $("#tab-4").css("min-width", "945px");
+                    $("#tab-5").css("min-width", "945px");
+                
+                }else{
+                    $("#tab-1").css("min-width", "63vmin");
+                    $("#tab-2").css("min-width", "63vmin");
+                    $("#tab-3").css("min-width", "63vmin");
+                    $("#tab-4").css("min-width", "63vmin");
+                    $("#tab-5").css("min-width", "63vmin");
+                }
             }
 
             public getTimeCardData() {
@@ -162,13 +187,14 @@ module nts.uk.at.view.kdp003.a {
 
             public openScreenB(button, layout) {
                 let self = this;
-
+                nts.uk.ui.windows.setShared("fromScreenBToFScreen", self.employeeSelected );
+                
 
             }
 
             public openScreenC(button, layout) {
                 let self = this;
-
+                        
             }
 
             public openKDP002T(button: ButtonSetting, layout) {

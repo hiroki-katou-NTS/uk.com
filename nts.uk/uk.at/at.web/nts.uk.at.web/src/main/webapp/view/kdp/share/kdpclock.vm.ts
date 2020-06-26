@@ -9,10 +9,14 @@ module nts.uk.at.view.kdp.share {
             <div class="panel" id="stamp-date"
                 data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
             <span id="stamp-date-text" data-bind="text: displayDate"></span>
+            
+
             </div>
                 <div class="panel" id="stamp-time"
-                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
+                    data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
                 <span id="stamp-time-text" data-bind="text: displayTime"></span>
+                <button class="btn-setting" type="button" tabindex="16"></button>
+                <button class="proceed btnA4">打刻履歴</button>
             </div>
         </div>
     `})

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.query.kdp.kdp003.f;
+package nts.uk.screen.at.app.query.kdp.kdp003.f.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

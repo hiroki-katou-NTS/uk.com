@@ -9,20 +9,25 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
+
 /**
  * @author laitv
  * 打刻入力のログイン設定を取得する
- *
+ * Screen 1
  */
 @Stateless
 public class GetLoginSettingsStampInput {
 	
 	@Inject
-	private GetListCompanyHasStamped comHaveBeenStampedFinder;
+	private GetListCompanyhaveBeenStamped finder;
 	
+	/**
+	 * 【input】
+	 * 【output】 ・打刻会社一覧
+	 */
 	public List<GetListCompanyHasStampedDto> getLoginSettingsForTimeStampInput(){
-		
-		return comHaveBeenStampedFinder.getListOfCompaniesHaveBeenStamped(Optional.empty());
+		return finder.getListOfCompaniesHaveBeenStamped(Optional.empty());
 		
 	}
 }

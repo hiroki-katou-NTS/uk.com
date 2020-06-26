@@ -3,11 +3,11 @@ module kdp003.f.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        getData:          'hr/notice/report/regis/person/document/findAll'
+        getLogginSetting:  'ctx/sys/gateway/kdp/login/getLogginSetting'
     };
 
-    export function getData(param: any) {
-        return ajax('hr', paths.getData, param);
+    export function getLogginSetting() {
+        return ajax('at', paths.getLogginSetting);
     }
 
 }
