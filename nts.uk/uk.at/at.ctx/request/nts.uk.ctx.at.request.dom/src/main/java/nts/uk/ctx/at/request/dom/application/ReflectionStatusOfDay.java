@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 
 /**
  * refactor 4
- * 対象日の反映状態
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.対象日の反映状態
  * @author Doan Duy Hung
  *
  */
