@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting;
+package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
 import lombok.AllArgsConstructor;
 
 /**
+ * refactor 4
  * 承認ルートの基準日
  * @author Doan Duy Hung
  *
