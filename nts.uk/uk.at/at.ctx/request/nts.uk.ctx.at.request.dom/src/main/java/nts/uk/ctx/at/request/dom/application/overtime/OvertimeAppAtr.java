@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 残業申請区分
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.残業休出申請.残業申請.残業申請区分
  * @author Doan Duy Hung
  *
  */
