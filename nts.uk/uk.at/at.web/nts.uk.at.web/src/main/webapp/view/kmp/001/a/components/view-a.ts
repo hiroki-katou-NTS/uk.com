@@ -13,13 +13,13 @@ const template = `
 	<div class="list-component float-left viewa">
 		<div class="caret-right caret-background bg-green" style="padding: 10px;">
 			<table id="list_employee" data-bind="ntsGridList: {
-						height: 300,
+						height: 483,
 						options: employees,
 						optionsValue: 'code',
 						columns: [
-				            { headerText: $i18n('KMP001_8'), prop: 'code', width: 100 },
-				            { headerText: $i18n('KMP001_9'), prop: 'name', width: 130 },
-				            { headerText: $i18n('KMP001_10'), prop: 'joinDate', width: 80 },
+				            { headerText: $i18n('KMP001_8'), prop: 'code', width: 112 },
+				            { headerText: $i18n('KMP001_9'), prop: 'name', width: 110 },
+				            { headerText: $i18n('KMP001_10'), prop: 'joinDate', width: 110 },
 	 						{ headerText: $i18n('KMP001_11'), prop: 'config', width: 70, template: '<div style=\\'text-align: center\\'>$\{config}</div>' }
 				        ],
 						multiple: false,
@@ -145,7 +145,7 @@ class ViewA extends ko.ViewModel {
 
 					// xu ly lay casc thong tin lien quan toi code o day
 					
-					debugger;
+					// debugger;
 
 					vm.employees(employees);
 				}
@@ -164,7 +164,7 @@ class ViewA extends ko.ViewModel {
 }
 
 const editorTemplate = `
-<div id= "info-employee">
+<div>
 	<table class="layout-grid">
 		<tbody>
 			<tr>
@@ -202,7 +202,7 @@ const editorTemplate = `
 		</tbody>
 	</table>
 </div>
-<div id= "info-employee" style="margin-top: 50px">
+<div style="margin-top: 127px">
 	<table class="layout-grid">
 	<!-- ko if: !ko.toJS(model.cardNos).length -->
 	<tbody>

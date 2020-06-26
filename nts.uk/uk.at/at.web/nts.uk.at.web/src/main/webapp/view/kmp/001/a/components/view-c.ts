@@ -29,7 +29,7 @@ const template = `
 			</table>
 		</div>
 		<div class="caret-right caret-background bg-green" style="padding: 10px;">
-			<div style="width: 460px"
+			<div style="width: 540px"
 				data-bind="ntsSearchBox: {
 					label: $i18n('KMP001_22'),
 					searchMode: 'filter',
@@ -48,10 +48,10 @@ const template = `
 						options: items,
 						optionsValue: 'code',
 						columns: [
-				            { headerText: $i18n('KMP001_22'), prop: 'code', width: 150 },
-				            { headerText: $i18n('KMP001_27'), prop: 'code1', width: 100 },
-				            { headerText: $i18n('KMP001_28'), prop: 'name', width: 80 },
-	 						{ headerText: $i18n('KMP001_29'), prop: 'name', width: 130 }
+				            { headerText: $i18n('KMP001_22'), prop: 'code', width: 180 },
+				            { headerText: $i18n('KMP001_27'), prop: 'code1', width: 140 },
+				            { headerText: $i18n('KMP001_28'), prop: 'name', width: 65 },
+	 						{ headerText: $i18n('KMP001_29'), prop: 'startDate', width: 145 }
 				        ],
 						multiple: false,
 						enable: true,
@@ -61,7 +61,7 @@ const template = `
 			</div>
 		</div>
 	</div>
-	<div class="model-component float-left " id= "info-employee">
+	<div class="model-component float-left ">
 		<table>
 			<tbody>
 				<tr>
@@ -118,11 +118,20 @@ class ViewCComponent extends ko.ViewModel {
 	public params!: Params;
 
 	public items: KnockoutObservableArray<any> = ko.observableArray([
-		{ code: '001', code1: '001',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
-		{ code: '002', code1: '002',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
-		{ code: '003', code1: '003', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
-		{ code: '004', code1: '004', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
-		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' }
+		{ code: '00000000000000000001', code1: '現在レビューをいただ',  name: 'Nittsu', startDate: '2000/01/01 17:30', endDate: '2000/01/01'},
+		{ code: '002', code1: '現在レビューをいただ',  name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30'},
+		{ code: '003', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '004', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
+		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' }
 	]);
 	public currentCode: KnockoutObservable<string> = ko.observable('');
 	

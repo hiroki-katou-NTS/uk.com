@@ -8,7 +8,7 @@ const template = `
 </div>
 <div class="view-kmp">
 	<div class="float-left list-component">
-		<div style="width: 480px"
+		<div style="width: 440px"
 			data-bind="ntsSearchBox: {
 				label: $i18n('KMP001_22'),
 				searchText: $i18n('KMP001_23'),
@@ -29,8 +29,8 @@ const template = `
 					optionsValue: 'code',
 					columns: [
 			            { headerText: $i18n('KMP001_22'), prop: 'code', width: 180 },
-			            { headerText: $i18n('KMP001_8'), prop: 'code1', width: 130 },
-			            { headerText: $i18n('KMP001_9'), prop: 'name', width: 150 }
+			            { headerText: $i18n('KMP001_8'), prop: 'code1', width: 112 },
+			            { headerText: $i18n('KMP001_9'), prop: 'name', width: 110 }
 			        ],
 					multiple: false,
 					enable: true,
@@ -39,7 +39,7 @@ const template = `
 			</table>
 		</div>
 	</div>
-	<div class="float-left model-component" id= "info-employee">
+	<div class="float-left model-component">
 		<table>
 			<tbody>
 				<tr>
@@ -104,10 +104,17 @@ class ViewBComponent extends ko.ViewModel {
 	public params!: Params;
 
 	public items: KnockoutObservableArray<any> = ko.observableArray([
-		{ code: '001', code1: '001',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
+		{ code: '00000000000000000001', code1: '000000000009',  name: 'に同じ関数を呼', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '002', code1: '002',  name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01'},
 		{ code: '003', code1: '003', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
 		{ code: '004', code1: '004', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
+		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' },
 		{ code: '005', code1: '005', name: 'Nittsu', startDate: '2000/01/01', endDate: '2000/01/01' }
 	]);
 	public currentCode: KnockoutObservable<string> = ko.observable('');
