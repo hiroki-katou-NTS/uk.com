@@ -27,7 +27,7 @@ module nts.uk.at.view.kdp002.a {
                             self.getTimeCardData();
                         });
                         let stampToSuppress = res.stampToSuppress;
-                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
+                        stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
                         // add correction interval

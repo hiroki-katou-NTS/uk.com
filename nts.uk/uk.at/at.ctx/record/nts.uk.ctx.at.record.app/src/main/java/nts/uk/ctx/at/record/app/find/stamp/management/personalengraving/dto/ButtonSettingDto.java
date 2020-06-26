@@ -119,6 +119,11 @@ public class ButtonSettingDto {
 				&& this.btnReservationArt == ReservationArt.NONE.value) {
 			return 3;
 		}
+		if (this.changeClockArt == ChangeClockArt.WORKING_OUT.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.BOUNCE.value && this.changeHalfDay == false
+				&& this.btnReservationArt == ReservationArt.NONE.value) {
+			return 3;
+		}
 		if (this.changeClockArt == ChangeClockArt.OVER_TIME.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				&& this.btnReservationArt == ReservationArt.NONE.value) {
