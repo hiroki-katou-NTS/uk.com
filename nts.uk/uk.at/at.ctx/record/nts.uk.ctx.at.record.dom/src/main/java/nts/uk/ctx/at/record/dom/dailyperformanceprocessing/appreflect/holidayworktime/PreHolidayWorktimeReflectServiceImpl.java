@@ -102,7 +102,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		if(!daily.getAttendanceTimeOfDailyPerformance().isPresent()
 				|| !daily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
 			AttendanceTimeOfDailyPerformance attendanceTime = AttendanceTimeOfDailyPerformance.allZeroValue(employeeId, baseDate);
-			daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime));
+			daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime.getTime()));
 			timeAndAnyItemUpService.addAndUpdate(daily);
 			//dailyTransaction.updated(employeeId, baseDate);
 		}				

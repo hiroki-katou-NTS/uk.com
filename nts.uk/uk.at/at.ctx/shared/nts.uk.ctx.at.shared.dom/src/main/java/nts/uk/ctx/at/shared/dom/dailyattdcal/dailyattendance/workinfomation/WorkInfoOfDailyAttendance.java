@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 日別勤怠の勤務情報
@@ -63,5 +65,14 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.setCalculationState(state);
 	}
 	
+	/**
+	 * 指定された勤務回数の予定時間帯を取得する
+	 * @param workNo
+	 * @return　予定時間帯
+	 */
+	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
+		return this.scheduleTimeSheets.stream()
+				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();	
+	}
 	
 }

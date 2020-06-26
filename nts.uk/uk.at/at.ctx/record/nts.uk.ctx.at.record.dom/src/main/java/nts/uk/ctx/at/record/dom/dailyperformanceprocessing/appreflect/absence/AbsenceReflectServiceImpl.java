@@ -45,17 +45,17 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		CommonReflectParameter absencePara = param.getCommon();
 			GeneralDate loopDate = absencePara.getAppDate();
 			IntegrationOfDaily dailyInfor = preOTService.calculateForAppReflect(absencePara.getEmployeeId(), loopDate);
-			WorkInfoOfDailyPerformance workInfor = dailyInfor.getWorkInformation();
+			WorkInfoOfDailyPerformance workInfor = new WorkInfoOfDailyPerformance(param.getCommon().getEmployeeId(), param.getCommon().getAppDate(), dailyInfor.getWorkInformation());
 			//1日休日の判断
-			if(workInfor.getRecordInfo().getWorkTypeCode() != null
-					&& workTypeRepo.checkHoliday(workInfor.getRecordInfo().getWorkTypeCode().v())) {
+			if(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
+					&& workTypeRepo.checkHoliday(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v())) {
 				return;
 			}
 			boolean isRecordWorkType = false;
 			//予定勤種の反映
-			if(workInfor.getScheduleInfo() == null 
-					|| workInfor.getScheduleInfo().getWorkTimeCode() == null
-					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, workInfor.getScheduleInfo().getWorkTimeCode().v())) {
+			if(workInfor.getWorkInformation().getScheduleInfo() == null 
+					|| workInfor.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null
+					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, workInfor.getWorkInformation().getScheduleInfo().getWorkTimeCode().v())) {
 				isRecordWorkType = true;
 				workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), true, dailyInfor);
 			}				
@@ -107,7 +107,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Override
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode,
 			IntegrationOfDaily dailyInfor) {
-		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode, dailyInfor.getAttendanceLeave());
+		TimeLeavingOfDailyPerformance dailyPerformance = new TimeLeavingOfDailyPerformance(employeeId, baseDate, dailyInfor.getAttendanceLeave().get());
+		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode, Optional.ofNullable(dailyPerformance));
 		//開始終了時刻をクリアするかチェックする 値：０になる。	
 		if(!isCheckClean) return;
 		workTimeUpdate.cleanRecordTimeData(employeeId, baseDate, dailyInfor);
@@ -143,7 +144,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	 * @return
 	 */
 	private boolean checkReflectNenkyuTokkyu(TimeLeavingOfDailyPerformance timeLeavingOfDaily, int workNo) {
-		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getTimeLeavingWorks().stream()
+		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getAttendance().getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo().v() == workNo).collect(Collectors.toList());
 		if(!timeLeavingWorks.isEmpty()) {
 			TimeLeavingWork timeLeaving1 = timeLeavingWorks.get(0);
@@ -153,7 +154,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optWorkStamp = attendanceStamp.getStamp();
 				if(optWorkStamp.isPresent()) {
 					WorkStamp workStamp = optWorkStamp.get();
-					if(workStamp.getStampSourceInfo() == TimeChangeMeans.SPR) {
+					if(workStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION) {
 						return false;
 					}
 				}
@@ -164,7 +165,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optStamp = leaveStamp.getStamp();
 				if(optStamp.isPresent()) {
 					WorkStamp stamp = optStamp.get();
-					if(stamp.getStampSourceInfo() == TimeChangeMeans.SPR) {
+					if(stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION) {
 						return false;
 					}
 				}

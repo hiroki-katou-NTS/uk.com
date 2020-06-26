@@ -85,7 +85,7 @@ public class FlexTimeByPeriod implements Cloneable {
 		
 		for (val attendanceTime : attendanceTimeOfDailyMap.entrySet()){
 			if (!period.contains(attendanceTime.getValue().getYmd())) continue;
-			val actualWorkingTimeOfDaily = attendanceTime.getValue().getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTime.getValue().getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			val excessPrescribedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 			val overTimeOfDaily = excessPrescribedTimeOfDaily.getOverTimeWork();

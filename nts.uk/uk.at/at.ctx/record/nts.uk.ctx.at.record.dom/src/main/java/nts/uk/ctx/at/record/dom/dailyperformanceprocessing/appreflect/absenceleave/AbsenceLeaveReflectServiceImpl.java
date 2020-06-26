@@ -134,9 +134,9 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workInforRepo.find(employeeId, dateData);
 		if(optWorkInfor.isPresent()) {
 			WorkInfoOfDailyPerformance workInfo = optWorkInfor.get();
-			if(workInfo.getScheduleInfo().getWorkTimeCode() != null) {
+			if(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null) {
 				outData.setChkReflect(false);
-				outData.setWorkTimeCode(workInfo.getScheduleInfo().getWorkTimeCode().v());
+				outData.setWorkTimeCode(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode().v());
 				return outData;
 			}
 		}
@@ -203,6 +203,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	public void reflectRecordStartEndTime(CommonReflectParameter param, IntegrationOfDaily dailyInfor) {
 		GeneralDate appDate = param.getAppDate();
 		//勤種の反映
+		TimeLeavingOfDailyPerformance dailyPerformance = new TimeLeavingOfDailyPerformance(param.getEmployeeId(), appDate, dailyInfor.getAttendanceLeave().get());
 		workUpdate.updateRecordWorkType(param.getEmployeeId(), appDate, 
 				param.getWorkTypeCode(), false, dailyInfor);
 		//1日半日出勤・1日休日系の判定
@@ -215,7 +216,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 				workUpdate.updateRecordWorkTime(param.getEmployeeId(), appDate, null, false, dailyInfor);
 			}
 			//開始終了時刻が反映できるか(1日休日)
-			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), appDate, 1, true, dailyInfor.getAttendanceLeave())) {
+			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), appDate, 1, true, Optional.of(dailyPerformance))) {
 				//開始時刻の反映 開始時刻をクリア
 				//終了時刻の反映 終了時刻をクリア
 				workTimeUpdate.cleanRecordTimeData(param.getEmployeeId(), appDate, dailyInfor);
@@ -246,7 +247,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return false;
 		}
 		TimeLeavingOfDailyPerformance timeLeaving = optTimeLeaving.get();
-		List<TimeLeavingWork> leavingStamp = timeLeaving.getTimeLeavingWorks();
+		List<TimeLeavingWork> leavingStamp = timeLeaving.getAttendance().getTimeLeavingWorks();
 		if(leavingStamp.isEmpty()) {
 			return false;
 		}

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.PClogOnOffLack
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrectOrderAlgorithm;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubleStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -85,11 +87,12 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> lackOfTimeLeavingStamping(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
-		String empId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
-		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
+		String empId = integrationOfDaily.getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getYmd();
+		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(empId, targetDate, integrationOfDaily.getWorkInformation());
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId, targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
 		// 出勤系打刻漏れをチェックする
-		returnList.add(this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, integrationOfDaily.getWorkInformation(),
-				integrationOfDaily.getAttendanceLeave().orElse(null)));
+		returnList.add(this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance));
 		// 外出系打刻漏れをチェックする
 		returnList.addAll(goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyId, empId, targetDate,
 				integrationOfDaily.getOutingTime().orElse(null)));

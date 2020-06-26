@@ -333,15 +333,15 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			if(!optWorkInfor.isPresent()) {
 				return false;
 			}
-			List<ScheduleTimeSheet> lstScheduleTimeSheets = optWorkInfor.get().getScheduleTimeSheets()
+			List<ScheduleTimeSheet> lstScheduleTimeSheets = optWorkInfor.get().getWorkInformation().getScheduleTimeSheets()
 					.stream()
 					.filter(x -> x.getWorkNo().v() == frameNo).collect(Collectors.toList());
 			
 			//取得した予定出勤時刻に値がない  OR 
 			//（取得した編集状態が手修正（本人）AND 手修正（他人）ではない）
 			if(lstScheduleTimeSheets.isEmpty()
-					|| (dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_MYSELF
-					&& dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_OTHER)) {
+					|| (dailyData.getEditState().getEditStateSetting() != EditStateSetting.HAND_CORRECTION_MYSELF
+					&& dailyData.getEditState().getEditStateSetting() != EditStateSetting.HAND_CORRECTION_OTHER)) {
 				return true;
 			}
 		}

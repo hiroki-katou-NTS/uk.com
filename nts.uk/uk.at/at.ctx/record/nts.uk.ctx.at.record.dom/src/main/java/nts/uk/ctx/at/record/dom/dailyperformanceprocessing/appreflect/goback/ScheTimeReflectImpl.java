@@ -163,6 +163,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Override
 	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect, IntegrationOfDaily dailyInfor) {
 		String tmpWorkTimeCode;
+		TimeLeavingOfDailyPerformance dailyPerformance = new TimeLeavingOfDailyPerformance(para.getEmployeeId(), para.getDateData(), dailyInfor.getAttendanceLeave().get());
 		//INPUT．勤種・就時の反映できるフラグをチェックする
 		if(workTypeTimeReflect) {
 			tmpWorkTimeCode = para.getGobackData().getWorkTimeCode();
@@ -173,12 +174,12 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 					: dailyInfor.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
-		boolean isStart1 = this.checkAttendenceReflect(para, 1, true, dailyInfor.getAttendanceLeave());
+		boolean isStart1 = this.checkAttendenceReflect(para, 1, true, Optional.of(dailyPerformance));
 		//ジャスト遅刻により時刻を編集する
 		//開始時刻を反映する 
 		Integer startTime1 = isStart1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getStartTime1(), 1, true) : null;
 		//退勤時刻を反映できるか
-		boolean isEnd1 = this.checkAttendenceReflect(para, 1, false, dailyInfor.getAttendanceLeave());
+		boolean isEnd1 = this.checkAttendenceReflect(para, 1, false, Optional.of(dailyPerformance));
 		//ジャスト早退により時刻を編集する
 		//終了時刻の反映
 		Integer endTime1 = isEnd1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false) : null;		
@@ -214,7 +215,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return true;
 			}
 			TimeLeavingOfDailyPerformance timeLeave = optTimeLeave.get();
-			List<TimeLeavingWork> lstTimeLeaveWork = timeLeave.getTimeLeavingWorks().stream().filter(x-> x.getWorkNo().v() == frameNo)
+			List<TimeLeavingWork> lstTimeLeaveWork = timeLeave.getAttendance().getTimeLeavingWorks().stream().filter(x-> x.getWorkNo().v() == frameNo)
 					.collect(Collectors.toList());
 			if(lstTimeLeaveWork.isEmpty()) {
 				return true;
