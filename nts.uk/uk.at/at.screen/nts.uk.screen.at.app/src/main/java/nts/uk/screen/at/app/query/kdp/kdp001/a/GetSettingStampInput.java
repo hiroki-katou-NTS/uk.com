@@ -11,8 +11,11 @@ import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
+import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
+import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -52,6 +55,9 @@ public class GetSettingStampInput {
 	private GetListStampEmployeeService stampEmployeeService;
 	@Inject
 	private GetStampTypeToSuppressService stampTypeToSuppressService;
+	
+	@Inject
+	private StampResultDisplayRepository stampResultRepo;
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
@@ -89,8 +95,16 @@ public class GetSettingStampInput {
 		}
 
 		result.setPortalStampSettings(PortalStampSettingsDto.fromDomain(settingOpt.get()));
-
-		// 2取得する(@Require, 社員ID, 年月日)
+		// 2:ログイン会社ID
+		
+		Optional<StampResultDisplay> stampResultOpt = this.stampResultRepo.getStampSet(comppanyID);
+		
+		if (stampResultOpt.isPresent()) {
+			StampResultDisplayDto stampResultDto = new StampResultDisplayDto(stampResultOpt);
+			result.setStampResultDisplayDto(stampResultDto);
+		}
+		
+		// 3: 取得する(@Require, 社員ID, 年月日)
 		String employeeId = AppContexts.user().employeeId();
 
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(-3));
@@ -111,7 +125,7 @@ public class GetSettingStampInput {
 			}
 			StampToSuppress stampToSuppress = null;
 
-			if (settingOpt.get().getSuppressStampBtn() == true) {
+			if (settingOpt.get().isButtonEmphasisArt()) {
 				GetStampTypeToSuppressServiceRequireImpl stampTypeRequire = new GetStampTypeToSuppressServiceRequireImpl(
 						stampSetPerRepo, settingsSmartphoneStampRepo, portalStampSettingsrepo, stampRecordRepo,
 						stampRepo, stampCardRepo, preRepo, workingService);

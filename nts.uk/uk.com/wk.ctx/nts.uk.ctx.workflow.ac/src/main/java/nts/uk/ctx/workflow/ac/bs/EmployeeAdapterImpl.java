@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
@@ -29,6 +30,7 @@ import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoRQ18;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
@@ -36,7 +38,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.ResultRequest596Import;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmpImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmployeeApproveAdapterImpl.
@@ -233,6 +234,21 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 		val wkp = wkplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
 		if(wkp == null) return Optional.empty();
 		return Optional.of(wkp.getWorkplaceId());
+	}
+
+	@Override
+	public List<EmpInfoImport> getEmpInfo(List<String> lstSid) {
+		return employeePub.getEmpInfo(lstSid).stream()
+				.map(x -> new EmpInfoImport(
+						x.getBirthDay(), 
+						x.getEmployeeId(), 
+						x.getEmployeeCode(),
+						x.getEntryDate(), 
+						x.getGender(), 
+						x.getPId(), 
+						x.getBusinessName(), 
+						x.getRetiredDate()))
+				.collect(Collectors.toList());
 	}
 	
 	

@@ -112,7 +112,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void insertPage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId));
+		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
 	}
 
 	/**
@@ -126,9 +126,9 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
-		
-		if (oldData.isPresent()) {
-			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId);
+
+		if(oldData.isPresent()){
+			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId, 1);
 			oldData.get().pageName = newData.pageName;
 			oldData.get().buttonLayoutType = newData.buttonLayoutType;
 			oldData.get().pageComment = newData.pageComment;
@@ -155,37 +155,45 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 				} else {
 					StampType stampType = null;
 					
-					if(optional2.get().getButtonType().getStampType().isPresent() && !(optional2.get().getButtonType().getStampType().get().getChangeHalfDay() == null 
-							&& (!optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() && optional2.get().getButtonType().getStampType().get().getGoOutArt().get() == null) 
-							&& optional2.get().getButtonType().getStampType().get().getSetPreClockArt() == null
-							&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
-							&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
+					Optional<StampType> stamptypeOpt = optional2.get().getButtonType().getStampType();
+					if(		stamptypeOpt.isPresent() 
+							&& !(stamptypeOpt.get().getChangeHalfDay() == null 
+							&& (!stamptypeOpt.get().getGoOutArt().isPresent() && stamptypeOpt.get().getGoOutArt().get() == null)
+							&& stamptypeOpt.get().getSetPreClockArt() == null
+							&& stamptypeOpt.get().getChangeClockArt() == null
+							&& stamptypeOpt.get().getChangeCalArt() == null)) {
 						
 						stampType = StampType.getStampType(
-								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
-								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
-								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
-								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-								optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null);
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeHalfDay() : null, 
+								stamptypeOpt.isPresent() && stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getSetPreClockArt() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeClockArt() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeCalArt() : null);
 					}
-
+					
+					Optional<StampType> stamptypeOpt2 = optional2.get().getButtonType().getStampType();
+					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
+					
+					StampType stampType2 = new StampType(
+							null, 
+							stamptypeOpt2.isPresent() && stamptypeOpt2.get().getGoOutArt().isPresent()? stamptypeOpt2.get().getGoOutArt().get(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getSetPreClockArt(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeClockArt(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeCalArt(): null);
+					
+					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType2));
+					
 					ButtonSettings settings = new ButtonSettings(
-							optional2.get().getButtonPositionNo(), 
-							new ButtonDisSet(
+							optional2.get().getButtonPositionNo()
+							,new ButtonDisSet(
 									new ButtonNameSet(
-											optional2.get().getButtonDisSet().getButtonNameSet().getTextColor(),
-											optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
-									optional2.get().getButtonDisSet().getBackGroundColor()), 
-							new ButtonType(
-									optional2.get().getButtonType().getReservationArt(),
-									Optional.ofNullable(new StampType(
-											 null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-											optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null))), 
-							optional2.get().getUsrArt(), 
-							optional2.get().getAudioType());
+											btnNameSetOpt.getTextColor()
+											,btnNameSetOpt.getButtonName().isPresent()? btnNameSetOpt.getButtonName().get(): null)
+									
+									,optional2.get().getButtonDisSet().getBackGroundColor())
+							,buttonType
+							,optional2.get().getUsrArt()
+							,optional2.get().getAudioType());
 					
 					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
 				}

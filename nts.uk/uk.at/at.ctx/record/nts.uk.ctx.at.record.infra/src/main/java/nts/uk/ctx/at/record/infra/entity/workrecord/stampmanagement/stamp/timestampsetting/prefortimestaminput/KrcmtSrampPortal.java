@@ -1,16 +1,26 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
+import org.eclipse.persistence.annotations.Customizer;
+
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -21,8 +31,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name="KRCMT_STAMP_PORTAL")
+@Customizer(KrcmtSrampPortalCustomizer.class)
 public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -46,7 +56,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Basic(optional = false)
 	@Column(name = "RESULT_DISPLAY_TIME")
-	public int resultDispayTime;
+	public int resultDisplayTime;
 	
 	/**
 	 * 文字色
@@ -76,18 +86,52 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
 	
+	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL)
+	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
+
 	@Override
 	protected Object getKey() {
 		return this.cid;
 	}
 	
-	public void update(PortalStampSettings domain) {
-		this.correctionInterval = domain.getDisplaySettingsStampScreen().getServerCorrectionInterval().v();
-		this.resultDispayTime = domain.getDisplaySettingsStampScreen().getResultDisplayTime().v();
-		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
-		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackgroundColor().v();
-		this.buttonEmphasisArt = domain.getSuppressStampBtn() ? 1 : 0;
-		this.toppageLinkArt = domain.getUseTopMenuLink() ? 1 : 0;
+	public static KrcmtSrampPortal toEntity(PortalStampSettings domain){
+		return new KrcmtSrampPortal(
+				domain.getCid(), 
+				domain.getDisplaySettingsStampScreen().getCorrectionInterval().v(), 
+				domain.getDisplaySettingsStampScreen().getResultDisplayTime().v(), 
+				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v(), 
+				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
+				domain.isButtonEmphasisArt() ? 1 : 0, 
+				domain.isToppageLinkArt() ? 1 : 0, 
+				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 1/*confirm with amid-mizutani, Vu Tuan is 1*/)).collect(Collectors.toList()));
+	}
+	
+	public PortalStampSettings toDomain(){
+		return new PortalStampSettings(
+				this.cid, 
+				new DisplaySettingsStampScreen(
+						new CorrectionInterval(this.correctionInterval), 
+						new SettingDateTimeColorOfStampScreen(
+							new ColorCode(this.textColor),
+							new ColorCode(this.backGroundColor)),
+						new ResultDisplayTime(this.resultDisplayTime)), 
+				this.krcmtStampLayoutDetail.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
+				this.buttonEmphasisArt == 1, 
+				this.toppageLinkArt == 1);
 	}
 
+	public KrcmtSrampPortal(String cid, int correctionInterval, int resultDisplayTime, String textColor,
+			String backGroundColor, int buttonEmphasisArt, int toppageLinkArt,
+			List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail) {
+		super();
+		this.cid = cid;
+		this.correctionInterval = correctionInterval;
+		this.resultDisplayTime = resultDisplayTime;
+		this.textColor = textColor;
+		this.backGroundColor = backGroundColor;
+		this.buttonEmphasisArt = buttonEmphasisArt;
+		this.toppageLinkArt = toppageLinkArt;
+		this.krcmtStampLayoutDetail = krcmtStampLayoutDetail;
+	}
+	
 }

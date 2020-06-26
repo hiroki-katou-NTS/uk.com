@@ -773,7 +773,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // reset data
                 self.mainSettingModel.resetData();
-                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK' && item.fieldName != 'FLOW_WORK');
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 
@@ -814,7 +814,7 @@ module nts.uk.at.view.kmk003.a {
             public enterCopyMode(): void {
                 let self = this;
                 
-                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK' && item.fieldName != 'FLOW_WORK');
+                self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
                 // set screen mode
                 self.screenMode(ScreenMode.COPY);
                 // clear current worktimecode

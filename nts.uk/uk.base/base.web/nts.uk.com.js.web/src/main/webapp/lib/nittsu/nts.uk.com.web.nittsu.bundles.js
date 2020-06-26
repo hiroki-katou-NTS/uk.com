@@ -8371,9 +8371,9 @@ var nts;
                                     div.style.cssText += divStyle;
                                     td.appendChild(div);
                                     if (column.handlerType) {
-                                        var handler = cellHandler.get(column.handlerType);
-                                        if (handler)
-                                            handler(div, self.options, helper.call(column.supplier, rData, rowIdx, key));
+                                        var handler_1 = cellHandler.get(column.handlerType);
+                                        if (handler_1)
+                                            handler_1(div, self.options, helper.call(column.supplier, rData, rowIdx, key));
                                     }
                                     //                       cellHandler.rClick(div, column, helper.call(column.rightClick, rData, rowIdx, key));
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
@@ -8386,9 +8386,9 @@ var nts;
                                 return td;
                             }
                             if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
-                                var handler = cellHandler.get(column.handlerType);
-                                if (!uk.util.isNullOrUndefined(handler)) {
-                                    handler(td, self.options, helper.call(column.supplier, rData, rowIdx, key));
+                                var handler_2 = cellHandler.get(column.handlerType);
+                                if (!uk.util.isNullOrUndefined(handler_2)) {
+                                    handler_2(td, self.options, helper.call(column.supplier, rData, rowIdx, key));
                                 }
                             }
                             if (self.options.isHeader) {
@@ -47472,6 +47472,17 @@ function component(options) {
         });
     };
 }
+function handler(params) {
+    return function (constructor) {
+        var _a;
+        ko.bindingHandlers[params.bindingName] = new constructor();
+        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+        // block rewrite binding
+        if (params.validatable) {
+            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
+        }
+    };
+}
 // create base viewmodel for all implement
 function BaseViewModel() { }
 function $i18n(text, params) {
@@ -47505,15 +47516,29 @@ BaseViewModel.prototype.$ajax = request.ajax;
 BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
 BaseViewModel.prototype.$user = __viewContext['user'];
 BaseViewModel.prototype.$program = __viewContext['program'];
-BaseViewModel.prototype.$date = Object.defineProperties({}, {
+var $date = {
+    diff: 0,
+    now: function () {
+        return Date.now();
+    },
+    today: function () {
+        return $date.now();
+    }
+};
+request.ajax('/server/time/now').then(function (time) {
+    Object.defineProperty($date, 'diff', {
+        value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+    });
+});
+BaseViewModel.prototype.$date = Object.defineProperties($date, {
     now: {
         value: function $now() {
-            return nts.uk.time.now().toDate();
+            return moment().add($date.diff, 'ms').toDate();
         }
     },
     today: {
         value: function $today() {
-            return nts.uk.time.today().toDate();
+            return moment($date.now()).startOf('day').toDate();
         }
     }
 });

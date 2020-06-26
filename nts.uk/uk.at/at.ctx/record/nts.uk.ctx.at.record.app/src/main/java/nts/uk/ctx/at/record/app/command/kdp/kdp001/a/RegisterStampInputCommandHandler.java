@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,7 +117,7 @@ public class RegisterStampInputCommandHandler
 		// not 打刻入力結果 empty
 		Optional<AtomTask> atomInput = inputResult.getAt();
 
-		if (atomInput != null && atomInput.isPresent()) {
+		if (atomInput.isPresent()) {
 			transaction.execute(() -> {
 				atomInput.get().run();
 			});

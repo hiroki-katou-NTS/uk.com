@@ -10,7 +10,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.C
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS: 共有打刻から打刻を入力する
@@ -47,7 +48,7 @@ public class EnterStampForSharedStampService {
 			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , RefectActualResult refActualResult) {
 		
 		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
-		Optional<TimeStampSetShareTStamp> setShareTStamp = require.gets();
+		Optional<StampSetCommunal> setShareTStamp = require.gets(AppContexts.user().companyId());
 		
 		if (!setShareTStamp.isPresent()) {
 			throw new BusinessException("Msg_1632");
@@ -72,7 +73,7 @@ public class EnterStampForSharedStampService {
 		 * 
 		 * 	共有打刻の打刻設定Repository.取得する()										
 		 */
-		Optional<TimeStampSetShareTStamp> gets();
+		Optional<StampSetCommunal> gets(String comppanyID);
 	}
 
 }

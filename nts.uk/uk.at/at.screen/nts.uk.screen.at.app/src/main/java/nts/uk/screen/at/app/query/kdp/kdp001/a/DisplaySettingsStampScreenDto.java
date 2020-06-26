@@ -23,7 +23,7 @@ public class DisplaySettingsStampScreenDto {
 
 	public static DisplaySettingsStampScreenDto fromDomain(DisplaySettingsStampScreen domain) {
 
-		return new DisplaySettingsStampScreenDto(domain.getServerCorrectionInterval().v(),
+		return new DisplaySettingsStampScreenDto(domain.getCorrectionInterval().v(),
 				SettingDateTimeColorOfStampScreenDto.fromDomain(domain.getSettingDateTimeColor()),
 				domain.getResultDisplayTime().v());
 	}

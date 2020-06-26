@@ -25,4 +25,6 @@ public class ApproverStateSendDto {
 	private String approverMail;
 	
 	private String agentMail;
+	
+	private Integer approverInListOrder;
 }

@@ -1,16 +1,27 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
+import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -45,7 +56,7 @@ private static final long serialVersionUID = 1L;
 	 */
 	@Basic(optional = false)
 	@Column(name = "RESULT_DISPLAY_TIME")
-	public int resultDispayTime;
+	public int resultDisplayTime;
 	
 	/**
 	 * 文字色
@@ -80,31 +91,52 @@ private static final long serialVersionUID = 1L;
 	 */
 	@Basic(optional = false)
 	@Column(name = "EMPLOYEE_AUTHC_USE_ART")
-	public int employeeAuthcUseArt;
+	public boolean employeeAuthcUseArt;
 	
 	/**
 	 * 指認証失敗回数
 	 */
 	@Basic(optional = true)
 	@Column(name = "AUTHC_FAIL_CNT")
-	public int authcFailCnt;
+	public Integer authcFailCnt;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtStampCommunal")
+	public List<KrcmtStampPageLayout> krcmtStampCommunal;
 	
 	@Override
 	protected Object getKey() {
 		return this.cid;
 	}
-
-	public void update(TimeStampSetShareTStamp domain) {
-		this.cid = domain.getCid();
-		this.correctionInterval = domain.getDisplaySetStampScreen().getServerCorrectionInterval().v();
-		this.resultDispayTime = domain.getDisplaySetStampScreen().getResultDisplayTime().v();
-		this.textColor = domain.getDisplaySetStampScreen().getSettingDateTimeColor().getTextColor().v();
-		this.backGroundColor = domain.getDisplaySetStampScreen().getSettingDateTimeColor().getBackgroundColor().v();
-		this.nameSelectArt = domain.getUseSelectName();
-		this.passwordRequiredArt = domain.getPasswordInputReq();
-		this.employeeAuthcUseArt = domain.getUseEmpCodeToAuthen().value;
-		this.authcFailCnt = domain.getNumberAuthenfailures().get().v();
-		
+	
+	public static KrcmtStampCommunal toEntity(StampSetCommunal domain){
+		return new KrcmtStampCommunal(
+				domain.getCid(), 
+				domain.getDisplaySetStampScreen().getCorrectionInterval().v(), 
+				domain.getDisplaySetStampScreen().getResultDisplayTime().v(), 
+				domain.getDisplaySetStampScreen().getSettingDateTimeColor().getTextColor().v(), 
+				domain.getDisplaySetStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
+				domain.isNameSelectArt(), 
+				domain.isPasswordRequiredArt(), 
+				domain.isEmployeeAuthcUseArt(), 
+				domain.getAuthcFailCnt().isPresent()?domain.getAuthcFailCnt().get().v():null,
+				domain.getLstStampPageLayout().stream().map(c-> KrcmtStampPageLayout.toEntity(c, domain.getCid(), 0)).collect(Collectors.toList()));
+	}
+	
+	public StampSetCommunal toDomain(){
+		return new StampSetCommunal(
+					this.cid,
+					new DisplaySettingsStampScreen(
+						new CorrectionInterval(this.correctionInterval), 
+						new SettingDateTimeColorOfStampScreen(
+							new ColorCode(this.textColor),
+							new ColorCode(this.backGroundColor)),
+						new ResultDisplayTime(this.resultDisplayTime)),
+					this.krcmtStampCommunal.stream().map(c->c.toDomain()).collect(Collectors.toList()),
+					this.nameSelectArt,
+					this.passwordRequiredArt,
+					this.employeeAuthcUseArt,
+					this.authcFailCnt == null ? Optional.empty() : Optional.of(new NumberAuthenfailures(this.authcFailCnt))
+				);
 	}
 
 }

@@ -18,8 +18,7 @@ public class SettingDateTimeColorOfStampScreen implements DomainValue{
 	private  ColorCode textColor;
 	
 	/** 背景色 */
-	private  ColorCode backgroundColor;
-	
+	private  ColorCode backGroundColor;
 	
 	// [C-0] 打刻画面の日時の色設定(文字色, 背景色)																							
 }

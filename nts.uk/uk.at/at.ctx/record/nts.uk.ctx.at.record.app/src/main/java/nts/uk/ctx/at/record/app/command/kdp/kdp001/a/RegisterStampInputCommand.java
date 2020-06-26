@@ -17,7 +17,7 @@ public class RegisterStampInputCommand {
 	/**
 	 * 打刻日時
 	 */
-	private GeneralDateTime datetime;
+	private String datetime;
 
 	/**
 	 * ボタン位置NO
@@ -29,4 +29,12 @@ public class RegisterStampInputCommand {
 	 */
 
 	private RefectActualResultCommand refActualResults;
+
+	
+	
+	
+	public GeneralDateTime getDatetime() {
+		return GeneralDateTime.fromString(this.datetime, "yyyy/MM/dd HH:mm:ss");
+		
+	}
 }

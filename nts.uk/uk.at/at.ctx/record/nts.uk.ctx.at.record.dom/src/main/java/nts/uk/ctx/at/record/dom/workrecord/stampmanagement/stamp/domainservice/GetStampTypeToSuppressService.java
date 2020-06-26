@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * DS : 抑制する打刻種類を取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.抑制する打刻種類を取得する
- * 
+ *
  * @author tutk
  *
  */
@@ -28,7 +28,7 @@ public class GetStampTypeToSuppressService {
 
 	/**
 	 * [1] 取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeId
 	 * @param stampMeans
@@ -50,7 +50,7 @@ public class GetStampTypeToSuppressService {
 
 	/**
 	 * [prv-1] 打刻ボタンを抑制するか
-	 * 
+	 *
 	 * @param require
 	 * @param stampMeans
 	 * @return
@@ -82,7 +82,7 @@ public class GetStampTypeToSuppressService {
 				return false;
 			}
 			// return $スマホ打刻の打刻設定.打刻ボタンを抑制する
-			return optSettingsSmartphoneStamp.get().getSuppressStampBtn();
+			return optSettingsSmartphoneStamp.get().isSuppressStampBtn();
 		}
 		// if 打刻手段 = ポータル打刻
 		if (stampMeans.equals(StampMeans.PORTAL)) {
@@ -93,7 +93,7 @@ public class GetStampTypeToSuppressService {
 				return false;
 			}
 			// return $個人利用の打刻設定.打刻ボタンを抑制する
-			return optPotalSetting.get().getSuppressStampBtn();
+			return optPotalSetting.get().isButtonEmphasisArt();
 		}
 
 		return false;
@@ -101,7 +101,7 @@ public class GetStampTypeToSuppressService {
 
 	/**
 	 * [prv-2] 打刻データを取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeId
 	 * @param dateAndTimePeriod
@@ -139,37 +139,38 @@ public class GetStampTypeToSuppressService {
 	 */
 	private static StampToSuppress judgmentStampToSuppress(List<Stamp> listStamp) {
 
-		if (listStamp.isEmpty()) {
+		Optional<Stamp> oStamp = listStamp.stream()
+				.filter(c -> c.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK
+						|| c.getType().getChangeClockArt() == ChangeClockArt.GO_OUT
+						|| c.getType().getChangeClockArt() == ChangeClockArt.RETURN
+						|| c.getType().getChangeClockArt() == ChangeClockArt.WORKING_OUT)
+				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime()))
+				.findFirst();
+
+		if(!oStamp.isPresent()) {
 			return StampToSuppress.highlightAttendance();
 		}
 
-		boolean checkIsWork = listStamp.stream()
-				.anyMatch(c -> c.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK);
+		Stamp stamp = oStamp.get();
 
-		Optional<Stamp> stamp = listStamp.stream()
-				.filter(c -> c.getType().getChangeClockArt() == ChangeClockArt.GO_OUT
-						|| c.getType().getChangeClockArt() == ChangeClockArt.RETURN)
-				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime())).findFirst();
-		boolean checkGoOut = false;
-		if (stamp.isPresent()) {
-			checkGoOut = stamp.get().getType().getChangeClockArt() == ChangeClockArt.GO_OUT;
+		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK || stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN) {
+			return new StampToSuppress(true, false, false, true);
 		}
 
-		boolean goingToWork = checkIsWork; // 出勤
-		boolean departure = !checkIsWork; // 退勤
-		boolean goOut = !(checkIsWork && !checkGoOut); // 外出
-		boolean turnBack = !(checkIsWork && checkGoOut); // 戻り
+		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT) {
+			return new StampToSuppress(true, true, true, false);
+		}
 
-		return new StampToSuppress(goingToWork, departure, goOut, turnBack);
+		return new StampToSuppress(true, true, true, true);
 	}
 
 	public static interface Require extends DateAndTimePeriod.Require {
 
 		/**
 		 * [R-1] 個人利用の打刻設定
-		 * 
+		 *
 		 * 個人利用の打刻設定Repository.取得する(会社ID)
-		 * 
+		 *
 		 * @param companyId
 		 * @return
 		 */
@@ -177,9 +178,9 @@ public class GetStampTypeToSuppressService {
 
 		/**
 		 * [R-2] スマホ打刻の打刻設定
-		 * 
+		 *
 		 * スマホ打刻の打刻設定Repository.取得する(会社ID)
-		 * 
+		 *
 		 * @param companyId
 		 * @return
 		 */
@@ -187,9 +188,9 @@ public class GetStampTypeToSuppressService {
 
 		/**
 		 * [R-3] ポータルの打刻設定
-		 * 
+		 *
 		 * ポータルの打刻設定Repository.取得する(会社ID)
-		 * 
+		 *
 		 * @param companyId
 		 * @param criteriaDate
 		 * @return

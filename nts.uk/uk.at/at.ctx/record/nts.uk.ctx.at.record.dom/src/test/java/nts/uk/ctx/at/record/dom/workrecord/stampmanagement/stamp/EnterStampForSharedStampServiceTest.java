@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.TimeStampSetShareTStampHelper;
 
 /**
@@ -54,7 +54,7 @@ public class EnterStampForSharedStampServiceTest {
 		
 		new Expectations() {
 			{
-				require.gets();
+				require.gets(employeeId);
 			}
 		};
 		
@@ -76,11 +76,11 @@ public class EnterStampForSharedStampServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
-		TimeStampSetShareTStamp timeStampSetShareTStamp = TimeStampSetShareTStampHelper.get_list_empty();
+		StampSetCommunal timeStampSetShareTStamp = TimeStampSetShareTStampHelper.get_list_empty();
 		
 		new Expectations() {
 			{
-				require.gets();
+				require.gets("000-0000000001");
 				result = Optional.of(timeStampSetShareTStamp);
 			}
 		};
@@ -103,11 +103,11 @@ public class EnterStampForSharedStampServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
-		TimeStampSetShareTStamp timeStampSetShareTStamp = TimeStampSetShareTStampHelper.getDefault();
+		StampSetCommunal timeStampSetShareTStamp = TimeStampSetShareTStampHelper.getDefault();
 		
 		new Expectations() {
 			{
-				require.gets();
+				require.gets("000-0000000001");
 				result = Optional.of(timeStampSetShareTStamp);
 			}
 		};

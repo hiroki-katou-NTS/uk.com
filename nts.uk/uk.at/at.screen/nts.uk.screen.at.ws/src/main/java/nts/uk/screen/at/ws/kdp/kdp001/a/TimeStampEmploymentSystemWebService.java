@@ -23,7 +23,6 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStamp
 import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
-import nts.uk.screen.at.app.query.kdp.kdp001.a.getEmployeeStampDataQuery;
 
 @Path("at/record/stamp/employment_system")
 @Produces("application/json")
@@ -52,8 +51,8 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	 */
 	@POST
 	@Path("get_employee_stamp_data")
-	public List<EmployeeStampInfoDto> getEmployeeStampData(getEmployeeStampDataQuery query) {
-		return this.displayListStamp.getEmployeeStampData(query.getPeriod());
+	public List<EmployeeStampInfoDto> getEmployeeStampData() {
+		return this.displayListStamp.getEmployeeStampData();
 	}
 
 	/**
