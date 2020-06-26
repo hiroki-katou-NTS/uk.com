@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * refactor 4
- * 申請理由
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.申請理由
  * @author Doan Duy Hung
  *
  */
