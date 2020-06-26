@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 
 /**
  * refactor 4
- * 申請
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.申請
  * @author Doan Duy Hung
  *
  */
