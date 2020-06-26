@@ -5,32 +5,59 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/009/shr/index.html'
     })
     class Kaf009ShareViewModel extends ko.ViewModel {
+        
+        subscribers: Array<any>;
         model : Model;
-        checkbox1: KnockoutObservable<boolean>;
-        checkbox2: KnockoutObservable<boolean>;
-        workTypeCode: KnockoutObservable<String>;
-        workTypeName: KnockoutObservable<String>;
-        workTimeCode: KnockoutObservable<String>;
-        workTimeName: KnockoutObservable<String>;
+//        checkbox1: KnockoutObservable<boolean>;
+//        checkbox2: KnockoutObservable<boolean>;
+//        workTypeCode: KnockoutObservable<String>;
+//        workTypeName: KnockoutObservable<String>;
+//        workTimeCode: KnockoutObservable<String>;
+//        workTimeName: KnockoutObservable<String>;
+        dataFetch: any;
         created(params: any) {
-            this.model = params;
-            this.checkbox1 = params.checkbox1;
-            this.checkbox2 = params.checkbox2;
-            this.workTypeCode = params.workTypeCode;
-            this.workTypeName = params.workTypeName;
-            this.workTimeCode = params.workTimeCode;
-            this.workTimeName = params.workTimeName;
+              this.model = params.model;
+              this.dataFetch = params.dataFetch;
+              
+//            this.checkbox1 = params.model().checkbox1;
+//            this.checkbox2 = params.model().checkbox2;
+//            this.workTypeCode = params.model().workTypeCode;
+//            this.workTypeName = params.model().workTypeName;
+//            this.workTimeCode = params.model().workTimeCode;
+//            this.workTimeName = params.model().workTimeName;
+            this.dataFetch.subscribe(value => {
+                console.log('Change dataFetch');
+                this.bindData();
+            });
             
         }
+        bindData(){
+            let goBackApp = this.dataFetch().goBackApplication();
+            if (goBackApp) {
+                this.model.checkbox1(goBackApp.straightDistinction == 1);
+                this.model.checkbox2(goBackApp.straightLine == 1);
+            }
+//            else {
+                this.model.checkbox1(true);
+                this.model.checkbox2(true);
+//            }
+            
+            this.model.workTypeCode(this.dataFetch().workType().workType);
+            this.model.workTypeName(this.dataFetch().workType().nameWorkType);
+            this.model.workTimeCode(this.dataFetch().workTime().workTime);
+            this.model.workTimeName(this.dataFetch().workTime().nameWorkTime);
+        }
+        
+        // 
     
         mounted() {
             
         }
         
         openDialogKdl003() {
-            let self = this;
-            let workTypeCodes = self.model.workTypeCode;
-            let workTimeCodes = self.model.workTimeCode;
+//            let self = this;
+//            let workTypeCodes = self.model.workTypeCode;
+//            let workTimeCodes = self.model.workTimeCode;
 //            nts.uk.ui.windows.setShared('parentCodes', {
 //                workTypeCodes: workTypeCodes,
 //                selectedWorkTypeCode: self.model.workTypeCode,

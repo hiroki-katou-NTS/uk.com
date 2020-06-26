@@ -7,10 +7,10 @@
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: true, text: $i18n('KAF009_16')}"></div>
+						<div data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16')}"></div>
 					</div>
 					<div style="display: inline-block; width: 250px;">
-						<div data-bind="ntsCheckBox: { checked: true, text: $i18n('KAF009_17')}"></div>
+						<div data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_17')}"></div>
 					</div>
 					
 				</div>
@@ -34,11 +34,11 @@
 					<button id="workSelect" data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24')" ></button>
 				</div>
 				<div class="cell valign-center">
-					<label class="lblWorkTypeCd" data-bind="text: workTypeCode"></label>
-					<LABEL data-bind="text: workTypeName"></LABEL> 
+					<label class="lblWorkTypeCd" data-bind="text: model.workTypeCode"></label>
+					<LABEL data-bind="text: model.workTypeName"></LABEL> 
 					<BR /> 
-					<label class="lblSiftCd" data-bind="text: workTimeCode"></label> 
-					<LABEL data-bind="text: workTimeName "></LABEL>
+					<label class="lblSiftCd" data-bind="text: model.workTimeCode"></label> 
+					<LABEL data-bind="text: model.workTimeName "></LABEL>
 				</div>
 			</div>
 		</div>
