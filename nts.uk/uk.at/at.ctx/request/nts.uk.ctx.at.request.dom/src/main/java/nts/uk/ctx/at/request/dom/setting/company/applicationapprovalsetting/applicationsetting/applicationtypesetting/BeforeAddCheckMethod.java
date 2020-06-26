@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 事前受付チェック方法
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.事前受付チェック方法
  * @author Doan Duy Hung
  *
  */
