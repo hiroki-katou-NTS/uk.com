@@ -284,7 +284,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		//出退勤時刻と就業時間帯の勤務時間帯との重複部分を取得
 		CommonFixedWorkTimezoneSet workTimeZone = new CommonFixedWorkTimezoneSet();
-		workTimeZone.forWorkTime(integrationOfWorkTime);
+		workTimeZone = workTimeZone.forWorkTime(integrationOfWorkTime);
 		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(timeLeavingWork,workTimeZone,todayWorkType);
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
@@ -2112,7 +2112,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param predetermineTimeSet 所定時間設定(計算用クラス)
 	 * @param holidayAdditionPerCompany 休暇加算時間設定
 	 * @param totalTime 休暇使用合計残時間
-	 * @return
+	 * @return 割り当て時間
 	 */
 	private AttendanceTime allocateOverflowVacationTimeToLegalTime(
 			ManagePerPersonDailySet personDailySetting,
@@ -2125,12 +2125,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		if(totalTime.lessThanOrEqualTo(AttendanceTime.ZERO)) return AttendanceTime.ZERO;
 		
-		AttendanceTime workTime = calcWorkTimeForStatutory(
-				PremiumAtr.RegularWork,
-				personDailySetting.getAddSetting().getCalculationByActualTimeAtr(PremiumAtr.RegularWork),
-				AttendanceTime.ZERO,//this.lateVacationUseTime.get(),//使用していない為、0で渡す
+		//就業時間を計算
+		WorkHour workTime = this.calcWorkTime(
+				PremiumAtr.RegularWork, 
 				VacationClass.createAllZero(),
-				StatutoryDivision.Nomal,
+				this.timeVacationAdditionRemainingTime.isPresent()?this.timeVacationAdditionRemainingTime.get():AttendanceTime.ZERO,
 				workType,
 				predetermineTimeSet,
 				Optional.of(integrationOfWorkTime.getCode()),
@@ -2143,16 +2142,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				personDailySetting.getPersonInfo(),
 				Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 				Optional.empty(),//コアタイム時間帯設定
-				personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),//DeductLeaveEarly 遅刻早退を控除する
-				NotUseAtr.USE//lateEarlyMinusAtr //2020/5/27 市岡記載：　渡邉KKへ確認。不要であり、最終的には消したいとのこと。
-				);
+				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
+						personDailySetting.getAddSetting().getCalculationByActualTimeAtr(PremiumAtr.RegularWork)),
+				NotUseAtr.NOT_USE);
 		
 		//就業時間 >= 法定労働時間
-		if(workTime.greaterThanOrEqualTo(personDailySetting.getDailyUnit().getDailyTime())) return AttendanceTime.ZERO;
+		if(workTime.getWorkTime().greaterThanOrEqualTo(personDailySetting.getDailyUnit().getDailyTime())) return AttendanceTime.ZERO;
 		
 		//法定労働時間不足時間を計算
 		AttendanceTime missingTime = new AttendanceTime(
-				personDailySetting.getDailyUnit().getDailyTime().minusMinutes(workTime.valueAsMinutes()).valueAsMinutes());
+				personDailySetting.getDailyUnit().getDailyTime().minusMinutes(workTime.getWorkTime().valueAsMinutes()).valueAsMinutes());
 		
 		//法定労働時間不足分 < 時間休暇加算残時間未割当
 		if(missingTime.lessThanOrEqualTo(totalTime)) return missingTime;
@@ -2187,18 +2186,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if(upperLimitTime.isNegative()) upperLimitTime = AttendanceTime.ZERO;
 		
 		//所定内割増合計時間の計算
-		AttendanceTime totalPredeterminePremiumTime = this.calcWorkTimeBeforeDeductPremium(
-				HolidayAdditionAtr.HolidayAddition,//不明
-				AttendanceTime.ZERO,//this.lateVacationUseTime.get(),//どの日別実績の休暇使用時間を渡せばいいのか不明。
-				integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
-				personDailySetting.getAddSetting(),
-				holidayAdditionPerCompany,
-				personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-				PremiumAtr.RegularWork,
-				Optional.of(integrationOfWorkTime.getCommonSetting()),
-				NotUseAtr.NOT_USE//lateEarlyMinusAtr
-				);
-		return new AttendanceTime(upperLimitTime.minusMinutes(totalPredeterminePremiumTime.valueAsMinutes()).valueAsMinutes());
+		AttendanceTime withinpremiumTime = this.calcTotalPredeterminePremiumTime();
+				
+		return new AttendanceTime(upperLimitTime.minusMinutes(withinpremiumTime.valueAsMinutes()).valueAsMinutes());
 	}
 	
 	/**
@@ -2212,5 +2202,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		TimeWithDayAttr start = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart();
 		TimeWithDayAttr end = this.withinWorkTimeFrame.get(this.withinWorkTimeFrame.size()-1).getTimeSheet().getEnd();
 		return Optional.of(new TimeSpanForDailyCalc(start, end));
+	}
+	
+	/**
+	 * 所定内割増合計時間の計算
+	 * @return 所定内割増合計時間
+	 */
+	private AttendanceTime calcTotalPredeterminePremiumTime() {
+		return new AttendanceTime(this.withinWorkTimeFrame.stream()
+				.filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
+				.map(tc -> tc.getPremiumTimeSheetInPredetermined().get().calcTotalTime().valueAsMinutes())
+				.collect(Collectors.summingInt(tc -> tc)));
 	}
 }
