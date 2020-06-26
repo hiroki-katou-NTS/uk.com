@@ -224,7 +224,7 @@ public class MonthlyAggregationEmployeeService {
 						dataSetter, employeeId, empCalAndSumExecLogID, datePeriod.end()));
 				aggrPeriod.setHappendOptimistLockError(true);
 				status.getOutAggrPeriod().add(aggrPeriod);
-				continue;
+				return AggregationResult.build(status, atomTasks);
 			}
 			
 			// 状態を確認する
@@ -263,6 +263,7 @@ public class MonthlyAggregationEmployeeService {
 				atomTasks.add(MonthlyAggregationErrorService.errorProcForOptimisticLock(
 						require, dataSetter, employeeId, empCalAndSumExecLogID, datePeriod.end()));
 				aggrPeriod.setHappendOptimistLockError(true);
+				return AggregationResult.build(status, atomTasks);
 			}
 			finally {
 				status.getOutAggrPeriod().add(aggrPeriod);
