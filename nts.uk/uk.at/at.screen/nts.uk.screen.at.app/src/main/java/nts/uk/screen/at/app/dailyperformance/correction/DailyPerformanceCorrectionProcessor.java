@@ -1664,25 +1664,35 @@ public class DailyPerformanceCorrectionProcessor {
 				.findByKey(employeeId, date);
 		if (timeLeavingOpt.isPresent()) {
 			TimeLeavingOfDailyPerformance timeLeaving = timeLeavingOpt.get();
-			if (!timeLeaving.getTimeLeavingWorks().isEmpty()) {
-				timeLeaving.getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1).forEach(x -> {
+			if (!timeLeaving.getAttendance().getTimeLeavingWorks().isEmpty()) {
+				timeLeaving.getAttendance().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1).forEach(x -> {
 					Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
 					if (attOpt.isPresent()) {
 						Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 						if (workStampOpt.isPresent() && stampSourceAt) {
-							workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-									workStampOpt.get().getTimeWithDay(), workStampOpt.get().getLocationCode().isPresent() ?  workStampOpt.get().getLocationCode().get() : null,
-									TimeChangeMeans.SPR);
-						}
+									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
+													? workStampOpt.get().getTimeDay().getTimeWithDay().get()
+													: null,
+											workStampOpt.get().getLocationCode().isPresent()
+													? workStampOpt.get().getLocationCode().get()
+													: null,
+											TimeChangeMeans.SPR_COOPERATION);
+								}
 					}
 
 					Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 					if (leavOpt.isPresent() && stampSourceLeav) {
 						Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-						workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-								workStampOpt.get().getTimeWithDay(), workStampOpt.get().getLocationCode().isPresent() ?  workStampOpt.get().getLocationCode().get() : null,
-								TimeChangeMeans.SPR);
-					}
+								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
+												? workStampOpt.get().getTimeDay().getTimeWithDay().get()
+												: null,
+										workStampOpt.get().getLocationCode().isPresent()
+												? workStampOpt.get().getLocationCode().get()
+												: null,
+										TimeChangeMeans.SPR_COOPERATION);
+							}
 					timeLeavingOfDailyPerformanceRepository.update(timeLeaving);
 				});
 			}

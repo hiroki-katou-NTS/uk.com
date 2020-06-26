@@ -68,6 +68,15 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	//勤務予定時間 - 日別実績の勤務予定時間
 	private AttendanceTimeOfDailyAttendance time;
 	
+	public AttendanceTimeOfDailyPerformance(String employeeId, GeneralDate ymd,
+			WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
+			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.time = new AttendanceTimeOfDailyAttendance(workScheduleTimeOfDaily, actualWorkingTimeOfDaily, 
+				stayingTime, budgetTimeVariance, unEmployedTime);
+	}
 	
 	public AttendanceTimeOfDailyPerformance (String employeeId,
 											 GeneralDate ymd,

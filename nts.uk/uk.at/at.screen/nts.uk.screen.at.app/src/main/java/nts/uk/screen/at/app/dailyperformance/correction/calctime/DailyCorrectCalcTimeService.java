@@ -96,9 +96,9 @@ public class DailyCorrectCalcTimeService {
 				&& !dtoEdit.getTimeLeaving().get().getWorkAndLeave().isEmpty()) {
 			dtoEdit.getTimeLeaving().get().getWorkAndLeave().stream().filter(x -> x.getNo() == 1).forEach(x -> {
 				if (changeSpr31 != null && changeSpr31.booleanValue() && x.getWorking() != null)
-					x.getWorking().getTime().setStampSourceInfo(StampSourceInfo.TimeChangeMeans.value);
+					x.getWorking().getTime().setStampSourceInfo(TimeChangeMeans.SPR_COOPERATION.value);
 				if (changeSpr34 != null && changeSpr34.booleanValue() && x.getLeave() != null)
-					x.getLeave().getTime().setStampSourceInfo(StampSourceInfo.TimeChangeMeans.value);
+					x.getLeave().getTime().setStampSourceInfo(TimeChangeMeans.SPR_COOPERATION.value);
 			});
 		}
 

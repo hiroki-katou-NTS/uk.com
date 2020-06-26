@@ -25,6 +25,7 @@ import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Pa
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -58,7 +60,6 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -68,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.Employee
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -100,7 +102,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCom
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -433,10 +434,11 @@ public class DailyModifyResCommandFacade {
 				dataResultAfterIU.setLstErOldHoliday(getRemoveState(dataParent.getEmployeeId(), type, mapEmpError));
 
 				System.out.println("tg get error: " + (System.currentTimeMillis() - startTime));
+				List<WorkInfoOfDailyPerformance> listData =dailyEdits.stream().map(c -> new WorkInfoOfDailyPerformance(c.getEmployeeId(), c.getDate(), c.getWorkInfo().toDomain(c.getEmployeeId(), c.getDate())))
+						.filter(c -> c != null).collect(Collectors.toList());
 				dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 						dataParent.getDateRange(),
-						dailyEdits.stream().map(c -> c.getWorkInfo().toDomain(c.getEmployeeId(), c.getDate()))
-								.filter(c -> c != null).collect(Collectors.toList()));
+						listData);
 				dataCheck = dataCheck.stream().map(x -> {
 					x.setLayoutCode(String.valueOf(type));
 					return x;
@@ -473,10 +475,10 @@ public class DailyModifyResCommandFacade {
 						.map(x -> x.toDomain(x.getEmployeeId(), x.getDate())).forEach(d -> {
 							// 任意項目更新
 							d.getAnyItemValue().ifPresent(ai -> {
-								anyItemValueOfDailyRepo.persistAndUpdate(ai);
+								anyItemValueOfDailyRepo.persistAndUpdate( new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 							});
 							updated.add(
-									Pair.of(d.getWorkInformation().getEmployeeId(), d.getWorkInformation().getYmd()));
+									Pair.of(d.getEmployeeId(), d.getYmd()));
 							// dailyTransaction.updated(d.getWorkInformation().getEmployeeId(),
 							// d.getWorkInformation().getYmd());
 						});
@@ -571,10 +573,12 @@ public class DailyModifyResCommandFacade {
 							resultIU.getCommandNew().stream().map(c -> c.getWorkInfo().getData()).filter(c -> c != null)
 									.collect(Collectors.toList()));
 				} else if (dataParent.isFlagCalculation()) {
+					List<WorkInfoOfDailyPerformance> workInfos = dailyEdits.stream()
+							.map(c -> new WorkInfoOfDailyPerformance(c.getEmployeeId(),c.getDate(), c.getWorkInfo().toDomain(null, null))).filter(c -> c != null)
+							.collect(Collectors.toList());
 					dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
 							dataParent.getDateRange(),
-							dailyEdits.stream().map(c -> c.getWorkInfo().toDomain(null, null)).filter(c -> c != null)
-									.collect(Collectors.toList()));
+							workInfos);
 				}
 			}
 			val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
@@ -859,13 +863,14 @@ public class DailyModifyResCommandFacade {
 			domainDailyEditAll = unionDomain(domainDailyEditAll, domainDailyNew);
 			// Acquire closing date corresponding to employee
 			List<IntegrationOfDaily> dailyOfEmp = domainDailyEditAll.stream()
-					.filter(x -> x.getWorkInformation().getEmployeeId().equals(emp)).collect(Collectors.toList());
+					.filter(x -> x.getEmployeeId().equals(emp)).collect(Collectors.toList());
 			List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = dailyOfEmp.stream()
 					.filter(x -> x.getAttendanceTimeOfDailyPerformance().isPresent())
-					.map(x -> x.getAttendanceTimeOfDailyPerformance().get()).collect(Collectors.toList());
+					.map(x -> new AttendanceTimeOfDailyPerformance(x.getEmployeeId(),x.getYmd(), x.getAttendanceTimeOfDailyPerformance().get())).collect(Collectors.toList());
 
 			List<WorkInfoOfDailyPerformance> lstWorkInfor = dailyOfEmp.stream()
-					.filter(x -> x.getWorkInformation() != null).map(x -> x.getWorkInformation())
+					.filter(x -> x.getWorkInformation() != null)
+					.map(x -> new WorkInfoOfDailyPerformance(x.getEmployeeId(), x.getYmd(), x.getWorkInformation()))
 					.collect(Collectors.toList()).stream().sorted((x, y) -> x.getYmd().compareTo(y.getYmd()))
 					.collect(Collectors.toList());
 
@@ -1200,8 +1205,8 @@ public class DailyModifyResCommandFacade {
 	}
 
 	private List<IntegrationOfDaily> unionDomain(List<IntegrationOfDaily> parent, List<IntegrationOfDaily> child) {
-		val date = child.stream().collect(Collectors.toMap(x -> x.getWorkInformation().getYmd(), x -> "", (x, y) -> x));
-		val resultFilter = parent.stream().filter(x -> !date.containsKey(x.getWorkInformation().getYmd()))
+		val date = child.stream().collect(Collectors.toMap(x -> x.getYmd(), x -> "", (x, y) -> x));
+		val resultFilter = parent.stream().filter(x -> !date.containsKey(x.getYmd()))
 				.collect(Collectors.toList());
 		resultFilter.addAll(child);
 		return resultFilter;
@@ -1210,8 +1215,8 @@ public class DailyModifyResCommandFacade {
 	public void createStampSourceInfo(DailyRecordDto dtoEdit, List<DailyModifyQuery> querys) {
 		val sidLogin = AppContexts.user().employeeId();
 		boolean editBySelf = sidLogin.equals(dtoEdit.getEmployeeId());
-		Integer stampSource = editBySelf ? StampSourceInfo.TimeChangeMeans.value
-				: StampSourceInfo.TimeChangeMeans.value;
+		Integer stampSource = editBySelf ? TimeChangeMeans.HAND_CORRECTION_PERSON.value
+				: TimeChangeMeans.HAND_CORRECTION_OTHERS.value;
 		List<ItemValue> itemValueTempDay = querys.stream().filter(
 				x -> x.getEmployeeId().equals(dtoEdit.getEmployeeId()) && x.getBaseDate().equals(dtoEdit.getDate()))
 				.flatMap(x -> x.getItemValues().stream()).collect(Collectors.toList());
@@ -1231,12 +1236,12 @@ public class DailyModifyResCommandFacade {
 				case 85:
 					dtoEdit.getAttendanceLeavingGate().get().getAttendanceLeavingGateTime()
 							.get(Math.abs(77 - x.getItemId()) / 4).getEnd()
-							.setStampSourceInfo(StampSourceInfo.TimeChangeMeans.value);
+							.setStampSourceInfo(TimeChangeMeans.HAND_CORRECTION_OTHERS.value);
 					break;
 				case 31:
 				case 41:
 					if (x.getItemId() == 31 && dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getWorking()
-							.getTime().getStampSourceInfo() != StampSourceInfo.TimeChangeMeans.value) {
+							.getTime().getStampSourceInfo() != TimeChangeMeans.SPR_COOPERATION.value) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(31 - x.getItemId()) / 10)
 								.getWorking().getTime().setStampSourceInfo(stampSource);
 					} else if (x.getItemId() == 41) {
@@ -1248,7 +1253,7 @@ public class DailyModifyResCommandFacade {
 				case 44:
 					if (x.getItemId() == 34
 							&& dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(Math.abs(34 - x.getItemId()) / 10)
-									.getLeave().getTime().getStampSourceInfo() != StampSourceInfo.TimeChangeMeans.value) {
+									.getLeave().getTime().getStampSourceInfo() != TimeChangeMeans.SPR_COOPERATION.value) {
 						dtoEdit.getTimeLeaving().get().getWorkAndLeave().get(0).getLeave().getTime()
 								.setStampSourceInfo(stampSource);
 					} else if (x.getItemId() == 44) {

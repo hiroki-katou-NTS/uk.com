@@ -1876,7 +1876,7 @@ public class KrcdtDayAnyItemValueMerge extends UkJpaEntity implements Serializab
 	}
 	
 	public void toEntityAnyItemValueOfDaily(AnyItemValueOfDaily domain){
-		for (AnyItemValue item : domain.getItems()){
+		for (AnyItemValue item : domain.getAnyItem().getItems()){
 			this.toEntityAnyItemValue(item);
 		}
 	}

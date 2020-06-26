@@ -58,7 +58,7 @@ public class TotalDayCountWs {
 			
 			int dayCount = 0;
 			for (WorkType workType: lstWorkType) {
-				dayCount += dailyPerformanceList.stream().filter(x -> x.getScheduleInfo().getWorkTypeCode().v().equals(workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
+				dayCount += dailyPerformanceList.stream().filter(x -> x.getWorkInformation().getScheduleInfo().getWorkTypeCode().v().equals(workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
 			}
 			//dayCount = lstWorkType.size();
 			
@@ -100,8 +100,8 @@ public class TotalDayCountWs {
 				
 				for (WorkType workType: lstWorkType) {
 					// 日数をカウントす�
-					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getScheduleInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())
-							|| StringUtils.equals(x.getRecordInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
+					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getWorkInformation().getScheduleInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())
+							|| StringUtils.equals(x.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
 					//int dayCount = lstWorkType.size();
 					switch (dayType) {
 					case HOLIDAY:

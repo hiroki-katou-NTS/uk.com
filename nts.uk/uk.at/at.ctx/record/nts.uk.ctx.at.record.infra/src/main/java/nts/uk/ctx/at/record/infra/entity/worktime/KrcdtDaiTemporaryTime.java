@@ -61,8 +61,8 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 
 	public static KrcdtDaiTemporaryTime toEntity(TemporaryTimeOfDailyPerformance domain) {
 		return new KrcdtDaiTemporaryTime(new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd()),
-				domain.getWorkTimes().v(),
-				domain.getTimeLeavingWorks().stream()
+				domain.getAttendance().getWorkTimes().v(),
+				domain.getAttendance().getTimeLeavingWorks().stream()
 						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 1))
 						.collect(Collectors.toList()));
 	}

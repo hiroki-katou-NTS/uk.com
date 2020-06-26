@@ -469,7 +469,7 @@ public class ValidatorDataDailyRes {
 			if (!divergenceErrors.isEmpty()) {
 				 Map<Integer, List<DPItemValue>> temMap = new HashMap<>();
 				temMap.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
-				resultError.put(Pair.of(d.getWorkInformation().getEmployeeId(), d.getWorkInformation().getYmd()), new ResultReturnDCUpdateData(d.getWorkInformation().getEmployeeId(), d.getWorkInformation().getYmd(), temMap));
+				resultError.put(Pair.of(d.getEmployeeId(), d.getYmd()), new ResultReturnDCUpdateData(d.getEmployeeId(), d.getYmd(), temMap));
 			}
 		}
 		return resultError;
@@ -688,7 +688,7 @@ public class ValidatorDataDailyRes {
 			return new ArrayList<>();
 		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
 		for (IntegrationOfDaily domain : domainDailyNews) {
-			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getWorkInformation().getEmployeeId()) && x.getDate().equals(domain.getWorkInformation().getYmd())).findFirst().orElse(null);
+			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getEmployeeId()) && x.getDate().equals(domain.getYmd())).findFirst().orElse(null);
 			val error = domain.getEmployeeError().stream().filter(x -> {
 				val errorSelect = errorAlarms.stream()
 						.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()

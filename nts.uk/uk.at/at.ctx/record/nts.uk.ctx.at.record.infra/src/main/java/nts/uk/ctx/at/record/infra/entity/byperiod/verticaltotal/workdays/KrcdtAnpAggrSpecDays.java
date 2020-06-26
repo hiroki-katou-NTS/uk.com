@@ -13,14 +13,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-<<<<<<< HEAD
-import nts.uk.ctx.at.shared.dom.raisesalarytime.SpecificDateItemNo;
-=======
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
->>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

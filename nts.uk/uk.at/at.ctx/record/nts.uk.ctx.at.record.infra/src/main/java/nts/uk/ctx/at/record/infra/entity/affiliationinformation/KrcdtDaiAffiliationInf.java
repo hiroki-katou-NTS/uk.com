@@ -9,10 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.primitivevalue.ClassificationCode;
-=======
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
->>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -70,11 +67,11 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 	public static KrcdtDaiAffiliationInf toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor){
 		return new KrcdtDaiAffiliationInf(
 				new KrcdtDaiAffiliationInfPK(affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getYmd()),
-				affiliationInforOfDailyPerfor.getEmploymentCode().v(),
-				affiliationInforOfDailyPerfor.getJobTitleID(),
-				affiliationInforOfDailyPerfor.getClsCode().v(),
-				affiliationInforOfDailyPerfor.getWplID(),
-				affiliationInforOfDailyPerfor.getBonusPaySettingCode() == null 
-					? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().v());
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() == null 
+					? null : affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v());
 	}
 }

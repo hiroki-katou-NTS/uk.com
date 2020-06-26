@@ -111,16 +111,16 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 		return new KrcdtDaiPerWorkInfo(
 				new KrcdtDaiPerWorkInfoPK(workInfoOfDailyPerformance.getEmployeeId(),
 						workInfoOfDailyPerformance.getYmd()),
-				workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode().v() : null,
-				workInfoOfDailyPerformance.getScheduleInfo().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getScheduleInfo().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getScheduleInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getScheduleInfo().getWorkTimeCode().v() : null,
-				workInfoOfDailyPerformance.getCalculationState() != null ? workInfoOfDailyPerformance.getCalculationState().value : null,
-				workInfoOfDailyPerformance.getGoStraightAtr() != null ? workInfoOfDailyPerformance.getGoStraightAtr().value : null,
-				workInfoOfDailyPerformance.getBackStraightAtr() != null ? workInfoOfDailyPerformance.getBackStraightAtr().value : null,
-				workInfoOfDailyPerformance.getDayOfWeek() != null ? workInfoOfDailyPerformance.getDayOfWeek().value : null,
-				workInfoOfDailyPerformance.getScheduleTimeSheets() != null ? 
-				workInfoOfDailyPerformance.getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
+				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getWorkInformation().getCalculationState() != null ? workInfoOfDailyPerformance.getWorkInformation().getCalculationState().value : null,
+				workInfoOfDailyPerformance.getWorkInformation().getGoStraightAtr() != null ? workInfoOfDailyPerformance.getWorkInformation().getGoStraightAtr().value : null,
+				workInfoOfDailyPerformance.getWorkInformation().getBackStraightAtr() != null ? workInfoOfDailyPerformance.getWorkInformation().getBackStraightAtr().value : null,
+				workInfoOfDailyPerformance.getWorkInformation().getDayOfWeek() != null ? workInfoOfDailyPerformance.getWorkInformation().getDayOfWeek().value : null,
+				workInfoOfDailyPerformance.getWorkInformation().getScheduleTimeSheets() != null ? 
+				workInfoOfDailyPerformance.getWorkInformation().getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
 						.toEntity(workInfoOfDailyPerformance.getEmployeeId(), workInfoOfDailyPerformance.getYmd(), f))
 						.collect(Collectors.toList()) : null,
 						workInfoOfDailyPerformance.getVersion());

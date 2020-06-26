@@ -20,9 +20,6 @@ import javax.persistence.Table;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
-=======
->>>>>>> 6a951869f1a133c8a2a28d251e823dcd67e7a548
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
 import nts.uk.ctx.at.record.infra.entity.daily.divergencetime.KrcdtDayDivergenceTime;
@@ -39,9 +36,6 @@ import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
 import nts.uk.ctx.at.record.infra.entity.daily.vacation.KrcdtDayVacation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-<<<<<<< HEAD
-import nts.uk.ctx.at.shared.dom.worktime.primitivevalue.WorkTimes;
-=======
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -230,12 +224,12 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	}
 	
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime){
-		ActualWorkingTimeOfDaily actualWork = attendanceTime.getActualWorkingTimeOfDaily();
+		ActualWorkingTimeOfDaily actualWork = attendanceTime.getTime().getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWork = actualWork == null ? null :actualWork.getTotalWorkingTime();
 		ConstraintTime constraintTime = actualWork == null ? null : actualWork.getConstraintTime();
 		ExcessOfStatutoryMidNightTime excessStt = totalWork == null ? null : totalWork.getExcessOfStatutoryTimeOfDaily() == null ? null 
 				: totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
-		StayingTimeOfDaily staying = attendanceTime.getStayingTime();
+		StayingTimeOfDaily staying = attendanceTime.getTime().getStayingTime();
 		if(totalWork != null){
 			/* 総労働時間 */
 			this.totalAttTime = totalWork.getTotalTime() == null ? 0 : totalWork.getTotalTime().valueAsMinutes();
@@ -270,9 +264,9 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		}
 		
 		/* 予実差異時間 */
-		this.budgetTimeVariance = attendanceTime.getBudgetTimeVariance() == null ? 0 : attendanceTime.getBudgetTimeVariance().valueAsMinutes();
+		this.budgetTimeVariance = attendanceTime.getTime().getBudgetTimeVariance() == null ? 0 : attendanceTime.getTime().getBudgetTimeVariance().valueAsMinutes();
 		/* 不就労時間 */
-		this.unemployedTime = attendanceTime.getUnEmployedTime() == null ? 0 : attendanceTime.getUnEmployedTime().valueAsMinutes();
+		this.unemployedTime = attendanceTime.getTime().getUnEmployedTime() == null ? 0 : attendanceTime.getTime().getUnEmployedTime().valueAsMinutes();
 		
 		if(staying != null){
 			/* 滞在時間 */
