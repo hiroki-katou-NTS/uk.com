@@ -108,7 +108,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	@Override
 	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID,
 			GeneralDate processingDate, String empCalAndSumExecLogID,
-			TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance, WorkInfoOfDailyAttendance workInfo) {
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance workInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID,
 				processingDate, 0);
 		if (breakOpt.isPresent()) {
@@ -116,9 +116,9 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		// 休憩時間帯設定を確認する
 		List<TimeLeavingWork> timeLeavingWorks = null;
-		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
-				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 		} else {
 			Optional<TimeLeavingOfDailyPerformance> TimeLeavingOptional = this.timeLeavingRepo.findByKey(employeeID,
 					processingDate);
@@ -133,8 +133,8 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		if (timeLeavingWorks == null) {
 			return null;
 		}
-		TimeLeavingOfDailyPerformance ofDailyPerformance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance);
-		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfo);
+		TimeLeavingOfDailyPerformance ofDailyPerformance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance.getAttendance());
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfo.getWorkInformation());
 		return this.reflectBreakTime(companyId, employeeID, processingDate, empCalAndSumExecLogID,
 				ofDailyPerformance, dailyPerformance);
 	}

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 
 /**
@@ -17,6 +18,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 public class ReasonTimeChange implements DomainObject {
 	
 	//時刻変更手段
+	@Setter
 	private TimeChangeMeans timeChangeMeans;
 	
 	//打刻方法
