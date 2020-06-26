@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreUpdate;
@@ -105,8 +106,8 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 	@Column(name = "AUTHC_FAIL_CNT")
 	public Integer authcFailCnt;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcmtStampCommunal")
-	public List<KrcmtStampPageLayout> krcmtStampCommunal;
+	@OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "krcmtStampCommunal")
+	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 	
 	@Override
 	protected Object getKey() {
@@ -141,7 +142,7 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 							new ColorCode(this.textColor),
 							new ColorCode(this.backGroundColor)),
 						new ResultDisplayTime(this.resultDisplayTime)),
-					this.krcmtStampCommunal.stream().map(c->c.toDomain()).collect(Collectors.toList()),
+					this.listKrcmtStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 					this.nameSelectArt,
 					this.passwordRequiredArt,
 					this.employeeAuthcUseArt,

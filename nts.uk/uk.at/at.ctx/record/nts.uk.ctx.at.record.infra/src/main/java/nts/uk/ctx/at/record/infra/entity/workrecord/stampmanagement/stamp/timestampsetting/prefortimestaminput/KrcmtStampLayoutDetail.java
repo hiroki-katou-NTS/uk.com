@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -120,7 +119,7 @@ private static final long serialVersionUID = 1L;
     })
 	public KrcmtStampPageLayout krcmtStampPageLayout;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumns({
     	@JoinColumn(name = "CID", insertable = false,  updatable = false),
     	@JoinColumn(name = "STAMP_MEANS", insertable = false,  updatable = false)

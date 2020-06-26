@@ -8,6 +8,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreUpdate;
@@ -88,7 +89,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
 	
-	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
 
 	@Override

@@ -69,6 +69,13 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
     })
 	public KrcmtStampCommunal krcmtStampCommunal;
 	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    })
+	public KrcmtStampSmartPhone krcmtStampSmartPhone;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
