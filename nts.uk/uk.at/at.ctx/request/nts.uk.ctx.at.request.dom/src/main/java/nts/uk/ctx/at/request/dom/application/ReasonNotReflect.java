@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * refactor 4
- * 予定反映不可理由
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.予定反映不可理由
  * @author Doan Duy Hung
  *
  */
