@@ -74,7 +74,7 @@ public class WorkClockOfMonthly implements Serializable{
 		boolean isWeekday = false;
 		if (anyItemValueOpt.isPresent()) {
 			AnyItemValueOfDaily anyItemValue = anyItemValueOpt.get();
-			for (AnyItemValue item : anyItemValue.getItems()) {
+			for (AnyItemValue item : anyItemValue.getAnyItem().getItems()) {
 				if (item.getItemNo().v().intValue() != 12) continue;	// 任意項目12以外は無視
 				if (item.getTimes().isPresent()) {						// 回数=1 なら平日
 					if (item.getTimes().get().v().doubleValue() == 1.0) isWeekday = true; 

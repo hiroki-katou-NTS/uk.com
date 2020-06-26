@@ -54,7 +54,7 @@ public class LeaveEarly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		val leaveEarlyTimeOfDailys = totalWorkingTime.getLeaveEarlyTimeOfDaily();
 		for (val leaveEarlyTimeOfDaily : leaveEarlyTimeOfDailys){
 			val leaveEarlyTime = leaveEarlyTimeOfDaily.getLeaveEarlyTime();

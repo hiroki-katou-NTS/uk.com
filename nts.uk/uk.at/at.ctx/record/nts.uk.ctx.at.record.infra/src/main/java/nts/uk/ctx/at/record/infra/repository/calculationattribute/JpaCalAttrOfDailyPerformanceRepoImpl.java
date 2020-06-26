@@ -132,13 +132,13 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	@Override
-	public void update(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day) {
+	public void update(CalAttrOfDailyPerformance domain) {
 		KrcstDaiCalculationSet calc = this.queryProxy()
-				.find(new KrcstDaiCalculationSetPK(employeeId, day),
+				.find(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()),
 						KrcstDaiCalculationSet.class)
 				.orElse(null);
 		if (calc == null) {
-			this.add(domain, employeeId, day);
+			this.add(domain);
 		} else {
 			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
 					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
@@ -146,20 +146,20 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class).orElse(null);
 			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
 					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
-			if (domain.getRasingSalarySetting() != null) {
-				calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
-				calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
+			if (domain.getCalcategory().getRasingSalarySetting() != null) {
+				calc.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
+				calc.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
 			}
-			if (domain.getDivergenceTime() != null) {
-				calc.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+			if (domain.getCalcategory().getDivergenceTime() != null) {
+				calc.divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
 			}
-			if (domain.getLeaveEarlySetting() != null) {
-				calc.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
-				calc.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			if (domain.getCalcategory().getLeaveEarlySetting() != null) {
+				calc.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
+				calc.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
 			}
-			setFlexCalcSetting(domain.getFlexExcessTime().getFlexOtTime(), flexCalc);
-			setHolidayCalcSetting(domain.getHolidayTimeSetting(), holidayCalc);
-			setOvertimeCalcSetting(domain.getOvertimeSetting(), overtimeCalc);
+			setFlexCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime(), flexCalc);
+			setHolidayCalcSetting(domain.getCalcategory().getHolidayTimeSetting(), holidayCalc);
+			setOvertimeCalcSetting(domain.getCalcategory().getOvertimeSetting(), overtimeCalc);
 			commandProxy().update(flexCalc);
 			commandProxy().update(holidayCalc);
 			commandProxy().update(overtimeCalc);
@@ -169,28 +169,28 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	@Override
-	public void add(CalAttrOfDailyAttd domain, String employeeId, GeneralDate day) {
+	public void add(CalAttrOfDailyPerformance domain) {
 		KrcstFlexAutoCalSet flexCalc = new KrcstFlexAutoCalSet(IdentifierUtil.randomUniqueId());
-		setFlexCalcSetting(domain.getFlexExcessTime().getFlexOtTime(), flexCalc);
+		setFlexCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime(), flexCalc);
 
 		KrcstHolAutoCalSet holidayCalc = new KrcstHolAutoCalSet(IdentifierUtil.randomUniqueId());
-		setHolidayCalcSetting(domain.getHolidayTimeSetting(), holidayCalc);
+		setHolidayCalcSetting(domain.getCalcategory().getHolidayTimeSetting(), holidayCalc);
 
 		KrcstOtAutoCalSet overtimeCalc = new KrcstOtAutoCalSet(IdentifierUtil.randomUniqueId());
-		setOvertimeCalcSetting(domain.getOvertimeSetting(), overtimeCalc);
+		setOvertimeCalcSetting(domain.getCalcategory().getOvertimeSetting(), overtimeCalc);
 
 		KrcstDaiCalculationSet calcSet = new KrcstDaiCalculationSet(
-				new KrcstDaiCalculationSetPK(employeeId, day));
-		if (domain.getRasingSalarySetting() != null) {
-			calcSet.bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
-			calcSet.bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
+				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
+		if (domain.getCalcategory().getRasingSalarySetting() != null) {
+			calcSet.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
+			calcSet.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
 		}
-		if (domain.getDivergenceTime() != null) {
-			calcSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+		if (domain.getCalcategory().getDivergenceTime() != null) {
+			calcSet.divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
 		}
-		if (domain.getLeaveEarlySetting() != null) {
-			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
-			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
+		if (domain.getCalcategory().getLeaveEarlySetting() != null) {
+			calcSet.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			calcSet.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
 		}
 		calcSet.overTimeWorkId = overtimeCalc.overTimeWorkId;
 		calcSet.flexExcessTimeId = flexCalc.flexExcessTimeId;

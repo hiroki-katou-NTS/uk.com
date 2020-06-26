@@ -66,7 +66,7 @@ public class GoOutOfMonthly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		val outingTimeList = totalWorkingTime.getOutingTimeOfDailyPerformance();
 		val shortTime = totalWorkingTime.getShotrTimeOfDaily();
 		

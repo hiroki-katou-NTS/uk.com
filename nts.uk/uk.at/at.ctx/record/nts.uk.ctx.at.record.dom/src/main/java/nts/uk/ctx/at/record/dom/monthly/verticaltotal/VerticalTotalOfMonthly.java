@@ -127,7 +127,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 			PredetemineTimeSetting predetermineTimeSet = null;
 			PredetermineTimeSetForCalc predTimeSetForCalc = null;
 			if (workInfoOfDaily != null){
-				val recordWorkInfo = workInfoOfDaily.getRecordInfo();
+				val recordWorkInfo = workInfoOfDaily.getWorkInformation().getRecordInfo();
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				if (workTypeCode != null){

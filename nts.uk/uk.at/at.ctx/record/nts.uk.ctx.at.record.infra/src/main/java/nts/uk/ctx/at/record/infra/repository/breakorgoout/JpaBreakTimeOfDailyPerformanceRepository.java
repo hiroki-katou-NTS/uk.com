@@ -176,17 +176,17 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
-	public void insert(BreakTimeOfDailyAttd breakTimes, String employeeID, GeneralDate day) {
+	public void insert(BreakTimeOfDailyPerformance breakTimes) {
 //		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
 //		this.getEntityManager().flush();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			Statement statementI = con.createStatement();
-			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
+			for(BreakTimeSheet breakTimeSheet : breakTimes.getTimeZone().getBreakTimeSheets()){
 				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
-						+ "VALUES( '" + employeeID + "' , '"
-						+ day + "' , "
-						+ breakTimes.getBreakType().value + " , "
+						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
+						+ breakTimes.getYmd() + "' , "
+						+ breakTimes.getTimeZone().getBreakType().value + " , "
 						+ breakTimeSheet.getBreakFrameNo().v() + " , "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
@@ -431,16 +431,16 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		}
     }
 	@Override
-	public void updateForEachOfType(BreakTimeOfDailyAttd breakTime,String employeeID, GeneralDate day) {
+	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
-			for(BreakTimeSheet breakTimeSheet : breakTime.getBreakTimeSheets()){
+			for(BreakTimeSheet breakTimeSheet : breakTime.getTimeZone().getBreakTimeSheets()){
 			
 				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , END_STAMP_TIME = "
-						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + employeeID
-						+ "' AND YMD = '" + day + "'" + " AND BREAK_TYPE = "
-						+ breakTime.getBreakType().value + " AND BREAK_FRAME_NO = "
+						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + breakTime.getEmployeeId()
+						+ "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = "
+						+ breakTime.getTimeZone().getBreakType().value + " AND BREAK_FRAME_NO = "
 						+ breakTimeSheet.getBreakFrameNo().v();
 				Statement statementU = con.createStatement();
 				statementU.executeUpdate(updateTableSQL);

@@ -325,9 +325,9 @@ public class TotalTimesFromDailyRecord {
 					
 					// 日別実績を回数集計用のクラスに変換
 					DailyRecordToAttendanceItemConverter dailyItems =
-							dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+							dailyConverter.withAttendanceTime(attendanceTimeOfDaily.getEmployeeId(), attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily.getTime());
 					if (this.anyItemValueOfDailyMap.containsKey(procDate)){
-						dailyItems = dailyItems.withAnyItems(this.anyItemValueOfDailyMap.get(procDate));
+						dailyItems = dailyItems.withAnyItems(this.anyItemValueOfDailyMap.get(procDate).getEmployeeId(), this.anyItemValueOfDailyMap.get(procDate).getYmd(), this.anyItemValueOfDailyMap.get(procDate).getAnyItem());
 					}
 					
 					// 勤務時間の判断

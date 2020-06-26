@@ -305,7 +305,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
-					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
+					val workInfo = workInformationOfDailyMap.get(procDate).getWorkInformation().getRecordInfo();
 					
 					// 日別実績を集計する　（フレックス時間勤務用）
 					val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily,

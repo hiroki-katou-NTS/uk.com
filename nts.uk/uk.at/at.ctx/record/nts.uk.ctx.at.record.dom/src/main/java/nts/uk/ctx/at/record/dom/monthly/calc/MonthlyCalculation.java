@@ -458,7 +458,7 @@ public class MonthlyCalculation implements SerializableWithOptional{
 		// 実績の勤務情報リスト
 		for (val workInfoOfDaily : monthlyCalcDailys.getWorkInfoOfDailyMap().values()){
 			val ymd = workInfoOfDaily.getYmd();
-			this.workInfoOfRecordMap.put(ymd, workInfoOfDaily.getRecordInfo());
+			this.workInfoOfRecordMap.put(ymd, workInfoOfDaily.getWorkInformation().getRecordInfo());
 		}
 		
 		// 月別実績の勤怠時間　既存データ

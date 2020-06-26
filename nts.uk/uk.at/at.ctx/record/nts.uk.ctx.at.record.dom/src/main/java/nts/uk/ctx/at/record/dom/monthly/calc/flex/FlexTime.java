@@ -114,7 +114,7 @@ public class FlexTime implements Serializable{
 	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 
 		// 「フレックス時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		val excessPrescribedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val overTimeOfDaily = excessPrescribedTimeOfDaily.getOverTimeWork();

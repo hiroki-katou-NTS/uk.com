@@ -91,7 +91,7 @@ public class SpecificDaysOfMonthly implements Serializable{
 		if (isAdd) {
 			
 			// 特定日日数を取得
-			for (val specificDateAttrSheet : specificDateAttrOfDaily.getSpecificDateAttrSheets()){
+			for (val specificDateAttrSheet : specificDateAttrOfDaily.getSpecificDay().getSpecificDateAttrSheets()){
 	
 				// 特定日とする＝NOT_USE　の時、その枠はカウントしない
 				if (specificDateAttrSheet.getSpecificDateAttr() == SpecificDateAttr.NOT_USE) continue;

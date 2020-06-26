@@ -278,7 +278,7 @@ public class CreateTempAnnLeaMngProc {
 	private void createTempManagementDataFromDailyRecord(WorkInfoOfDailyPerformance workInfo){
 	
 		// 勤務種類から年休の日数を取得
-		val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode();
+		val workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 		if (workTypeCode == null) return;
 		val workType = this.getWorkType(workTypeCode.v());
 		if (workType == null) return;

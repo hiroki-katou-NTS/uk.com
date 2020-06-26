@@ -82,7 +82,7 @@ public class AggrPCLogonDivergence implements Serializable{
 
 		// 対象とするかどうかの判断
 		if (attendanceTimeOfDaily == null) return;
-		val stayingTime =  attendanceTimeOfDaily.getStayingTime();		// 日別実績の滞在時間
+		val stayingTime =  attendanceTimeOfDaily.getTime().getStayingTime();		// 日別実績の滞在時間
 		
 		// プレミアムデーを除く
 		if (workType.getWorkTypeCode().equals(AggrPCLogonClock.PREMIUM_DAY)) return;
@@ -110,8 +110,8 @@ public class AggrPCLogonDivergence implements Serializable{
 			if (attendanceStamp.getStamp().isPresent() &&
 				leaveStamp.getStamp().isPresent()) {
 				// 出勤＝退勤なら、対象外
-				int attendanceMinutes = attendanceStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
-				int leaveMinutes = leaveStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
+				int attendanceMinutes = attendanceStamp.getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes();
+				int leaveMinutes = leaveStamp.getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes();
 				if (attendanceMinutes == leaveMinutes) {
 					return;
 				}
@@ -162,11 +162,11 @@ public class AggrPCLogonDivergence implements Serializable{
 		// 退勤時刻<>NULL
 		if (timeLeavingOfDaily == null) return;
 		TimeWithDayAttr leaveStamp = null;
-		Integer targetWorkNo = timeLeavingOfDaily.getWorkTimes().v();	// 勤務No ← 勤務回数
+		Integer targetWorkNo = timeLeavingOfDaily.getAttendance().getWorkTimes().v();	// 勤務No ← 勤務回数
 		Optional<TimeActualStamp> leavingWorkOpt = timeLeavingOfDaily.getLeavingWork();		// 2回勤務があれば2回目
 		if (leavingWorkOpt.isPresent()) {
 			if (leavingWorkOpt.get().getStamp().isPresent()) {
-				leaveStamp = leavingWorkOpt.get().getStamp().get().getTimeWithDay();
+				leaveStamp = leavingWorkOpt.get().getStamp().get().getTimeDay().getTimeWithDay().get();
 			}
 		}
 		if (leaveStamp == null) return;

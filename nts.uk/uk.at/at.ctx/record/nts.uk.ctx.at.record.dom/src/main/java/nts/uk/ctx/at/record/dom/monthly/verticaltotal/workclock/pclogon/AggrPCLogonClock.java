@@ -94,7 +94,7 @@ public class AggrPCLogonClock implements Serializable{
 			boolean isExistLogon = false;
 			
 			// ログオン時刻を合計
-			for (val logonInfo : pcLogonInfo.getLogOnInfo()){
+			for (val logonInfo : pcLogonInfo.getTimeZone().getLogOnInfo()){
 				
 				// ログ時刻<>NULL
 				if (!logonInfo.getLogOn().isPresent()) continue;
@@ -144,7 +144,7 @@ public class AggrPCLogonClock implements Serializable{
 			boolean isExistLogoff = false;
 			
 			// ログオフ時刻を合計
-			for (val logonInfo : pcLogonInfo.getLogOnInfo()){
+			for (val logonInfo : pcLogonInfo.getTimeZone().getLogOnInfo()){
 				
 				// ログ時刻<>NULL
 				if (!logonInfo.getLogOff().isPresent()) continue;
@@ -208,7 +208,7 @@ public class AggrPCLogonClock implements Serializable{
 		timeLeavingOfDaily.getAttendanceLeavingWork(1).ifPresent(tl -> {
 			tl.getAttendanceStamp().ifPresent(leave -> {
 				leave.getStamp().ifPresent(ls -> {
-					if (ls.getTimeWithDay() != null) timeAttendance.set(ls.getTimeWithDay().valueAsMinutes());
+					if (ls.getTimeDay().getTimeWithDay() != null) timeAttendance.set(ls.getTimeDay().getTimeWithDay().isPresent() ? ls.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null);
 				});
 			});
 		});
@@ -229,7 +229,7 @@ public class AggrPCLogonClock implements Serializable{
 		timeLeavingOfDaily.getAttendanceLeavingWork(1).ifPresent(tl -> {
 			tl.getLeaveStamp().ifPresent(leave -> {
 				leave.getStamp().ifPresent(ls -> {
-					if (ls.getTimeWithDay() != null) timeLeave.set(ls.getTimeWithDay().valueAsMinutes());
+					if (ls.getTimeDay().getTimeWithDay().isPresent()) timeLeave.set(ls.getTimeDay().getTimeWithDay().get().valueAsMinutes());
 				});
 			});
 		});

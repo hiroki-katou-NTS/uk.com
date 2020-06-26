@@ -83,7 +83,7 @@ public class MidnightTimeOfMonthly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		WithinStatutoryTimeOfDaily legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		if (legalTime == null){

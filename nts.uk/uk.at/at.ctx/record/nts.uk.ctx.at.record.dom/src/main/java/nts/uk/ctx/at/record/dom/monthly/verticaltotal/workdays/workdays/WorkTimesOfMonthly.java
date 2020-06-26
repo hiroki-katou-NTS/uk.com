@@ -48,7 +48,7 @@ public class WorkTimesOfMonthly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTime.getTotalWorkingTime();
 		
 		// 日別実績の「勤務回数」を集計する

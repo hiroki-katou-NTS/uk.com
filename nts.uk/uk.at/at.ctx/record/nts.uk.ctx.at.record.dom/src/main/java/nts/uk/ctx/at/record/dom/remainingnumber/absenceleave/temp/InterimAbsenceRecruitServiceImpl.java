@@ -90,8 +90,8 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から振出・振休の日数を取得
-			if (targetWorkInfo.getRecordInfo() == null) continue;
-			val workTypeCode = targetWorkInfo.getRecordInfo().getWorkTypeCode();
+			if (targetWorkInfo.getWorkInformation().getRecordInfo() == null) continue;
+			val workTypeCode = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			if (workTypeCode == null) continue;
 			if (!workTypeMap.containsKey(workTypeCode)) return;
 			val workType = workTypeMap.get(workTypeCode);

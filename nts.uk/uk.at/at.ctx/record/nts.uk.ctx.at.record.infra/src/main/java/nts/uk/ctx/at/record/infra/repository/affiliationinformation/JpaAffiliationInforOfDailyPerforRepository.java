@@ -76,18 +76,18 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void add(AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, String employeeID, GeneralDate day) {
+	public void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "'" : null;
+			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
-					+ "VALUES( '" + employeeID + "' , '"
-					+ day + "' , '"
-					+ affiliationInforOfDailyPerfor.getEmploymentCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getJobTitleID() + "' , '"
-					+ affiliationInforOfDailyPerfor.getClsCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getWplID() + "' , "
+					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
+					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID() + "' , "
 					+ bonusPaycode + " )";
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
@@ -147,7 +147,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void updateByKey(AffiliationInforOfDailyAttd domain, String employeeID, GeneralDate day) {
+	public void updateByKey(AffiliationInforOfDailyPerfor domain) {
 		// Optional<KrcdtDaiAffiliationInf> dataOpt =
 		// this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
 		// .setParameter("employeeId", domain.getEmployeeId())
@@ -169,12 +169,12 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
+		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
 		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
-				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
-				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
+				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()
+				+ "' , CLS_CODE = '" + domain.getAffiliationInfor().getClsCode().v() + "' , WKP_ID = '" + domain.getAffiliationInfor().getWplID()
 				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
-				+ employeeID + "' AND YMD = '" + day + "'";
+				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {

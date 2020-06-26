@@ -196,7 +196,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「残業枠時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		val excessPrescibedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val overTimeOfDaily = excessPrescibedTimeOfDaily.getOverTimeWork();
@@ -255,7 +255,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		}
 		
 		// 日別実績の法定内時間を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		WithinStatutoryTimeOfDaily legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		if (legalTimeOfDaily == null){
@@ -443,7 +443,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		val flexAggrSet = settingsByFlex.getFlexAggrSet();
 		
 		// 「残業枠時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		val excessPrescribedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val overTimeOfDaily = excessPrescribedTimeOfDaily.getOverTimeWork();
@@ -503,7 +503,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「残業枠時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			val excessPrescibedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 			val overTimeOfDailyOpt = excessPrescibedTimeOfDaily.getOverTimeWork();

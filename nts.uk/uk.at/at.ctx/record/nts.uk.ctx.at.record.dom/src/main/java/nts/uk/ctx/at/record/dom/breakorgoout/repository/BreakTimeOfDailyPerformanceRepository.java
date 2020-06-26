@@ -21,7 +21,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	List<BreakTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 
-	void insert(BreakTimeOfDailyPerformance breakTimes, String employeeID, GeneralDate day);
+	void insert(BreakTimeOfDailyPerformance breakTimes);
 	
 	void insert(List<BreakTimeOfDailyPerformance> breakTimes);
 	
@@ -33,7 +33,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType);
 	
-	void updateForEachOfType(BreakTimeOfDailyPerformance breakTime,String employeeID, GeneralDate day);
+	void updateForEachOfType(BreakTimeOfDailyPerformance breakTime);
 	
 	void updateNotDelete(List<BreakTimeOfDailyPerformance> breakTimes);
 }
