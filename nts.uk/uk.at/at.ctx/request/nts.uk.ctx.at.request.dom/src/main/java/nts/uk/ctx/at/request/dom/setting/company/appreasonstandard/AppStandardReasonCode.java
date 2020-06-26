@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * refactor 4
- * 申請定型理由コード
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請定型理由.申請定型理由コード
  * @author Doan Duy Hung
  *
  */
