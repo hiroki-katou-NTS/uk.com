@@ -64,17 +64,19 @@ public class ButtonSettingDto {
 	}
 	
 	public Integer corectBtnDisType() {
-		if(this.changeClockArt == null) {
+		if(this.changeClockArt == null || this.changeHalfDay == null) {
 			return null;
 		}
 
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.NONE.value && 
+				this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.changeHalfDay == false && this.btnReservationArt == ReservationArt.NONE.value) {
 			return 1;
 		}
 		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value
-				&& this.setPreClockArt == SetPreClockArt.DIRECT.value && this.changeCalArt == ChangeCalArt.NONE.value
+				&& this.setPreClockArt == SetPreClockArt.DIRECT.value 
+				&& this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.changeHalfDay == false && this.btnReservationArt == ReservationArt.NONE.value) {
 			return 1;
 		}

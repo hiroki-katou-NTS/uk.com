@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -39,8 +38,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DisplaySuppressStampButtonInStampInput {
-	@Inject
-	private GetStampTypeToSuppressService getStampToSuppressService;
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
@@ -73,7 +70,7 @@ public class DisplaySuppressStampButtonInStampInput {
 
 		String employeeId = AppContexts.user().employeeId();
 		// 取得する(Require, 社員ID, 打刻手段)
-		return this.getStampToSuppressService.get(require, employeeId, StampMeans.PORTAL);
+		return GetStampTypeToSuppressService.get(require, employeeId, StampMeans.PORTAL);
 	}
 
 	@AllArgsConstructor

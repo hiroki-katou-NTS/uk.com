@@ -65,23 +65,25 @@ module nts.uk.at.view.kdp002.c {
                     console.log(res);
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
-                            let dateDisplay =res.stampRecords[0].stampDate;
+	
+							let record= res.stampRecords[0];
+                            let dateDisplay =record.stampDate;
                             res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
-                            if (moment(res.stampRecords[0].stampDate).day() == 6) {
+                            if (moment(record.stampDate).day() == 6) {
                                 dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
-                            } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
+                            } else if (moment(record.stampDate).day() == 0) {
                                 dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
                             }
-                            self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
+                            self.checkHandName(res.stampRecords.length > 0 ?  record.stampArtName : 0);
                             self.numberName();
-                            self.laceName(res.stampRecords[0].workLocationCD +" "+res.workPlaceName);
+                            self.laceName((record.workLocationCD||'') +" "+ (res.workPlaceName ||''));
                             self.dayName(dateDisplay);
-                            self.timeName(res.stampRecords[0].stampTime);
+                            self.timeName(record.stampTime);
                             
                             self.timeName1(res.attendance ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.attendance)) + " ~ " : null);
                             self.timeName2(res.leave ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.leave)): null);
-                            self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
-                            self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');      
+                            self.workName1(res.workTypes.length > 0 ? record.name : '');
+                            self.workName2(res.workTimeTypes.length > 0 ? record.name : '');      
 							
                             if(res.itemValues) {
                                 // C4	実績の属性と表示書式について
