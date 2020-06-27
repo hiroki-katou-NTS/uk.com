@@ -65,14 +65,14 @@ module nts.uk.at.view.kdp002.c {
                     console.log(res);
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
-	
+
+                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
 							let record= res.stampRecords[0];
                             let dateDisplay =record.stampDate;
-                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
                             if (moment(record.stampDate).day() == 6) {
-                                dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
+                                dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
                             } else if (moment(record.stampDate).day() == 0) {
-                                dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
+                                dateDisplay = "<span class='color-schedule-sunday' >" + dateDisplay + "</span>";
                             }
                             self.checkHandName(res.stampRecords.length > 0 ?  record.stampArtName : 0);
                             self.numberName();
