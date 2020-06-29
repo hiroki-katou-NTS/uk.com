@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.workschedule.EditStateOfDailyAttd;
+import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
 
 /**
  * @author anhdt
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.workschedule.EditStateOfDailyAttd;
  */
 @Data
 public class WorkShiftScheduleDto {
+	
 	// シフトコード
 	private Optional<String> shiftCode;
 	// シフトの編集状態
@@ -34,4 +37,10 @@ public class WorkShiftScheduleDto {
 	private boolean confirmed;
 	// 社員ID
 	private String employeeId;
+	
+	
+	public WorkShiftScheduleDto(ScheManaStatuTempo scheduleManagementState, WorkSchedule workSchedule) {
+//		this.employeeId = scheduleManagementState
+		// TODO: hieu lam not nhe
+	}
 }

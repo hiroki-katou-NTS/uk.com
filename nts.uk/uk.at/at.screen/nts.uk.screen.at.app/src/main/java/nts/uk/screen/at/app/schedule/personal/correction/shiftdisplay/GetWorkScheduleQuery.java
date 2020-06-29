@@ -17,8 +17,10 @@ import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.workschedule.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DeterEditStatusShiftService;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.GetCombineShiftMasterandWorkHolidayClassificationService;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.GetListWorkInfoByDailyAttendanceRecordService;
+import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -48,11 +50,24 @@ public class GetWorkScheduleQuery {
 		WorkScheManaStatusRequiredImpl workRequired = new WorkScheManaStatusRequiredImpl(workScheduleRepo);
 		// 1 取得する(Require, List<社員ID>, 期間)
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> workSchedules = WorkScheManaStatusService.getScheduleManagement(workRequired, empIds, period);
-		// 勤務情報リスト = 管理状態と勤務予定Map.values(): map $.勤務情報
+		
 		List<WorkInfoOfDailyAttendance> workInfosOfDaily = new ArrayList<>();
+		List<WorkShiftScheduleDto> schedules = new ArrayList<>();
 		for (Map.Entry<ScheManaStatuTempo, Optional<WorkSchedule>> entry : workSchedules.entrySet()) {
+			ScheManaStatuTempo scheduleManagementState = entry.getKey();
 		    if(entry.getValue().isPresent()) {
-		    	workInfosOfDaily.add(entry.getValue().get().getWorkInfo());
+		    	WorkSchedule workSchedule = entry.getValue().get();
+		    	// 勤務情報リスト = 管理状態と勤務予定Map.values(): map $.勤務情報
+		    	workInfosOfDaily.add(workSchedule.getWorkInfo());
+		    	// TODO: thieu 4.2.1 ai lam sau thi sua them vao nhe
+		    	
+		    	// 4.2.2 判断する(勤務予定)
+		    	ShiftEditState editState = DeterEditStatusShiftService.toDecide(workSchedule);
+		    	
+		    	// 4.2.3 create DTO
+		    	schedules.add(new WorkShiftScheduleDto(scheduleManagementState, workSchedule));
+		    	
+		    	
 		    }
 		}
 		
@@ -65,6 +80,7 @@ public class GetWorkScheduleQuery {
 		
 		List<String> shiftMasterCodes = shiftMasters.stream().map(s -> s.getShiftMasterCode().v()).collect(Collectors.toList());
 		Map<ShiftMaster, Optional<WorkStyle>> shiftWorks = GetCombineShiftMasterandWorkHolidayClassificationService.get(shiftRequired, cid, shiftMasterCodes);
+		
 		
 		
 		return null;
