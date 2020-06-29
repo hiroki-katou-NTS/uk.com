@@ -35,10 +35,11 @@ public class ShiftPalletsOrgFinder {
 	public List<PageDto> getByListPage(String workplaceId) {
 		String cid = AppContexts.user().companyId();
 		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findByCID(cid);
-		List<PageDto> result = shiftPalletsOrg.stream().map(c -> new PageDto(c)).collect(Collectors.toList());
+		List<PageDto> result = shiftPalletsOrg.stream().map(c -> new PageDto(c))
+				.collect(Collectors.toList());
 		return result;
 	}
-
+	
 	@Getter
 	public class PageDto {
 		private int page;

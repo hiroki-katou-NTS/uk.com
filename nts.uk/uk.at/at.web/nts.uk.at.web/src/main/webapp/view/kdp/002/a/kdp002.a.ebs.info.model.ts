@@ -56,11 +56,11 @@ class EmbossGridInfo {
 
                 stampData.stampHowAndTime = "<div class='inline-bl'>" + stampData.stampHow + "</div>" + stampData.stampTime;
                 if(stampData.changeClockArt == 0) {
-                    stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.timeStampType + '</div>';
+                    stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.stampArtName + '</div>';
                 } else if (stampData.changeClockArt == 1) {
-                    stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.timeStampType + '</div>';
+                    stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.stampArtName + '</div>';
                 } else {
-                    stampData.timeStampType = stampData.timeStampType ? `<div class='full-width' style='text-align: center'>` + stampData.timeStampType + '</div>' : '';
+                    stampData.timeStampType = stampData.stampArtName ? `<div class='full-width' style='text-align: center'>` + stampData.stampArtName + '</div>' : '';
                 }
 
             });

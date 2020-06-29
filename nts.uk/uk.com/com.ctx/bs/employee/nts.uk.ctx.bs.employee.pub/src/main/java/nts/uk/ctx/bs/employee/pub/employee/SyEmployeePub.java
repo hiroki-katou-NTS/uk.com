@@ -238,4 +238,5 @@ public interface SyEmployeePub {
 	 */
 	PersonInfoJhn001Export getEmployeeInfo(String sid);
 	
+	List<ResultRequest596Export> getEmpNotDeletedLstBySids(List<String> sids);
 }

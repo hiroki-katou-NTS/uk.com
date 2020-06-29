@@ -26,8 +26,8 @@ module nts.uk.at.view.kdp002.a {
                         self.stampGrid().yearMonth.subscribe((val) => {
                             self.getTimeCardData();
                         });
-                        let stampToSuppress = res.stampToSuppress;
-                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
+                        let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
+                        stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
                         // add correction interval
@@ -94,7 +94,7 @@ module nts.uk.at.view.kdp002.a {
                     });
                     layout.buttonSettings = btnSettings;
                 }
-
+                
                 return layout;
             }
 

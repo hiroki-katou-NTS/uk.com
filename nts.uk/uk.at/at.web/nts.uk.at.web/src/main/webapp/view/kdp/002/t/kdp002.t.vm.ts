@@ -43,6 +43,7 @@ module nts.uk.at.view.kdp002.t {
                         }]
                     }
                 } else {
+                    self.share.dailyAttdErrorInfos = _.orderBy(self.share.dailyAttdErrorInfos, ['lastDateError'], ['desc']);
                     let error = self.share.dailyAttdErrorInfos[0];
                     self.messageContent(error.messageContent);
                     self.messageColor(error.messageColor);
