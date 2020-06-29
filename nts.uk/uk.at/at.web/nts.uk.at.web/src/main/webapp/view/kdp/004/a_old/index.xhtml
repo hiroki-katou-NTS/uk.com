@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="./components/tab-panel.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="style.css" />
+		</ui:define>
+
+
+		<ui:define name="content">
+
+			<div id="functions-area"></div>
+			<div id="contents-area">
+				<div id="main-content">
+
+					<div id="system-Date">
+						<div>
+							<div class="col-1">
+								<div id="date-text" data-bind="text:dateText()"></div>
+								<div id="time-text" data-bind="text:timeText()"></div>
+							</div>
+							<div class="col-2">
+								<div>
+									<i data-bind="ntsIcon: { no: 5, width: 55, height: 55 }"></i>
+								</div>
+								<div>
+									<button id='stamp-btn' class="large proceed">#{i18n.getText('KDP003_2')}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div data-bind="if:isUsed()">
+						<div id="message">
+							<pre>
+打刻基本のページです
+テスト内容
+3行目</pre>
+						</div>
+
+						<div id="tab-panel" tabindex="2"
+							data-bind="ntsTabPanel: { dataSource: stampTab().tabs, active: stampTab().selectedTab }">
+							<div class="tab-content-1" data-bind="visible: getPageLayout(1)">
+								<!-- <stamp-layout-button data-bind="attr:{'params':  stampTab().tabs}" ></stamp-layout-button> -->
+								<stamp-layout-button
+									params="data: getPageLayout(1), parent: $parent, highlightSetting: stampToSuppress"></stamp-layout-button>
+							</div>
+							<div class="tab-content-2" data-bind="visible : getPageLayout(2)">
+								<stamp-layout-button
+									params="data: getPageLayout(2), parent: $parent, highlightSetting: stampToSuppress"></stamp-layout-button>
+							</div>
+							<div class="tab-content-3" data-bind="visible : getPageLayout(3)">
+								<stamp-layout-button
+									params="data: getPageLayout(3), parent: $parent, highlightSetting: stampToSuppress"></stamp-layout-button>
+							</div>
+							<div class="tab-content-4" data-bind="visible : getPageLayout(4)">
+								<stamp-layout-button
+									params="data: getPageLayout(4), parent: $parent, highlightSetting: stampToSuppress"></stamp-layout-button>
+							</div>
+							<div class="tab-content-5" data-bind="visible : getPageLayout(5)">
+								<stamp-layout-button
+									params="data: getPageLayout(5), parent: $parent, highlightSetting: stampToSuppress"></stamp-layout-button>
+							</div>
+						</div>
+					</div>
+					<div class='not-use-panel' data-bind="if:!isUsed()">
+						<span class="label not-use-label"
+							data-bind="text:getNotUseMessage()"></span>
+					</div>
+				</div>
+
+
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

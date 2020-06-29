@@ -1,118 +1,49 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile path="./components/tab-panel.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:stylefile path="style.css" />
-		</ui:define>
+  <ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="../../share/kdp.main.css" />
+      <com:scriptfile path="../../share/kdpbutton.vm.js" />
+      <com:scriptfile path="../../share/kdpclock.vm.js" />
+      <com:stylefile path="kdp004.a.main.css" />
+      <com:scriptfile path="kdp004.a.service.js" />
+      <com:scriptfile path="kdp004.a.vm.js" />
+      <com:scriptfile path="kdp004.a.start.js" />
+      <com:scriptfile path="kdp004.a.model.js" />
+      <com:scriptfile path="kdp004.a.ebs.info.model.js" />
+      <com:EnumScript>
+        nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod
+      </com:EnumScript>
+    </ui:define>
 
+    <ui:define name="content">
+      <div id="functions-area"></div>
 
-		<ui:define name="content">
-
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="main-content">
-
-					<div id="system-Date">
-						<div>
-							<div class="col-1">
-								<div id="date-text" data-bind="text:dateText()"></div>
-								<div id="time-text" data-bind="text:timeText()"></div>
-							</div>
-							<div class="col-2">
-								<div>
-									<i data-bind="ntsIcon: { no: 5, width: 55, height: 55 }"></i>
-								</div>
-								<div>
-									<button id='stamp-btn' class="large proceed">#{i18n.getText('KDP003_2')}</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div data-bind="if:isUsed()">
-						<div id="message">
-							<pre>
-打刻基本のページです
-テスト内容
-3行目</pre>
-						</div>
-						<div id="layouts"
-							class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
-							<div
-								data-bind="component: { name: 'kdp-tab-panel', params: tabs }">
-							</div>
-							<com:ko-if bind="tabs.selected() === '1'">
-								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-									<div class="btn-grid-container cf">
-										<div class="stamp-rec-btn-container pull-left btn-pos-1">
-											<button class="stamp-rec-btn"
-												style="background-color: #22b14c; color: rgb(0, 51, 204);">
-												<i data-bind="ntsIcon: { no: 160 }"></i> 出勤
-											</button>
-										</div>
-
-										<div class="stamp-rec-btn-container pull-left btn-pos-2">
-											<button class="stamp-rec-btn"
-												style="background-color: #f79646; color: rgb(0, 51, 204);">
-												<i data-bind="ntsIcon: { no: 161 }"></i> 退勤
-											</button>
-										</div>
-
-										<div class="stamp-rec-btn-container pull-left btn-pos-3">
-											<button class="stamp-rec-btn"
-												style="background-color: #22b14c; color: rgb(0, 51, 204);">直行</button>
-										</div>
-
-										<div class="stamp-rec-btn-container pull-left btn-pos-4">
-											<button class="stamp-rec-btn"
-												style="background-color: #f79646; color: rgb(0, 51, 204);">直帰</button>
-										</div>
-
-										<div class="stamp-rec-btn-container pull-left btn-pos-5">
-											<button class="stamp-rec-btn"
-												style="background-color: #22b14c; color: rgb(0, 51, 204);">外出</button>
-										</div>
-
-										<div class="stamp-rec-btn-container pull-left btn-pos-6">
-											<button class="stamp-rec-btn"
-												style="background-color: #f79646; color: rgb(0, 51, 204);">戻り</button>
-										</div>
-									</div>
-								</div>
-							</com:ko-if>
-							<com:ko-if bind="tabs.selected() === '2'">
-								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-								</div>
-							</com:ko-if>
-							<com:ko-if bind="tabs.selected() === '3'">
-								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-								</div>
-							</com:ko-if>
-							<com:ko-if bind="tabs.selected() === '4'">
-								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-								</div>
-							</com:ko-if>
-							<com:ko-if bind="tabs.selected() === '5'">
-								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-								</div>
-							</com:ko-if>
-						</div>
-					</div>
-					<div class='not-use-panel' data-bind="if:!isUsed()">
-						<span class="label not-use-label" data-bind="text:getNotUseMessage()"></span>
-					</div>
-				</div>
-
-
-			</div>
-		</ui:define>
-
-	</ui:composition>
+      <div id="content-area" class="cf">
+        <!-- A1 -->
+        <div id="kdp002a" class="cf">
+          <div class="pull-left" id="stamp-input">
+            <stamp-clock params="setting: stampSetting()"></stamp-clock>
+            
+            <div class="panel" style="padding: 0 10px 10px 10px">
+              <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
+                <span data-bind="text: stampTab().stampPageComment"></span>
+              </div>
+              <ui:include src="stamp-tab.xhtml" />
+            </div>
+          </div>
+          <div class="pull-left" id="stamp-info">
+            <ui:include src="emboss-info.xhtml" />
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
 </body>
+
 </html>
