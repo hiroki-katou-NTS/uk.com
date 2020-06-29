@@ -22,11 +22,11 @@ public class StampSetCommunalDto {
 	
 	private List<StampPageLayoutDto> lstStampPageLayout;
 	
-	private Boolean nameSelectArt;
+	private Integer nameSelectArt;
 	
-	private Boolean passwordRequiredArt;
+	private Integer passwordRequiredArt;
 	
-	private Boolean employeeAuthcUseArt;
+	private Integer employeeAuthcUseArt;
 	
 	private Integer authcFailCnt;
 	
@@ -35,9 +35,9 @@ public class StampSetCommunalDto {
 				domain.getCid(), 
 				DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySetStampScreen()), 
 				domain.getLstStampPageLayout().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()), 
-				domain.isNameSelectArt(), 
-				domain.isPasswordRequiredArt(), 
-				domain.isEmployeeAuthcUseArt(), 
+				domain.isNameSelectArt()?1:0, 
+				domain.isPasswordRequiredArt()?1:0, 
+				domain.isEmployeeAuthcUseArt()?1:0, 
 				domain.getAuthcFailCnt().isPresent()?domain.getAuthcFailCnt().get().v():null);
 	}
 }

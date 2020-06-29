@@ -86,13 +86,14 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 				.getSingle(c -> c.toDomain());
 		
 		entity.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
-		entity.mapAddress = domain.getMapAddres().v();
-		
+		if(domain.getMapAddres().isPresent()) {
+			entity.mapAddress = domain.getMapAddres().get().v();
+		}
 		return entity;
 	}
 	
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity, List<String> roles) {
-		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1,new MapAddress(entity.mapAddress));
+		return new CommonSettingsStampInput(entity.cid, roles, entity.googleMapUseArt == 1, entity.mapAddress == null ? Optional.empty():Optional.of(new MapAddress(entity.mapAddress)));
 	}
 
 }

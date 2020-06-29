@@ -25,11 +25,11 @@ public class StampSetCommunalCommand {
 	
 	private List<StampPageLayoutDto> lstStampPageLayout;
 	
-	private Boolean nameSelectArt;
+	private Integer nameSelectArt;
 	
-	private Boolean passwordRequiredArt;
+	private Integer passwordRequiredArt;
 	
-	private Boolean employeeAuthcUseArt;
+	private Integer employeeAuthcUseArt;
 	
 	private Integer authcFailCnt;
 	
@@ -38,9 +38,9 @@ public class StampSetCommunalCommand {
 				AppContexts.user().companyId(), 
 				this.displaySetStampScreen.toDomain(), 
 				new ArrayList<StampPageLayout>(), 
-				this.nameSelectArt, 
-				this.passwordRequiredArt, 
-				this.employeeAuthcUseArt, 
+				this.nameSelectArt == 1, 
+				this.passwordRequiredArt == 1, 
+				this.employeeAuthcUseArt == 1, 
 				this.authcFailCnt == null?Optional.empty():Optional.of(new NumberAuthenfailures(this.authcFailCnt)));
 	}
 }
