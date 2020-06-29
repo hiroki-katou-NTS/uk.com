@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailConte
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
@@ -91,7 +91,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	private HolidayShipmentService holidayShipmentService;
 
 	@Override
-	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType) {
+	public AppDispInfoNoDateOutput_Old getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType) {
 		// 申請者情報を取得する
 		List<EmployeeInfoImport> employeeInfoLst = this.getEmployeeInfoLst(applicantLst);
 		// 申請承認設定を取得する
@@ -104,7 +104,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				appTypeSetting.getDisplayFixedReason(), 
 				appType);
 		// OUTPUT「申請表示情報(基準日関係なし)」にセットする
-		AppDispInfoNoDateOutput output = new AppDispInfoNoDateOutput(employeeInfoLst, requestSetting, appReasonLst);
+		AppDispInfoNoDateOutput_Old output = new AppDispInfoNoDateOutput_Old(employeeInfoLst, requestSetting, appReasonLst);
 		// 「申請表示情報(基準日関係なし)」を返す
 		return output;
 	}
@@ -125,7 +125,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType_Old appType,
-			List<GeneralDate> dateLst, AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode) {
+			List<GeneralDate> dateLst, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
 		// 基準日=INPUT．「申請対象日リスト」の1個目
 		Optional<GeneralDate> targetDate = Optional.empty();
@@ -257,7 +257,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType_Old appType,
 			List<String> applicantLst, List<GeneralDate> dateLst, boolean mode) {
 		// 申請表示情報(基準日関係なし)を取得する
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
+		AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
 		// OUTPUT「申請表示情報」にセットする
@@ -268,7 +268,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType_Old appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
+			ApplicationType_Old appType, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する

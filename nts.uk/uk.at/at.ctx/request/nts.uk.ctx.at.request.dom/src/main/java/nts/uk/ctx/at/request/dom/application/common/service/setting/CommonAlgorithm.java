@@ -7,7 +7,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
@@ -25,7 +25,7 @@ public interface CommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType);
+	public AppDispInfoNoDateOutput_Old getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType);
 	
 	/**
 	 * 10_申請者を作成
@@ -44,7 +44,7 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType_Old appType, List<GeneralDate> dateLst,
-			AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode);
+			AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, boolean mode);
 	
 	/**
 	 * 社員IDから申請承認設定情報の取得
@@ -103,7 +103,7 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType_Old appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput);
+			ApplicationType_Old appType, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput);
 	
 	/**
 	 * 申請済み勤務種類の存在判定と取得

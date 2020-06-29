@@ -41,7 +41,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -219,7 +219,7 @@ public class AppHolidayWorkFinder {
 		GeneralDate targetDate = GeneralDate.fromString(appDate, "yyyy/MM/dd");
 		List<GeneralDate> dateLst = Arrays.asList(targetDate);
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = appHdWorkDispInfoCmd.toDomain();
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
+		AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput();
 		// 共通インタラクション「申請日を変更する」を実行する
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(

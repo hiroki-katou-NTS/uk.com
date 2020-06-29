@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 
 /**
+ * refactor 4
  * 申請表示情報
  * @author Doan Duy Hung
  *
@@ -22,7 +23,7 @@ public class AppDispInfoStartupOutput {
 	/**
 	 * 申請設定（基準日関係なし）
 	 */
-	private AppDispInfoNoDateOutput appDispInfoNoDateOutput;
+	private AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput;
 	
 	/**
 	 * 申請設定（基準日関係あり）

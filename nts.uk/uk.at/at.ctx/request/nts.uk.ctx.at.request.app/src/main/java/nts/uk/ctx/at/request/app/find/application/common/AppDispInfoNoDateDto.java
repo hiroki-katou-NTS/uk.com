@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.RequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class AppDispInfoNoDateDto {
 	 */
 	public List<ApplicationReasonDto> appReasonLst;
 	
-	public static AppDispInfoNoDateDto fromDomain(AppDispInfoNoDateOutput appDispInfoNoDateOutput) {
+	public static AppDispInfoNoDateDto fromDomain(AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput) {
 		AppDispInfoNoDateDto appDispInfoNoDateDto = new AppDispInfoNoDateDto();
 		appDispInfoNoDateDto.employeeInfoLst = appDispInfoNoDateOutput.getEmployeeInfoLst();
 		appDispInfoNoDateDto.requestSetting = RequestSettingDto.fromDomain(appDispInfoNoDateOutput.getRequestSetting());
@@ -38,8 +38,8 @@ public class AppDispInfoNoDateDto {
 		return appDispInfoNoDateDto;
 	}
 	
-	public AppDispInfoNoDateOutput toDomain() {
-		return new AppDispInfoNoDateOutput(
+	public AppDispInfoNoDateOutput_Old toDomain() {
+		return new AppDispInfoNoDateOutput_Old(
 				employeeInfoLst, 
 				requestSetting.toDomain(), 
 				appReasonLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));

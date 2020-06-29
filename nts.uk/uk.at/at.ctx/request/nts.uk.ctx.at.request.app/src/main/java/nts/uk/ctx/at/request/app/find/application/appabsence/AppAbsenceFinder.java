@@ -53,7 +53,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
@@ -258,7 +258,7 @@ public class AppAbsenceFinder {
 		GeneralDate targetDate = GeneralDate.fromString(startAppDate, "yyyy/MM/dd");
 		dateLst.add(targetDate);
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = appAbsenceStartInfoDto.toDomain();
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
+		AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput();
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput();
 		// 共通インタラクション「申請日を変更する」を実行する
 		appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
