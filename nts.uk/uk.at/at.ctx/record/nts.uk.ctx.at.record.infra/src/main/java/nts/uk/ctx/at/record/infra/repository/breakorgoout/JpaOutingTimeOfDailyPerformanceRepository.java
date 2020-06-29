@@ -133,8 +133,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer outActualTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
+						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent()) &&  outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent() ? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				String outActualStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
@@ -154,7 +153,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer outStampTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent())
+						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()) && outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
 								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
 				String outStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
@@ -178,7 +177,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer backActualTime = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent())
+						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent()) 
+						&& outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()
 								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
@@ -201,6 +201,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer backStampTime = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp().isPresent())
+						&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
 								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
 				Integer backStampSource = (outingTimeSheet.getComeBack().isPresent()
@@ -311,7 +312,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getAfterRoundingTime().valueAsMinutes();
 			krcdtDaiOutingTime.backActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
 					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.backActualTime = stamp.getTimeDay().getTimeWithDay() == null ? null
+			krcdtDaiOutingTime.backActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
 					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setBackActualStampNull(krcdtDaiOutingTime);
@@ -326,7 +327,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getAfterRoundingTime().valueAsMinutes();
 			krcdtDaiOutingTime.backStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
 					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.backStampTime = stamp.getTimeDay().getTimeWithDay() == null ? null
+			krcdtDaiOutingTime.backStampTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
 					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setBackStampNull(krcdtDaiOutingTime);
@@ -369,7 +370,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getAfterRoundingTime().valueAsMinutes();
 			krcdtDaiOutingTime.outActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
 					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.outActualTime = stamp.getTimeDay().getTimeWithDay() == null ? null
+			krcdtDaiOutingTime.outActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
 					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setGoOutActualStampNull(krcdtDaiOutingTime);
@@ -391,7 +392,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getAfterRoundingTime().valueAsMinutes();
 			krcdtDaiOutingTime.outStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
 					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.outStampTime = stamp.getTimeDay().getTimeWithDay() == null ? null
+			krcdtDaiOutingTime.outStampTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
 					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setGoOutStampNull(krcdtDaiOutingTime);
