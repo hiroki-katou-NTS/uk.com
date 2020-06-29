@@ -73,7 +73,7 @@ public class GetUnusedLeaveTemporary {
 
 		// 代休の設定を取得する
 		SubstitutionHolidayOutput subHolidayOut = SettingSubstituteHolidayProcess
-				.getSettingForSubstituteHoliday(require, param.getCid(), param.getSid(), param.getScreenDisplayDate());
+				.getSettingForSubstituteHoliday(require, param.getCid(), param.getSid(), param.getDateData().end());
 
 		// 取得した件数をチェックする
 
@@ -84,7 +84,7 @@ public class GetUnusedLeaveTemporary {
 					.filter(a -> a.getRemainManaID().equals(breakMng.getBreakMngId())).collect(Collectors.toList())
 					.get(0);
 			AccumulationAbsenceDetail dataDetail = getNotTypeDayOff(require, Pair.of(remainData, breakMng),
-					param.getDateData().start(), param.getScreenDisplayDate(), subHolidayOut, param.getCid(),
+					param.getDateData().end(), subHolidayOut, param.getCid(),
 					param.getSid());
 			if (dataDetail != null) {
 				result.add(dataDetail);
@@ -95,7 +95,7 @@ public class GetUnusedLeaveTemporary {
 
 	// 4-1.代休と紐付けをしない休出を取得する
 	public static AccumulationAbsenceDetail getNotTypeDayOff(Require require,
-			Pair<InterimRemain, InterimBreakMng> interimData, GeneralDate aggStartDate, GeneralDate baseDate,
+			Pair<InterimRemain, InterimBreakMng> interimData, GeneralDate aggEndDate,
 			SubstitutionHolidayOutput subsHolidaySetting, String cid, String sid) {
 
 		// ドメインモデル「暫定休出代休紐付け管理」を取得する
@@ -111,7 +111,7 @@ public class GetUnusedLeaveTemporary {
 
 		// 締め設定を取得する
 		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				baseDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), aggStartDate);
+				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), interimData.getLeft().getYmd());
 
 		// 使用期限を設定
 		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
