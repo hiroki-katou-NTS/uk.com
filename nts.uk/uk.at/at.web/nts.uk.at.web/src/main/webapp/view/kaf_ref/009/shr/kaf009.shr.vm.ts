@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/009/shr/index.html'
     })
     class Kaf009ShareViewModel extends ko.ViewModel {
-        
+        mode: string = 'edit';
         subscribers: Array<any>;
         model : Model;
 //        checkbox1: KnockoutObservable<boolean>;
@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
         created(params: any) {
               this.model = params.model;
               this.dataFetch = params.dataFetch;
-              
+              this.mode = params.mode;
 //            this.checkbox1 = params.model().checkbox1;
 //            this.checkbox2 = params.model().checkbox2;
 //            this.workTypeCode = params.model().workTypeCode;
@@ -37,11 +37,12 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 this.model.checkbox1(goBackApp.straightDistinction == 1);
                 this.model.checkbox2(goBackApp.straightLine == 1);
             }
-//            else {
+//           else {
                 this.model.checkbox1(true);
                 this.model.checkbox2(true);
-//            }
-            
+//           }
+            this.model.checkbox3(true);
+//            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
             this.model.workTypeCode(this.dataFetch().workType().workType);
             this.model.workTypeName(this.dataFetch().workType().nameWorkType);
             this.model.workTimeCode(this.dataFetch().workTime().workTime);
@@ -94,13 +95,15 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
     export class Model {
         checkbox1: KnockoutObservable<boolean>;
         checkbox2: KnockoutObservable<boolean>;
+        checkbox3: KnockoutObservable<boolean>;
         workTypeCode: KnockoutObservable<String>;
         workTypeName: KnockoutObservable<String>;
         workTimeCode: KnockoutObservable<String>;
         workTimeName: KnockoutObservable<String>;
-        constructor(cb1: boolean, cb2: boolean, workTypeCode: String, workTypeName: String, workTimeCode: String, workTimeName: String) {
+        constructor(cb1: boolean, cb2: boolean, cb3: boolean, workTypeCode: String, workTypeName: String, workTimeCode: String, workTimeName: String) {
             this.checkbox1 = ko.observable(cb1);
             this.checkbox2 = ko.observable(cb2);
+            this.checkbox3 = ko.observable(cb3);
             this.workTypeCode = ko.observable(workTypeCode);
             this.workTypeName = ko.observable(workTypeName);
             this.workTimeCode = ko.observable(workTimeCode);
