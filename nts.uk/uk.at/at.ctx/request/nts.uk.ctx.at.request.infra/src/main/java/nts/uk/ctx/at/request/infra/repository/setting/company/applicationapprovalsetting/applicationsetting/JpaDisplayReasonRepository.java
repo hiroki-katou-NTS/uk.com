@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.applicationsetting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -16,13 +18,13 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 public class JpaDisplayReasonRepository implements DisplayReasonRepository {
 
 	@Override
-	public DisplayReason findByAppType(String companyID, ApplicationType appType) {
+	public Optional<DisplayReason> findByAppType(String companyID, ApplicationType appType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DisplayReason findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
+	public Optional<DisplayReason> findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
