@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile path="./components/tab-panel.js" />
 			<com:scriptfile path="viewmodel.js" />
-			<com:stylefile path="kdp004.a.style.css" />
+			<com:stylefile path="style.css" />
 		</ui:define>
 
 
@@ -17,8 +17,8 @@
 
 			<div id="functions-area"></div>
 			<div id="contents-area">
-
 				<div id="main-content">
+
 					<div id="system-Date">
 						<div>
 							<div class="col-1">
@@ -35,92 +35,81 @@
 							</div>
 						</div>
 					</div>
-
-					<div id="message">
-						<pre>
+					<div data-bind="if:isUsed()">
+						<div id="message">
+							<pre>
 打刻基本のページです
 テスト内容
 3行目</pre>
-					</div>
-					<div id="layouts"
-						class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
-						<div
-							data-bind="component: { name: 'kdp-tab-panel', params: tabs }">
 						</div>
-						<com:ko-if bind="tabs.selected() === '1'">
-							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-								<div class="btn-grid-container cf">
-									<div class="stamp-rec-btn-container pull-left btn-pos-1"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #22b14c; color: rgb(0, 51, 204);"><i data-bind="ntsIcon: { no: 2 }"></i>
-											出勤
+						<div id="layouts"
+							class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
+							<div
+								data-bind="component: { name: 'kdp-tab-panel', params: tabs }">
+							</div>
+							<com:ko-if bind="tabs.selected() === '1'">
+								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+									<div class="btn-grid-container cf">
+										<div class="stamp-rec-btn-container pull-left btn-pos-1">
+											<button class="stamp-rec-btn"
+												style="background-color: #22b14c; color: rgb(0, 51, 204);">
+												<i data-bind="ntsIcon: { no: 160 }"></i> 出勤
 											</button>
-									</div>
-									
-									<div class="stamp-rec-btn-container pull-left btn-pos-2"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #f79646; color: rgb(0, 51, 204);"><i data-bind="ntsIcon: { no: 138 }"></i>
-											退勤
+										</div>
+
+										<div class="stamp-rec-btn-container pull-left btn-pos-2">
+											<button class="stamp-rec-btn"
+												style="background-color: #f79646; color: rgb(0, 51, 204);">
+												<i data-bind="ntsIcon: { no: 161 }"></i> 退勤
 											</button>
-									</div>
-									
-									<div class="stamp-rec-btn-container pull-left btn-pos-3"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #22b14c; color: rgb(0, 51, 204);">直行</button>
-									</div>
-									
-									<div class="stamp-rec-btn-container pull-left btn-pos-4"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #f79646; color: rgb(0, 51, 204);">直帰</button>
-									</div>
-									
-									<div class="stamp-rec-btn-container pull-left btn-pos-5"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #22b14c; color: rgb(0, 51, 204);">外出</button>
-									</div>
-									
-									<div class="stamp-rec-btn-container pull-left btn-pos-6"
-										>
-										<button class="stamp-rec-btn"
-											style="background-color: #f79646; color: rgb(0, 51, 204);">戻り</button>
+										</div>
+
+										<div class="stamp-rec-btn-container pull-left btn-pos-3">
+											<button class="stamp-rec-btn"
+												style="background-color: #22b14c; color: rgb(0, 51, 204);">直行</button>
+										</div>
+
+										<div class="stamp-rec-btn-container pull-left btn-pos-4">
+											<button class="stamp-rec-btn"
+												style="background-color: #f79646; color: rgb(0, 51, 204);">直帰</button>
+										</div>
+
+										<div class="stamp-rec-btn-container pull-left btn-pos-5">
+											<button class="stamp-rec-btn"
+												style="background-color: #22b14c; color: rgb(0, 51, 204);">外出</button>
+										</div>
+
+										<div class="stamp-rec-btn-container pull-left btn-pos-6">
+											<button class="stamp-rec-btn"
+												style="background-color: #f79646; color: rgb(0, 51, 204);">戻り</button>
+										</div>
 									</div>
 								</div>
-							</div>
-						</com:ko-if>
-						<com:ko-if bind="tabs.selected() === '2'">
-							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-							</div>
-						</com:ko-if>
-						<com:ko-if bind="tabs.selected() === '3'">
-							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-							</div>
-						</com:ko-if>
-						<com:ko-if bind="tabs.selected() === '4'">
-							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-							</div>
-						</com:ko-if>
-						<com:ko-if bind="tabs.selected() === '5'">
-							<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
-							</div>
-						</com:ko-if>
+							</com:ko-if>
+							<com:ko-if bind="tabs.selected() === '2'">
+								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="tabs.selected() === '3'">
+								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="tabs.selected() === '4'">
+								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="tabs.selected() === '5'">
+								<div class="ui-tabs-panel ui-corner-bottom ui-widget-content">
+								</div>
+							</com:ko-if>
+						</div>
 					</div>
-					<div class="div_line" id="company-message">
-						<pre>
-本部より：全職場に表示される会社のメッセージです。２行目改行の表示
-					</pre>
+					<div class='not-use-panel' data-bind="if:!isUsed()">
+						<span class="label not-use-label" data-bind="text:getNotUseMessage()"></span>
 					</div>
-					<div class="div_line" id="manager-message">
-						<pre>
-職場管理：職場管理者からのお願いです。この画面で編集するコメント。
-					</pre>
-					</div>
-
 				</div>
+
+
 			</div>
 		</ui:define>
 

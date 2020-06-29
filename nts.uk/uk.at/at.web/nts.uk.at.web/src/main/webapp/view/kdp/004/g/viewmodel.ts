@@ -2,7 +2,7 @@
 
 
 @bean()
-class KDP004AViewModel extends ko.ViewModel {
+class KDP004GViewModel extends ko.ViewModel {
 	systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
 
 	tabs = {
@@ -25,7 +25,7 @@ class KDP004AViewModel extends ko.ViewModel {
 		selected: ko.observable('1')
 	};
 
-	isUsed: KnockoutObservable<boolean> = ko.observable(true);
+	isUsed: KnockoutObservable<boolean> = ko.observable(false);
 
 	layoutsSetting: KnockoutObservable<any> = ko.observable(
 		{ layout1Title: ko.observable('layout-1'), layout1Visible: ko.observable(true) }
