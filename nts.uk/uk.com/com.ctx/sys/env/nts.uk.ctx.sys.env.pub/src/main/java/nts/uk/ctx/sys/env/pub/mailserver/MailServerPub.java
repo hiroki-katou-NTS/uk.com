@@ -4,7 +4,8 @@ public interface MailServerPub {
 	boolean findBy(String companyId);
 	
 	/**
-	 * メールサーバを設定したかチェックする
+	 * refactor 4
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".システム.環境.メールサーバ.アルゴリズム.メールサーバを設定したかチェックする.メールサーバを設定したかチェックする
 	 * @param companyID
 	 * @return
 	 */
