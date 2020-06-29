@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -44,6 +42,7 @@ public class DailyResultAccordScheduleStatus {
 	}
 
 	public static interface Require  {
-		
+		// 社員と日付を指定して日別勤怠(Work)を取得するアルゴリズムを利用する（1次の処理に存在するはず） 
+		// Tài liệu chưa chỉ rõ thuật toán 
 	}
 }

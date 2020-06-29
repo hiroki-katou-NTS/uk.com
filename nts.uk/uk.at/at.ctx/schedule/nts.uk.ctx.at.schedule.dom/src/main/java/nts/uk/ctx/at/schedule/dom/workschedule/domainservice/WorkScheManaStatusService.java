@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 /**
  * «DomainService» 予定管理状態に応じて勤務予定を取得する
