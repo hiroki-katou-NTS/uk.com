@@ -119,7 +119,7 @@ public class CheckAttdErrorAfterStampService {
 	 */
 	private static Optional<DailyAttdErrorInfo> createDailyErrorInfo(Require require, StampRecordDis stampRecordDis,
 			List<EmployeeDailyPerError> listEmployeeDailyPerError) {
-		List<ErrorAlarmWorkRecordCode> listError = stampRecordDis.getCheckErrorType().getErrorAlarm();
+		List<String> listError = stampRecordDis.getCheckErrorType().getErrorAlarm().stream().map(x-> x.v()).collect(Collectors.toList());
 		
 		List<EmployeeDailyPerError> listDataError = new ArrayList<>();
 		
