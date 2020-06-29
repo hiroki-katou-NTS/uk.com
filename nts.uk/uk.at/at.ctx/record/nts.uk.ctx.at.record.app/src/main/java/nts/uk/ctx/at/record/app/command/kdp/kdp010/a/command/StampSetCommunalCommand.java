@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,7 +37,7 @@ public class StampSetCommunalCommand {
 		return new StampSetCommunal(
 				AppContexts.user().companyId(), 
 				this.displaySetStampScreen.toDomain(), 
-				new ArrayList(), 
+				new ArrayList<StampPageLayout>(), 
 				this.nameSelectArt, 
 				this.passwordRequiredArt, 
 				this.employeeAuthcUseArt, 

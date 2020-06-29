@@ -38,18 +38,18 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	/*打刻の前準備(共有)を登録する*/
 	public void saveStampSetCommunal(StampSetCommunalCommand command) {
-		stampSetCommunalRepo.insert(command.toDomain());
+		stampSetCommunalRepo.save(command.toDomain());
 	}
 	
 	/*打刻の前準備(スマホ)を登録する*/
 	public void saveSettingsSmartphoneStamp(SettingsSmartphoneStampCommand command) {
-		settingsSmartphoneStampRepo.insert(command.toDomain());
+		settingsSmartphoneStampRepo.save(command.toDomain());
 		Optional<CommonSettingsStampInput> domain = commonSettingsStampInputRepo.get(AppContexts.user().companyId());
 		if (domain.isPresent()) {
 			domain.get().setGooglemap(command.getGoogleMap());
-			commonSettingsStampInputRepo.insert(domain.get());
+			commonSettingsStampInputRepo.update(domain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(AppContexts.user().companyId(), new ArrayList(), command.getGoogleMap(), Optional.empty()));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(AppContexts.user().companyId(), new ArrayList<String>(), command.getGoogleMap(), Optional.empty()));
 		}
 	}
 	

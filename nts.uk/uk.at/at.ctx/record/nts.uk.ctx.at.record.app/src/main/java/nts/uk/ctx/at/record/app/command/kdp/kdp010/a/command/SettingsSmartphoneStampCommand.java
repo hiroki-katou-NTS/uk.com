@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.shr.com.context.AppContexts;
 
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class SettingsSmartphoneStampCommand {
 		return new SettingsSmartphoneStamp(
 				AppContexts.user().companyId(), 
 				this.displaySettingsStampScreen.toDomain(), 
-				new ArrayList(), 
+				new ArrayList<StampPageLayout>(), 
 				this.buttonEmphasisArt);
 	}
 }

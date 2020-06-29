@@ -51,9 +51,11 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		
 		KrcmtStampFunction entity =  entityOpt.get();
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class).getList()
+		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class)
+				.setParameter("companyId", domain.getCompanyId())
+				.getList()
 				.stream()
-				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.valueOf(dp.pk.getDAtdItemId()))).collect(Collectors.toList())
+				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.USE)).collect(Collectors.toList())
 				.stream().findFirst();
 		
 		entity.update(domain, display);

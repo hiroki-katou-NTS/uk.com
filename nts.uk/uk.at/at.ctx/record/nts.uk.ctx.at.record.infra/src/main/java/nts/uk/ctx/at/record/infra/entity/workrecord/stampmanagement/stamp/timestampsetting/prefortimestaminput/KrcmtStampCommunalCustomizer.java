@@ -9,7 +9,7 @@ public class KrcmtStampCommunalCustomizer implements DescriptorCustomizer{
 
 	@Override
 	public void customize(ClassDescriptor descriptor) throws Exception {
-		OneToManyMapping mapping = (OneToManyMapping)descriptor.getMappingForAttributeName("krcmtStampCommunal");
+		OneToManyMapping mapping = (OneToManyMapping)descriptor.getMappingForAttributeName("listKrcmtStampPageLayout");
 		ExpressionBuilder builder = new ExpressionBuilder(mapping.getReferenceClass());
 		Expression fkExp = builder.getField("CID").equal(builder.getParameter("CID"));
 		Expression activeExp = builder.getField("STAMP_MEANS").equal(0);
