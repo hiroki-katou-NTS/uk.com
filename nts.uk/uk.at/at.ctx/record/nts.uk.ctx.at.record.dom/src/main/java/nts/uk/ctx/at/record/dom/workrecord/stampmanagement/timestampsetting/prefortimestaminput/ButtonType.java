@@ -55,8 +55,8 @@ public class ButtonType implements DomainValue{
 			// return $表示する打刻種類
 			return stampTypeDisplay;
 		} else {
-			// $表示する打刻種類 + '+' +打刻記録.予約区分 ←EnumのName
-			return stampTypeDisplay + ReservationArt.CANCEL_RESERVATION.nameId;
+			// $表示する打刻種類 + '+' +@予約区分 ←EnumのNameを返す
+			return stampTypeDisplay + this.reservationArt.nameId;
 		}
 	}
 }
