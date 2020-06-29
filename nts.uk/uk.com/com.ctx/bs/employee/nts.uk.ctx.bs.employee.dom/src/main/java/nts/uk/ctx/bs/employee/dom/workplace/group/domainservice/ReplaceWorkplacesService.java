@@ -23,7 +23,7 @@ public class ReplaceWorkplacesService {
 	 * @param lstWorkplaceId
 	 * @return	
 	 */
-	public static Map<String, WorkplaceReplaceResult> getWorkplace(Require require,WorkplaceGroup group, List<String> lstWorkplaceId){
+	public static Map<String, WorkplaceReplaceResult> replaceWorkplace(Require require,WorkplaceGroup group, List<String> lstWorkplaceId){
 		// require.職場グループを指定して職場グループ所属情報を取得する( 職場グループ.職場グループID )
 		// 旧所属情報リスト=get*(ログイン会社ID, 職場グループ.職場グループID):List<職場グループ所属情報>
 		List<AffWorkplaceGroup> lstFormerAffInfo = require.getByWKPGRPID(group.getWKPGRPID());

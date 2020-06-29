@@ -65,34 +65,39 @@ module nts.uk.at.view.kdp002.c {
                     console.log(res);
                     if (res) {
                         if(_.size(res.stampRecords) > 0){
-                            let dateDisplay =res.stampRecords[0].stampDate;
-                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc'])
-                            if (moment(res.stampRecords[0].stampDate).day() == 6) {
-                                dateDisplay = "<span class='color-schedule-saturday' style='float:left;'>" + dateDisplay + "</span>";
-                            } else if (moment(res.stampRecords[0].stampDate).day() == 0) {
-                                dateDisplay = "<span class='color-schedule-sunday' style='float:left;'>" + dateDisplay + "</span>";
+
+                            res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
+							let record= res.stampRecords[0];
+                            let dateDisplay =record.stampDate;
+                            if (moment(record.stampDate).day() == 6) {
+                                dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
+                            } else if (moment(record.stampDate).day() == 0) {
+                                dateDisplay = "<span class='color-schedule-sunday' >" + dateDisplay + "</span>";
                             }
-                            self.checkHandName(res.stampRecords.length > 0 ?  res.stampRecords[0].stampArtName : 0);
+                            self.checkHandName(res.stampRecords.length > 0 ?  record.stampArtName : 0);
                             self.numberName();
-                            self.laceName(res.stampRecords[0].workLocationCD +" "+res.workPlaceName);
+                            self.laceName((record.workLocationCD||'') +" "+ (res.workPlaceName ||''));
                             self.dayName(dateDisplay);
-                            self.timeName(res.stampRecords[0].stampTime);
+                            self.timeName(record.stampTime);
                             
                             self.timeName1(res.attendance ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.attendance)) + " ~ " : null);
                             self.timeName2(res.leave ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.leave)): null);
-                            self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
-                            self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');      
+                            self.workName1(res.workTypes.length > 0 ? record.name : '');
+                            self.workName2(res.workTimeTypes.length > 0 ? record.name : '');      
 							
                             if(res.itemValues) {
+                                // C4	実績の属性と表示書式について
                                 res.itemValues.forEach(item => {
                                     if(item.itemId == 28 || item.itemId == 29 || item.itemId == 31 || item.itemId == 34) {
                                         item.value = '';
-                                    } else if(item.valueType == "TIME" && item.value) {
+                                    } else if((item.valueType == "TIME") && item.value) {
                                         item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
                                     } else if (item.valueType == "AMOUNT") {
                                         item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));
-                                    } else if (item.valueType == "TIME_WITH_DAY" && item.value) {
-                                        item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
+                                    } else if ((item.valueType == "TIME_WITH_DAY" || item.valueType == "CLOCK" ) && item.value) {
+                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(item.value));
+                                    } else if ((item.valueType == "DAYS" || item.valueType == "COUNT") && item.value ) {
+                                        item.valueType = nts.uk.ntsNumber.formatNumber(parseFloat(item.valueType), new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1}));
                                     }
                                 });
                             }

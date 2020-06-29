@@ -137,7 +137,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
-			int changeClockArt, int changeCalArt, int setPreClockArt, Integer changeHalfDay, Integer goOutArt,
+			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
 			String textColor, String backGroundColor, int aidioType) {
 		super();
 		this.pk = pk;
@@ -167,7 +167,7 @@ private static final long serialVersionUID = 1L;
 		 
 		
 		ButtonType buttonType = new ButtonType(
-				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.of(stampType));
+				EnumAdaptor.valueOf(this.reservationArt, ReservationArt.class), Optional.ofNullable(stampType));
 		
 		return new ButtonSettings(
 				new ButtonPositionNo(pk.buttonPositionNo), 
@@ -234,8 +234,14 @@ private static final long serialVersionUID = 1L;
 				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
 						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v()
 						: null,
-				settings.getButtonType().getReservationArt().value, changeClockArt, changeCalArt, setPreClockArt,
-				changeHalfDay, goOutArt, settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
-				settings.getButtonDisSet().getBackGroundColor().v(), settings.getAudioType().value);
+				settings.getButtonType().getReservationArt().value
+				, changeClockArt
+				, changeCalArt
+				, setPreClockArt
+				,changeHalfDay
+				, goOutArt
+				, settings.getButtonDisSet().getButtonNameSet().getTextColor().v()
+				,settings.getButtonDisSet().getBackGroundColor().v()
+				, settings.getAudioType().value);
 	}
 }

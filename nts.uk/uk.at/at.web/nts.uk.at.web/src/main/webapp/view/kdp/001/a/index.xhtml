@@ -43,12 +43,12 @@
 								data-bind="css: {
 										'button-big': $vm.isWidget(),
 										'button-small' :!$vm.isWidget() },
-										enable:$vm.checkEnableButton($data),
+										enable:true,
 										click: function(data, event) { $vm.stamp($vm,data) }  ,
 										text: buttonDisSet.buttonNameSet.buttonName,
 										style: { 
 											'color': buttonDisSet.buttonNameSet.textColor,
-											'background-color': buttonDisSet.backGroundColor
+											'background-color': $vm.getBGButton($data)
 										}"
 								class="button "></button>
 						</com:ko-foreach>
@@ -59,7 +59,7 @@
 					</div>
 				</div>
 				<div
-					data-bind="if:(stampDatas().length &amp;&amp; isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0) ,visible:isWidget() , css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
+					data-bind="if:( isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0) ,visible:isWidget() , css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
 					id="right-area">
 					<table data-bind="visible:showTable" id="fixed-table">
 						<colgroup>
@@ -86,7 +86,7 @@
 				</div>
 
 				<div
-					data-bind="if:( stampDatas().length &amp;&amp; !isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0)   ,visible:!isWidget(), css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
+					data-bind="if:(!isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0)   ,visible:!isWidget(), css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
 					id="right-area">
 					<table data-bind="visible:showTable" id="fixed-table">
 						<colgroup>

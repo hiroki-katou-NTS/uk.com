@@ -104,10 +104,10 @@ module nts.uk.at.view.kdp002.b {
                             let dateDisplay = nts.uk.time.applyFormat("Short_YMDW", sr.stampDate)
                             if(moment(sr.stampDate).day() ==6){
                                 dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
-                                sr.stampDate ="<span class='color-schedule-saturday' style='float:left;'>"+sr.stampDate + "</span>";
+                                sr.stampDate ="<span class='color-schedule-saturday' >"+sr.stampDate + "</span>";
                             }else if(moment(sr.stampDate).day() == 0){
                                 dateDisplay = "<span class='color-schedule-sunday'>" + dateDisplay + "</span>";
-                                sr.stampDate ="<span class='color-schedule-sunday' style='float:left;'>" + sr.stampDate + "</span>";
+                                sr.stampDate ="<span class='color-schedule-sunday'>" + sr.stampDate + "</span>";
                             }
                             self.items.push(new model.ItemModels( 
                                 dateDisplay,
