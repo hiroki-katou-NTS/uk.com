@@ -13,10 +13,9 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
-import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampRecordDis;
+import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampFunction;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampFunction;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampWkpSelectRole;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 打刻入力の共通設定Repository
@@ -32,7 +31,7 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	
 	private static final String SELECT_ALL_ROLES = "SELECT r FROM KrcmtStampWkpSelectRole r WHERE r.pk.companyId = :companyId";
 	
-	private static final String SELECT_ALL_STAMP_RECORD_DIS = "SELECT r FROM KrccpStampRecordDis r WHERE r.pk.companyId = :companyId";
+	private static final String SELECT_BY_CID_PAGE = "SELECT c FROM KrccpStampFunction c WHERE c.pk.companyId = :companyId";
 
 	@Override
 	public void insert(CommonSettingsStampInput domain) {
@@ -51,10 +50,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		
 		KrcmtStampFunction entity =  entityOpt.get();
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class).getList()
-				.stream()
-				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.valueOf(dp.pk.getDAtdItemId()))).collect(Collectors.toList())
-				.stream().findFirst();
+		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_BY_CID_PAGE,KrccpStampFunction.class)
+				.setParameter("companyId", domain.getCompanyId())
+				.getSingle(c -> c.toDomain());
 		
 		entity.update(domain, display);
 		this.commandProxy().update(entity);
@@ -68,7 +66,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 			return Optional.empty();
 		}
 		
-		List<String> roles = this.queryProxy().query(SELECT_ALL_ROLES, KrcmtStampWkpSelectRole.class).getList().stream().map(r-> r.pk.roleId).collect(Collectors.toList());
+		List<String> roles = this.queryProxy().query(SELECT_ALL_ROLES, KrcmtStampWkpSelectRole.class)
+				.setParameter("companyId", comppanyID)
+				.getList().stream().map(r-> r.pk.roleId).collect(Collectors.toList());
 		
 		CommonSettingsStampInput domain = toDomain(entityOpt.get(), roles);
 		
@@ -81,11 +81,9 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 		entity.cid = domain.getCompanyId();
 		entity.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		
-		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_ALL_STAMP_RECORD_DIS,KrccpStampRecordDis.class).getList()
-				.stream()
-				.map(dp -> new StampResultDisplay(dp.pk.getCompanyId(), NotUseAtr.valueOf(dp.pk.getDAtdItemId()))).collect(Collectors.toList())
-				.stream().findFirst();
-		
+		Optional<StampResultDisplay> display = this.queryProxy().query(SELECT_BY_CID_PAGE,KrccpStampFunction.class)
+				.setParameter("companyId", domain.getCompanyId())
+				.getSingle(c -> c.toDomain());
 		
 		entity.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
 		entity.mapAddress = domain.getMapAddres().v();
