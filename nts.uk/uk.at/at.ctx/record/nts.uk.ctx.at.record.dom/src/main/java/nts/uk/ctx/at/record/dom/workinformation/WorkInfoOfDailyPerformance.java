@@ -116,13 +116,13 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
 		this.workInformation = new WorkInfoOfDailyAttendance(
-				workInformation.getRecordInfo(),
-				workInformation.getScheduleInfo(),
-				workInformation.getCalculationState(),
-				workInformation.getGoStraightAtr(),
-				workInformation.getBackStraightAtr(),
-				workInformation.getDayOfWeek(),
-				workInformation.getScheduleTimeSheets()
+				recordWorkInformation,
+				scheduleWorkInformation,
+				calculationState,
+				goStraightAtr,
+				backStraightAtr,
+				dayOfWeek,
+				scheduleTimeSheets
 				);
 	}
 	

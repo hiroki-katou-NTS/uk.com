@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
@@ -9,6 +11,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
  * @author tutk
  *
  */
+@Stateless
 public class CorrectWorkSchedule {
 	
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
