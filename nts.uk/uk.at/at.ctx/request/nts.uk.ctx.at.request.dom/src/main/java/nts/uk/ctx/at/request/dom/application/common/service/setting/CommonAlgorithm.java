@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoI
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -43,7 +43,7 @@ public interface CommonAlgorithm {
 	 * @param mode 新規詳細モード(新規モード/詳細モード) 新規モード: true/詳細モード: false
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType_Old appType, List<GeneralDate> dateLst,
+	public AppDispInfoWithDateOutput_Old getAppDispInfoWithDate(String companyID, ApplicationType_Old appType, List<GeneralDate> dateLst,
 			AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, boolean mode);
 	
 	/**
@@ -78,7 +78,7 @@ public interface CommonAlgorithm {
 	 * @param initValueAtr 事前事後区分の初期表示
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
+	public AppDispInfoWithDateOutput_Old getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
 			ApplicationType_Old appType, DisplayAtr prePostAtrDisp, PrePostInitialAtr initValueAtr);
 	
 	/**
@@ -102,8 +102,8 @@ public interface CommonAlgorithm {
 	 * @param appDispInfoWithDateOutput 申請表示情報(基準日関係あり)
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType_Old appType, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput);
+	public AppDispInfoWithDateOutput_Old changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
+			ApplicationType_Old appType, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput);
 	
 	/**
 	 * 申請済み勤務種類の存在判定と取得

@@ -28,7 +28,7 @@ public class AppDispInfoStartupOutput {
 	/**
 	 * 申請設定（基準日関係あり）
 	 */
-	private AppDispInfoWithDateOutput appDispInfoWithDateOutput;
+	private AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput;
 	
 	/**
 	 * 申請詳細画面情報

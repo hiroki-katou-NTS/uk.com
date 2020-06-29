@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDivisionDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
@@ -84,7 +84,7 @@ public class AppDispInfoWithDateDto {
 	 */
 	public SEmpHistImportDto empHistImport;
 	
-	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
+	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput) {
 		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
 		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
@@ -121,8 +121,8 @@ public class AppDispInfoWithDateDto {
 		return workTimeSettingDto;
 	}
 	
-	public AppDispInfoWithDateOutput toDomain() {
-		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
+	public AppDispInfoWithDateOutput_Old toDomain() {
+		AppDispInfoWithDateOutput_Old output = new AppDispInfoWithDateOutput_Old();
 		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
 		output.setEmploymentSet(employmentSet == null ? null : employmentSet.toDomain());
 		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));

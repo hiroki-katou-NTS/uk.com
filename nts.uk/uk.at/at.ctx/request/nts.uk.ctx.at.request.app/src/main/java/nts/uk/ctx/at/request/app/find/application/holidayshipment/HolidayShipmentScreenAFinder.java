@@ -53,7 +53,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
@@ -301,7 +301,7 @@ public class HolidayShipmentScreenAFinder {
 		listTagetDate.add(holidayDate == null ? null : holidayDate);
 		
 		//申請日を変更する(Thay đổi Applicationdate)
-		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
+		AppDispInfoWithDateOutput_Old appDateProcess = commonAlgorithm.changeAppDateProcess(
 				companyId, 
 				listTagetDate,
 				ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, 
@@ -335,7 +335,7 @@ public class HolidayShipmentScreenAFinder {
 		listTagetDate.add(holidayDate == null ? null : holidayDate);
 		
 		//申請日を変更する(Thay đổi Applicationdate)
-		AppDispInfoWithDateOutput appDateProcess = commonAlgorithm.changeAppDateProcess(
+		AppDispInfoWithDateOutput_Old appDateProcess = commonAlgorithm.changeAppDateProcess(
 				companyId, 
 				listTagetDate, 
 				ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, 
