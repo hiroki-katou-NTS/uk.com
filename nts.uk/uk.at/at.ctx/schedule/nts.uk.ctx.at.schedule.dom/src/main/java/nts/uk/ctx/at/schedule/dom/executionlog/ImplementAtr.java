@@ -10,13 +10,17 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 // 実施区分
 public enum ImplementAtr {
 
-	/** The generally created. */
-	// 通常作成
-	GENERALLY_CREATED(0, "Enum_ImplementAtr_generallyCreated", "通常作成"),
+	/** Create new only. */
+	// 新規のみ作成する (通常作成 - old)
+	CREATE_NEW_ONLY(0, "Enum_ImplementAtr_CREATE_NEW_ONLY", "新規のみ作成する"),
 
-	/** The recreate. */
-	// 再作成
-	RECREATE(1, "Enum_ImplementAtr_reCreate", "再作成");
+	/** Create work schedule. */
+	// 勤務予定作成する  (再作成 - old)
+	CREATE_WORK_SCHEDULE(1, "Enum_ImplementAtr_CREATE_WORK_SCHEDULE", "勤務予定作成する"),
+	
+	/** Delete work schedule. */
+	// 勤務予定を削除する
+	DELETE_WORK_SCHEDULE(2, "Enum_ImplementAtr_DELETE_WORK_SCHEDULE", "勤務予定を削除する");
 
 	/** The value. */
 	public final int value;

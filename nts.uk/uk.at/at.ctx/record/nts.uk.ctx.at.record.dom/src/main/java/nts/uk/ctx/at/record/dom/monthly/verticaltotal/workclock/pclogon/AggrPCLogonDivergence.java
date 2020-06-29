@@ -6,15 +6,15 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -82,7 +82,7 @@ public class AggrPCLogonDivergence implements Serializable{
 
 		// 対象とするかどうかの判断
 		if (attendanceTimeOfDaily == null) return;
-		val stayingTime =  attendanceTimeOfDaily.getStayingTime();		// 日別実績の滞在時間
+		val stayingTime =  attendanceTimeOfDaily.getTime().getStayingTime();		// 日別実績の滞在時間
 		
 		// プレミアムデーを除く
 		if (workType.getWorkTypeCode().equals(AggrPCLogonClock.PREMIUM_DAY)) return;
@@ -110,8 +110,8 @@ public class AggrPCLogonDivergence implements Serializable{
 			if (attendanceStamp.getStamp().isPresent() &&
 				leaveStamp.getStamp().isPresent()) {
 				// 出勤＝退勤なら、対象外
-				int attendanceMinutes = attendanceStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
-				int leaveMinutes = leaveStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
+				int attendanceMinutes = attendanceStamp.getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes();
+				int leaveMinutes = leaveStamp.getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes();
 				if (attendanceMinutes == leaveMinutes) {
 					return;
 				}
@@ -162,11 +162,11 @@ public class AggrPCLogonDivergence implements Serializable{
 		// 退勤時刻<>NULL
 		if (timeLeavingOfDaily == null) return;
 		TimeWithDayAttr leaveStamp = null;
-		Integer targetWorkNo = timeLeavingOfDaily.getWorkTimes().v();	// 勤務No ← 勤務回数
+		Integer targetWorkNo = timeLeavingOfDaily.getAttendance().getWorkTimes().v();	// 勤務No ← 勤務回数
 		Optional<TimeActualStamp> leavingWorkOpt = timeLeavingOfDaily.getLeavingWork();		// 2回勤務があれば2回目
 		if (leavingWorkOpt.isPresent()) {
 			if (leavingWorkOpt.get().getStamp().isPresent()) {
-				leaveStamp = leavingWorkOpt.get().getStamp().get().getTimeWithDay();
+				leaveStamp = leavingWorkOpt.get().getStamp().get().getTimeDay().getTimeWithDay().get();
 			}
 		}
 		if (leaveStamp == null) return;

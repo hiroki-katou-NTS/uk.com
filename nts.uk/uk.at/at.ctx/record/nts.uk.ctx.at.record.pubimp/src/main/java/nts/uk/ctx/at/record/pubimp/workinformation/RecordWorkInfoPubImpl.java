@@ -11,10 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -24,6 +21,9 @@ import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.GoOutReason;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -47,9 +47,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 		if(!workInfo.isPresent()) {
 			return new RecordWorkInfoPubExport("", "");
 		}
-		String workTimeCode = workInfo.get().getRecordInfo().getWorkTimeCode() == null 
-				? null : workInfo.get().getRecordInfo().getWorkTimeCode().v();
-		String workTypeCode = workInfo.get().getRecordInfo().getWorkTypeCode().v();
+		String workTimeCode = workInfo.get().getWorkInformation().getRecordInfo().getWorkTimeCode() == null 
+				? null : workInfo.get().getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+		String workTypeCode = workInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 		RecordWorkInfoPubExport record = new RecordWorkInfoPubExport(
 				workTypeCode,
 				workTimeCode);
@@ -63,12 +63,12 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				// nampt : check null case
 				al.getAttendanceStamp().ifPresent(stamp -> {
 					stamp.getStamp().ifPresent(s -> {
-						record.setAttendanceStampTimeFirst(s.getTimeWithDay() == null ? null : s.getTimeWithDay().valueAsMinutes());
+						record.setAttendanceStampTimeFirst(!s.getTimeDay().getTimeWithDay().isPresent() ? null : s.getTimeDay().getTimeWithDay().get().valueAsMinutes());
 					});
 				});
 				al.getLeaveStamp().ifPresent(stamp -> {
 					stamp.getStamp().ifPresent(s -> {
-						record.setLeaveStampTimeFirst(s.getTimeWithDay() == null ? null : s.getTimeWithDay().valueAsMinutes());
+						record.setLeaveStampTimeFirst(!s.getTimeDay().getTimeWithDay().isPresent() ? null : s.getTimeDay().getTimeWithDay().get().valueAsMinutes());
 					});
 				});
 			});
@@ -76,19 +76,19 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				// nampt : check null case
 				al.getAttendanceStamp().ifPresent(stamp -> {
 					stamp.getStamp().ifPresent(s -> {
-						record.setAttendanceStampTimeSecond(s.getTimeWithDay() == null ? null : s.getTimeWithDay().valueAsMinutes());
+						record.setAttendanceStampTimeSecond(!s.getTimeDay().getTimeWithDay().isPresent() ? null : s.getTimeDay().getTimeWithDay().get().valueAsMinutes());
 					});
 				});
 				al.getLeaveStamp().ifPresent(stamp -> {
 					stamp.getStamp().ifPresent(s -> {
-						record.setLeaveStampTimeSecond(s.getTimeWithDay() == null ? null : s.getTimeWithDay().valueAsMinutes());
+						record.setLeaveStampTimeSecond(!s.getTimeDay().getTimeWithDay().isPresent() ? null : s.getTimeDay().getTimeWithDay().get().valueAsMinutes());
 					});
 				});
 			});
 		});
 		
 		attenTime.ifPresent(at -> {
-			TotalWorkingTime totalWT = at.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+			TotalWorkingTime totalWT = at.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 			if(totalWT == null){
 				return;
 			}
@@ -159,8 +159,8 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordInfo().getWorkTimeCode()==null?"":domain.getRecordInfo().getWorkTimeCode().v(),
-				domain.getRecordInfo().getWorkTypeCode().v(),
+				domain.getWorkInformation().getRecordInfo().getWorkTimeCode()==null?"":domain.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
+				domain.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
 				domain.getYmd());
 	}
 	
@@ -176,7 +176,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd) {
 		Optional<WorkInfoOfDailyPerformance> optWorkInfo =  workInformationRepository.find(employeeId, ymd);
 		if(!optWorkInfo.isPresent()) return Optional.ofNullable(null);		
-		return Optional.of(optWorkInfo.get().getRecordInfo().getWorkTypeCode().v());
+		return Optional.of(optWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 	}
 
 	@Override
@@ -190,8 +190,8 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private InfoCheckNotRegisterPubExport convertToExportInfor(WorkInfoOfDailyPerformance domain) {
 		return new InfoCheckNotRegisterPubExport(
 				domain.getEmployeeId(),
-				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTimeCode()==null? null : domain.getRecordInfo().getWorkTimeCode().v()),
-				domain.getRecordInfo() ==null?null : (domain.getRecordInfo().getWorkTypeCode()==null? null : domain.getRecordInfo().getWorkTypeCode().v()),
+				domain.getWorkInformation().getRecordInfo() ==null?null : (domain.getWorkInformation().getRecordInfo().getWorkTimeCode()==null? null : domain.getWorkInformation().getRecordInfo().getWorkTimeCode().v()),
+				domain.getWorkInformation().getRecordInfo() ==null?null : (domain.getWorkInformation().getRecordInfo().getWorkTypeCode()==null? null : domain.getWorkInformation().getRecordInfo().getWorkTypeCode().v()),
 				domain.getYmd());
 	}
 

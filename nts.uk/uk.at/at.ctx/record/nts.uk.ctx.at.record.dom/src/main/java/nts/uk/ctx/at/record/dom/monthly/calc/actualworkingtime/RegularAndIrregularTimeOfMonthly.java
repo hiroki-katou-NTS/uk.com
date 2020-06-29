@@ -32,11 +32,11 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.export.GetSettlementPeriodOfDefor;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
@@ -221,7 +221,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
-					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
+					val workInfo = workInformationOfDailyMap.get(procDate).getWorkInformation().getRecordInfo();
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
@@ -395,7 +395,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
-					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
+					val workInfo = workInformationOfDailyMap.get(procDate).getWorkInformation().getRecordInfo();
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					prevTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,

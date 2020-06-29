@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeErrorCancelMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DiverdenceReasonCode;
 
 /**
  * The Interface CompanyDivergenceReferenceTimeService.

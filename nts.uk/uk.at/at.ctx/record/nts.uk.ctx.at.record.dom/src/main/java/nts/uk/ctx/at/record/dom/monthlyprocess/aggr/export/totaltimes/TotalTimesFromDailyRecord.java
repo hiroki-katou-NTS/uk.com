@@ -11,12 +11,10 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -25,6 +23,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesResult;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
@@ -325,9 +325,9 @@ public class TotalTimesFromDailyRecord {
 					
 					// 日別実績を回数集計用のクラスに変換
 					DailyRecordToAttendanceItemConverter dailyItems =
-							dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+							dailyConverter.withAttendanceTime(attendanceTimeOfDaily.getEmployeeId(), attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily.getTime());
 					if (this.anyItemValueOfDailyMap.containsKey(procDate)){
-						dailyItems = dailyItems.withAnyItems(this.anyItemValueOfDailyMap.get(procDate));
+						dailyItems = dailyItems.withAnyItems(this.anyItemValueOfDailyMap.get(procDate).getEmployeeId(), this.anyItemValueOfDailyMap.get(procDate).getYmd(), this.anyItemValueOfDailyMap.get(procDate).getAnyItem());
 					}
 					
 					// 勤務時間の判断

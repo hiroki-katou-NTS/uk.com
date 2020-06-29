@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 /**
  * 
@@ -23,7 +23,7 @@ public class AutomaticStampSetDetailOutput {
 	private String workLocationCode;
 
 	// 出勤打刻元
-	private StampSourceInfo attendanceStamp;
+	private TimeChangeMeans attendanceStamp;
 	
 	// 出勤反映
 	private UseAtr attendanceReflectAttr;
@@ -32,7 +32,7 @@ public class AutomaticStampSetDetailOutput {
 	private List<TimeLeavingWork> timeLeavingWorks;
 	
 	// 退勤打刻元
-	private StampSourceInfo leavingStamp;
+	private TimeChangeMeans leavingStamp;
 	
 	// 退勤反映
 	private UseAtr retirementAttr;

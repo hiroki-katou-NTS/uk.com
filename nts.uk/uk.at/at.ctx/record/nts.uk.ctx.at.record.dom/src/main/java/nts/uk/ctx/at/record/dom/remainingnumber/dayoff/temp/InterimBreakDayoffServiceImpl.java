@@ -118,8 +118,8 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から代休・休出の日数を取得
-			if (targetWorkInfo.getRecordInfo() == null) continue;
-			val workTypeCode = targetWorkInfo.getRecordInfo().getWorkTypeCode();
+			if (targetWorkInfo.getWorkInformation().getRecordInfo() == null) continue;
+			val workTypeCode = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			if (workTypeCode == null) continue;
 			if (!workTypeMap.containsKey(workTypeCode)) return;
 			val workType = workTypeMap.get(workTypeCode);
@@ -155,7 +155,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				
 				// 振替時間の合計を確認
 				int totalTransferMinutes = 0;
-				val totalWorkingTime = targetAttdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+				val totalWorkingTime = targetAttdTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 				val holidayWorkOpt = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
 				if (holidayWorkOpt.isPresent()){
 					for (val holidayWorkFrame : holidayWorkOpt.get().getHolidayWorkFrameTime()){
@@ -172,9 +172,9 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				// 就業時間帯コードを確認
 				String workTimeCd = null;
 				if (isTarget){
-					if (targetWorkInfo.getRecordInfo() != null){
-						if (targetWorkInfo.getRecordInfo().getWorkTimeCode() != null){
-							workTimeCd = targetWorkInfo.getRecordInfo().getWorkTimeCode().v();
+					if (targetWorkInfo.getWorkInformation().getRecordInfo() != null){
+						if (targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null){
+							workTimeCd = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 						}
 					}
 				}

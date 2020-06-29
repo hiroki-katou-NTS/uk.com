@@ -8,8 +8,8 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
 /**
  * 月別実績の乖離時間
@@ -56,7 +56,7 @@ public class DivergenceTimeOfMonthly implements Serializable{
 		if (attendanceTimeOfDaily == null) return;
 		
 		// 日別実績の「乖離時間」「控除時間」「控除後乖離時間」を集計
-		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
 		if (divergenceTimeOfDaily.getDivergenceTime() == null) return;
 		for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){

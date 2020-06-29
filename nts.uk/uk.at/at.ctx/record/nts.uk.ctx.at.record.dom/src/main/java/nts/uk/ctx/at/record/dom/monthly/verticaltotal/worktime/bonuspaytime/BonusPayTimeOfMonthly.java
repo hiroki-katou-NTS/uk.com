@@ -59,7 +59,7 @@ public class BonusPayTimeOfMonthly implements Serializable{
 		// 休出かどうか判断
 		boolean isHolidayWork = workType.getDailyWork().isHolidayWork();
 		
-		val totalWorkingtime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingtime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		val raiseSalaryTime = totalWorkingtime.getRaiseSalaryTimeOfDailyPerfor();
 		val bonusPayTimes = raiseSalaryTime.getRaisingSalaryTimes();
 		val specDayBonusPayTimes = raiseSalaryTime.getAutoCalRaisingSalarySettings();

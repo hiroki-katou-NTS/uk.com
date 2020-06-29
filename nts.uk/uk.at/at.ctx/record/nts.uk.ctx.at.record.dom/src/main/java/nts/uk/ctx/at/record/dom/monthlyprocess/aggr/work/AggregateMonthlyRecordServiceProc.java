@@ -20,7 +20,6 @@ import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.util.value.MutableValue;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
@@ -64,11 +63,11 @@ import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -99,6 +98,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
@@ -868,9 +868,9 @@ public class AggregateMonthlyRecordServiceProc {
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
 		for (val anyItemValueOfDaily : this.monthlyCalculatingDailys.getAnyItemValueOfDailyList()){
 			if (!period.contains(anyItemValueOfDaily.getYmd())) continue;
-			if (anyItemValueOfDaily.getItems() == null) continue;
+			if (anyItemValueOfDaily.getAnyItem().getItems() == null) continue;
 			val ymd = anyItemValueOfDaily.getYmd();
-			for (val item : anyItemValueOfDaily.getItems()){
+			for (val item : anyItemValueOfDaily.getAnyItem().getItems()){
 				if (item.getItemNo() == null) continue;
 				Integer itemNo = item.getItemNo().v();
 				
@@ -1674,10 +1674,10 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
-				firstInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(firstInfoOfDaily.getWplID()),
-				new JobTitleId(firstInfoOfDaily.getJobTitleID()),
-				firstInfoOfDaily.getClsCode(),
+				firstInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(firstInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(firstInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				firstInfoOfDaily.getAffiliationInfor().getClsCode(),
 				firstWorkTypeOfDaily.getWorkTypeCode());
 
 		// 月末がシステム日付以降の場合、月初の情報を月末の情報とする
@@ -1718,10 +1718,10 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月末の情報を作成
 		val lastInfo = AggregateAffiliationInfo.of(
-				lastInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(lastInfoOfDaily.getWplID()),
-				new JobTitleId(lastInfoOfDaily.getJobTitleID()),
-				lastInfoOfDaily.getClsCode(),
+				lastInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(lastInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(lastInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				lastInfoOfDaily.getAffiliationInfor().getClsCode(),
 				lastWorkTypeOfDaily.getWorkTypeCode());
 		
 		// 月別実績の所属情報を返す

@@ -89,7 +89,7 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の代休」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();
@@ -100,9 +100,9 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 			String workTypeCode = null;
 			if (workInfoOfDailyMap.containsKey(ymd)) {
 				val workInfo = workInfoOfDailyMap.get(ymd);
-				if (workInfo.getRecordInfo() != null) {
-					if (workInfo.getRecordInfo().getWorkTypeCode() != null) {
-						workTypeCode = workInfo.getRecordInfo().getWorkTypeCode().v();
+				if (workInfo.getWorkInformation().getRecordInfo() != null) {
+					if (workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
+						workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 					}
 				}
 			}

@@ -82,9 +82,9 @@ public class AnyItemByPeriod implements Cloneable {
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
 		for (val anyItemValueOfDaily : calcDailys.getAnyItemValueOfDailyList()){
 			if (!period.contains(anyItemValueOfDaily.getYmd())) continue;
-			if (anyItemValueOfDaily.getItems() == null) continue;
+			if (anyItemValueOfDaily.getAnyItem().getItems() == null) continue;
 			val ymd = anyItemValueOfDaily.getYmd();
-			for (val item : anyItemValueOfDaily.getItems()){
+			for (val item : anyItemValueOfDaily.getAnyItem().getItems()){
 				if (item.getItemNo() == null) continue;
 				Integer itemNo = item.getItemNo().v();
 				

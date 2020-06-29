@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
@@ -40,7 +40,7 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 	public RecordRemainCreateInfor remainDataFromRecord(WorkInfoOfDailyPerformance workInfor, AttendanceTimeOfDailyPerformance attendanceInfor) {
 		RecordRemainCreateInfor outputInfor = new RecordRemainCreateInfor();
 		//残業振替時間の合計を算出する
-		Optional<OverTimeOfDaily> overTimeWork = attendanceInfor.getActualWorkingTimeOfDaily()
+		Optional<OverTimeOfDaily> overTimeWork = attendanceInfor.getTime().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
 		Integer overTimes = 0;
 		if(overTimeWork.isPresent()) {
@@ -51,7 +51,7 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 		} 
 		outputInfor.setTransferOvertimesTotal(overTimes);
 		//休出振替時間の合計を算出する
-		Optional<HolidayWorkTimeOfDaily> workHolidayTime = attendanceInfor.getActualWorkingTimeOfDaily()
+		Optional<HolidayWorkTimeOfDaily> workHolidayTime = attendanceInfor.getTime().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
 		Integer transferTotal = 0;
 		if(workHolidayTime.isPresent()) {
@@ -65,10 +65,10 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
 		outputInfor.setSid(workInfor.getEmployeeId());
 		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "" 
-				: workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getWorkTimeCode() == null ? "" 
-				: workInfor.getRecordInfo().getWorkTimeCode().v()));
+		outputInfor.setWorkTypeCode(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode() == null ? "" 
+				: workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? "" 
+				: workInfor.getWorkInformation().getRecordInfo().getWorkTimeCode().v()));
 		return outputInfor;
 	}
 	/**

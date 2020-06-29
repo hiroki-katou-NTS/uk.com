@@ -16,9 +16,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,7 +51,7 @@ public class UpdateMonthAfterProcessDaily {
 			val needCalc = checkCalcMonthService.isNeedCalcMonth(companyId, key, value);
 			if (needCalc.getLeft()) {
 				List<IntegrationOfDaily> domainDailyGroupEmp = domainDailyNew.stream()
-						.filter(x -> x.getWorkInformation().getEmployeeId().equals(key)).collect(Collectors.toList());
+						.filter(x -> x.getEmployeeId().equals(key)).collect(Collectors.toList());
 				needCalc.getRight().forEach(data -> {
 					//月の実績を集計する
 					aggregateSpecifiedDailys.algorithm(companyId, key,

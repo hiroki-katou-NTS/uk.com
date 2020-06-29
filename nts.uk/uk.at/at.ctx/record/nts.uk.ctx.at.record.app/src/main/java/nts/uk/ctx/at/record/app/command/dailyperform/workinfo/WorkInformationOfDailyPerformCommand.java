@@ -18,8 +18,10 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(getEmployeeId(),
+				getWorkDate(), ((WorkInformationOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		this.data = item == null || !item.isHaveData() ? null
-				: ((WorkInformationOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
+				:workInfoOfDailyPerformance ;
 	}
 
 	@Override

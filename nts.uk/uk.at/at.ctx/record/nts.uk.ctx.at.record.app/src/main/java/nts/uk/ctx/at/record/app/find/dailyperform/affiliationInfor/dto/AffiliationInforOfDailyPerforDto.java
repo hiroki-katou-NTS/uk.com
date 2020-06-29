@@ -7,13 +7,14 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
@@ -52,14 +53,30 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
+			dto.setClassificationCode(domain.getAffiliationInfor().getClsCode() == null ? null : domain.getAffiliationInfor().getClsCode().v());
+			dto.setEmploymentCode(domain.getAffiliationInfor().getEmploymentCode() == null ? null : domain.getAffiliationInfor().getEmploymentCode().v());
+			dto.setJobId(domain.getAffiliationInfor().getJobTitleID());
+			dto.setSubscriptionCode(domain.getAffiliationInfor().getBonusPaySettingCode() == null ? null 
+					: domain.getAffiliationInfor().getBonusPaySettingCode().v());
+			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
+			dto.setBaseDate(domain.getYmd());
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static AffiliationInforOfDailyPerforDto getDto(String employeeID,GeneralDate ymd,AffiliationInforOfDailyAttd domain){
+		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
+		if(domain != null){
 			dto.setClassificationCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
 			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
 					: domain.getBonusPaySettingCode().v());
 			dto.setWorkplaceID(domain.getWplID());
-			dto.setBaseDate(domain.getYmd());
-			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setBaseDate(ymd);
+			dto.setEmployeeId(employeeID);
 			dto.exsistData();
 		}
 		return dto;
@@ -92,7 +109,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AffiliationInforOfDailyPerfor toDomain(String employeeId, GeneralDate date) {
+	public AffiliationInforOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -102,9 +119,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
+		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), 
 												employeeId, this.jobId, this.workplaceID, date,
 												new ClassificationCode(this.classificationCode),
 												new BonusPaySettingCode(this.subscriptionCode));
+		return domain.getAffiliationInfor();
 	}
 }

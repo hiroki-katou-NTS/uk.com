@@ -12,6 +12,11 @@ import nts.uk.ctx.at.record.dom.daily.calcset.RelationSetOfGoOutAndFluBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.FluidFixedAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -212,7 +217,7 @@ public class DeductionTotalTimeForFluidCalc {
 											FluidFixedAtr fluidFixedAtr,	
 											WorkTimeDailyAtr workTimeDailyAtr){
 		//休憩時間帯と重複している控除時間帯を取得
-		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> timeSheetOfDeductionItem.getTimeSheet().timeSpan().checkDuplication(ts.calcrange) != TimeSpanDuplication.NOT_DUPLICATE ).collect(Collectors.toList());
+		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> timeSheetOfDeductionItem.getTimeSheet().timeSpan().checkDuplication(ts.getCalcrange()) != TimeSpanDuplication.NOT_DUPLICATE ).collect(Collectors.toList());
 		while(true) {
 			//控除時間帯分ループ
 			for(int itemNumber = 0 ; itemNumber < duplicateList.size();itemNumber++) { //TimeSheetOfDeductionItem goOutTime : duplicateList) {
@@ -311,8 +316,8 @@ public class DeductionTotalTimeForFluidCalc {
 		if(breakTime.greaterThan(0)) {
 			//前を休憩へ
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-					   new TimeZoneRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
-					  ,new TimeSpanForCalc(deductionItem.calcrange.getStart(), baseTime)
+					   new TimeZoneRounding(deductionItem.getTimeSheet().getStart(), baseTime, deductionItem.getTimeSheet().getRounding())
+					  ,new TimeSpanForCalc(deductionItem.getCalcrange().getStart(), baseTime)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
@@ -326,8 +331,8 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.getChildCareAtr()));
 			//後ろを外出のままに
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
-					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
-					  ,new TimeSpanForCalc(baseTime, deductionItem.calcrange.getEnd())
+					   new TimeZoneRounding(baseTime, deductionItem.getTimeSheet().getEnd(), deductionItem.getTimeSheet().getRounding())
+					  ,new TimeSpanForCalc(baseTime, deductionItem.getCalcrange().getEnd())
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)
@@ -344,13 +349,13 @@ public class DeductionTotalTimeForFluidCalc {
 		else {
 			//全部休憩へ
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-					  deductionItem.timeSheet
-					 ,deductionItem.calcrange
-					 ,deductionItem.recordedTimeSheet
-					 ,deductionItem.deductionTimeSheet
-					 ,deductionItem.bonusPayTimeSheet
-					 ,deductionItem.specBonusPayTimesheet
-					 ,deductionItem.midNightTimeSheet
+					  deductionItem.getTimeSheet()
+					 ,deductionItem.getCalcrange()
+					 ,deductionItem.getRecordedTimeSheet()
+					 ,deductionItem.getDeductionTimeSheet()
+					 ,deductionItem.getBonusPayTimeSheet()
+					 ,deductionItem.getSpecBonusPayTimesheet()
+					 ,deductionItem.getMidNightTimeSheet()
 					 ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)

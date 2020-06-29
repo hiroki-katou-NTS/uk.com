@@ -6,26 +6,27 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
@@ -58,20 +59,20 @@ public class SchedulePerformance {
 		
 		IntegrationOfDaily copyIntegration = integrationOfDaily;
 		//勤務情報を移す
-		WorkInfoOfDailyPerformance workInfo = integrationOfDaily.getWorkInformation();
-		workInfo.setRecordInfo(workInfo.getScheduleInfo());
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation());
+		workInfo.getWorkInformation().setRecordInfo(workInfo.getWorkInformation().getScheduleInfo());
 		
 		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
-		for(ScheduleTimeSheet schedule : workInfo.getScheduleTimeSheets()) {
-			WorkStamp attendance = new WorkStamp(schedule.getAttendance(),schedule.getAttendance(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(),schedule.getLeaveWork(), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,workInfo.getScheduleTimeSheets().size());
-			TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,workInfo.getScheduleTimeSheets().size());
+		for(ScheduleTimeSheet schedule : workInfo.getWorkInformation().getScheduleTimeSheets()) {
+			WorkStamp attendance = new WorkStamp(schedule.getAttendance(),schedule.getAttendance(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
+			WorkStamp leaving    = new WorkStamp(schedule.getLeaveWork(),schedule.getLeaveWork(), new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET );
+			TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,workInfo.getWorkInformation().getScheduleTimeSheets().size());
+			TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,workInfo.getWorkInformation().getScheduleTimeSheets().size());
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(schedule.getWorkNo(),atStamp,leStamp);
 			scheduleTimeSheetList.add(timeLeavingWork);
 		}
-		val timeLeavingOfDaily = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(),new WorkTimes(workInfo.getScheduleTimeSheets().size()), scheduleTimeSheetList, workInfo.getYmd());
-		copyIntegration.setAttendanceLeave(Optional.of(timeLeavingOfDaily));
+		val timeLeavingOfDaily = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(),new WorkTimes(workInfo.getWorkInformation().getScheduleTimeSheets().size()), scheduleTimeSheetList, workInfo.getYmd());
+		copyIntegration.setAttendanceLeave(Optional.of(timeLeavingOfDaily.getAttendance()));
 		return copyIntegration;
 	}
 	
@@ -81,8 +82,8 @@ public class SchedulePerformance {
 	 */
 	private static IntegrationOfDaily changeCalcAtr(IntegrationOfDaily integrationOfDaily){
 		
-		CalAttrOfDailyPerformance calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getWorkInformation().getEmployeeId(), 
-																		  integrationOfDaily.getWorkInformation().getYmd(),
+		CalAttrOfDailyPerformance calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getEmployeeId(), 
+																		  integrationOfDaily.getYmd(),
 																		  new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS)),
 																		  new AutoCalRaisingSalarySetting(true,true),
 																		  new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS)
@@ -96,8 +97,8 @@ public class SchedulePerformance {
 																		  new AutoCalcOfLeaveEarlySetting(true, true),
 																		  new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 		if(integrationOfDaily.getCalAttr() != null) {
-			calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getWorkInformation().getEmployeeId(), 
-													integrationOfDaily.getWorkInformation().getYmd(),
+			calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getEmployeeId(), 
+													integrationOfDaily.getYmd(),
 													new AutoCalFlexOvertimeSetting(new AutoCalSetting(integrationOfDaily.getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(), AutoCalAtrOvertime.CALCULATEMBOSS)),
 													new AutoCalRaisingSalarySetting(true,true),
 													new AutoCalRestTimeSetting(new AutoCalSetting(integrationOfDaily.getCalAttr().getHolidayTimeSetting().getLateNightTime().getUpLimitORtSet(), AutoCalAtrOvertime.CALCULATEMBOSS)
@@ -111,7 +112,7 @@ public class SchedulePerformance {
 													new AutoCalcOfLeaveEarlySetting(true, true),
 													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
 		}
-		integrationOfDaily.setCalAttr(calAttr);
+		integrationOfDaily.setCalAttr(calAttr.getCalcategory());
 		return integrationOfDaily;
 	}
 	

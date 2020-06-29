@@ -64,6 +64,13 @@ public interface ScheduleErrorLogRepository {
 	public void add(ScheduleErrorLog domain);
 	
 	/**
+	 * Add in Transaction
+	 *
+	 * @param domain the domain
+	 */
+	public void addByTransaction(ScheduleErrorLog domain);
+	
+	/**
 	 * 
 	 * @param executionId
 	 * @param employeeId

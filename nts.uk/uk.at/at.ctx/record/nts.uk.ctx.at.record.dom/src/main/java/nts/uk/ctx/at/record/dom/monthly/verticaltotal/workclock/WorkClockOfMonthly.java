@@ -6,11 +6,11 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -74,7 +74,7 @@ public class WorkClockOfMonthly implements Serializable{
 		boolean isWeekday = false;
 		if (anyItemValueOpt.isPresent()) {
 			AnyItemValueOfDaily anyItemValue = anyItemValueOpt.get();
-			for (AnyItemValue item : anyItemValue.getItems()) {
+			for (AnyItemValue item : anyItemValue.getAnyItem().getItems()) {
 				if (item.getItemNo().v().intValue() != 12) continue;	// 任意項目12以外は無視
 				if (item.getTimes().isPresent()) {						// 回数=1 なら平日
 					if (item.getTimes().get().v().doubleValue() == 1.0) isWeekday = true; 
