@@ -46,10 +46,10 @@ public class TimeStampInputSettingsCommandHandler {
 		settingsSmartphoneStampRepo.save(command.toDomain());
 		Optional<CommonSettingsStampInput> domain = commonSettingsStampInputRepo.get(AppContexts.user().companyId());
 		if (domain.isPresent()) {
-			domain.get().setGooglemap(command.getGoogleMap());
+			domain.get().setGooglemap(command.getGoogleMap() == 1);
 			commonSettingsStampInputRepo.update(domain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(AppContexts.user().companyId(), new ArrayList<String>(), command.getGoogleMap(), Optional.empty()));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(AppContexts.user().companyId(), new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
 		}
 	}
 	

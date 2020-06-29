@@ -20,15 +20,15 @@ public class SettingsSmartphoneStampDto {
 	
 	private List<StampPageLayoutDto> pageLayoutSettings;
 	
-	private Boolean buttonEmphasisArt;	
+	private Integer buttonEmphasisArt;	
 	
 	@Setter
-	private Boolean googleMap;
+	private Integer googleMap;
 	
 	public void settingsSmartphoneStamp(SettingsSmartphoneStamp domain) {
 		this.cid = domain.getCid(); 
 		this.displaySettingsStampScreen = DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySettingsStampScreen()); 
 		this.pageLayoutSettings = domain.getPageLayoutSettings().stream().map(c->StampPageLayoutDto.fromDomain(c)).collect(Collectors.toList()); 
-		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
+		this.buttonEmphasisArt = domain.isButtonEmphasisArt()?1:0;
 	}
 }

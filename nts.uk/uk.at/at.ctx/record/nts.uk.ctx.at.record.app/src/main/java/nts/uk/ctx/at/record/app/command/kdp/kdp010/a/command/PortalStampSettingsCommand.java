@@ -18,11 +18,11 @@ public class PortalStampSettingsCommand {
 	
 	private List<ButtonSettingsCommand> buttonSettings;
 	
-	private Boolean suppressStampBtn;
+	private Integer suppressStampBtn;
 	
-	private Boolean useTopMenuLink;
+	private Integer useTopMenuLink;
 
 	public PortalStampSettings toDomain() {
-		return new PortalStampSettings(AppContexts.user().companyId(), this.displaySettingsStampScreen.toDomain(), this.buttonSettings.stream().map(c->c.toDomain()).collect(Collectors.toList()), this.suppressStampBtn, this.useTopMenuLink);
+		return new PortalStampSettings(AppContexts.user().companyId(), this.displaySettingsStampScreen.toDomain(), this.buttonSettings.stream().map(c->c.toDomain()).collect(Collectors.toList()), this.suppressStampBtn == 1, this.useTopMenuLink == 1);
 	}
 }

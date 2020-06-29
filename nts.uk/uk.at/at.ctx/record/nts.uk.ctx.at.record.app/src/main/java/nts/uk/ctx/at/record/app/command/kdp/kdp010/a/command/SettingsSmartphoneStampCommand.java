@@ -16,15 +16,15 @@ public class SettingsSmartphoneStampCommand {
 	
 	private DisplaySettingsStampScreenCommand displaySettingsStampScreen;
 	
-	private Boolean buttonEmphasisArt;	
+	private Integer buttonEmphasisArt;	
 	
-	private Boolean googleMap;
+	private Integer googleMap;
 	
 	public SettingsSmartphoneStamp toDomain() {
 		return new SettingsSmartphoneStamp(
 				AppContexts.user().companyId(), 
 				this.displaySettingsStampScreen.toDomain(), 
 				new ArrayList<StampPageLayout>(), 
-				this.buttonEmphasisArt);
+				this.buttonEmphasisArt == 1);
 	}
 }

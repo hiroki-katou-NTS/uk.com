@@ -57,7 +57,7 @@ public class TimeStampInputSettingFinder {
 		SettingsSmartphoneStampDto result = new SettingsSmartphoneStampDto();
 		String cId = AppContexts.user().companyId();
 		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(cId);
-		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()));
+		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()?1:0));
 		if(domain.isPresent()) {
 			result.settingsSmartphoneStamp(domain.get());
 		}
