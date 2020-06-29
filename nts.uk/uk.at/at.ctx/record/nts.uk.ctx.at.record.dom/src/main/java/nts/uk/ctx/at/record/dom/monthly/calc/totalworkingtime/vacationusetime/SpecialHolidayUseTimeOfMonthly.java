@@ -80,7 +80,7 @@ public class SpecialHolidayUseTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の特別休暇」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();

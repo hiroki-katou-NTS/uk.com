@@ -1,16 +1,16 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
@@ -104,8 +104,8 @@ public class LeaveEarlyTimeSheet {
 		TimeWithDayAttr leave = null;
 		if(timeLeavingWork.getLeaveStamp().isPresent()) {
 			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}
@@ -205,8 +205,8 @@ public class LeaveEarlyTimeSheet {
 		TimeWithDayAttr leave = null;
 		if(timeLeavingWork.getLeaveStamp().isPresent()) {
 			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}

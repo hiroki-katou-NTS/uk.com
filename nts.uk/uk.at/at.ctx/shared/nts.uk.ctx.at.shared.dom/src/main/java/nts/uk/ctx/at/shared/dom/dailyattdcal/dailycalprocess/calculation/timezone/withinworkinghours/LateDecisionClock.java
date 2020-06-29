@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours;
 
 import java.util.List;
 import java.util.Optional;
@@ -102,8 +102,8 @@ public class LateDecisionClock {
 		TimeWithDayAttr attendance = null;
 		if(timeLeavingWork.getAttendanceStamp().isPresent()) {
 			if(timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					attendance =  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}

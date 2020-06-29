@@ -6,9 +6,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.StatutoryDeductionForFlex;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
@@ -29,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.w
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateDecisionClock;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
@@ -36,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdd
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
@@ -443,7 +441,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if(a.isPresent()) {
 			for(WithinWorkTimeFrame b : this.getWithinWorkTimeFrame()) {
 				if(isWithin) {
-					val dupRange = a.get().getDuplicatedWith(b.timeSheet.getTimeSpan());
+					val dupRange = a.get().getDuplicatedWith(b.getTimeSheet().getTimeSpan());
 					if(dupRange.isPresent()) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
 												 .map(tc -> tc.replaceTimeSpan(dupRange))
@@ -456,7 +454,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 					}
 				}
 				else {
-					val dupRangeList = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
+					val dupRangeList = a.get().getNotDuplicationWith(b.getTimeSheet().getTimeSpan());
 					for(TimeSpanForCalc newSpan : dupRangeList) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
 																			  .map(tc -> tc.replaceTimeSpan(Optional.of(newSpan)))
@@ -577,5 +575,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		}
 		return result;
 	}
+
+	
 	
 }

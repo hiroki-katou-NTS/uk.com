@@ -10,14 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinPremiumTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
@@ -33,7 +25,10 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -41,6 +36,11 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezon
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateDecisionClock;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyDecisionClock;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinPremiumTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
@@ -471,7 +471,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																List<TimeSheetOfDeductionItem> breakTimeList // マスタ側の休憩時間帯リスト
 																,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet,
 																Optional<WorkTimezoneCommonSet> commonSetting,
-																Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, boolean isFirstIndex, boolean isLastIndex) {
+																Optional<SpecificDateAttrOfDailyAttd> specificDateAttrSheets, boolean isFirstIndex, boolean isLastIndex) {
 		
 		boolean earlyDed = true;
 		boolean lateDed = true;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours;
 
 import java.util.List;
 import java.util.Optional;
@@ -94,8 +94,8 @@ public class LeaveEarlyDecisionClock {
 		TimeWithDayAttr leave = null;
 		if(timeLeavingWork.getLeaveStamp().isPresent()) {
 			if(timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()!=null) {
-					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+				if(timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					leave =  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 				}
 			}
 		}

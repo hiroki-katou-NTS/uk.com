@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.Employee
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -202,7 +203,7 @@ public class DivTimeSysFixedCheckService {
 		List<EmployeeDailyPerError> checkR = new ArrayList<>(); 
 		attendanceTimeRepo.find(empId, tarD).ifPresent(at -> {
 			checkR.addAll(divergenceTimeCheckBySystemFixed(comId, empId, tarD, 
-					at.getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()));
+					at.getTime().getActualWorkingTimeOfDaily().getDivTime().getDivergenceTime()));
 		});
 		return checkR;
 	}
@@ -237,7 +238,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
 			List<DivergenceTimeRoot> divTimeErAlMs, MasterShareContainer<String> shareContainer){
 		
@@ -489,7 +490,7 @@ public class DivTimeSysFixedCheckService {
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
 			val valued = shareContainer.getShared(CONVERTER_KEY, () -> convertHelper.createDailyConverter())
-					.withTimeLeaving(timeLeave.get()).convert(TIME_LEAVE_ITEM);
+					.withTimeLeaving(employeeId, workingDate, timeLeave.get().getAttendance()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
 				GeneralDateTime now = shareContainer.getShared(TIME_NOW_KEY, () -> GeneralDateTime.now());
 				int currentTime = now.hours() * 60 + now.minutes();

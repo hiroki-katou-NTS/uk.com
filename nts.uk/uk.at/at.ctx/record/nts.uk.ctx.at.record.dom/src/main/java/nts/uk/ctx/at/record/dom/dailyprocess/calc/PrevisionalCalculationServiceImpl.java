@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -15,19 +16,17 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
@@ -36,9 +35,11 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Ti
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
@@ -98,6 +99,8 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			//控除置き換え
 			val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord.get(), imp.getBreakTimeSheets(),
 				imp.getOutingTimeSheets(), imp.getShortWorkingTimeSheets(), imp.getEmployeeId(), imp.getTargetDate());
+			provisionalDailyRecord.setEmployeeId(imp.getEmployeeId());
+			provisionalDailyRecord.setYmd(imp.getTargetDate());
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
@@ -131,9 +134,9 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
 		for (Map.Entry<Integer, TimeZone> key : timeSheets.entrySet()) {
 			WorkStamp attendance = new WorkStamp(key.getValue().getStart(), key.getValue().getStart(),
-					new WorkLocationCD("01"), TimeChangeMeans.CORRECTION_RECORD_SET);
+					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
 			WorkStamp leaving = new WorkStamp(key.getValue().getEnd(), key.getValue().getEnd(),
-					new WorkLocationCD("01"), TimeChangeMeans.CORRECTION_RECORD_SET);
+					new WorkLocationCD("01"), TimeChangeMeans.AUTOMATIC_SET,null);
 			TimeActualStamp attendanceStamp = new TimeActualStamp(attendance, attendance, key.getKey());
 			TimeActualStamp leavingStamp = new TimeActualStamp(leaving, leaving, key.getKey());
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(key.getKey()), attendanceStamp,
@@ -182,11 +185,26 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			return Optional.empty();		
 		}
 		
-		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
-				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
-				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), Optional.empty(), new ArrayList<>()));
+		IntegrationOfDaily data = new IntegrationOfDaily(
+				workInformation.getWorkInformation(), //workInformation
+				calAttrOfDailyPerformance.getCalcategory(),//calAttr
+				employeeState.getAffiliationInforOfDailyPerfor().get(), //affiliationInfor
+				Optional.empty(), //pcLogOnInfo
+				Collections.emptyList(), //employeeError
+				goOutTimeSheet.isPresent()?Optional.of(goOutTimeSheet.get().getOutingTime()):Optional.empty(), //outingTime
+				breakTimeSheet.stream().map(c -> c.getTimeZone()).collect(Collectors.toList()), //breakTime
+				attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(), //attendanceTimeOfDailyPerformance
+				Optional.of(timeAttendance.getAttendance()),// attendanceLeave
+				Optional.empty(), //shortTime
+				Optional.empty(), //specDateAttr
+				Optional.empty(), //attendanceLeavingGate
+				Optional.empty(), //anyItemValue
+				Collections.emptyList(), //editState
+				Optional.empty(), //tempTime
+				new ArrayList<>());//remarks
+		data.setEmployeeId(employeeId);
+		data.setYmd(ymd);
+		return Optional.of(data);
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,
@@ -194,13 +212,13 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			List<ShortWorkingTimeSheet> shortWorkingTimeSheets, String employeeId, GeneralDate ymd) {
 
 		provisionalRecord
-				.setOutingTime(Optional.of(new OutingTimeOfDailyPerformance(employeeId, ymd, outingTimeSheets)));
+				.setOutingTime(Optional.of(new OutingTimeOfDailyAttd(outingTimeSheets)));
 		List<BreakTimeOfDailyPerformance> addElement = new ArrayList<>();
 		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
 		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_SCHEDULE, breakTimeSheets, ymd));
-		provisionalRecord.setBreakTime(addElement);
+		provisionalRecord.setBreakTime(addElement.stream().map(c->c.getTimeZone()).collect(Collectors.toList()));
 		provisionalRecord
-				.setShortTime(Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortWorkingTimeSheets, ymd)));
+				.setShortTime(Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets)));
 
 		return provisionalRecord;
 	}

@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -49,6 +48,11 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStamp
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
@@ -171,9 +175,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		ReflectStampOutput reflectStamp = new ReflectStampOutput();
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
-		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
+		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode();
 
-		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode();
+		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode();
 
 		// 1日半日出勤・1日休日系の判
 		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode.v());
@@ -248,6 +252,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = null;
 		}
 
+		TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance.getAttendance());
 		// lstStamp is null -> has error
 		if (lstStamp != null) {
 
@@ -256,7 +261,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeID, companyID);
 			} else {
-				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+				reflectStamp.setTimeLeavingOfDailyPerformance(performance);
 			}
 
 			// 就業時間帯の休憩時間帯を日別実績に写す
@@ -275,9 +280,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				return newReflectStampOutput;
 			}
 			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
-
+			WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfoOfDailyPerformance.getWorkInformation());
 			// エラーチェック
-			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+			this.errorCheck(companyID, employeeID, processingDate, dailyPerformance,
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
 					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
 					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
@@ -289,6 +294,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		return newReflectStampOutput;
 	}
+
 
 	/*
 	 * 1日分の打刻反映範囲を取得
@@ -358,13 +364,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		StampReflectOnHolidayOutPut stampReflectOnHolidayOutPut = new StampReflectOnHolidayOutPut();
 
 		// get workTimeCode
-		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode();
+		WorkTimeCode workTimeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode();
 
 		// 当日の打刻反映範囲を取得 - 当日の就業時間帯コードを取得
 		// start get data of this day
 		if (workTimeCode != null) {
 			// use workTypeCode
-			WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode();
+			WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			// 休日出勤時の勤務情報を取得する - new wave
 			Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
 					.getHolidayWorkSchedule(companyID, employeeId, processingDate, workTypeCode.v());
@@ -470,7 +476,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// 打刻反映時の出勤休日扱いチェック
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
@@ -552,11 +558,11 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				return null;
 			}
 		} else {
-			if (!(workInfoOfDailyPerformance.get().getRecordInfo().getWorkTimeCode() == null)) {
-				return workInfoOfDailyPerformance.get().getRecordInfo().getWorkTimeCode().v();
+			if (!(workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode() == null)) {
+				return workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 			} else {
-				if (!(workInfoOfDailyPerformance.get().getScheduleInfo().getWorkTimeCode() == null)) {
-					return workInfoOfDailyPerformance.get().getScheduleInfo().getWorkTimeCode().v();
+				if (!(workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode() == null)) {
+					return workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode().v();
 				} else {
 					return null;
 				}
@@ -799,10 +805,12 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		ReflectStampOutput reflectStamp = new ReflectStampOutput();
 		// パラメータを確認
 		if (!workInfoOfDailyPerformanceOpt.isPresent()) {
-			workInfoOfDailyPerformanceOpt = this.workInformationRepository.find(employeeId, processingDate);
+			workInfoOfDailyPerformanceOpt = Optional
+					.ofNullable(this.workInformationRepository.find(employeeId, processingDate).get());
 		}
 		if (!affInfoOfDailyOpt.isPresent()) {
-			affInfoOfDailyOpt = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, processingDate);
+			affInfoOfDailyOpt = Optional
+					.ofNullable(this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, processingDate).get());
 		}
 		if (!workTypeOfDailyOpt.isPresent()) {
 			workTypeOfDailyOpt = this.workTypeOfDailyPerforRepository.findByKey(employeeId, processingDate);
@@ -817,14 +825,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// .find(employeeId, processingDate);
 		String workTimeCode = null;
 		String workTypeCode = null;
-		WorkTimeCode workTimeCodeDefault = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode();
+		WorkTimeCode workTimeCodeDefault = workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().getWorkTimeCode();
 		
-		if(workInfoOfDailyPerformanceOpt.isPresent() && workInfoOfDailyPerformanceOpt.get().getRecordInfo() != null){
-			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTypeCode() != null){
-				workTypeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTypeCode().v();
+		if(workInfoOfDailyPerformanceOpt.isPresent() && workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo() != null){
+			if(workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().getWorkTypeCode() != null){
+				workTypeCode = workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 			}
-			if(workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode() != null){
-				workTimeCode = workInfoOfDailyPerformanceOpt.get().getRecordInfo().getWorkTimeCode().v();
+			if(workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().getWorkTimeCode() != null){
+				workTimeCode = workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 			}
 		}
 		
@@ -857,7 +865,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			workTimeCode = singleDaySchedule.get().getWorkTimeCode().isPresent() ? singleDaySchedule.get().getWorkTimeCode().get().v() : null;
 		}
 		//update workTime when work time change
-		workInfoOfDailyPerformanceOpt.get().getRecordInfo().setWorkTimeCode(new WorkTimeCode(workTimeCode));
+		workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().setWorkTimeCode(new WorkTimeCode(workTimeCode));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
 				workTimeCode, AbolishAtr.NOT_ABOLISH);
@@ -908,7 +916,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (lstStamp == null) {
 			reflectStamp = null;
 		}
-
+		TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeId, processingDate, timeLeavingOfDailyPerformance.getAttendance());
 		// lstStampItem is null -> has error
 		if (lstStamp != null) {
 
@@ -917,10 +925,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 						timeLeavingOfDailyPerformance, lstStamp, stampReflectRangeOutput, processingDate,
 						employeeId, companyId);
 			} else {
-				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+				reflectStamp.setTimeLeavingOfDailyPerformance(performance);
 			}
 			//set worktime default  
-			workInfoOfDailyPerformanceOpt.get().getRecordInfo().setWorkTimeCode(workTimeCodeDefault);
+			workInfoOfDailyPerformanceOpt.get().getWorkInformation().getRecordInfo().setWorkTimeCode(workTimeCodeDefault);
 			// 就業時間帯の休憩時間帯を日別実績に写す
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
@@ -938,9 +946,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				return newReflectStampOutput;
 			}
 			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
-
+			Optional<WorkInfoOfDailyPerformance> optional = Optional.ofNullable(new WorkInfoOfDailyPerformance(employeeId, processingDate, workInfoOfDailyPerformanceOpt.get().getWorkInformation()));
 			// エラーチェック
-			this.errorCheck(companyId, employeeId, processingDate, workInfoOfDailyPerformanceOpt.get(),
+			this.errorCheck(companyId, employeeId, processingDate, optional.get(),
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(),
 					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance,
 					reflectStamp.getAttendanceLeavingGateOfDaily(), reflectStamp.getPcLogOnInfoOfDaily());
@@ -952,5 +960,4 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		return newReflectStampOutput;
 	}
-
 }

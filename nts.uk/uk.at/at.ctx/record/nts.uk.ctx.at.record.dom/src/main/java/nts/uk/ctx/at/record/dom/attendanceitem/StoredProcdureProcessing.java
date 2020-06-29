@@ -21,6 +21,7 @@ import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyTempo;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.A
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
@@ -306,8 +308,9 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 		
 		/** 任意項目の件数を取得 */
-		List<AnyItemValueOfDaily> optionalItemsInMonth = dailyOptionalItem.finds(Arrays.asList(employeeId), attendanceTime.get().getDatePeriod());
-		List<AnyItemValue> items = optionalItemsInMonth.stream().map(AnyItemValueOfDaily::getItems).flatMap(List::stream).collect(Collectors.toList());
+		List<AnyItemValueOfDailyTempo> optionalItemsInMonth = dailyOptionalItem.finds(Arrays.asList(employeeId), attendanceTime.get().getDatePeriod())
+				.stream().map(x-> new AnyItemValueOfDailyTempo(x.getEmployeeId(), x.getYmd(), x.getAnyItem().getItems())).collect(Collectors.toList());
+		List<AnyItemValue> items = optionalItemsInMonth.stream().map(AnyItemValueOfDailyTempo::getItems).flatMap(List::stream).collect(Collectors.toList());
 		
 		
 		List<AnyItemOfMonthly> dataToProcess = new ArrayList<>(monthlyOptionalItems);
@@ -547,7 +550,6 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			daily.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				actualWorkTime.set(at.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().valueAsMinutes());
 				withinStatutoryTime.set(at.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime().valueAsMinutes());
-				
 				getOverTime(at).ifPresent(ot -> {
 					ot.getOverTimeWorkFrameTime().stream().forEach(o -> {
 						overTime.add(sumActualOvertime(o) - getAttendanceTime(o.getBeforeApplicationTime()));
@@ -569,11 +571,11 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			daily.getAttendanceLeavingGate().ifPresent(alg -> 
 				alg.getAttendanceLeavingGate(new WorkNo(1)).ifPresent(alw -> {
 					alw.getAttendance().ifPresent(as -> { 
-						int time = as.getTimeWithDay() == null ? 0 : as.getTimeWithDay().valueAsMinutes();
+						int time = as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 						leaveGateStartTime.set(time); 
 						timeOn.set(time);
 					});
-					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeWithDay() == null ? 0 : as.getTimeWithDay().valueAsMinutes()));
+					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes()));
 				})
 			);
 		}
@@ -590,8 +592,8 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		private void calcAttendanceLeave(IntegrationOfDaily daily) {
 			daily.getAttendanceLeave().ifPresent(al -> 
 				al.getAttendanceLeavingWork(1).ifPresent(alw -> {
-					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(s.getTimeWithDay() == null ? 0 : s.getTimeWithDay().valueAsMinutes())));
-					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(s.getTimeWithDay() == null ? 0 : s.getTimeWithDay().valueAsMinutes())));
+					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
+					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
 				})
 			);
 		}
@@ -703,7 +705,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			return new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(AttendanceTimeOfExistMinus.ZERO), AttendanceTime.ZERO);
 		}
 		
-		private Optional<OverTimeOfDaily> getOverTime(AttendanceTimeOfDailyPerformance attendanceTime){
+		private Optional<OverTimeOfDaily> getOverTime(AttendanceTimeOfDailyAttendance attendanceTime){
 			ActualWorkingTimeOfDaily actual = attendanceTime.getActualWorkingTimeOfDaily();
 			if(actual == null || actual.getTotalWorkingTime() == null
 				|| actual.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() == null){

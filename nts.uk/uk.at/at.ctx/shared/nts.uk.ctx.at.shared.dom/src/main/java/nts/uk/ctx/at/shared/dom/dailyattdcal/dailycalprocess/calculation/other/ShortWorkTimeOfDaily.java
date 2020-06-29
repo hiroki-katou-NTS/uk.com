@@ -7,12 +7,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutsideWorkTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
@@ -22,6 +16,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.Work
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;

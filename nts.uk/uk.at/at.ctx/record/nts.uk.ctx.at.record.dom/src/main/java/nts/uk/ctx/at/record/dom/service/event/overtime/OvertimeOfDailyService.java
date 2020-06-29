@@ -78,11 +78,11 @@ public class OvertimeOfDailyService {
 		}
 		
 		//編集状態を取得する
-		List<EditStateOfDailyPerformance> editItemReflect = editStateDaily.findByEditState(working.getWorkInformation().getEmployeeId(),
-				working.getWorkInformation().getYmd(),
+		List<EditStateOfDailyPerformance> editItemReflect = editStateDaily.findByEditState(working.getEmployeeId(),
+				working.getYmd(),
 				itemIdList,
 				EditStateSetting.REFLECT_APPLICATION);
-		itemIdList = editItemReflect.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		itemIdList = editItemReflect.stream().map(x -> x.getEditState().getAttendanceItemId()).collect(Collectors.toList());
 		if(itemIdList.isEmpty()) {
 			return working;
 		}
@@ -191,9 +191,10 @@ public class OvertimeOfDailyService {
 		//editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), itemIdList);
 
 		if(isSaveDirect){
-			List<Integer> lstDeleteItem = this.deleteItemEdit(working.getEditState(), itemIdList);
+			List<EditStateOfDailyPerformance> dailyPerformances = working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList());
+			List<Integer> lstDeleteItem = this.deleteItemEdit(dailyPerformances, itemIdList);
 			if(!itemIdList.isEmpty()) {
-				editStateDaily.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), lstDeleteItem);	
+				editStateDaily.deleteByListItemId(working.getEmployeeId(), working.getYmd(), lstDeleteItem);	
 			}
 		}
 		//削除
@@ -219,9 +220,9 @@ public class OvertimeOfDailyService {
 		}	
 		List<EditStateOfDailyPerformance> temp = new ArrayList<>(editState);
 		for (EditStateOfDailyPerformance a : temp) {
-			if(deleteItem.contains(a.getAttendanceItemId())) {
+			if(deleteItem.contains(a.getEditState().getAttendanceItemId())) {
 				editState.remove(editState.indexOf(a));
-				outputList.add(a.getAttendanceItemId());
+				outputList.add(a.getEditState().getAttendanceItemId());
 			}
 		}
 		return outputList;

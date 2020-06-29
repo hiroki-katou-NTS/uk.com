@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -32,11 +33,11 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -55,7 +56,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProc
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -123,7 +123,7 @@ public class DailyCalculationCommandFacade {
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit, editedDtos, dataParent.getLstNotFoundWorkType());
 		FlexShortageRCDto flexShortage = null;
 		// filter domain not error
-		editedDomains = editedDomains.stream().filter(x -> !resultError.containsKey(Pair.of(x.getWorkInformation().getEmployeeId(),x.getWorkInformation().getYmd()))).collect(Collectors.toList());
+		editedDomains = editedDomains.stream().filter(x -> !resultError.containsKey(Pair.of(x.getEmployeeId(),x.getYmd()))).collect(Collectors.toList());
 		domainOld = domainOld.stream().filter(x -> !resultError.containsKey(Pair.of(x.getEmployeeId(),x.getDate()))).collect(Collectors.toList());
 		val mapDtoOld = editedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		if (!editedDomains.isEmpty()) {
@@ -133,12 +133,12 @@ public class DailyCalculationCommandFacade {
 					dataParent.isFlagCalculation() ? ExecutionType.RERUN : ExecutionType.NORMAL_EXECUTION);
 //			editedDomains = calcService.calculate(editedDomains);
 			
-			editedDomains.stream().forEach(d -> {
-				editedDtos.stream().filter(c -> c.employeeId().equals(d.getWorkInformation().getEmployeeId()) && c.workingDate().equals(d.getWorkInformation().getYmd()))
-					.findFirst().ifPresent(dto -> {
-					d.getWorkInformation().setVersion(dto.getWorkInfo().getVersion());
-				});
-			});
+//			editedDomains.stream().forEach(d -> {
+//				editedDtos.stream().filter(c -> c.employeeId().equals(d.getEmployeeId()) && c.workingDate().equals(d.getWorkInformation().getYmd()))
+//					.findFirst().ifPresent(dto -> {
+//					d.getWorkInformation().setVersion(dto.getWorkInfo().getVersion());
+//				});
+//			});
 
 			List<IntegrationOfMonthly> monthlyResults = new ArrayList<>();
 			// check format display = individual
@@ -168,12 +168,12 @@ public class DailyCalculationCommandFacade {
 			val lstErrorCheckDetail = afterError.getLstErrorEmpMonth();
 			flexShortage = afterError.getFlexShortage();
 			
-			editedDomains = editedDomains.stream().filter(x -> !resultError.containsKey(Pair.of(x.getWorkInformation().getEmployeeId(),x.getWorkInformation().getYmd()))).collect(Collectors.toList());
+			editedDomains = editedDomains.stream().filter(x -> !resultError.containsKey(Pair.of(x.getEmployeeId(),x.getYmd()))).collect(Collectors.toList());
 			domainOld = domainOld.stream().filter(x -> !resultError.containsKey(Pair.of(x.getEmployeeId(),x.getDate()))).collect(Collectors.toList());
 			
 			editedDomains = editedDomains.stream()
-					.filter(x -> !resultErrorTemp.containsKey(Pair.of(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd()))
-							&& !lstErrorCheckDetail.contains(Pair.of(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd())))
+					.filter(x -> !resultErrorTemp.containsKey(Pair.of(x.getEmployeeId(), x.getYmd()))
+							&& !lstErrorCheckDetail.contains(Pair.of(x.getEmployeeId(), x.getYmd())))
 					.collect(Collectors.toList());
 			domainOld = domainOld.stream()
 					.filter(x -> !resultErrorTemp.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))

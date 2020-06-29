@@ -276,7 +276,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 									empCalAndSumExecLogID, reCreateAttr , reCreateWorkType, reCreateWorkPlace ,
 									employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-									mapDateHistoryItem, periodInMasterList, recreateFlag,optDaily);
+									mapDateHistoryItem, periodInMasterList, recreateFlag, Optional.ofNullable(optDaily.get().getWorkInformation()));
 						}
 					} else {
                         // 再作成フラグの作成
@@ -285,7 +285,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
 								empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, employeeGeneralInfoImport,
 								stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
-								periodInMasterList ,recreateFlag,optDaily);
+								periodInMasterList ,recreateFlag, Optional.ofNullable(optDaily.get().getWorkInformation()));
 					}
 				}
 			}
@@ -438,14 +438,14 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
                                         reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 								this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
 										employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
-										stampReflectionManagement, recreateFlag, optDaily);
+										stampReflectionManagement, recreateFlag, Optional.ofNullable(optDaily.get().getWorkInformation()));
 							}
 						} else {
                             // 再作成フラグの作成
                             recreateFlag = createRebuildFlag.createRebuildFlag(employeeId, day, reCreateAttr, reCreateWorkType,
                                     reCreateWorkPlace, Optional.of(empCalAndSumExecLogID), optDaily);
 							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
-									day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement, recreateFlag, optDaily);
+									day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement, recreateFlag, Optional.ofNullable(optDaily.get().getWorkInformation()));
 						}
 					}
 					

@@ -20,7 +20,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
@@ -34,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSe
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -170,23 +170,23 @@ public class AggregateMonthlyRecordServiceTest {
 				GeneralDate ymd = v.getYmd();
 				
 				IntegrationOfDaily integOfDay = new IntegrationOfDaily(
-						v,
+						v.getWorkInformation(),
 						null,
-						affiliationOfDayMap.containsKey(ymd) ? affiliationOfDayMap.get(ymd) : null,
-						Optional.ofNullable(workTypeOfDayMap.get(ymd)),
-						Optional.ofNullable(pcLogOnInfoOfDayMap.get(ymd)),
+						affiliationOfDayMap.containsKey(ymd) ? affiliationOfDayMap.get(ymd).getAffiliationInfor() : null,
+						//Optional.ofNullable(workTypeOfDayMap.get(ymd)),
+						Optional.ofNullable(pcLogOnInfoOfDayMap.get(ymd).getTimeZone()),
 						perErrorOfDayMap.containsKey(ymd) ? perErrorOfDayMap.get(ymd) : new ArrayList<>(),
 						Optional.empty(),
 						new ArrayList<>(),
-						Optional.ofNullable(attendanceTimeOfDayMap.get(ymd)),
+						Optional.ofNullable(attendanceTimeOfDayMap.get(ymd).getTime()),
+						//Optional.empty(),
+						Optional.ofNullable(timeLeavingOfDayMap.get(ymd).getAttendance()),
 						Optional.empty(),
-						Optional.ofNullable(timeLeavingOfDayMap.get(ymd)),
+						Optional.ofNullable(specificDateAttrOfDayMap.get(ymd).getSpecificDay()),
 						Optional.empty(),
-						Optional.ofNullable(specificDateAttrOfDayMap.get(ymd)),
-						Optional.empty(),
-						Optional.ofNullable(anyItemOfDayMap.get(ymd)),
+						Optional.ofNullable(anyItemOfDayMap.get(ymd).getAnyItem()),
 						new ArrayList<>(),
-						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd)),
+						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd).getAttendance()),
 						new ArrayList<>());
 				
 				dailyWorks.add(integOfDay);

@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -71,7 +72,8 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	WorkInfoOfDailyAttendance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
+	// Lần refactor code này đang không thấy dùng domain này
+	WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
 
 	/**
 	 * 計算区分を日別実績に反映する

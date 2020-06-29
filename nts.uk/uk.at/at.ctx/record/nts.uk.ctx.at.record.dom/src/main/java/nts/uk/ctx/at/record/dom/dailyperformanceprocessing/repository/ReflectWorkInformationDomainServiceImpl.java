@@ -16,7 +16,7 @@ public class ReflectWorkInformationDomainServiceImpl implements ReflectWorkInfor
 	private WorkingConditionItemService workingConditionItemService;
 
 	public boolean changeWorkInformation(WorkInfoOfDailyPerformance workInfo,String companyId) {
-		WorkInformation recordWorkInformation = workInfo.getRecordInfo();
+		WorkInformation recordWorkInformation = workInfo.getWorkInformation().getRecordInfo();
 				Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
 						.getHolidayWorkSchedule(companyId, workInfo.getEmployeeId(), workInfo.getYmd(), recordWorkInformation.getWorkTypeCode().v());
 				if(!singleDaySchedule.isPresent()){

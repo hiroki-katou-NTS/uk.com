@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
  * 

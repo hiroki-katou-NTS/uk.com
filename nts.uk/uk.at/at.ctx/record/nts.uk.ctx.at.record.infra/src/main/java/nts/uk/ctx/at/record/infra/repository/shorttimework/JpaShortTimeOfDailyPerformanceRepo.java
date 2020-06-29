@@ -53,8 +53,8 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	public void updateByKey(ShortTimeOfDailyPerformance shortWork) {
 		if(shortWork == null){ return;}
 		
-		if (!shortWork.getShortWorkingTimeSheets().isEmpty()) {
-			List<KrcdtDaiShortWorkTime> all = shortWork.getShortWorkingTimeSheets().stream()
+		if (!shortWork.getTimeZone().getShortWorkingTimeSheets().isEmpty()) {
+			List<KrcdtDaiShortWorkTime> all = shortWork.getTimeZone().getShortWorkingTimeSheets().stream()
 					.filter(c -> c.getEndTime() != null && c.getStartTime() != null)
 					.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 			List<KrcdtDaiShortWorkTime> krcdtShortTimes = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
@@ -75,7 +75,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 
 	@Override
 	public void insert(ShortTimeOfDailyPerformance shortWork) {
-		List<KrcdtDaiShortWorkTime> entities = shortWork.getShortWorkingTimeSheets().stream()
+		List<KrcdtDaiShortWorkTime> entities = shortWork.getTimeZone().getShortWorkingTimeSheets().stream()
 				.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
 		this.getEntityManager().flush();

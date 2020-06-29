@@ -24,11 +24,13 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -106,7 +108,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	@Override
 	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID,
 			GeneralDate processingDate, String empCalAndSumExecLogID,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance WorkInfo) {
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance workInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID,
 				processingDate, 0);
 		if (breakOpt.isPresent()) {
@@ -131,8 +133,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		if (timeLeavingWorks == null) {
 			return null;
 		}
+		TimeLeavingOfDailyPerformance ofDailyPerformance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance.getAttendance());
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfo.getWorkInformation());
 		return this.reflectBreakTime(companyId, employeeID, processingDate, empCalAndSumExecLogID,
-				timeLeavingOfDailyPerformance, WorkInfo);
+				ofDailyPerformance, dailyPerformance);
 	}
 
 	@Override

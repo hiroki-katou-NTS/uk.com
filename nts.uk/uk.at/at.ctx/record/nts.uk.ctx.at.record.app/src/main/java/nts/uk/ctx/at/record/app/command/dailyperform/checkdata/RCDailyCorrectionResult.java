@@ -32,8 +32,8 @@ public class RCDailyCorrectionResult {
 	public RCDailyCorrectionResult filterDataError(Collection<String> errorRelease, Collection<String> lstEmployeeId) {
 		
 		lstDailyDomain = lstDailyDomain.stream()
-				                       .filter(x -> !errorRelease.contains(x.getWorkInformation().getEmployeeId()+"|"+x.getWorkInformation().getYmd()) 
-				                    		     && !lstEmployeeId.contains(x.getWorkInformation().getEmployeeId()+"|"+x.getWorkInformation().getYmd())).collect(Collectors.toList());
+				                       .filter(x -> !errorRelease.contains(x.getEmployeeId()+"|"+x.getYmd()) 
+				                    		     && !lstEmployeeId.contains(x.getEmployeeId()+"|"+x.getYmd())).collect(Collectors.toList());
 		
 //		lstMonthDomain = lstMonthDomain.stream()
 //                .filter(x -> x.getAttendanceTime().isPresent() && !lstEmployeeId.contains(x.getAttendanceTime().get().getEmployeeId())).collect(Collectors.toList());

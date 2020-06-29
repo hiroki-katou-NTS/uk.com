@@ -51,7 +51,7 @@ public class UpdateMonthAfterProcessDaily {
 			val needCalc = checkCalcMonthService.isNeedCalcMonth(companyId, key, value);
 			if (needCalc.getLeft()) {
 				List<IntegrationOfDaily> domainDailyGroupEmp = domainDailyNew.stream()
-						.filter(x -> x.getWorkInformation().getEmployeeId().equals(key)).collect(Collectors.toList());
+						.filter(x -> x.getEmployeeId().equals(key)).collect(Collectors.toList());
 				needCalc.getRight().forEach(data -> {
 					//月の実績を集計する
 					aggregateSpecifiedDailys.algorithm(companyId, key,

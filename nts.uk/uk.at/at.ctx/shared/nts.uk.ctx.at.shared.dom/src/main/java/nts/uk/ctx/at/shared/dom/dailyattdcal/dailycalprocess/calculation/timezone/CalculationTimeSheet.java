@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.Conditi
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -806,7 +806,7 @@ public abstract class CalculationTimeSheet {
 	public static List<SpecBonusPayTimeSheetForCalc> getSpecBonusPayTimeSheetIncludeDedTimeSheet(Optional<BonusPaySetting> bonuspaySetting,TimeSpanForCalc duplicateTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   		   						  List<TimeSheetOfDeductionItem> recordTimeSheet,
-															   		   						  Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets){
+															   		   						  Optional<SpecificDateAttrOfDailyAttd> specificDateAttrSheets){
 		List<SpecBonusPayTimeSheetForCalc> duplicatedSpecBonusPay = new ArrayList<>();
 		if(bonuspaySetting.isPresent()) {
 			val specBpTimeSheet = bonuspaySetting.get().getLstSpecBonusPayTimesheet().stream()

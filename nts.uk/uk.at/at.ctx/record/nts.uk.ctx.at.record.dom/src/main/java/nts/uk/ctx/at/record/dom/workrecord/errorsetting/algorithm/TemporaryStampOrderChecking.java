@@ -44,21 +44,21 @@ public class TemporaryStampOrderChecking {
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 
 		if (temporaryTimeOfDailyPerformance != null
-				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+				&& !temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 
-			List<TimeLeavingWork> newTimeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+			List<TimeLeavingWork> newTimeLeavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			List<TimeLeavingWork> timeLeavingWorks = newTimeLeavingWorks.stream()
 					.filter(item -> (item.getAttendanceStamp() != null && item.getAttendanceStamp().isPresent()
 							&& item.getAttendanceStamp().get().getStamp().isPresent()
-							&& item.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null)
+							&& item.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent())
 							&& (item.getLeaveStamp() != null && item.getLeaveStamp().isPresent()
 									&& item.getLeaveStamp().get().getStamp().isPresent()
-									&& item.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null))
+									&& item.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()))
 					.collect(Collectors.toList());
 
-			timeLeavingWorks.sort((e1, e2) -> (e1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v())
-					.compareTo(e2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v()));
+			timeLeavingWorks.sort((e1, e2) -> (e1.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
+					.compareTo(e2.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()));
 
 			int workNo = 1;
 			for (TimeLeavingWork item : timeLeavingWorks) {
@@ -79,9 +79,9 @@ public class TemporaryStampOrderChecking {
 				StateAttr duplicationStateAttr = StateAttr.NO_DUPLICATION;
 
 				TimeWithDayAttr attendanceTimeWithDay = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-						.getTimeWithDay();
+						.getTimeDay().getTimeWithDay().get();
 				TimeWithDayAttr leaveTimeWithDay = timeLeavingWork.getLeaveStamp().get().getStamp().get()
-						.getTimeWithDay();
+						.getTimeDay().getTimeWithDay().get();
 
 				if (attendanceTimeWithDay.lessThanOrEqualTo(leaveTimeWithDay)) {
 					// 他の出退勤との時間帯重複を確認する
@@ -135,26 +135,27 @@ public class TemporaryStampOrderChecking {
 		if (timeLeavingOfDailyPerformance.isPresent()) {
 			// 【パラメータ】出退勤が出退勤と重複しているか確認する
 			TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-					.getTimeWithDay();
-			TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().get().getStamp().get()
-					.getTimeWithDay();
+					.getTimeDay().getTimeWithDay().get();
+			TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay()
+					.getTimeWithDay().get();
+			
 			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 
-			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getAttendance().getTimeLeavingWorks();
 			for (TimeLeavingWork leavingWork : timeLeavingWorks) {
 
 				if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
 						&& leavingWork.getAttendanceStamp().get().getStamp() != null
 						&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
-						&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+						&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
 						&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
 						&& leavingWork.getLeaveStamp().get().getStamp() != null
 						&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
-						&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+						&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 					TimeWithDayAttr stampStartTimeSecondTime = leavingWork.getAttendanceStamp().get().getStamp().get()
-							.getTimeWithDay();
+							.getTimeDay().getTimeWithDay().get();
 					TimeWithDayAttr endStartTimeSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
-							.getTimeWithDay();
+							.getTimeDay().getTimeWithDay().get();
 					TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
 							endStartTimeSecondTime);
 
@@ -170,21 +171,21 @@ public class TemporaryStampOrderChecking {
 				stateAttr = StateAttr.DUPLICATION;
 			} else {
 				List<DuplicationStatusOfTimeZone> newStatusOfTimeZones = new ArrayList<>();
-				List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 				for (TimeLeavingWork leavingWork : leavingWorks) {
 					if (!leavingWork.getWorkNo().equals(timeLeavingWork.getWorkNo())) {
 						if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
 								&& leavingWork.getAttendanceStamp().get().getStamp() != null
 								&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()
-								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
 								&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()
 								&& leavingWork.getLeaveStamp().get().getStamp() != null
 								&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
-								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
-							TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().get().getStamp()
-									.get().getTimeWithDay();
+								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+							TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().get().getStamp().get()
+							.getTimeDay().getTimeWithDay().get();
 							TimeWithDayAttr endStartSecondTime = leavingWork.getLeaveStamp().get().getStamp().get()
-									.getTimeWithDay();
+							.getTimeDay().getTimeWithDay().get();
 							TimeSpanForCalc spanTimeSecondTime = new TimeSpanForCalc(stampStartSecondTime,
 									endStartSecondTime);
 

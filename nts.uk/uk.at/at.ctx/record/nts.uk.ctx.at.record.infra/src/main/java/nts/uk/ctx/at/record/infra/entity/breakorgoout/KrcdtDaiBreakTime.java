@@ -66,10 +66,10 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 
 	public static List<KrcdtDaiBreakTime> toEntity(BreakTimeOfDailyPerformance breakTime) {
 		if (breakTime == null) return new ArrayList<>();
-		return breakTime.getBreakTimeSheets().stream()
+		return breakTime.getTimeZone().getBreakTimeSheets().stream()
 				.map(c -> new KrcdtDaiBreakTime(
 						new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(),
-								breakTime.getBreakType().value, c.getBreakFrameNo().v()),
+								breakTime.getTimeZone().getBreakType().value, c.getBreakFrameNo().v()),
 						c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
 						c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes()))
 				.collect(Collectors.toList());

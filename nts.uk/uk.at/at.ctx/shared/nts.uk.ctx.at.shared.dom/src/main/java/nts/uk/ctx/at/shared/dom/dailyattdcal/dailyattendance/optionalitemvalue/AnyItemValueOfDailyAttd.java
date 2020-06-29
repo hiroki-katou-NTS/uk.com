@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 日別勤怠の任意項目
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnyItemValueOfDailyAttd {
 	/** 任意項目値: 任意項目値 */
+	@Setter
 	private List<AnyItemValue> items;
 
 	public AnyItemValueOfDailyAttd(List<AnyItemValue> items) {

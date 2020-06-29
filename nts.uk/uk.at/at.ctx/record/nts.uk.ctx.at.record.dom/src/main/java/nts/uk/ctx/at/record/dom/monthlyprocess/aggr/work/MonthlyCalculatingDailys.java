@@ -12,7 +12,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -156,31 +156,36 @@ public class MonthlyCalculatingDailys {
 			
 			// 日別実績の勤怠時間
 			val attendanceTimeOfDaily = dailyWork.getAttendanceTimeOfDailyPerformance().get();
-			val ymd = attendanceTimeOfDaily.getYmd();
-			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
+			val ymd = dailyWork.getYmd();
+			AttendanceTimeOfDailyPerformance dailyPerformance = new AttendanceTimeOfDailyPerformance(employeeId, ymd, attendanceTimeOfDaily);
+			result.attendanceTimeOfDailyMap.put(ymd, dailyPerformance);
 			
 			// 日別実績の出退勤
 			if (dailyWork.getAttendanceLeave().isPresent()){
 				val timeLeaveOfDaily = dailyWork.getAttendanceLeave().get();
-				result.timeLeaveOfDailyMap.put(ymd, timeLeaveOfDaily);
+				TimeLeavingOfDailyPerformance performance = new TimeLeavingOfDailyPerformance(employeeId, ymd, timeLeaveOfDaily);
+				result.timeLeaveOfDailyMap.put(ymd, performance);
 			}
 			
 			// 日別実績の勤務情報
 			if (dailyWork.getWorkInformation() != null){
 				val workInfoOfDaily = dailyWork.getWorkInformation();
-				result.workInfoOfDailyMap.put(ymd, workInfoOfDaily);
+				WorkInfoOfDailyPerformance performance = new WorkInfoOfDailyPerformance(employeeId, ymd, workInfoOfDaily);
+				result.workInfoOfDailyMap.put(ymd, performance);
 			}
 			
 			// 日別実績の臨時出退勤
 			if (dailyWork.getTempTime().isPresent()){
 				val temporaryTimeOfDaily = dailyWork.getTempTime().get();
-				result.temporaryTimeOfDailyMap.put(ymd, temporaryTimeOfDaily);
+				TemporaryTimeOfDailyPerformance performance = new TemporaryTimeOfDailyPerformance(employeeId, ymd, temporaryTimeOfDaily);
+				result.temporaryTimeOfDailyMap.put(ymd, performance);
 			}
 			
 			// 日別実績の特定日区分
 			if (dailyWork.getSpecDateAttr().isPresent()){
 				val specificDateAttrOfDaily = dailyWork.getSpecDateAttr().get();
-				result.specificDateAttrOfDailyMap.put(ymd, specificDateAttrOfDaily);
+				SpecificDateAttrOfDailyPerfor ofDailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeId, ymd, specificDateAttrOfDaily);
+				result.specificDateAttrOfDailyMap.put(ymd, ofDailyPerfor);
 			}
 			
 			// 社員の日別実績エラー一覧
@@ -207,20 +212,23 @@ public class MonthlyCalculatingDailys {
 					if (anyItem.getYmd().compareTo(ymd) != 0) continue;
 					itrAnyItem.remove();
 				}
-				result.anyItemValueOfDailyList.add(dailyWork.getAnyItemValue().get());
+				AnyItemValueOfDaily daily = new AnyItemValueOfDaily(employeeId, ymd, dailyWork.getAnyItemValue().get());
+				result.anyItemValueOfDailyList.add(daily);
 			}
 			
 			// PCログオン情報
 			if (dailyWork.getPcLogOnInfo().isPresent()){
 				val pcLogonInfo = dailyWork.getPcLogOnInfo().get();
-				result.pcLogonInfoMap.put(pcLogonInfo.getYmd(), pcLogonInfo);
+				PCLogOnInfoOfDaily infoOfDaily = new PCLogOnInfoOfDaily(employeeId, ymd, pcLogonInfo);
+				result.pcLogonInfoMap.put(ymd, infoOfDaily);
 			}
 			
 			// 日別実績の勤務種別
-			if (dailyWork.getBusinessType().isPresent()) {
-				val workType = dailyWork.getBusinessType().get();
-				result.workTypeOfDailyMap.put(workType.getDate(), workType);
-			}
+			// Không còn domain này trong EA
+//			if (dailyWork.getBusinessType().isPresent()) {
+//				val workType = dailyWork.getBusinessType().get();
+//				result.workTypeOfDailyMap.put(workType.getDate(), workType);
+//			}
 		}
 		
 		return result;

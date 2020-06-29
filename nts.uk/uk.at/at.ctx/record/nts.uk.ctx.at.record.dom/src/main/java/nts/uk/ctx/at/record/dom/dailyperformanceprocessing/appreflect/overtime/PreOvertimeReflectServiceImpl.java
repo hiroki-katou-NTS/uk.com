@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTi
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -47,8 +47,12 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -104,13 +108,14 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		//予定勤種・就時の反映
 		priorProcess.workTimeWorkTimeUpdate(param, dailyInfor);
 		//勤種・就時の反映
-		AppReflectRecordWork changeFlg = priorProcess.changeFlg(param, dailyInfor.getWorkInformation());
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(param.getEmployeeId(), param.getDateInfo(), dailyInfor.getWorkInformation());
+		AppReflectRecordWork changeFlg = priorProcess.changeFlg(param, dailyPerformance);
 		//予定開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
 		priorProcess.startAndEndTimeReflectSche(param, changeFlg.chkReflect, dailyInfor);
 
 		//残業時間を反映する
 		//残業枠時間
-		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = dailyInfor.getAttendanceTimeOfDailyPerformance();
+		Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = Optional.of(new AttendanceTimeOfDailyPerformance(param.getEmployeeId(), param.getDateInfo(), dailyInfor.getAttendanceTimeOfDailyPerformance().get()));
 		if(optAttendanceTime.isPresent()) {
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param, dailyInfor);
@@ -155,6 +160,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		//日別実績の所属情報
 		Optional<AffiliationInforOfDailyPerfor> findByKey = affiliationInfor.finds(emps, dates).stream().findFirst();
 		//日別実績の勤務種別
+		//EA bỏ root này rồi
 		Optional<WorkTypeOfDailyPerformance> workType = workTypeOfDailyPerforRepository.finds(emps, dates).stream().findFirst();
 		//日別実績のPCログオン情報
 		Optional<PCLogOnInfoOfDaily> pcLogOnDarta = pcLogOnInfo.finds(emps, dates).stream().findFirst();
@@ -167,6 +173,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		//日別実績の勤怠時間
 		Optional<AttendanceTimeOfDailyPerformance> findAttendanceTime = attendanceTime.finds(emps, dates).stream().findFirst();
 		//日別実績の作業別勤怠時間
+		//EA bỏ root này rồi
 		Optional<AttendanceTimeByWorkOfDaily> findTimeByWork = attendanceTimeByWork.finds(emps, dates).stream().findFirst();
 		//日別実績の出退勤
 		Optional<TimeLeavingOfDailyPerformance> findByKeyTimeLeaving = timeLeaningOfDaily.finds(emps, dates).stream().findFirst();
@@ -186,24 +193,24 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		List<RemarksOfDailyPerform> remark = remarks.getRemarksBykey(employeeId, dateData);
 		//日別実績の臨時出退勤
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.finds(emps, dates).stream().findFirst();
-		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
-				calAtrrOfDailyData, 
-				findByKey.isPresent() ? findByKey.get() : null,
-				workType,
-				pcLogOnDarta, 
+		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor.getWorkInformation(), 
+				calAtrrOfDailyData.getCalcategory(), 
+				findByKey.isPresent() ? findByKey.get().getAffiliationInfor() : null,
+				// workType,
+				Optional.ofNullable(pcLogOnDarta.get().getTimeZone()), 
 				findEror, 
-				findByEmployeeIdAndDate, 
-				lstBreakTime, 
-				findAttendanceTime, 
-				findTimeByWork, 
-				findByKeyTimeLeaving, 
-				findShortTimeOfDaily, 
-				findSpecificData, 
-				findLeavingGate, 
-				findAnyItem, 
-				lstEditState,
-				temporaryData,
-				remark);
+				Optional.ofNullable(findByEmployeeIdAndDate.get().getOutingTime()), 
+				lstBreakTime.stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList()), 
+				Optional.ofNullable(findAttendanceTime.get().getTime()), 
+				Optional.ofNullable(findByKeyTimeLeaving.get().getAttendance()), 
+				//findTimeByWork,
+				Optional.ofNullable(findShortTimeOfDaily.get().getTimeZone()), 
+				Optional.ofNullable(findSpecificData.get().getSpecificDay()), 
+				Optional.ofNullable(findLeavingGate.get().getTimeZone()), 
+				Optional.ofNullable(findAnyItem.get().getAnyItem()), 
+				lstEditState.stream().map(mapper-> new EditStateOfDailyAttd(mapper.getEditState().getAttendanceItemId(), mapper.getEditState().getEditStateSetting())).collect(Collectors.toList()),
+				Optional.ofNullable(temporaryData.get().getAttendance()),
+				remark.stream().map(mapper-> new RemarksOfDailyAttd(mapper.getRemarks().getRemarks(), mapper.getRemarks().getRemarkNo())).collect(Collectors.toList()));
 		return integration;
 	}
 	

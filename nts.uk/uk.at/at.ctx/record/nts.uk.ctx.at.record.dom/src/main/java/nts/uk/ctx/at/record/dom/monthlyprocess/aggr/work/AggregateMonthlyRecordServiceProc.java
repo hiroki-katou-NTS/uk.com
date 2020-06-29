@@ -868,9 +868,9 @@ public class AggregateMonthlyRecordServiceProc {
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
 		for (val anyItemValueOfDaily : this.monthlyCalculatingDailys.getAnyItemValueOfDailyList()){
 			if (!period.contains(anyItemValueOfDaily.getYmd())) continue;
-			if (anyItemValueOfDaily.getItems() == null) continue;
+			if (anyItemValueOfDaily.getAnyItem().getItems() == null) continue;
 			val ymd = anyItemValueOfDaily.getYmd();
-			for (val item : anyItemValueOfDaily.getItems()){
+			for (val item : anyItemValueOfDaily.getAnyItem().getItems()){
 				if (item.getItemNo() == null) continue;
 				Integer itemNo = item.getItemNo().v();
 				
@@ -1674,10 +1674,10 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
-				firstInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(firstInfoOfDaily.getWplID()),
-				new JobTitleId(firstInfoOfDaily.getJobTitleID()),
-				firstInfoOfDaily.getClsCode(),
+				firstInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(firstInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(firstInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				firstInfoOfDaily.getAffiliationInfor().getClsCode(),
 				firstWorkTypeOfDaily.getWorkTypeCode());
 
 		// 月末がシステム日付以降の場合、月初の情報を月末の情報とする
@@ -1718,10 +1718,10 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月末の情報を作成
 		val lastInfo = AggregateAffiliationInfo.of(
-				lastInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(lastInfoOfDaily.getWplID()),
-				new JobTitleId(lastInfoOfDaily.getJobTitleID()),
-				lastInfoOfDaily.getClsCode(),
+				lastInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(lastInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(lastInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				lastInfoOfDaily.getAffiliationInfor().getClsCode(),
 				lastWorkTypeOfDaily.getWorkTypeCode());
 		
 		// 月別実績の所属情報を返す

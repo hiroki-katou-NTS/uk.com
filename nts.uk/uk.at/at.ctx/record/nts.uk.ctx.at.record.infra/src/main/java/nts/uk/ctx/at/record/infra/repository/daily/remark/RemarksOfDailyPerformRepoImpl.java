@@ -93,11 +93,11 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 
 	@Override
 	public void update(RemarksOfDailyPerform domain) {
-		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
+		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarks().getRemarkNo()), 
 				KrcdtDayRemarksColumn.class);
 		if(remarks.isPresent()){
 			KrcdtDayRemarksColumn c = remarks.get();
-			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().v();
+			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().getRemarks().v();
 			commandProxy().update(c);
 		} else {
 			add(domain);

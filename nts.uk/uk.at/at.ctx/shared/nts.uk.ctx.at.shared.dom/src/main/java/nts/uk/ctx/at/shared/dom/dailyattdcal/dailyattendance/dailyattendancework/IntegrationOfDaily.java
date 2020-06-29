@@ -8,12 +8,12 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
@@ -40,9 +40,11 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.Attendance
 @Getter
 public class IntegrationOfDaily {
 	//社員ID
+	@Setter
 	private String employeeId;
 	
 	//年月日
+	@Setter
 	private GeneralDate ymd;
 	
 	//日別実績の勤務情報  (old)
@@ -168,7 +170,8 @@ public class IntegrationOfDaily {
 	 * @param editState 日別実績の編集状態
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
-	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, 
+	public IntegrationOfDaily(
+			WorkInfoOfDailyAttendance workInformation, 
 			CalAttrOfDailyAttd calAttr,
 			AffiliationInforOfDailyAttd affiliationInfor,
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
@@ -207,10 +210,6 @@ public class IntegrationOfDaily {
 		this.tempTime = tempTime;
 		this.remarks = remarks;
 	}
-	
-	
-	
-
 
 	/**
 	 * 残業時間実績超過の取得

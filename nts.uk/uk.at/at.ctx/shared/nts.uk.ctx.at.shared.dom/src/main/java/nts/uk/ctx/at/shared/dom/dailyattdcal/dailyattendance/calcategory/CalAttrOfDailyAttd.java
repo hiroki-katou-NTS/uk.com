@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
@@ -50,6 +51,15 @@ public class CalAttrOfDailyAttd implements DomainObject {
 			this.leaveEarlySetting = leaveEarlySetting;
 			this.divergenceTime = divergenceTime;
 		} 
+		
+	public CalAttrOfDailyAttd reCreate(AutoCalAtrOvertime atr) {
+		return new CalAttrOfDailyAttd(this.flexExcessTime, this.rasingSalarySetting,
+				this.holidayTimeSetting,
+				this.overtimeSetting.changeNormalAutoCalcSetting(atr),
+				this.leaveEarlySetting, this.divergenceTime
+
+		);
+		}
 		
 		
 }

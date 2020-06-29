@@ -197,7 +197,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 				companyId, placeId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「休出枠時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val holidayWorkTimeOfDaily = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
@@ -440,7 +440,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		val roleHolidayWorkFrameMap = settingsByFlex.getRoleHolidayWorkFrameMap();
 		
 		// 「休出枠時間」を取得する（日別）
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		val holidayWorkTimeOfDaily = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
@@ -538,7 +538,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「休出枠時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 			val holidayWorkTimeOfDailyOpt = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();

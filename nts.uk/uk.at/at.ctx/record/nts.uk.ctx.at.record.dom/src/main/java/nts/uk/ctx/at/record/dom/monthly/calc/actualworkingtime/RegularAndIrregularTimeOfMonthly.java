@@ -221,7 +221,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
-					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
+					val workInfo = workInformationOfDailyMap.get(procDate).getWorkInformation().getRecordInfo();
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
@@ -395,7 +395,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				
 				// 処理日の勤務情報を取得する
 				if (workInformationOfDailyMap.containsKey(procDate)) {
-					val workInfo = workInformationOfDailyMap.get(procDate).getRecordInfo();
+					val workInfo = workInformationOfDailyMap.get(procDate).getWorkInformation().getRecordInfo();
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
 					prevTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,

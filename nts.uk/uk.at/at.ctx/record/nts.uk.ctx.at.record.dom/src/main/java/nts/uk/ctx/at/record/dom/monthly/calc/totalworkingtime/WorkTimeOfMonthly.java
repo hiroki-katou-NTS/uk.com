@@ -119,7 +119,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// ドメインモデル「日別実績の所定内時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
@@ -150,8 +150,8 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			// 勤務種類を確認する
 			WorkType workType = null;
 			if (workInformationOfDailyMap.containsKey(ymd)) {
-				if (workInformationOfDailyMap.get(ymd).getRecordInfo() != null) {
-					val record = workInformationOfDailyMap.get(ymd).getRecordInfo();
+				if (workInformationOfDailyMap.get(ymd).getWorkInformation().getRecordInfo() != null) {
+					val record = workInformationOfDailyMap.get(ymd).getWorkInformation().getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
 						workType = companySets.getWorkTypeMap(workTypeCode, repositories);
@@ -310,7 +310,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// ドメインモデル「日別実績の所定内時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
@@ -325,8 +325,8 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			// 勤務種類を確認する
 			WorkType workType = null;
 			if (workInfoOfDailyMap.containsKey(ymd)) {
-				if (workInfoOfDailyMap.get(ymd).getRecordInfo() != null) {
-					val record = workInfoOfDailyMap.get(ymd).getRecordInfo();
+				if (workInfoOfDailyMap.get(ymd).getWorkInformation().getRecordInfo() != null) {
+					val record = workInfoOfDailyMap.get(ymd).getWorkInformation().getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
 						workType = companySets.getWorkTypeMap(workTypeCode, repositories);

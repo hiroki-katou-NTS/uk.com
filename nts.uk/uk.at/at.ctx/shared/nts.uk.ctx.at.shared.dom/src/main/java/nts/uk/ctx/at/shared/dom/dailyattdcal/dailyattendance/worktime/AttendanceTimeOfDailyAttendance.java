@@ -38,6 +38,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		//医療時間 - 日別実績の医療時間
 		private MedicalCareTimeOfDaily medicalCareTime;
 
+		
 		public AttendanceTimeOfDailyAttendance (
 				 WorkScheduleTimeOfDaily schedule,
 				 ActualWorkingTimeOfDaily actual,
@@ -51,18 +52,18 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				this.unEmployedTime = unEmploy;
 				}
 				
-				public AttendanceTimeOfDailyAttendance(
-				WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
-				StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance,
-				MedicalCareTimeOfDaily medicalCareTime) {
-				super();
-				this.workScheduleTimeOfDaily = workScheduleTimeOfDaily;
-				this.actualWorkingTimeOfDaily = actualWorkingTimeOfDaily;
-				this.stayingTime = stayingTime;
-				this.unEmployedTime = unEmployedTime;
-				this.budgetTimeVariance = budgetTimeVariance;
-				this.medicalCareTime = medicalCareTime;
-				}
+	public AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily workScheduleTimeOfDaily,
+			ActualWorkingTimeOfDaily actualWorkingTimeOfDaily, StayingTimeOfDaily stayingTime,
+			AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance,
+			MedicalCareTimeOfDaily medicalCareTime) {
+		super();
+		this.workScheduleTimeOfDaily = workScheduleTimeOfDaily;
+		this.actualWorkingTimeOfDaily = actualWorkingTimeOfDaily;
+		this.stayingTime = stayingTime;
+		this.unEmployedTime = unEmployedTime;
+		this.budgetTimeVariance = budgetTimeVariance;
+		this.medicalCareTime = medicalCareTime;
+	}
 	/**
 	 * エラーチェックの指示メソッド 
 	 * @param attendanceItemConverter 
@@ -75,5 +76,12 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			return this.getActualWorkingTimeOfDaily().requestCheckError(employeeId, targetDate, fixedErrorAlarmCode, checkAtr);
 		}
 		return returnErrorItem;
+	}
+	
+	public AttendanceTimeOfDailyAttendance inssertActualWorkingTimeOfDaily(ActualWorkingTimeOfDaily time) {
+		return new AttendanceTimeOfDailyAttendance (
+						this.workScheduleTimeOfDaily, time, this.stayingTime, this.budgetTimeVariance,
+						this.unEmployedTime
+				); 
 	}
 }

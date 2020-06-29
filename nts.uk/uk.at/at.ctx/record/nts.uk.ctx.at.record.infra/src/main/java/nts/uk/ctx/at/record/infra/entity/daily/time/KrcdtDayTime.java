@@ -1313,12 +1313,12 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime) {
 		/*----------------------日別実績の勤怠時間------------------------------*/
-		ActualWorkingTimeOfDaily actualWork = attendanceTime.getActualWorkingTimeOfDaily();
+		ActualWorkingTimeOfDaily actualWork = attendanceTime.getTime().getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWork = actualWork == null ? null :actualWork.getTotalWorkingTime();
 		ConstraintTime constraintTime = actualWork == null ? null : actualWork.getConstraintTime();
 		ExcessOfStatutoryMidNightTime excessStt = totalWork == null ? null : totalWork.getExcessOfStatutoryTimeOfDaily() == null ? null 
 				: totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
-		StayingTimeOfDaily staying = attendanceTime.getStayingTime();
+		StayingTimeOfDaily staying = attendanceTime.getTime().getStayingTime();
 		if(totalWork != null){
 			/* 総労働時間 */
 			this.totalAttTime = totalWork.getTotalTime() == null ? 0 : totalWork.getTotalTime().valueAsMinutes();
@@ -1354,9 +1354,9 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		}
 		
 		/* 予実差異時間 */
-		this.budgetTimeVariance = attendanceTime.getBudgetTimeVariance() == null ? 0 : attendanceTime.getBudgetTimeVariance().valueAsMinutes();
+		this.budgetTimeVariance = attendanceTime.getTime().getBudgetTimeVariance() == null ? 0 : attendanceTime.getTime().getBudgetTimeVariance().valueAsMinutes();
 		/* 不就労時間 */
-		this.unemployedTime = attendanceTime.getUnEmployedTime() == null ? 0 : attendanceTime.getUnEmployedTime().valueAsMinutes();
+		this.unemployedTime = attendanceTime.getTime().getUnEmployedTime() == null ? 0 : attendanceTime.getTime().getUnEmployedTime().valueAsMinutes();
 		
 		if(staying != null){
 			/* 滞在時間 */
@@ -1397,8 +1397,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		
 		if(attendanceTime != null) {
 			/*----------------------日別実績の予定時間------------------------------*/
-			if(attendanceTime.getWorkScheduleTimeOfDaily() !=null) {
-				val domain = attendanceTime.getWorkScheduleTimeOfDaily(); 
+			if(attendanceTime.getTime().getWorkScheduleTimeOfDaily() !=null) {
+				val domain = attendanceTime.getTime().getWorkScheduleTimeOfDaily(); 
 				/*勤務予定時間*/
 				this.workScheduleTime = domain.getWorkScheduleTime() == null || domain.getWorkScheduleTime().getTotal() == null ? 0 
 					: domain.getWorkScheduleTime().getTotal().valueAsMinutes();
@@ -1409,7 +1409,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			}
 			/*----------------------日別実績の予定時間------------------------------*/
 			
-			if(attendanceTime.getActualWorkingTimeOfDaily() != null) {
+			if(attendanceTime.getTime().getActualWorkingTimeOfDaily() != null) {
 				/*----------------------日別実績の乖離時間------------------------------*/
 				if(actualWork != null&& actualWork.getDivTime() != null) {
 					val a = actualWork.getDivTime();
@@ -1419,13 +1419,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					}
 				}
 				/*----------------------日別実績の乖離時間------------------------------*/
-				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 					/*----------------------日別実績の休憩時間------------------------------*/
-					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
-						val recordTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
-						val dedTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
-						val duringTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();
-						val workTimes = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getGooutTimes();
+					if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
+						val recordTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
+						val dedTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
+						val duringTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();
+						val workTimes = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getGooutTimes();
 						if(recordTime.getTotalTime() != null) {
 							this.toRecordTotalTime = recordTime.getTotalTime().getTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
 							this.calToRecordTotalTime = recordTime.getTotalTime().getCalcTime() == null ? 0 : recordTime.getTotalTime().getCalcTime().valueAsMinutes();
@@ -1464,7 +1464,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					}
 					/*----------------------日別実績の休憩時間------------------------------*/
 					/*----------------------日別実績の休出枠時間------------------------------*/
-					val test = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
+					val test = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
 					val domain = test == null ? null : test.getWorkHolidayTime().orElse(null);
 					
 					if(domain != null && domain.getHolidayWorkFrameTime() != null || !domain.getHolidayWorkFrameTime().isEmpty()){
@@ -1677,7 +1677,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 					
 					/*----------------------日別実績の休暇------------------------------*/
-					val vacationDomain = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily();
+					val vacationDomain = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily();
 					this.annualleaveTime = 0;
 					this.annualleaveTdvTime = 0;
 					this.compensatoryLeaveTime = 0;

@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.UseTimeAtr;
-import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
@@ -244,7 +240,7 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間帯に入っている加給時間の計算
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyAttd calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		ActualWorkTimeSheetAtr sheetAtr;
 		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {

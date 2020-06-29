@@ -25,8 +25,8 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 
 		stQuery.setParameter("CID", comId).setParameter("SID", workInfo.getEmployeeId())
 				.setParameter("YMD", Date.valueOf(workInfo.getYmd().localDate()))
-				.setParameter("WorkTypeCode", workInfo.getRecordInfo().getWorkTypeCode().v())
-				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v())
+				.setParameter("WorkTypeCode", workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
+				.setParameter("WorkTimeCode", workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v())
 				.setParameter("HoliWorkTimes", calcHolWorkTime(attendanceTime));
 
 		stQuery.execute();
@@ -37,9 +37,9 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 			return 0;
 		}
 
-		if (attendanceTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
+		if (attendanceTime.get().getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 				.getWorkHolidayTime().isPresent()) {
-			HolidayWorkTimeOfDaily hol = attendanceTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+			HolidayWorkTimeOfDaily hol = attendanceTime.get().getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get();
 			return hol.getHolidayWorkFrameTime().stream().mapToInt(c -> getHolTimeOrDefaul(c.getTransferTime())).sum();
 		}

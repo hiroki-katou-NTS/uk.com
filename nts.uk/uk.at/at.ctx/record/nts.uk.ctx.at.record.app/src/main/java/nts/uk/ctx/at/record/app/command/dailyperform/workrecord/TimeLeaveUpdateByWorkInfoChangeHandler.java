@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.service.event.timeleave.TimeLeavingOfDailyServic
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,28 +40,40 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		}
 		
 		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
-		IntegrationOfDaily working = new IntegrationOfDaily(wi, null,
-				null, Optional.empty(),
-				Optional.empty(),
-				new ArrayList<>(), Optional.empty(),
-				new ArrayList<>(),
-				Optional.empty(),
-				Optional.empty(),
-				command.cachedTimeLeave, Optional.empty(),
-				Optional.empty(),
-				Optional.empty(), Optional.empty(),
-				command.cachedEditState.isPresent() ? command.cachedEditState.get() : new ArrayList<>(), Optional.empty(),
-				new ArrayList<>());
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = command.cachedTimeLeave;
+		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()?Optional.of(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
+		IntegrationOfDaily working = new IntegrationOfDaily(
+				wi.getWorkInformation(), //workInformation
+				null, //calAttr
+				null, //affiliationInfor
+				Optional.empty(), //pcLogOnInfo
+				new ArrayList<>(), //employeeError
+				Optional.empty(), //outingTime
+				new ArrayList<>(), //breakTime
+				Optional.empty(), //attendanceTimeOfDailyPerformance
+				timeLeavingOfDailyAttd, //attendanceLeave
+				Optional.empty(), //shortTime
+				Optional.empty(), //specDateAttr
+				Optional.empty(), //attendanceLeavingGate
+				Optional.empty(), //anyItemValue
+				command.cachedEditState.isPresent() ? command.cachedEditState.get().stream().map(c->c.getEditState()).collect(Collectors.toList()) : new ArrayList<>(),
+				Optional.empty(),//tempTime
+				new ArrayList<>());//remarks
+		working.setEmployeeId(command.employeeId);
+		working.setYmd(command.targetDate);
 		EventHandleResult<IntegrationOfDaily> result = eventService.correct(companyId, working, command.cachedWorkCondition, command.cachedWorkType, !command.actionOnCache);
 		
 		if(command.isTriggerRelatedEvent && result.getAction() != EventHandleAction.ABORT) {
 			/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
 			result.getData().getAttendanceLeave().ifPresent(tl -> {
-				tl.timeLeavesChanged();
+				tl.timeLeavesChanged(command.getEmployeeId(),command.getTargetDate());
 			});
 		}
-		
-		return EventHandleResult.withResult(result.getAction(), result.getData().getAttendanceLeave().orElse(null));
+		Optional<TimeLeavingOfDailyAttd> attendanceLeave = result.getData().getAttendanceLeave();
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPer = new TimeLeavingOfDailyPerformance(command.employeeId,
+				command.targetDate, 
+				attendanceLeave.isPresent()?attendanceLeave.get():null);
+		return EventHandleResult.withResult(result.getAction(), timeLeavingOfDailyPer);
 	}
 
 	private WorkInfoOfDailyPerformance getDefaultWorkInfo(TimeLeaveUpdateByWorkInfoChangeCommand command) {

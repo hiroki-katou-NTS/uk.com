@@ -121,8 +121,8 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 		
 		for(IntegrationOfDaily integrationOfDaily:integrationOfDailyList) {
 		
-			String empId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
-			GeneralDate ymd = integrationOfDaily.getAffiliationInfor().getYmd();
+			String empId = integrationOfDaily.getEmployeeId();
+			GeneralDate ymd = integrationOfDaily.getYmd();
 			
 			//総労働時間
 			AttendanceTime totalWorkTime = new AttendanceTime(0);

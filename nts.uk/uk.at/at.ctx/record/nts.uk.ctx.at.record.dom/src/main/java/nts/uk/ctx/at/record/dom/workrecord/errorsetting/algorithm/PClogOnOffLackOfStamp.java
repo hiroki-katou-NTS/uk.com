@@ -36,12 +36,12 @@ public class PClogOnOffLackOfStamp {
 		
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
-			if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getLogOnInfo().isEmpty()) {
+			if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo().isEmpty()) {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				
-				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
+				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
 				// fix bug 106204
 				logOnInfos.forEach(logOnInfo ->  {
 					// ログオフのみ存在している(only has Logoff time)

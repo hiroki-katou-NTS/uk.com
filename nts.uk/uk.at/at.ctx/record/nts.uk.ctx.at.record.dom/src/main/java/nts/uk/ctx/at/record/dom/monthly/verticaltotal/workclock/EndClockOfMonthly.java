@@ -73,14 +73,14 @@ public class EndClockOfMonthly implements Serializable{
 		if (predTimeSetForCalc == null) return;
 		
 		// 所定を超えて退勤しているかどうか判断
-		for (val timeLeavingWork : timeLeavingOfDaily.getTimeLeavingWorks()){
+		for (val timeLeavingWork : timeLeavingOfDaily.getAttendance().getTimeLeavingWorks()){
 			
 			// 退勤　確認
 			if (!timeLeavingWork.getLeaveStamp().isPresent()) continue;
 			val leaveStamp = timeLeavingWork.getLeaveStamp().get();
 			if (!leaveStamp.getStamp().isPresent()) continue;
 			val stamp = leaveStamp.getStamp().get();
-			if (stamp.getTimeWithDay() == null) continue;
+			if (!stamp.getTimeDay().getTimeWithDay().isPresent() ) continue;
 			
 // 2019.6.18 DEL shuichi ishida Redmine #108120
 //			// 時間帯　確認
@@ -99,7 +99,7 @@ public class EndClockOfMonthly implements Serializable{
 			if (isWeekday == false) continue;
 			
 			// 退勤時刻を合計
-			this.totalClock = this.totalClock.addMinutes(stamp.getTimeWithDay().v());
+			this.totalClock = this.totalClock.addMinutes(stamp.getTimeDay().getTimeWithDay().get().v());
 			
 			// 回数を＋１
 			this.times = this.times.addTimes(1);

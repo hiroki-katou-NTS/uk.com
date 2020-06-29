@@ -376,7 +376,7 @@ public class ErAlWorkRecordCheckService {
 		
 		for (int i = 0; i < subWorkInfos.size(); i++){
 			WorkInfoOfDailyPerformance info = subWorkInfos.get(i);
-			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
+			WorkTypeCode currentWTC = info.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			
 			if(setting.getTargetWorkType().contains(currentWTC) || !markPreviousDate) {
 				
@@ -391,7 +391,7 @@ public class ErAlWorkRecordCheckService {
 				
 				for(int j = i + 1; j < subWorkInfos.size(); j++){
 					WorkInfoOfDailyPerformance info2 = subWorkInfos.get(j);
-					WorkTypeCode currentWTC2 = info2.getRecordInfo().getWorkTypeCode();
+					WorkTypeCode currentWTC2 = info2.getWorkInformation().getRecordInfo().getWorkTypeCode();
 
 					if(!setting.getTargetWorkType().contains(currentWTC2) && !setting.getIgnoreWorkType().contains(currentWTC2)){
 						nextCount = true;
@@ -487,7 +487,7 @@ public class ErAlWorkRecordCheckService {
 				condition.getCheckTargetCondtion())){
 			return false;
 		}
-		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
 		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
 			if (item.isEmpty()) {
 				return new ArrayList<>();
@@ -513,7 +513,7 @@ public class ErAlWorkRecordCheckService {
 				condition.getCheckTargetCondtion())){
 			return new ResultCheckWith(false,null);
 		}
-		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
+		WorkInfoOfDailyPerformance workInfo =new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
 		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
 			if (item.isEmpty()) {
 				return new ArrayList<>();

@@ -146,7 +146,7 @@ public class ActualWorkingTimeOfDaily {
 			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTime> divergenceTimeList, 
+			   List<DivergenceTimeRoot> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			   DeductLeaveEarly leaveLateSet, WorkScheduleTimeOfDaily workScheduleTime,Optional<WorkTimeCode> recordWorkTimeCode) {

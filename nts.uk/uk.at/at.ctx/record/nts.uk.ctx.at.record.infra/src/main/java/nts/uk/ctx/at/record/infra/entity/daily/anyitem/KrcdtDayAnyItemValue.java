@@ -45,7 +45,7 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	
 	
 	public static List<KrcdtDayAnyItemValue> create(AnyItemValueOfDaily domain) {
-		return domain.getItems().stream().map(d -> {
+		return domain.getAnyItem().getItems().stream().map(d -> {
 			KrcdtDayAnyItemValue entity = new KrcdtDayAnyItemValue();
 			entity.krcdtDayAnyItemValuePK = new KrcdtDayAnyItemValuePK(domain.getEmployeeId(),
 					domain.getYmd(), d.getItemNo().v());

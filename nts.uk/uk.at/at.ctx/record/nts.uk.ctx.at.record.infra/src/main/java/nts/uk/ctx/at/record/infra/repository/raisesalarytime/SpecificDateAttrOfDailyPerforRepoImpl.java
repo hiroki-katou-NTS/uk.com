@@ -23,6 +23,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
@@ -31,7 +32,6 @@ import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayCl
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository implements SpecificDateAttrOfDailyPerforRepo {
@@ -50,7 +50,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	@Override
 	public void update(SpecificDateAttrOfDailyPerfor domain) {
 		List<KrcdtDaiSpeDayCla> entities = findEntities(domain.getEmployeeId(), domain.getYmd()).getList();
-		domain.getSpecificDateAttrSheets().stream().forEach(c -> {
+		domain.getSpecificDay().getSpecificDateAttrSheets().stream().forEach(c -> {
 			KrcdtDaiSpeDayCla current = entities.stream()
 					.filter(x -> x.krcdtDaiSpeDayClaPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
 					.orElse(null);
@@ -65,7 +65,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void add(SpecificDateAttrOfDailyPerfor domain) {
-		List<KrcdtDaiSpeDayCla> entities = domain.getSpecificDateAttrSheets().stream()
+		List<KrcdtDaiSpeDayCla> entities = domain.getSpecificDay().getSpecificDateAttrSheets().stream()
 				.map(c -> newEntities(domain.getEmployeeId(), domain.getYmd(), c)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
 	}

@@ -31,8 +31,8 @@ public class TemporaryDoubleStampChecking {
 		// .findByKey(employeeID, processingDate);
 
 		if (temporaryTimeOfDailyPerformance != null
-				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				&& !temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				if ((timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent())
 						|| (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())) {
