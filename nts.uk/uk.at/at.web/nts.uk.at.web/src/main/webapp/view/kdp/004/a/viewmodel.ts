@@ -29,7 +29,7 @@ class KDP004AViewModel extends ko.ViewModel {
 		{ layout1Title: ko.observable('layout-1'), layout1Visible: ko.observable(true) }
 	);
 
-	getSytemDate() {
+	dateText() {
 		let vm = this;
 		return vm.systemDate().format("YYYY/MM/DD(dddd)");
 
@@ -37,7 +37,7 @@ class KDP004AViewModel extends ko.ViewModel {
 	
 	
 
-	getSytemTime() {
+	timeText() {
 		let vm = this;
 		return vm.systemDate().format("HH:ss");
 	}

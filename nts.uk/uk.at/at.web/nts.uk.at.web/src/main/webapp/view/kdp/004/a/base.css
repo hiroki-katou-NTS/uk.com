@@ -17,6 +17,9 @@
 .display_block {
 	display: block;
 }
+.display_inline{
+	display: inline-block;
+}
 
 #content-left {
 	float: left;

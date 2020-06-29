@@ -25,7 +25,6 @@ class KDPTabPanelComponent extends ko.ViewModel {
 
 	created(params: Model) {
 		const vm = this;
-		debugger;
 		vm.model = params;
 	}
 
