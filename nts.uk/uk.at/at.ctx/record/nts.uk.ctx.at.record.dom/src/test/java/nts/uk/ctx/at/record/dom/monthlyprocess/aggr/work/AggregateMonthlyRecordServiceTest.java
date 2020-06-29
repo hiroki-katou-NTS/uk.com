@@ -170,23 +170,23 @@ public class AggregateMonthlyRecordServiceTest {
 				GeneralDate ymd = v.getYmd();
 				
 				IntegrationOfDaily integOfDay = new IntegrationOfDaily(
-						v,
+						v.getWorkInformation(),
 						null,
-						affiliationOfDayMap.containsKey(ymd) ? affiliationOfDayMap.get(ymd) : null,
-						Optional.ofNullable(workTypeOfDayMap.get(ymd)),
-						Optional.ofNullable(pcLogOnInfoOfDayMap.get(ymd)),
+						affiliationOfDayMap.containsKey(ymd) ? affiliationOfDayMap.get(ymd).getAffiliationInfor() : null,
+						//Optional.ofNullable(workTypeOfDayMap.get(ymd)),
+						Optional.ofNullable(pcLogOnInfoOfDayMap.get(ymd).getTimeZone()),
 						perErrorOfDayMap.containsKey(ymd) ? perErrorOfDayMap.get(ymd) : new ArrayList<>(),
 						Optional.empty(),
 						new ArrayList<>(),
-						Optional.ofNullable(attendanceTimeOfDayMap.get(ymd)),
+						Optional.ofNullable(attendanceTimeOfDayMap.get(ymd).getTime()),
+						//Optional.empty(),
+						Optional.ofNullable(timeLeavingOfDayMap.get(ymd).getAttendance()),
 						Optional.empty(),
-						Optional.ofNullable(timeLeavingOfDayMap.get(ymd)),
+						Optional.ofNullable(specificDateAttrOfDayMap.get(ymd).getSpecificDay()),
 						Optional.empty(),
-						Optional.ofNullable(specificDateAttrOfDayMap.get(ymd)),
-						Optional.empty(),
-						Optional.ofNullable(anyItemOfDayMap.get(ymd)),
+						Optional.ofNullable(anyItemOfDayMap.get(ymd).getAnyItem()),
 						new ArrayList<>(),
-						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd)),
+						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd).getAttendance()),
 						new ArrayList<>());
 				
 				dailyWorks.add(integOfDay);

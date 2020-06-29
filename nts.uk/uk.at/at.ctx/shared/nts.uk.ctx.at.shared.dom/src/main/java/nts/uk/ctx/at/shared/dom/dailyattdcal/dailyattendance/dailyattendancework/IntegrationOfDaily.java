@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -169,7 +170,8 @@ public class IntegrationOfDaily {
 	 * @param editState 日別実績の編集状態
 	 * @param tempTime 日別実績の臨時出退勤
 	 */
-	public IntegrationOfDaily(WorkInfoOfDailyAttendance workInformation, 
+	public IntegrationOfDaily(
+			WorkInfoOfDailyAttendance workInformation, 
 			CalAttrOfDailyAttd calAttr,
 			AffiliationInforOfDailyAttd affiliationInfor,
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
@@ -208,7 +210,6 @@ public class IntegrationOfDaily {
 		this.tempTime = tempTime;
 		this.remarks = remarks;
 	}
-
 
 	/**
 	 * 残業時間実績超過の取得
