@@ -69,12 +69,12 @@ public class GetUnusedCompenTemporary {
 
 		}
 
-		//対象期間のドメインモデル「暫定振出管理データ」を上書き用の暫定管理データに置き換える
+		// 対象期間のドメインモデル「暫定振出管理データ」を上書き用の暫定管理データに置き換える
 		ProcessDataTemporary.processOverride(input, input.getUseRecMng(), lstInterimMngOfRec, lstRecMng);
 
 		// 振休の設定を取得する
 		LeaveSetOutput leaveSetOut = GetSettingCompensaLeave.process(require, input.getCid(), input.getSid(),
-				input.getScreenDisplayDate());
+				input.getDateData().end());
 
 		if (leaveSetOut == null)
 			return lstOutput;
@@ -86,9 +86,9 @@ public class GetUnusedCompenTemporary {
 			InterimRemain remainData = lstInterimMngOfRec.stream()
 					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
 					.collect(Collectors.toList()).get(0);
-			// アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
+			// アルゴリズム「振休と紐付けをしない振出を取得する」を実行する
 			lstOutput.add(getNotTypeRec(require, interimRecMng, remainData, input.getCid(), input.getSid(),
-					input.getDateData().start(), input.getScreenDisplayDate(), leaveSetOut, lstInterimRecAbsMng));
+					input.getDateData().end(), leaveSetOut, lstInterimRecAbsMng));
 		}
 		return lstOutput;
 
@@ -96,8 +96,8 @@ public class GetUnusedCompenTemporary {
 
 	// 4-1.振休と紐付けをしない振出を取得する
 	public static AccumulationAbsenceDetail getNotTypeRec(Require require, InterimRecMng recMng,
-			InterimRemain remainData, String cid, String sid, GeneralDate aggStartDate, GeneralDate baseDate,
-			LeaveSetOutput leaveSetOut, List<InterimRecAbsMng> lstInterimRecAbsMng) {
+			InterimRemain remainData, String cid, String sid, GeneralDate aggEndDate, LeaveSetOutput leaveSetOut,
+			List<InterimRecAbsMng> lstInterimRecAbsMng) {
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する
 		List<InterimRecAbsMng> lstInterimMng = lstInterimRecAbsMng.stream()
 				.filter(x -> x.getAbsenceMngId().equals(recMng.getRecruitmentMngId())).collect(Collectors.toList());
@@ -116,7 +116,7 @@ public class GetUnusedCompenTemporary {
 
 		// 締め設定を取得する
 		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				baseDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), aggStartDate);
+				aggEndDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), remainData.getYmd());
 
 		// 使用期限日を設定
 		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
