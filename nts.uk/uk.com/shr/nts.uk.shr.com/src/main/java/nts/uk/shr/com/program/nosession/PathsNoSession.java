@@ -20,6 +20,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/shr/infra/file/storage/.*",
 			"/operation/stop/.*",
 			"/i18n/.*",
+			"/server/time/.*",
 			"/ctx/sys/gateway/login/.*",
 			"/ctx/sys/gateway/sendmail/.*",
 			"/ctx/sys/gateway/changepassword/.*",

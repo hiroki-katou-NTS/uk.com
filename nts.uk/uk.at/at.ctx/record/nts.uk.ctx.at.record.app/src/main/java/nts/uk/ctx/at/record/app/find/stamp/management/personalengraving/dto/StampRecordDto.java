@@ -128,10 +128,8 @@ public class StampRecordDto {
 		Stamp stamp = info.getStamp().isPresent() ? info.getStamp().get() : null;
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = info.getStampAtr();
-		
-//		this.revervationAtr = stampRecord.getRevervationAtr().value;
-//		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
-//				: null;
+		this.stampArtName = info.getStampAtr();
+		this.timeStampType = this.stampArtName;
 
 		// stamp
 		if (stamp != null) {
@@ -140,7 +138,6 @@ public class StampRecordDto {
 			
 
 			StampType type = stamp.getType();
-			this.stampArtName = type.createStampTypeDisplay();
 			this.changeHalfDay = type.getChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
@@ -171,7 +168,7 @@ public class StampRecordDto {
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
 					: null;
-			this.timeStampType = this.stampArtName;
+			
 		}
 	}
 
@@ -271,16 +268,17 @@ public class StampRecordDto {
 				) {
 			return ContentsStampType.START_SUPPORT_BREAK.nameId;
 		}
-		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.RESERVATION.value) {
-			return ContentsStampType.RESERVATION.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.CANCEL_RESERVATION.value) {
-			return ContentsStampType.CANCEL_RESERVATION.nameId;
-		}
+		
+//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& ReservationArt.RESERVATION.value == this.revervationAtr) {
+//			return ContentsStampType.RESERVATION.nameId;
+//		}
+//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& ReservationArt.CANCEL_RESERVATION.value == this.revervationAtr) {
+//			return ContentsStampType.CANCEL_RESERVATION.nameId;
+//		}
 
 		return null;
 	}
