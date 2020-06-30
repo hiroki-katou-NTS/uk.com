@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.workschedule.EditStateOfDailyAttd;
 import nts.uk.ctx.at.schedule.dom.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
 
 /**
  * @author anhdt
@@ -18,7 +18,7 @@ public class WorkShiftScheduleDto {
 	// シフトコード
 	private Optional<String> shiftCode;
 	// シフトの編集状態
-	private Optional<EditStateOfDailyAttd> editState;
+	private Optional<ShiftEditState> editState;
 	// シフト名称
 	private Optional<String> shiftName;
 	// データがあるか
