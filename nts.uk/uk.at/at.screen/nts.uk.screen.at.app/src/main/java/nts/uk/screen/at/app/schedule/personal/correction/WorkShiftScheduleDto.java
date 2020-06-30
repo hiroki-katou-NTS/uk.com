@@ -40,7 +40,7 @@ public class WorkShiftScheduleDto {
 	
 	
 	public WorkShiftScheduleDto(ScheManaStatuTempo scheduleManagementState, WorkSchedule workSchedule) {
-//		this.employeeId = scheduleManagementState
+		this.employeeId = scheduleManagementState.getEmployeeID();
 		// TODO: hieu lam not nhe
 	}
 }

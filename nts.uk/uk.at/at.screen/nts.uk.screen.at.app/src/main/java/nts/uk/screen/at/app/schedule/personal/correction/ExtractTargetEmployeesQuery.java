@@ -34,6 +34,8 @@ public class ExtractTargetEmployeesQuery {
 
 		// 3 <<Public>> 社員の情報を取得する
 		List<EmployeeInformationImport> listEmpInfo = employeeInformationAdapter.getEmployeeInfo(param);
+		
+		
 
 		return null;
 	}

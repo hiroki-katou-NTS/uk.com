@@ -83,10 +83,11 @@ public class GetWorkScheduleQuery {
 		
 		
 		
-		return null;
+		return new WorkScheduleDto(schedules, null);
 	}
 
 	@Data
+	@AllArgsConstructor
 	class WorkScheduleDto {
 		private List<WorkShiftScheduleDto> schedules;
 		private Map<ShiftMaster, Optional<AttendanceHolidayAttr>> shiftHollidayAtt;
