@@ -346,7 +346,6 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
 				previousAndNextDaily,
-				paramList,
 				this.withinWorkingTimeSheet.get());
 		
 		if(!overTimeFrame.isEmpty()) {
@@ -395,7 +394,6 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			PreviousAndNextDaily previousAndNextDaily,
-			List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
 			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
 
 		if(!this.withinWorkingTimeSheet.isPresent()) return Collections.emptyList();
@@ -462,7 +460,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				overTimeWorkFrameTimeSheetList,
+				returnList,
 				createdWithinWorkTimeSheet);
 	}
 

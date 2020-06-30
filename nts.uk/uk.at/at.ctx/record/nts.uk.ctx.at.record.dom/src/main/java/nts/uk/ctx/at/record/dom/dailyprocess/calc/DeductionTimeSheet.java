@@ -561,12 +561,18 @@ public class DeductionTimeSheet {
 	/**
 	 * 流動固定休憩の計算方法が指定された休憩種類の日別計算用休憩時間帯クラスを取得する
 	 * 
-	 * @return 日別実績の休 時間帯クラス
+	 * @return 日別勤怠の休憩時間帯クラス
 	 */
-	public static List<TimeSheetOfDeductionItem> getReferenceTimeSheet(BreakType breakType,
-			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
-		return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().equals(breakType)).findFirst().get()
-				.changeAllTimeSheetToDeductionItem();
+	public static List<TimeSheetOfDeductionItem> getReferenceTimeSheet(BreakType breakType, List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
+		//予定もしくは実績の「日別勤怠の休憩時間帯」
+		Optional<BreakTimeOfDailyPerformance> sheduleOrRecord = breakTimeOfDailyList.stream()
+				.filter(tc -> tc.getBreakType().equals(breakType))
+				.findFirst();
+		
+		if(!sheduleOrRecord.isPresent())
+			return Collections.emptyList();
+		
+		return sheduleOrRecord.get().changeAllTimeSheetToDeductionItem();
 	}
 
 	// ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊

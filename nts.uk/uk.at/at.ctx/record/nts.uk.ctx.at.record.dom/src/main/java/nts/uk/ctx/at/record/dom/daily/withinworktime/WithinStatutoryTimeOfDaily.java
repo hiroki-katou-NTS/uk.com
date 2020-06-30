@@ -149,7 +149,8 @@ public class WithinStatutoryTimeOfDaily {
 				calcMethod,
 				flexCalcMethod,
 				workTimeDailyAtr,
-				workTimeCode,preFlexTime,
+				workTimeCode,
+				preFlexTime,
 				recordReget.getCoreTimeSetting(),
 				recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime(),
@@ -172,7 +173,8 @@ public class WithinStatutoryTimeOfDaily {
 				calcMethod,
 				flexCalcMethod,
 				workTimeDailyAtr,
-				workTimeCode,preFlexTime,
+				workTimeCode,
+				preFlexTime,
 				recordReget.getCoreTimeSetting(),
 				recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime(),
@@ -441,8 +443,8 @@ public class WithinStatutoryTimeOfDaily {
 				leaveLateset = deductLeaveEarly.get();
 			}
 			else {
-				if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {//ichioka見直し　ここはフレだった
-					leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();//ichioka　ここは通常。あってるか？
+				if(addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
+					leaveLateset = addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
 //			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()

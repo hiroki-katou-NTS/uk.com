@@ -106,14 +106,6 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		}
 	}
 	
-	
-//ichioka削除
-//	public MidNightTimeSheetForCalc getTerminalMidnightTimeSheet() {
-//		return this.midNightTimeSheet
-//				.map(ts -> ts.getTerminalMidnightTimeSheet())
-//				.orElse(this);
-//	}
-	
 	public AttendanceTime testSAIKI(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
 		//自分が持つ集計対象の時間帯の合計
 		val includeForcsValue = super.forcs(conditionAtr, dedAtr);

@@ -604,6 +604,15 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
+	 * 時間帯を指定された時間帯に変更する（計上と控除も補正する）
+	 * @param timeSheet 開始時刻～終了時刻
+	 */
+	public void shiftTimeSheet(TimeSpanForDailyCalc timeSheet) {
+		this.timeSheet = timeSheet;
+		this.trimRecordedAndDeductionToSelfRange();
+	}
+	
+	/**
 	 * 開始時刻を指定された時刻に変更する（計上と控除も補正する）
 	 * @param start 開始時刻
 	 */

@@ -330,10 +330,7 @@ public class IntegrationOfWorkTime {
 	 * */
 	public List<DeductionTime> getBreakTimeList(WorkType worktype){
 		if(this.workTimeSetting.getWorkTimeDivision().isFlex()) {
-			if(worktype.isWeekDayAttendance())
-				return null;
-			if(worktype.getDailyWork().getOneDay().isHolidayWork())
-				return this.flexWorkSetting.get().getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones();
+			this.flexWorkSetting.get().getFlowWorkRestTimezone(worktype).getFixedRestTimezone().getTimezones();
 		}
 		return Collections.emptyList();
 	}
