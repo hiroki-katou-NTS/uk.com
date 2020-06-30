@@ -63,7 +63,7 @@ public class RegisterStampDataCommand {
 		if(reservationArt != 2 && reservationArt != 1) {
 			return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
 		}
-		return new ButtonType(ReservationArt.valueOf(reservationArt), null);
+		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.ofNullable(null));
 
 	}
 

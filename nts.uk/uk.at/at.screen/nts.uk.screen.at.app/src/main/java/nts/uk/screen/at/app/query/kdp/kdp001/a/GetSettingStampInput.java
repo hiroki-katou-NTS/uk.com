@@ -13,7 +13,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -51,10 +50,6 @@ public class GetSettingStampInput {
 
 	@Inject
 	private PortalStampSettingsRepository potalSettingRepo;
-	@Inject
-	private GetListStampEmployeeService stampEmployeeService;
-	@Inject
-	private GetStampTypeToSuppressService stampTypeToSuppressService;
 	
 	@Inject
 	private StampResultDisplayRepository stampResultRepo;
@@ -116,7 +111,7 @@ public class GetSettingStampInput {
 		period.datesBetween().forEach(date -> {
 			EmpInfoPotalStampDto infoPotal = null;
 
-			Optional<EmployeeStampInfo> empInfoOpt = this.stampEmployeeService.get(empRequire, employeeId, date);
+			Optional<EmployeeStampInfo> empInfoOpt = GetListStampEmployeeService.get(empRequire, employeeId, date);
 
 			if (empInfoOpt.isPresent()) {
 				infoPotal = new EmpInfoPotalStampDto();
@@ -133,7 +128,7 @@ public class GetSettingStampInput {
 					infoPotal = new EmpInfoPotalStampDto();
 				}
 
-				stampToSuppress = this.stampTypeToSuppressService.get(stampTypeRequire, employeeId, StampMeans.PORTAL);
+				stampToSuppress = GetStampTypeToSuppressService.get(stampTypeRequire, employeeId, StampMeans.PORTAL);
 
 				infoPotal.setStampToSuppress(new StampToSuppressDto(stampToSuppress));
 			}

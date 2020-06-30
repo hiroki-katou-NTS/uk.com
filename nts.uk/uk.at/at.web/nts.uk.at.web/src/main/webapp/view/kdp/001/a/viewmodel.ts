@@ -15,10 +15,8 @@ const stampTypes = [
 	{ text: "KDP002_120", name: "ICカード打刻" },
 	{ text: "KDP002_120", name: "個人打刻" },
 	{ text: "KDP002_120", name: "ポータル打刻" },
-	{ text: "KDP002_120", name: "スマホ打刻" },
-	{ text: "KDP002_120", name: "タイムレコーダー打刻" },
-	{ text: "KDP002_121", name: "テキスト受入" },
-	{ text: "KDP002_122", name: "リコー複写機打刻" }
+	{ text: "KDP002_121", name: "スマホ打刻" },
+	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
 ]
 
 const notUseMessage = [
