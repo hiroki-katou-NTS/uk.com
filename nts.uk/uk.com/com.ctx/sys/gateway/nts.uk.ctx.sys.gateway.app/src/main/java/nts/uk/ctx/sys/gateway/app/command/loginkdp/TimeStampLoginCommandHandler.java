@@ -1,8 +1,8 @@
+package nts.uk.ctx.sys.gateway.app.command.loginkdp;
+
 /**
  * 
  */
-package nts.uk.ctx.sys.gateway.app.command.loginkdp;
-
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,8 +18,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
@@ -46,11 +48,13 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
- * @author laitv 打刻入力ログイン path:UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG007_ログイン
+ * @author laitv 
+ * algorithm: 打刻入力ログイン 
+ * path:UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG007_ログイン
  *         (Login).打刻入力ログイン.アルゴリズム.打刻入力ログイン
  */
-@Stateless
-public class TimeStampInputLoginAlg extends LoginBaseWithTimeStampCommandHandler<TimeStampInputLoginCommand>{
+@Stateless 
+public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandler<TimeStampLoginCommand> {
 	
 	@Inject
 	private LoginService employeeCodeSetting;
@@ -74,19 +78,22 @@ public class TimeStampInputLoginAlg extends LoginBaseWithTimeStampCommandHandler
 	@Inject
 	private LoginLogRepository loginLogRepository;
 	
+	@Inject
+	private SystemSuspendService systemSuspendService;
+	
 	
 	@Override
-	public TimeStampInputLoginDto internalHanler(CommandHandlerContext<TimeStampInputLoginCommand> context) {
+	public TimeStampInputLoginDto internalHanler(CommandHandlerContext<TimeStampLoginCommand> context) {
 		
-		TimeStampInputLoginCommand command = context.getCommand();
-		String cid = command.getCompanyId();
+		TimeStampLoginCommand command = context.getCommand();
+		String companyId = command.getCompanyId();
 		String contractCode = command.getContractCode();
 		
 		String remarkMessage = "";
 		EmployeeImport em = new EmployeeImport();
 		UserImportNew user = new UserImportNew();
 
-		if (command.getIsAdminMode()) {
+		if (command.isAdminMode()) {
 			// 「備考メッセージ」は#Msg_1661をセット
 			remarkMessage = TextResource.localize("Msg_1661");
 		} else {
@@ -95,26 +102,26 @@ public class TimeStampInputLoginAlg extends LoginBaseWithTimeStampCommandHandler
 		}
 
 		// Edit employee code
-		String employeeCode = this.employeeCodeSetting.employeeCodeEdit(command.getEmployeeCode(), cid);
+		String employeeCode = this.employeeCodeSetting.employeeCodeEdit(command.getEmployeeCode(), companyId);
 		
 		// Imported（GateWay）「社員」を取得する
-		em = this.getEmployee(cid, employeeCode, remarkMessage);
+		em = this.getEmployee(companyId, employeeCode, remarkMessage);
 		
 		// アルゴリズム「社員が削除されたかを取得」を実行する
-		this.checkEmployeeDelStatus(em.getEmployeeId(), command.getEmployeeCode(), cid, remarkMessage);
+		this.checkEmployeeDelStatus(em.getEmployeeId(), command.getEmployeeCode(), companyId, remarkMessage);
 		
 		// imported（ゲートウェイ）「ユーザ」を取得する
-		user = this.getUser(em.getPersonalId(), cid, employeeCode, em.getEmployeeId(), remarkMessage);
+		user = this.getUser(em.getPersonalId(), companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		
 		// アルゴリズム「アカウントロックチェック」を実行する (Execute the algorithm "account lock check")
-		this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), cid );
+		this.checkAccoutLock(user.getLoginId(), contractCode, user.getUserId(), companyId );
 		
 		// パラメータ：パスワード無効
-		if (!command.getPasswordInvalid()) {
+		if (!command.isPasswordInvalid() && command.getPassword() != null) {
 			String msgErrorId = this.compareHashPassword(user, command.getPassword());
 			if (msgErrorId != null){
 				String remarkText = employeeCode + " " + remarkMessage + " " + TextResource.localize("Msg_302");
-				ParamLoginRecord param = new ParamLoginRecord(cid, LoginMethod.NORMAL_LOGIN.value,
+				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
 						LoginStatus.Fail.value, remarkText, null);
 				
 				this.service.callLoginRecord(param);
@@ -123,31 +130,43 @@ public class TimeStampInputLoginAlg extends LoginBaseWithTimeStampCommandHandler
 		}
 		
 		// ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
-		this.checkLimitTime(user, cid, employeeCode, em.getEmployeeId(), remarkMessage);
+		this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		
 		// 実行時環境作成
-		if(command.getRuntimeEnvironmentCreat()){
+		if(command.isRuntimeEnvironmentCreat()){
+			//set info to session
+			command.getRequest().changeSessionId();
+			
 			//ログインセッション作成 (Create login session)
 	        this.initSessionC(user, em, command.getCompanyCode());
 		}
 		
 		// アルゴリズム「システム利用停止の確認」を実行する
-        SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command);
+        SystemSuspendOutput systemSuspendOutput = this.checkSystemStop(command);
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		
 		// アルゴリズム「ログイン記録」を実行する１
-		ParamLoginRecord param = new ParamLoginRecord(cid, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, remarkMessage, em.getEmployeeId());
+		ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, remarkMessage, em.getEmployeeId());
 		this.service.callLoginRecord(param);
 		
 		//アルゴリズム「ログインログを削除」を実行する
 		this.deleteLoginLog(user.getUserId());
 		
 		//アルゴリズム「ログイン後チェック」を実行する
-		this.checkAfterLogin(user, command.getPw().get(), false);
+		if (command.getPassword() != null) {
+			CheckChangePassDto checkChangePass = this.checkAfterLogin(user, command.getPassword(), false);
+		}
 		
-		return new TimeStampInputLoginDto(true, em, null);
+		TimeStampInputLoginDto result = new TimeStampInputLoginDto();
+		result.successMsg = systemSuspendOutput.getMsgID();
+		result.result = true;
+		result.em = em;
+		result.errorMessage = null;
+		System.out.println(AppContexts.user().employeeId());
+		System.out.println(AppContexts.user().employeeCode());
+		return result;
 	}
 	
 	/**
@@ -314,6 +333,18 @@ public class TimeStampInputLoginAlg extends LoginBaseWithTimeStampCommandHandler
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_316");
 		}
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public SystemSuspendOutput checkSystemStop(TimeStampLoginCommand command) {
+		// アルゴリズム「システム利用停止の確認」を実行する
+		String programID = AppContexts.programId().substring(0, 6);
+		String screenID = AppContexts.programId().substring(6);
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(command.getContractCode(),  command.getCompanyCode(), 0, programID, screenID);
+		if(systemSuspendOutput.isError()){
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
+		}
+		return systemSuspendOutput;
 	}
 	
 }

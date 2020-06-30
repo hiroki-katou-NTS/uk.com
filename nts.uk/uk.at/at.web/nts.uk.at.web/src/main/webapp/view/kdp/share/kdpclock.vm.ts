@@ -40,12 +40,14 @@ module nts.uk.at.view.kdp.share {
                     self.displayTime(moment.utc(res).format(TIME_FORMAT));
                 });
             }, 2000);
-
+            
             self.addCorrectionInterval(self.stampSetting().correctionInterval);
         }
 
         public addCorrectionInterval(minute: number) {
             let self = this;
+            if (minute == undefined)
+                return;
             setInterval(() => {
                 nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
                     self.displayDate(moment.utc(res).format(DATE_FORMAT));

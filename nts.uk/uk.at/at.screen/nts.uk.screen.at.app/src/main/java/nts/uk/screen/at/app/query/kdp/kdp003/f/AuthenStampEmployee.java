@@ -7,12 +7,15 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
-import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampInputLoginAlg;
-import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampInputLoginCommand;
 import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampInputLoginDto;
+import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampLoginCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampLoginCommandHandler;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -27,7 +30,7 @@ public class AuthenStampEmployee {
 	private IPersonInfoPub personInfoPub;
 	
 	@Inject
-	private TimeStampInputLoginAlg timeStampInputLoginAlg;
+	private TimeStampLoginCommandHandler timeStampLoginCommandHandler;
 	
 	
 	/**
@@ -45,7 +48,7 @@ public class AuthenStampEmployee {
 	  ・エラーメッセージ 
 	 */
 	public TimeStampInputLoginDto authenticateStampedEmployees(String cid, Optional<String> scd, Optional<String> sid, Optional<String> passWord,
-			Boolean passwordInvalid, Boolean isAdminMode, Boolean runtimeEnvironmentCreat){
+			boolean passwordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreat, @Context HttpServletRequest request){
 		
 		TimeStampInputLoginDto result = null;
 		if (!scd.isPresent()) {
@@ -53,29 +56,31 @@ public class AuthenStampEmployee {
 			// Imported（GateWay）「社員」を取得する
 			PersonInfoExport personInfo = personInfoPub.getPersonInfo(sid.get());
 			// アルゴリズム「打刻入力ログイン」を実行する
-			TimeStampInputLoginCommand input = new TimeStampInputLoginCommand();
-			input.setCompanyId(cid);
-			input.setEmployeeCode(personInfo.getEmployeeCode());
-			input.setSid(sid.get());
-			input.setPw(passWord);
-			input.setPasswordInvalid(passwordInvalid);
-			input.setIsAdminMode(isAdminMode);
-			input.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			TimeStampLoginCommand command = new TimeStampLoginCommand();
+			command.setContractCode(AppContexts.user().contractCode());
+			command.setCompanyId(cid);
+			command.setEmployeeCode(personInfo.getEmployeeCode());
+			command.setPassword(passWord.isPresent() ? passWord.get() : null);
+			command.setPasswordInvalid(passwordInvalid);
+			command.setAdminMode(isAdminMode);
+			command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			command.setRequest(request);
 
-			result = timeStampInputLoginAlg.handle(input);
+			result = this.timeStampLoginCommandHandler.handle(command);
 			
 		}else if(scd.isPresent()){
 			// アルゴリズム「打刻入力ログイン」を実行する
-			TimeStampInputLoginCommand input = new TimeStampInputLoginCommand();
-			input.setCompanyId(cid);
-			input.setEmployeeCode(scd.get());
-			input.setSid(null);
-			input.setPw(passWord);
-			input.setPasswordInvalid(passwordInvalid);
-			input.setIsAdminMode(isAdminMode);
-			input.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			TimeStampLoginCommand command = new TimeStampLoginCommand();
+			command.setContractCode(AppContexts.user().contractCode());
+			command.setCompanyId(cid);
+			command.setEmployeeCode(scd.get());
+			command.setPassword(passWord.isPresent() ? passWord.get() : null);
+			command.setPasswordInvalid(passwordInvalid);
+			command.setAdminMode(isAdminMode);
+			command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			command.setRequest(request);
 			
-			result = timeStampInputLoginAlg.handle(input);
+			result = this.timeStampLoginCommandHandler.handle(command);
 		}
 		
 		return result;

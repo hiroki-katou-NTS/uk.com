@@ -2410,12 +2410,20 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     /**
      * KDP003
      */
-    public static final Program KDP003A = new Program(WebAppId.AT, ProgramIdConsts.KDP003A, "KDP003_1",
+    public static final Program KDP003A = new Program(WebAppId.AT, ProgramIdConsts.KDP003A, "KDP002_2",
             "/view/kdp/003/a/index.xhtml");
-    public static final Program KDP003B = new Program(WebAppId.AT, ProgramIdConsts.KDP003B, "KDP003_2",
-            "/view/kdp/003/b/index.xhtml");
-    public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
-            "/view/kdp/003/c/index.xhtml");
+    public static final Program KDP003F = new Program(WebAppId.AT, ProgramIdConsts.KDP003F, "KDP002_9",
+            "/view/kdp/003/f/index.xhtml");
+	public static final Program KDP003K = new Program(WebAppId.AT, ProgramIdConsts.KDP003K, "KDP002_14",
+			"/view/kdp/003/k/index.xhtml");
+	public static final Program KDP003S = new Program(WebAppId.AT, ProgramIdConsts.KDP003S, "KDP002_22",
+			"/view/kdp/003/s/index.xhtml");
+	
+
+
+    
+    
+    
     public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
             "/view/cmf/007/a/index.xhtml");
     
@@ -2960,18 +2968,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 	public static final Program KDP002T = new Program(WebAppId.AT, ProgramIdConsts.KDP002T, "KDP002_23",
 			"/view/kdp/002/t/index.xhtml");
 	
-	/**
-     * KDP003
-     */
-	
-	public static final Program KDP003 = new Program(WebAppId.AT, ProgramIdConsts.KDP003A, "KDP002_2",
-			"/view/kdp/004/a/index.xhtml");
-	public static final Program KDP003F = new Program(WebAppId.AT, ProgramIdConsts.KDP003F, "KDP002_9",
-			"/view/kdp/004/f/index.xhtml");
-	public static final Program KDP003K = new Program(WebAppId.AT, ProgramIdConsts.KDP003K, "KDP002_14",
-			"/view/kdp/004/k/index.xhtml");
-	public static final Program KDP003S = new Program(WebAppId.AT, ProgramIdConsts.KDP003S, "KDP002_22",
-			"/view/kdp/004/s/index.xhtml");
+
 		
 	/**
      * KSM007A

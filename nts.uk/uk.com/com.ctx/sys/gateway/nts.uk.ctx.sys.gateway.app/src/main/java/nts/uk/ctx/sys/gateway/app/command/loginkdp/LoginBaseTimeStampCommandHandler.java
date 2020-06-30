@@ -95,13 +95,13 @@ import nts.uk.shr.com.system.config.InstallationType;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * The Class LoginBaseWithTimeStampCommandHandler.
+ * The Class TimeStampLoginCommonHandler.
  *
  * @param <T>
  *            the generic type
  */
 @Stateless
-public abstract class LoginBaseWithTimeStampCommandHandler<T> extends CommandHandlerWithResult<T, TimeStampInputLoginDto> {
+public abstract class LoginBaseTimeStampCommandHandler<T> extends CommandHandlerWithResult<T, TimeStampInputLoginDto> {
 
 	/** The employee adapter. */
 	@Inject

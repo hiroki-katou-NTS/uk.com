@@ -51,30 +51,22 @@ module nts.uk.at.view.kdp003.a {
                 
                 if (infoAdministrator) {
                     self.firstLogin = false;
+                    // sẽ dùng thông tin lưu trong cache để tự động login.
+                    
+                    
+                    
                 } else {
                     self.firstLogin = true;
-                    
-                    subModal('/view/kdp/003/f/index.xhtml', { title: '' }).onClosed(() => {
-                        
-                    });
-                };
-                dfd.resolve();
-                
-                /*nts.uk.ui.block.grayout();
-                service.startPage().done((res: IStartPage) => {
+                    setShared('mode', { modeAdmin: true });
+
+                    nts.uk.ui.block.grayout();
+                    service.startPage().done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
-                        self.stampTab().bindData(res.stampSetting.pageLayouts);
-                        self.stampGrid(new EmbossGridInfo(res));
-                        self.stampGrid().yearMonth.subscribe((val) => {
-                            self.getTimeCardData();
-                        });
-                        let stampToSuppress = res.stampToSuppress;
-                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
-                        self.stampToSuppress(stampToSuppress);
-                        self.stampResultDisplay(res.stampResultDisplay);
                         // add correction interval
                         self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
-                        self.setWidth();
+                        
+                        self.openScreenF();
+                        
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -82,9 +74,33 @@ module nts.uk.at.view.kdp003.a {
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();
-                    });*/
-
+                    });
+                };
+                dfd.resolve();
                 return dfd.promise();
+            }
+            
+            public openScreenF() {
+                let self = this;
+                // hiển thị màn hình login.
+                subModal('/view/kdp/003/f/index.xhtml', { title: '' }).onClosed(() => {
+                    self.openScreenK();
+                });
+
+            }
+
+            public openScreenK() {
+                let self = this;
+                // hiển thị màn hình login.
+                subModal('/view/kdp/003/k/index.xhtml', { title: '' }).onClosed(() => {
+
+                });
+
+            }
+            
+            public loginAuto() {
+                let self = this;
+
             }
             
             public setWidth(){
@@ -187,7 +203,12 @@ module nts.uk.at.view.kdp003.a {
 
             public openScreenB(button, layout) {
                 let self = this;
-                nts.uk.ui.windows.setShared("fromScreenBToFScreen", self.employeeSelected );
+                nts.uk.ui.windows.setShared("fromScreenBToFScreen", 
+                {   passwordRequiredArt : 'se lay tu domain',
+                    employeeSelected:     self.employeeSelected,
+                    companyCdAndName: '',
+                    employeeCodeAndName: ''
+                });
                 
 
             }
