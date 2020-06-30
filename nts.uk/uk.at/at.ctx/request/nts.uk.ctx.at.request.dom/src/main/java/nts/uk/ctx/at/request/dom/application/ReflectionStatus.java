@@ -18,4 +18,8 @@ public class ReflectionStatus {
 	 */
 	private List<ReflectionStatusOfDay> listReflectionStatusOfDay;
 	
+	public ReflectionStatus(List<ReflectionStatusOfDay> listReflectionStatusOfDay) {
+		this.listReflectionStatusOfDay = listReflectionStatusOfDay;
+	}
+	
 }
