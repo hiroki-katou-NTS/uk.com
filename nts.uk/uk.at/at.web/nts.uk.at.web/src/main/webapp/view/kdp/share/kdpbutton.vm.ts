@@ -16,6 +16,7 @@ module nts.uk.at.view.kdp.share {
             let self = this;
             self.parentVM = ko.observable(params.parent.content);
             self.useHighlightFunction(params.highlightSetting());
+            
             if(params.data()) {
                 self.oldLayout(params.data());
                 let layout = $.extend(true, {}, params.data());
