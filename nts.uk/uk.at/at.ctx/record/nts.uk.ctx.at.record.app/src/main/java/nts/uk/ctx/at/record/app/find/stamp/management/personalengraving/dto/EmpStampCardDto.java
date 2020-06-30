@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 
 /**
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
  *
  */
 @Data
+@NoArgsConstructor
 public class EmpStampCardDto {
 
 	private String stampCardId;

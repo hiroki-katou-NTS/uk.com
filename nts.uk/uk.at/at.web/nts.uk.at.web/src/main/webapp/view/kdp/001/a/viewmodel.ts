@@ -15,10 +15,8 @@ const stampTypes = [
 	{ text: "KDP002_120", name: "ICカード打刻" },
 	{ text: "KDP002_120", name: "個人打刻" },
 	{ text: "KDP002_120", name: "ポータル打刻" },
-	{ text: "KDP002_120", name: "スマホ打刻" },
-	{ text: "KDP002_120", name: "タイムレコーダー打刻" },
-	{ text: "KDP002_121", name: "テキスト受入" },
-	{ text: "KDP002_122", name: "リコー複写機打刻" }
+	{ text: "KDP002_121", name: "スマホ打刻" },
+	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
 ]
 
 const notUseMessage = [
@@ -371,14 +369,14 @@ class KDP001AViewModel extends ko.ViewModel {
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
 		});
-		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
+			nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
 			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
 
-					vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 
 						let returnData = nts.uk.ui.windows.getShared('KDP010_T');
 						if (!returnData.isClose && returnData.errorDate) {
