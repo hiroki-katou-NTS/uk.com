@@ -27,6 +27,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 @Stateless
 public class GetUnusedLeaveFixed {
 
+	private GetUnusedLeaveFixed() {
+	};
+
 	public static List<AccumulationAbsenceDetail> getUnbalanceUnused(Require require, String companyId,
 			String employeeId, GeneralDate startDateAggr) {
 		// アルゴリズム「確定休出から未使用の休出を取得する」を実行する

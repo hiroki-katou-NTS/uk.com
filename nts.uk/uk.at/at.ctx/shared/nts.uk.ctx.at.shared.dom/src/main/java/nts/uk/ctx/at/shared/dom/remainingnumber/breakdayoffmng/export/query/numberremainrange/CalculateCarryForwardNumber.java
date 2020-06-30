@@ -14,8 +14,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class CalculateCarryForwardNumber {
 
-	public static CarryForwardDayTimes process(Require require, String companyId, String employeeID, GeneralDate baseDate,
-			List<AccumulationAbsenceDetail> lstAccuAbsence, boolean isMode) {
+	private CalculateCarryForwardNumber() {
+	};
+
+	public static CarryForwardDayTimes process(Require require, String companyId, String employeeID,
+			GeneralDate baseDate, List<AccumulationAbsenceDetail> lstAccuAbsence, boolean isMode) {
 		// アルゴリズム「6.残数と未消化数を集計する」を実行
 		RemainUndigestResult remainUndigestResult = TotalRemainUndigestNumber.process(require, companyId, employeeID,
 				baseDate.addDays(-1), lstAccuAbsence, isMode);
@@ -24,9 +27,9 @@ public class CalculateCarryForwardNumber {
 		return new CarryForwardDayTimes(remainUndigestResult.getRemainingDay(),
 				remainUndigestResult.getRemainingTime());
 	}
-	
-	public static interface Require extends TotalRemainUndigestNumber.Require{
-		
+
+	public static interface Require extends TotalRemainUndigestNumber.Require {
+
 	}
 
 }

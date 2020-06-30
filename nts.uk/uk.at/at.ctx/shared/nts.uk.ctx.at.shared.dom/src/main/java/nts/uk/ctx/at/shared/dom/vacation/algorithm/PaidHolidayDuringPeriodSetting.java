@@ -15,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
  */
 public class PaidHolidayDuringPeriodSetting {
 
+	private PaidHolidayDuringPeriodSetting() {
+	};
+
 	public static List<TimeLapseVacationSetting> getSetting(Require require, String companyId, String employeeId) {
 
 		// 期間の雇用履歴を全て取得

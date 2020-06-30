@@ -17,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Subs
  */
 public class TotalRemainUndigestNumber {
 
+	private TotalRemainUndigestNumber() {
+	};
+
 	// 6.残数と未消化数を集計する
 	public static RemainUndigestResult process(Require require, String companyId, String employeeID,
 			GeneralDate baseDate, List<AccumulationAbsenceDetail> lstAccuAbsence, boolean isMode) {

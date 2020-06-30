@@ -19,6 +19,9 @@ import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
  */
 public class OffsetChronologicalOrder {
 
+	private OffsetChronologicalOrder() {
+	};
+
 	// 時系列順で相殺する
 	public static List<SeqVacationAssociationInfo> process(Require require, String employeeId,
 			List<TimeLapseVacationSetting> lstTimeLap, List<AccumulationAbsenceDetail> lstAccAbse,

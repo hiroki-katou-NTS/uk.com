@@ -32,6 +32,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
  */
 public class GetUnbalancedLeaveTemporary {
 
+	private GetUnbalancedLeaveTemporary() {
+	};
+
 	// 3.未相殺の代休(暫定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, BreakDayOffRemainMngRefactParam param) {
 
@@ -60,7 +63,7 @@ public class GetUnbalancedLeaveTemporary {
 			lstDayoffMng.addAll(require.getDayOffBySidPeriod(param.getSid(), param.getDateData()));
 		}
 
-		//対象期間のドメインモデル「暫定代休管理データ」を上書き用の暫定管理データに置き換える 
+		// 対象期間のドメインモデル「暫定代休管理データ」を上書き用の暫定管理データに置き換える
 		ProcessDataTemporary.processOverride(param, param.getDayOffMng(), lstInterimDayoff, lstDayoffMng);
 
 		// アルゴリズム「休出と紐付けをしない代休を取得する」を実行する

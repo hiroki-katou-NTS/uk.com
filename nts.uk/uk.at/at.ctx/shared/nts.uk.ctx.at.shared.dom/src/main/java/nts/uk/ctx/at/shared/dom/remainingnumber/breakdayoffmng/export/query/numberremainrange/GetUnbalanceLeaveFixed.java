@@ -24,6 +24,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffMana
  */
 public class GetUnbalanceLeaveFixed {
 
+	private GetUnbalanceLeaveFixed() {
+	};
+
 	public static List<AccumulationAbsenceDetail> getUnbalanceUnused(Require require, String companyId,
 			String employeeId, GeneralDate startDateAggr) {
 		// アルゴリズム「確定代休から未相殺の代休を取得する」を実行する

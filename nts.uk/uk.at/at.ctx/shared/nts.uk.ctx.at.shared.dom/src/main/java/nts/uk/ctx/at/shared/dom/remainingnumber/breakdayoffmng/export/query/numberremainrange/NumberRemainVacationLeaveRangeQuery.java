@@ -24,6 +24,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
  */
 public class NumberRemainVacationLeaveRangeQuery {
 
+	private NumberRemainVacationLeaveRangeQuery() {
+	};
+
 	// RequestList203: 期間内の休出代休残数を取得する
 	// Refactor
 	public static SubstituteHolidayAggrResult getBreakDayOffMngInPeriod(Require require,
@@ -48,13 +51,13 @@ public class NumberRemainVacationLeaveRangeQuery {
 					&& beforeResult.getNextDay().get().equals(inputParam.getDateData().start())) {
 				calcCarryForwardDays.setCarryForwardDays(beforeResult.getCarryoverDay().v());
 				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryoverTime().v());
-				//result.setVacationDetails(beforeResult.getVacationDetails());
+				// result.setVacationDetails(beforeResult.getVacationDetails());
 				lstAccTemp.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
 			}
 		}
 		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
 		result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
-		
+
 		// 今から処理が必要な代休、休出を全て集める
 		lstAccTemp.addAll(GetTemporaryData.process(require, inputParam));
 
@@ -77,7 +80,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 		result.setCalcNumberOccurUses(remainUnDigDayTime);
 		// エラーチェック
 		CheckErrorDuringHoliday.check(result);
-        result.setVacationDetails(new VacationDetails(lstAccTemp));
+		result.setVacationDetails(new VacationDetails(lstAccTemp));
 		// 次の集計期間の開始日を計算する
 		result.setNextDay(Finally.of(inputParam.getDateData().end().addDays(1)));
 		return result;

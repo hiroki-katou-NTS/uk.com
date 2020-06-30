@@ -15,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
  */
 public class OffsetProcessing {
 
+	private OffsetProcessing() {
+	};
+
 	public static List<SeqVacationAssociationInfo> process(Require require, String companyId, String employeeId,
 			GeneralDate date, List<AccumulationAbsenceDetail> accAbse) {
 
