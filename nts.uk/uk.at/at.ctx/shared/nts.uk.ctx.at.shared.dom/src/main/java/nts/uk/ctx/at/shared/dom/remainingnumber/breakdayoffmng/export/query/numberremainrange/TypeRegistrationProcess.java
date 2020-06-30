@@ -16,6 +16,9 @@ import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
  */
 public class TypeRegistrationProcess {
 
+	private TypeRegistrationProcess() {
+	};
+
 	// 紐づけ登録処理
 	public static Optional<SeqVacationAssociationInfo> process(TimeLapseVacationSetting timeLapVacationSetting,
 			GeneralDate occurDate, GeneralDate accdigestDate, ManagementDataRemainUnit unOffsetDay,

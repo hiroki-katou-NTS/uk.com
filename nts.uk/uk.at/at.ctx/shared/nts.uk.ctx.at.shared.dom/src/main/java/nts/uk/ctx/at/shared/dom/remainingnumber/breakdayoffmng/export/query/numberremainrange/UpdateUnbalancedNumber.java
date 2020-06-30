@@ -14,6 +14,9 @@ import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
  */
 public class UpdateUnbalancedNumber {
 
+	private UpdateUnbalancedNumber() {
+	};
+
 	public static void updateUnbalanced(TimeLapseVacationSetting timeLap, AccumulationAbsenceDetail accdigest,
 			AccumulationAbsenceDetail occur, TypeOffsetJudgment typeJudgment) {
 

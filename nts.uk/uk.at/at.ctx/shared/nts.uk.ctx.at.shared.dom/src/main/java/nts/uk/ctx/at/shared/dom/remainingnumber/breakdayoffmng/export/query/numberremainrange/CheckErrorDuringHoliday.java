@@ -13,6 +13,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class CheckErrorDuringHoliday {
 
+	private CheckErrorDuringHoliday() {
+	};
+
 	public static void check(SubstituteHolidayAggrResult result) {
 
 		List<DayOffError> lstError = new ArrayList<>();

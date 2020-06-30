@@ -41,6 +41,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Subs
  */
 public class GetUnusedLeaveTemporary {
 
+	private GetUnusedLeaveTemporary() {
+	};
+
 	// 4.未使用の休出(暫定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, BreakDayOffRemainMngRefactParam param) {
 
@@ -68,7 +71,7 @@ public class GetUnusedLeaveTemporary {
 			lstBreakMng.addAll(require.getBySidPeriod(param.getSid(), param.getDateData()));
 		}
 
-		// 対象期間のドメインモデル「暫定休出管理データ」を上書き用の暫定管理データに置き換える 
+		// 対象期間のドメインモデル「暫定休出管理データ」を上書き用の暫定管理データに置き換える
 		ProcessDataTemporary.processOverride(param, param.getBreakMng(), lstInterimBreak, lstBreakMng);
 
 		// 代休の設定を取得する
@@ -84,8 +87,7 @@ public class GetUnusedLeaveTemporary {
 					.filter(a -> a.getRemainManaID().equals(breakMng.getBreakMngId())).collect(Collectors.toList())
 					.get(0);
 			AccumulationAbsenceDetail dataDetail = getNotTypeDayOff(require, Pair.of(remainData, breakMng),
-					param.getDateData().end(), subHolidayOut, param.getCid(),
-					param.getSid());
+					param.getDateData().end(), subHolidayOut, param.getCid(), param.getSid());
 			if (dataDetail != null) {
 				result.add(dataDetail);
 			}
@@ -111,7 +113,8 @@ public class GetUnusedLeaveTemporary {
 
 		// 締め設定を取得する
 		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), interimData.getLeft().getYmd());
+				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()),
+				interimData.getLeft().getYmd());
 
 		// 使用期限を設定
 		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(

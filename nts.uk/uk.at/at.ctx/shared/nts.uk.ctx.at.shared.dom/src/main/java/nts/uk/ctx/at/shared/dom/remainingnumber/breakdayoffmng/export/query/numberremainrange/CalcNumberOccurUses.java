@@ -15,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class CalcNumberOccurUses {
 
+	private CalcNumberOccurUses() {
+	};
+
 	// 7.発生数・使用数を計算する
 	public static RemainUnDigestedDayTimes process(List<AccumulationAbsenceDetail> lstAccAbsem, DatePeriod period) {
 

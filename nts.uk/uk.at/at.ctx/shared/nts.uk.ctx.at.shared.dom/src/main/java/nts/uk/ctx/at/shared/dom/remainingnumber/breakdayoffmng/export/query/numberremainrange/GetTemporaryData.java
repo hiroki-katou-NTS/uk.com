@@ -12,6 +12,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class GetTemporaryData {
 
+	private GetTemporaryData() {
+	};
+
 	// 暫定データを取得
 	public static List<AccumulationAbsenceDetail> process(Require require, BreakDayOffRemainMngRefactParam param) {
 

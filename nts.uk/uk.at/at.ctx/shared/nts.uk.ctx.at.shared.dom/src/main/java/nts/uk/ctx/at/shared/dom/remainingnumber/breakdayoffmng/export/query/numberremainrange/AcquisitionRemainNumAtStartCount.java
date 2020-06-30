@@ -15,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class AcquisitionRemainNumAtStartCount {
 
+	private AcquisitionRemainNumAtStartCount() {
+	};
+
 	/**
 	 * 集計開始時点の残数取得
 	 * 

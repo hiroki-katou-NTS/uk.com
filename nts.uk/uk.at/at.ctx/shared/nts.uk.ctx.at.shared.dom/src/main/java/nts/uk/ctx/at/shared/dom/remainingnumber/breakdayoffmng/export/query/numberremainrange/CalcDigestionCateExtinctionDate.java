@@ -15,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class CalcDigestionCateExtinctionDate {
 
+	private CalcDigestionCateExtinctionDate() {
+	};
+
 	// 消化区分と消滅日を計算する
 	public static void calc(List<AccumulationAbsenceDetail> lstAccAbs, GeneralDate date) {
 
