@@ -42,6 +42,11 @@ public class JpaShainFlexSettingGetMemento extends JpaDefaultSettingGetMemento i
 	}
 
 	@Override
+	public List<MonthlyUnit> getWeekAveSetting() {
+		return toWeekSettingFromFlexSet();
+	}
+	
+	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.entity.getKshstShaFlexSetPK().getCid());
 	}

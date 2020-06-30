@@ -31,6 +31,7 @@ public class ComFlexSetting extends FlexSetting implements MonthStatutoryWorking
 		this.year = memento.getYear();
 		this.statutorySetting = memento.getStatutorySetting();
 		this.specifiedSetting = memento.getSpecifiedSetting();
+		this.weekAveSetting = memento.getWeekAveSetting();
 	}
 
 	/**
@@ -44,6 +45,7 @@ public class ComFlexSetting extends FlexSetting implements MonthStatutoryWorking
 		memento.setYear(this.year);
 		memento.setStatutorySetting(this.statutorySetting);
 		memento.setSpecifiedSetting(this.specifiedSetting);
+		memento.setWeekAveSetting(this.weekAveSetting);
 	}
 
 }

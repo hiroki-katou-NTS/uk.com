@@ -16,12 +16,19 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 
+/**
+ * 打刻Repository
+ */
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c ";
@@ -58,6 +65,8 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber"
 			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
+	
+	private static final String GET_STAMP = SELECT_STAMP + " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber AND";
 	/**
 	 * Convert to domain contain Stamp Entity only.
 	 * 

@@ -12,6 +12,7 @@ public enum AtWorkAtr {
 	NOTDISPLAY(0),
 	/**
 	 * 使用する
+	 * 実績から出退勤を初期表示する
 	 */
 	DISPLAY(1),
 	

@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -15,7 +17,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
  * @author shuichi_ishida
  */
 @Getter
-public class AgreMaxTimeOfMonthly {
+public class AgreMaxTimeOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 36協定時間 */
 	@Setter
@@ -60,24 +65,22 @@ public class AgreMaxTimeOfMonthly {
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
 	 * @param workingSystem 労働制
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void setMaxTime(
-			String companyId,
-			String employeeId,
-			GeneralDate criteriaDate,
-			WorkingSystem workingSystem,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void setMaxTime(RequireM1 require, String companyId, String employeeId,
+			GeneralDate criteriaDate, WorkingSystem workingSystem){
 		
 		// 初期設定
 		this.maxTime = new LimitOneMonth(0);
 		
 		// 「36協定基本設定」を取得する
-		val upperAgreementSet = repositories.getAgreementDomainService().getBasicSet(
+		val upperAgreementSet = AgreementDomainService.getBasicSet(require, 
 				companyId, employeeId, criteriaDate, workingSystem).getUpperAgreementSetting();
 		
 		// 月間の値を取得し、上限時間とする
 		this.maxTime = new LimitOneMonth(upperAgreementSet.getUpperMonth().v());
+	}
+	
+	public static interface RequireM1 extends AgreementDomainService.RequireM3 {
 	}
 	
 	/**

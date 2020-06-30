@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
@@ -25,7 +26,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -113,16 +116,23 @@ public interface CommonOvertimeHoliday {
 	 * @param appDateContradictionAtr 申請日矛盾区分
 	 * @return
 	 */
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, AppDateContradictionAtr appDateContradictionAtr);
 	
 	/**
 	 * 01-14_勤務時間取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param appDate
-	 * @param requestAppDetailSetting
+	 * @param companyID 会社ID
+	 * @param employeeID 申請者ID
+	 * @param appDate 申請日付
+	 * @param timeCalUse 時刻計算利用区分
+	 * @param atworkTimeBeginDisp 出退勤時刻初期表示区分
+	 * @param appType 申請種類
+	 * @param workTimeCD 就業時間帯コード
+	 * @param startTime Opitonal＜開始時刻＞
+	 * @param endTime Opitonal＜終了時刻＞
+	 * @return
 	 */
-	public RecordWorkOutput getWorkingHours(String companyID,String employeeID, String changeEmployee, String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD, boolean isOverTime);
+	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
+			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 03-01_事前申請超過チェック
@@ -151,7 +161,7 @@ public interface CommonOvertimeHoliday {
 			int attendanceId, List<HolidayWorkInput> overtimeInputs, String employeeID) ;
 	
 	/**
-	 * 03-06_計算ボタンチェック
+	 * 
 	 * @param 計算フラグ:CalculateFlg(0,1)
 	 * @param companyID
 	 * @param employeeID
@@ -159,7 +169,12 @@ public interface CommonOvertimeHoliday {
 	 * @param targetApp
 	 * @param appDate
 	 */
-	void calculateButtonCheck(int CalculateFlg, String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate);
+	/**
+	 * 03-06_計算ボタンチェック
+	 * @param calculateFlg
+	 * @param timeCalUse 時刻計算利用区分
+	 */
+	void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse);
 	
 	/**
 	 * 03-03_３６上限チェック（月間） KAF005
@@ -288,4 +303,24 @@ public interface CommonOvertimeHoliday {
 	 * @return
 	 */
 	public AppDateContradictionAtr actualSetCheck(AppDateContradictionAtr performanceExcessAtr, PrePostAtr prePostAtr);
+	
+	/**
+	 * 03-01_事前申請超過チェック（＃108410）
+	 * @param employeeName 申請者名
+	 * @param appDate 申請日
+	 * @param preActualColorResult 計算結果
+	 * @return
+	 */
+	List<ConfirmMsgOutput> preAppExcessCheckHdApp(String employeeName, GeneralDate appDate, PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames);
+	
+	/**
+	 * 03-02_実績超過チェック（＃108410）
+	 * @param employeeName 申請者名
+	 * @param appDate 申請日
+	 * @param performanceExcessAtr 実績超過区分
+	 * @param preActualColorResult 計算結果
+	 * @return
+	 */
+	List<ConfirmMsgOutput> achievementCheckHdApp(String employeeName, GeneralDate appDate, AppDateContradictionAtr performanceExcessAtr, 
+			PreActualColorResult preActualColorResult, List<WorkdayoffFrame> breaktimeFrames);
 }

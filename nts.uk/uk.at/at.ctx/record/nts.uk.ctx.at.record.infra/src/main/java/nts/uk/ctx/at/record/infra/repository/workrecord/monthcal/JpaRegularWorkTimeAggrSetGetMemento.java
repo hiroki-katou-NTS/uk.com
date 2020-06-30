@@ -42,7 +42,8 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet>
 		return new ExcessOutsideTimeSetReg(
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalAggr()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayAggr()),
-				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()));
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraAggr()),
+				false);
 	}
 
 	/*
@@ -56,7 +57,8 @@ public class JpaRegularWorkTimeAggrSetGetMemento<T extends KrcstRegMCalSet>
 		return new ExcessOutsideTimeSetReg(
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeLegalOt()),
 				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeHolidayOt()),
-				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()));
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getIncludeExtraOt()),
+				BooleanGetAtr.getAtrByInteger(this.typeValue.getExceptLegalHdwkOt()));
 	}
 
 }

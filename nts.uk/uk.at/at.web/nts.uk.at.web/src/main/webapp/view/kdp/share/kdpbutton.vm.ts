@@ -36,17 +36,17 @@ module nts.uk.at.view.kdp.share {
                 let btnBackGroundColor = btn ? btn.btnBackGroundColor : '';
                 if(self.useHighlightFunction().isUse && btn) {
                     btnBackGroundColor = DEFAULT_GRAY;
-                    if ( btn.changeClockArt == 0 ) {
-                        btnBackGroundColor = self.useHighlightFunction().goingToWork ? btn.btnBackGroundColor : DEFAULT_GRAY;
+                    if ( btn.btnDisplayType == 1 ) {
+                        btnBackGroundColor = !self.useHighlightFunction().goingToWork ? btn.btnBackGroundColor : DEFAULT_GRAY;
                     }  
-                    if ( btn.changeClockArt == 1) {
-                        btnBackGroundColor = self.useHighlightFunction().departure ? btn.btnBackGroundColor : DEFAULT_GRAY;
+                    if ( btn.btnDisplayType == 2) {
+                        btnBackGroundColor = !self.useHighlightFunction().departure ? btn.btnBackGroundColor : DEFAULT_GRAY;
                     } 
-                    if ( btn.changeClockArt == 7 ) {
-                        btnBackGroundColor = self.useHighlightFunction().goOut ? btn.btnBackGroundColor : DEFAULT_GRAY;
+                    if ( btn.btnDisplayType == 3 ) {
+                        btnBackGroundColor = !self.useHighlightFunction().goOut ? btn.btnBackGroundColor : DEFAULT_GRAY;
                     }  
-                    if ( btn.changeClockArt == 8 ) {
-                        btnBackGroundColor = self.useHighlightFunction().turnBack ? btn.btnBackGroundColor : DEFAULT_GRAY;
+                    if ( btn.btnDisplayType == 4 ) {
+                        btnBackGroundColor = !self.useHighlightFunction().turnBack ? btn.btnBackGroundColor : DEFAULT_GRAY;
                     }
                     btn.btnBackGroundColor = btnBackGroundColor;
                 }
@@ -72,6 +72,7 @@ interface ButtonSetting {
     changeCalArt: number;
     usrArt: number;
     audioType: number;
+    btnDisplayType: number;
 }
 
 interface StampToSuppress {

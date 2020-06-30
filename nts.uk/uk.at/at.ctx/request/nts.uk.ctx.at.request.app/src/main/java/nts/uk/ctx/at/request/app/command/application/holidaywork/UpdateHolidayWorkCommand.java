@@ -132,4 +132,6 @@ public class UpdateHolidayWorkCommand {
 	private AppOvertimeDetailCommand appOvertimeDetail;
 	
 	private String appReasonID;
+	
+	private AppHdWorkDispInfoCmd appHdWorkDispInfoCmd;
 }

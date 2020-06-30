@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,9 +14,11 @@ import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateToHolidayCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.ConfirmMsgDto;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
@@ -27,10 +30,13 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolid
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkingDateParam;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -66,6 +72,15 @@ public class HolidayShipmentWebService extends WebService {
 	public HolidayShipmentDto startPage(StartScreenAParam param) {
 		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
 	}
+	
+	@POST
+	@Path("startPageARefactor")
+	public DisplayInforWhenStarting startPageARefactor(StartPageARefactorParam param) {
+		return this.screenAFinder.startPageARefactor(
+				AppContexts.user().companyId(), 
+				CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
+				param.getAppDate());
+	}
 
 	@POST
 	@Path("change_work_type")
@@ -85,6 +100,24 @@ public class HolidayShipmentWebService extends WebService {
 		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
 				param.getUiType());
 	}
+	
+	@POST
+	@Path("changeWorkingDateRefactor")
+	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
+		return this.screenAFinder.changeWorkingDateRefactor(
+				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+				param.displayInforWhenStarting);
+	}
+	
+	@POST
+	@Path("changeHolidayDateRefactor")
+	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
+		return this.screenAFinder.changeHolidayDateRefactor(
+				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+				param.displayInforWhenStarting);
+	}
 
 	@POST
 	@Path("get_selected_working_hours")
@@ -92,6 +125,12 @@ public class HolidayShipmentWebService extends WebService {
 		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
 	}
 
+	@POST
+	@Path("processBeforeRegister_New")
+	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
+		return saveHandler.processBeforeRegister_New(command);
+	}
+	
 	@POST
 	@Path("save")
 	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
@@ -102,6 +141,13 @@ public class HolidayShipmentWebService extends WebService {
 	@Path("find_by_id")
 	public HolidayShipmentDto findByID(StartScreenBParam param) {
 		return this.screenBFinder.findByID(param.getAppID());
+	}
+	
+	
+	@POST
+	@Path("startPageBRefactor")
+	public DisplayInforWhenStarting startPageBRefactor(StartScreenBParam param) {
+		return this.screenBFinder.startPageBRefactor(param.getAppID());
 	}
 
 	@POST
@@ -159,6 +205,14 @@ class StartScreenAParam {
 	private List<String> sIDs;
 	private GeneralDate appDate;
 	private int uiType;
+}
+
+@Value
+class StartPageARefactorParam {
+	//申請者リスト<Optional>
+	private List<String> sIDs;
+	//申請対象日リスト<Optional>
+	private List<GeneralDate> appDate;
 }
 
 @Value

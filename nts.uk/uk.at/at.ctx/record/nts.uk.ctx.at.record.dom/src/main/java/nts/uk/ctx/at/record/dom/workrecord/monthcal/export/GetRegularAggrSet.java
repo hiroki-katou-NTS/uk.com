@@ -1,40 +1,79 @@
 package nts.uk.ctx.at.record.dom.workrecord.monthcal.export;
 
+import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 
 /**
- * 集計設定の取得（通常勤務）
+ * 実装：集計設定の取得（通常勤務）
  * @author shuichu_ishida
  */
-public interface GetRegularAggrSet {
-
+public class GetRegularAggrSet {
+	
 	/**
-	 * 集計設定の取得（通常勤務）
+	 * 取得共通処理
 	 * @param companyId 会社ID
 	 * @param employmentCd 雇用コード
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
+	 * @param usageUnitSet 労働時間と日数の設定の利用単位の設定
+	 * @param shaRegSetOpt 通常勤務社員別月別実績集計設定
+	 * @param comRegSetOpt 通常勤務会社別月別実績集計設定
 	 * @return 通常勤務の法定内集計設定
 	 */
-	Optional<RegularWorkTimeAggrSet> get(
-			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate);
-
-	/**
-	 * 集計設定の取得（通常勤務）
-	 * @param companyId 会社ID
-	 * @param employmentCd 雇用コード
-	 * @param employeeId 社員ID
-	 * @param criteriaDate 基準日
-	 * @param companySets 月別集計で必要な会社別設定
-	 * @param employeeSets 月別集計で必要な社員別設定
-	 * @return 通常勤務の法定内集計設定
-	 */
-	Optional<RegularWorkTimeAggrSet> get(
+	public static Optional<RegularWorkTimeAggrSet> regularWorkTimeAggrSet(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
+			UsageUnitSetting usageUnitSet, Optional<ShaRegulaMonthActCalSet> shaRegSetOpt,
+			Optional<ComRegulaMonthActCalSet> comRegSetOpt){
+		
+		// 社員別設定　確認
+		if (usageUnitSet.isEmployee()){
+			if (shaRegSetOpt.isPresent()) return Optional.of(shaRegSetOpt.get().getRegulaAggrSetting());
+		}
+		
+		// 職場別設定　確認
+		if (usageUnitSet.isWorkPlace()){
+			
+			// 所属職場を含む上位階層の職場IDを取得
+			
+			val workplaceIds = require.getCanUseWorkplaceForEmp(cacheCarrier, companyId, employeeId, criteriaDate);
+			
+			for (val workplaceId : workplaceIds){
+				val wkpSetOpt = require.monthRegularCalcSetByWorkplace(companyId, workplaceId);
+				
+				if (wkpSetOpt.isPresent()) return Optional.of(wkpSetOpt.get().getRegulaAggrSetting());
+			}
+		}
+		
+		// 雇用別設定　確認
+		if (usageUnitSet.isEmployment()){
+			val empSetOpt = require.monthRegularCalcSetByEmployment(companyId, employmentCd);
+			
+			if (empSetOpt.isPresent()) return Optional.of(empSetOpt.get().getRegulaAggrSetting());
+		}
+		
+		// 会社別設定　確認
+		if (comRegSetOpt.isPresent()) return Optional.of(comRegSetOpt.get().getRegulaAggrSetting());
+		
+		return Optional.empty();
+	}
+	
+	public static interface RequireM1 {
+		
+		List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, 
+				String employeeId, GeneralDate baseDate);
+		
+		Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId);
+
+		Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode);
+	}
 }

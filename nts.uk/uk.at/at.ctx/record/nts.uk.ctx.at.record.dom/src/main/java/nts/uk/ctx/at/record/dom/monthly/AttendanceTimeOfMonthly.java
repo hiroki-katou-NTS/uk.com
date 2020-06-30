@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
@@ -14,19 +18,20 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の勤怠時間
  * @author shuichi_ishida
  */
 @Getter
-public class AttendanceTimeOfMonthly extends AggregateRoot {
+public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 社員ID */
 	private final String employeeId;
@@ -124,22 +129,19 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @param monthlyOldDatas 集計前の月別実績データ
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void prepareAggregation(
-			String companyId,
-			DatePeriod datePeriod,
-			WorkingConditionItem workingConditionItem,
-			int startWeekNo,
-			MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			MonthlyOldDatas monthlyOldDatas,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void prepareAggregation(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+			DatePeriod datePeriod, WorkingConditionItem workingConditionItem, int startWeekNo, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyOldDatas monthlyOldDatas){
 		
-		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
+		this.monthlyCalculation.prepareAggregation(require, cacheCarrier, companyId, this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate, datePeriod, workingConditionItem,
-				startWeekNo, companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
+				startWeekNo, companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas);
+	}
+	
+	public static interface RequireM1 extends MonthlyCalculation.RequireM5 {
+
 	}
 
 	/**

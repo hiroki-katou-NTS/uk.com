@@ -12,4 +12,5 @@ public class OutputScreenListOfStampDto {
 	 String companyName;
 	 GeneralDate startDate;
 	 GeneralDate endDate;
+	 boolean existAuthEmpl;
 }

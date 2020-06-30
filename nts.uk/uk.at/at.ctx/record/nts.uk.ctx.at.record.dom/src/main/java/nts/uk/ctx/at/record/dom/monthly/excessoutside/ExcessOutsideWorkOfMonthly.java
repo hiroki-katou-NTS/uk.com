@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.excessoutside;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,13 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 
 /**
  * 月別実績の時間外超過
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
-public class ExcessOutsideWorkOfMonthly {
+public class ExcessOutsideWorkOfMonthly implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 週割増合計時間 */
 	@Setter

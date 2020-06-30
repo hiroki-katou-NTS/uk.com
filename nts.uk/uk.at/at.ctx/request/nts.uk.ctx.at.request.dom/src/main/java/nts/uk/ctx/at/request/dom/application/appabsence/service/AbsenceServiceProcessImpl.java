@@ -12,11 +12,14 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -51,6 +54,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.appt
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
@@ -61,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
@@ -81,8 +86,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Annu
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -98,17 +103,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
 	@Inject
-	private AbsenceTenProcess absenceTenProcess;
-	@Inject
 	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmp;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
 	@Inject
 	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
 	@Inject
@@ -128,9 +125,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
-	@Inject
-	private PredetemineTimeSettingRepository predTimeRepository;
 	
 	@Inject
 	private AppAbsenceFourProcess appAbsenceFourProcess;
@@ -155,6 +149,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject 
+	private WorkTimeSettingService weorkTimeSettingService;
+	
+	@Inject
+	private RemainNumberTempRequireService requireService;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -203,6 +203,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			
 		}
 	}
+	
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
@@ -213,6 +214,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		//A4_3 - 年休設定
 		boolean isYearManage = false;
 		//A4_4 - 代休管理設定
@@ -222,15 +225,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//A4_8 - 積立年休設定
 		boolean isRetentionManage = false;
 		//10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
+		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(require, companyID);
 		isYearManage = annualHd.isYearHolidayManagerFlg();
 		//10-4.積立年休の設定を取得する
-		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
+		isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(require, cacheCarrier, 
+				companyID, sID, baseDate);
 		//10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
+		SubstitutionHolidayOutput subHd = AbsenceTenProcess.getSettingForSubstituteHoliday(require, cacheCarrier,
+				companyID, sID, baseDate);
 		isSubHdManage = subHd.isSubstitutionFlg();
 		//10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
+		LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cacheCarrier,
+				companyID, sID, baseDate);
 		isSubVacaManage = leaveSet.isSubManageFlag();
 		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
 	}
@@ -247,12 +253,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
 		boolean subVacaTypeUseFlg = false;
 		boolean subHdTypeUseFlg = false;
-		if(employmentSet != null) {
-			if(employmentSet.getHolidayOrPauseType() == HolidayType.RESTTIME.value) {
-				subVacaTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
+		if(employmentSet != null && !CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
+			WorkTypeObjAppHoliday item = employmentSet.getListWTOAH().get(0);
+			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.RESTTIME.value) {
+				subVacaTypeUseFlg = item.getHolidayTypeUseFlg().get();
 			}
-			if(employmentSet.getHolidayOrPauseType() == HolidayType.SUBSTITUTEHOLIDAY.value) {
-				subHdTypeUseFlg = employmentSet.getHolidayTypeUseFlg();
+			
+			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.SUBSTITUTEHOLIDAY.value) {
+				subHdTypeUseFlg = item.getHolidayTypeUseFlg().get();
 			}
 		}
 		result = this.checkPriorityHoliday(
@@ -341,8 +349,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
 			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage) {
+		
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
+		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeID);
 		if(!closure.isPresent()){
 			return new NumberOfRemainOutput(null, null, null, null);
 		}
@@ -368,7 +380,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・上書きフラグ＝false
 			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
+			AbsRecRemainMngOfInPeriod subVaca = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
 			subVacaRemain = subVaca.getRemainDays();//残日数
 		}
@@ -385,7 +397,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //			・上書きフラグ＝false
 			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
+			BreakDayOffRemainMngOfInPeriod subHd = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
 			subHdRemain = subHd.getRemainDays();
 		}
@@ -526,10 +538,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// pending / chưa đối ứng
 		}
 		// 勤務時間初期値の取得
-		PrescribedTimezoneSetting prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
+		PredetermineTimeSetForCalc prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
 		// 返ってきた「時間帯(使用区分付き)」を「休暇申請起動時の表示情報」にセットする
 		if(prescribedTimezoneSet != null) {
-			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getLstTimezone());
+			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getTimezones());
 		}
 		// 「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
@@ -543,7 +555,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workTimeCode
 	 * @return
 	 */
-	public PrescribedTimezoneSetting initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
+	public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
@@ -554,13 +566,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				if (workTimeCode != null && !workTimeCode.equals("")) {
-					if (predTimeRepository.findByWorkTimeCode(companyID, workTimeCode).isPresent()) {
-						PrescribedTimezoneSetting prescribedTzs = predTimeRepository
-								.findByWorkTimeCode(companyID, workTimeCode).get().getPrescribedTimezoneSetting();
-						return prescribedTzs;
-					}
-				}
+				return weorkTimeSettingService.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
+				
 			}
 		}
 		return null;
@@ -596,13 +603,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// 返ってきた「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
 	}
-
+	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
+		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
+	}
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
-		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == holidayType.value)
-				.findFirst().orElse(null);
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+
 		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
 		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
 		// 勤務種類を取得する
@@ -931,8 +939,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 代休振休優先消化チェック
-		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
-				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
+//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
+//				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : false
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = setting.get();
 		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
 				mode, 
 				appAbsenceStartInfoOutput.getHdAppSet(), 
@@ -1076,9 +1091,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
-		List<AppEmploymentSetting> employmentSetLst = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
-				.findFirst().orElse(null);
+		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+//		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
+//				.findFirst().orElse(null);
+//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+//			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
+//				
+//				).findFirst();
+//		AppEmploymentSetting employmentSet = employmentSetLst;
 		// 選択可能の勤務種類を取得する
 		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
 				employmentSet,

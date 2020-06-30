@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -15,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 	@Inject
-	private WorkTimeIsFluidWork worktimeisFluid;
-	@Inject
 	private WorkUpdateService workUpdate;
+	@Inject 
+	private RecordDomRequireService requireService;
 	@Override
 	public IntegrationOfDaily updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode,
 			String workTimeCode, boolean scheReflectFlg, boolean isPre,
@@ -55,7 +56,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			return false;
 		}
 		//流動勤務かどうかの判断処理
-		return worktimeisFluid.checkWorkTimeIsFluidWork(workTimeCode);
+		return WorkTimeIsFluidWork.checkWorkTimeIsFluidWork(requireService.createRequire(), workTimeCode);
 		
 	}
 

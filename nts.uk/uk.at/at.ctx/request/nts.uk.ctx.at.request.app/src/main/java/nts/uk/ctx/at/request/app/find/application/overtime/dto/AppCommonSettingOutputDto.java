@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
@@ -29,7 +31,7 @@ public class AppCommonSettingOutputDto {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	public List<AppEmploymentSettingDto> appEmploymentWorkType;
+	public AppEmploymentSettingDto appEmploymentWorkType;
 	
 	public AppCommonSettingOutput toDomain() {
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
@@ -39,7 +41,7 @@ public class AppCommonSettingOutputDto {
 		appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()
 				.map(x -> ApplicationDeadline.createSimpleFromJavaType(x.companyId, x.closureId, x.userAtr, x.deadline, x.deadlineCriteria)).collect(Collectors.toList());
-		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		appCommonSettingOutput.appEmploymentWorkType = appEmploymentWorkType == null ? Optional.empty() : appEmploymentWorkType.toDomainOptional();
 		return appCommonSettingOutput;
 	}
 

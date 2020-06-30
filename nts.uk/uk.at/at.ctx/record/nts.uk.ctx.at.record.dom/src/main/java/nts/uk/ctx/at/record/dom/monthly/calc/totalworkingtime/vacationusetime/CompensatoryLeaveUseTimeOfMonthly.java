@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -7,21 +8,23 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.CompensatoryLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の代休使用時間
  * @author shuichi_ishida
  */
 @Getter
-public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
+public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializable {
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 	
 	/** 使用時間 */
 	private AttendanceTimeMonth useTime;
@@ -70,13 +73,11 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void confirm(DatePeriod datePeriod,
+	public void confirm(RequireM1 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			val ymd = attendanceTimeOfDaily.getYmd();
@@ -106,7 +107,7 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
 			HolidayAtr holidayAtr = HolidayAtr.STATUTORY_HOLIDAYS;
 			if (workTypeCode != null) {
-				val workType = companySets.getWorkTypeMap(workTypeCode, repositories);
+				val workType = companySets.getWorkTypeMap(require, workTypeCode);
 				if (workType != null) {
 					Optional<HolidayAtr> holidayAtrOpt = workType.getHolidayAtr();
 					if (holidayAtrOpt.isPresent()) holidayAtr = holidayAtrOpt.get();
@@ -172,5 +173,9 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 	 */
 	public void addMinuteToUseTime(int minutes){
 		this.useTime = this.useTime.addMinutes(minutes);
+	}
+	
+	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4 { 
+
 	}
 }

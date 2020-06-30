@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         kdl003BtnEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeSwitchEnable: KnockoutObservable<boolean> = ko.observable(true);
         recTimeInputEnable: KnockoutObservable<boolean> = ko.computed(() => {
-            return true;
+            return this.drawalReqSet().permissionDivision() == 1;
         });
         absKdl003BtnEnable: KnockoutObservable<boolean> = ko.computed(() => {
                 return this.absWk().changeWorkHoursType();
@@ -89,11 +89,75 @@ module nts.uk.at.view.kaf011.a.screenModel {
         changeWorkHoursTypeEnable: KnockoutObservable<boolean> = ko.computed(() => {
             return true;
         });
+        displayInforWhenStarting: any = null;
         constructor() {
-            let self = this;
+            let self = this,
+                recWk = ko.unwrap(self.recWk),
+                absWk = ko.unwrap(self.absWk);
+            
+            recWk.appDate.subscribe(newDate => {
+                let absDate = self.absWk().appDate(),
+                    recDate = self.recWk().appDate(),
+                    changeDateParam = {
+                        workingDate: self.appComSelectedCode() != 2 ? recDate : null,
+                        holidayDate: self.appComSelectedCode() != 1 ? absDate : null,
+                        displayInforWhenStarting: self.displayInforWhenStarting
+                    }
+
+                if (!newDate || !self.screenModeNew() || $("#recDatePicker").ntsError("hasError") || $("#absDatePicker").ntsError("hasError")) { return; }
+                block.invisible();
+                service.changeWorkingDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
+                    self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
+                    self.recWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
+                    self.absWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
+                    if (self.displayPrePostFlg() == 0) {
+                        self.prePostSelectedCode(self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr);
+                    }
+                    self.kaf000_a.initData({
+                        errorFlag: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
+                        listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
+                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate 
+                    });
+                }).fail((error) => {
+                    alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                }).always(() => {
+                    block.clear();
+                }); 
+            });
+            
+            absWk.appDate.subscribe(newDate => {
+                let absDate = self.absWk().appDate(),
+                    recDate = self.recWk().appDate(),
+                    changeDateParam = {
+                        workingDate: self.appComSelectedCode() != 2 ? recDate : null,
+                        holidayDate: self.appComSelectedCode() != 1 ? absDate : null,
+                        displayInforWhenStarting: self.displayInforWhenStarting
+                    }
+
+                if (!newDate || !self.screenModeNew() || $("#recDatePicker").ntsError("hasError") || $("#absDatePicker").ntsError("hasError")) { return; }
+                block.invisible();
+                service.changeHolidayDateRefactor(changeDateParam).done((data: IHolidayShipment) => {
+                    self.displayInforWhenStarting.appDispInfoStartup = data.appDispInfoStartup;
+                    self.recWk().setWkTypes(data.applicationForWorkingDay.workTypeList || []);
+                    self.absWk().setWkTypes(data.applicationForHoliday.workTypeList || []);
+                    if (self.displayPrePostFlg() == 0) {
+                        self.prePostSelectedCode(self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr);
+                    }
+                    self.kaf000_a.initData({
+                        errorFlag: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
+                        listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
+                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate         
+                    });
+                }).fail((error) => {
+                    alError({ messageId: error.messageId, messageParams: error.parameterIds });
+                }).always(() => {
+                    block.clear();
+                });   
+            });
 
             self.appComSelectedCode.subscribe((newCode) => {
-                
+                self.absWk().appDate(null);
+                self.recWk().appDate(null);
                 setTimeout(()=>self.clearTextboxError(), 100);
                 
             });
@@ -163,31 +227,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             let startParam = {
                 sIDs: employeeIDs,
-                appDate: self.appDate(),
-                uiType: 0
+                appDate: nts.uk.util.isNullOrUndefined(transferDate) ? [] : [transferDate]
             };
 
-            service.start(startParam).done((data: common.IHolidayShipment) => {
+            service.startPageARefactor(startParam).done((data: any) => {
                 self.setDataFromStart(data);
                 $("#fixed-table").ntsFixedTable({ width: 100 });
+                dfd.resolve(data);
             }).fail((error) => {
-                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() =>{
-                      if(res.messageId == 'Msg_426'){
-                         nts.uk.uidialog.alertError({messageId : res.messageId}).then(function(){
-                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                                nts.uk.ui.block.clear();
-                        });
-                     }else{
-                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
-                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                                nts.uk.ui.block.clear();
-                        });
-                     }
-  
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(function(){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                    nts.uk.ui.block.clear();
                 });
             }).always(() => {
                 block.clear();
-                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -208,29 +261,58 @@ module nts.uk.at.view.kaf011.a.screenModel {
             jump("com", "/view/cmm/018/a/index.xhtml", { screen: "Application", employeeId: self.employeeID() });
         }
 
-        setDataFromStart(data: common.IHolidayShipment) {
-            let self = this;
+        setDataFromStart(data: any) {
+            let self = this,
+                appDispInfoNoDateOutput = data.appDispInfoStartup.appDispInfoNoDateOutput,
+                appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput,
+                listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
+                appTypeSet = _.find(listAppTypeSet, o => o.appType == 10),
+                applicationForWorkingDay = data.applicationForWorkingDay,
+                applicationForHoliday = data.applicationForHoliday;
+            self.displayInforWhenStarting = data;
             if (data) {
-                self.remainDays(data.absRecMng);
-                self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
-                self.employeeName(data.employeeName);
-                self.prePostSelectedCode(data.preOrPostType);
-                self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
-                self.recWk().setWkTypes(data.recWkTypes || []);
-                self.absWk().setWkTypes(data.absWkTypes || []);
-                self.appReasons(data.appReasonComboItems || []);
-                self.employeeID(data.employeeID);
-                self.checkBoxValue(data.applicationSetting.manualSendMailAtr == 1 ? true : false);
-                self.enableSendMail(!data.sendMailWhenRegisterFlg);
+                self.remainDays(data.remainingHolidayInfor.remainDays);
+                if(data.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst[0].sid != __viewContext.user.employeeId){
+                    self.employeeList(_.map(data.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
+                }
+                self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+                self.prePostSelectedCode(appDispInfoWithDateOutput.prePostAtr);
+                self.appTypeSet(new common.AppTypeSet(appTypeSet || null));
+                self.recWk().setWkTypes(applicationForWorkingDay.workTypeList || []);
+                self.absWk().setWkTypes(applicationForHoliday.workTypeList || []);
+                self.appReasons(appDispInfoNoDateOutput.appReasonLst || []);
+                self.employeeID(appDispInfoNoDateOutput.employeeInfoLst[0].sid);
+                self.checkBoxValue(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
+                self.enableSendMail(!appTypeSet.sendMailWhenRegister);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
-                self.showReason(data.applicationSetting.appReasonDispAtr);
-                self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
-                self.recWk().wkTimeName(data.wkTimeName || null);
-                self.recWk().wkTimeCD(data.wkTimeCD || null);
-                self.requiredReason(data.applicationSetting.requireAppReasonFlg == 1 ? true : false);
-                self.recWk().workTimeCDs(data.workTimeCDs || null);
+                // self.showReason(data.applicationSetting.appReasonDispAtr);
+                self.displayPrePostFlg(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
+                self.recWk().wkTimeCD(applicationForWorkingDay.selectionWorkTime || null);
+                self.recWk().wkTimeName(self.getWorkTimeName(self.recWk().wkTimeCD(), appDispInfoWithDateOutput.workTimeLst));
+                self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
+                self.recWk().workTimeCDs(_.map(appDispInfoWithDateOutput.workTimeLst, o => {return {
+                    workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName} })  || null);
             }
         }
+        
+        getWorkTypeName(code, workTypeLst) {
+            let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
+                return text("マスタ未登録");
+            } else {
+                return currentWorkType.name;     
+            }      
+        }
+        
+        getWorkTimeName(code, workTimeLst) {
+            let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
+            if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
+                return text("マスタ未登録");
+            } else {
+                return currentWorkTime.workTimeDisplayName.workTimeName;     
+            }      
+        }
+        
         validateControl() {
             let self = this,
                 isRecError = self.checkRecTime(),
@@ -313,44 +395,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let checkBoxValue = self.checkBoxValue();
             // if (isCheckReasonError) { return; }
             block.invisible();
-            saveCmd.checkOver1Year = true;
-            service.save(saveCmd).done((data) => {
-                self.saveDone(data, checkBoxValue);
+            // saveCmd.checkOver1Year = true;
+            saveCmd.displayInforWhenStarting = self.displayInforWhenStarting;
+            service.checkBeforeRegister(saveCmd).done((data) => {
+                self.processConfirmMsg(saveCmd, data, 0);
             }).fail((res) => {
-                if (res.messageId == "Msg_1518") {//confirm
-                    nts.uk.ui.dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                        saveCmd.checkOver1Year = false;
-                        service.save(saveCmd).done((data) => {
-                            self.saveDone(data, checkBoxValue);
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                .then(function() { nts.uk.ui.block.clear(); });
-                        });
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                } else {
-                    if (res.messageId == "Msg_1520" || res.messageId == "Msg_1522") {
-                        nts.uk.ui.dialog.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).ifYes(() => {
-                            saveCmd.isNotSelectYes = false;
-                            service.save(saveCmd).done((data) => {
-                                self.saveDone(data, checkBoxValue);
-                            }).fail((res) => {
-                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                    .then(function() { nts.uk.ui.block.clear(); });
-                            });
-                        }).ifNo(() => {
-                            nts.uk.ui.block.clear();
-                        });;
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                            .then(function() { nts.uk.ui.block.clear(); });
-                    }
-                }
-
-            }).always(() => {
-                block.clear();
-                $("#recDatePicker").focus();
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
+                .then(function() { nts.uk.ui.block.clear(); });
             });
         }
         saveDone(data, checkBoxValue) {
@@ -429,10 +480,30 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 modal("/view/kdl/009/a/single.xhtml");
             }
         }
+            
+        processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
+            let self = this;
+            let confirmMsgLst = result;
+            let confirmMsg = confirmMsgLst[confirmIndex];
+            if(_.isUndefined(confirmMsg)) {
+                paramInsert.holidayDateLst = result.holidayDateLst;
+                service.save(paramInsert).done((data) => {
+                    self.saveDone(data, self.checkBoxValue());
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }).always(() => {
+                    block.clear();
+                    $("#recDatePicker").focus();
+                });
+                return;
+            }
+            
+            nts.uk.ui.dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
+                self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
+            }).ifNo(() => {
+                nts.uk.ui.block.clear();
+            });
+        }
     }
-
-
-
-
 
 }

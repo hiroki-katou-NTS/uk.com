@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.anyitem;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
@@ -17,7 +20,10 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  * @author shuichi_ishida
  */
 @Getter
-public class AnyItemOfMonthly extends AggregateRoot {
+public class AnyItemOfMonthly extends AggregateRoot implements SerializableWithOptional{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 社員ID */
 	private final String employeeId;
@@ -36,6 +42,14 @@ public class AnyItemOfMonthly extends AggregateRoot {
 	private Optional<AnyTimesMonth> times;
 	/** 金額 */
 	private Optional<AnyAmountMonth> amount;
+
+	private void writeObject(ObjectOutputStream stream){
+		writeObjectWithOptional(stream);
+	}
+	
+	private void readObject(ObjectInputStream stream){
+		readObjectWithOptional(stream);
+	}
 	
 	/**
 	 * コンストラクタ

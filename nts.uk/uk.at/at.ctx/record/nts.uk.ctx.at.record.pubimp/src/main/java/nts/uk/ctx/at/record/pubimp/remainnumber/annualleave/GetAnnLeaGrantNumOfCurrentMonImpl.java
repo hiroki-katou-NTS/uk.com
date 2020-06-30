@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaGrantNumberExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.GetAnnLeaGrantNumOfCurrentMon;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
@@ -19,41 +21,36 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
  */
 @Stateless
 public class GetAnnLeaGrantNumOfCurrentMonImpl implements GetAnnLeaGrantNumOfCurrentMon {
-
-	/** 社員に対応する締め開始日を取得する */
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
-	/** 当月の期間を算出する */
-	@Inject
-	private ClosureService closureService;
-	/** 次回年休付与を計算 */
-	@Inject
-	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantNum;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	/** 社員の当月の年休付与数を取得する */
 	@Override
 	public AnnLeaGrantNumberExport algorithm(String employeeId) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		
 		AnnLeaGrantNumberExport result = new AnnLeaGrantNumberExport(new GrantDays(0.0));
 		
 		//　社員に対応する締め開始日を取得する
-		val closureStartOpt = this.getClosureStartForEmployee.algorithm(employeeId);
+		val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 		if (!closureStartOpt.isPresent()) return result;
 		val closureStart = closureStartOpt.get();
 		
 		// 社員に対応する処理締めを取得する
-		val closure = this.closureService.getClosureDataByEmployee(employeeId, closureStart);
+		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, closureStart);
 		if (closure == null) return result;
 
 		// 当月の年月を取得する
 		val currentMonth = closure.getClosureMonth().getProcessingYm();
 		
 		// 当月の期間を算出する　→　締め期間
-		val closurePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value, currentMonth);
+		val closurePeriod = ClosureService.getClosurePeriod(require, closure.getClosureId().value, currentMonth);
 	
 		// 次回年休付与を計算
-		val nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantNum.algorithm(
-				Optional.empty(), closure.getCompanyId().v(), employeeId, Optional.of(closurePeriod));
+		val nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
+				require, cacheCarrier,
+				closure.getCompanyId().v(), employeeId, Optional.of(closurePeriod));
 		
 		// 全ての「次回年休付与．付与日数」を合計する
 		double grantDays = 0.0;

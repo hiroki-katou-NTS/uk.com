@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011.shr.service {
         changeDay: "at/request/application/holidayshipment/change_day",
         save: "at/request/application/holidayshipment/save",
         findById: "at/request/application/holidayshipment/find_by_id",
+        startPageBRefactor: "at/request/application/holidayshipment/startPageBRefactor",
         update: "at/request/application/holidayshipment/update",
         start_c: "at/request/application/holidayshipment/start_c",
         holidayShipmentRemove: "at/request/application/holidayshipment/remove",
@@ -15,6 +16,10 @@ module nts.uk.at.view.kaf011.shr.service {
         changeAbsDate: "at/request/application/holidayshipment/change_abs_date",
         changeAbsDateToHoliday: "at/request/application/holidayshipment/change_abs_date_to_holiday",
         getSelectedWorkingHours: "at/request/application/holidayshipment/get_selected_working_hours",
+        startPageARefactor: "at/request/application/holidayshipment/startPageARefactor",
+        checkBeforeRegister: "at/request/application/holidayshipment/processBeforeRegister_New",
+        changeWorkingDateRefactor: "at/request/application/holidayshipment/changeWorkingDateRefactor",
+        changeHolidayDateRefactor: "at/request/application/holidayshipment/changeHolidayDateRefactor"
     }
 
     export function start(startParam: any) {
@@ -33,6 +38,9 @@ module nts.uk.at.view.kaf011.shr.service {
     }
     export function findById(appParam) {
         return ajax(paths.findById, appParam);
+    }
+    export function startPageBRefactor(appParam) {
+        return ajax(paths.startPageBRefactor, appParam);
     }
     export function update(updateCmd: common.ISaveHolidayShipmentCommand) {
         return ajax(paths.update, updateCmd);
@@ -57,10 +65,20 @@ module nts.uk.at.view.kaf011.shr.service {
     export function getSelectedWorkingHours(changeWkTypeParam) {
         return ajax(paths.getSelectedWorkingHours, changeWkTypeParam);
     }
+    
+    export function startPageARefactor(param) {
+        return ajax(paths.startPageARefactor, param);
+    }
 
+    export function checkBeforeRegister(param) {
+        return ajax(paths.checkBeforeRegister, param);
+    }
 
+    export function changeWorkingDateRefactor(param) {
+        return ajax(paths.changeWorkingDateRefactor, param);
+    }
 
-
-
-
+    export function changeHolidayDateRefactor(param) {
+        return ajax(paths.changeHolidayDateRefactor, param);
+    }
 }

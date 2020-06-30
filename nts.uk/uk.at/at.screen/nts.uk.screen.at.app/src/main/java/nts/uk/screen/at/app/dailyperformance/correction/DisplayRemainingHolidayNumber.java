@@ -8,7 +8,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
@@ -40,9 +42,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class DisplayRemainingHolidayNumber {
 
 	@Inject
-	private AbsenceTenProcess absenceProc;
-
-	@Inject
 	private AnnLeaveRemainNumberAdapter annLeaveRemainAdapter;
 	
 	@Inject
@@ -52,13 +51,12 @@ public class DisplayRemainingHolidayNumber {
 	private AnnualHolidayManagementAdapter annualHolidayMng;
 	
 	@Inject
-	private BreakDayOffMngInPeriodQuery brDayOffQuery;
-	
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRecQuery;
+	private RecordDomRequireService requireService;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
-		AnnualHolidaySetOutput output = absenceProc.getSettingForAnnualHoliday(companyId);
+		AnnualHolidaySetOutput output = AbsenceTenProcess.getSettingForAnnualHoliday(
+				requireService.createRequire(), companyId);
+		
 		if (output.isYearHolidayManagerFlg()) {
 			//RequestList198
 			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
@@ -75,7 +73,10 @@ public class DisplayRemainingHolidayNumber {
 	}
 
 	public ReserveLeaveDto getReserveLeaveSetting(String companyId, String employeeId, GeneralDate date) {
-		boolean manageAtr = absenceProc.getSetForYearlyReserved(companyId, employeeId, date);
+		boolean manageAtr = AbsenceTenProcess.getSetForYearlyReserved(
+				requireService.createRequire(),
+				new CacheCarrier(),
+				companyId, employeeId, date);
 		if (manageAtr) {
 			// call requestlist201
 			Optional<RsvLeaManagerImport> optOutput = rsvLeaveRemainAdapter.getRsvLeaveManager(employeeId, date);
@@ -86,18 +87,27 @@ public class DisplayRemainingHolidayNumber {
 	}
 	
 	public SubstVacationDto getSubsitutionVacationSetting(String companyId, String employeeId, GeneralDate date) {
-		LeaveSetOutput output = absenceProc.getSetForLeave(companyId, employeeId, date);
+		LeaveSetOutput output = AbsenceTenProcess.getSetForLeave(
+				requireService.createRequire(), new CacheCarrier(),
+				companyId, employeeId, date);
 		if (output.isSubManageFlag()) {
-			double remain = absRecQuery.getAbsRecMngRemain(employeeId, date);
+			double remain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+					requireService.createRequire(), new CacheCarrier(),
+					employeeId, date)
+					.getRemainDays();
 			return new SubstVacationDto(output.isSubManageFlag(), remain);
 		}
 		return new SubstVacationDto(false, null);
 	}
 
 	public CompensLeaveComDto getCompensatoryLeaveSetting(String companyId, String employeeId, GeneralDate date) {
-		SubstitutionHolidayOutput output = absenceProc.getSettingForSubstituteHoliday(companyId, employeeId, date);
+		SubstitutionHolidayOutput output = AbsenceTenProcess.getSettingForSubstituteHoliday(
+				requireService.createRequire(), new CacheCarrier(),
+				companyId, employeeId, date);
 		if (output != null && output.isSubstitutionFlg()) {
-			double remain = brDayOffQuery.getBreakDayOffMngRemain(employeeId, date);
+			double remain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
+					requireService.createRequire(), new CacheCarrier(),
+					employeeId, date);
 			return new CompensLeaveComDto(output.isSubstitutionFlg(), output.isTimeOfPeriodFlg(), remain, 0);
 		} else {
 			return new CompensLeaveComDto(false, false, null, null);

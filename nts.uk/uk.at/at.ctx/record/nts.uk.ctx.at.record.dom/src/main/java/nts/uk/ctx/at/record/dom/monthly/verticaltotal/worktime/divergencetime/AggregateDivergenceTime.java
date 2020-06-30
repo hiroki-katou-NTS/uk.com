@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,11 +10,14 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 集計乖離時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @NoArgsConstructor
-public class AggregateDivergenceTime {
+public class AggregateDivergenceTime implements Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** 乖離時間No */
 	private int divergenceTimeNo;

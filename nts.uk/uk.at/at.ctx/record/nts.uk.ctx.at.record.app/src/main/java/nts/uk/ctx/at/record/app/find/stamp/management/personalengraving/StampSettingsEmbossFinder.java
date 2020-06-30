@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -19,8 +18,6 @@ import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSetPerRepository;
-import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
@@ -33,9 +30,14 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -59,15 +61,6 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	private StampCardRepository stampCardRepo;
-
-	@Inject
-	private StampRecordRepository stampRecordRepo;
-
-	@Inject
-	private StampDakokuRepository stampDakokuRepo;
-
-	@Inject
-	protected WorkingConditionService workingConditionService;
 
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
@@ -117,8 +110,7 @@ public class StampSettingsEmbossFinder {
 	
 	public List<StampDataOfEmployees> getEmployeeStampDatas(DatePeriod period, String employeeId) {
 		List<StampDataOfEmployees> employeeStampDatas = new ArrayList<>();
-		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
-				stampDakokuRepo);
+		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl();
 		List<GeneralDate> betweens = period.datesBetween();
 		betweens.sort((d1, d2) -> d2.compareTo(d1));
 		for (GeneralDate date : betweens) {
@@ -133,8 +125,7 @@ public class StampSettingsEmbossFinder {
 	}
 	
 	public StampToSuppress getStampToSuppress(String employeeId) {
-		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
-				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo);
+		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl();
 		
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
 	} 
@@ -157,7 +148,6 @@ public class StampSettingsEmbossFinder {
 
 	}
 
-	@AllArgsConstructor
 	private class EmpStampDataRequiredImpl implements GetEmpStampDataService.Require {
 
 		@Inject
@@ -187,26 +177,17 @@ public class StampSettingsEmbossFinder {
 	}
 
 	private class StampTypeToSuppressRequiredImpl extends EmpStampDataRequiredImpl
-			implements GetStampTypeToSuppressService.Require {
+			implements GetStampTypeToSuppressService.Require, WorkingConditionService.RequireM1 {
 
 		@Inject
 		protected StampSetPerRepository stampSetPerRepo;
 
 		@Inject
-		protected WorkingConditionService workingConditionService;
-
-		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-
-		public StampTypeToSuppressRequiredImpl(StampCardRepository stampCardRepo, StampRecordRepository stampRecordRepo,
-				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
-				WorkingConditionService workingConditionService,
-				PredetemineTimeSettingRepository predetemineTimeSettingRepo) {
-			super(stampCardRepo, stampRecordRepo, stampDakokuRepo);
-			this.stampSetPerRepo = stampSetPerRepo;
-			this.workingConditionService = workingConditionService;
-			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
-		}
+		@Inject
+		protected WorkingConditionRepository workingConditionRepo;
+		@Inject
+		protected WorkingConditionItemRepository workingConditionItemRepo;
 
 		@Override
 		public Optional<StampSettingPerson> getStampSet() {
@@ -215,12 +196,22 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
 			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
+		}
+
+		@Override
+		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+			return workingConditionItemRepo.getByHistoryId(historyId);
 		}
 
 	}

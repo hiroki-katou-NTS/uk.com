@@ -64,13 +64,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.appType(appType);
             
             let dfd = $.Deferred();
-            
             //Call approval list
             self.getAppDataDate(appType, standardDate, true,sid, overtimeAtr).done(function(data) {
                 dfd.resolve(data); 
             }).fail((res)=>{
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
-                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
                     nts.uk.ui.block.clear();
                 });  
             });
@@ -88,7 +86,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 employeeID: employeeID,
                 overtimeAtrParam: overtimeAtr
             }).done((data)=>{
-                if(appType != 1) {
+                if(appType != 1 && appType != 2 && appType != 10) {
                     self.initData(data);    
                 }
                 let deadlineMsg = data.outputMessageDeadline;
@@ -141,7 +139,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             if(_.size(loopFrame.listApprover()) > 1) {
                 return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
             }
-            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);    
+            return loopFrame.frameOrder(); 
         }
         
         frameCount(listFrame) {
@@ -196,33 +194,62 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             if(!nts.uk.util.isNullOrEmpty(data.errorFlag)){
                 if(data.errorFlag==0){
                     if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
-                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());       
+                        
+                        // sort list approval
+                        if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
+                            data.listApprovalPhaseStateDto.forEach((el) => {
+                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+                                        el.listApprovalFrame.forEach((el1) =>{
+                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+                                                  el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+                                               }
+                                        });
+                                        if(el.listApprovalFrame.length > 1) {
+                                            let arrayTemp = [];
+                                            arrayTemp.push(el.listApprovalFrame[0]);
+                                            if(el.listApprovalFrame[0].listApprover.length == 0) {   
+                                                _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+                                                .forEach(i => arrayTemp.push(i));      
+                                                el.listApprovalFrame = arrayTemp;
+                                            }else {
+                                                el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+                                                
+                                            }
+                                            let frameOrderTemp = 0;
+                                            el.listApprovalFrame.forEach((el1, index) =>{
+                                                if(el1.listApprover.length != 0) {
+                                                    frameOrderTemp++;
+                                                }
+                                                el1.frameOrder = frameOrderTemp;
+                                            });
+                                        }
+                                }
+                            });  
+                        }
+                        self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());    
                     }
                 }
+                let msgID = "";
                 switch(data.errorFlag){
                     case 1:
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_324"});
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_324";
                         break;
                     case 2: 
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_238"});
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_238" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_238";
                         break;
                     case 3:
-                        // $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
-                        // $("#inputdate").ntsError('set', {messageId:"Msg_237"});
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_237" }).then(function(){
-                            nts.uk.ui.block.clear();
-                        });
+                        msgID = "Msg_237";
                         break;
                     default: 
                 }  
+                if(!nts.uk.util.isNullOrEmpty(msgID)) {
+                    nts.uk.ui.dialog.alertError({ messageId: msgID }).then(function(){
+                        if(!nts.uk.util.isNullOrUndefined(data.isSystemDate) && data.isSystemDate == 0) {
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");            
+                        }
+                        nts.uk.ui.block.clear();
+                    });    
+                }
             }    
         }    
         
@@ -240,15 +267,15 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
-                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
-            switch(index) {
-                case 1: return nts.uk.resource.getText("KAF000_9"); 
-                case 2: return nts.uk.resource.getText("KAF000_10"); 
-                case 3: return nts.uk.resource.getText("KAF000_11"); 
-                case 4: return nts.uk.resource.getText("KAF000_12"); 
-                case 5: return nts.uk.resource.getText("KAF000_13");    
-                default: return "";
-            }     
+                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
+            // case group approver
+            if(_.size(loopFrame.listApprover()) > 1) {
+                index++;
+            }
+            if(index <= 10){
+                return nts.uk.resource.getText("KAF000_9",[index+'']);    
+            }
+            return "";   
         }
     }
     

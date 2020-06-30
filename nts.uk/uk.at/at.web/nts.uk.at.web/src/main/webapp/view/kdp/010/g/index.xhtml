@@ -1,13 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <head>
-<link rel="stylesheet"
-	href="path/to/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
 </head>
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -19,11 +18,11 @@
 			<com:scriptfile path="kdp010.g.start.js" />
 			<com:scriptfile path="kdp010.g.service.js" />
 			<com:EnumScript>
-				nts.uk.ctx.at.record.dom.stamp.management.ButtonLayoutType
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType
 			</com:EnumScript>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.stamp.management.StampPageName
-				nts.uk.ctx.at.record.dom.stamp.management.PageComment
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -31,8 +30,10 @@
 			<div id="functions-area">
 				<button tabindex="1" id="button-add" class="proceed"
 					data-bind="click:registration">#{i18n.getText('KDP010_95')}</button>
-				<button tabindex="2" id="button-del" class="danger" data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
-				<button tabindex="3" id="button-cancel" data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
+				<button tabindex="2" id="button-del" class="danger"
+					data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
+				<button tabindex="3" id="button-cancel"
+					data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-area">
@@ -45,8 +46,7 @@
 						<tr>
 							<td>
 								<!-- G2_2 -->
-								<div tabindex="4" id="combobox"  class="cbx-days"
-									data-bind="ntsComboBox: {
+								<div tabindex="4" id="combobox" class="cbx-days" data-bind="ntsComboBox: {
 											options: optionPage,
 											optionsValue: 'code',
 											value: selectedPage,
@@ -67,22 +67,22 @@
 							<td>
 								<!-- G3_1 -->
 								<div id="correc-label"
-									data-bind="ntsFormLabel: { required: true, constraint: 'StampPageName' }">#{i18n.getText('KDP010_101')}
+									data-bind="ntsFormLabel: { required: true, constraint: 'StampPageName' }">
+									#{i18n.getText('KDP010_101')}
 								</div> <!-- G3_2 --> <input tabindex="6" id="correc-text"
-								data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
+									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- G4_1 -->
-								<div id="correc-label1"
-									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_102')}
+								<div id="correc-label1" data-bind="ntsFormLabel: { required: true }">
+									#{i18n.getText('KDP010_102')}
 								</div>
 							</td>
 							<td>
 								<!-- G4_2 -->
-								<div tabindex="7" id="combobox1" class="cbx-days"
-									data-bind="ntsComboBox: {
+								<div tabindex="7" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
 											options: optionLayout,
 											optionsValue: 'value',
 											value: selectedLayout,
@@ -98,14 +98,22 @@
 						</tr>
 						<tr>
 							<!-- G5_1 -->
-							<td><div id="comment"
-									data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_103')}</div>
-							</td>
+								<td>
+									<div id="comment"
+										data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">
+										#{i18n.getText('KDP010_103')}</div>
+										
+								</td>
+							
 							<!-- G5_2 -->
-							<td><textarea tabindex="8" id="comment-text" 
-									data-bind="ntsMultilineEditor: { name: '#[KDP010_103]',value: commentDaily, constraint: 'PageComment' }" />
-							</td>
+							
+								<td>
+								<div id="comment-text"><textarea tabindex="8" id = "text-area-comment"
+										data-bind="ntsMultilineEditor: { name: '#[KDP010_103]',value: commentDaily, constraint: 'PageComment' }" /></div>
+									</td>
+							
 						</tr>
+					
 						<tr>
 							<!-- G6_1 -->
 							<td><div id="color"
