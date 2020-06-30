@@ -267,20 +267,13 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		DeductionOffSetTime timeVacationOffSetTime = new DeductionOffSetTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
 
 		//遅刻、早退時間を就業時間から控除
-		//遅刻控除時間を計算
-		if(jugmentDeductLateEarly(premiumAtr,holidayCalcMethodSet,commonSetting,lateEarlyMinusAtr)) {
-			int lateDeductTime = 0;
-			if(this.lateTimeSheet.isPresent()) {
-				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLate(),lateEarlyMinusAtr).getTime().valueAsMinutes();
-			}
-			//早退控除時間を計算
-			int leaveEarlyDeductTime = 0;
-			if(this.leaveEarlyTimeSheet.isPresent()) {
-				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(),lateEarlyMinusAtr).getTime().valueAsMinutes();
-			}
-			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
-			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
-		}
+		AttendanceTime lateEarlyDiductionTime = this.getLateEarlyDiductionTime(
+				autoCalcOfLeaveEarlySetting,
+				holidayCalcMethodSet,
+				premiumAtr,
+				commonSetting,
+				lateEarlyMinusAtr);
+		workTime = new AttendanceTime(workTime.valueAsMinutes() - lateEarlyDiductionTime.valueAsMinutes());
 		
 		//時間休暇使用の残時間を計算 
 		if(holidayAdditionAtr.isHolidayAddition()) {
@@ -294,6 +287,59 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
 						
 		return workTime;
+	}
+	
+	/**
+	 * 遅刻、早退時間を就業時間から控除
+	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param premiumAtr 割増区分
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @param lateEarlyMinusAtr 遅刻早退を強制的に控除する true:強制的に控除する  false:強制的に控除しない（設定を参照する）
+	 * @return 遅刻早退控除時間
+	 */
+	private AttendanceTime getLateEarlyDiductionTime(
+			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneCommonSet> commonSetting,
+			NotUseAtr lateEarlyMinusAtr) {
+		
+		if(!this.jugmentDeductLateEarly(premiumAtr, holidayCalcMethodSet, commonSetting) && lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))
+			//設定を参照して「控除しない」となった場合、かつ、「強制的に控除する＝しない」の場合は0
+			return AttendanceTime.ZERO;
+		
+		//遅刻控除時間を計算
+		int lateDeductTime = 0;
+		if(this.lateTimeSheet.isPresent() && this.lateTimeSheet.get().getForDeducationTimeSheet().isPresent()) {
+			
+			//遅刻時間帯と自身が重複している時間
+			Optional<TimeSpanForDailyCalc> lateDupulicateTime
+					= this.lateTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.timeSheet);
+			
+			if(lateDupulicateTime.isPresent()) {
+				//就業時間内時間枠の時間帯と重複している遅刻時間帯のみを控除する
+				this.lateTimeSheet.get().getForDeducationTimeSheet().get().shiftTimeSheet(lateDupulicateTime.get());
+				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLate(), NotUseAtr.USE).getTime().valueAsMinutes();
+			}
+		}
+		
+		//早退控除時間を計算
+		int leaveEarlyDeductTime = 0;
+		if(this.leaveEarlyTimeSheet.isPresent() && this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().isPresent()) {
+			
+			//早退時間帯と自身が重複している時間
+			Optional<TimeSpanForDailyCalc> leaveEarlyDupulicateTime 
+					= this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.timeSheet);
+			
+			if(leaveEarlyDupulicateTime.isPresent()) {
+				//就業時間内時間枠の時間帯と重複している早退時間帯のみを控除する
+				this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().shiftTimeSheet(leaveEarlyDupulicateTime.get());
+				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(autoCalcOfLeaveEarlySetting.isLeaveEarly(), NotUseAtr.USE).getTime().valueAsMinutes();
+			}
+		}
+		int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
+		return new AttendanceTime(lateLeaveEarlySubtraction);
 	}
 	
 	/**
@@ -843,53 +889,37 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param lateEarlyMinusAtr 
 	 * @return
 	 */
-	public boolean jugmentDeductLateEarly(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting, NotUseAtr lateEarlyMinusAtr) {
+	public boolean jugmentDeductLateEarly(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+	
 		//就業の休暇の就業時間計算方法詳細．遅刻・早退を控除する
-//		NotUseAtr workTimeDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-//																				?holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()
-//																				:NotUseAtr.NOT_USE;	
 		NotUseAtr workTimeDeductLateLeaveEarly = NotUseAtr.USE;
-		if(lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE)) {
-			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-				if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-					workTimeDeductLateLeaveEarly = NotUseAtr.USE;
-				}
-				else {
-					workTimeDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-				}
-			}			
-		}
-		else {
-			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-				if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-					workTimeDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-				}
-				else {
-					workTimeDeductLateLeaveEarly = NotUseAtr.USE;
-				}
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
+			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+				workTimeDeductLateLeaveEarly = NotUseAtr.USE;
+			}else {
+				workTimeDeductLateLeaveEarly = NotUseAtr.NOT_USE;
 			}
 		}
-
 		
 		//割増の休暇の就業時間計算方法詳細．遅刻・早退を控除する
-		//2019/04/03 大塚緊急対応　通常勤務時に割増の休暇加算設定を見ないよう対応↓
-		//現時点では、割増に入る(premiumAtr=割増)ことは無いが、念には念を入れての対応 hoshina
-		NotUseAtr premiumDeductLateLeaveEarly = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().isPresent()
-//		NotUseAtr premiumDeductLateLeaveEarly = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-																				?holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().get().getCalculateIncludIntervalExemptionTime()
-																			    :NotUseAtr.NOT_USE;
-		//2019/04/03 大塚緊急対応　通常勤務時に割増の休暇加算設定を見ないよう対応↑		
-		boolean result = false;
+		NotUseAtr premiumDeductLateLeaveEarly = NotUseAtr.USE;
+		if(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().isPresent()) {
+			if(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().get().isDeductLateLeaveEarly(commonSetting)) {
+				premiumDeductLateLeaveEarly = NotUseAtr.USE;
+			}else {
+				premiumDeductLateLeaveEarly = NotUseAtr.NOT_USE;
+			}
+		}
 		
-		if(premiumAtr.isRegularWork() && workTimeDeductLateLeaveEarly == NotUseAtr.USE) {
+		if(premiumAtr.isRegularWork() && workTimeDeductLateLeaveEarly.equals(NotUseAtr.USE)) {
 			return true;
 		} 
 		if(premiumAtr.isPremium()
-				 && workTimeDeductLateLeaveEarly == NotUseAtr.USE
-				 && premiumDeductLateLeaveEarly==NotUseAtr.NOT_USE){
+				 && workTimeDeductLateLeaveEarly.equals(NotUseAtr.USE)
+				 && premiumDeductLateLeaveEarly.equals(NotUseAtr.NOT_USE)){
 			return true;
 		}
-		return result;
+		return false;
 	}
 	
 	/**

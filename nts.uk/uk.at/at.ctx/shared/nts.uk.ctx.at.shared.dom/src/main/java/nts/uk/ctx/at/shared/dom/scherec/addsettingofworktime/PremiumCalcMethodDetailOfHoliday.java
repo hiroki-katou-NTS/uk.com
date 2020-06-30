@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -42,6 +45,31 @@ public class PremiumCalcMethodDetailOfHoliday extends DomainObject{
 		this.calculateIncludCareTime = NotUseAtr.valueOf(calculateIncludCareTime);
 		this.notDeductLateLeaveEarly = notDeductLateLeaveEarly;
 		this.calculateIncludIntervalExemptionTime = NotUseAtr.valueOf(calculateIncludIntervalExemptionTime);
+	}
+	
+	/**
+	 * 遅刻・早退を控除するか判断する
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @return 控除する場合はtrueが返る
+	 */
+	public boolean isDeductLateLeaveEarly(Optional<WorkTimezoneCommonSet> commonSetting) {
+		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour()) {
+			//就業時間帯ごとに設定を見る
+			if(commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+				//就業時間帯「遅刻・早退」の詳細タブの「控除する」にチェック有り
+				return true;
+			}
+			return false;
+		}else {
+			//計算設定を見る
+			if (!this.notDeductLateLeaveEarly.isDeduct()) {
+				//遅刻・早退をマイナスしない□(チェック無し = 控除する)
+				return true;
+			}else {
+				//遅刻・早退をマイナスしない☑(チェック有り = 控除しない)
+				return false;
+			}
+		}
 	}
 }
 

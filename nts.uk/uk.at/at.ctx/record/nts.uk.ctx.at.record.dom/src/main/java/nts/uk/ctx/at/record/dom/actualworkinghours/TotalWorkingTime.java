@@ -992,7 +992,7 @@ public class TotalWorkingTime {
 					predetermineTimeSetByPersonInfo,
 					recordClass.getCoreTimeSetting(),
 					HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-					NotUseAtr.USE);
+					NotUseAtr.NOT_USE);
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
 		}
 			

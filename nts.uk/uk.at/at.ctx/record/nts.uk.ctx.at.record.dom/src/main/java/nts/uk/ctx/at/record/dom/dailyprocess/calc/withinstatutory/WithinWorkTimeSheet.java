@@ -501,7 +501,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				Optional.of(integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr()),
 				Optional.of(integrationOfWorkTime.getCode()), 
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime(), 
-				Optional.of(integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting()), 
+				integrationOfWorkTime.getCoreTimeSetting(), 
 				predetermineTimeSetForCalc, 
 				Finally.of(AttendanceTime.ZERO),
 				personDailySetting.getDailyUnit(),
@@ -509,7 +509,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				personDailySetting.getPersonInfo(),
 				predetermineTimeSetByPersonInfo,
 				Optional.of(personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly()),
-				NotUseAtr.USE);
+				NotUseAtr.NOT_USE);
 		return workTime.minusMinutes(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes());
 	}
 	
@@ -1112,17 +1112,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 DeductLeaveEarly deductLeaveEarly,
 											 NotUseAtr lateEarlyMinusAtr
 			   								 ) {
-		
-		//遅刻、早退の控除設定を「控除する」に変更する
-		HolidayCalcMethodSet changeHolidayCalcMethodSet = new HolidayCalcMethodSet(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday(),holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().changeDeduct());
-		//就業時間帯の遅刻早退を控除するかを見る場合、就業時間帯の遅刻、早退の控除設定を「控除する」に変更する
-		Optional<WorkTimezoneCommonSet> changeCommonSetting = commonSetting;
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&
-		   holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&
-		   commonSetting.isPresent()) {
-			 changeCommonSetting = Optional.of(commonSetting.get().changeWorkTimezoneLateEarlySet());
-		}
-		
 		//就業時間（法定内用）の計算
 		AttendanceTime result = calcWorkTime(premiumAtr,
 											 vacationClass,
@@ -1133,9 +1122,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 autoCalcOfLeaveEarlySetting,
 											 addSetting,
 											 holidayAddtionSet,
-											 changeHolidayCalcMethodSet,
+											 holidayCalcMethodSet,
 											 dailyUnit,
-											 changeCommonSetting,
+											 commonSetting,
 											 conditionItem,
 											 predetermineTimeSetByPersonInfo,
 											 coreTimeSetting

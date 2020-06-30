@@ -249,7 +249,7 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.USE);
+				NotUseAtr.NOT_USE);
 		
 		//控除用コアタイム無しの遅刻時間計算
 		TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
@@ -274,7 +274,7 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.USE);
+				NotUseAtr.NOT_USE);
 		
 		return new LateTimeOfDaily(calcedLateTime, calcedLateDeductionTime, new WorkNo(1), TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
 	}
