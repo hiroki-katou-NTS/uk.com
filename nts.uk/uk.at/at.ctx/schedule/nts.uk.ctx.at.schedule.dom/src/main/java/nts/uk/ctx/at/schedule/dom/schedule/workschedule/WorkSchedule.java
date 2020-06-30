@@ -34,7 +34,7 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/** 予定確定区分 **/
 	@Getter
-	private ConfirmedATR ConfirmedATR;
+	private ConfirmedATR confirmedATR;
 	
 	/** 日別勤怠の勤務情報 **/
 	@Getter

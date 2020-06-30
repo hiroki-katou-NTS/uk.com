@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 
 /**
@@ -22,6 +23,9 @@ public class AffiliationInforState {
 	List<ErrMessageInfo> errMesInfos;
 	
 	Optional<AffiliationInforOfDailyAttd> affiliationInforOfDailyPerfor;
+	
+	// Have not empCalAndSumExecLogID
+	List<ErrorMessageInfo> errorNotExecLogID;
 
 	public AffiliationInforState(List<ErrMessageInfo> errMesInfos,
 			Optional<AffiliationInforOfDailyAttd> affiliationInforOfDailyPerfor) {
@@ -29,6 +33,12 @@ public class AffiliationInforState {
 		this.errMesInfos = errMesInfos;
 		this.affiliationInforOfDailyPerfor = affiliationInforOfDailyPerfor;
 	}
-	
-	
+
+	public AffiliationInforState(List<ErrMessageInfo> errMesInfos,
+			Optional<AffiliationInforOfDailyAttd> affiliationInforOfDailyPerfor, List<ErrorMessageInfo> errorNotExecLogID) {
+		super();
+		this.errMesInfos = errMesInfos;
+		this.affiliationInforOfDailyPerfor = affiliationInforOfDailyPerfor;
+		this.errorNotExecLogID = errorNotExecLogID;
+	}
 }
