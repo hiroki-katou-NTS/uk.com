@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
+package nts.uk.ctx.at.record.app.command.kdp.kdp004.a;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,51 +7,49 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
+ * UKDesign.UniversalK.就業.KDP_打刻.KDP004_打刻入力(指静脈).A:打刻入力(指静脈).メニュー別OCD.打刻入力(指静脈)を登録する
  * 
  * @author sonnlb
- * 
- *         UKDesign.UniversalK.就業.KDP_打刻.KDP001_打刻入力(ポータル).A:打刻入力(ポータル).メニュー別OCD.打刻入力(ポータル)の利用確認を行う
  *
  */
 @Stateless
-public class ConfirmUseOfStampInputCommandHandler
-		extends CommandHandlerWithResult<ConfirmUseOfStampInputCommand, ConfirmUseOfStampInputResult> {
+public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<RegisterFingerStampCommand,GeneralDate> {
 
 	@Inject
-	private StampUsageRepository stampUsageRepo;
+	private StampSetCommunalRepository stampSetCommunalRepository;
 
 	@Inject
 	private StampCardRepository stampCardRepo;
@@ -75,36 +73,54 @@ public class ConfirmUseOfStampInputCommandHandler
 	private CreateDailyResultDomainService createDailyResultDomainSv;
 
 	@Override
-	protected ConfirmUseOfStampInputResult handle(CommandHandlerContext<ConfirmUseOfStampInputCommand> context) {
+	protected GeneralDate handle(CommandHandlerContext<RegisterFingerStampCommand> context) {
+		
+		RegisterFingerStampCommand cmd = context.getCommand();
 
-		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
-				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
-				createDailyResultDomainSv);
+		EnterStampForSharedStampServiceRequireImpl require = new EnterStampForSharedStampServiceRequireImpl(
+																												stampSetCommunalRepository
+																												, stampCardRepo
+																												, stampCardEditRepo
+																												, companyAdapter
+																												, sysEmpPub
+																												, stampRecordRepo
+																												, stampDakokuRepo
+																												, createDailyResultDomainSv);
 
-		StampMeans stampMeans = EnumAdaptor.valueOf(context.getCommand().getStampMeans(), StampMeans.class);
-
-		String employeeId = AppContexts.user().employeeId();
-		// 1. 判断する(@Require, 社員ID, 打刻手段)
-		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
-		// not 打刻カード作成結果 empty
-		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
-
-		if (cradResultOpt.isPresent()) {
-
-			Optional<AtomTask> atom = cradResultOpt.get().getAtomTask();
+		//require, 契約コード, 社員ID, なし, 打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容
+		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
+																						require
+																						, AppContexts.user().contractCode()
+																						, cmd.getEmployeeId()
+																						, Optional.ofNullable(null)
+																						, new Relieve(AuthcMethod.VEIN_AUTHC, StampMeans.FINGER_AUTHC)
+																						, cmd.getStampDatetime()
+																						, cmd.getStampButton()
+																						, cmd.getRefActualResult().toDomainValue());
+		//2: not empty
+		if(inputResult!=null && inputResult.at.isPresent()) {
+			
 			transaction.execute(() -> {
-				atom.get().run();
+				inputResult.at.get().run();
 			});
-			return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
 		}
-		return new ConfirmUseOfStampInputResult(GeneralDateTime.now(), jugResult.getUsed().value);
-
+		
+		StampDataReflectResult stampRefResult = inputResult.getStampDataReflectResult();
+	
+		if(stampRefResult!=null && stampRefResult.getAtomTask()!=null) {
+			
+			transaction.execute(() -> {
+				stampRefResult.getAtomTask().run();
+			});
+		}
+		return stampRefResult.getReflectDate().isPresent() ? stampRefResult.getReflectDate().get() : null;
 	}
 
 	@AllArgsConstructor
-	private class StampFunctionAvailableServiceRequireImpl implements StampFunctionAvailableService.Require {
+	private class EnterStampForSharedStampServiceRequireImpl implements EnterStampForSharedStampService.Require {
+
 		@Inject
-		private StampUsageRepository stampUsageRepo;
+		private StampSetCommunalRepository stampSetCommunalRepository;
 
 		@Inject
 		private StampCardRepository stampCardRepo;
@@ -128,8 +144,13 @@ public class ConfirmUseOfStampInputCommandHandler
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
 		@Override
-		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
-			return this.sysEmpPub.findBySidNotDel(sids);
+		public List<StampCard> getListStampCard(String sid) {
+			return this.stampCardRepo.getListStampCard(sid);
+		}
+
+		@Override
+		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sid) {
+			return this.sysEmpPub.findBySidNotDel(sid);
 		}
 
 		@Override
@@ -143,23 +164,19 @@ public class ConfirmUseOfStampInputCommandHandler
 		}
 
 		@Override
+		public Optional<Stamp> get(String contractCode, String stampNumber) {
+			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		}
+
+		@Override
 		public void add(StampCard domain) {
 			this.stampCardRepo.add(domain);
 		}
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
-		}
-
-		@Override
-		public Optional<SettingsUsingEmbossing> get() {
-			return this.stampUsageRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
 		public void insert(StampRecord stampRecord) {
 			this.stampRecordRepo.insert(stampRecord);
+
 		}
 
 		@Override
@@ -176,10 +193,10 @@ public class ConfirmUseOfStampInputCommandHandler
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampSetCommunal> gets(String comppanyID) {
+			return this.stampSetCommunalRepository.gets(comppanyID);
 		}
 
 	}
+
 }
