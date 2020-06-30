@@ -8,8 +8,13 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 
 /**
  * refactor 4
@@ -55,5 +60,39 @@ public interface CommonAlgorithmMobile {
 	 */
 	public AppReasonOutput getAppReasonDisplay(String companyID, ApplicationType appType, Optional<HolidayAppType> opHolidayAppType);
 	
+	/**
+	 * 基準日に関係する申請設定情報を取得する
+	 * @param mode 起動モード（編集モード・表示モード） 編集モード: true, 表示モード: false
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param appDateLst 申請対象日リスト
+	 * @param appType 申請種類
+	 * @param applicationSetting 申請設定
+	 * @param opOvertimeAppAtr 残業区分<Optional>
+	 * @return
+	 */
+	public AppDispInfoWithDateOutput getAppSetInfoRelatedBaseDate(boolean mode, String companyID, String employeeID,
+			List<GeneralDate> appDateLst, ApplicationType appType, ApplicationSetting applicationSetting, 
+			Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
+	/**
+	 * 基準日として扱う日の取得
+	 * @param applicationSetting 申請設定
+	 * @param appType 申請種類
+	 * @param appDateLst 申請対象日リスト
+	 * @return
+	 */
+	public GeneralDate getBaseDate(ApplicationSetting applicationSetting, ApplicationType appType, List<GeneralDate> appDateLst);
+	
+	/**
+	 * 事前事後の初期選択状態を取得する
+	 * @param appDate 申請対象日
+	 * @param appType 申請種類
+	 * @param prePostDisplayAtr 事前事後区分表示
+	 * @param displayInitialSegment 事前事後区分の初期表示
+	 * @param overtimeAppAtr 残業区分<Optional>
+	 * @return
+	 */
+	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
+			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr);
 }
