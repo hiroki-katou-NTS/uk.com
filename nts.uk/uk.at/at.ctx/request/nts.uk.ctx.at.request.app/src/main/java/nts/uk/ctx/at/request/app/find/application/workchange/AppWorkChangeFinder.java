@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
@@ -165,7 +165,7 @@ public class AppWorkChangeFinder {
 				appReason, ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(
 				companyId, 
 				appID,
 				workChangeCommand.getWorkTypeCd(), 
@@ -278,7 +278,7 @@ public class AppWorkChangeFinder {
 								.ofNullable(appCommand.getReflectPerTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
 						.build());
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(workChangeCommand.getCid(),
 				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
 				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
 				workChangeCommand.getGoWorkAtr1(), workChangeCommand.getBackHomeAtr1(),

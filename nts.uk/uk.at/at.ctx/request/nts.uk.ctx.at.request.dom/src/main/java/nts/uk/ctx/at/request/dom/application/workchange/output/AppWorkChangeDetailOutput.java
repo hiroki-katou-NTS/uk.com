@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +20,6 @@ public class AppWorkChangeDetailOutput {
 	/**
 	 * 勤務変更申請
 	 */
-	private AppWorkChange appWorkChange;
+	private AppWorkChange_Old appWorkChange;
 	
 }

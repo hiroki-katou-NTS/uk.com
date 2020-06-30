@@ -32,7 +32,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
@@ -110,7 +110,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			outData.setEndDate(appData.getEndDate());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
-				Optional<AppWorkChange> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
+				Optional<AppWorkChange_Old> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
 					outData.setWorkTimeCode(x.getWorkTimeCd() == null ? Optional.empty() : Optional.of(x.getWorkTimeCd()));
 					outData.setWorkTypeCode(x.getWorkTypeCd() == null ? Optional.empty() : Optional.of(x.getWorkTypeCd()));
@@ -208,7 +208,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	}
 	@Override
 	public Integer excludeHolidayAtr(String cid, String appID) {
-		Optional<AppWorkChange> data = workChangeRepos.getAppworkChangeById(cid, appID);
+		Optional<AppWorkChange_Old> data = workChangeRepos.getAppworkChangeById(cid, appID);
 		if(data.isPresent()) {
 			return data.get().getExcludeHolidayAtr();
 		}

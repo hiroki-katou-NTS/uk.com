@@ -11,5 +11,5 @@ public interface IWorkChangeUpdateService {
 	 * @param workChange 勤務変更申請
 	 * @return
 	 */
-	public ProcessResult updateWorkChange(Application_New app, AppWorkChange workChange);
+	public ProcessResult updateWorkChange(Application_New app, AppWorkChange_Old workChange);
 }

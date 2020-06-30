@@ -44,7 +44,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
-    public ProcessResult registerData(AppWorkChange workChange, Application_New app, List<GeneralDate> lstDateHd) {
+    public ProcessResult registerData(AppWorkChange_Old workChange, Application_New app, List<GeneralDate> lstDateHd) {
 		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
 		appRepository.insert(app);
@@ -75,7 +75,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	}
 
 	@Override
-	public void checkWorkHour(AppWorkChange workChange) {
+	public void checkWorkHour(AppWorkChange_Old workChange) {
 		// 就業時間（開始時刻：終了時刻）
 		// 開始時刻 ＞ 終了時刻
 		if (workChange.getWorkTimeStart1() > workChange.getWorkTimeEnd1()) {
@@ -100,7 +100,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	}
 
 	@Override
-	public void checkBreakTime1(AppWorkChange workChange) {
+	public void checkBreakTime1(AppWorkChange_Old workChange) {
 		// 開始時刻 ＞ 終了時刻
 		if (workChange.getBreakTimeStart1() > workChange.getBreakTimeEnd1()) {
 			// エラーメッセージ(Msg_582)

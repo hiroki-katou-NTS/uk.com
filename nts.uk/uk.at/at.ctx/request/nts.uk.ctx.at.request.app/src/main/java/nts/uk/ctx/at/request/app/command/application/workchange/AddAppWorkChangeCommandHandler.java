@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
@@ -86,7 +86,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				appReason, ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(
 				companyId, 
 				appID,
 				workChangeCommand.getWorkTypeCd(), 

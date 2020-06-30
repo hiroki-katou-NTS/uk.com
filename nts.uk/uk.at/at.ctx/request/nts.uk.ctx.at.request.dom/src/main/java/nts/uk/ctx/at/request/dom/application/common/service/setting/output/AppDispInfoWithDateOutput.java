@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -23,6 +24,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@Setter
 public class AppDispInfoWithDateOutput {
 	
 	/**
@@ -83,6 +85,26 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 就業時間帯の設定
 	 */
-	private List<WorkTimeSetting> workTimeLst;
+	private Optional<List<WorkTimeSetting>> opWorkTimeLst;
+	
+	public AppDispInfoWithDateOutput(
+			ApprovalFunctionSetting approvalFunctionSet,
+			PrePostInitAtr prePostAtr,
+			GeneralDate baseDate,
+			SEmpHistImport empHistImport,
+			NotUseAtr appDeadlineUseCategory) {
+		this.approvalFunctionSet = approvalFunctionSet;
+		this.prePostAtr = prePostAtr;
+		this.baseDate = baseDate;
+		this.empHistImport = empHistImport;
+		this.appDeadlineUseCategory = appDeadlineUseCategory;
+		this.opEmploymentSet = Optional.empty();
+		this.opListApprovalPhaseState = Optional.empty();
+		this.opErrorFlag = Optional.empty();
+		this.opAchievementOutputLst = Optional.empty();
+		this.opAppDetailContentLst = Optional.empty();
+		this.opAppDeadline = Optional.empty();
+		this.opWorkTimeLst = Optional.empty();
+	}
 	
 }

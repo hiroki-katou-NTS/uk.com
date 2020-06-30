@@ -256,7 +256,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application,
-			AppWorkChange appWorkChange) {
+			AppWorkChange_Old appWorkChange) {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -280,7 +280,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public void checkRegisterWorkChange(Application_New application, AppWorkChange appWorkChange) {
+	public void checkRegisterWorkChange(Application_New application, AppWorkChange_Old appWorkChange) {
 		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
 		List<String> errorLst = this.detailWorkHoursCheck(application, appWorkChange);
@@ -294,7 +294,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange appWorkChange) {
+	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange_Old appWorkChange) {
 		List<String> errorLst = new ArrayList<>();
 		// INPUT．「申請．申請開始日」と「INPUT．「申請．申請終了日」をチェックする
 		if(application.getEndDate().isPresent() && 
@@ -360,7 +360,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 詳細画面起動前申請共通設定を取得する
 		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
-		AppWorkChange appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, appID).get();
+		AppWorkChange_Old appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, appID).get();
 		// ドメインモデル「勤務変更申請設定」より取得する 
 		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
 		// 勤務種類を取得する
@@ -378,7 +378,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application,
-			AppWorkChange appWorkChange, boolean agentAtr) {
+			AppWorkChange_Old appWorkChange, boolean agentAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(

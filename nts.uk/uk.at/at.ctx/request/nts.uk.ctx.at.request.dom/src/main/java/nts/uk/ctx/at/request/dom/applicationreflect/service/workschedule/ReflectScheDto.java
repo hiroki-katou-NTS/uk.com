@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class ReflectScheDto {
 	/**
 	 * 勤務変更申請
 	 */
-	private AppWorkChange workChange;
+	private AppWorkChange_Old workChange;
 	/**
 	 * 	休日出勤申請
 	 */

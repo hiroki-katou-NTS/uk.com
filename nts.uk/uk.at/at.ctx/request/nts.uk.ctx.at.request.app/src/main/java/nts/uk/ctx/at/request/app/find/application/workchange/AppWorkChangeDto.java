@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.workchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 
 /**
 * 勤務変更申請
@@ -103,7 +103,7 @@ public class AppWorkChangeDto
      */
     private String workTimeName;
 
-	public static AppWorkChangeDto fromDomain(AppWorkChange domain) {
+	public static AppWorkChangeDto fromDomain(AppWorkChange_Old domain) {
 		return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(),
 				domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(),
 				domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(),

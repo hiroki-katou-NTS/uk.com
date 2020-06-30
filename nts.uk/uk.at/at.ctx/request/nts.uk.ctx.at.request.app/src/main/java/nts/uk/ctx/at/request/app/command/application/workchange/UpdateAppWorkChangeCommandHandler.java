@@ -26,7 +26,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
@@ -126,7 +126,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 								.ofNullable(appCommand.getReflectPerTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
 						.build());
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(workChangeCommand.getCid(),
 				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
 				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
 				workChangeCommand.getGoWorkAtr1(), workChangeCommand.getBackHomeAtr1(),

@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AppWorkChange extends AggregateRoot
+public class AppWorkChange_Old extends AggregateRoot
 {
     
     /**
@@ -104,11 +104,11 @@ public class AppWorkChange extends AggregateRoot
      */
     private String workTimeName;
     
-	public static AppWorkChange createFromJavaType(String cid, String appId, String workTypeCd, String workTimeCd,
+	public static AppWorkChange_Old createFromJavaType(String cid, String appId, String workTypeCd, String workTimeCd,
 			Integer excludeHolidayAtr, Integer workChangeAtr, Integer goWorkAtr1, Integer backHomeAtr1, Integer breakTimeStart1,
 			Integer breakTimeEnd1, Integer workTimeStart1, Integer workTimeEnd1, Integer workTimeStart2, Integer workTimeEnd2,
 			Integer goWorkAtr2, Integer backHomeAtr2) {
-		return new AppWorkChange(cid, appId, workTypeCd, workTimeCd, excludeHolidayAtr, workChangeAtr, goWorkAtr1,
+		return new AppWorkChange_Old(cid, appId, workTypeCd, workTimeCd, excludeHolidayAtr, workChangeAtr, goWorkAtr1,
 				backHomeAtr1, breakTimeStart1, breakTimeEnd1, workTimeStart1, workTimeEnd1, workTimeStart2,
 				workTimeEnd2, goWorkAtr2, backHomeAtr2, null, null);
 	}

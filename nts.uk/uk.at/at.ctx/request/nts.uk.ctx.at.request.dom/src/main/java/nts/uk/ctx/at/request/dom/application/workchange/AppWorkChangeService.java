@@ -76,14 +76,14 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application, AppWorkChange appWorkChange);
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application, AppWorkChange_Old appWorkChange);
 	
 	/**
 	 * 登録時チェック処理（勤務変更申請）
 	 * @param application 申請
 	 * @param appWorkChange 勤務変更申請
 	 */
-	public void checkRegisterWorkChange(Application_New application, AppWorkChange appWorkChange);
+	public void checkRegisterWorkChange(Application_New application, AppWorkChange_Old appWorkChange);
 	
 	/**
 	 * 勤務変更申請就業時間チェックの内容
@@ -91,7 +91,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange appWorkChange);
+	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange_Old appWorkChange);
 	
 	/**
 	 * 1日休日のチェック
@@ -118,5 +118,5 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application, 
-			AppWorkChange appWorkChange, boolean agentAtr);
+			AppWorkChange_Old appWorkChange, boolean agentAtr);
 }

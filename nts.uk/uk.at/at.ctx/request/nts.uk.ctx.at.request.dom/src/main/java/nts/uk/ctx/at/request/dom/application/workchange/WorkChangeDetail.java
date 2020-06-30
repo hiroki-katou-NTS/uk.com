@@ -16,7 +16,7 @@ public class WorkChangeDetail {
 	/**
 	* 勤務変更申請
 	*/
-	AppWorkChange appWorkChange;		
+	AppWorkChange_Old appWorkChange;		
 	/**
 	 * 申請
 	 */

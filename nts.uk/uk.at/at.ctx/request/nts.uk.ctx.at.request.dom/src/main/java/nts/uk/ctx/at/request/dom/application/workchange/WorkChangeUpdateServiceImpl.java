@@ -32,7 +32,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;
 	@Override
-	public ProcessResult updateWorkChange(Application_New app, AppWorkChange workChange) {
+	public ProcessResult updateWorkChange(Application_New app, AppWorkChange_Old workChange) {
 		//ドメインモデル「勤務変更申請」の更新をする
 		appRepository.updateWithVersion(app);
 		workChangeRepository.update(workChange);

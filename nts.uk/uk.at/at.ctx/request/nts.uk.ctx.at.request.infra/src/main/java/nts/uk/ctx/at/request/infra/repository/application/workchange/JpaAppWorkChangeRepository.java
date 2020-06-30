@@ -13,7 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
@@ -31,13 +31,13 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     		+ " AND a.appWorkChangePk.appId IN :lstAppId";
 
     @Override
-    public List<AppWorkChange> getAllAppWorkChange(){
+    public List<AppWorkChange_Old> getAllAppWorkChange(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqdtAppWorkChange.class)
                 .getList(item -> toDomain(item));
     }
     
     @Override
-    public Optional<AppWorkChange> getAppworkChangeById(String cid, String appId){
+    public Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId){
     	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppWorkChange.class)
 				.setParameter("companyID", cid)
 				.setParameter("appId", appId)
@@ -45,12 +45,12 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     }
     
     @Override
-    public void add(AppWorkChange domain){
+    public void add(AppWorkChange_Old domain){
         this.commandProxy().insert(toEntity(domain));
     }
 
     @Override
-    public void update(AppWorkChange domain){
+    public void update(AppWorkChange_Old domain){
     	KrqdtAppWorkChange newAppWC = toEntity(domain);
     	KrqdtAppWorkChange updateWorkChange = this.queryProxy().find(newAppWC.appWorkChangePk, KrqdtAppWorkChange.class).get();
     	if (null == updateWorkChange) {
@@ -80,8 +80,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
         this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(cid, appId));
     }
     
-	private static AppWorkChange toDomain(KrqdtAppWorkChange entity) {
-		AppWorkChange appWorkChange = AppWorkChange.createFromJavaType(entity.appWorkChangePk.cid,
+	private static AppWorkChange_Old toDomain(KrqdtAppWorkChange entity) {
+		AppWorkChange_Old appWorkChange = AppWorkChange_Old.createFromJavaType(entity.appWorkChangePk.cid,
 				entity.appWorkChangePk.appId, entity.workTypeCd, entity.workTimeCd, entity.excludeHolidayAtr,
 				entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1, entity.breakTimeStart1,
 				entity.breakTimeEnd1, entity.workTimeStart1, entity.workTimeEnd1, entity.workTimeStart2,
@@ -91,7 +91,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 		return appWorkChange;
 	}
 
-	private KrqdtAppWorkChange toEntity(AppWorkChange domain) {
+	private KrqdtAppWorkChange toEntity(AppWorkChange_Old domain) {
 		return new KrqdtAppWorkChange(domain.getVersion(), new KrqdtAppWorkChangePk(domain.getCid(), domain.getAppId()),
 				Strings.isBlank(domain.getWorkTypeCd()) ? null : domain.getWorkTypeCd(), 
 				Strings.isBlank(domain.getWorkTimeCd()) ? null : domain.getWorkTimeCd(), 
@@ -110,11 +110,11 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId) {
+	public List<AppWorkChange_Old> getListAppWorkChangeByID(String companyID, List<String> lstAppId) {
 		if(lstAppId.isEmpty()){
 			return new ArrayList<>();
 		}
-		List<AppWorkChange> resultList = new ArrayList<>();
+		List<AppWorkChange_Old> resultList = new ArrayList<>();
 		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange.class)
 								  .setParameter("companyID", companyID)

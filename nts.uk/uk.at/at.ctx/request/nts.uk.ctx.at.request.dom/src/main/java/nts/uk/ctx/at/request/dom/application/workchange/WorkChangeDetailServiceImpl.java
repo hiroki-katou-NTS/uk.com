@@ -92,7 +92,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
-		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
+		AppWorkChange_Old appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
 		//Get work type name & work time name
 		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
 		if (workTime.isPresent()) {

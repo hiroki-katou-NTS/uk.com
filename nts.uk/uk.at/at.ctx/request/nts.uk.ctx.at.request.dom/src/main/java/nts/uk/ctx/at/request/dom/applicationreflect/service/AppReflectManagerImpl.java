@@ -45,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectRecordPara;
@@ -202,11 +202,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 			break;
 		case WORK_CHANGE_APPLICATION:
-			Optional<AppWorkChange> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
+			Optional<AppWorkChange_Old> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
 				return;
 			}
-			AppWorkChange workChange = getAppworkChangeById.get();
+			AppWorkChange_Old workChange = getAppworkChangeById.get();
 			workchangeData = this.getWorkChange(appInfor, workChange, reflectSetting, excLogId);
 			if(workchangeData == null) {
 				return;
@@ -309,7 +309,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}				
 		}
 	}	
-	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange,
+	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange_Old workChange,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		CommonReflectPara workchangeInfor = null;
 		workchangeInfor = new CommonReflectPara(appInfor.getEmployeeID(), 
