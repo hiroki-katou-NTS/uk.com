@@ -73,7 +73,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-//                        self.viewModelD().start();
+                        self.viewModelD().start();
                         self.removeErrorMonitor();
                     }
                 });
