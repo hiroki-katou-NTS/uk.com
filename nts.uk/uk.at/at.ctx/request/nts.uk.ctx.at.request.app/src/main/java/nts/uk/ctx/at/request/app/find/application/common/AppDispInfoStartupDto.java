@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class AppDispInfoStartupDto {
 	 */
 	public AppDetailScreenInfoDto appDetailScreenInfo;
 	
-	public static AppDispInfoStartupDto fromDomain(AppDispInfoStartupOutput appDispInfoStartupOutput) {
+	public static AppDispInfoStartupDto fromDomain(AppDispInfoStartupOutput_Old appDispInfoStartupOutput) {
 		AppDispInfoStartupDto result = new AppDispInfoStartupDto();
 		result.appDispInfoNoDateOutput = AppDispInfoNoDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
 		result.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
@@ -33,11 +33,11 @@ public class AppDispInfoStartupDto {
 		return result;
 	}
 	
-	public AppDispInfoStartupOutput toDomain() {
-		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput();
+	public AppDispInfoStartupOutput_Old toDomain() {
+		AppDispInfoStartupOutput_Old output = new AppDispInfoStartupOutput_Old();
 		output.setAppDispInfoNoDateOutput(appDispInfoNoDateOutput.toDomain());
 		
-		return new AppDispInfoStartupOutput(
+		return new AppDispInfoStartupOutput_Old(
 				appDispInfoNoDateOutput.toDomain(), 
 				appDispInfoWithDateOutput.toDomain(), 
 				appDetailScreenInfo == null ? Optional.empty() : Optional.of(appDetailScreenInfo.toDomain()));

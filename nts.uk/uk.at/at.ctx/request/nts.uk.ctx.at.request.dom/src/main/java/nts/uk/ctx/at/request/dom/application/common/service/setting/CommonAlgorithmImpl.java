@@ -29,7 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
@@ -254,14 +254,14 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType_Old appType,
+	public AppDispInfoStartupOutput_Old getAppDispInfoStart(String companyID, ApplicationType_Old appType,
 			List<String> applicantLst, List<GeneralDate> dateLst, boolean mode) {
 		// 申請表示情報(基準日関係なし)を取得する
 		AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
 		// OUTPUT「申請表示情報」にセットする
-		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
+		AppDispInfoStartupOutput_Old output = new AppDispInfoStartupOutput_Old(appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
 		// OUTPUT「申請表示情報」を返す
 		return output;
 	}

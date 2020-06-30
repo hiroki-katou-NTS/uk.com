@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -72,7 +72,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput getCommonSetBeforeDetail(String companyID, String appID) {
+	public AppDispInfoStartupOutput_Old getCommonSetBeforeDetail(String companyID, String appID) {
 		// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 起動時の申請表示情報を取得する
@@ -84,7 +84,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)) {
 			dateLst.add(loopDate);
 		}
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyID, appType, applicantLst, dateLst, false);
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyID, appType, applicantLst, dateLst, false);
 		// 詳細画面の利用者とステータスを取得する
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 

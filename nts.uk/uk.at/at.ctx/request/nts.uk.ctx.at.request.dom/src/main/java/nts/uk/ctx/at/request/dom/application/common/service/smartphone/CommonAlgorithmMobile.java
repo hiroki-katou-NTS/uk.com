@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
@@ -25,19 +24,19 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 public interface CommonAlgorithmMobile {
 	
 	/**
-	 * 申請共通起動処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.申請共通起動処理.申請共通起動処理
 	 * @param mode 起動モード（編集モード・表示モード） 編集モード: true, 表示モード: false
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param appType 申請種類
 	 * @param opHolidayAppType 休暇申請の種類＜Optional＞
 	 * @param dateLst 申請対象日リスト
-	 * @param opOverTimeAtr 残業区分＜Optional＞
+	 * @param opOvertimeAppAtr 残業区分＜Optional＞
 	 * @return 申請表示情報
 	 */
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType, 
-			List<GeneralDate> dateLst, Optional<OverTimeAtr> opOverTimeAtr);
+			List<GeneralDate> dateLst, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.申請共通設定情報を取得する.申請共通設定情報を取得する
@@ -61,7 +60,7 @@ public interface CommonAlgorithmMobile {
 	public AppReasonOutput getAppReasonDisplay(String companyID, ApplicationType appType, Optional<HolidayAppType> opHolidayAppType);
 	
 	/**
-	 * 基準日に関係する申請設定情報を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.基準日に関係する申請共通設定情報を取得する.基準日に関係する申請設定情報を取得する
 	 * @param mode 起動モード（編集モード・表示モード） 編集モード: true, 表示モード: false
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
@@ -76,7 +75,7 @@ public interface CommonAlgorithmMobile {
 			Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
-	 * 基準日として扱う日の取得
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.基準日として扱う日の取得.基準日として扱う日の取得
 	 * @param applicationSetting 申請設定
 	 * @param appType 申請種類
 	 * @param appDateLst 申請対象日リスト
@@ -85,7 +84,7 @@ public interface CommonAlgorithmMobile {
 	public GeneralDate getBaseDate(ApplicationSetting applicationSetting, ApplicationType appType, List<GeneralDate> appDateLst);
 	
 	/**
-	 * 事前事後の初期選択状態を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.事前事後の初期選択状態を取得する.事前事後の初期選択状態を取得する
 	 * @param appDate 申請対象日
 	 * @param appType 申請種類
 	 * @param prePostDisplayAtr 事前事後区分表示

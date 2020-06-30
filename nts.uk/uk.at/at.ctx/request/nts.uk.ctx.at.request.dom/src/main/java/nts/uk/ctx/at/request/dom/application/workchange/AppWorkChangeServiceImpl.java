@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
@@ -93,7 +93,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
 		AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
 		// 共通申請
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
 				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				employeeIDLst, 
@@ -358,7 +358,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeDetailOutput result = new AppWorkChangeDetailOutput();
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
 		// 詳細画面起動前申請共通設定を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
 		AppWorkChange_Old appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, appID).get();
 		// ドメインモデル「勤務変更申請設定」より取得する 

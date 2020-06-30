@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.De
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -329,7 +329,7 @@ public class HolidayShipmentScreenBFinder {
 		String companyID = AppContexts.user().companyId();
 		
 		//詳細画面起動前申請共通設定を取得する(Lấy setting chung của đơn xin trước khi khởi động màn hình chi tiết)
-		AppDispInfoStartupOutput appDispInfoStartupOutput = detailService.getCommonSetBeforeDetail(companyID, applicationID);
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = detailService.getCommonSetBeforeDetail(companyID, applicationID);
 		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
 
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])

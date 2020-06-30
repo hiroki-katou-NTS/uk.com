@@ -52,7 +52,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
@@ -880,7 +880,7 @@ public class HolidayShipmentScreenAFinder {
 	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
 		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
 		
 		//振休管理チェック (Check quản lý nghỉ bù)

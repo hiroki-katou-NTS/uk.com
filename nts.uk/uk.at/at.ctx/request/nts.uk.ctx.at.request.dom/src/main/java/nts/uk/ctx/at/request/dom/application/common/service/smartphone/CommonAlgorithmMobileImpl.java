@@ -35,7 +35,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
@@ -104,9 +103,14 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType, List<GeneralDate> dateLst,
-			Optional<OverTimeAtr> opOverTimeAtr) {
-		// TODO Auto-generated method stub
-		return null;
+			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		// 申請共通設定情報を取得する
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppCommonSetInfo(mode, companyID, employeeID, appType, opHolidayAppType);
+		// 基準日に関係する申請設定情報を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppSetInfoRelatedBaseDate(mode, companyID, employeeID,
+				dateLst, appType, appDispInfoNoDateOutput.getApplicationSetting(), opOvertimeAppAtr);
+		// 取得した内容を返す
+		return new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput);
 	}
 
 	@Override

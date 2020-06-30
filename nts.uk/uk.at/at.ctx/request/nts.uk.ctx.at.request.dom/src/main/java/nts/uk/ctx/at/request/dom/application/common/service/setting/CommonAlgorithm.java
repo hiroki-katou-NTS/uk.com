@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
@@ -90,7 +90,7 @@ public interface CommonAlgorithm {
 	 * @param mode 新規詳細モード(新規モード/詳細モード) 新規モード: true/詳細モード: false
 	 * @return
 	 */
-	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType_Old appType, List<String> applicantLst, 
+	public AppDispInfoStartupOutput_Old getAppDispInfoStart(String companyID, ApplicationType_Old appType, List<String> applicantLst, 
 			List<GeneralDate> dateLst, boolean mode);
 	
 	/**
