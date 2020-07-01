@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PredetemineTimeSettingDto;
@@ -21,7 +21,7 @@ public class AppWorkChangeDispInfoCmd {
 	/**
 	 * 申請表示情報
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	public AppDispInfoStartupDto_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 勤務変更申請設定

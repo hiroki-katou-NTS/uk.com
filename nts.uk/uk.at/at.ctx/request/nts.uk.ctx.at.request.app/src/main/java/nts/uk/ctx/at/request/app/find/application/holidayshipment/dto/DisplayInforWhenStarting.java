@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
@@ -26,7 +26,7 @@ public class DisplayInforWhenStarting {
 	//振休残数情報
 	public RemainingHolidayInfor remainingHolidayInfor;
 	//申請表示情報
-	public AppDispInfoStartupDto appDispInfoStartup;
+	public AppDispInfoStartupDto_Old appDispInfoStartup;
 	//振休振出申請設定
 	private WithDrawalReqSetDto drawalReqSet;
 	

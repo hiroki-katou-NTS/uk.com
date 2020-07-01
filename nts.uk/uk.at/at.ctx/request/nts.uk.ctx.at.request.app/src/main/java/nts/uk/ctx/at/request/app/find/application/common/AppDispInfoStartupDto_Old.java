@@ -8,27 +8,27 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppDispInfoStartupDto {
+public class AppDispInfoStartupDto_Old {
 	
 	/**
 	 * 申請設定（基準日関係なし）
 	 */
-	public AppDispInfoNoDateDto appDispInfoNoDateOutput;
+	public AppDispInfoNoDateDto_Old appDispInfoNoDateOutput;
 	
 	/**
 	 * 申請設定（基準日関係あり）
 	 */
-	public AppDispInfoWithDateDto appDispInfoWithDateOutput;
+	public AppDispInfoWithDateDto_Old appDispInfoWithDateOutput;
 	
 	/**
 	 * 申請詳細画面情報
 	 */
 	public AppDetailScreenInfoDto appDetailScreenInfo;
 	
-	public static AppDispInfoStartupDto fromDomain(AppDispInfoStartupOutput_Old appDispInfoStartupOutput) {
-		AppDispInfoStartupDto result = new AppDispInfoStartupDto();
-		result.appDispInfoNoDateOutput = AppDispInfoNoDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
-		result.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
+	public static AppDispInfoStartupDto_Old fromDomain(AppDispInfoStartupOutput_Old appDispInfoStartupOutput) {
+		AppDispInfoStartupDto_Old result = new AppDispInfoStartupDto_Old();
+		result.appDispInfoNoDateOutput = AppDispInfoNoDateDto_Old.fromDomain(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
+		result.appDispInfoWithDateOutput = AppDispInfoWithDateDto_Old.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
 		result.appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> AppDetailScreenInfoDto.fromDomain(x)).orElse(null);
 		return result;
 	}

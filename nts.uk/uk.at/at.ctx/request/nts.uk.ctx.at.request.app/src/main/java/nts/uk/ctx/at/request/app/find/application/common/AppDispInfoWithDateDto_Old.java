@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.shr.com.primitive.Memo;
 
-public class AppDispInfoWithDateDto {
+public class AppDispInfoWithDateDto_Old {
 	/**
 	 * 申請承認機能設定
 	 */
@@ -84,12 +84,12 @@ public class AppDispInfoWithDateDto {
 	 */
 	public SEmpHistImportDto empHistImport;
 	
-	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput) {
-		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
+	public static AppDispInfoWithDateDto_Old fromDomain(AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput) {
+		AppDispInfoWithDateDto_Old appDispInfoWithDateDto = new AppDispInfoWithDateDto_Old();
 		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
 		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
 		appDispInfoWithDateDto.workTimeLst = appDispInfoWithDateOutput.getWorkTimeLst().stream()
-				.map(x -> AppDispInfoWithDateDto.fromDomainWorkTime(x)).collect(Collectors.toList());
+				.map(x -> AppDispInfoWithDateDto_Old.fromDomainWorkTime(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.listApprovalPhaseState = appDispInfoWithDateOutput.getApprovalRootState() == null ? Collections.emptyList() : 
 			appDispInfoWithDateOutput.getApprovalRootState().getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList());
 		appDispInfoWithDateDto.errorFlag = appDispInfoWithDateOutput.getErrorFlag().value;
@@ -125,7 +125,7 @@ public class AppDispInfoWithDateDto {
 		AppDispInfoWithDateOutput_Old output = new AppDispInfoWithDateOutput_Old();
 		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
 		output.setEmploymentSet(employmentSet == null ? null : employmentSet.toDomain());
-		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
+		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto_Old.toDomainWorkTime(x)).collect(Collectors.toList()));
 		output.setApprovalRootState(new ApprovalRootStateImport_New(
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		output.setErrorFlag(EnumAdaptor.valueOf(errorFlag, ErrorFlagImport.class));

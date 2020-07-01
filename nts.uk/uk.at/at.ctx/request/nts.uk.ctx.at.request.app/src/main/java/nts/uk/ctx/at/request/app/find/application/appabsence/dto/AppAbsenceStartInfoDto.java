@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
@@ -22,7 +22,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 申請表示情報
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	public AppDispInfoStartupDto_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 休暇申請設定
@@ -78,7 +78,7 @@ public class AppAbsenceStartInfoDto {
 	
 	public static AppAbsenceStartInfoDto fromDomain(AppAbsenceStartInfoOutput absenceStartInfoOutput) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
+		result.appDispInfoStartupOutput = AppDispInfoStartupDto_Old.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.hdAppSet = HdAppSetDto.convertToDto(absenceStartInfoOutput.getHdAppSet());
 		result.displayReasonLst = absenceStartInfoOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();

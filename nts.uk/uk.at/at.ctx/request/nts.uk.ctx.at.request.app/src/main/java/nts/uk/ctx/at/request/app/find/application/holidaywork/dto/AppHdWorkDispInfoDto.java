@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
@@ -20,7 +20,7 @@ public class AppHdWorkDispInfoDto {
 	/**
 	 * 申請表示情報
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	public AppDispInfoStartupDto_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 休出申請指示
@@ -75,7 +75,7 @@ public class AppHdWorkDispInfoDto {
 	
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
 		AppHdWorkDispInfoDto result = new AppHdWorkDispInfoDto();
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		result.appDispInfoStartupOutput = AppDispInfoStartupDto_Old.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
 		result.withdrawalAppSet = WithdrawalAppSetDto.convertToDto(appHdWorkDispInfoOutput.getWithdrawalAppSet());
 		if(appHdWorkDispInfoOutput.getAgreeOverTimeOutput() != null) {
 			result.agreeOverTimeOutput = AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());

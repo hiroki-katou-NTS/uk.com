@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
@@ -18,7 +18,7 @@ public class AppWorkChangeDispInfoDto {
 	/**
 	 * 申請表示情報
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	public AppDispInfoStartupDto_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 勤務変更申請設定
@@ -52,7 +52,7 @@ public class AppWorkChangeDispInfoDto {
 	
 	public static AppWorkChangeDispInfoDto fromDomain(AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		AppWorkChangeDispInfoDto result = new AppWorkChangeDispInfoDto();
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
+		result.appDispInfoStartupOutput = AppDispInfoStartupDto_Old.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
 		result.appWorkChangeSet = AppWorkChangeSetDto.fromDomain(appWorkChangeDispInfo.getAppWorkChangeSet());
 		result.workTypeLst = appWorkChangeDispInfo.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
 		result.setupType = appWorkChangeDispInfo.getSetupType() == null ? null : appWorkChangeDispInfo.getSetupType().value;

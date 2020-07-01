@@ -23,8 +23,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto_Old;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
@@ -308,7 +308,7 @@ public class HolidayShipmentScreenAFinder {
 				displayInforWhenStarting.getAppDispInfoStartup().appDispInfoNoDateOutput.toDomain(), 
 				displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput.toDomain());
 		//「振休振出申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」 
-		displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput = AppDispInfoWithDateDto .fromDomain(appDateProcess);
+		displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput = AppDispInfoWithDateDto_Old .fromDomain(appDateProcess);
 		//INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする 
 		if(displayInforWhenStarting.getAppDispInfoStartup().appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate == RecordDate.APP_DATE.value) {
 			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
@@ -342,7 +342,7 @@ public class HolidayShipmentScreenAFinder {
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoNoDateOutput(), 
 				displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput());
 		//「振休振出申請起動時の表示情報」．申請表示情報．申請表示情報(基準日関係あり)=上記取得した「申請表示情報(基準日関係あり)」 
-		displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDateProcess);
+		displayInforWhenStarting.getAppDispInfoStartup().appDispInfoWithDateOutput = AppDispInfoWithDateDto_Old.fromDomain(appDateProcess);
 		//INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする 
 		if(displayInforWhenStarting.getAppDispInfoStartup().toDomain().getAppDispInfoNoDateOutput().getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.APP_DATE) {
 			//1.振出申請（新規）起動処理(申請対象日関係あり)/1.xử lý khởi động đơn xin làm bù(new)(có liên quan ApplicationTargetdate)
@@ -881,7 +881,7 @@ public class HolidayShipmentScreenAFinder {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
 		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
-		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
+		result.setAppDispInfoStartup(AppDispInfoStartupDto_Old.fromDomain(appDispInfoStartupOutput));
 		
 		//振休管理チェック (Check quản lý nghỉ bù)
 		this.startupErrorCheck(lstEmployee.get(0), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), companyId);

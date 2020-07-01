@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationS
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
@@ -141,7 +141,7 @@ public class AppAbsenceFinder {
 				employeeIDs, 
 				dateLst, 
 				true);
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
+		result.appDispInfoStartupOutput = AppDispInfoStartupDto_Old.fromDomain(appDispInfoStartupOutput);
 		// 休暇申請設定を取得する
 		HolidayRequestSetOutput holidayRequestSetOutput = absenseProcess.getHolidayRequestSet(companyID);
 		result.hdAppSet = HdAppSetDto.convertToDto(holidayRequestSetOutput.getHdAppSet());

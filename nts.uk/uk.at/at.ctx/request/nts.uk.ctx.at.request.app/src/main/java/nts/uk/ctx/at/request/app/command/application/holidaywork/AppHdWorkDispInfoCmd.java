@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
@@ -22,7 +22,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 申請表示情報
 	 */
-	public AppDispInfoStartupDto appDispInfoStartupOutput;
+	public AppDispInfoStartupDto_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 休出申請指示

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppDispInfoNoDateDto {
+public class AppDispInfoNoDateDto_Old {
 	
 	/**
 	 * 社員情報
@@ -29,8 +29,8 @@ public class AppDispInfoNoDateDto {
 	 */
 	public List<ApplicationReasonDto> appReasonLst;
 	
-	public static AppDispInfoNoDateDto fromDomain(AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput) {
-		AppDispInfoNoDateDto appDispInfoNoDateDto = new AppDispInfoNoDateDto();
+	public static AppDispInfoNoDateDto_Old fromDomain(AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput) {
+		AppDispInfoNoDateDto_Old appDispInfoNoDateDto = new AppDispInfoNoDateDto_Old();
 		appDispInfoNoDateDto.employeeInfoLst = appDispInfoNoDateOutput.getEmployeeInfoLst();
 		appDispInfoNoDateDto.requestSetting = RequestSettingDto.fromDomain(appDispInfoNoDateOutput.getRequestSetting());
 		appDispInfoNoDateDto.appReasonLst = appDispInfoNoDateOutput.getAppReasonLst().stream()
