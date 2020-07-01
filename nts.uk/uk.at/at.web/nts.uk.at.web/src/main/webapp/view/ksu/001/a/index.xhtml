@@ -10,6 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./style.css" />
+			<com:stylefile path="./grid-list.css" />
 			<com:scriptfile path="./bindings/icon.js" />
 			<com:scriptfile path="./bindings/date.js" />
 			<com:scriptfile path="./bindings/popup.js" />
@@ -24,6 +25,7 @@
 			<com:scriptfile path="./components/mode-edit-action.js" />
 			<com:scriptfile path="./components/shift-pallet.js" />
 			<com:scriptfile path="./components/mode.js" />
+			<com:scriptfile path="./components/grid-list.js" />
 			<com:scriptfile path="./viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -31,6 +33,7 @@
 			<div id="contents-area" class="ksu-001-a">
 				<div data-bind="component: { name: 'ksu-target-organization' }"></div>
 				<div data-bind="component: { name: 'ksu-mode' }"></div>
+				<div data-bind="component: { name: 'ksu-grid-list', params: { summaryDataSources: ko.observableArray([]) } }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

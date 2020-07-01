@@ -83,9 +83,15 @@
 	min-width: 640px;
 }
 
-.ksu-001-a .ksu-mode .tab-mode .tab-table {
+.ksu-001-a .ksu-mode .tab-mode a.tab-table {
+	cursor: pointer;
+	padding: 10px 7px;
 	color: #0D86D1;
 	text-decoration: underline;
+}
+
+.ksu-001-a .ksu-mode .tab-mode a.tab-table.selected {
+	background-color: rgb(237,250,194);	
 }
 
 .ksu-001-a .ksu-mode .setting-mode {
@@ -96,6 +102,8 @@
 
 .ksu-001-a .ksu-mode .setting-mode .btn-setting {
 	width: 32px;
+	box-shadow: none;
+	top: 0;
 }
 
 .ksu-001-a .ksu-mode .ksu-mode-buttons button.active:enabled {
@@ -127,6 +135,8 @@
 .ksu-001-a .ksu-mode .button-table td>button {
 	width: 100%;
 	min-width: 90px;
+	box-shadow: none;
+	top: 0;
 }
 
 #functions-area>div {

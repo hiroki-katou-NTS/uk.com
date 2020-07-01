@@ -17,8 +17,14 @@ const shiftPalletTemplate = `
 					value: ko.observable('Com_Company')
 				}"></div>
 		</div>
-		<div class="d-inline tab-mode" data-bind="foreach: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
-			<a class="tab-table" data-bind="text: 'tabs ' + $data, css: { selected: true }"></a>
+		<div class="d-inline tab-mode" data-bind="foreach: tabs">
+			<a class="tab-table" data-bind="
+					text: 'tabs ' + $data,
+					css: { 
+						selected: $component.selectedTab() === $data
+					},
+					click: function() { $component.selectedTab($data); }
+				"></a>
 		</div>
 		<div class="d-inline setting-mode">
 			<div class="d-inline" data-bind="ntsCheckBox: { checked: ko.observable(false), text: $component.$i18n('KSU001_92') }"></div>
@@ -30,7 +36,7 @@ const shiftPalletTemplate = `
 			<tbody data-bind="foreach: _.chunk([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0], 10)">
 				<tr data-bind="foreach: $data">
 					<td>
-						<button>+</button>
+						<button class="small">+</button>
 					</td>
 				</tr>
 			</tbody>
@@ -44,7 +50,9 @@ const shiftPalletTemplate = `
 	template: shiftPalletTemplate
 })
 class KSU001AShiftPalletComponent extends ko.ViewModel {
-	
+	selectedTab: KnockoutObservable<number> = ko.observable(1);
+	tabs: KnockoutObservableArray<number> = ko.observableArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
 	created() {
 	}
 
