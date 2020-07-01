@@ -32,6 +32,28 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             console.log( ko.toJS( vm.application() ) );
             console.log( this.model );
             //        vm.model(new Model(true, true, '01', 'hoang','30','33'));
+            
+            
+//          // assign A8
+//          if (this.dataFetch().goBackReflect()) {
+//              if (this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_REFLECT_1 
+//                      || this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_NOT_REFLECT_1) {
+//                  
+//                  this.dataFetch().goBackApplication().isChangedWork = this.model.checkbox3();
+//              }else if (this.dataFetch().goBackReflect().reflectApplication == ApplicationStatus.DO_REFLECT){
+//                  this.dataFetch().goBackApplication().isChangedWork = true;
+//              }
+//          }
+//          
+//          if (this.dataFetch().goBackApplication().isChangedWork) {
+//              
+////              A8_2
+//              this.dataFetch().goBackApplication().dataWork.workType.workType = this.model.workTypeCode();
+//              this.dataFetch().goBackApplication().dataWork.workType.nameWorkType = this.model.workTypeName();
+//              
+////              A8_4                
+//              this.dataFetch().goBackApplication().dataWork.workTime.workTime = this.model.workTimeCode();
+//              this.dataFetch().goBackApplication().dataWork.workTime.nameWorkTime = this.model.workTimeName();
         }
 
         fetchData() {
