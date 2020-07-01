@@ -34,7 +34,7 @@ module nts.uk.at.view.kdp002.a {
                         self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId , messageParams: res.parameterIds}).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
                     }).always(() => {
