@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 
 /**
  * 打刻カード
@@ -57,5 +58,6 @@ public class StampCard extends AggregateRoot {
 		this.stampNumber = new StampNumber(stampNumber);
 		this.employeeId = employeeId;
 		this.registerDate = GeneralDate.today();
+		this.stampCardId = IdentifierUtil.randomUniqueId();
 	}
 }
