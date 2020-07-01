@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.setting.output;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 
 /**
@@ -27,6 +28,7 @@ public class AppDispInfoStartupOutput {
 	/**
 	 * 申請詳細画面情報
 	 */
+	@Setter
 	private Optional<AppDetailScreenInfo> appDetailScreenInfo;
 	
 	public AppDispInfoStartupOutput(AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {

@@ -24,7 +24,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
-@Setter
 public class AppDispInfoWithDateOutput {
 	
 	/**
@@ -55,36 +54,43 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 雇用別申請承認設定
 	 */
+	@Setter
 	private Optional<AppEmploymentSetting> opEmploymentSet;
 	
 	/**
 	 * 承認ルート
 	 */
+	@Setter
 	private Optional<List<ApprovalPhaseStateImport_New>> opListApprovalPhaseState;
 	
 	/**
 	 * 承認ルートエラー情報
 	 */
+	@Setter
 	private Optional<ErrorFlagImport> opErrorFlag;
 	
 	/**
 	 * 表示する実績内容
 	 */
+	@Setter
 	private Optional<List<AchievementOutput>> opAchievementOutputLst;
 	
 	/**
 	 * 表示する事前申請内容
 	 */
+	@Setter
 	private Optional<List<AppDetailContent>> opAppDetailContentLst;
 	
 	/**
 	 * 申請締め切り日
 	 */
+	@Setter
 	private Optional<GeneralDate> opAppDeadline;
 	
 	/**
 	 * 就業時間帯の設定
 	 */
+	@Setter
 	private Optional<List<WorkTimeSetting>> opWorkTimeLst;
 	
 	public AppDispInfoWithDateOutput(

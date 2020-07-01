@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -70,16 +71,19 @@ public class AppDispInfoNoDateOutput {
 	/**
 	 * 事前受付時分
 	 */
+	@Setter
 	private Optional<AttendanceClock> opAdvanceReceptionHours;
 	
 	/**
 	 * 事前受付日
 	 */
+	@Setter
 	private Optional<GeneralDate> opAdvanceReceptionDate;
 	
 	/**
 	 * 入力者社員情報
 	 */
+	@Setter
 	private Optional<EmployeeInfoImport> opEmployeeInfo;
 	
 	public AppDispInfoNoDateOutput(
