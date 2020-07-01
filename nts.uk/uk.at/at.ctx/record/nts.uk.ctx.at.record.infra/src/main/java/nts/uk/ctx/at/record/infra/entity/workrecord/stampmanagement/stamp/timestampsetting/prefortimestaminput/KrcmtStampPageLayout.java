@@ -13,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -62,14 +64,26 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 	
 	@ManyToOne
     @JoinColumns({
-    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-    	@JoinColumn(name = "STAMP_MEANS", referencedColumnName = "0", insertable = false, updatable = false)
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
     })
 	public KrcmtStampCommunal krcmtStampCommunal;
+	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    })
+	public KrcmtStampSmartPhone krcmtStampSmartPhone;
 	
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
 	}
 	
 	public StampPageLayout toDomain(){
@@ -99,7 +113,7 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
 				pageLayout.getButtonLayoutType().value, 
 				pageLayout.getStampPageComment().getPageComment().v(), 
 				pageLayout.getStampPageComment().getCommentColor().v(), 
-				pageLayout.getLstButtonSet().stream().map(mapper->KrcmtStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v())).collect(Collectors.toList()));
+				pageLayout.getLstButtonSet().stream().map(mapper->KrcmtStampLayoutDetail.toEntity(mapper, companyId, pageLayout.getPageNo().v(),stampMeans)).collect(Collectors.toList()));
 	}
 
 }

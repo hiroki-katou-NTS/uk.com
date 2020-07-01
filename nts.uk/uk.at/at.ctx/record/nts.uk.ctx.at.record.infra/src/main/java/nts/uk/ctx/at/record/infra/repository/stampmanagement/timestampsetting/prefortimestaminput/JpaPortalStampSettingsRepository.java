@@ -27,14 +27,11 @@ public class JpaPortalStampSettingsRepository extends JpaRepository implements P
 	}
 	
 	/**
-	 * 	[2]  update(ポータルの打刻設定)
+	 * 	[2]  save(ポータルの打刻設定)
 	 */
 	@Override
-	public void update(PortalStampSettings domain) {
-		Optional<KrcmtSrampPortal> entityOpt = this.queryProxy().find(domain.getCid(), KrcmtSrampPortal.class);
-		if (entityOpt.isPresent()) {
-			this.commandProxy().update(KrcmtSrampPortal.toEntity(domain));
-		}
+	public void save(PortalStampSettings domain) {
+		this.getEntityManager().merge(KrcmtSrampPortal.toEntity(domain));
 	}
 
 	/**

@@ -195,7 +195,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 							,optional2.get().getUsrArt()
 							,optional2.get().getAudioType());
 					
-					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
+					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v(), 1));
 				}
 			});
 		}

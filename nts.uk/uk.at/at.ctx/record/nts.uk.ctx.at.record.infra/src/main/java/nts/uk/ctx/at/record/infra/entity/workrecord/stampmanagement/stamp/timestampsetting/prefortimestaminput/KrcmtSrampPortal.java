@@ -8,8 +8,10 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.eclipse.persistence.annotations.Customizer;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -41,7 +44,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	 */
 	@Id
 	@Basic(optional = false)
-	@Column(name = "CID")
+	@Column(name = "CID", updatable = false)
 	public String cid;
 
 	/**
@@ -86,12 +89,17 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
 	
-	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
 
 	@Override
 	protected Object getKey() {
 		return this.cid;
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
 	}
 	
 	public static KrcmtSrampPortal toEntity(PortalStampSettings domain){
@@ -103,7 +111,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
 				domain.isButtonEmphasisArt() ? 1 : 0, 
 				domain.isToppageLinkArt() ? 1 : 0, 
-				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 1/*confirm with amid-mizutani, Vu Tuan is 1*/)).collect(Collectors.toList()));
+				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 1/*confirm with amid-mizutani, Vu Tuan is 1*/,4)).collect(Collectors.toList()));
 	}
 	
 	public PortalStampSettings toDomain(){

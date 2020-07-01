@@ -24,7 +24,7 @@ public class StampSetCommunal implements DomainAggregate {
 	// 会社ID
 	private final String cid;
 	
-	// 打刻画面の表示設定r
+	// 打刻画面の表示設定
 	private DisplaySettingsStampScreen displaySetStampScreen;
 	
 	// ページレイアウト設定 

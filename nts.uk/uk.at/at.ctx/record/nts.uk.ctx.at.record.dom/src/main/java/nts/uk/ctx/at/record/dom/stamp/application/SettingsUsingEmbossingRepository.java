@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction;
+package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
  *         打刻機能の利用設定Repository
  *
  */
-public interface StampUsageRepository {
+public interface SettingsUsingEmbossingRepository {
 	/**
 	 * [1] insert(打刻機能の利用設定)
 	 * 

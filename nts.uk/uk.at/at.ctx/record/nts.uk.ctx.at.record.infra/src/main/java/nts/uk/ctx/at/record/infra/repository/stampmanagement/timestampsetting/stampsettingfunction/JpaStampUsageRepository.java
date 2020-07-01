@@ -6,11 +6,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.KrcmtStampUsage;
 
 @Stateless
-public class JpaStampUsageRepository extends JpaRepository implements StampUsageRepository {
+public class JpaStampUsageRepository extends JpaRepository implements SettingsUsingEmbossingRepository {
 
 	@Override
 	public void insert(SettingsUsingEmbossing domain) {
