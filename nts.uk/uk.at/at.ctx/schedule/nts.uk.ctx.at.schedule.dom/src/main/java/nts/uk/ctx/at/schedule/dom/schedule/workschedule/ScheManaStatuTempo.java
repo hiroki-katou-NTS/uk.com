@@ -47,7 +47,7 @@ public class ScheManaStatuTempo {
 	 * @param date
 	 * @return
 	 */
-	public ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
+	public static ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
 		return null;
 	}
 	/**
@@ -127,7 +127,7 @@ public class ScheManaStatuTempo {
 		 * 	社員の休職履歴Adapter.期間を指定して休職期間を取得する( list: 社員ID, 期間: 年月日 )
 		 * GetAffCompanyHistByEmployee			
 		 */
-
+		
 		
 	}
 	
