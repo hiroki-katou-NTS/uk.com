@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdp002.a {
+module nts.uk.at.view.kdp004.a {
     
     import ajax = nts.uk.request.ajax;
     

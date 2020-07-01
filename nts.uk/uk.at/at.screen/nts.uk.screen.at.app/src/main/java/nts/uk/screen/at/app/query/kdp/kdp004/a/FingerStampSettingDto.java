@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampSettingDto;
 
 /**
  * 
@@ -15,7 +16,9 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
 @Data
 public class FingerStampSettingDto {
 	// 共有打刻の打刻設定
-	private StampSetCommunalDto stampSetting;
+	//private StampSetCommunalDto stampSetting;
+	
+	private StampSettingDto stampSetting;
 
 	// 打刻後の実績表示
 	private StampResultDisplayDto stampResultDisplay;

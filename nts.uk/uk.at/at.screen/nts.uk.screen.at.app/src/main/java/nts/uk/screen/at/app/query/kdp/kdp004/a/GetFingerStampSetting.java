@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampSettingDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +31,7 @@ public class GetFingerStampSetting {
 		String comppanyID = AppContexts.user().companyId();
 		// 1:get 会社ID
 		this.stampSetCommunalRepo.gets(comppanyID).ifPresent(setComu -> {
-			result.setStampSetting(StampSetCommunalDto.fromDomain(setComu));
+			result.setStampSetting(new StampSettingDto(setComu));
 		});
 		// 2:get 会社ID
 		this.stampResulRepo.getStampSet(comppanyID).ifPresent(stampRes -> {

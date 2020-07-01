@@ -33,6 +33,10 @@ interface ButtonSetting {
     onClick: any;
 }
 
+interface ILoginInfo{
+	
+	
+}
 class StampTab {
     tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray([]);
     selectedTab: KnockoutObservable<string> = ko.observable('');

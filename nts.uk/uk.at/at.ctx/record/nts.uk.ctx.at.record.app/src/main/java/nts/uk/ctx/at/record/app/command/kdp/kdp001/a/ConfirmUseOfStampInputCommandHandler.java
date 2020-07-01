@@ -51,7 +51,7 @@ public class ConfirmUseOfStampInputCommandHandler
 		extends CommandHandlerWithResult<ConfirmUseOfStampInputCommand, ConfirmUseOfStampInputResult> {
 
 	@Inject
-	private StampUsageRepository stampUsageRepo;
+	private SettingsUsingEmbossingRepository stampUsageRepo;
 
 	@Inject
 	private StampCardRepository stampCardRepo;
