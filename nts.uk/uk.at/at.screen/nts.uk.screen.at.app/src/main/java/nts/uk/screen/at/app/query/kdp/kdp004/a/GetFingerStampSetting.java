@@ -30,7 +30,7 @@ public class GetFingerStampSetting {
 		String comppanyID = AppContexts.user().companyId();
 		// 1:get 会社ID
 		this.stampSetCommunalRepo.gets(comppanyID).ifPresent(setComu -> {
-			result.setStampSetCommunal(StampSetCommunalDto.fromDomain(setComu));
+			result.setStampSetting(StampSetCommunalDto.fromDomain(setComu));
 		});
 		// 2:get 会社ID
 		this.stampResulRepo.getStampSet(comppanyID).ifPresent(stampRes -> {

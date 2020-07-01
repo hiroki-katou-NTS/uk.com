@@ -28,7 +28,7 @@ public class StampSetCommunalDto {
 	private DisplaySettingsStampScreenDto displaySetStampScreen;
 
 	// ページレイアウト設定
-	private List<StampPageLayoutDto> lstStampPageLayout;
+	private List<StampPageLayoutDto> pageLayouts;
 
 	// 氏名選択利用する
 	private boolean nameSelectArt;
@@ -41,6 +41,12 @@ public class StampSetCommunalDto {
 
 	// 指認証失敗回数
 	private Integer authcFailCnt;
+	
+	private boolean buttonEmphasisArt;
+	private Integer correctionInterval;
+	private String textColor;
+	private String backGroundColor;
+	private Integer resultDisplayTime;
 
 	public static StampSetCommunalDto fromDomain(StampSetCommunal domain) {
 		List<StampPageLayoutDto> lstStampPageLayout = domain
@@ -48,15 +54,19 @@ public class StampSetCommunalDto {
 															.stream()
 															.map(pageLayout -> StampPageLayoutDto.fromDomain(pageLayout))
 															.collect(Collectors.toList());
-		
+		DisplaySettingsStampScreenDto displaySetStampScreen =	DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySetStampScreen());
 	return	StampSetCommunalDto.builder()
 				.cid(domain.getCid())
-				.displaySetStampScreen(DisplaySettingsStampScreenDto.fromDomain(domain.getDisplaySetStampScreen()))
-				.lstStampPageLayout(lstStampPageLayout)
+				.displaySetStampScreen(displaySetStampScreen)
+				.pageLayouts(lstStampPageLayout)
 				.nameSelectArt(domain.isNameSelectArt())
 				.passwordRequiredArt(domain.isPasswordRequiredArt())
 				.employeeAuthcUseArt(domain.isEmployeeAuthcUseArt())
 				.authcFailCnt(domain.getAuthcFailCnt().isPresent() ? domain.getAuthcFailCnt().get().v() : null)
+				.correctionInterval(displaySetStampScreen.getServerCorrectionInterval())
+				.textColor(displaySetStampScreen.getSettingDateTimeColor().getTextColor())
+				.backGroundColor(displaySetStampScreen.getSettingDateTimeColor().getBackgroundColor())
+				.resultDisplayTime(displaySetStampScreen.getResultDisplayTime())
 				.build();
 	}
 }

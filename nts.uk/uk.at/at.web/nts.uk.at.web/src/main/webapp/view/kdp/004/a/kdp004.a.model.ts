@@ -33,35 +33,6 @@ interface ButtonSetting {
     onClick: any;
 }
 
-const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
-const TIME_FORMAT = 'HH:mm';
-class StampClock {
-    time: KnockoutObservable<Date> = ko.observable(new Date());
-    displayDate: KnockoutObservable<String>;
-    displayTime: KnockoutObservable<String>;
-
-    constructor() {
-        let self = this;
-        moment.locale('ja');
-        self.displayDate = ko.observable(moment(self.time()).format(DATE_FORMAT));
-        self.displayTime = ko.observable(moment(self.time()).format(TIME_FORMAT));
-        setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayTime(moment.utc(res).format(TIME_FORMAT));
-            });
-        }, 2000);
-    }
-
-    public addCorrectionInterval(minute: number) {
-        let self = this;
-        setInterval(() => {
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayDate(moment.utc(res).format(DATE_FORMAT));
-            });
-        }, minute * 60000);
-    }
-}
-
 class StampTab {
     tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray([]);
     selectedTab: KnockoutObservable<string> = ko.observable('');

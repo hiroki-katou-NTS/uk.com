@@ -4,9 +4,7 @@ module nts.uk.at.view.kdp002.a {
 
         export class ScreenModel {
             stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
-            stampClock: StampClock = new StampClock();
             stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
-            stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
             serverTime: KnockoutObservable<any> = ko.observable('');
@@ -22,16 +20,7 @@ module nts.uk.at.view.kdp002.a {
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
-                        self.stampGrid(new EmbossGridInfo(res));
-                        self.stampGrid().yearMonth.subscribe((val) => {
-                            self.getTimeCardData();
-                        });
-                        let stampToSuppress = res.stampToSuppress;
-                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
-                        self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
-                        // add correction interval
-                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -42,45 +31,6 @@ module nts.uk.at.view.kdp002.a {
                     });
 
                 return dfd.promise();
-            }
-
-            public getTimeCardData() {
-                nts.uk.ui.errors.clearAll();
-                $(".nts-input").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-
-                let self = this;
-                nts.uk.ui.block.grayout();
-                let data = {
-                    date: self.stampGrid().yearMonth() + '/15'
-                };
-                service.getTimeCardData(data).done((timeCard) => {
-                    self.stampGrid().bindItemData(timeCard.listAttendances);
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
-            }
-
-            public getStampData() {
-                nts.uk.ui.errors.clearAll();
-                $(".nts-input").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-
-                let self = this;
-                nts.uk.ui.block.grayout();
-                service.getStampData(self.stampGrid().dateValue()).done((stampDatas) => {
-                    self.stampGrid().bindItemData(stampDatas);
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
             }
 
             public getPageLayout(pageNo: number) {
@@ -135,11 +85,7 @@ module nts.uk.at.view.kdp002.a {
                 });               
 
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-                    if (self.stampGrid().displayMethod() === 1) {
-                        self.getStampData();
-                    } else {
-                        self.getTimeCardData();
-                    }
+                   
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
@@ -155,11 +101,7 @@ module nts.uk.at.view.kdp002.a {
                 });
                 
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                    if (self.stampGrid().displayMethod() === 1) {
-                        self.getStampData();
-                    } else {
-                        self.getTimeCardData();
-                    }
+                 
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });

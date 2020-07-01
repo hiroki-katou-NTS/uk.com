@@ -4,7 +4,7 @@ module nts.uk.at.view.kdp002.a {
     
     export module service {
         let url = {
-            startPage: 'at/record/stamp/management/personal/startPage',
+            startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
             getStampData: 'at/record/stamp/management/personal/stamp/getStampData',
             getTimeCard: 'at/record/stamp/management/personal/stamp/getTimeCard',
             stampInput: 'at/record/stamp/management/personal/stamp/input',
