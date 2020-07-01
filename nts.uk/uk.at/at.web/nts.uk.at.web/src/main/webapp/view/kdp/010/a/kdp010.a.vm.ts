@@ -125,7 +125,7 @@ module nts.uk.at.view.kdp010.a {
             start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
+                block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
                         self.stampSetCommunal.update(data);
@@ -144,7 +144,7 @@ module nts.uk.at.view.kdp010.a {
             checkSetStampPageLayout(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
+                block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
                         self.lstStampPageLayout(data.lstStampPageLayout.length > 0);
@@ -160,7 +160,7 @@ module nts.uk.at.view.kdp010.a {
             
             save(){
                 let self = this;
-                block.invisible();
+                block.grayout();
                 service.save(ko.toJS(self.stampSetCommunal)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {

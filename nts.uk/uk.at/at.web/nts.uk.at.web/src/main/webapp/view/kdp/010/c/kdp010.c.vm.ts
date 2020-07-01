@@ -21,7 +21,7 @@ module nts.uk.at.view.kdp010.c {
             start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
+                block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
                         self.settingsSmartphoneStamp.update(data);
@@ -39,7 +39,7 @@ module nts.uk.at.view.kdp010.c {
             checkSetStampPageLayout(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
+                block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
                         self.pageLayoutSettings(data.pageLayoutSettings.length > 0);
@@ -55,7 +55,7 @@ module nts.uk.at.view.kdp010.c {
             
             save(){
                 let self = this;
-                block.invisible();
+                block.grayout();
                 service.save(ko.toJS(self.settingsSmartphoneStamp)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {

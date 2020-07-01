@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
@@ -14,6 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,6 +34,9 @@ public class TimeStampInputSettingFinder {
 	
 	@Inject
 	private CommonSettingsStampInputRepository commonSettingsStampInputRepo;
+	
+	@Inject
+	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
 	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
 	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
@@ -62,5 +68,14 @@ public class TimeStampInputSettingFinder {
 			result.settingsSmartphoneStamp(domain.get());
 		}
 		return result;
+	}
+	
+	public Optional<SettingsUsingEmbossingDto> getSettingsUsingEmbossing() {
+		String cId = AppContexts.user().companyId();
+		Optional<SettingsUsingEmbossing> domain = settingsUsingEmbossingRepo.get(cId);
+		if(domain.isPresent()) {
+			return Optional.of(new SettingsUsingEmbossingDto(domain.get()));
+		}
+		return Optional.empty();
 	}
 }

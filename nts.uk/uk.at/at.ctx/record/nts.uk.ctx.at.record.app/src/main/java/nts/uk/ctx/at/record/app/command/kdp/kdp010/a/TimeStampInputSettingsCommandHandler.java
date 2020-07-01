@@ -8,9 +8,11 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettingsCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
@@ -30,6 +32,9 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	@Inject
 	private CommonSettingsStampInputRepository commonSettingsStampInputRepo;
+	
+	@Inject
+	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
 	
 	/*打刻の前準備(ポータル)を登録する*/
 	public void savePortalStampSettings(PortalStampSettingsCommand command) {
@@ -53,4 +58,8 @@ public class TimeStampInputSettingsCommandHandler {
 		}
 	}
 	
+	/*打刻の前準備(利用設定)を登録する*/
+	public void saveSettingsUsingEmbossing(SettingsUsingEmbossingCommand command) {
+		settingsUsingEmbossingRepo.update(command.toDomain());
+	}
 }

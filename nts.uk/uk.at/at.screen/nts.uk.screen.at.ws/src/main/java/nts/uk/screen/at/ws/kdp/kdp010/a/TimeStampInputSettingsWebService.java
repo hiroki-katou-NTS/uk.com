@@ -9,6 +9,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.TimeStampInputSettingFinder;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
 
 @Path("at/record/stamp/timestampinputsetting")
@@ -35,6 +36,12 @@ public class TimeStampInputSettingsWebService extends WebService {
 	@Path("settingssmartphonestamp/get")
 	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
 		return timeStampInputSettingFinder.getSettingsSmartphoneStamp();
+	}
+	
+	@POST
+	@Path("settingsusingembossing/get")
+	public SettingsUsingEmbossingDto getSettingsUsingEmbossing() {
+		return timeStampInputSettingFinder.getSettingsUsingEmbossing().orElse(null);
 	}
 }
 

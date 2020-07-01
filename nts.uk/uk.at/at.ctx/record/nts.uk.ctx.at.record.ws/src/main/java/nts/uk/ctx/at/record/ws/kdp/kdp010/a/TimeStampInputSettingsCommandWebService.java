@@ -9,6 +9,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.TimeStampInputSettingsCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettingsCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
 
 @Path("at/record/stamp/timestampinputsetting")
@@ -37,6 +38,13 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	@Path("settingssmartphonestamp/save")
 	public void saveSettingsSmartphoneStamp(SettingsSmartphoneStampCommand command) {
 		commandHandler.saveSettingsSmartphoneStamp(command);
+	}
+	
+	/**打刻の前準備(利用設定)を登録する*/
+	@POST
+	@Path("settingsusingembossing/save")
+	public void saveSettingsUsingEmbossing(SettingsUsingEmbossingCommand command) {
+		commandHandler.saveSettingsUsingEmbossing(command);
 	}
 }
 

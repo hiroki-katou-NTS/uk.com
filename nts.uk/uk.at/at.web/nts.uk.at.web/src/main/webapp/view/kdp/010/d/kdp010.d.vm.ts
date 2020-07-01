@@ -26,7 +26,7 @@ module nts.uk.at.view.kdp010.d {
             start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                block.invisible();
+                block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
                         console.log(data);
@@ -48,7 +48,7 @@ module nts.uk.at.view.kdp010.d {
             
             save(){
                 let self = this;
-                block.invisible();
+                block.grayout();
                 service.save(ko.toJS(self.portalStampSettings)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
@@ -117,11 +117,14 @@ module nts.uk.at.view.kdp010.d {
                         reservationArt: 0
                     }
                 }else if(self.buttonPositionNo == 3){
-                    self.goOutArt(0);
                     self.buttonType = {
-                        stampType: { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: ko.observable(self.goOutArt())},
+                        stampType: { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: 0},
                         reservationArt: 0
                     }
+                    self.goOutArt(0);
+                    self.goOutArt.subscribe((newValue) => {
+                        self.buttonType.stampType.goOutArt = newValue;
+                    });
                 }else if(self.buttonPositionNo == 4){
                     self.buttonType = {
                         stampType: { changeClockArt: 5, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
@@ -133,7 +136,7 @@ module nts.uk.at.view.kdp010.d {
                 let self = this;
                 if(param){
                     self.buttonDisSet.update(param.buttonDisSet);
-                    if(param.buttonPositionNo == 1 && param.buttonType.stampType){
+                    if(param.buttonPositionNo == 3 && param.buttonType.stampType){
                         self.goOutArt(param.buttonType.stampType.goOutArt);
                     }
                 }
