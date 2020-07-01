@@ -55,7 +55,7 @@ public class StampFunctionAvailableService {
 		}
 
 		// $打刻カード作成結果 = 打刻カード番号を自動作成する#作成する(require, 社員ID, 打刻手段)
-		Optional<StampCardCreateResult> optCardCreate = new AutoCreateStampCardNumberService().create(require,
+		Optional<StampCardCreateResult> optCardCreate = AutoCreateStampCardNumberService.create(require,
 				employeeId, stampMeans);
 		
 		// if not $打刻カード作成結果.isEmpty
