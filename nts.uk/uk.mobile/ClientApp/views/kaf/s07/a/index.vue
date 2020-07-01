@@ -31,15 +31,15 @@
       </div>
       <div class="card-body">
         <!-- A4_2 -->
-        <span class="textSize">{{'KAFS07_3' | i18n}}</span>
+        <span class="textSize uk-text-dark-gray">{{'KAFS07_3' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary textSize">{{worktype.code}}</span>
+          <span class="badge badge-secondary ">{{worktype.code}}</span>
           <span>{{worktype.name}}</span>
         </button>
 
         <!-- A4_3 -->
-        <span class="textSize">{{'KAFS07_4' | i18n}}</span>
+        <span class="textSize uk-text-dark-gray">{{'KAFS07_4' | i18n}}</span>
         <button
           type="button"
           v-bind:enable="isDisplay1()"
@@ -47,7 +47,7 @@
           v-on:click="openKDL002()"
         >
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary textSize">{{worktime.code}}</span>
+          <span class="badge badge-secondary ">{{worktime.code}}</span>
           <span>{{worktime.name}}</span>
           <!-- A4_3_2 -->
           <span class="d-block mt-1">{{worktime.time}}</span>
@@ -86,7 +86,7 @@
       <!-- A7_1 -->
       <div v-if="isDisplay2()" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_7' | i18n}}</span>
-        <span class="badge badge-warning">必須</span>
+        <span class="badge badge-info">必須</span>
       </div>
       <!-- A7_2 -->
       <div v-if="isDisplay2()" v-bind:enable="isDisplay3()" class="card-body">
