@@ -10,30 +10,54 @@ module nts.uk.at.view.kdp010.a {
     
     export module viewmodel {
         export class ScreenModel {
-            viewModelA: KnockoutObservable<any>;
-            viewModelB: KnockoutObservable<any>;
-            viewModelC: KnockoutObservable<any>;
-            viewModelD: KnockoutObservable<any>;
-            viewModelF: KnockoutObservable<any>;
-            viewModelE: KnockoutObservable<any>;
+            viewModelA = new ScreenModelA();
+            viewModelB = new viewModelscreenB.ScreenModel();
+            viewModelC = new viewModelscreenC.ScreenModel();
+            viewModelD = new viewModelscreenD.ScreenModel();
+            viewModelF: any;
+            viewModelE = new viewModelscreenE.ScreenModel();
+            controlTab = new viewModelscreenF.SettingsUsingEmbossing();
             
             constructor(){
                 let self = this;
-                self.viewModelA = ko.observable(new ScreenModelA());
-                self.viewModelB = ko.observable(new viewModelscreenB.ScreenModel());
-                self.viewModelC = ko.observable(new viewModelscreenC.ScreenModel());
-                self.viewModelD = ko.observable(new viewModelscreenD.ScreenModel());
-                self.viewModelF = ko.observable(new viewModelscreenF.ScreenModel());
-                self.viewModelE = ko.observable(new viewModelscreenE.ScreenModel());
+                self.viewModelF = new viewModelscreenF.ScreenModel(self.bindingTab);
             }
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred<any>();
-                self.viewModelA().start().done(()=>{
-                    dfd.resolve();
+                self.viewModelF.start().done(() => {
+                    if(self.controlTab.name_selection() || self.controlTab.finger_authc() || self.controlTab.ic_card()){
+                        self.viewModelA.start().done(()=>{
+                            dfd.resolve();
+                        });                            
+                    }else if(self.controlTab.indivition()){
+                        self.viewModelB.start().done(()=>{
+                            dfd.resolve();
+                            $("#sidebar").ntsSideBar("active", 1);
+                        });
+                    }else if(self.controlTab.smart_phone()){
+                        self.viewModelC.start().done(()=>{
+                            dfd.resolve();
+                            $("#sidebar").ntsSideBar("active", 2);
+                        });
+                    }else if(self.controlTab.portal()){
+                        self.viewModelD.start().done(()=>{
+                            dfd.resolve();
+                            $("#sidebar").ntsSideBar("active", 3);
+                        });
+                    }else{
+                        dfd.resolve();
+                        $("#sidebar").ntsSideBar("active", 4);
+                    }
                 });
                 return dfd.promise();
+            }
+            
+            public bindingTab(settingsUsingEmbossing?: any){
+                if(settingsUsingEmbossing){
+                    __viewContext.vm.controlTab.update(settingsUsingEmbossing);
+                }
             }
             
             /**
@@ -43,7 +67,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewModelA().start();
+                        self.viewModelA.start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -53,7 +77,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewModelB().start();
+                        self.viewModelB.start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -63,7 +87,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewModelC().start();
+                        self.viewModelC.start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -73,7 +97,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewModelD().start();
+                        self.viewModelD.start();
                         self.removeErrorMonitor();
                     }
                 });
@@ -83,7 +107,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-//                        self.viewModelF().start(); 
+                        self.viewModelF.start(); 
                         self.removeErrorMonitor();
                     }
                 });
@@ -93,7 +117,7 @@ module nts.uk.at.view.kdp010.a {
                 $("#sidebar").ntsSideBar("init", {
                     activate: (event, info) => {
                         let self = this;
-                        self.viewModelE().start();
+                        self.viewModelE.start();
                         self.removeErrorMonitor();
                     }
                 });

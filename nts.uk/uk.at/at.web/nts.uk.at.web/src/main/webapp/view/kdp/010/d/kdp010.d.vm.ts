@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp010.d {
                 block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
-                        console.log(data);
+//                        console.log(data);
                         self.portalStampSettings.update(data);
                     }
                     dfd.resolve();
@@ -39,11 +39,6 @@ module nts.uk.at.view.kdp010.d {
                     block.clear();
                 });
                 return dfd.promise();
-            }
-            
-            getDefaultValueButtonType(buttonPositionNo: number){
-                let self = this;
-                
             }
             
             save(){

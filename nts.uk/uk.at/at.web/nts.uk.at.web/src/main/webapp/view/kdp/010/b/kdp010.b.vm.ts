@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdp010.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import block = nts.uk.ui.block;
     import confirm = nts.uk.ui.dialog.confirm;
     import href = nts.uk.request.jump;
     import modal = nts.uk.ui.windows.sub.modal;
@@ -38,8 +39,11 @@ module nts.uk.at.view.kdp010.b.viewmodel {
          */
         start(): JQueryPromise<any> {
             let self = this,dfd = $.Deferred();
-            self.getStamp();
-            self.getData();
+            block.grayout();
+            $.when(self.getStamp(), self.getData()).done(function() {
+                dfd.resolve();
+                block.clear();
+            });
             return dfd.promise();
         }
 
@@ -57,11 +61,11 @@ module nts.uk.at.view.kdp010.b.viewmodel {
                     self.backgroundColors(totalTimeArr.backGroundColor);
                     self.stampValue(totalTimeArr.resultDisplayTime);
                 }
-                dfd.resolve();
                 $('#correc-input').focus();
             }).fail(function(error) {
                 alert(error.message);
-                dfd.reject(error);
+            }).always(function () {
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -73,10 +77,10 @@ module nts.uk.at.view.kdp010.b.viewmodel {
                     self.checkInUp(true);
                 else
                     self.checkInUp(false);
-                    dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
-                dfd.reject(error);
+            }).always(function () {
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -89,7 +93,7 @@ module nts.uk.at.view.kdp010.b.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            nts.uk.ui.block.invisible();
+            block.invisible();
             // Data from Screen 
             let data = new StampSettingPersonDto({
                 buttonEmphasisArt: self.selectedHighlight(),
@@ -104,7 +108,7 @@ module nts.uk.at.view.kdp010.b.viewmodel {
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
             }).always(() => {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
         }
 
