@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 575,
+					height : 550
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="kdp003.k.style.css" />
+			<com:scriptfile path="kdp003.k.service.js" />
+			<com:scriptfile path="kdp003.k.vm.js" />
+			<com:scriptfile path="kdp003.k.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="margin-left : 10px" >
+				<div id = 'k1' data-bind="text: '#{i18n.getText('KDP003_12')}'"></div>
+				<div id="tree-grid" style="margin-top: 30px; margin-left: 10px;"></div>
+			</div>
+			<div style = "margin-top: 10px">
+						<button tabindex="2" id='k20_1' style="width : 180px; margin-left: 90px;" class="proceed x-large" data-bind="click: selectWorkPlace">#{i18n.getText('KDP003_14')}</button>
+						<button tabindex="3" id='k20_2' style="margin-left: 50px; width : 100px" class="large" data-bind="click: cancel">#{i18n.getText('KDP003_15')}</button>
+					</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

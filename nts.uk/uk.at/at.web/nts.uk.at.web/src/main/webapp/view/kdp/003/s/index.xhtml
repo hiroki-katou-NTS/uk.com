@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 510,
+					height : 460
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdp003.s.style.css" />
+			<com:scriptfile path="kdp003.s.service.js" />
+			<com:scriptfile path="kdp003.s.vm.js" />
+			<com:scriptfile path="kdp003.s.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="margin-left: 10px">
+				<div id='s1' data-bind="ntsPanel:{width: '429px', height: '35px', direction: 'bottom', showIcon: false , visible: true}" style="margin-bottom: -20px;">
+					<table>
+						<tr>
+							<td><div tabindex="1" id="S21"
+									data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', 
+												   valueFormat: 'YYYYMM', cssRanger: cssRangerYM, 
+												   fiscalMonthsMode: true, defaultClass: 'round-orange', 
+												   showJumpButtons: true }"></div></td>
+							<td><div id="S22" tabindex="2" 
+									data-bind="ntsComboBox: {
+									name: 'List Kieu Check Tay',
+									options: listTypeOfEngraving ,
+									optionsValue: 'code',
+									visibleItemsCount: 4,
+									value: selectedCode_TypeOfEngraving ,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									required: true,
+									selectFirstIfNull: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}"></div></td>
+						</tr>
+					</table>
+				</div>
+				<div id="table-stamp">
+					<table id="single-list" tabindex="3" 
+						data-bind="ntsGridList: {
+                                height: 350,
+								dataSource: listOfStamps ,
+								primaryKey: 'id',
+								columns: columns2,
+								enable: true,
+								multiple: false,
+								value: currentCodeOfStamp ,
+								rows: 10
+							}"></table>
+				</div>
+
+			</div>
+			<div id='S201'>
+				<button tabindex="4" style="width: 180px;" class="x-large" data-bind="click: closeDialog">#{i18n.getText('KDP003_43')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login;
+package nts.uk.ctx.sys.gateway.app.command.loginkdp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
@@ -100,7 +101,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  *            the generic type
  */
 @Stateless
-public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResult<T, CheckChangePassDto> {
+public abstract class LoginBaseTimeStampCommandHandler<T> extends CommandHandlerWithResult<T, TimeStampInputLoginDto> {
 
 	/** The employee adapter. */
 	@Inject
@@ -208,7 +209,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected CheckChangePassDto handle(CommandHandlerContext<T> context) {
+	protected TimeStampInputLoginDto handle(CommandHandlerContext<T> context) {
 		return this.internalHanler(context);
 	}
 
@@ -218,7 +219,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param context the context
 	 * @return the check change pass dto
 	 */
-	protected abstract CheckChangePassDto internalHanler(CommandHandlerContext<T> context);
+	protected abstract TimeStampInputLoginDto internalHanler(CommandHandlerContext<T> context);
 
 	/**
 	 * Re check contract.

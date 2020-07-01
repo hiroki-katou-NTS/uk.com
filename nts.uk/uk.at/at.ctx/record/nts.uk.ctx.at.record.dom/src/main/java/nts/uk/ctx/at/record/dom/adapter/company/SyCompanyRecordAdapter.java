@@ -8,4 +8,5 @@ public interface SyCompanyRecordAdapter {
 	List<AffCompanyHistImport> getAffCompanyHistByEmployee(List<String> sid, DatePeriod datePeriod);
 	
 	List<StatusOfEmployeeExport> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
+	
 }

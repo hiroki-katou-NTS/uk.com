@@ -12,7 +12,10 @@ module nts.uk.at.view.kdp.share {
             </div>
                 <div class="panel" id="stamp-time"
                 data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-                <span id="stamp-time-text" data-bind="text: displayTime()"></span>
+				<span id="stamp-time-text" data-bind="text: displayTime()"></span>
+				<button class="btn-setting" type="button" tabindex="16"></button>
+                <button class="proceed btnA4">打刻履歴</button>
+
             </div>
         </div>
     `})
@@ -56,11 +59,9 @@ module nts.uk.at.view.kdp.share {
 					}).always(() => {
 						self.countTime = 0;
 					});
-					console.log('get time');
 				} else {
 					self.systemDate(self.systemDate().add(1, 'seconds'));
 					self.countTime = self.countTime + 1;
-					console.log('check time');
 				}
 
 			}, 1000);
