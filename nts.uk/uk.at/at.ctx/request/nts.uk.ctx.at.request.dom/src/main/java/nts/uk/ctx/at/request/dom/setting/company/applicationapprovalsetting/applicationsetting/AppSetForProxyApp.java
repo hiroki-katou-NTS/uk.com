@@ -32,4 +32,11 @@ public class AppSetForProxyApp {
 	 */
 	private Optional<StampRequestMode> opStampRequestMode;
 	
+	public AppSetForProxyApp(List<ApplicationType> appTypeLst,
+			Optional<OvertimeAppAtr> opOvertimeAppAtr, Optional<StampRequestMode> opStampRequestMode) {
+		this.appTypeLst = appTypeLst;
+		this.opOvertimeAppAtr = opOvertimeAppAtr;
+		this.opStampRequestMode = opStampRequestMode;
+	}
+	
 }

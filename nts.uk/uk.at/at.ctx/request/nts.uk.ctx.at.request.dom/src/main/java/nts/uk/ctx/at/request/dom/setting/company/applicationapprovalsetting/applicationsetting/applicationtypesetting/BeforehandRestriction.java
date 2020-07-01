@@ -21,4 +21,9 @@ public class BeforehandRestriction {
 	 */
 	private boolean toUse;
 	
+	public BeforehandRestriction(AppAcceptLimitDay dateBeforehandRestrictions, boolean toUse) {
+		this.dateBeforehandRestrictions = dateBeforehandRestrictions;
+		this.toUse = toUse;
+	}
+	
 }

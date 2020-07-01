@@ -16,4 +16,8 @@ public class AfterhandRestriction {
 	 */
 	private boolean allowFutureDay;
 	
+	public AfterhandRestriction(boolean allowFutureDay) {
+		this.allowFutureDay = allowFutureDay;
+	}
+	
 }

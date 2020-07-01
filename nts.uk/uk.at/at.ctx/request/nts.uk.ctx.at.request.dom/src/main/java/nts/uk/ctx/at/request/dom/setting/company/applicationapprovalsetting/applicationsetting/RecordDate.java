@@ -21,7 +21,7 @@ public enum RecordDate {
 	 */
 	APP_DATE(1, "申請対象日時点");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 	

@@ -19,7 +19,7 @@ public enum DeadlineCriteria {
 	 */
 	WORKING_DAY(1, "稼働日");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

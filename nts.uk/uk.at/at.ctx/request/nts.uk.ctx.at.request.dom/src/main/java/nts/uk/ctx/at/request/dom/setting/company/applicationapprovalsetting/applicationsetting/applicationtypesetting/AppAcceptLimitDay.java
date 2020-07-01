@@ -51,7 +51,7 @@ public enum AppAcceptLimitDay {
 	 */
 	SEVENDAYAGO(7, "7日前");
 
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 	

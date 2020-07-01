@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.AttendanceClock;
  *
  */
 @Getter
-public class OTAppBeforehandAcceptanceRestriction {
+public class OTAppBeforeAccepRestric {
 	
 	/**
 	 * チェック方法
@@ -33,16 +33,27 @@ public class OTAppBeforehandAcceptanceRestriction {
 	/**
 	 * 時刻（早出残業）
 	 */
-	private Optional<AttendanceClock> earlyOvertime;
+	private Optional<AttendanceClock> opEarlyOvertime;
 	
 	/**
 	 * 時刻（通常残業）
 	 */
-	private Optional<AttendanceClock> normalOvertime;
+	private Optional<AttendanceClock> opNormalOvertime;
 	
 	/**
 	 * 時刻（早出残業・通常残業）
 	 */
-	private Optional<AttendanceClock> earlyNormalOvertime;
+	private Optional<AttendanceClock> opEarlyNormalOvertime;
+	
+	public OTAppBeforeAccepRestric(BeforeAddCheckMethod methodCheck, 
+			AppAcceptLimitDay dateBeforehandRestrictions, boolean toUse, Optional<AttendanceClock> opEarlyOvertime,
+			Optional<AttendanceClock> opNormalOvertime, Optional<AttendanceClock> opEarlyNormalOvertime) {
+		this.methodCheck = methodCheck;
+		this.dateBeforehandRestrictions = dateBeforehandRestrictions;
+		this.toUse = toUse;
+		this.opEarlyOvertime = opEarlyOvertime;
+		this.opNormalOvertime = opNormalOvertime;
+		this.opEarlyNormalOvertime = opEarlyNormalOvertime;
+	}
 	
 }

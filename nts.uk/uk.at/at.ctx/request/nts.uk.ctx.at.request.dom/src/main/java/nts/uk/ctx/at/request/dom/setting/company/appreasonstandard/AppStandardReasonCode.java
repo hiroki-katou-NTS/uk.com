@@ -17,7 +17,7 @@ public class AppStandardReasonCode extends IntegerPrimitiveValue<AppStandardReas
 	 */
 	private static final long serialVersionUID = -1221605104909349465L;
 
-	public AppStandardReasonCode(Integer rawValue) {
+	public AppStandardReasonCode(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

@@ -21,7 +21,7 @@ public enum DisplayAtr {
 	 */
 	DISPLAY(1, "表示する");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

@@ -23,4 +23,9 @@ public class AppDisplaySetting {
 	 */
 	private NotUseAtr manualSendMailAtr;
 	
+	public AppDisplaySetting(DisplayAtr prePostDisplayAtr, NotUseAtr manualSendMailAtr) {
+		this.prePostDisplayAtr = prePostDisplayAtr;
+		this.manualSendMailAtr = manualSendMailAtr;
+	}
+	
 }

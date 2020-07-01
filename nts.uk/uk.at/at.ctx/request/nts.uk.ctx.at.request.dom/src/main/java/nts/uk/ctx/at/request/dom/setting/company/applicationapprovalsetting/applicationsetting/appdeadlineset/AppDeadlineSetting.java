@@ -32,4 +32,12 @@ public class AppDeadlineSetting {
 	 */
 	private DeadlineCriteria deadlineCriteria;
 	
+	public AppDeadlineSetting(UseDivision useAtr, int closureId,
+			Deadline deadline, DeadlineCriteria deadlineCriteria) {
+		this.useAtr = useAtr;
+		this.closureId = closureId;
+		this.deadline = deadline;
+		this.deadlineCriteria = deadlineCriteria;
+	}
+	
 }

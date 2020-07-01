@@ -17,7 +17,7 @@ public class Deadline extends IntegerPrimitiveValue<Deadline>{
 	 */
 	private static final long serialVersionUID = -4828558600292272324L;
 
-	public Deadline(Integer rawValue) {
+	public Deadline(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

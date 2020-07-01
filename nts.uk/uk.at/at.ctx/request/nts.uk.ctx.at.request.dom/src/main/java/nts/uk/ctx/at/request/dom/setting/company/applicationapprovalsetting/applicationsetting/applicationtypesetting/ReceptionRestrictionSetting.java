@@ -15,7 +15,7 @@ public class ReceptionRestrictionSetting {
 	/**
 	 * 残業申請事前の受付制限
 	 */
-	private OTAppBeforehandAcceptanceRestriction otAppBeforehandAcceptanceRestriction;
+	private OTAppBeforeAccepRestric otAppBeforeAccepRestric;
 	
 	/**
 	 * 事後の受付制限
@@ -32,4 +32,11 @@ public class ReceptionRestrictionSetting {
 	 */
 	private ApplicationType appType;
 	
+	public ReceptionRestrictionSetting(OTAppBeforeAccepRestric otAppBeforeAccepRestric,
+			AfterhandRestriction afterhandRestriction, BeforehandRestriction beforehandRestriction, ApplicationType appType) {
+		this.otAppBeforeAccepRestric = otAppBeforeAccepRestric;
+		this.afterhandRestriction = afterhandRestriction;
+		this.beforehandRestriction = beforehandRestriction;
+		this.appType = appType;
+	}
 }

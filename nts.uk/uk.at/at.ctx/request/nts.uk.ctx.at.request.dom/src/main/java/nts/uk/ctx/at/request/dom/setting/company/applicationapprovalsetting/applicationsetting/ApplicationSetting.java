@@ -57,4 +57,18 @@ public class ApplicationSetting implements DomainAggregate {
 	 */
 	private RecordDate recordDate;
 	
+	public ApplicationSetting(String companyID, AppLimitSetting appLimitSetting,
+			AppTypeSetting appTypeSetting, AppSetForProxyApp appSetForProxyApp,
+			AppDeadlineSetting appDeadlineSetting, AppDisplaySetting appDisplaySetting,
+			ReceptionRestrictionSetting receptionRestrictionSetting, RecordDate recordDate) {
+		this.companyID = companyID;
+		this.appLimitSetting = appLimitSetting;
+		this.appTypeSetting = appTypeSetting;
+		this.appSetForProxyApp = appSetForProxyApp;
+		this.appDeadlineSetting = appDeadlineSetting;
+		this.appDisplaySetting = appDisplaySetting;
+		this.receptionRestrictionSetting = receptionRestrictionSetting;
+		this.recordDate = recordDate;
+	}
+	
 }

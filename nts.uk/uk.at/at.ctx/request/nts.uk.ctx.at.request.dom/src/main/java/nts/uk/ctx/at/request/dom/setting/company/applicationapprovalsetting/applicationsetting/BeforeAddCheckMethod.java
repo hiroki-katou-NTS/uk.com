@@ -21,7 +21,7 @@ public enum BeforeAddCheckMethod {
 	 */
 	CHECK_IN_DAY(1, "日数でチェック");
 
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

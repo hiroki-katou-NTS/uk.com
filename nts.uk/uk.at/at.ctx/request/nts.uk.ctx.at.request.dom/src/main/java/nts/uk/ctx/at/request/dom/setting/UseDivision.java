@@ -21,7 +21,7 @@ public enum UseDivision {
 	 */
 	TO_USE(1, "利用する");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

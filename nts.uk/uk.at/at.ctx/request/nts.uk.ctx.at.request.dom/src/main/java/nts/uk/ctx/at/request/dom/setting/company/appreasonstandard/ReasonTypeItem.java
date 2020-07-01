@@ -33,4 +33,12 @@ public class ReasonTypeItem {
 	 */
 	private Optional<ReasonForFixedForm> opReasonForFixedForm;
 	
+	public ReasonTypeItem(AppStandardReasonCode appStandardReasonCD, int displayOrder,
+			boolean defaultValue, Optional<ReasonForFixedForm> opReasonForFixedForm) {
+		this.appStandardReasonCD = appStandardReasonCD;
+		this.displayOrder = displayOrder;
+		this.defaultValue = defaultValue;
+		this.opReasonForFixedForm = opReasonForFixedForm;
+	}
+	
 }

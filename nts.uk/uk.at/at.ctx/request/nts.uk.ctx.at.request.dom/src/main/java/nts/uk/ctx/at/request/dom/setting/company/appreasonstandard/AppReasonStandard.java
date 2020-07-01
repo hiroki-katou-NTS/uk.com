@@ -37,4 +37,12 @@ public class AppReasonStandard implements DomainAggregate {
 	 */
 	private Optional<HolidayAppType> opHolidayAppType;
 	
+	public AppReasonStandard(String companyID, ApplicationType applicationType,
+			List<ReasonTypeItem> reasonTypeItemLst, Optional<HolidayAppType> opHolidayAppType) {
+		this.companyID = companyID;
+		this.applicationType = applicationType;
+		this.reasonTypeItemLst = reasonTypeItemLst;
+		this.opHolidayAppType = opHolidayAppType;
+	}
+	
 }

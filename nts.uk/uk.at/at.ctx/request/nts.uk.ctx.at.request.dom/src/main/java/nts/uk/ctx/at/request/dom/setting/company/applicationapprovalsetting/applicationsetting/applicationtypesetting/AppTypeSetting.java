@@ -37,4 +37,14 @@ public class AppTypeSetting {
 	 */
 	private boolean canClassificationChange;
 	
+	public AppTypeSetting(ApplicationType appType, boolean sendMailWhenRegister,
+			boolean sendMailWhenApproval, PrePostInitAtr displayInitialSegment,
+			boolean canClassificationChange) {
+		this.appType = appType;
+		this.sendMailWhenRegister = sendMailWhenRegister;
+		this.sendMailWhenApproval = sendMailWhenApproval;
+		this.displayInitialSegment = displayInitialSegment;
+		this.canClassificationChange = canClassificationChange;
+	}
+	
 }
