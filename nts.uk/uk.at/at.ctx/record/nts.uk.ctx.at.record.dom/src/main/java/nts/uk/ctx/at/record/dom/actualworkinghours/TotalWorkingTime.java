@@ -384,6 +384,15 @@ public class TotalWorkingTime {
 											+ tempTime.totalTemporaryFrameTime()
 											+ flexTime);
 		
+		//実働時間の計算
+		boolean isOOtsukaIWMode = decisionIWOOtsukaMode(workType,recordWorkTimeCode,recordClass);
+		//大塚専用IW専用処理
+		if(isOOtsukaIWMode) {
+			if(recordClass.getPredSetForOOtsuka().isPresent()) {
+				withinStatutoryTimeOfDaily.setActualWorkTime(recordClass.getPredSetForOOtsuka().get().getAdditionSet().getPredTime().getOneDay());
+			}
+		}
+		
 		//総計算時間
 		val totalCalcTime = new AttendanceTime(withinStatutoryTimeOfDaily.getActualWorkTime().valueAsMinutes()
 											+ withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
@@ -399,14 +408,7 @@ public class TotalWorkingTime {
 											+ excesstime.calcWorkHolidayTime().valueAsMinutes()
 											+ tempTime.totalTemporaryFrameTime()
 											+ flexTime);
-		//実働時間の計算
-		boolean isOOtsukaIWMode = decisionIWOOtsukaMode(workType,recordWorkTimeCode,recordClass);
-		//大塚専用IW専用処理
-		if(isOOtsukaIWMode) {
-			if(recordClass.getPredSetForOOtsuka().isPresent()) {
-				withinStatutoryTimeOfDaily.setActualWorkTime(recordClass.getPredSetForOOtsuka().get().getAdditionSet().getPredTime().getOneDay());
-			}
-		}
+		
 		TotalWorkingTime returnTotalWorkingTimereturn = new TotalWorkingTime(
 				totalWorkTime,
 				totalCalcTime,
