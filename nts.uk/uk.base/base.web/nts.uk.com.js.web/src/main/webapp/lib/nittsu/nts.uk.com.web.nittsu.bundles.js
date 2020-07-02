@@ -1,13 +1,23 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -47730,7 +47740,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
                     .join('');
                 return JSON.parse($string).$value;
             }
-            return null;
+            return windows.getShared(name);
         });
     }
 }, $storage = function ($data) {
@@ -47876,28 +47886,28 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
     info: {
         value: function $info() {
             var dfd = $.Deferred();
-            dialog.info.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
+            dialog.info.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     alert: {
         value: function $alert() {
             var dfd = $.Deferred();
-            dialog.alert.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
+            dialog.alert.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     error: {
         value: function $error() {
             var dfd = $.Deferred();
-            dialog.error.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
+            dialog.error.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     confirm: {
         value: function $confirm() {
             var dfd = $.Deferred();
-            var $cf = dialog.confirm.apply(null, arguments.slice());
+            var $cf = dialog.confirm.apply(null, __spreadArrays(arguments));
             $cf.ifYes(function () {
                 dfd.resolve('yes');
             });
@@ -47915,7 +47925,7 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
     self: {
         value: function $to() {
-            $jump.apply(null, [].slice.apply(arguments, []).slice());
+            $jump.apply(null, __spreadArrays([].slice.apply(arguments, [])));
         }
     },
     blank: {
@@ -47937,10 +47947,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modal: {
-        value: function $modal(path, params) {
+        value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modal(path).onClosed(function () {
+                windows.sub.modal(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
@@ -47950,10 +47960,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modeless: {
-        value: function $modeless(path, params) {
+        value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modeless(path).onClosed(function () {
+                windows.sub.modeless(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
