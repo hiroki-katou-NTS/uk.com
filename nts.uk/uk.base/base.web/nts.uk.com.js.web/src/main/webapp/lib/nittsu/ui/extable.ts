@@ -201,6 +201,11 @@ module nts.uk.ui.exTable {
             }
         }
         
+        getChartRuler() {
+            let self = this;
+            return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+        }
+        
         /**
          * Create.
          */

@@ -42,11 +42,11 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -245,15 +245,15 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
-				continue;
-			}
+//			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
+//				continue;
+//			}
             LockStatus lockStatus = LockStatus.UNLOCK;
             //「ロック中の計算/集計する」の値をチェックする
             if(isCalWhenLock ==null || isCalWhenLock ==false ) {
                 //
                 lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
-                        criteriaDate, closureData.getClosureId().value, PerformanceType.MONTHLY);
+                		datePeriod.end(), closureData.getClosureId().value, PerformanceType.MONTHLY);
             }
             if(lockStatus == LockStatus.LOCK) {
                 continue;

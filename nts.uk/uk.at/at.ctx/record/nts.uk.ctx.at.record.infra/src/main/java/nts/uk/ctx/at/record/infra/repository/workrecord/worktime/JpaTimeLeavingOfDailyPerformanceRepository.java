@@ -196,6 +196,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							? null : attendanceActualS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+
 				} else {
 					krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 					krcdtTimeLeavingWork.attendanceActualTime = null;
@@ -211,6 +212,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 							: attendanceS.getLocationCode().get().v();
 					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
 							: attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+
 				} else {
 					krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
 					krcdtTimeLeavingWork.attendanceStampTime = null;

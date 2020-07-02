@@ -28,7 +28,7 @@ public class KscdtSchBasicInfoPK implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "SID")
-	public String SID;
+	public String sid;
 
 	/** 年月日 **/
 	@Basic(optional = false)

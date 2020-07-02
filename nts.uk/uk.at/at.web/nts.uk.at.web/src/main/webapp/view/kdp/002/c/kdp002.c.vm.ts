@@ -76,15 +76,18 @@ module nts.uk.at.view.kdp002.c {
                             self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');      
 							
                             if(res.itemValues) {
+                                // C4	実績の属性と表示書式について
                                 res.itemValues.forEach(item => {
                                     if(item.itemId == 28 || item.itemId == 29 || item.itemId == 31 || item.itemId == 34) {
                                         item.value = '';
-                                    } else if(item.valueType == "TIME" && item.value) {
+                                    } else if((item.valueType == "TIME") && item.value) {
                                         item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
                                     } else if (item.valueType == "AMOUNT") {
                                         item.value = nts.uk.ntsNumber.formatNumber(item.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));
-                                    } else if (item.valueType == "TIME_WITH_DAY" && item.value) {
-                                        item.value = nts.uk.time.format.byId("Clock_Short_HM", parseInt(item.value));
+                                    } else if ((item.valueType == "TIME_WITH_DAY" || item.valueType == "CLOCK" ) && item.value) {
+                                        item.value = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(item.value));
+                                    } else if ((item.valueType == "DAYS" || item.valueType == "COUNT") && item.value ) {
+                                        item.valueType = nts.uk.ntsNumber.formatNumber(parseFloat(item.valueType), new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1}));
                                     }
                                 });
                             }

@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.schedule.dom.workschedule;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 
 /**
  * 

@@ -11,7 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 /**
  * 並び替え設定
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.社員並び替え
- * @author kingo
+ * @author HieuLt
  *
  */
 

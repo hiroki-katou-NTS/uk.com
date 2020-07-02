@@ -26,3 +26,5 @@ public class ShiftEditState {
 	/** <日別勤怠の編集状態>**/
 	private final Optional<EditStateSetting> optEditStateOfDailyAttd;
 }
+
+

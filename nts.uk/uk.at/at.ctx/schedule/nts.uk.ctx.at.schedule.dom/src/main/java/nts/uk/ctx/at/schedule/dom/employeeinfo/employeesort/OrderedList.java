@@ -16,5 +16,11 @@ public class OrderedList implements DomainValue{
 	private final SortType type;
 	/** 並び順**/
 	private final SortOrder sortOrder;
+	public OrderedList(SortType type, SortOrder sortOrder) {
+		super();
+		this.type = type;
+		this.sortOrder = sortOrder;
+	}
 
+	
 }

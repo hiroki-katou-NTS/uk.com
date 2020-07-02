@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.math.BigDecimal;
 
