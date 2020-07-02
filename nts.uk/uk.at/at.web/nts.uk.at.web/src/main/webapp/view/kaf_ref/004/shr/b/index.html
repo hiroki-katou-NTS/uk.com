@@ -11,15 +11,15 @@
         <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
 
         <!-- A6_3 -->
-        <span class="label" id="label-A6_3" data-bind="text: $vm.workManagement().scheAttendanceTime"></span>
+        <span class="label" id="label-A6_3" data-bind="text: $vm.workManagement.scheAttendanceTime"></span>
 
         <!-- A6_4 -->
         <span>
             <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
-                    value: $vm.workManagement().workTime,
+                    value: $vm.workManagement.workTime,
                     option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13()" />
+                }, enable: $vm.condition8(1)" />
         </span>
 
         <!-- A6_5 -->
@@ -27,13 +27,14 @@
 
         <div class="block-right">
             <!-- A6_6 -->
-            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10()"></span>
+            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition10Display(1)"></span>
 
             <!-- A6_7 -->
             <span data-bind="ntsCheckBox: {
-                    checked: false,
-                    text: $i18n('KAF004_57')
-                }, visible: $vm.condition8_10(), enable: $vm.condition10Activation()"></span>
+                    checked: !!ko.toJS($vm.workManagement.workTime),
+                    text: $i18n('KAF004_57'),
+                    enable: $vm.condition10Activation(1)
+                }, visible: $vm.condition10Display(1)"></span>
         </div>
     </div>
 
@@ -42,15 +43,15 @@
         <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
 
         <!-- A6_9 -->
-        <span class="label" id="label-A6_9" data-bind="text: $vm.workManagement().scheWorkTime"></span>
+        <span class="label" id="label-A6_9" data-bind="text: $vm.workManagement.scheWorkTime"></span>
 
         <!-- A6_10 -->
         <span>
             <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
-                    value: $vm.workManagement().leaveTime,
+                    value: $vm.workManagement.leaveTime,
                     option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13()" />
+                }, enable: $vm.condition8(2)" />
         </span>
 
         <!-- A6_11 -->
@@ -58,13 +59,14 @@
 
         <div class="block-right">
             <!-- A6_12 -->
-            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10()"></span>
+            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition10Display(2)"></span>
 
             <!-- A6_13 -->
             <span data-bind="ntsCheckBox: {
-                    checked: false,
-                    text: $i18n('KAF004_58')
-                    }, visible: $vm.condition8_10(), enable: $vm.condition10Activation()"></span>
+                    checked: !!ko.toJS($vm.workManagement.leaveTime),
+                    text: $i18n('KAF004_58'),
+                    enable: $vm.condition10Activation(2)
+                    }, visible: $vm.condition10Display(2)"></span>
         </div>
     </div>
 
@@ -73,15 +75,15 @@
         <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
 
         <!-- A6_15 -->
-        <span class="label" id="label-A6_15" data-bind="text: $vm.workManagement().scheAttendanceTime2"></span>
+        <span class="label" id="label-A6_15" data-bind="text: $vm.workManagement.scheAttendanceTime2"></span>
 
         <!-- A6_16 -->
         <span>
             <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
-                    value: $vm.workManagement().workTime2,
+                    value: $vm.workManagement.workTime2,
                     option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13()" />
+                }, enable: $vm.condition8(3)" />
         </span>
 
         <!-- A6_17 -->
@@ -89,13 +91,14 @@
 
         <div class="block-right">
             <!-- A6_18 -->
-            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10()"></span>
+            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_9_10(3)"></span>
 
             <!-- A6_19 -->
             <span data-bind="ntsCheckBox: {
-                    checked: false,
-                    text: $i18n('KAF004_60')
-                    }, visible: $vm.condition2_8_10(), enable: $vm.condition10Activation()"></span>
+                    checked: !!ko.toJS($vm.workManagement.workTime2),
+                    text: $i18n('KAF004_60'),
+                    enable: $vm.condition10Activation(3)
+                    }, visible: $vm.condition2_9_10(3)"></span>
         </div>
     </div>
 
@@ -104,15 +107,15 @@
         <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
 
         <!-- A6_21 -->
-        <span class="label" id="label-A6_21" data-bind="text: $vm.workManagement().scheWorkTime2"></span>
+        <span class="label" id="label-A6_21" data-bind="text: $vm.workManagement.scheWorkTime2"></span>
 
         <!-- A6_22 -->
         <span>
             <input data-bind="ntsTimeWithDayEditor: {
                     name: $i18n('KAF004_42'),
-                    value: $vm.workManagement().leaveTime2,
+                    value: $vm.workManagement.leaveTime2,
                     option: {timeWithDay: false, width: '50'}
-                }, enable: $vm.condition13()" />
+                }, enable: $vm.condition8(4)" />
         </span>
 
         <!-- A6_23 -->
@@ -120,13 +123,14 @@
 
         <div class="block-right">
             <!-- A6_24 -->
-            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10()"></span>
+            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_9_10(4)"></span>
 
             <!-- A6_25 -->
             <span data-bind="ntsCheckBox: {
-                    checked: false,
-                    text: $i18n('KAF004_61')
-                    }, visible: $vm.condition2_8_10(), enable: $vm.condition10Activation()"></span>
+                    checked: !!ko.toJS($vm.workManagement.leaveTime2),
+                    text: $i18n('KAF004_61'),
+                    enable: $vm.condition10Activation(4)
+                    }, visible: $vm.condition2_9_10(4)"></span>
         </div>
     </div>
 </div>
