@@ -9,10 +9,10 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('KDP010_7')}</span>
-			<button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+			<button tabindex="2" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
 		</div>
 
-		<div class="contents-area">
+		<div class="contents-area" data-bind="with: settingsUsingEmbossing">
 			<div class="label-top">
 				<label>#{i18n.getText('KDP010_220')}</label>
 			</div>
@@ -20,25 +20,25 @@
 				<label>#{i18n.getText('KDP010_221')}</label>
 			</div> 
 			<div class="check">
-				<div data-bind="ntsCheckBox: { checked: nameSelection }">#{i18n.getText('KDP010_222')}</div>
+				<div data-bind="ntsCheckBox: { checked: name_selection }">#{i18n.getText('KDP010_222')}</div>
 			</div> 
 			<div class="check">
-				<div data-bind="ntsCheckBox: { checked: fingerVeinAuthentication }">#{i18n.getText('KDP010_223')}</div>
+				<div data-bind="ntsCheckBox: { checked: finger_authc }">#{i18n.getText('KDP010_223')}</div>
 			</div> 
 			<div class="check">	
-				<div data-bind="ntsCheckBox: { checked: ICCardAuthentication }">#{i18n.getText('KDP010_224')}</div>
+				<div data-bind="ntsCheckBox: { checked: ic_card }">#{i18n.getText('KDP010_224')}</div>
 			</div>
 			<div class="label-middle margin-left5">
 				<label>#{i18n.getText('KDP010_225')}</label>
 			</div>
 			<div class="check">
-				<div data-bind="ntsCheckBox: { checked: personalStamp }">#{i18n.getText('KDP010_226')}</div>
+				<div data-bind="ntsCheckBox: { checked: indivition }">#{i18n.getText('KDP010_226')}</div>
 			</div> 
 			<div class="check">
-				<div data-bind="ntsCheckBox: { checked: smartphoneEngraving }">#{i18n.getText('KDP010_227')}</div>
+				<div data-bind="ntsCheckBox: { checked: smart_phone }">#{i18n.getText('KDP010_227')}</div>
 			</div> 
 			<div class="check">
-				<div data-bind="ntsCheckBox: { checked: portalStamp }">#{i18n.getText('KDP010_228')}</div>
+				<div data-bind="ntsCheckBox: { checked: portal }">#{i18n.getText('KDP010_228')}</div>
 			</div>
 		</div>
 	</ui:composition>

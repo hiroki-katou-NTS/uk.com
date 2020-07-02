@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
@@ -70,6 +72,7 @@ public class TimeStampInputSettingFinder {
 		return result;
 	}
 	
+	/**打刻の前準備(利用設定)を表示する*/
 	public Optional<SettingsUsingEmbossingDto> getSettingsUsingEmbossing() {
 		String cId = AppContexts.user().companyId();
 		Optional<SettingsUsingEmbossing> domain = settingsUsingEmbossingRepo.get(cId);
@@ -77,5 +80,19 @@ public class TimeStampInputSettingFinder {
 			return Optional.of(new SettingsUsingEmbossingDto(domain.get()));
 		}
 		return Optional.empty();
+	}
+	
+	
+	/**打刻レイアウト(スマホ)の設定内容を取得する*/
+	public StampPageLayoutDto getLayoutSettingsSmartphone(Integer pageNo){
+		String cId = AppContexts.user().companyId();
+		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(cId);
+		if(domain.isPresent()) {
+			 Optional<StampPageLayout> result = domain.get().getPageLayoutSettings().stream().filter(c->c.getPageNo().v() == pageNo).findFirst();
+			 if(result.isPresent()) {
+				 return StampPageLayoutDto.fromDomain(result.get());
+			 }
+		}
+		return null;
 	}
 }

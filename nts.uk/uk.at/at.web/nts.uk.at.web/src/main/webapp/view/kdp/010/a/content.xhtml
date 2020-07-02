@@ -45,10 +45,10 @@
 				</tr>
 			</table>
 			
-			<div class="label-middle">
+			<div class="label-middle" data-bind="visible: $parent.controlTab.name_selection">
 				<label>#{i18n.getText('KDP010_161')}</label>
 			</div>
-			<table class="form-data" data-bind="with: stampSetCommunal">
+			<table class="form-data" data-bind="visible: $parent.controlTab.name_selection, with: stampSetCommunal">
 				<tr>
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_162')}</div> 
@@ -63,10 +63,10 @@
 				</tr>
 			</table>
 			
-			<div class="label-middle">
+			<div class="label-middle" data-bind="visible: $parent.controlTab.finger_authc">
 				<label>#{i18n.getText('KDP010_168')}</label>
 			</div>
-			<table class="form-data" data-bind="with: stampSetCommunal">
+			<table class="form-data" data-bind="visible: $parent.controlTab.finger_authc, with: stampSetCommunal">
 				<tr>
 					<td class="option-authent">
 						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_169')}</div> 

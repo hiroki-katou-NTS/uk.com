@@ -5,7 +5,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.TimeStampInputSettingFinder;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
@@ -43,6 +45,17 @@ public class TimeStampInputSettingsWebService extends WebService {
 	public SettingsUsingEmbossingDto getSettingsUsingEmbossing() {
 		return timeStampInputSettingFinder.getSettingsUsingEmbossing().orElse(null);
 	}
+	
+	@POST
+	@Path("layoutsettingssmartphone/get")
+	public StampPageLayoutDto getLayoutSettingsSmartphone(paramPageNo param) {
+		return timeStampInputSettingFinder.getLayoutSettingsSmartphone(param.pageNo);
+	}
+	
 }
 
+class paramPageNo{
+	
+	public Integer pageNo;
+}
 

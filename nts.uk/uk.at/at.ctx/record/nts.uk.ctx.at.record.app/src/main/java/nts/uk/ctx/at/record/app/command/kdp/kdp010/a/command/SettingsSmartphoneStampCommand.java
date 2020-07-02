@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.shr.com.context.AppContexts;
 
 @NoArgsConstructor
@@ -16,6 +17,8 @@ public class SettingsSmartphoneStampCommand {
 	
 	private DisplaySettingsStampScreenCommand displaySettingsStampScreen;
 	
+	private List<StampPageLayoutCommand> pageLayoutSettings;
+	
 	private Integer buttonEmphasisArt;	
 	
 	private Integer googleMap;
@@ -24,7 +27,7 @@ public class SettingsSmartphoneStampCommand {
 		return new SettingsSmartphoneStamp(
 				AppContexts.user().companyId(), 
 				this.displaySettingsStampScreen.toDomain(), 
-				new ArrayList<StampPageLayout>(), 
+				this.pageLayoutSettings.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				this.buttonEmphasisArt == 1);
 	}
 }

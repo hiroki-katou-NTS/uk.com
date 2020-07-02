@@ -80,7 +80,7 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 	@Column(name = "BUTTON_EMPHASIS_ART")
 	public Boolean buttonEmphasisArt;
 	
-	@OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "krcmtStampSmartPhone")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampSmartPhone")
 	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 
 	@Override
@@ -100,6 +100,7 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
 		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
+		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 3)).collect(Collectors.toList());
 	}
 	
 	public SettingsSmartphoneStamp toDomain() {
