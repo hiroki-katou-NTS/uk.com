@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;

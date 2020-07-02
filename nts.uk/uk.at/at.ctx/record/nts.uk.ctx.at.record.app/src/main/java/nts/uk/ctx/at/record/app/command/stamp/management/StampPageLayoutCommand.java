@@ -8,12 +8,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 /**
  * 
  * @author phongtq
@@ -43,7 +41,7 @@ public class StampPageLayoutCommand {
 		StampPageName stampPageNames = new StampPageName(stampPageName);
 		StampPageComment stampPageComments = stampPageComment.toDomain();
 		ButtonLayoutType buttonLayoutTypes = EnumAdaptor.valueOf(buttonLayoutType, ButtonLayoutType.class);
-		List<ButtonSettings> lstButtonSets = lstButtonSet.stream().map(x -> ButtonSettingsCommand.toDomain(x)).collect(Collectors.toList());
+		List<ButtonSettings> lstButtonSets = lstButtonSet.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		return new StampPageLayout(pageNos, stampPageNames, stampPageComments, buttonLayoutTypes, lstButtonSets);
 	}
 
