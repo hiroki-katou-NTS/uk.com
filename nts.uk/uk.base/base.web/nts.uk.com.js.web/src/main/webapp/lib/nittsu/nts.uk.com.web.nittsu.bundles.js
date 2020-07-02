@@ -47638,9 +47638,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
                 return $storeSession(name);
             }
             else {
-                $storeSession(name, params);
-                // for old page
-                windows.setShared(name, params);
+                return $.Deferred().resolve()
+                    .then(function () {
+                    $storeSession(name, params);
+                    // for old page
+                    windows.setShared(name, params);
+                });
             }
         }
     }

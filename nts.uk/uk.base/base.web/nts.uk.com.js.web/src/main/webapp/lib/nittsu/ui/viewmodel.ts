@@ -313,9 +313,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 			if (arguments.length == 1) {
 				return $storeSession(name);
 			} else {
-				$storeSession(name, params);
-				// for old page
-				windows.setShared(name, params);
+				return $.Deferred().resolve()
+					.then(() => {
+						$storeSession(name, params);
+						// for old page
+						windows.setShared(name, params);
+					});
 			}
 		}
 	}
