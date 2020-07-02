@@ -302,7 +302,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	public Optional<Stamp> get(String contractCode, StampNumber stampNumber) {
 		
 		return this.queryProxy().query(GET_STAMP_RECORD_BY_NUMBER, KrcdtStamp.class).setParameter("contractCode", contractCode)
-				.setParameter("cardNumbers", stampNumber).getSingle(x -> toDomain(x));
+				.setParameter("cardNumbers", stampNumber).getList().stream().findFirst().map(x -> toDomain(x));
 	}
 
 }
