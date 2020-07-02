@@ -485,3 +485,16 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 };
 
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+
+@handler({
+	bindingName: 'i18n',
+	validatable: true
+})
+class I18nBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
+		const msg = ko.unwrap(valueAccessor());
+		const params = ko.unwrap(allBindingsAccessor.get('params'));
+		
+		$(element).text(nts.uk.resource.getText(msg, params));
+	}
+}
