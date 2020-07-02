@@ -471,4 +471,11 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public AttendanceDayAttr chechAttendanceDay() {
 		return this.dailyWork.chechAttendanceDay();
 	}
+
+	public WorkType(String companyId, WorkTypeCode workTypeCode, List<WorkTypeSet> workTypeSetList) {
+		super();
+		this.companyId = companyId;
+		this.workTypeCode = workTypeCode;
+		this.workTypeSetList = workTypeSetList;
+	}
 }

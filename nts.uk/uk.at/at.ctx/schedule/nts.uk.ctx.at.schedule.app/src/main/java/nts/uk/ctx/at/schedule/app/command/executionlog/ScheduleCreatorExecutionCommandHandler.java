@@ -21,6 +21,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
@@ -49,7 +50,11 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo.Require;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -161,6 +166,12 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	
 	@Inject
 	private I18NResourcesForUK internationalization;
+	
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private Require require; 
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -297,7 +308,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			//アルゴリズム「実行ログ作成処理」を実行する
 			createExcutionLog(command, scheduleExecutionLog);
 		}
-
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
@@ -483,15 +493,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// ToDo
 		// 社員一覧のループ
 		// 「パラメータ」・社員ID一覧・期間
-		List<WorkSchedule> listWorkSchedules = new ArrayList<>();
+		List<ScheManaStatuTempo> lstStatuTempos = new ArrayList<>();
 		for(val id : employeeIds) {
 			// 期間のループ
 			for (val date : period.datesBetween()) {
-				// ToDo : Đợi của Hiếu (TKT-TQP)
-				// http://192.168.50.14:81/domain/?type=dom&dom=社員の予定管理状態
+				// 「社員の予定管理状態」を取得する
 				// 「Output」・社員の予定管理状態一覧
-				WorkSchedule workSchedule = null;
-				listWorkSchedules.add(workSchedule);
+				ScheManaStatuTempo manaStatuTempo = ScheManaStatuTempo.create(require, id, date);
+				lstStatuTempos.add(manaStatuTempo);
 			}
 		}
 		// -----↑
@@ -509,7 +518,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				listShortWorkTimeDto,
 				listBusTypeOfEmpHis,
 				lstWorkTypeInfo,
-				listWorkSchedules
+				lstStatuTempos
 				);
 		
 
