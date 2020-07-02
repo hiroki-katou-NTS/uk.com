@@ -11,6 +11,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __spreadArrays = (this && this.__spreadArrays) || function () {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
@@ -47603,10 +47609,10 @@ Object.defineProperties($jump, {
         }
     }
 });
-var $size = function (width, height) {
+var $size = function (height, width) {
     var wd = nts.uk.ui.windows.getSelf();
     if (wd) {
-        wd.setSize(width, height);
+        wd.setSize(height, width);
     }
 };
 Object.defineProperties($size, {
@@ -47795,4 +47801,20 @@ BaseViewModel.prototype.$validate = function $validate(act) {
     }
 };
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+var I18nBindingHandler = /** @class */ (function () {
+    function I18nBindingHandler() {
+    }
+    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var msg = ko.unwrap(valueAccessor());
+        var params = ko.unwrap(allBindingsAccessor.get('params'));
+        $(element).text(nts.uk.resource.getText(msg, params));
+    };
+    I18nBindingHandler = __decorate([
+        handler({
+            bindingName: 'i18n',
+            validatable: true
+        })
+    ], I18nBindingHandler);
+    return I18nBindingHandler;
+}());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
