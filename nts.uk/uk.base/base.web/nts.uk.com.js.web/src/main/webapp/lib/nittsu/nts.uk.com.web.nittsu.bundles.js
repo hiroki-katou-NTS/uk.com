@@ -47400,7 +47400,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
                     .join('');
                 return JSON.parse($string).$value;
             }
-            return null;
+            return windows.getShared(name);
         });
     }
 }, $storage = function ($data) {
@@ -47607,10 +47607,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modal: {
-        value: function $modal(path, params) {
+        value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modal(path).onClosed(function () {
+                windows.sub.modal(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
@@ -47620,10 +47620,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modeless: {
-        value: function $modeless(path, params) {
+        value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modeless(path).onClosed(function () {
+                windows.sub.modeless(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
