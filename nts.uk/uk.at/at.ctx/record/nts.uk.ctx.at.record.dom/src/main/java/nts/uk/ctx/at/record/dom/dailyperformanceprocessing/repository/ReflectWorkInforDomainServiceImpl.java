@@ -79,11 +79,14 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHisItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
@@ -150,6 +153,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -2229,6 +2233,133 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			}
 		}
 		return result.multiply(new BigDecimal(roundingTimeUnit)).intValue();
+	}
+
+	// 所属情報を反映する
+	@Override
+	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId, GeneralDate day,
+			AffiliationInforOfDailyAttd dailyAttd, EmployeeGeneralInfoImport generalInfoImport) {
+
+		// employment
+		Map<String, List<ExEmploymentHistItemImport>> mapEmploymentHist = generalInfoImport
+				.getEmploymentHistoryImports().stream().collect(Collectors.toMap(
+						ExEmploymentHistoryImport::getEmployeeId, ExEmploymentHistoryImport::getEmploymentItems));
+
+		Optional<ExEmploymentHistItemImport> employmentHistItemImport = Optional.empty();
+		List<ExEmploymentHistItemImport> exEmploymentHistItemImports = mapEmploymentHist.get(employeeId);
+		if (exEmploymentHistItemImports != null) {
+			employmentHistItemImport = exEmploymentHistItemImports.stream()
+					.filter(empHistItem -> empHistItem.getPeriod().contains(day)).findFirst();
+		}
+
+		// classification
+		Map<String, List<ExClassificationHistItemImport>> mapClassificationHist = generalInfoImport
+				.getExClassificationHistoryImports().stream()
+				.collect(Collectors.toMap(ExClassificationHistoryImport::getEmployeeId,
+						ExClassificationHistoryImport::getClassificationItems));
+
+		Optional<ExClassificationHistItemImport> classificationHistItemImport = Optional.empty();
+		List<ExClassificationHistItemImport> exClassificationHistItemImports = mapClassificationHist.get(employeeId);
+		if (exClassificationHistItemImports != null) {
+			classificationHistItemImport = exClassificationHistItemImports.stream()
+					.filter(item -> item.getPeriod().contains(day)).findFirst();
+		}
+
+		// Job title
+		Map<String, List<ExJobTitleHistItemImport>> mapJobTitleHist = generalInfoImport
+				.getExJobTitleHistoryImports().stream().collect(Collectors.toMap(ExJobTitleHistoryImport::getEmployeeId,
+						ExJobTitleHistoryImport::getJobTitleItems));
+
+		Optional<ExJobTitleHistItemImport> jobTitleHistItemImport = Optional.empty();
+		List<ExJobTitleHistItemImport> exJobTitleHistItemImports = mapJobTitleHist.get(employeeId);
+		if (exJobTitleHistItemImports != null) {
+			jobTitleHistItemImport = exJobTitleHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
+					.findFirst();
+		}
+
+		// workPlace
+		Map<String, List<ExWorkplaceHistItemImport>> mapWorkplaceHist = generalInfoImport
+				.getExWorkPlaceHistoryImports().stream().collect(Collectors
+						.toMap(ExWorkPlaceHistoryImport::getEmployeeId, ExWorkPlaceHistoryImport::getWorkplaceItems));
+
+		Optional<ExWorkplaceHistItemImport> workplaceHistItemImport = Optional.empty();
+		List<ExWorkplaceHistItemImport> exWorkplaceHistItemImports = mapWorkplaceHist.get(employeeId);
+		if (exWorkplaceHistItemImports != null) {
+			workplaceHistItemImport = exWorkplaceHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
+					.findFirst();
+		}
+		
+		Map<String, List<ExWorkTypeHisItemImport>> map = generalInfoImport
+				.getExWorkTypeHistoryImports().stream().collect(Collectors
+						.toMap(ExWorkTypeHistoryImport::getEmployeeId, ExWorkTypeHistoryImport::getExWorkTypeHisItemImports));
+
+		Optional<ExWorkTypeHisItemImport> worktypeHistItemImport = Optional.empty();
+		List<ExWorkTypeHisItemImport> exWorktypeHistItemImports = map.get(employeeId);
+		if (exWorktypeHistItemImports != null) {
+			worktypeHistItemImport = exWorktypeHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
+					.findFirst();
+		}
+		
+		// Get Data
+		List<ErrorMessageInfo> errMesInfos = new ArrayList<>();
+		// 存在しない - no data
+		if (!employmentHistItemImport.isPresent()) {
+			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
+					EnumAdaptor.valueOf(0, ExecutionContent.class),
+					new ErrMessageResource("001"), 
+					new ErrMessageContent(TextResource.localize("Msg_426")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!workplaceHistItemImport.isPresent()) {
+			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
+					EnumAdaptor.valueOf(0, ExecutionContent.class),
+					new ErrMessageResource("002"), 
+					new ErrMessageContent(TextResource.localize("Msg_427")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!classificationHistItemImport.isPresent()) {
+			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
+					EnumAdaptor.valueOf(0, ExecutionContent.class),
+					new ErrMessageResource("003"), 
+					new ErrMessageContent(TextResource.localize("Msg_428")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!jobTitleHistItemImport.isPresent()) {
+			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
+					EnumAdaptor.valueOf(0, ExecutionContent.class),
+					new ErrMessageResource("004"), 
+					new ErrMessageContent(TextResource.localize("Msg_429")));
+			errMesInfos.add(employmentErrMes);
+		}
+		
+		if(exWorktypeHistItemImports.isEmpty()) {
+			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
+					EnumAdaptor.valueOf(0, ExecutionContent.class),
+					// trong EA đang để リソースID　=　？？？, nên đang để tạm là 100
+					new ErrMessageResource("100"), 
+					new ErrMessageContent(TextResource.localize("Msg_1010")));
+			errMesInfos.add(employmentErrMes);
+		}
+		// 存在する - has data
+		// 「2020/02/12」 追加　Tin
+		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent()
+				&& classificationHistItemImport.isPresent() && jobTitleHistItemImport.isPresent() && worktypeHistItemImport.isPresent()) {
+			return new AffiliationInforState(Collections.emptyList(),
+					Optional.of(new AffiliationInforOfDailyAttd(
+							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
+							jobTitleHistItemImport.get().getJobTitleId(),
+							workplaceHistItemImport.get().getWorkplaceId(),
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), 
+							new BonusPaySettingCode(worktypeHistItemImport.get().getBusinessTypeCd()))));
+		} else {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+			
+			return new AffiliationInforState(new ArrayList<>(), Optional.empty(), errMesInfos);
+		}
 	}
 
 }

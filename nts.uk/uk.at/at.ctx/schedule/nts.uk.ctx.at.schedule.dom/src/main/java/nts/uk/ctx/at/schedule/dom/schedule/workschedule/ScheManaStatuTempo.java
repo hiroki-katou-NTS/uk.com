@@ -47,7 +47,7 @@ public class ScheManaStatuTempo {
 	 * @param date
 	 * @return
 	 */
-	public ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
+	public static ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
 		return null;
 	}
 	/**

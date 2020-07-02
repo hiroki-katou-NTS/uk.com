@@ -217,8 +217,8 @@ module nts.uk.com.view.cmm018.a {
                             self.cpA([]);
                         }
                     }
-//                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-//                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
                 });
                 //---subscribe tab selected---
                 self.tabSelected.subscribe(function(codeChanged) {
