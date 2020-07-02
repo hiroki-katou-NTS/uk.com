@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkType.
@@ -471,6 +473,36 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public AttendanceDayAttr chechAttendanceDay() {
 		return this.dailyWork.chechAttendanceDay();
 	}
+	
+	/**
+	 * 1日半日出勤・1日休日系の判定
+	 * @param workTypeCode
+	 * @return
+	 */
+	public WorkStyle checkWorkDay(String workTypeCode) {
+		// All day
+		if (this.isOneDay()) {
+			if (this.dailyWork.IsLeaveForADay()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.ONE_DAY_WORK;
+		}
+
+		// Half day
+		if (this.dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.AFTERNOON_WORK;
+		}
+
+		if (this.dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
 
 	public WorkType(String companyId, WorkTypeCode workTypeCode, List<WorkTypeSet> workTypeSetList) {
 		super();
