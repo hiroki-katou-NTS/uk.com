@@ -730,10 +730,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//所定内割増合計時間の計算
 			AttendanceTime withinpremiumTime = predetermineTimeSet != null 
 					&& predetermineTimeSet.getpredetermineTime(workType.getDailyWork()).greaterThan(dailyUnit.getDailyTime().valueAsMinutes())
-					?new AttendanceTime(this.withinWorkTimeFrame.stream()
-							.filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
-							.map(tc -> tc.getPremiumTimeSheetInPredetermined().get().getWithinPremiumtimeSheet().lengthAsMinutes())
-							.collect(Collectors.summingInt(tc -> tc)))
+					?this.calcTotalPredeterminePremiumTime()
 					:new AttendanceTime(0);
 			//就業時間から所定内割増時間を減算
 			workTime = workTime.minusMinutes(withinpremiumTime.valueAsMinutes());
