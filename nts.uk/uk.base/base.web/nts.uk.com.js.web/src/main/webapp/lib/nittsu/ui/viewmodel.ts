@@ -108,6 +108,15 @@ function component(options: { name: string; template: string; }): any {
 									}
 								});
 
+								Object.defineProperty($viewModel, 'dispose', {
+									value: function dispose() {
+
+										if (typeof $viewModel.destroyed === 'function') {
+											$viewModel.destroyed.apply($viewModel, []);
+										}
+									}
+								});
+
 								return $viewModel;
 							}
 						}
@@ -268,7 +277,39 @@ Object.defineProperties($jump, {
 	}
 });
 
+const $size = function (height: string | number, width: string | number) {
+	const wd = nts.uk.ui.windows.getSelf();
+
+	if (wd) {
+		wd.setSize(height, width);
+	}
+};
+
+Object.defineProperties($size, {
+	width: {
+		value: function (width: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setWidth(width);
+			}
+		}
+	},
+	height: {
+		value: function (height: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setHeight(height);
+			}
+		}
+	}
+});
+
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+	size: {
+		value: $size
+	},
 	close: {
 		value: function $close(result?: any) {
 			if (window.top !== window) {

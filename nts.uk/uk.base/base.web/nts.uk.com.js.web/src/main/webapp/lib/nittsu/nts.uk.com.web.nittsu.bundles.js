@@ -47804,6 +47804,13 @@ function component(options) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            Object.defineProperty($viewModel, 'dispose', {
+                                value: function dispose() {
+                                    if (typeof $viewModel.destroyed === 'function') {
+                                        $viewModel.destroyed.apply($viewModel, []);
+                                    }
+                                }
+                            });
                             return $viewModel;
                         }
                     }
@@ -47936,7 +47943,34 @@ Object.defineProperties($jump, {
         }
     }
 });
+var $size = function (height, width) {
+    var wd = nts.uk.ui.windows.getSelf();
+    if (wd) {
+        wd.setSize(height, width);
+    }
+};
+Object.defineProperties($size, {
+    width: {
+        value: function (width) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setWidth(width);
+            }
+        }
+    },
+    height: {
+        value: function (height) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setHeight(height);
+            }
+        }
+    }
+});
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+    size: {
+        value: $size
+    },
     close: {
         value: function $close(result) {
             if (window.top !== window) {
