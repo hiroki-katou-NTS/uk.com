@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp004.a {
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
 			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
-			fingerAuth: ''
+			fingerAuth: '',
 		}
 
 		export function startPage(): JQueryPromise<any> {

@@ -18,14 +18,19 @@
 		</ui:define>
 
 		<ui:define name="content">
-		<div class="contents">
+			<div class="contents">
 				<div class="failure-message">#{i18n.getText('KDP004_1')}</div>
 				<div class="confirm-message">#{i18n.getText('KDP004_2')}</div>
-				<div class="error-content">打刻入力を利用することができません。</div>
+				<div class="error-content" data-bind="text:errorMessage"></div>
 				<div class='div_line flex btn-panel'>
-					<button class="retry-btn proceed x-large">#{i18n.getText('KDP004_3')}</button>
-					<button class="password-login-btn proceed x-large">#{i18n.getText('KDP004_4')}</button>
-					<button class="cancel-btn x-large">#{i18n.getText('KDP004_5')}</button>
+					<button class="retry-btn proceed x-large"
+						data-bind="click:function(){closeDialog('retry')}">#{i18n.getText('KDP004_3')}</button>
+					<com:ko-if bind="retry() == 3 ">
+						<button class="password-login-btn proceed x-large"
+							data-bind="click:function(){closeDialog('loginPass')}">#{i18n.getText('KDP004_4')}</button>
+					</com:ko-if>
+					<button class="cancel-btn x-large"
+						data-bind="click:function(){closeDialog('cancel')}">#{i18n.getText('KDP004_5')}</button>
 				</div>
 			</div>
 		</ui:define>

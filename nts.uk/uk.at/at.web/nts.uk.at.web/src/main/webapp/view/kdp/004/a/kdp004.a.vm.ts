@@ -147,69 +147,69 @@ module nts.uk.at.view.kdp004.a {
 				return layout;
 			}
 
-			public openScreenG() {
+			public openScreenG(button, layout): JQueryPromise<IAuthResult> {
 				let self = this;
-				setShared('retry', self.retry);
+				let dfd = $.Deferred<any>();
+				setShared('ModelGParam', { retry: self.retry, errorMessage: self.errorMessage() });
 				modal('/view/kdp/003/k/index.xhtml', self.retry).onClosed(() => {
-					let redirect: "retry" | "loginPass" | "cancel" = getShared('selectedResult');
+					let redirect: "retry" | "loginPass" | "cancel" = getShared('actionName');
 					if (redirect === "retry") {
 						self.retry = self.retry + 1;
-						self.fingerAuth().done((res) => {
-							if (res.result) {
-								self.retry = 0;
-								service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-									self.isUsed(res.used == 0);
-									if (!self.isUsed()) {
-										self.errorMessage(getMessage(res.messageId));
-										return;
-									}
-									service.stampInput({}).done(() => {
-
-									});
-								});
-							} else {
-								self.errorMessage(getMessage(res.messageId));
-								self.openScreenG();
-							}
+						self.doAuthent(button, layout).done((res: IAuthResult) => {
+							dfd.resolve(res);
 						});
 					}
 					if (redirect === "loginPass") {
-						self.retry = self.retry + 1;
-						self.openDialogF().done((loginSuccess) => {
-							if (loginSuccess) {
+						self.openDialogF().done((res) => {
+							if (res) {
 								self.retry = 0;
-
-								service.stampInput({}).done(() => {
-
-								});
 							} else {
-								self.isUsed(false);
 								self.errorMessage(getText("Msg_1647"));
 							}
+							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
 						});
 					}
+					dfd.resolve({ isSuccess: false, authType: 0 });
 				});
+				return dfd.promise();
 			}
 
 			public clickBtn1(vm, layout) {
 				let button = this;
-				vm.fingerAuth().done((res) => {
+
+				vm.doAuthent(layout, button).done((res: IAuthResult) => {
+					if (res.isSuccess) {
+						vm.registerData(button, layout, res.authType);
+					}
+					vm.isUsed(res.isSuccess);
+				});
+			}
+
+			public doAuthent(layout, button): JQueryPromise<IAuthResult> {
+				let self = this;
+				let dfd = $.Deferred<any>();
+
+				self.fingerAuth().done((res) => {
 					if (res.result) {
-						service.confirmUseOfStampInput({ employeeId: vm.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-							vm.isUsed(res.used == 0);
-							if (!vm.isUsed()) {
-								vm.errorMessage(getMessage(res.messageId));
+						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
+							self.isUsed(res.used == 0);
+							if (!self.isUsed()) {
+								self.errorMessage(getMessage(res.messageId));
 							}
-							//dang ki data
-							vm.registerData(button, layout);
+							dfd.resolve({ isSuccess: self.isUsed(), authType: 0 });
 						});
 
 					} else {
-						vm.errorMessage(getMessage(res.messageId));
-						vm.openScreenG();
+						self.errorMessage(getMessage(res.messageId));
+						self.openScreenG(button, layout).done((res: IAuthResult) => {
+							dfd.resolve(res);
+						});
+
 					}
 
 				});
+
+				return dfd.promise();
 			}
 
 			public registerData(button, layout, authcMethod) {
@@ -228,16 +228,16 @@ module nts.uk.at.view.kdp004.a {
 							cardNumberSupport: null,
 							workLocationCD: null,
 							workTimeCode: null,
-							overtimeDeclaration:null
+							overtimeDeclaration: null
 						},
 						authcMethod: authcMethod
 					};
 
 					service.stampInput(data).done((res) => {
-						if (vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
-							vm.openScreenC(button, layout);
+						if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+							self.openScreenC(button, layout);
 						} else {
-							vm.openScreenB(button, layout);
+							self.openScreenB(button, layout);
 						}
 					}).fail((res) => {
 						dialog.alertError({ messageId: res.messageId });
@@ -253,7 +253,7 @@ module nts.uk.at.view.kdp004.a {
 				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
 				setShared("infoEmpToScreenB", {
 					employeeId: __viewContext.user.employeeId,
-					employeeCode __viewContext.user.employeeCode,
+					employeeCode: __viewContext.user.employeeCode,
 					mode: Mode.Personal,
 				});
 
