@@ -21,12 +21,13 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/** 合計残日数 */
 	@Setter
 	private ReserveLeaveRemainingDayNumber totalRemainingDays;
-	/** 付与前 */
-	@Setter
-	private ReserveLeaveRemainingDayNumber beforeGrant;
-	/** 付与後 */
-	@Setter
-	private Optional<ReserveLeaveRemainingDayNumber> afterGrant;
+//	/** 付与前 */
+//	@Setter
+//	private ReserveLeaveRemainingDayNumber beforeGrant;
+//	/** 付与後 */
+//	@Setter
+//	private Optional<ReserveLeaveRemainingDayNumber> afterGrant;
+	
 	/** 明細 */
 	private List<ReserveLeaveRemainingDetail> details;
 	
@@ -36,8 +37,8 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public ReserveLeaveRemainingNumber(){
 		
 		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
-		this.beforeGrant = new ReserveLeaveRemainingDayNumber(0.0);
-		this.afterGrant = Optional.empty();
+//		this.beforeGrant = new ReserveLeaveRemainingDayNumber(0.0);
+//		this.afterGrant = Optional.empty();
 		this.details = new ArrayList<>();
 	}
 	
@@ -49,15 +50,15 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	 */
 	public static ReserveLeaveRemainingNumber of(
 			ReserveLeaveRemainingDayNumber totalRemainingDays,
-			ReserveLeaveRemainingDayNumber beforeGrant,
-			Optional<ReserveLeaveRemainingDayNumber> afterGrant,
+//			ReserveLeaveRemainingDayNumber beforeGrant,
+//			Optional<ReserveLeaveRemainingDayNumber> afterGrant,
 			List<ReserveLeaveRemainingDetail> details){
 		
 		ReserveLeaveRemainingNumber domain = new ReserveLeaveRemainingNumber();
 		domain.totalRemainingDays = totalRemainingDays;
 		domain.details = details;
-		domain.beforeGrant = beforeGrant;
-		domain.afterGrant = afterGrant;
+//		domain.beforeGrant = beforeGrant;
+//		domain.afterGrant = afterGrant;
 		return domain;
 	}
 	

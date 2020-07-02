@@ -34,11 +34,14 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	/** 積立年休 */
 	private ReserveLeave reserveLeave;
 	/** 実積立年休 */
-	private RealReserveLeave realReserveLeave;
+	private ReserveLeave realReserveLeave;
 	/** 積立年休付与情報 */
 	private Optional<ReserveLeaveGrant> reserveLeaveGrant;
 	/** 付与区分 */
 	private boolean grantAtr;
+	
+	/** 未消化数 */
+	private ReserveLeaveUndigestedNumber undigestedNumber;
 	
 	/**
 	 * コンストラクタ
@@ -62,7 +65,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		this.closurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.closureStatus = ClosureStatus.UNTREATED;
 		this.reserveLeave = new ReserveLeave();
-		this.realReserveLeave = new RealReserveLeave();
+		this.realReserveLeave = new ReserveLeave();
 		this.reserveLeaveGrant = Optional.empty();
 		this.grantAtr = false;
 	}
@@ -89,7 +92,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			DatePeriod closurePeriod,
 			ClosureStatus closureStatus,
 			ReserveLeave reserveLeave,
-			RealReserveLeave realReserveLeave,
+			ReserveLeave realReserveLeave,
 			Optional<ReserveLeaveGrant> reserveLeaveGrant,
 			boolean grantAtr){
 		
