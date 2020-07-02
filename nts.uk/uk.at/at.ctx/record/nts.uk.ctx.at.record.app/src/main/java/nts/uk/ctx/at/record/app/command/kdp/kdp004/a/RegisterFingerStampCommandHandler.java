@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -93,7 +94,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 																						, AppContexts.user().contractCode()
 																						, cmd.getEmployeeId()
 																						, Optional.ofNullable(null)
-																						, new Relieve(AuthcMethod.VEIN_AUTHC, StampMeans.FINGER_AUTHC)
+																						, new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC)
 																						, cmd.getStampDatetime()
 																						, cmd.getStampButton()
 																						, cmd.getRefActualResult().toDomainValue());

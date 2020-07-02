@@ -34,7 +34,7 @@ interface ButtonSetting {
 }
 
 interface ILoginInfo{
-	
+	employeeId:string;
 	
 }
 class StampTab {

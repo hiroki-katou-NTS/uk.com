@@ -31,6 +31,9 @@ public class RegisterFingerStampCommand {
 	// 実績への反映内容
 	private RefectActualResultCommand refActualResult;
 
+	// 認証方法
+	private Integer authcMethod;
+
 	public GeneralDateTime getStampDatetime() {
 		return GeneralDateTime.fromString(this.stampDatetime, "yyyy/MM/dd HH:mm:ss");
 	}

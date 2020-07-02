@@ -8,6 +8,8 @@ module nts.uk.at.view.kdp004.a {
 		import block = nts.uk.ui.block;
 		import dialog = nts.uk.ui.dialog;
 		import jump = nts.uk.request.jump;
+		import getText = nts.uk.resource.getText;
+		import getMessage = nts.uk.resource.getMessage;
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
@@ -15,8 +17,10 @@ module nts.uk.at.view.kdp004.a {
 			stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
 			stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
 			serverTime: KnockoutObservable<any> = ko.observable('');
-			isUsed: KnockoutObservable<boolean> = ko.observable(true);
+			isUsed: KnockoutObservable<boolean> = ko.observable(false);
 			errorMessage: KnockoutObservable<string> = ko.observable('');
+			loginInfo: any = null;
+			retry: number = 0;
 			constructor() {
 				let self = this;
 			}
@@ -27,33 +31,104 @@ module nts.uk.at.view.kdp004.a {
 
 				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
 					if (!loginInfo) {
-						self.openDialogF();
+						self.openDialogF().done((loginSuccess) => {
+							if (!loginSuccess) {
+								self.isUsed(false);
+								self.errorMessage(getText("Msg_1647"));
+								dfd.resolve();
+								return;
+							}
+							self.openDialogK().done((chooseItem) => {
+								if (!chooseItem) {
+									self.isUsed(false);
+									self.errorMessage(getText("Msg_1647"));
+									dfd.resolve();
+									return;
+								}
+
+								nts.uk.characteristics.save("loginKDP004", {});
+								dfd.resolve();
+
+							});
+						});
 					} else {
 
+						self.loginInfo = loginInfo;
+						//login
+						block.grayout();
+						service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
+							self.isUsed(res.used == 0);
+							if (self.isUsed()) {
+								let isAdmin = true;
+								service.login(isAdmin, loginInfo).done((res) => {
+									if (res.result) {
+										block.grayout();
+										service.startPage()
+											.done((res: any) => {
+												self.stampSetting(res.stampSetting);
+												self.stampTab().bindData(res.stampSetting.pageLayouts);
+												self.stampResultDisplay(res.stampResultDisplay);
+												dfd.resolve();
+											}).fail((res) => {
+												dialog.alertError({ messageId: res.messageId }).then(() => {
+													jump("com", "/view/ccg/008/a/index.xhtml");
+												});
+											}).always(() => {
+												block.clear();
+											});
+									} else {
+										self.isUsed(false);
+										self.errorMessage(getMessage(res.errorMessage));
+										dfd.resolve();
+									}
+								}).fail((res) => {
+									self.isUsed(false);
+									self.errorMessage(getMessage(res.messageId));
+									dfd.resolve();
+								}).always(() => {
+									block.clear();
+								});
+							} else {
+								self.errorMessage(getMessage(res.messageId));
+							}
+						});
 					}
 				});
-				block.grayout();
-				service.startPage()
-					.done((res: any) => {
-						self.stampSetting(res.stampSetting);
-						self.stampTab().bindData(res.stampSetting.pageLayouts);
-						self.stampResultDisplay(res.stampResultDisplay);
-						dfd.resolve();
-					}).fail((res) => {
-						dialog.alertError({ messageId: res.messageId }).then(() => {
-							jump("com", "/view/ccg/008/a/index.xhtml");
-						});
-					}).always(() => {
-						block.clear();
-					});
+
 
 				return dfd.promise();
 			}
 
-			public openDialogF(): JQueryPromise<void> {
+			public fingerAuth(): JQueryPromise<any> {
+				let dfd = $.Deferred<any>();
+
+				service.fingerAuth().done((res) => {
+					dfd.resolve(res);
+				});
+
+				return dfd.promise();
+			}
+
+			public openDialogF(): JQueryPromise<any> {
 				let self = this;
-				let dfd = $.Deferred<void>();
-				dfd.resolve();
+				let dfd = $.Deferred<any>();
+
+				modal('/view/kdp/003/f/index.xhtml').onClosed(function(): any {
+					let loginSuccess = true;
+
+					dfd.resolve(loginSuccess);
+				});
+
+				return dfd.promise();
+			}
+
+			public openDialogK(): JQueryPromise<any> {
+				let self = this;
+				let dfd = $.Deferred<any>();
+				modal('/view/kdp/003/k/index.xhtml').onClosed(() => {
+					let chooseItem = true;
+					dfd.resolve(chooseItem);
+				});
 				return dfd.promise();
 			}
 
@@ -72,20 +147,92 @@ module nts.uk.at.view.kdp004.a {
 				return layout;
 			}
 
+			public openScreenG() {
+				let self = this;
+				setShared('retry', self.retry);
+				modal('/view/kdp/003/k/index.xhtml', self.retry).onClosed(() => {
+					let redirect: "retry" | "loginPass" | "cancel" = getShared('selectedResult');
+					if (redirect === "retry") {
+						self.retry = self.retry + 1;
+						self.fingerAuth().done((res) => {
+							if (res.result) {
+								self.retry = 0;
+								service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
+									self.isUsed(res.used == 0);
+									if (!self.isUsed()) {
+										self.errorMessage(getMessage(res.messageId));
+										return;
+									}
+									service.stampInput({}).done(() => {
+
+									});
+								});
+							} else {
+								self.errorMessage(getMessage(res.messageId));
+								self.openScreenG();
+							}
+						});
+					}
+					if (redirect === "loginPass") {
+						self.retry = self.retry + 1;
+						self.openDialogF().done((loginSuccess) => {
+							if (loginSuccess) {
+								self.retry = 0;
+
+								service.stampInput({}).done(() => {
+
+								});
+							} else {
+								self.isUsed(false);
+								self.errorMessage(getText("Msg_1647"));
+							}
+						});
+					}
+				});
+			}
+
 			public clickBtn1(vm, layout) {
 				let button = this;
+				vm.fingerAuth().done((res) => {
+					if (res.result) {
+						service.confirmUseOfStampInput({ employeeId: vm.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
+							vm.isUsed(res.used == 0);
+							if (!vm.isUsed()) {
+								vm.errorMessage(getMessage(res.messageId));
+							}
+							//dang ki data
+							vm.registerData(button, layout);
+						});
+
+					} else {
+						vm.errorMessage(getMessage(res.messageId));
+						vm.openScreenG();
+					}
+
+				});
+			}
+
+			public registerData(button, layout, authcMethod) {
+				let self = this;
+
 				nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
 					let data = {
+						employeeId: self.loginInfo.employeeId,
 						datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
-						authcMethod: 0,
-						stampMeans: 3,
-						reservationArt: button.btnReservationArt,
-						changeHalfDay: button.changeHalfDay,
-						goOutArt: button.goOutArt,
-						setPreClockArt: button.setPreClockArt,
-						changeClockArt: button.changeClockArt,
-						changeCalArt: button.changeCalArt
+						stampNumber: null,
+						stampButton: {
+							pageNo: layout.pageNo,
+							buttonPositionNo: button.btnPositionNo
+						},
+						refActualResult: {
+							cardNumberSupport: null,
+							workLocationCD: null,
+							workTimeCode: null,
+							overtimeDeclaration:null
+						},
+						authcMethod: authcMethod
 					};
+
 					service.stampInput(data).done((res) => {
 						if (vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
 							vm.openScreenC(button, layout);
@@ -96,6 +243,8 @@ module nts.uk.at.view.kdp004.a {
 						dialog.alertError({ messageId: res.messageId });
 					});
 				});
+
+
 			}
 
 			public openScreenB(button, layout) {
