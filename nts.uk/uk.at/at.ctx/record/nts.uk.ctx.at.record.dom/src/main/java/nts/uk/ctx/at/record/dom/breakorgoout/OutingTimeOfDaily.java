@@ -146,7 +146,7 @@ public class OutingTimeOfDaily {
 		
 		if(isCalculatable) {
 			//外出回数
-			goOutTimes = calcGoOutTimes(recordClass);
+			goOutTimes = calcGoOutTimes(recordClass, ConditionAtr.convertFromGoOutReason(outingOfDaily.getReasonForGoOut()));
 			//休暇使用時間
 			
 			//計上用合計時間
@@ -169,21 +169,21 @@ public class OutingTimeOfDaily {
 	 * @param recordClass
 	 * @return 休憩外出回数
 	 */
-	public static BreakTimeGoOutTimes calcGoOutTimes(ManageReGetClass recordClass) {
+	public static BreakTimeGoOutTimes calcGoOutTimes(ManageReGetClass recordClass, ConditionAtr conditionAtr) {
 		
 		//控除時間帯一覧の取得
 		List<TimeSheetOfDeductionItem> list = new ArrayList<>();
 		//就業時間内時間帯
 		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
-			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			//遅刻
 			if(withinWorkTimeFrame.getLateTimeSheet().isPresent()&&withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
-				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			}
 			//早退
 			if(withinWorkTimeFrame.getLeaveEarlyTimeSheet().isPresent()&&withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
-				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			}
 		}
 		//就業時間外時間帯
@@ -191,13 +191,13 @@ public class OutingTimeOfDaily {
 		//残業
 		if(outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()) {
 			for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets()) {
-				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			}
 		}
 		//休出
 		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
 			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
-				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Appropriate, conditionAtr));
 			}
 		}
 		
