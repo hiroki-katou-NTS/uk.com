@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -28,6 +29,7 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	private DisplaySettingsStampScreen displaySettingsStampScreen;
 	
 	// ページレイアウト設定
+	@Setter
 	private List<StampPageLayout> pageLayoutSettings;
 	
 	// 打刻ボタンを抑制する

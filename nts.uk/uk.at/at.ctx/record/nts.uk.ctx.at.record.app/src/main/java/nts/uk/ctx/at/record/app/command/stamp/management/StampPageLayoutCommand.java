@@ -41,8 +41,7 @@ public class StampPageLayoutCommand {
 	public StampPageLayout toDomain() {
 		PageNo pageNos = new PageNo(pageNo);
 		StampPageName stampPageNames = new StampPageName(stampPageName);
-		StampPageComment stampPageComments = new StampPageComment(new PageComment(stampPageComment.getPageComment()),
-				new ColorCode(stampPageComment.getCommentColor()));
+		StampPageComment stampPageComments = stampPageComment.toDomain();
 		ButtonLayoutType buttonLayoutTypes = EnumAdaptor.valueOf(buttonLayoutType, ButtonLayoutType.class);
 		List<ButtonSettings> lstButtonSets = lstButtonSet.stream().map(x -> ButtonSettingsCommand.toDomain(x)).collect(Collectors.toList());
 		return new StampPageLayout(pageNos, stampPageNames, stampPageComments, buttonLayoutTypes, lstButtonSets);

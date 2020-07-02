@@ -13,7 +13,6 @@ module nts.uk.at.view.kdp010.c {
                 { id: 1, name: getText("KDP010_187") },
                 { id: 0, name: getText("KDP010_188") }
             ]);
-            pageLayoutSettings: KnockoutObservable<boolean> = ko.observable(false);
             constructor(){
                 let self = this;
             }
@@ -25,7 +24,6 @@ module nts.uk.at.view.kdp010.c {
                 service.getData().done(function(data) {
                     if (data) {
                         self.settingsSmartphoneStamp.update(data);
-                        self.pageLayoutSettings(data.pageLayoutSettings.length > 0);
                     }
                     dfd.resolve();
                 }).fail(function (res) {
@@ -100,6 +98,7 @@ module nts.uk.at.view.kdp010.c {
         
         class SettingsSmartphoneStamp {
             displaySettingsStampScreen: any = new DisplaySettingsStampScreen();
+            pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
             buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
             googleMap: KnockoutObservable<number> = ko.observable(0);
             constructor(){
@@ -109,6 +108,7 @@ module nts.uk.at.view.kdp010.c {
                 let self = this;
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
+                    self.pageLayoutSettings(data.pageLayoutSettings);
                     self.buttonEmphasisArt(data.buttonEmphasisArt);
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,13 +49,22 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	/*打刻の前準備(スマホ)を登録する*/
 	public void saveSettingsSmartphoneStamp(SettingsSmartphoneStampCommand command) {
-		settingsSmartphoneStampRepo.save(command.toDomain());
-		Optional<CommonSettingsStampInput> domain = commonSettingsStampInputRepo.get(AppContexts.user().companyId());
-		if (domain.isPresent()) {
-			domain.get().setGooglemap(command.getGoogleMap() == 1);
-			commonSettingsStampInputRepo.update(domain.get());
+		String companyId = AppContexts.user().companyId();
+		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+		SettingsSmartphoneStamp saveDomain = command.toDomain();
+		if(oldDomain.isPresent()) {
+			saveDomain.setPageLayoutSettings(oldDomain.get().getPageLayoutSettings());
+		}else {
+			saveDomain.setPageLayoutSettings(new ArrayList<>());
+		}
+		settingsSmartphoneStampRepo.save(saveDomain);
+		
+		Optional<CommonSettingsStampInput> commonDomain = commonSettingsStampInputRepo.get(companyId);
+		if (commonDomain.isPresent()) {
+			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
+			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(AppContexts.user().companyId(), new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
 		}
 	}
 	

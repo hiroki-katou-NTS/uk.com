@@ -24,7 +24,6 @@ public interface SettingsSmartphoneStampRepository {
 	 */
 	public void save(SettingsSmartphoneStamp settingsSmartphoneStamp);
 	
-	
 	/**
 	 * [3]  取得する
 	 * @param cid
