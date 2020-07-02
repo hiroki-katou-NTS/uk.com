@@ -21,7 +21,10 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * アラームリストパターン設定
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

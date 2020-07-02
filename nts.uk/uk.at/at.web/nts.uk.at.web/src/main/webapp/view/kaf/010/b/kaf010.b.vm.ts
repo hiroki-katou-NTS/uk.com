@@ -283,15 +283,16 @@ module nts.uk.at.view.kaf010.b {
                 self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
                 self.employeeID(appDispInfoNoDateOutput.employeeInfoLst[0].sid);
                 self.inputDate(applicationDto.inputDate);
-                self.siftCD(hdWorkDispInfoWithDateOutput.workTimeCD);
-                self.siftName(hdWorkDispInfoWithDateOutput.workTimeName);
-                self.workTypeCd(hdWorkDispInfoWithDateOutput.workTypeCD);
-                self.workTypeName(hdWorkDispInfoWithDateOutput.workTypeName);
-                
-//                self.siftCD(appHolidayWork.workTime.siftCode);
-//                self.siftName(appHolidayWork.workTime.siftName);
-//                self.workTypeCd(appHolidayWork.workType.workTypeCode);
-//                self.workTypeName(appHolidayWork.workType.workTypeName);
+                self.siftCD(appHolidayWork.workTime.siftCode);
+                let workTimeInfo = _.find(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode == self.siftCD());
+                if(workTimeInfo) {
+                    self.siftName(workTimeInfo.workTimeDisplayName.workTimeName);           
+                }
+                self.workTypeCd(appHolidayWork.workType.workTypeCode);
+                let workTypeInfo = _.find(hdWorkDispInfoWithDateOutput.workTypeLst, o => o.workTypeCode == self.workTypeCd());
+                if(workTypeInfo) {
+                    self.workTypeName(workTypeInfo.name);        
+                }
                 
                 self.workTypecodes(_.map(hdWorkDispInfoWithDateOutput.workTypeLst, o => o.workTypeCode));
                 self.workTimecodes(_.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode));

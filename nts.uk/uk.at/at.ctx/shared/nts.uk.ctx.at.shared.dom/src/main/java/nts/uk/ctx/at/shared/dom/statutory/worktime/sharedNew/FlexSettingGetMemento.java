@@ -33,4 +33,11 @@ public interface FlexSettingGetMemento {
 	 * @return the specified setting
 	 */
 	List<MonthlyUnit> getSpecifiedSetting();
+	
+	/**
+	 * Gets the week avarage setting.
+	 * 
+	 * @return the week average setting.
+	 */
+	List<MonthlyUnit> getWeekAveSetting();
 }

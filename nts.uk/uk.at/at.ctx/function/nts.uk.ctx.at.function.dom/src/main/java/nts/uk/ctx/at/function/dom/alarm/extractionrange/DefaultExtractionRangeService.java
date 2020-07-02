@@ -230,7 +230,13 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				formatter.format(endDate), null, null);
 	}
 	
-	//月次単位の期間を算出する
+	/**
+	 * 月次単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
 	public CheckConditionTimeDto getMonthlyTime(CheckCondition c, int closureId, YearMonth yearMonth) {
 		//DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		YearMonth startMonthly = yearMonth;
@@ -248,7 +254,13 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				null, startMonthly.toString(), endMonthly.toString());
 	}
 	
-	
+	/**
+	 * 日次単位の期間の算出する
+	 * @param extraction
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
 	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth ) {
 		
 		Date startDate =null;
@@ -256,6 +268,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth startMonthly = yearMonth;
 		YearMonth endMonthly = yearMonth;
 		// Calculate start date
+		//ドメインモデル「チェック条件」．抽出期間から開始日の指定方法をチェックする
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
 			if (extraction.getStartDate().getStrDays().get().getDayPrevious() == PreviousClassification.BEFORE)
@@ -270,6 +283,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		}
 
 		// Calculate endDate
+		//メインモデル「チェック条件」．抽出期間から終了日の指定方法をチェックする
 		if (extraction.getEndDate().getEndSpecify() == EndSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
 			if (extraction.getEndDate().getEndDays().get().getDayPrevious() == PreviousClassification.BEFORE)

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +24,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 // 所定時間帯設定
 @Getter
 @NoArgsConstructor
-public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements Cloneable{
+public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements Cloneable, Serializable{
+
+	/** Serializable */
+	private static final long serialVersionUID = 1L;
 
 	/** The morning end time. */
 	// 午前終了時刻

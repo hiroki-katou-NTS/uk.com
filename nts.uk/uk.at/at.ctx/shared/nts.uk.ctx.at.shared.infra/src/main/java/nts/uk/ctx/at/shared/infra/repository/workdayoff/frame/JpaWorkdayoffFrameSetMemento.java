@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.workdayoff.frame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
@@ -71,4 +72,11 @@ public class JpaWorkdayoffFrameSetMemento implements WorkdayoffFrameSetMemento{
 		this.kshstWorkdayoffFrame.setWdoFrName(workdayoffFrName.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento#setRole(nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole)
+	 */
+	@Override
+	public void setRole(WorkdayoffFrameRole role) {
+		this.kshstWorkdayoffFrame.setRole((short)role.value);
+	}
 }

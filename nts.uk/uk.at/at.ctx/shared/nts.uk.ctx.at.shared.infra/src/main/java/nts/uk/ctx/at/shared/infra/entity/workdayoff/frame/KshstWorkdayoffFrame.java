@@ -44,6 +44,10 @@ public class KshstWorkdayoffFrame extends UkJpaEntity implements Serializable {
     @Column(name = "TRANS_FR_NAME")
     private String transFrName;
 
+    /** The role. */
+    @Column(name = "ROLE")
+    private short role;
+    
     /**
      * Instantiates a new kshst workdayoff frame.
      */

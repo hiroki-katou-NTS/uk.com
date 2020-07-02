@@ -246,6 +246,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 //            service.findById(appParam).done((data) => {
             service.startPageBRefactor(appParam).done((data) => {
                 self.setDataFromStart(data);
+                self.absWk().wkTypeCD.valueHasMutated();  
                 if (isReload) {
                     self.start(data.application.applicationDate, false).done(() => {
                         nts.uk.ui.block.clear();
@@ -436,7 +437,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 if (comType) {
                     self.appComSelectedCode(comType);
                 }
-                control.updateWorkingText();
+                if(control.wkTimeCD() != null){
+                    control.updateWorkingText();
+                }
             }
         }
 

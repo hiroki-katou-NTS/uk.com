@@ -74,10 +74,12 @@ public class RouteConfirmStatus {
 	 */
 	private ApprovalActionByEmp actionFor(String approverId, List<String> representRequesterIds) {
 		if (!phases.canApprove(approverId, representRequesterIds)) {
-			return ApprovalActionByEmp.NOT_APPROVAL;
+			return phases.hasApprovedBy(approverId, representRequesterIds) 
+					? ApprovalActionByEmp.APPROVALED 
+					: ApprovalActionByEmp.NOT_APPROVAL;
 		}
 		
-		return phases.hasApprovedBy(approverId)
+		return phases.hasApprovedBy(approverId, representRequesterIds)
 				? ApprovalActionByEmp.APPROVALED
 				: ApprovalActionByEmp.APPROVAL_REQUIRE;
 	}
@@ -103,20 +105,8 @@ public class RouteConfirmStatus {
 					: ApproverEmpState.PHASE_PASS;
 		}
 		
-		if(phases.firstPhaseUnapproved().isPresent()) {
-			if(!phases.firstPhaseUnapproved().get().isApprover(approverId)) {
-				return ApproverEmpState.PHASE_LESS;
-			}
-		}
-		
-		// 他の確定者がいない
-		if (!progressingPhases.existsOtherConcluder(approverId)) {
-			return ApproverEmpState.PHASE_DURING;
-		}
-		
-		// 他の確定者に確定されていれば通過済み
-		return progressingPhases.hasConcludedByOtherConcluder(approverId)
-				? ApproverEmpState.PHASE_PASS
+		return phases.hasApproved(approverId, representRequesterIds)
+				? ApproverEmpState.COMPLETE
 				: ApproverEmpState.PHASE_DURING;
 	}
 }

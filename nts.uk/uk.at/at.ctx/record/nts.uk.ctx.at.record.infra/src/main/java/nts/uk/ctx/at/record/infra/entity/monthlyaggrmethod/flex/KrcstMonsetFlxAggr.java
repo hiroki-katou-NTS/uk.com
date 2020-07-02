@@ -43,4 +43,16 @@ public class KrcstMonsetFlxAggr implements Serializable {
 	/** 36協定時間集計方法 */
 	@Column(name = "AGGR_METHOD_36AGRE")
 	public int aggregateMethodOf36AgreementTime;
+	
+	/** 清算期間 */
+	@Column(name = "SETTLE_PERIOD")
+	public int settlePeriod;
+	
+	/** 開始月 */
+	@Column(name = "START_MONTH")
+	public int startMonth;
+	
+	/** 清算期間月数 */
+	@Column(name = "SETTLE_PERIOD_MON")
+	public int settlePeriodMon;
 }

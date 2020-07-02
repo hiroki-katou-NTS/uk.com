@@ -71,6 +71,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
 			+ " JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 			+ " WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId'";
+	
+	private static final String FIND_BY_CID = "SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE, b.POSITION, b.POSITION_NAME, c.POSITION_ORDER, c.SHIFT_MASTER_CD"
+			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
+			+ " JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
+			+ " WHERE a.CID = 'cid'";
 
 	@AllArgsConstructor
 	@Getter
@@ -312,6 +317,22 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public List<ShiftPalletsOrg> findByCID(String cid) {
+		String query = FIND_BY_CID;
+		query = query.replaceFirst("cid", String.valueOf(cid));
+
+		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
+			ResultSet rs = statement.executeQuery();
+			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+					.collect(Collectors.toList());
+			return palletsOrgs;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 	@Override
 	public void deleteByWorkPlaceId(String workplaceId, int page) {

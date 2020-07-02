@@ -104,6 +104,8 @@ module nts.uk.com.view.cmm018.a {
             items: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor() {
                 let self = this;
+                // clear localStorage , bug that is width's appName
+                uk.localStorage.removeItem('AppName_CMM018');
                 //get param url
                 let url = $(location).attr('search');
                 let urlParam: number = url.split("=")[1];
@@ -1179,8 +1181,8 @@ module nts.uk.com.view.cmm018.a {
                         //TH: list left
                         //TH: list right
                         self.cpA(self.createNew(data.lstAppType,data.overLap));
-                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+//                        __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+//                        vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
                     }else{
                         //TH: list left
                         if(checkReload){
@@ -1519,7 +1521,11 @@ module nts.uk.com.view.cmm018.a {
                         vmbase.ProcessHandler.resizeColumn([a], tabSel, vmbase.MODE.SHINSEI);
                     }else{
                         let dataOld: Array<vmbase.CompanyAppRootADto> = self.cpA();
+                        if(!isNaN(parseInt(a.appTypeValue))) {
+                            a.appTypeValue = parseInt(a.appTypeValue);
+                        }
                         dataOld.push(a);
+                        
                         let listHistoryNew = vmbase.ProcessHandler.orderByList(dataOld);
                         self.cpA(listHistoryNew);
                         // bug #109950

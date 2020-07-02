@@ -43,7 +43,5 @@ public class StampSettingDto {
 				this.pageLayouts.add(new StampPageLayoutDto(layout));
 			}
 		}
-		
-		
 	}
 }

@@ -169,48 +169,71 @@ public class ErAlWorkRecordCheckService {
 			List<String> EACheckID) {
 		return checkWithRecord(new DatePeriod(workingDate, workingDate), employeeIds, EACheckID) ;
 	}
-	
+	/**
+	 * 勤務種類でフィルタする
+	 * @param workingDate
+	 * @param employeeIds
+	 * @param EACheckID
+	 * @return
+	 */
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
 			List<String> EACheckID) {
-		
+		//日別実績
 		List<DailyRecordDto> record = fullFinder.find(new ArrayList<>(employeeIds), workingDate);
 			
 		if(record.isEmpty()){
 			return toEmptyResultList();
 		}
+		//勤務実績のエラーアラームチェック
 		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		
 		if(checkConditions.isEmpty()){
 			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
 					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
 			if(EACheckID.isEmpty()){
 				return toEmptyResultList();
 			}
+			//勤務実績のエラーアラームチェック
 			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
-			return checkWithPeriod(workingDate, employeeIds, record, checkConditions, (currentRecord, condition) -> {
+			return checkWithPeriod(workingDate,
+					employeeIds,
+					record,
+					checkConditions,
+					(currentRecord, condition) -> {
 				//勤務種類でフィルタする
 				if(condition.getWorkTypeCondition() != null) {
+					//勤務種類（単一）
 					if(condition.getWorkTypeCondition() instanceof SingleWorkType) {
 						SingleWorkType wtConCheck = (SingleWorkType) condition.getWorkTypeCondition();
 						switch (wtConCheck.getComparePlanAndActual().value) {
 						case 0:/** 全て */
 							break;
 						case 1:/** 選択 */
-							currentRecord.removeIf(cr -> !wtConCheck.getTargetWorkType().getLstWorkType().contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+							currentRecord.removeIf(cr -> !wtConCheck.getTargetWorkType()
+									.getLstWorkType()
+									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
 							break;
 						case 2:/** 選択以外 */
-							currentRecord.removeIf(cr -> wtConCheck.getTargetWorkType().getLstWorkType().contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+							currentRecord.removeIf(cr -> wtConCheck.getTargetWorkType()
+									.getLstWorkType()
+									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
 							break;
 						}
 					} else {
+						//勤務種類（予実）
 						PlanActualWorkType wtConCheck = (PlanActualWorkType) condition.getWorkTypeCondition();
 						switch (wtConCheck.getComparePlanAndActual().value) {
 						case 0:/** 全て */
 							break;
 						case 1:/** 選択 */
-							currentRecord.removeIf(cr -> !wtConCheck.getWorkTypePlan().getLstWorkType().contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+							currentRecord.removeIf(cr -> !wtConCheck.getWorkTypePlan()
+									.getLstWorkType()
+									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
 							break;
 						case 2:/** 選択以外 */
-							currentRecord.removeIf(cr -> wtConCheck.getWorkTypePlan().getLstWorkType().contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+							currentRecord.removeIf(cr -> wtConCheck.getWorkTypePlan()
+									.getLstWorkType()
+									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
 							break;
 						}
 					}

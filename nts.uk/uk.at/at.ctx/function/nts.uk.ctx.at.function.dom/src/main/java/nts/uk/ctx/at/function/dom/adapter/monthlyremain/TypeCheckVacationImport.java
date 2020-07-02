@@ -8,16 +8,16 @@ import nts.arc.i18n.I18NText;
  *
  */
 public enum TypeCheckVacationImport {
-	
-	ANNUAL_PAID_LEAVE(0, I18NText.getText("KAL003_112")),//年次有給休暇
-	
-	SUB_HOLIDAY(1, I18NText.getText("KAL003_113")),//代休
-	
-	PAUSE(2, I18NText.getText("KAL003_114")),//振休
-	
-	YEARLY_RESERVED(3, I18NText.getText("KAL003_115")),//積立年休
-	
-	SPECIAL_HOLIDAY(6, I18NText.getText("KAL003_118"));//特休
+	/**年次有給休暇	 */
+	ANNUAL_PAID_LEAVE(0, I18NText.getText("KAL003_112")),
+	/**代休	 */
+	SUB_HOLIDAY(1, I18NText.getText("KAL003_113")),
+	/**	振休 */
+	PAUSE(2, I18NText.getText("KAL003_114")),
+	/**積立年休	 */
+	YEARLY_RESERVED(3, I18NText.getText("KAL003_115")),
+	/**特休	 */
+	SPECIAL_HOLIDAY(6, I18NText.getText("KAL003_118"));
 	
 	public int value;
 	

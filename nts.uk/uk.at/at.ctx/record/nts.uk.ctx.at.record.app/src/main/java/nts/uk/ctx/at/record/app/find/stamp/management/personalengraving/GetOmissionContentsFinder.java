@@ -55,10 +55,6 @@ public class GetOmissionContentsFinder {
 				closureService, erAlApplicationRepo, employeeDailyPerErrorRepo, stampSetPerRepo );
 		return new DailyAttdErrorInfoDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo), appDisplayAdapter.getAppDisplay());
 	}
-	// アルゴリズム「申請種類を取得する」を実行する
-//	private getApplicationType() {
-//		
-//	}
 
 	@AllArgsConstructor
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {

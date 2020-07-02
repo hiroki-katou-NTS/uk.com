@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSetSetMemento;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class FlexMonthWorkTimeAggrSetDto.
@@ -33,6 +32,9 @@ public class FlexMonthWorkTimeAggrSetDto {
 
 	/** The include over time. */
 	private Integer includeOverTime;
+
+	/** The include illegal holiday work. */
+	private Integer includeIllegalHdwk;
 
 	/**
 	 * To domain.
@@ -79,10 +81,14 @@ public class FlexMonthWorkTimeAggrSetDto {
 		}
 
 		@Override
-		public void setIncludeOverTime(NotUseAtr includeOverTime) {
-			this.dto.setIncludeOverTime(includeOverTime.value);
+		public void setIncludeOverTime(Boolean includeOverTime) {
+			this.dto.setIncludeOverTime(includeOverTime ? 1 : 0);
 		}
 
+		@Override
+		public void setIncludeIllegalHdwk(Boolean includeIllegalHdwk) {
+			this.dto.setIncludeIllegalHdwk(includeIllegalHdwk ? 1 : 0);
+		}
 	}
 
 }

@@ -148,6 +148,37 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
+                // sort list approval
+//                if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
+//                    data.listApprovalPhaseStateDto.forEach((el) => {
+//                        if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+//                                el.listApprovalFrame.forEach((el1) =>{
+//                                       if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+//                                           el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+//                                       }
+//                                       
+//                                });
+//                                if(el.listApprovalFrame.length > 1) {
+//                                    let arrayTemp = [];
+//                                    arrayTemp.push(el.listApprovalFrame[0]);
+//                                    if(el.listApprovalFrame[0].listApprover.length == 0) {   
+//                                        _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+//                                        .forEach(i => arrayTemp.push(i));      
+//                                        el.listApprovalFrame = arrayTemp;
+//                                    }else {
+//                                        el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+//                                        
+//                                    }
+//                                    
+//                                    el.listApprovalFrame.forEach((el1, index) =>{            
+//                                        el1.frameOrder = index +1;
+//                                    });
+//                                }
+//                                
+//                        }
+//                    });  
+//                }
+                
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 if (self.displayReturnReasonPanel()) {
@@ -740,10 +771,23 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             shrvm.model.CommonProcess.callCMM045();
         }
         
+        isFirstIndexFrame(loopPhase, loopFrame, loopApprover) {
+            let self = this;
+            if(_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;  
+            }
+            let firstIndex = _.chain(loopPhase.listApprovalFrame()).filter(x => _.size(x.listApprover()) > 0).orderBy(x => x.frameOrder()).first().value().frameOrder();  
+            let approver = _.find(loopPhase.listApprovalFrame(), o => o == loopFrame);
+            if(approver) {
+                return approver.frameOrder() == firstIndex;    
+            }
+            return false;
+        }
+        
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             let self = this;
             if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
+                return loopApprover.approverInListOrder();    
             }
             return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame);    
         }
@@ -807,15 +851,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
-                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover) + 1;
-            switch(index) {
-                case 1: return nts.uk.resource.getText("KAF000_9"); 
-                case 2: return nts.uk.resource.getText("KAF000_10"); 
-                case 3: return nts.uk.resource.getText("KAF000_11"); 
-                case 4: return nts.uk.resource.getText("KAF000_12"); 
-                case 5: return nts.uk.resource.getText("KAF000_13");    
-                default: return "";
-            }     
+                index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
+            return nts.uk.resource.getText("KAF000_9",[index+'']);    
         }
     }
 

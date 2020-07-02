@@ -32,14 +32,15 @@ public class ExtraResultMonthlyAcFinder implements ExtraResultMonthlyFunAdapter 
 
 	@Override
 	public List<ExtraResultMonthlyDomainEventDto> getListExtraResultMonByListEralID(List<String> listEralCheckID) {
+		//月別実績の抽出条件
 		List<ExtraResultMonthlyDomainEventDto> data = repo.getListExtraResultMonByListEralID(listEralCheckID)
 				.stream().map(c -> convertToExport(c)).collect(Collectors.toList());
 		for(ExtraResultMonthlyDomainEventDto extraResultMonthly : data) {
-			//get SpecHolidayCheckCon
+			//get SpecHolidayCheckCon 所定公休日数チェック条件
 			extraResultMonthly.setSpecHolidayCheckCon(specHolidayCheckConRepo.getSpecHolidayCheckConById(extraResultMonthly.getErrorAlarmCheckID()));
-			//get CheckRemainNumberMon
+			//get CheckRemainNumberMon　月別実績の残数チェック
 			extraResultMonthly.setCheckRemainNumberMon(checkRemainNumberMonRepo.getByEralCheckID(extraResultMonthly.getErrorAlarmCheckID()));
-			//get list AgreementCheckCon36
+			//get list AgreementCheckCon36 36協定チェック条件
 			extraResultMonthly.setAgreementCheckCon36(agreementCheckCon36Repo.getAgreementCheckCon36ById(extraResultMonthly.getErrorAlarmCheckID()));
 		}
 		return data;

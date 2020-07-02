@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.TimeCardDto;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
 
 /**
  * @author anhdt
@@ -16,7 +16,7 @@ public class TimeCardFinder {
 	@Inject
 	private StampSettingsEmbossFinder stampSettingFinder;
 	
-	public TimeCardDto getTimeCard(String employeeId, GeneralDate date) {
-		return new TimeCardDto(stampSettingFinder.getTimeCard(employeeId, date));
+	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
+		return stampSettingFinder.getTimeCard(employeeId, date);
 	}
 }
