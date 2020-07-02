@@ -17,11 +17,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 @AllArgsConstructor
 public class AnnualLeaveUsedInfo implements Cloneable {
 
-	/** 付与前 */
-	private AnnualLeaveUsedNumber usedNumberBeforeGrant;
-	
 	/** 合計 */
 	private AnnualLeaveUsedNumber usedNumber;
+	
+	/** 付与前 */
+	private AnnualLeaveUsedNumber usedNumberBeforeGrant;
 	
 	/** 時間年休使用回数 （1日2回使用した場合２回でカウント）*/
 	private UsedTimes annualLeaveUsedTimes;
@@ -32,10 +32,36 @@ public class AnnualLeaveUsedInfo implements Cloneable {
 	/** 付与後 */
 	private Optional<AnnualLeaveUsedNumber> usedNumberAfterGrantOpt;
 	
+	/**
+	 * ファクトリ
+	 * @param usedNumber 合計
+	 * @param usedNumberBeforeGrant 付与前
+	 * @param annualLeaveUsedTimes 時間年休使用回数
+	 * @param annualLeaveUsedDayTimes 時間年休使用日数
+	 * @param usedNumberAfterGrant 付与後 
+	 * @return
+	 */
+	public static AnnualLeaveUsedInfo of(
+			AnnualLeaveUsedNumber usedNumber,
+			AnnualLeaveUsedNumber usedNumberBeforeGrant,
+			UsedTimes annualLeaveUsedTimes,
+			UsedTimes annualLeaveUsedDayTimes,
+			Optional<AnnualLeaveUsedNumber> usedNumberAfterGrantOpt
+			){
+		
+		AnnualLeaveUsedInfo domain = new AnnualLeaveUsedInfo();
+		domain.usedNumber = usedNumber;
+		domain.usedNumberBeforeGrant = usedNumberBeforeGrant;
+		domain.annualLeaveUsedTimes = annualLeaveUsedTimes;
+		domain.annualLeaveUsedDayTimes = annualLeaveUsedDayTimes;
+		domain.usedNumberAfterGrantOpt = usedNumberAfterGrantOpt;
+		return domain;
+	}
+	
 	/** コンストラクタ */
 	public AnnualLeaveUsedInfo(){
-		usedNumberBeforeGrant = new AnnualLeaveUsedNumber();
 		usedNumber = new AnnualLeaveUsedNumber();
+		usedNumberBeforeGrant = new AnnualLeaveUsedNumber();
 		annualLeaveUsedTimes = new UsedTimes(0);
 		annualLeaveUsedDayTimes = new UsedTimes(0);
 		usedNumberAfterGrantOpt = Optional.empty();

@@ -26,6 +26,26 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 	/** 付与後 */
 	private Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrantOpt;
 	
+	/**
+	 * ファクトリ
+	 * @param remainingNumber 合計
+	 * @param remainingNumberBeforeGrant 付与前
+	 * @param remainingNumberAfterGrantOpt 付与後
+	 * @return
+	 */
+	public static AnnualLeaveRemainingNumberInfo of(
+			AnnualLeaveRemainingNumber remainingNumber,
+			AnnualLeaveRemainingNumber remainingNumberBeforeGrant,
+			Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrantOpt
+			){
+		
+		AnnualLeaveRemainingNumberInfo domain = new AnnualLeaveRemainingNumberInfo();
+		domain.remainingNumber = remainingNumber;
+		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
+		domain.remainingNumberAfterGrantOpt= remainingNumberAfterGrantOpt;
+		return domain;
+	}
+	
 	/** コンストラクタ  */
 	public AnnualLeaveRemainingNumberInfo(){
 		this.remainingNumber = new AnnualLeaveRemainingNumber();
