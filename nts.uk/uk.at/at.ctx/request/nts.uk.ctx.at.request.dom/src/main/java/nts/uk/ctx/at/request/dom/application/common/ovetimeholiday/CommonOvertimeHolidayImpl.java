@@ -63,7 +63,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess
 import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClassification;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AtWorkAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;

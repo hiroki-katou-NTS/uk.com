@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AtWorkAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AtWorkAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;

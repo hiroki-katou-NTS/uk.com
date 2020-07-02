@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime;
+package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon;
 
 import lombok.AllArgsConstructor;
 
