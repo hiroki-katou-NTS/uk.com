@@ -2289,6 +2289,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					.findFirst();
 		}
 		
+		// WorkType
 		Map<String, List<ExWorkTypeHisItemImport>> map = generalInfoImport
 				.getExWorkTypeHistoryImports().stream().collect(Collectors
 						.toMap(ExWorkTypeHistoryImport::getEmployeeId, ExWorkTypeHistoryImport::getExWorkTypeHisItemImports));
@@ -2350,7 +2351,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), 
-							new BonusPaySettingCode(worktypeHistItemImport.get().getBusinessTypeCd()))));
+							new BonusPaySettingCode(dailyAttd.getBonusPaySettingCode().v()))));
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
