@@ -2,6 +2,7 @@ module nts.uk.at.view.kdp010.c {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     export module viewmodel {
         export class ScreenModel {
             settingsSmartphoneStamp: any = new SettingsSmartphoneStamp();
@@ -27,28 +28,25 @@ module nts.uk.at.view.kdp010.c {
                     }
                     dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
                 return dfd.promise();
             }
             
-            checkSetStampPageLayout(): JQueryPromise<any> {
+            checkSetStampPageLayout(){
                 let self = this;
-                let dfd = $.Deferred();
                 block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
-                        self.pageLayoutSettings(data.pageLayoutSettings.length > 0);
+                        self.settingsSmartphoneStamp.pageLayoutSettings(data.pageLayoutSettings);
                     }
-                    dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
-                return dfd.promise();
             }
             
             save(){
@@ -57,14 +55,16 @@ module nts.uk.at.view.kdp010.c {
                 service.save(ko.toJS(self.settingsSmartphoneStamp)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
             }
             
             openIDialog() {
+                let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/i/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();
                 });
             }
         }

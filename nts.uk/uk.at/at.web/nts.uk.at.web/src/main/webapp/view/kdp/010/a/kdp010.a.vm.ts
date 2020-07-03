@@ -2,6 +2,7 @@ module nts.uk.at.view.kdp010.a {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     import viewModelscreenB = nts.uk.at.view.kdp010.b.viewmodel;
     import viewModelscreenC = nts.uk.at.view.kdp010.c.viewmodel;
     import viewModelscreenD = nts.uk.at.view.kdp010.d.viewmodel;
@@ -158,7 +159,7 @@ module nts.uk.at.view.kdp010.a {
                     dfd.resolve();
                     $('#correc-input').focus();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
@@ -175,7 +176,7 @@ module nts.uk.at.view.kdp010.a {
                     }
                     dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
@@ -188,7 +189,7 @@ module nts.uk.at.view.kdp010.a {
                 service.save(ko.toJS(self.stampSetCommunal)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });

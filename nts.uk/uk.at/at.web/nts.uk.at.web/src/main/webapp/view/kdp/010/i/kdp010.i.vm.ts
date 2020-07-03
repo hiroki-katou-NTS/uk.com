@@ -2,9 +2,12 @@ module nts.uk.at.view.kdp010.i {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
+    import confirm = nts.uk.ui.dialog.confirm;
 	export module viewmodel {
 		export class ScreenModel {
-            stampPageLayout = new StampPageLayout();
+            stampPageLayout = ko.observable(new StampPageLayout());
+            isDel = ko.observable(false);
 			constructor() {
 				let self = this;
 			}
@@ -16,23 +19,45 @@ module nts.uk.at.view.kdp010.i {
                 service.getData(param).done(function(data) {
                     console.log(data);
                     if (data) {
-                        self.stampPageLayout.update(data);
+                        self.stampPageLayout().update(data);
+                        self.isDel(true);
                     }
                     dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
                 return dfd.promise();
 			}
             
-			public registration() {
+			public save() {
 				let self = this;
+                block.grayout();
+                service.save(ko.toJS(self.stampPageLayout())).done(function() {
+                    self.isDel(true);
+                    info({ messageId: "Msg_15" });
+                }).fail(function (res) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
 			}
             
 			public deleteSetting() {
 				let self = this;
+                confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    block.grayout();
+                    service.del().done(function() {
+                        self.stampPageLayout(new StampPageLayout());
+                        self.isDel(false);
+                        info({ messageId: "Msg_16" });
+                    }).fail(function (res) {
+                        error({ messageId: res.messageId });
+                    }).always(function () {
+                        block.clear();
+                    });
+                });
 			}
             
             public closeDialog(): void {

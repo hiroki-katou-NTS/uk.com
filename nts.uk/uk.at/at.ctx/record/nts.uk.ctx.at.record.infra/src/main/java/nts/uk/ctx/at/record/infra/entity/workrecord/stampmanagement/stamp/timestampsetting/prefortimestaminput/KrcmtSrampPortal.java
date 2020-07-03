@@ -89,7 +89,7 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
 	
-	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL, fetch = FetchType.LAZY,  orphanRemoval = true)
 	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
 
 	@Override

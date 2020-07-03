@@ -2,6 +2,7 @@ module nts.uk.at.view.kdp010.f {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     export module viewmodel {
         export class ScreenModel {
             settingsUsingEmbossing = new SettingsUsingEmbossing();
@@ -23,7 +24,7 @@ module nts.uk.at.view.kdp010.f {
                     }
                     dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
@@ -38,7 +39,7 @@ module nts.uk.at.view.kdp010.f {
                     $("#tabpanel-a").addClass("disappear");
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });

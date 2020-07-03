@@ -80,7 +80,7 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 	@Column(name = "BUTTON_EMPHASIS_ART")
 	public Boolean buttonEmphasisArt;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampSmartPhone")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampSmartPhone", orphanRemoval = true)
 	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 
 	@Override

@@ -18,7 +18,7 @@ public class JpaStampUsageRepository extends JpaRepository implements SettingsUs
 	}
 
 	@Override
-	public void update(SettingsUsingEmbossing domain) {
+	public void save(SettingsUsingEmbossing domain) {
 		Optional<KrcmtStampUsage> entityOpt = this.queryProxy().find(domain.getCompanyId(),
 				KrcmtStampUsage.class);
 
@@ -29,7 +29,7 @@ public class JpaStampUsageRepository extends JpaRepository implements SettingsUs
 		
 		KrcmtStampUsage entity =  entityOpt.get();
 		entity.update(domain);
-		this.commandProxy().update(entity);
+		this.getEntityManager().merge(entity);
 	}
 
 	@Override
