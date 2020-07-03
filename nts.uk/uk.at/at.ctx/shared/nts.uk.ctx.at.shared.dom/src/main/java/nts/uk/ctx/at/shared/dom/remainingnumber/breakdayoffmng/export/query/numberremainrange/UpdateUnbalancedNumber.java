@@ -22,7 +22,7 @@ public class UpdateUnbalancedNumber {
 
 		// 代休の場合
 		if (typeJudgment == TypeOffsetJudgment.REAMAIN) {
-			if ((timeLap.isManagerCate()
+			if ((timeLap.getManagerTimeCate().isPresent() && timeLap.getManagerTimeCate().get()
 					&& accdigest.getUnbalanceNumber().getDay().v() > occur.getUnbalanceNumber().getDay().v())) {
 
 				// 「逐次発生の休暇明細」(消化)．未相殺数-= 「逐次発生の休暇明細」(発生)．未相殺数
@@ -33,10 +33,10 @@ public class UpdateUnbalancedNumber {
 				occur.getUnbalanceNumber().setDay(new ManagementDataRemainUnit(0d));
 			}
 
-			if (!timeLap.isManagerCate() && (accdigest.getUnbalanceNumber().getTime().isPresent()
-					&& occur.getUnbalanceNumber().getTime().isPresent()
-					|| accdigest.getUnbalanceNumber().getTime().get().v() > occur.getUnbalanceNumber().getTime().get()
-							.v())) {
+			if (timeLap.getManagerTimeCate().isPresent() && !timeLap.getManagerTimeCate().get()
+					&& (accdigest.getUnbalanceNumber().getTime().isPresent()
+							&& occur.getUnbalanceNumber().getTime().isPresent() && accdigest.getUnbalanceNumber()
+									.getTime().get().v() > occur.getUnbalanceNumber().getTime().get().v())) {
 
 				// 「逐次発生の休暇明細」(発生)．未相殺数 -= 「逐次発生の休暇明細」(消化)．未相殺数
 				occur.getUnbalanceNumber()
