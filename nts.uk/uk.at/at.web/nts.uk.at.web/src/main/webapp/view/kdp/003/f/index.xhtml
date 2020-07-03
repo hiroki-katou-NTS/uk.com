@@ -8,112 +8,39 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
-				var dialogSize = {
-					width : 485,
-					height : 280
-				};
+				var dialogSize = { width: 480, height: 280 };
 			</script>
+			
 			<com:ValidatorScript>
 					nts.uk.ctx.bs.company.dom.company.CompanyCode
 					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 			</com:ValidatorScript>
+			
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kdp003.f.style.css" />
-			<com:scriptfile path="kdp003.f.service.js" />
-			<com:scriptfile path="kdp003.f.vm.js" />
-			<com:scriptfile path="kdp003.f.start.js" />
+			<com:stylefile path="./kdp003.f.style.css" />
+			<com:scriptfile path="./components/admin-mode.js" />
+			<com:scriptfile path="./components/employee-mode.js" />
+			<com:scriptfile path="./components/finger-vein-mode.js" />
+			<com:scriptfile path="./viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="margin-left : 25px" >
-				<div>
-					<table>
-						<!-- row 1 company -->
-						<tr style="height: 60px" data-bind="visible : selectCompFromListMode ">
-							<td><div id = 'f1_1' data-bind="text: '#{i18n.getText('KDP003_3')}'"></div></td>
-							<td id = 'f1_2' class="pad_5" style="padding-left: 10px">
-								<div tabindex="1" id="company-code-select"
-									data-bind="ntsComboBox: {
-										width: '350px',
-										name: '',
-										options: companyList,
-										optionsValue: 'companyCode',
-										visibleItemsCount: 5,
-										value: selectedCompanyCode,
-										optionsText: 'companyName',
-										required: false,
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'companyCode', length: 5 },
-											{ prop: 'companyName', length: 11},
-										]}"></div>
-							</td>
-						</tr>
-						<tr style="height: 50px" data-bind="visible : inputCompanyCodeMode ">
-							<td><div id = 'f1_11' data-bind="text: '#{i18n.getText('KDP003_3')}'"></div></td>
-							<td id = 'f1_3' class="pad_5" style="padding-left: 10px"><div>
-									<input tabindex="2" id="employee-code-inp-1"
-										data-bind="ntsTextEditor: {
-										name: '',
-										constraint: 'CompanyCode',
-										value: inputCompanyCode ,
-										required: false,
-										option: {textmode: 'text',width: '115px'},
-										enable: true,
-										readonly: false}" />
-							</div></td>
-						</tr>
-						<tr style="height: 50px" data-bind="visible : oneCompanyRegistered ">
-							<td><div id = 'f1_111' data-bind="text: '#{i18n.getText('KDP003_3')}'"></div></td>
-							<td id = 'f1_4' class="pad_5" style="padding-left: 10px">
-								<div data-bind="text: companyCdAndName "></div>
-							</td>
-						</tr>
-						
-						<!-- row 2 EmpoyeeCode-->
-						<tr style="height: 45px" data-bind="visible : selectIdMode ">
-							<td><div id = 'f2_1' data-bind="text: '#{i18n.getText('KDP003_4')}'"></div></td>
-							<td id = 'f2_2' class="pad_5" style="padding-left: 10px"><div>
-									<input tabindex="2" id="employee-code-inp-2"
-										data-bind="ntsTextEditor: {
-										name: '',
-										constraint: 'EmployeeCode',
-										value: employeeCodeInput ,
-										required: false,
-										option: {textmode: 'text',width: '230px'},
-										enable: true,
-										readonly: false}" />
-								</div></td>
-						</tr>
-						<tr style="height: 45px" data-bind="visible : selectNameMode ">
-							<td><div id = 'f2_11' data-bind="text: '#{i18n.getText('KDP003_4')}'"></div></td>
-							<td id = 'f2_3' class="pad_5" style="padding-left: 10px">
-								<div data-bind="text: employeeCodeAndName "></div>
-							</td>
-						</tr>
-						
-						<!-- row 3 PassWord-->
-						<tr style="height: 60px" data-bind="visible : isPasswordRequired ">
-							<td><div id = 'f3_1' data-bind="text: '#{i18n.getText('KDP003_5')}'"></div></td>
-							<td id = 'f3_2' class="pad_5" style="padding-left: 10px"><div>
-									<input tabindex="3" id="password-input"
-										data-bind="ntsTextEditor: {
-										name: '#{i18n.getText('CCG007_2')}',
-										value: password,
-										required: false,
-										option: {textmode: 'password',width: '330px'},
-										enable: true,
-										readonly: false}" />
-								</div></td>
-						</tr>
-					</table>
-					<div  id="f20" style = "margin-top: 10px">
-						<button tabindex="5" id='f20_1' style="width : 180px" class="proceed x-large" data-bind="click: submitLogin">#{i18n.getText('KDP003_6')}</button>
-						<button tabindex="5" id='f20_2' style="margin-left: 120px; width : 100px" class="large" data-bind="click: cancelLogin">#{i18n.getText('KDP003_7')}</button>
-					</div>
-				</div>
-				
+			<div id="contents-area" class="kdp-003-f">
+				<table class="layout">
+					<com:ko-if bind="ko.toJS(mode) === 'admin'">
+						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: model }"></tbody>
+					</com:ko-if>
+					<com:ko-if bind="ko.toJS(mode) === 'employee'">
+						<tbody data-bind="component: { name: 'kdp-003-f-employee-mode', params: model }"></tbody>
+					</com:ko-if>
+					<com:ko-if bind="ko.toJS(mode) === 'fingerVein'">
+						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: model }"></tbody>
+					</com:ko-if>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="5" class="proceed x-large" data-bind="text: $i18n('KDP003_6'), click: submitLogin"></button>
+				<button tabindex="5" class="large" data-bind="text: $i18n('KDP003_7'), click: cancelLogin"></button>
 			</div>
 		</ui:define>
 	</ui:composition>
