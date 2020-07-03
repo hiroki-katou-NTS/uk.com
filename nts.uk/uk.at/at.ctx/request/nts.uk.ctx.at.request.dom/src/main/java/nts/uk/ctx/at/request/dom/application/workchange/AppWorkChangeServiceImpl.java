@@ -31,11 +31,11 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDisp
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.InitDisplayWorktimeAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -234,7 +234,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			Optional<PredetemineTimeSetting> opPredetemineTimeSetting = 
 					predetemineTimeSettingRepository.findByWorkTimeCode(companyID, workTimeCD.get());
 			result.setOpPredetemineTimeSetting(opPredetemineTimeSetting);
-		}
+		}	
 		// 取得した「必須任意不要区分」と「所定時間設定」を返す
 		return result;
 	}
