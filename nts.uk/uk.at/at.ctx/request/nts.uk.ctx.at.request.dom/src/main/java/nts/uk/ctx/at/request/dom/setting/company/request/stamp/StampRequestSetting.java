@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.stamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 /**
  * 打刻申請設定
