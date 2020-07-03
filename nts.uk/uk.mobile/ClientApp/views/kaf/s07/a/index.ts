@@ -51,6 +51,9 @@ export class KafS07AComponent extends Vue {
 
     public valueWorkHours2: { start: number, end: number } = null;
 
+
+    public data: any;
+
     public application: any = {
         employeeName: 'employee',
         appDate: new Date(),
@@ -78,22 +81,33 @@ export class KafS07AComponent extends Vue {
         this.worktime.code = 'dd';
         this.worktime.name = 'worktime';
 
+
+
     }
 
     public mounted() {
         let self = this;
         self.$mask('show');
-        self.$http.post('at', API.startNew, {
-            empLst: [],
-            dateLst: []
+        // self.$http.post('at', API.startNew, {
+        //     empLst: [],
+        //     dateLst: []
+        // })
+        //     .then((resApp: any) => {
+        //         self.appDispInfoStartupOutput = resApp.data.appDispInfoStartupOutput;
+        //         self.$mask('hide');
+        //     }).catch((res: any) => {
+        //         self.$mask('hide');
+
+
+        //     });
+
+        this.$http.post('at', API.startS07, {
+
         })
-            .then((resApp: any) => {
-                self.appDispInfoStartupOutput = resApp.data.appDispInfoStartupOutput;
-                self.$mask('hide');
-            }).catch((res: any) => {
-                self.$mask('hide');
+            .then((res: any) => {
 
-
+            }).catch((err: any) => {
+                this.$mask('hide');
             });
     }
 
@@ -103,7 +117,7 @@ export class KafS07AComponent extends Vue {
         this.$validate();
         if (!this.$valid) {
             window.scrollTo(500, 0);
-            
+
             return;
         }
         this.app = new AppWorkChange(
@@ -198,5 +212,6 @@ export class Model extends AppWorkChange {
 }
 
 const API = {
-    startNew: 'at/request/application/workchange/startNew'
+    startNew: 'at/request/application/workchange/startNew',
+    startS07: 'at/at/request/application/workchange/startMobile',
 };
