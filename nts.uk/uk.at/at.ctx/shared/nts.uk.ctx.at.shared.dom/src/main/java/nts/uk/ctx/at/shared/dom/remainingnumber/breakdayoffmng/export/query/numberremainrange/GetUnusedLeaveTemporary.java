@@ -88,9 +88,7 @@ public class GetUnusedLeaveTemporary {
 					.get(0);
 			AccumulationAbsenceDetail dataDetail = getNotTypeDayOff(require, Pair.of(remainData, breakMng),
 					param.getDateData().end(), subHolidayOut, param.getCid(), param.getSid());
-			if (dataDetail != null) {
-				result.add(dataDetail);
-			}
+			result.add(dataDetail);
 		}
 		return result;
 	}
@@ -127,18 +125,6 @@ public class GetUnusedLeaveTemporary {
 		} else if (interimData.getLeft().getCreatorAtr() == CreateAtr.RECORD) {
 			dataAtr = MngDataStatus.RECORD;
 		}
-
-		new AccuVacationBuilder(interimData.getLeft().getSID(),
-				new CompensatoryDayoffDate(false, Optional.of(interimData.getLeft().getYmd())),
-				OccurrenceDigClass.OCCURRENCE, dataAtr, interimData.getLeft().getRemainManaID())
-						.numberOccurren(new NumberConsecuVacation(
-								new ManagementDataRemainUnit(interimData.getRight().getOccurrenceDays().v()),
-								Optional.of(new AttendanceTime(interimData.getRight().getOccurrenceTimes().v()))))
-						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays),
-								Optional.of(new AttendanceTime(unUseTimes))))
-						.unbalanceVacation(new UnbalanceVacation(dateSettingExp, DigestionAtr.USED, Optional.empty(),
-								interimData.getRight().getOnedayTime(), interimData.getRight().getHaftDayTime()))
-						.build();
 
 		return new AccuVacationBuilder(interimData.getLeft().getSID(),
 				new CompensatoryDayoffDate(false, Optional.of(interimData.getLeft().getYmd())),

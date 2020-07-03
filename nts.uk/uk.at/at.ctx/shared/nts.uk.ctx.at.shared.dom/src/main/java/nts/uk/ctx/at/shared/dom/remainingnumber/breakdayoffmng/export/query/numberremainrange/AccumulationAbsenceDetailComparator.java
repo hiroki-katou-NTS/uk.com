@@ -13,14 +13,14 @@ public class AccumulationAbsenceDetailComparator implements Comparator<Accumulat
 		CompensatoryDayoffDate comDay1 = o1.getDateOccur();
 		CompensatoryDayoffDate comDay2 = o2.getDateOccur();
 		if (comDay1.isUnknownDate() != comDay2.isUnknownDate()) {
-			return comDay1.isUnknownDate() ? 1 : -1;
+			return Boolean.compare(comDay2.isUnknownDate(), comDay1.isUnknownDate());
 		}
 		if (!comDay1.getDayoffDate().isPresent() && !comDay2.getDayoffDate().isPresent())
 			return 0;
 		if (!comDay1.getDayoffDate().isPresent())
-			return -1;
-		if (!comDay2.getDayoffDate().isPresent())
 			return 1;
+		if (!comDay2.getDayoffDate().isPresent())
+			return -1;
 
 		return comDay1.getDayoffDate().get().compareTo(comDay2.getDayoffDate().get());
 	}

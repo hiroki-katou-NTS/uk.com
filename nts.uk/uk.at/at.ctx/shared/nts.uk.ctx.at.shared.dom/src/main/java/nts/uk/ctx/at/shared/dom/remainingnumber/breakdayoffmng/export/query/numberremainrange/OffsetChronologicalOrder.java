@@ -50,11 +50,10 @@ public class OffsetChronologicalOrder {
 			if (timeLapSet == null)
 				continue;
 			// ループ中の「逐次発生の休暇明細」（消化）．未相殺数をチェックする
-			if ((timeLapSet.isManagerCate() && accAbsence.getUnbalanceNumber().getDay().v() <= 0)
-					|| (!timeLapSet.isManagerCate() && (!accAbsence.getUnbalanceNumber().getTime().isPresent()
-							|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0))) {
+			if (!timeLapSet.getManagerTimeCate().isPresent()
+					|| (timeLapSet.getManagerTimeCate().get() && (!accAbsence.getUnbalanceNumber().getTime().isPresent()
+							|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0)))
 				continue;
-			}
 
 			// 逐次発生の休暇明細（消化）.年月日が期間に含まれる逐次発生の休暇設定を取得
 			// 「逐次発生の休暇明細」(発生)でループする
@@ -67,12 +66,14 @@ public class OffsetChronologicalOrder {
 					break;
 				else {
 					// 「逐次発生の休暇明細」（消化）.未相殺数 > 0
-					if ((timeLapSet.isManagerCate() && accAbsence.getUnbalanceNumber().getDay().v() <= 0)
-							|| (timeLapSet.isManagerCate() && (!accAbsence.getUnbalanceNumber().getTime().isPresent()
-									|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0))) {
-						continue;
-					} else {
+					if ((timeLapSet.getManagerTimeCate().get()
+							&& (!accAbsence.getUnbalanceNumber().getTime().isPresent()
+									|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0))
+							|| (!timeLapSet.getManagerTimeCate().get()
+									&& accAbsence.getUnbalanceNumber().getDay().v() <= 0)) {
 						break;
+					} else {
+						continue;
 					}
 				}
 			}
