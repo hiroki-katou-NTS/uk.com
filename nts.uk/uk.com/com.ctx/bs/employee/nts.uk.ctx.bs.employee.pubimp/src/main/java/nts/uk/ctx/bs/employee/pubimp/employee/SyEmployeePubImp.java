@@ -778,6 +778,16 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		return new ArrayList<>();
 	}
+	
+	@Override
+	public List<EmployeeDataMngInfoExport> findBySidNotDel(List<String> sids) {
+		return this.empDataMngRepo.findBySidNotDel(sids).stream().map(mngInfo -> EmployeeDataMngInfoExport.builder()
+				.companyId(mngInfo.getCompanyId()).personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
+				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
+				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
+				.externalCode(mngInfo.getExternalCode() == null ? null : mngInfo.getExternalCode().v()).build())
+				.collect(Collectors.toList());
+	}
 
 	@Override
 	public Optional<EmpInfoRegistered> getEmpInfo(String cid, String pid) {

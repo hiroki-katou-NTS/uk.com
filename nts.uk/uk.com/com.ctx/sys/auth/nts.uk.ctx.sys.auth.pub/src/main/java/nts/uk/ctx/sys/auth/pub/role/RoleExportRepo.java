@@ -116,4 +116,18 @@ public interface RoleExportRepo {
 	 * @return the list
 	 */
 	Map<String, String> getNameLstByRoleIds(String cid, List<String> roleIds);
+	
+	
+	/**
+	 * [No.XXX]ユーザIDからロールを区分を含めて取得する
+	 * @param userId  ユーザID：ユーザID
+	 * @param rollType ロール種類：ロール種類
+	 * @param baseDate 基準日：年月日
+	 * @param companyId 会社ID：会社ID
+	 * @return ・ロール情報：
+				　　├　担当ロールか：boolean
+				　　└　ロールID：ロールID
+	 */
+	RollInformationExport getRoleIncludCategoryFromUserID(String userId, int roleType, GeneralDate baseDate, String companyId);
+
 }

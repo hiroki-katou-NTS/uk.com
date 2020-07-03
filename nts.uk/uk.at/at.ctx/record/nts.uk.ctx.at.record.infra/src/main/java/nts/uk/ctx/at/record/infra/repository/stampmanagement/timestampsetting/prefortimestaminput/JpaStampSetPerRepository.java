@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcctStampDisplay;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampLayoutDetail;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampPageLayout;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcctStampPageLayoutPk;
+import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampPerson;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampLayoutDetail;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayoutPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,20 +33,20 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaStampSetPerRepository extends JpaRepository implements StampSetPerRepository {
 
-	private static final String SELECT_ALL = "SELECT c FROM KrcctStampDisplay c ";
+	private static final String SELECT_ALL = "SELECT c FROM KrcmtStampPerson c ";
 
 	private static final String SELECT_BY_CID = SELECT_ALL + " WHERE c.pk.companyId = :companyId";
 
-	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID + " AND c.pk.operationMethod = :operationMethod";
+	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID ;
 
-	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcctStampPageLayout c ";
+	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtStampPageLayout c ";
 
 	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
 	
-	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.operationMethod = :operationMethod";
+	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.stampMeans = :operationMethod";
 	
 	private static final String SELECT_BY_CID_PAGENO = SELECT_BY_CID_PAGE 
-			+ " AND c.pk.operationMethod = :operationMethod"
+			+ " AND c.pk.stampMeans = :operationMethod"
 			+ " AND c.pk.pageNo = :pageNo";
 	
 	private static final String SELECT_BY_CID_LAYOUT = SELECT_BY_CID_PAGENO 
@@ -58,7 +58,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void insert(StampSettingPerson stampSettingPerson) {
-		commandProxy().insert(KrcctStampDisplay.toEntity(stampSettingPerson));
+		commandProxy().insert(KrcmtStampPerson.toEntity(stampSettingPerson));
 	}
 
 	/**
@@ -68,12 +68,11 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void update(StampSettingPerson stampSettingPerson) {
 		
-		Optional<KrcctStampDisplay> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcctStampDisplay.class)
+		Optional<KrcmtStampPerson> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcmtStampPerson.class)
 				.setParameter("companyId", stampSettingPerson.getCompanyId())
-				.setParameter("operationMethod", 1)
 				.getSingle();
 		if(oldData.isPresent()){
-			KrcctStampDisplay newData = KrcctStampDisplay.toEntity(stampSettingPerson);
+			KrcmtStampPerson newData = KrcmtStampPerson.toEntity(stampSettingPerson);
 			oldData.get().correctionInterval = newData.correctionInterval;
 			oldData.get().histDisplayMethod = newData.histDisplayMethod;
 			oldData.get().resultDisplayTime = newData.resultDisplayTime;
@@ -91,7 +90,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampSettingPerson> getStampSet(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
 	}
 	
@@ -102,7 +101,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public Optional<StampSettingPerson> getStampSetting(String companyId) {
 		List<StampPageLayout> layouts = getAllStampSetPage(companyId);
-		return this.queryProxy().query(SELECT_BY_CID, KrcctStampDisplay.class)
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain(layouts));
 	}
 
@@ -113,82 +112,94 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void insertPage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		commandProxy().insert(KrcctStampPageLayout.toEntity(layout, companyId));
+		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
 	}
 
 	/**
 	 * 打刻レイアウトの設定内容を更新する
-	 * update KrcctStampPageLayout
+	 * update KrcmtStampPageLayout
 	 */
 	@Override
 	public void updatePage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcctStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
+		Optional<KrcmtStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
-		if(oldData.isPresent()){
-		KrcctStampPageLayout newData = KrcctStampPageLayout.toEntity(layout, companyId);
-		oldData.get().pageName = newData.pageName;
-		oldData.get().buttonLayoutType = newData.buttonLayoutType;
-		oldData.get().pageComment = newData.pageComment;
-		oldData.get().commentColor = newData.commentColor;
 
-		newData.lstButtonSet.stream().forEach(x -> {
-			Optional<KrcctStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
-					.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
-			Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
-					.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
-//			if(!optional.isPresent() && ((oldData.get().lstButtonSet == null ) || 
-//					(x.reservationArt == 0 && x.changeCalArt == null && x.changeClockArt == null && x.changeHalfDay == null) || (x.krcctStampPageLayout == null)) && !x.buttonName.equals("外出") ) {
-//				return;
-//			}
-			if(optional.isPresent()){
-				optional.get().useArt = x.useArt;
-				optional.get().buttonName = x.buttonName;
-				optional.get().reservationArt = x.reservationArt;
-				optional.get().changeClockArt = x.changeClockArt;
-				optional.get().changeCalArt = x.changeCalArt;
-				optional.get().setPreClockArt = x.setPreClockArt;
-				optional.get().changeHalfDay = x.changeHalfDay;
-				optional.get().goOutArt = x.goOutArt;
-				optional.get().textColor = x.textColor;
-				optional.get().backGroundColor = x.backGroundColor;
-				optional.get().aidioType = x.aidioType;
-			}else {
-				StampType stampType = null;
-				
-				if(optional2.get().getButtonType().getStampType().isPresent() && !(optional2.get().getButtonType().getStampType().get().getChangeHalfDay() == null 
-						&& (!optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() && optional2.get().getButtonType().getStampType().get().getGoOutArt().get() == null) 
-						&& optional2.get().getButtonType().getStampType().get().getSetPreClockArt() == null
-						&& optional2.get().getButtonType().getStampType().get().getChangeClockArt() == null
-						&& optional2.get().getButtonType().getStampType().get().getChangeCalArt() == null)) {
+		if(oldData.isPresent()){
+			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId, 1);
+			oldData.get().pageName = newData.pageName;
+			oldData.get().buttonLayoutType = newData.buttonLayoutType;
+			oldData.get().pageComment = newData.pageComment;
+			oldData.get().commentColor = newData.commentColor;
+	
+			newData.lstButtonSet.stream().forEach(x -> {
+				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
+						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
+				Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
+						.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+
+				if(optional.isPresent()) {
+					optional.get().useArt = x.useArt;
+					optional.get().buttonName = x.buttonName;
+					optional.get().reservationArt = x.reservationArt;
+					optional.get().changeClockArt = x.changeClockArt;
+					optional.get().changeCalArt = x.changeCalArt;
+					optional.get().setPreClockArt = x.setPreClockArt;
+					optional.get().changeHalfDay = x.changeHalfDay;
+					optional.get().goOutArt = x.goOutArt;
+					optional.get().textColor = x.textColor;
+					optional.get().backGroundColor = x.backGroundColor;
+					optional.get().aidioType = x.aidioType;
+				} else {
+					StampType stampType = null;
 					
-					stampType = StampType.getStampType(
-							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeHalfDay() : null, 
-							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().isPresent() ? optional2.get().getButtonType().getStampType().get().getGoOutArt().get() : null : null, 
-							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getSetPreClockArt() : null, 
-							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeClockArt() : null, 
-							optional2.get().getButtonType().getStampType().isPresent() ? optional2.get().getButtonType().getStampType().get().getChangeCalArt() : null);
+					Optional<StampType> stamptypeOpt = optional2.get().getButtonType().getStampType();
+					if(		stamptypeOpt.isPresent() 
+							&& !(stamptypeOpt.get().getChangeHalfDay() == null 
+							&& (!stamptypeOpt.get().getGoOutArt().isPresent() && stamptypeOpt.get().getGoOutArt().get() == null)
+							&& stamptypeOpt.get().getSetPreClockArt() == null
+							&& stamptypeOpt.get().getChangeClockArt() == null
+							&& stamptypeOpt.get().getChangeCalArt() == null)) {
+						
+						stampType = StampType.getStampType(
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeHalfDay() : null, 
+								stamptypeOpt.isPresent() && stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getSetPreClockArt() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeClockArt() : null, 
+								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeCalArt() : null);
+					}
 					
+					Optional<StampType> stamptypeOpt2 = optional2.get().getButtonType().getStampType();
+					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
+					
+					StampType stampType2 = new StampType(
+							null, 
+							stamptypeOpt2.isPresent() && stamptypeOpt2.get().getGoOutArt().isPresent()? stamptypeOpt2.get().getGoOutArt().get(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getSetPreClockArt(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeClockArt(): null,
+							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeCalArt(): null);
+					
+					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType2));
+					
+					ButtonSettings settings = new ButtonSettings(
+							optional2.get().getButtonPositionNo()
+							,new ButtonDisSet(
+									new ButtonNameSet(
+											btnNameSetOpt.getTextColor()
+											,btnNameSetOpt.getButtonName().isPresent()? btnNameSetOpt.getButtonName().get(): null)
+									
+									,optional2.get().getButtonDisSet().getBackGroundColor())
+							,buttonType
+							,optional2.get().getUsrArt()
+							,optional2.get().getAudioType());
+					
+					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
 				}
-				ButtonSettings settings = new ButtonSettings(
-						optional2.get().getButtonPositionNo(), 
-						new ButtonDisSet(
-								new ButtonNameSet(
-										optional2.get().getButtonDisSet().getButtonNameSet().getTextColor(),
-										optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().isPresent() ? optional2.get().getButtonDisSet().getButtonNameSet().getButtonName().get() : null),
-								optional2.get().getButtonDisSet().getBackGroundColor()), 
-						new ButtonType(
-								optional2.get().getButtonType().getReservationArt(), stampType
-								), 
-						optional2.get().getUsrArt(), 
-						optional2.get().getAudioType());
-				commandProxy().insert(KrcctStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v()));
-			}
-			
-		});
+			});
 		}
+		
 		this.commandProxy().update(oldData.get());
 	}
 
@@ -198,7 +209,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPage(String companyId, int pageNo) {
-		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcctStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
@@ -210,7 +221,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampPageLayout> getStampSetPageByCid(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcctStampPageLayout.class)
+		return this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcmtStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.getSingle(c -> c.toDomain());
@@ -221,7 +232,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public List<StampPageLayout> getAllStampSetPage(String companyId) {
-		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcctStampPageLayout.class)
+		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtStampPageLayout.class)
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 		if (data.isEmpty())
 			return Collections.emptyList();
@@ -235,13 +246,13 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void delete(String companyId, int pageNo) {
-		Optional<StampPageLayout> newEntity = this.queryProxy().query(SELECT_BY_CID_PAGENO,KrcctStampPageLayout.class)
+		Optional<StampPageLayout> newEntity = this.queryProxy().query(SELECT_BY_CID_PAGENO,KrcmtStampPageLayout.class)
 				.setParameter("companyId", companyId)
 				.setParameter("operationMethod", 1)
 				.setParameter("pageNo", pageNo)
 				.getSingle(c -> c.toDomain());
 		if (newEntity.isPresent()) {
-			this.commandProxy().remove(KrcctStampPageLayout.class, new KrcctStampPageLayoutPk(companyId,1, pageNo));
+			this.commandProxy().remove(KrcmtStampPageLayout.class, new KrcmtStampPageLayoutPk(companyId,1, pageNo));
 		}
 
 	}

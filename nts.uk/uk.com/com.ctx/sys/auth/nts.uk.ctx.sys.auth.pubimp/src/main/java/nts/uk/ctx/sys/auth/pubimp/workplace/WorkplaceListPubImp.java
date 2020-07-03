@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceManagerExport;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -59,6 +60,9 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	
 	@Inject
 	private WorkplacePub workplacePub;
+	
+	@Inject
+	private WorkplaceManagerRepository workplaceManagerRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -123,6 +127,29 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 			}
 		}
 		return subListWorkPlace.stream().distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getListWorkPlaceIDNoWkpAdmin(String employeeID, int empRange, GeneralDate referenceDate) {
+		
+		List<String> result = acquireListWorkplace.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange, referenceDate);
+		return result;
+	}
+
+	@Override
+	public List<WorkplaceManagerExport> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate) {
+		
+		List<WorkplaceManager> listDomain =  workplaceManagerRepo.findListWkpManagerByEmpIdAndBaseDate(employeeId, baseDate);
+		if (listDomain.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<WorkplaceManagerExport> result = listDomain.stream().map(i -> {
+			WorkplaceManagerExport export = new WorkplaceManagerExport(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
+			return export;
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 }
 

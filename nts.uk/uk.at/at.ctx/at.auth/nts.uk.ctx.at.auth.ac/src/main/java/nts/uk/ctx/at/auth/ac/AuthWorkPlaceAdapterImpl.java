@@ -1,16 +1,23 @@
 package nts.uk.ctx.at.auth.ac;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
-import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceManagerImport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceManagerExport;
 
 
 @Stateless
@@ -20,7 +27,10 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 	private EmployeePublisher employeePublisher;
 
 	@Inject
-	private WorkplaceListPub  workplaceListPub ;
+	private WorkplaceListPub  workplaceListPub;
+	
+	@Inject
+	private WorkplacePub  workplacePub;
 	
 	@Override
 	public List<String> getListWorkPlaceID(String employeeID, GeneralDate referenceDate) {
@@ -34,6 +44,44 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 		WorkplaceInfoExport workplaceInfoExport = workplaceListPub.getWorkplaceListId(referenceDate, employeeID, referEmployee);
 		WorkplaceInfoImport workplaceInfoImport = new WorkplaceInfoImport (workplaceInfoExport.lstWorkPlaceID, workplaceInfoExport.getEmployeeRange());
 		return workplaceInfoImport;
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItemImport> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+
+		List<AffWorkplaceHistoryItemExport2> export = workplacePub.getWorkHisItemfromWkpIdAndBaseDate(workPlaceId, baseDate);
+		if (export.isEmpty()) {
+			return new ArrayList<AffWorkplaceHistoryItemImport>();
+		}
+		
+		List<AffWorkplaceHistoryItemImport> result = export.stream().map(item -> {
+			return new AffWorkplaceHistoryItemImport(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
+					item.getNormalWorkplaceId());
+		}).collect(Collectors.toList());
+
+		return result;
+	}
+
+	@Override
+	public List<String> getListWorkPlaceIDNoWkpAdmin(String employeeID, int empRange, GeneralDate referenceDate) {
+		List<String> result = workplaceListPub.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange, referenceDate);
+		return result;
+	}
+
+	@Override
+	public List<WorkplaceManagerImport> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate) {
+		
+		List<WorkplaceManagerExport> dataExport = workplaceListPub.findListWkpManagerByEmpIdAndBaseDate(employeeId, baseDate);
+		if (dataExport.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<WorkplaceManagerImport> result = dataExport.stream().map(i -> {
+			WorkplaceManagerImport export = new WorkplaceManagerImport(i.getWorkplaceManagerId(), i.getEmployeeId(), i.getWorkplaceId(), i.getHistoryPeriod());
+			return export;
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 
 

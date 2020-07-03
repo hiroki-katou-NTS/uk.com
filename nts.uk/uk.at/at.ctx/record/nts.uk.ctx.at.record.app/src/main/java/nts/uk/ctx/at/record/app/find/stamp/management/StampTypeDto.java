@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.app.find.stamp.management;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+
 /**
  * 
  * @author phongtq
@@ -16,14 +16,22 @@ public class StampTypeDto {
 	private boolean changeHalfDay;
 
 	/** 外出区分 */
-	private Optional<Integer> goOutArt;
-	
+	private Integer goOutArt;
+
 	/** 所定時刻セット区分 */
 	private Integer setPreClockArt;
-	
+
 	/** 時刻変更区分 */
 	private Integer changeClockArt;
-	
+
 	/** 計算区分変更対象 */
 	private Integer changeCalArt;
+
+	public static StampTypeDto fromDomain(StampType stampType) {
+
+		return new StampTypeDto(stampType.getChangeHalfDay(),
+				stampType.getGoOutArt().isPresent() ? stampType.getGoOutArt().get().value : null,
+				stampType.getSetPreClockArt().value, stampType.getChangeClockArt().value,
+				stampType.getChangeCalArt().value);
+	}
 }

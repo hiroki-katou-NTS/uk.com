@@ -34,28 +34,9 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	
 	// 打刻ボタンを抑制する
 	@Getter
-	private Boolean suppressStampBtn;
+	private boolean suppressStampBtn;	
 	
-//	// [C-0] スマホ打刻の打刻設定(会社ID, 打刻画面の表示設定, ページレイアウト設定, 打刻ボタンを抑制する)																							
-//	public SettingsSmartphoneStamp(String cid, DisplaySettingsStampScreen displaySettingsStamScreen,
-//			List<StampPageLayout> pageLayoutSettings, Boolean suppressStampBtn) {
-//		this.cid = cid;
-//		this.displaySettingsStamScreen = displaySettingsStamScreen;
-//		this.pageLayoutSettings = pageLayoutSettings;
-//		this.suppressStampBtn = suppressStampBtn;
-//	}
-	
-	
-	
-	/**
-	 * [1] ボタン詳細設定を取得する
-	 * 
-	 * @param 打刻ボタン
-	 *            stamButton
-	 * @return ボタン詳細設定 Optional<ButtonSettings>
-	 * 
-	 *         ボタン詳細設定を取得する
-	 */
+	// [1] ボタン詳細設定を取得する																							
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {
 		
 		// $打刻ページレイアウト = @ページレイアウト設定 :	filter $.ページNO = 打刻ボタン.ページNO

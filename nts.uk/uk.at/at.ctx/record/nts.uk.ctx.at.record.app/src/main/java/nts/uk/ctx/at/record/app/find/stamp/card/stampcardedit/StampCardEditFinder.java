@@ -17,7 +17,7 @@ public class StampCardEditFinder {
 	
 	public StampCardEditDto findDto() {
 		String cId = AppContexts.user().companyId();
-		Optional<StampCardEditing> stampCardEditingOpt = stampCardEditRepo.get(cId);
+		Optional<StampCardEditing> stampCardEditingOpt = Optional.ofNullable(stampCardEditRepo.get(cId));
 		
 		if (!stampCardEditingOpt.isPresent()) {
 			throw new RuntimeException("No data StampCardEditing");

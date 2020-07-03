@@ -6,6 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.stampmanagement.timestampsetting.p
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
@@ -22,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author laitv
  *
  */
+@Stateless
 public class JpaSetSmartphoneStampRepository  extends JpaRepository implements SettingsSmartphoneStampRepository  {
 
 	@Override
@@ -61,8 +64,8 @@ public class JpaSetSmartphoneStampRepository  extends JpaRepository implements S
 		entity.cid = domain.getCid();
 		entity.contractCode = AppContexts.user().contractCode();
 		entity.correctionInteval = domain.getDisplaySettingsStamScreen() == null ? 0
-				: (domain.getDisplaySettingsStamScreen().getServerCorrectionInterval() == null ? 0
-						: domain.getDisplaySettingsStamScreen().getServerCorrectionInterval().v());
+				: (domain.getDisplaySettingsStamScreen().getCorrectionInterval() == null ? 0
+						: domain.getDisplaySettingsStamScreen().getCorrectionInterval().v());
 		
 		entity.resultDisplayTime =  domain.getDisplaySettingsStamScreen() == null ? 0
 				: (domain.getDisplaySettingsStamScreen().getResultDisplayTime() == null ? 0
@@ -75,9 +78,9 @@ public class JpaSetSmartphoneStampRepository  extends JpaRepository implements S
 		
 		entity.backGroundColor = domain.getDisplaySettingsStamScreen() == null ? ""
 				: (domain.getDisplaySettingsStamScreen().getSettingDateTimeColor() == null ? ""
-						: (domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackgroundColor() == null ? ""
-								: domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackgroundColor().v()));
-		entity.btnEmphasisArt = domain.getSuppressStampBtn();
+						: (domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackGroundColor() == null ? ""
+								: domain.getDisplaySettingsStamScreen().getSettingDateTimeColor().getBackGroundColor().v()));
+		entity.btnEmphasisArt = domain.isSuppressStampBtn();
 		
 		return entity;
 	}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -8,7 +9,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author phongtq
  *
  */
-
+@AllArgsConstructor
 public class ButtonSettings {
 
 	/** ボタン位置NO */
@@ -31,12 +32,4 @@ public class ButtonSettings {
 	@Getter
 	private AudioType audioType;
 
-	public ButtonSettings(ButtonPositionNo buttonPositionNo, ButtonDisSet buttonDisSet, ButtonType buttonType, NotUseAtr usrArt,
-			AudioType audioType) {
-		this.buttonPositionNo = buttonPositionNo;
-		this.buttonDisSet = buttonDisSet;
-		this.buttonType = buttonType;
-		this.usrArt = usrArt;
-		this.audioType = audioType;
-	}
 }
