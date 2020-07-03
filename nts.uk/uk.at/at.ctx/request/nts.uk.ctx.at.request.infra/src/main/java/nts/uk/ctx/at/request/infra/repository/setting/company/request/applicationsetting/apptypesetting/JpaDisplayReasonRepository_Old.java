@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationset
  *
  */
 @Stateless
-public class JpaDisplayReasonRepository extends JpaRepository implements DisplayReasonRepository{
+public class JpaDisplayReasonRepository_Old extends JpaRepository implements DisplayReasonRepository{
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KrqstDisplayReason c ";
 	private static final String SELECT_BY_COM = SELECT_NO_WHERE + " WHERE c.krqstDisplayReasonPK.companyId = :companyId ";
 	

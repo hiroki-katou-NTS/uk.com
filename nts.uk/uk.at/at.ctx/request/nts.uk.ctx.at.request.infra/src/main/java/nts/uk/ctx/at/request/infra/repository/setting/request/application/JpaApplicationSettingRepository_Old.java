@@ -29,7 +29,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppli
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository {
+public class JpaApplicationSettingRepository_Old extends JpaRepository implements ApplicationSettingRepository {
 
 	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
 
