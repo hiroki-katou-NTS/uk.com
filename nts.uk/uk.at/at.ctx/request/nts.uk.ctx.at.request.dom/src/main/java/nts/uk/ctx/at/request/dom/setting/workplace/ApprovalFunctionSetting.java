@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 
 /**
  * 申請承認機能設定

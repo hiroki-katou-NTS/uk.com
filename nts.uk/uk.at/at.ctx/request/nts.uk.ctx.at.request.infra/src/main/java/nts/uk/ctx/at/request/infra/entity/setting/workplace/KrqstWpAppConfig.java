@@ -16,13 +16,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
@@ -30,6 +29,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.SelectionFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -82,7 +82,7 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 							new ApplicationUseSetting(
 									new AppUseSetRemark(x.memo), 
 									UseAtr.toEnum(x.useAtr), 
-									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType_Old.class)), 
+									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
 							Optional.of(new ApplicationDetailSetting(
 									x.breakInputFieldDisFlg == 1? true : false, 
 									x.breakTimeDisFlg == 1? true : false, 

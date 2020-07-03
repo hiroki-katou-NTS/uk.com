@@ -20,10 +20,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApproverRegisterSet;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 //HOATT - CMM018_2
 @Stateless

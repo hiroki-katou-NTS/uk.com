@@ -5,18 +5,18 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 
 @Data
 @AllArgsConstructor
@@ -111,7 +111,7 @@ public class ApprovalFunctionSettingCommand {
 				new ApplicationUseSetting(
 						new AppUseSetRemark(this.memo), 
 						UseAtr.toEnum(this.useAtr), 
-						EnumAdaptor.valueOf(this.appType, ApplicationType_Old.class)), 
+						EnumAdaptor.valueOf(this.appType, ApplicationType.class)), 
 				Optional.of(new ApplicationDetailSetting(
 						this.breakInputFieldDisFlg == 1? true : false, 
 						this.breakTimeDisFlg == 1? true : false, 
