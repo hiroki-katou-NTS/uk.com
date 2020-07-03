@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CanEngravingUsed;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.StampUsageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
@@ -60,7 +60,7 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
 	@Inject
-	private SettingsUsingEmbossingRepository stampUsageRepo;
+	private StampUsageRepository stampUsageRepo;
 
 	@Inject
 	private CreateDailyResultDomainService createDailyResultDomainSv;
@@ -113,7 +113,7 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
 
 		@Inject
-		private SettingsUsingEmbossingRepository stampUsageRepo;
+		private StampUsageRepository stampUsageRepo;
 
 		@Inject
 		private StampCardRepository stampCardRepo;

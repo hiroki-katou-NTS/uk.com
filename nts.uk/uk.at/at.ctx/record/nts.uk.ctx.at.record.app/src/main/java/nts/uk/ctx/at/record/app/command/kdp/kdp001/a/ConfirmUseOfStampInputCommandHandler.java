@@ -51,9 +51,6 @@ public class ConfirmUseOfStampInputCommandHandler
 		extends CommandHandlerWithResult<ConfirmUseOfStampInputCommand, ConfirmUseOfStampInputResult> {
 
 	@Inject
-	private StampFunctionAvailableService stampAvailableService;
-
-	@Inject
 	private StampUsageRepository stampUsageRepo;
 
 	@Inject
@@ -88,9 +85,9 @@ public class ConfirmUseOfStampInputCommandHandler
 
 		String employeeId = AppContexts.user().employeeId();
 		// 1. 判断する(@Require, 社員ID, 打刻手段)
-		MakeUseJudgmentResults jugResult = this.stampAvailableService.decide(require, employeeId, stampMeans);
+		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, stampMeans);
 		// not 打刻カード作成結果 empty
-		Optional<StampCardCreateResult> cradResultOpt = jugResult.get().getCardResult();
+		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
 
 		if (cradResultOpt.isPresent()) {
 
