@@ -479,7 +479,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 * @param workTypeCode
 	 * @return
 	 */
-	public WorkStyle checkWorkDay(String workTypeCode) {
+	public WorkStyle checkWorkDay() {
 		// All day
 		if (this.isOneDay()) {
 			if (this.dailyWork.IsLeaveForADay()) {
@@ -503,6 +503,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 
 		return WorkStyle.ONE_DAY_WORK;
+	}
 
 	public WorkType(String companyId, WorkTypeCode workTypeCode, List<WorkTypeSet> workTypeSetList) {
 		super();

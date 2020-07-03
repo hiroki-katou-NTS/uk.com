@@ -2048,7 +2048,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @param workInfoOfDailyPerformanceUpdate
 	 * @return
 	 */
-	private Optional<BonusPaySetting> reflectBonusSettingDailyPer(String companyId, String employeeId, GeneralDate day,
+	public Optional<BonusPaySetting> reflectBonusSettingDailyPer(String companyId, String employeeId, GeneralDate day,
 			WorkInfoOfDailyAttendance workInfoOfDailyPerformanceUpdate,
 			AffiliationInforOfDailyAttd affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();

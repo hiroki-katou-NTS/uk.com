@@ -201,7 +201,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		if (!workTypeOpt.isPresent()) {
 			return null;
 		}
-		return workTypeOpt.get().checkWorkDay(workTypeCode);
+		return workTypeOpt.get().checkWorkDay();
 	}
 	
 	@Override

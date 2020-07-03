@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.shared.app.find.dailyperform.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 /**
  * 日別のコンバーターを作成する
