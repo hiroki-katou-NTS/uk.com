@@ -7,8 +7,12 @@
 	position: absolute;
 }
 
-#oViewModel #set-work-time {
+#oViewModel{
 	top: 29px;
+}
+
+#set-work-time {
+	top: 32px;
 }
 
 #oViewModel #time-edit1 {

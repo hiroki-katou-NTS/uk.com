@@ -196,20 +196,20 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             if (self.selectedTab() === 'company') {
                 self.indexLinkButtonCom = index();
                 // link button has color gray when clicked
-                _.each($('#part-1-1 a.hyperlink'), (a) => {
+                _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
                 });
-                $($('#part-1-1 a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
+                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
                 self.selectedLinkButtonCom(self.indexLinkButtonCom);
                 //set sourceCompany
                 self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
             } else {
                 self.indexLinkButtonWkp = index();
                 // link button has color gray when clicked
-                _.each($('#part-1-2 a.hyperlink'), (a) => {
+                _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
                 });
-                $($('#part-1-2 a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
+                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
                 self.selectedLinkButtonWkp(self.indexLinkButtonWkp);
                 //set sourceWorkplace
                 self.sourceWorkplace(self.dataSourceWorkplace()[self.indexLinkButtonWkp] || source);

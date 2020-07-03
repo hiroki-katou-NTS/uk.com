@@ -48,7 +48,11 @@ table th, table td {
 }
 
 .hope {
-	margin-left: 145px !important;
+	margin-left: 5px !important;
+}
+
+.output {
+	margin-left: 250px !important;
 }
 
 .generally, .simulation, .capture {
@@ -66,20 +70,16 @@ table th, table td {
 	width: 80px;
 }
 
-.substitute-holiday, .pause, .annual-holiday, .yearly-reserved {
-	width: 75px;
+.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
+	width: 105px;
 }
 
-.break {
-	margin-left: 80px;
-}
-
-#work-setting, #company-setting {
+#work-setting, #person-setting, #sort-order-setting {
 	margin-left: 10px;
 }
 
-#work-setting button, #company-setting button {
-	width: 109px;
+#work-setting button, #person-setting button, #sort-order-setting button{
+	width: 260px;
 	margin-bottom: 10px;
 }
 
@@ -94,9 +94,14 @@ table th, table td {
 	padding-bottom: 3px;
 }
 
+.btnSelectMode {
+	float: left;
+}
+
 #oViewModel, #qViewModel {
 	float: left;
-	width: 94%
+	width: 88%;
+	margin-left: 25px;
 }
 
 #qViewModel {
@@ -104,9 +109,15 @@ table th, table td {
 	height: 120px
 }
 
+#group-btmode {
+	float: left;
+	width: 9%;
+}
+
 #group-bt {
 	float: left;
-	width: 6%;
+	width: 10%;
+	border-right: 2px solid #ccc;
 }
 
 .setting-button {
@@ -119,14 +130,19 @@ table th, table td {
 
 .size-image-button1 {
 	background-size: 20px 20px !important;
-	height: 24px !important;
-	width: 24px;
+	width: 27px;
 }
 
 .size-image-button2 {
 	background-size: 24px 24px !important;
 	height: 27px !important;;
 	width: 27px;
+}
+
+.size-image-button3 {
+	background-size: 20px 20px !important;
+	height: 24px !important;;
+	width: 24px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -148,7 +164,8 @@ table th, table td {
 }
 
 #popup-area4 {
-	width: 307px !important;
+	width: 362px !important;
+	height: 85px;
 }
 
 #popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
@@ -211,7 +228,7 @@ table th, table td {
 }
 
 .popup-div {
-	width: 140px;
+	width: 152px;
 	display: inline-block;
 	margin-bottom: 10px
 }
@@ -233,16 +250,39 @@ table th, table td {
 }
 
 #paste {
-	background: url(../image/image102.png) no-repeat center;
+	white-space: normal;
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
 }
 
 #copy {
-	background: url(../image/image104.png) no-repeat center;
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
+}
+
+#input {
+	white-space: normal;
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
 }
 
 #undo {
-	margin: 2px 0 0 31px;
+	margin-top: 3px;
 	background: url(../image/image030.png) no-repeat center;
+	width: 38px;
+	height: 38px !important; 
+	background-color: #ffff;
+}
+
+#redo {
+	margin-top: 3px;
+	background: url(../image/image031.png) no-repeat center;
+	width: 38px;
+	height: 38px !important; 
+	background-color: #ffff;
 }
 
 #prevMonth {
@@ -253,12 +293,15 @@ table th, table td {
 	background: url(../image/image053.png) no-repeat center;
 }
 
+
 #contain-view {
 	float: left;
-	margin-top: 3px;
-	width: 100%;
-	margin-left: 80px;
-}
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 20px;
+	border: 1px solid #cccccc;
+	background: rgb(219, 238, 244);
+	padding: 5px;}
 
 .right-content button {
 	height: 27px;
@@ -266,16 +309,19 @@ table th, table td {
 
 #top-area-left {
 	float: left;
-	width: 30%;
+	width: 37.4%;
+	margin-top: 5px;
 }
 
-#top-area-left * {
-	font-size: 21px !important;
+#top-area-center {
+	float: left;
+	width: 21%;
 }
 
 #top-area-right {
+	margin-top: 5px;
 	float: left;
-	width: 70%;
+	width: 10%;
 }
 
 #date-time-prev, #date-time-after {
@@ -375,10 +421,51 @@ tbody a.x-link {
     overflow-x: auto;
     overflow-y: hidden;
 }
-#top-area , #contain-view {
+
+#contain-view {
+	min-width: 1022px;
+	width: calc(83vw - 82px);
+}
+
+#top-area {
 	min-width: 1022px;
 	width: calc(100vw - 80px);
 }
+
 html {
 	overflow: hidden;
 }
+
+.marginleft15px {
+	margin-left: 20px !important;
+}
+
+.marginleft45px {
+	margin-left: 60px !important;
+}
+
+#period-setting {
+	background: #edfac2;
+	width: max-content;
+	padding: 5px;
+	border: 1px solid #cccccc;
+}
+
+.area6-left {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+	width: 130px ; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+}
+
+.area6-right {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+}
+
+.color-attendance {background-color: #0000ff !important;}
+.color-holiday {background-color: #ff0000 !important;}
+.color-half-day-work {background-color: #FF7F27 !important; }
+.color-schedule-performance {background-color:#92D050 !important;}
+

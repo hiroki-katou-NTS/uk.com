@@ -24,55 +24,29 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //popup 1
-        $('#popup-area2').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.create')
-            }
-        });
-
-        $('.create').click(function() {
-            $('#popup-area2').ntsPopup("toggle");
-        });
-
-        //popup 2
-        $('#popup-area3').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.check')
-            }
-        });
-
-        $('.check').click(function() {
-            $('#popup-area3').ntsPopup("toggle");
-        });
-
         //popup 3
         $('#popup-area4').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.vacation')
+                of: $('.revision')
             }
         });
 
-        $('.vacation').click(function() {
+        $('.revision').click(function() {
             $('#popup-area4').ntsPopup("toggle");
         });
 
         //popup 4
         $('#popup-area5').ntsPopup({
             position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.setting')
+                my: 'right top',
+                at: 'right bottom+3',
+                of: $('.setmenu')
             }
         });
 
-        $('.setting').click(function() {
+        $('.setmenu').click(function() {
             $('#popup-area5').ntsPopup("toggle");
         });
 
@@ -81,28 +55,14 @@ module nts.uk.at.view.ksu001.a {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.setting-button')
+                of: $('#A4')
             }
         });
 
-        $('.setting-button').click(function() {
+        $('#A4').click(function() {
             $('#popup-area6').ntsPopup("toggle");
         });
-
-        //popup A2-2
-        $('#popup-area7').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.done')
-            }
-        });
-
-        $('.done').click(function() {
-            $('#popup-area7').ntsPopup("toggle");
-        });
-
-
+        
         //popup A3-24
         $('#popup-area9').ntsPopup({
             position: {

@@ -29,48 +29,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         selectedCode: KnockoutObservableArray<any> = ko.observableArray([]);
         showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(true);
 
-        //Pop-up
-        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
-            { headerText: getText("KSU001_19"), key: 'code', width: 50 },
-            { headerText: getText("KSU001_20"), key: 'name', width: 150 },
-            { headerText: 'コード', key: 'id', width: 50, hidden: true },
+        
+        // popup-area6
+        formatSelection: KnockoutObservableArray<any> = ko.observableArray([
+            new BoxModel(1, getText("KSU001_43")),
+            new BoxModel(2, getText("KSU001_44")),
+            new BoxModel(3, getText("KSU001_45")),
         ]);
-        currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        backgroundColorList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            new ItemModel('001', '就業時間帯'),
-            new ItemModel('002', '通常')
+        selectedFormat: any = ko.observable(1);
+        
+        displaySelection: KnockoutObservableArray<any> = ko.observableArray([
+            new BoxModel(1, getText("KSU001_135")),
+            new BoxModel(2, getText("KSU001_136")),
         ]);
-        selectedBackgroundColor: KnockoutObservable<string> = ko.observable('001');
-        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            new ItemModel('基本給1', '基本給'),
-            new ItemModel('基本給2', '役職手当'),
-            new ItemModel('基本給3', '基本給')
+        selectedDisplay: any = ko.observable(1);
+        
+                backgroundColorSelList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel('1', getText("KSU001_143")),
+            new ItemModel('2', getText("KSU001_144"))
         ]);
-        selectedCode1: KnockoutObservable<string> = ko.observable('0003');
-        roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, getText("KSU001_89")),
-            new BoxModel(2, getText("KSU001_90")),
-        ]);
-        selectedDisplayLastWeek: any = ko.observable(1);
-        selectedDisplayBank: any = ko.observable(1);
-        selectedDisplayVertical: any = ko.observable(1);
-        selectedCompareMonth: any = ko.observable(1);
-        itemList1: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, '画面サイズ'),
-            new BoxModel(2, '高さを指定'),
-        ]);
+        backgroundColorSelected: KnockoutObservable<string> = ko.observable('1');
+        
+       
         selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
         isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
         isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
-        itemList2: KnockoutObservableArray<any> = ko.observableArray([
-            new BoxModel(1, getText("KSU001_339")),
-            new BoxModel(2, getText("KSU001_340")),
-            new BoxModel(3, getText("KSU001_341"))
-        ]);
-        selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
         popupVal: KnockoutObservable<string> = ko.observable('');
         selectedDate: KnockoutObservable<string> = ko.observable('1993/23/12');
 
@@ -89,9 +73,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         selectedTimePeriod: KnockoutObservable<number> = ko.observable(1);
 
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '略名' },
-            { code: 2, name: '時刻' }
-            //{ code: 3, name: '記号' } de bat man Ja    
+            { code: 1, name: getText("KSU001_39") },
+            { code: 2, name: getText("KSU001_40") },
+            { code: 3, name: getText("KSU001_41") }    
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
@@ -102,9 +86,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
-        lengthListSid: any;
+        lengthListSid: KnockoutObservable<string> = ko.observable('開発本部　第一開発部　　　UK就業　チーム１0');
         affiliationId: any = null;
-        affiliationName: KnockoutObservable<string> = ko.observableArray('');
+        affiliationName: KnockoutObservable<string> = ko.observable('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
         listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -142,9 +126,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             //Pop-up
-            for (let i = 1; i <= 12; i++) {
-                self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
-            }
 
             self.selectedTypeHeightExTable.subscribe(function(newValue) {
                 $('#input-heightExtable').ntsError('clear');
@@ -158,7 +139,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
 
-            self.selectedDisplayVertical.subscribe(function(newValue) {
+            self.selectedDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
                     self.isEnableCompareMonth(true);
                 } else {
@@ -166,7 +147,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
 
-            self.selectedModeDisplay.subscribe(function(newValue) {
+            self.selectedFormat.subscribe(function(newValue) {
                 nts.uk.ui.errors.clearAll();
                 __viewContext.viewModel.viewO.time1('');
                 __viewContext.viewModel.viewO.time2('');
@@ -260,17 +241,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 //                }
 //            });
 
-            self.selectedBackgroundColor.subscribe((newValue) => {
+            self.backgroundColorSelected.subscribe((newValue) => {
                 self.updateExTable();
-            });
-
-            //display for A3_2
-            self.lengthListSid = ko.pureComputed(() => {
-                let sizeListSid: number = self.listSid().length;
-                if(sizeListSid > 0){
-                    self.hasEmployee(true);
-                }
-                return getText('KSU001_54', [sizeListSid.toString()]);
             });
 
             self.stopRequest.subscribe(function(value) {
@@ -1882,12 +1854,43 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             nts.uk.ui.dialog.bundledErrors({ errors: errors });
         }
+        
+        editMode() {
+            let self = this;
+            // set color button
+            $(".editMode").css("background-color", "#007fff");
+            $(".editMode").css("color", "#ffffff");
+            
+            $(".confirmMode").css("background-color", "#ffffff");
+            $(".confirmMode").css("color", "#000000");
+        }
+
+        confirmMode() {
+            let self = this;
+            // set color button
+            $(".confirmMode").css("background-color", "#007fff");
+            $(".confirmMode").css("color", "#ffffff");
+            
+            $(".editMode").css("background-color", "#ffffff");
+            $(".editMode").css("color", "#000000");
+        }
 
         /**
          * paste data on cell
          */
         pasteData(): void {
             let self = this;
+            // set color button
+            $("#paste").css("background-color", "#007fff");
+            $("#paste").css("color", "#ffffff");
+            
+            $("#copy").css("background-color", "#ffffff");
+            $("#copy").css("color", "#000000");
+            
+            $("#input").css("background-color", "#ffffff");
+            $("#input").css("color", "#000000");
+
+            
             $("#extable").exTable("updateMode", "stick");
              
             if (self.selectedModeDisplay() == 1) {
@@ -1903,8 +1906,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * copy data on cell
          */
         copyData(): void {
+            // set color button
+            $("#copy").css("background-color", "#007fff");
+            $("#copy").css("color", "#ffffff");
+            
+            $("#paste").css("background-color", "#ffffff");
+            $("#paste").css("color", "#000000");
+            
+            $("#input").css("background-color", "#ffffff");
+            $("#input").css("color", "#000000");
+            
             $("#extable").exTable("updateMode", "copyPaste");
         }
+        
+        /**
+         * copy data on cell
+         */
+        inputData(): void {
+            // set color button
+            $("#input").css("background-color", "#007fff");
+            $("#input").css("color", "#ffffff");
+            
+            $("#copy").css("background-color", "#ffffff");
+            $("#copy").css("color", "#000000");
+            
+            $("#paste").css("background-color", "#ffffff");
+            $("#paste").css("color", "#000000");
+            
+        }
+        
+        
 
         /**
          * undo data on cell

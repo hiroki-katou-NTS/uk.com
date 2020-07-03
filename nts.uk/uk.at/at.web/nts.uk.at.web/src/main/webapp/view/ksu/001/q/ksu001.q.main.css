@@ -35,19 +35,19 @@
 	color: #E0F59E !important;
 }
 
-#test1, #test2 {
+#tableButton {
 	background-color: #FBE5D6;
-	margin-left: -7px;
 	width: 1015px;
 	height: 53px;
+	margin-top: 5px;
 }
 
-#test1 button, #test2 button {
+#tableButton button {
 	width: 95px !important;
 	height: 20px;
 }
 
-#test1 table td, #test2 table td {
+#tableButton table td {
 	padding: 3px 3px !important;
 }
 
@@ -96,4 +96,32 @@
 
 .color-gray {
 	color: gray !important
+}
+
+#group-link-button-ja {
+	height: 30px;
+	width: fit-content;
+	margin-top: -5px;
+
+}
+
+#group-link-button-ja a {
+	font-size: 13px;
+	margin-top: 5px;
+	margin-left: 10px;
+	display: inline-block;
+}
+
+.overwrite {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.openDialogJA {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.inline {
+	display: inline-block;
 }
