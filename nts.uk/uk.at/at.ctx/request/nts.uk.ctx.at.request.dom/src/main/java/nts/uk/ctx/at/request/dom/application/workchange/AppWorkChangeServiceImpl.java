@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -23,11 +24,15 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_New;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
@@ -35,9 +40,11 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.work
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -84,6 +91,12 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	
+	@Inject
+	private IAppWorkChangeSetRepository iAppWorkChangeSetRepository;
+	
+	@Inject
+	private CommonAlgorithmMobile algorithmMobile;
 
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType_Old hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
@@ -394,6 +407,104 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
+	}
+	
+	@Override
+	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId,
+			Optional<String> employeeId, Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo,
+			Optional<AppWorkChange> appWorkChange) {
+		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();	
+		// new mode
+		if (mode) {
+//			申請共通起動処理
+			AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(
+					mode, 
+					companyId, 
+					employeeId.isPresent() ? employeeId.get() : null, 
+							ApplicationType.WORK_CHANGE_APPLICATION, 
+					null, 
+					dates.isPresent() ? dates.get(): null, 
+					null);
+//			勤務変更申請画面初期（新規）
+			AppWorkChangeDispInfo_New appWorkChangeDisp = this.getAppWorkChangeDisInfo(
+					companyId, 
+					employeeId.isPresent() ? employeeId.get() : null, 
+					dates.isPresent() ? dates.get() : null,
+					appDispInfoStartupOutput);
+			appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDisp);
+			
+			
+		}else {
+			if (appWorkChange.isPresent()) {
+				appWorkChangeOutput.setAppWorkChange(appWorkChange.get());
+				
+			}
+		}
+		return appWorkChangeOutput;
+	}
+	
+	@Override
+	public AppWorkChangeDispInfo_New getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		AppWorkChangeDispInfo_New appWorkChangeDispInfo = new AppWorkChangeDispInfo_New();
+		
+//		勤務変更申請設定を取得する
+		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyId);
+		
+	// 勤務種類を取得する
+		Optional<AppEmploymentSetting> appEmploymentSetting = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
+		List<WorkType> workTypes = this.getWorkTypeLst(appEmploymentSetting.isPresent() ? appEmploymentSetting.get() : null);
+		
+		
+		
+//		勤務種類・就業時間帯の初期選択項目を取得する
+		WorkTypeWorkTimeSelect woSelect = this.initWorkTypeWorkTime(
+				companyId,
+				employeeId,
+				dates.get(0), 
+				workTypes,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
+		
+//		勤務種類・就業時間帯を変更する時
+		ChangeWkTypeTimeOutput changeWkTypeTimeOutput = this.changeWorkTypeWorkTime(
+				companyId,
+				woSelect.getWorkType().getWorkTypeCode().v(),
+				Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()),
+				appWorkChangeSettingOutput.getAppWorkChangeSet());
+		
+		
+		// assign value to output
+		
+		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSettingOutput.getAppWorkChangeSet());
+		
+		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		appWorkChangeDispInfo.setWorkTypeLst(workTypes);
+		appWorkChangeDispInfo.setSetupType(changeWkTypeTimeOutput.getSetupType());
+		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().isPresent() 
+				? changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get(): null );
+		appWorkChangeDispInfo.setWorkTypeCD(woSelect.getWorkType().getWorkTypeCode().v());
+		appWorkChangeDispInfo.setWorkTimeCD(woSelect.getWorkTime().getWorktimeCode().v());
+		
+//		勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
+		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
+		
+		return appWorkChangeDispInfo;
+	}
+
+	@Override
+	public AppWorkChangeSettingOutput getAppWorkChangeSettingOutput(String companyId) {
+		AppWorkChangeSettingOutput appWorkChangeSettingOutput = new AppWorkChangeSettingOutput();
+		
+//		ドメインモデル「勤務変更申請設定」を取得する
+		Optional<AppWorkChangeSet> appWorkChangeSet = iAppWorkChangeSetRepository.findWorkChangeSetByID(companyId);
+//		ドメインモデル「勤務変更申請の反映」を取得する
+		ReflectWorkChangeApp appWorkChangeReflect = null;
+		
+		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);
+		
+		appWorkChangeSettingOutput.setAppWorkChangeReflect(appWorkChangeReflect);
+		
+		return appWorkChangeSettingOutput;
 	}
 
 }

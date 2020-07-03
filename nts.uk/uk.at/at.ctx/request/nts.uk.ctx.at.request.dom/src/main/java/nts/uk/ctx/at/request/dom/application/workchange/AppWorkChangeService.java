@@ -8,13 +8,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_New;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -119,4 +123,36 @@ public interface AppWorkChangeService {
 	 */
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application, 
 			AppWorkChange_Old appWorkChange, boolean agentAtr);
+	/**
+	 * 勤務変更申請の起動処理
+	 * Refactor4
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF007_勤務変更申請.A:勤務変更申請（新規）.アルゴリズム.勤務変更申請画面初期（新規）
+	 * @param mode 画面モード
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID＜Optional＞
+	 * @param dates 申請対象日リスト＜Optional＞ 
+	 * @param appWorkChangeDispInfo 勤務変更申請の表示情報＜Optional＞
+	 * @param appWorkChange 勤務変更申請＜Optional＞
+	 * @return 
+	 */
+	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId, Optional<String> employeeId,
+			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
+	
+	/**
+	 * 勤務変更申請画面初期（新規）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param dates 申請対象日リスト
+	 * @param appDispInfoStartupOutput 申請表示情報
+	 * @return 勤務変更申請の表示情報
+	 */
+	public AppWorkChangeDispInfo_New getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	/**
+	 * 勤務変更申請設定を取得する
+	 * @param companyId 会社ID
+	 * @return
+	 */
+	public AppWorkChangeSettingOutput getAppWorkChangeSettingOutput(String companyId);
+	
 }

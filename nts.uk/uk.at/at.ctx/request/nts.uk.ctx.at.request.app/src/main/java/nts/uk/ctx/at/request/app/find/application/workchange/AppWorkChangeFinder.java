@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCom
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfo_NewDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -291,4 +292,17 @@ public class AppWorkChangeFinder {
 		
 		appWorkChangeService.checkBeforeUpdate(companyId, updateApp, workChangeDomain, false);
 	}
+	
+	public AppWorkChangeOutputDto getStartKAFS07(boolean mode, String companyId, String employeeId, List<GeneralDate> dates) {
+		return AppWorkChangeOutputDto.fromDomain(appWorkChangeService.getAppWorkChangeOutput(
+				true,
+				companyId,
+				Optional.ofNullable(employeeId),
+				Optional.ofNullable(dates),
+				Optional.ofNullable(null), 
+				Optional.ofNullable(null)
+				));
+	}
+	
+	
 }
