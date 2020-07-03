@@ -1,24 +1,19 @@
 module nts.uk.at.view.kdp010.i.service {
     let paths: any = {
-        saveStampPage: "at/record/stamp/management/saveStampPage",
-        getStampSetting: "at/record/stamp/management/getStampSetting",
-        getStampPage: "at/record/stamp/management/getStampPage",
-        deleteStampPage: "at/record/stamp/management/delete"
+        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
+        save: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/save",
+        del: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/del"
     }
 
-    export function saveStampPage(data: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.saveStampPage, data);
+    export function save(param: any): void {
+        return nts.uk.request.ajax("at", paths.save, param);
     }
 
-    export function getStampSetting(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampSetting);
+    export function getData(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getData, param);
     }
     
-    export function deleteStampPage(command: any) {
-        return nts.uk.request.ajax("at", paths.deleteStampPage, command);
-    }
-
-    export function getStampPage(pageNo : number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
+    export function del(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getData);
     }
 }

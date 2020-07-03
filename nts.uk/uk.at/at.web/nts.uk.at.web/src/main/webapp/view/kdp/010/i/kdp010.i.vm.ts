@@ -1,46 +1,187 @@
 module nts.uk.at.view.kdp010.i {
+    import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
+    import info = nts.uk.ui.dialog.info;
 	export module viewmodel {
 		export class ScreenModel {
-			commentDaily: KnockoutObservable<string> = ko.observable("");
-			letterColors: KnockoutObservable<string> = ko.observable("#000000");
-			btn1: KnockoutObservable<any> = ko.observable(new ButtonSetting('出勤','#0033cc','#ccccff'));
-            btn2: KnockoutObservable<any> = ko.observable(new ButtonSetting('退勤','#0033cc','#ccccff'));
-            btn3: KnockoutObservable<any> = ko.observable(new ButtonSetting('外出','#0033cc','#05f9f9'));
-            btn4: KnockoutObservable<any> = ko.observable(new ButtonSetting(undefined, undefined, undefined));
-            btn5: KnockoutObservable<any> = ko.observable(new ButtonSetting(undefined, undefined, undefined));
-            btn6: KnockoutObservable<any> = ko.observable(new ButtonSetting(undefined, undefined, undefined));
+            stampPageLayout = new StampPageLayout();
 			constructor() {
 				let self = this;
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this;
-				let dfd = $.Deferred();
-				dfd.resolve();
-				return dfd.promise();
+                let dfd = $.Deferred();
+                block.grayout();
+                let param = {pageNo:1};
+                service.getData(param).done(function(data) {
+                    console.log(data);
+                    if (data) {
+                        self.stampPageLayout.update(data);
+                    }
+                    dfd.resolve();
+                }).fail(function (res) {
+                    info({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
+                return dfd.promise();
 			}
+            
 			public registration() {
 				let self = this;
 			}
+            
 			public deleteSetting() {
 				let self = this;
 			}
-			public closeDialog(): void {
+            
+            public closeDialog(): void {
 				nts.uk.ui.windows.close();
 			}
 		}
 
-		export class ButtonSetting {
-			text: KnockoutObservable<string>;
-            textColor: KnockoutObservable<string>;
-			bgColor: KnockoutObservable<string>;
-			constructor(text: string, textColor: string, bgColor: string) {
-				this.text = ko.observable(text || '');
-                this.textColor = ko.observable(textColor || '#999');
-				this.bgColor = ko.observable(bgColor|| '#999');
-			}
-            setting (): void {
+        class StampPageLayout {
+            pageNo = 1;
+            stampPageName = getText("KDP010_231");
+            stampPageComment = new StampPageComment();
+            buttonLayoutType = 0;
+            lstButtonSet = [];
+            btn1 = new ButtonSettings();
+            btn2 = new ButtonSettings();
+            btn3 = new ButtonSettings();
+            btn4 = new ButtonSettings();
+            btn5 = new ButtonSettings();
+            btn6 = new ButtonSettings();
+            constructor(){
                 let self = this;
             }
-		}
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.stampPageComment.update(data.stampPageComment);
+                    _.forEach(data.lstButtonSet, (item) => {
+                        if(item.buttonPositionNo == 1){
+                            self.btn1.update(item);
+                            self.lstButtonSet.push(self.btn1);
+                        }else if(item.buttonPositionNo == 2){
+                            self.btn2.update(item);
+                            self.lstButtonSet.push(self.btn2);
+                        }else if(item.buttonPositionNo == 3){
+                            self.btn3.update(item);
+                            self.lstButtonSet.push(self.btn3);
+                        }else if(item.buttonPositionNo == 4){
+                            self.btn4.update(item);
+                            self.lstButtonSet.push(self.btn4);
+                        }else if(item.buttonPositionNo == 5){
+                            self.btn5.update(item);
+                            self.lstButtonSet.push(self.btn5);
+                        }else if(item.buttonPositionNo == 6){
+                            self.btn6.update(item);
+                            self.lstButtonSet.push(self.btn6);
+                        }
+                    });
+                }
+            }
+            
+            setting(buttonPositionNo: number){
+                let self = this;
+                let dataI = {
+                    dataShare: ko.toJS(self),
+                    buttonPositionNo: buttonPositionNo
+                }
+                nts.uk.ui.windows.setShared('KDP010_G', dataI);
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared('KDP010_H');
+                    if (data) {
+                        _.forEach(data.dataShare.lstButtonSet, (item) => {
+                            let buttonSet = _.find(self.lstButtonSet,['buttonPositionNo',item.buttonPositionNo]);
+                            if(buttonSet){
+                                buttonSet.update(item);
+                            }else if(item.buttonPositionNo == 1){
+                                self.btn1.update(item);
+                                self.lstButtonSet.push(self.btn1);
+                            }else if(item.buttonPositionNo == 2){
+                                self.btn2.update(item);
+                                self.lstButtonSet.push(self.btn2);
+                            }else if(item.buttonPositionNo == 3){
+                                self.btn3.update(item);
+                                self.lstButtonSet.push(self.btn3);
+                            }else if(item.buttonPositionNo == 4){
+                                self.btn4.update(item);
+                                self.lstButtonSet.push(self.btn4);
+                            }else if(item.buttonPositionNo == 5){
+                                self.btn5.update(item);
+                                self.lstButtonSet.push(self.btn5);
+                            }else if(item.buttonPositionNo == 6){
+                                self.btn6.update(item);
+                                self.lstButtonSet.push(self.btn6);
+                            }
+                        }); 
+                    }
+                });    
+            }
+        }
+        
+        class StampPageComment{
+            pageComment = ko.observable("");
+            commentColor = ko.observable("#000000");
+            constructor(){
+                let self = this;
+            }
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.pageComment(data.pageComment);
+                    self.commentColor(data.commentColor);
+                }
+            }
+        }
+        
+        class ButtonSettings {
+            buttonPositionNo: number;
+            buttonDisSet = new ButtonDisSet();
+            buttonType = 0;
+            usrArt = ko.observable(0);
+            audioType = 0;
+            constructor(){
+                let self = this;
+            }
+            update(param: any){
+                let self = this;
+                if(param){
+                    self.buttonPositionNo = param.buttonPositionNo;
+                    self.buttonDisSet.update(param.buttonDisSet);
+                    self.buttonType = param.buttonType;
+                    self.usrArt(param.usrArt);
+                    self.audioType = param.audioType;
+                }
+            }
+        }
+        
+        class ButtonDisSet{
+            backGroundColor = ko.observable('');
+            buttonNameSet = new ButtonNameSet();
+            constructor(){
+                let self = this;
+            }
+            update(param: any){
+                let self = this;
+                self.backGroundColor(param.backGroundColor);
+                self.buttonNameSet.update(param.buttonNameSet);
+            }
+        }
+        
+        class ButtonNameSet{
+            buttonName = ko.observable('');
+            textColor = ko.observable('');
+            constructor(){
+                let self = this;
+            }
+            update(param: any){
+                let self = this;
+                self.buttonName(param.buttonName);
+                self.textColor(param.textColor);
+            }
+        }
     }
 }

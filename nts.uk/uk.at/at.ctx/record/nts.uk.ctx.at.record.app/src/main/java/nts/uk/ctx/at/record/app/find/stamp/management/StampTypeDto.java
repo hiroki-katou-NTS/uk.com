@@ -12,8 +12,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 @Data
 @AllArgsConstructor
 public class StampTypeDto {
+	
 	/** 勤務種類を半休に変更する */
-	private boolean changeHalfDay;
+	private Boolean changeHalfDay;
 
 	/** 外出区分 */
 	private Integer goOutArt;

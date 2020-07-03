@@ -46,7 +46,7 @@ public class TimeStampInputSettingsWebService extends WebService {
 	}
 	
 	@POST
-	@Path("layoutsettingssmartphone/get")
+	@Path("smartphonepagelayoutsettings/get")
 	public StampPageLayoutDto getLayoutSettingsSmartphone(paramPageNo param) {
 		return timeStampInputSettingFinder.getLayoutSettingsSmartphone(param.pageNo);
 	}
