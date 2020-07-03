@@ -35,4 +35,31 @@ public class ShortWorkingTimeSheet {
 	/** 時間: 勤怠時間 */
 	private AttendanceTime shortTime;
 	
+	
+
+	public void setShortWorkTimeFrameNo(ShortWorkTimFrameNo shortWorkTimeFrameNo) {
+		this.shortWorkTimeFrameNo = shortWorkTimeFrameNo;
+	}
+
+	public void setChildCareAttr(ChildCareAttribute childCareAttr) {
+		this.childCareAttr = childCareAttr;
+	}
+
+	public void setStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime;
+	}
+
+	public ShortWorkingTimeSheet(ShortWorkTimFrameNo shortWorkTimeFrameNo, ChildCareAttribute childCareAttr,
+			TimeWithDayAttr startTime, TimeWithDayAttr endTime) {
+		super();
+		this.shortWorkTimeFrameNo = shortWorkTimeFrameNo;
+		this.childCareAttr = childCareAttr;
+		this.startTime = startTime;
+		this.endTime = endTime;
+	}
+	
 }

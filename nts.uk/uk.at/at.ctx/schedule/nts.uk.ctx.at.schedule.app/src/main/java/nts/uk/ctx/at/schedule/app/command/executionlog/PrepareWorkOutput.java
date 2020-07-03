@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 勤務情報・勤務時間を用意する Output
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PrepareWorkOutput {
 	
 	/** 勤務情報 */
@@ -32,8 +32,32 @@ public class PrepareWorkOutput {
 	private List<TimezoneUse> scheduleTimeZone;
 	
 	/** 社員の短時間勤務 */
-	private List<ShortWorkTimeDto> workTimeDto;
+	private List<ShortWorkTimeDto> lstWorkTimeDto;
 	
 	/** スケジュール作成ログ＜Optional＞ */
 	private Optional<ScheduleErrorLog> executionLog;
+	
+	/**  */
+	private Optional<WorkType> workType;
+
+	public PrepareWorkOutput(WorkInformation information, List<TimezoneUse> scheduleTimeZone,
+			List<ShortWorkTimeDto> lstWorkTimeDto, Optional<ScheduleErrorLog> executionLog) {
+		super();
+		this.information = information;
+		this.scheduleTimeZone = scheduleTimeZone;
+		this.lstWorkTimeDto = lstWorkTimeDto;
+		this.executionLog = executionLog;
+	}
+
+	public PrepareWorkOutput(WorkInformation information, List<TimezoneUse> scheduleTimeZone,
+			List<ShortWorkTimeDto> workTimeDto, Optional<ScheduleErrorLog> executionLog, Optional<WorkType> workType) {
+		super();
+		this.information = information;
+		this.scheduleTimeZone = scheduleTimeZone;
+		this.lstWorkTimeDto = lstWorkTimeDto;
+		this.executionLog = executionLog;
+		this.workType = workType;
+	}
+	
+	
 }

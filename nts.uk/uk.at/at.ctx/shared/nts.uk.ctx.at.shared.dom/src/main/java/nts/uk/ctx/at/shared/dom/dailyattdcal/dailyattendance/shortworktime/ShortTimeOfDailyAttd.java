@@ -20,5 +20,9 @@ public class ShortTimeOfDailyAttd implements DomainObject{
 		super();
 		this.shortWorkingTimeSheets = shortWorkingTimeSheets;
 	}
+
+	public void setShortWorkingTimeSheets(List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
+		this.shortWorkingTimeSheets = shortWorkingTimeSheets;
+	}
 	
 }

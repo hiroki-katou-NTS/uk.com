@@ -503,6 +503,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 
 		return WorkStyle.ONE_DAY_WORK;
+	}
 
 	public WorkType(String companyId, WorkTypeCode workTypeCode, List<WorkTypeSet> workTypeSetList) {
 		super();
