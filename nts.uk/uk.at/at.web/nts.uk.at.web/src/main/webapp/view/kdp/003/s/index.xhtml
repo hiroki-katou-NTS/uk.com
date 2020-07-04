@@ -8,63 +8,68 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
-				var dialogSize = {
-					width : 510,
-					height : 460
-				};
+				var dialogSize = { width: 497, height: 440 };
 			</script>
+			
 			<com:scriptfile set="IGNITE" />
+			
 			<com:stylefile path="kdp003.s.style.css" />
-			<com:scriptfile path="kdp003.s.service.js" />
-			<com:scriptfile path="kdp003.s.vm.js" />
-			<com:scriptfile path="kdp003.s.start.js" />
+			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="margin-left: 10px">
-				<div id='s1' data-bind="ntsPanel:{width: '429px', height: '35px', direction: 'bottom', showIcon: false , visible: true}" style="margin-bottom: -20px;">
-					<table>
-						<tr>
-							<td><div tabindex="1" id="S21"
-									data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', 
-												   valueFormat: 'YYYYMM', cssRanger: cssRangerYM, 
-												   fiscalMonthsMode: true, defaultClass: 'round-orange', 
-												   showJumpButtons: true }"></div></td>
-							<td><div id="S22" tabindex="2" 
-									data-bind="ntsComboBox: {
-									name: 'List Kieu Check Tay',
-									options: listTypeOfEngraving ,
-									optionsValue: 'code',
-									visibleItemsCount: 4,
-									value: selectedCode_TypeOfEngraving ,
-									optionsText: 'name',
-									editable: false,
-									enable: true,
-									required: true,
-									selectFirstIfNull: true,
-									columns: [
-										{ prop: 'name', length: 10 },
-									]}"></div></td>
-						</tr>
-					</table>
+			<div id="contents-area">
+				<div class="top-panel bg-green">
+					<div tabindex="1" 
+						data-bind="ntsDatePicker: {
+							name: $i18n(''),
+							value: filter.day,
+							dateFormat: 'yearmonth',
+							valueFormat: 'YYYYMM',
+							showJumpButtons: true,
+							required: true,
+							enabled: true
+						}"></div>
+					<div tabindex="2" 
+						data-bind="ntsComboBox: {
+							name: $i18n('KDP003_34'),
+							optionsText: 'name',
+							optionsValue: 'code',
+							visibleItemsCount: 4,
+							options: [
+				                { code: '1', name: $i18n('KDP003_36') },
+				                { code: '2', name: $i18n('KDP003_37') },
+				                { code: '3', name: $i18n('KDP003_38') },
+				                { code: '4', name: $i18n('KDP003_39') },
+				            ],
+							value: filter.engraving,
+							editable: false,
+							required: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]
+						}"></div>
+					<div class="cf"></div>
 				</div>
-				<div id="table-stamp">
-					<table id="single-list" tabindex="3" 
-						data-bind="ntsGridList: {
-                                height: 350,
-								dataSource: listOfStamps ,
-								primaryKey: 'id',
-								columns: columns2,
-								enable: true,
-								multiple: false,
-								value: currentCodeOfStamp ,
-								rows: 10
-							}"></table>
-				</div>
-
+				<table id="single-list" tabindex="3" 
+					data-bind="ntsGridList: {
+						height: 350,
+						primaryKey: 'id',
+						columns: [
+			                { headerText: 'id', key: 'id', width: 0, hidden: true },
+			                { headerText: $i18n('KDP003_40'), key: 'date', width: 150 },
+			                { headerText: $i18n('KDP003_41'), key: 'time', width: 100 },
+			                { headerText: $i18n('KDP003_42'), key: 'name', width: 210 }
+			            ],
+						enable: true,
+						multiple: false,
+						dataSource: dataSources.filtereds,
+						value: ko.observable(''),
+						rows: 10
+					}"></table>
 			</div>
-			<div id='S201'>
-				<button tabindex="4" style="width: 180px;" class="x-large" data-bind="click: closeDialog">#{i18n.getText('KDP003_43')}</button>
+			<div id="functions-area-bottom">
+				<button tabindex="4" class="x-large" data-bind="click: closeDialog, i18n: 'KDP003_43'"></button>
 			</div>
 		</ui:define>
 	</ui:composition>

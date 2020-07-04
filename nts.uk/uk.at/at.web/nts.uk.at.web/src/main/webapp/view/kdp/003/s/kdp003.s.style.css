@@ -1,26 +1,11 @@
-#contents-area {
-	height: auto !important;
+.top-panel {
+	padding: 10px 15px;
 }
 
-#S22 {
-	margin-left: 77px;
+.top-panel>div:first-child {
+	float: left;
 }
 
-#S201 {
-  width: 100%;
-  height: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-#table-stamp {
-    margin-top: 10px;
-    padding-top: 10px;
-}
-
-.inline-bl{
-  display: inline-block;
-  width: 40px;
+.top-panel>div:first-child+div {
+	float: right;
 }
