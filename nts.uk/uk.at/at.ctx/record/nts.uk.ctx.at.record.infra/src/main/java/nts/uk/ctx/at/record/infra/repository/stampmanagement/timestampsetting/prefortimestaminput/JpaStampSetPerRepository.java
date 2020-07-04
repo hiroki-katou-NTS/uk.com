@@ -232,8 +232,10 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public List<StampPageLayout> getAllStampSetPage(String companyId) {
-		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE, KrcmtStampPageLayout.class)
-				.setParameter("companyId", companyId).getList(c -> c.toDomain());
+		List<StampPageLayout> data = this.queryProxy().query(SELECT_BY_CID_PAGE_METHOD, KrcmtStampPageLayout.class)
+				.setParameter("companyId", companyId)
+				.setParameter("operationMethod", 1)
+				.getList(c -> c.toDomain());
 		if (data.isEmpty())
 			return Collections.emptyList();
 
