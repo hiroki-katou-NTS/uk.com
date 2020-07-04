@@ -155,7 +155,9 @@ module nts.uk.at.view.kdp010.a {
                         self.stampSetCommunal.update(data);
                     }
                     dfd.resolve();
-                    $('#correc-input').focus();
+                    $(document).ready(function() {
+                        $('#a-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
                 }).always(function () {

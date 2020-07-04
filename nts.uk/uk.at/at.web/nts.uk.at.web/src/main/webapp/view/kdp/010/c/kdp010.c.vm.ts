@@ -27,6 +27,9 @@ module nts.uk.at.view.kdp010.c {
                         self.settingsSmartphoneStamp.update(data);
                     }
                     dfd.resolve();
+                    $(document).ready(function() {
+                        $('#c-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
                 }).always(function () {

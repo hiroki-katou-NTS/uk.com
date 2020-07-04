@@ -23,6 +23,9 @@ module nts.uk.at.view.kdp010.f {
                         self.callBack(data);
                     }
                     dfd.resolve();
+                    $(document).ready(function() {
+                        $('#name_selection').focus();
+                    });
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
                 }).always(function () {

@@ -23,14 +23,14 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed" data-bind="click: save">#{i18n.getText('KDP010_230')}</button>
+				<button tabindex="1" id="btnSave" class="proceed" data-bind="click: save">#{i18n.getText('KDP010_230')}</button>
 				<button tabindex="2" class="danger" data-bind="click: deleteSetting, enable: isDel">#{i18n.getText('KDP010_231')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
 			</div>
 			<div class="contents-area" data-bind="with: stampPageLayout">
 				<div class="row">
 					<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
-					<textarea tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />
+					<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />
 				</div>
 				<div class="row">				
 					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>
@@ -42,7 +42,7 @@
 						<table>
 							<tr>
 								<td>
-									<button tabindex="5" data-bind="
+									<button id="btn1" tabindex="5" data-bind="
 										click: setting.bind($data,1), 
 										text: btn1.usrArt() == 1 ?btn1.buttonDisSet.buttonNameSet.buttonName:'', 
 										style:{
@@ -103,8 +103,6 @@
 						</table>
 					</div>
 				</div>
-				
-				
 			</div>
 		</ui:define>
 	</ui:composition>

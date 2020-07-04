@@ -17,11 +17,14 @@ module nts.uk.at.view.kdp010.i {
                 block.grayout();
                 let param = {pageNo:1};
                 service.getData(param).done(function(data) {
-                    console.log(data);
+//                    console.log(data);
                     if (data) {
                         self.stampPageLayout().update(data);
                         self.isDel(true);
                     }
+                    $(document).ready(function() {
+                        $('#pageComment').focus();
+                    });
                     dfd.resolve();
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
@@ -36,9 +39,17 @@ module nts.uk.at.view.kdp010.i {
                 block.grayout();
                 service.save(ko.toJS(self.stampPageLayout())).done(function() {
                     self.isDel(true);
-                    info({ messageId: "Msg_15" });
+                    info({ messageId: "Msg_15" }).then(()=>{
+                        $(document).ready(function() {
+                            $('#pageComment').focus();
+                        });    
+                    });
                 }).fail(function (res) {
-                    error({ messageId: res.messageId });
+                    error({ messageId: res.messageId }).then(()=>{
+                        $(document).ready(function() {
+                            $('#pageComment').focus();
+                        });
+                    });
                 }).always(function () {
                     block.clear();
                 });
@@ -51,12 +62,18 @@ module nts.uk.at.view.kdp010.i {
                     service.del().done(function() {
                         self.stampPageLayout(new StampPageLayout());
                         self.isDel(false);
-                        info({ messageId: "Msg_16" });
+                        info({ messageId: "Msg_16" }).then(()=>{
+                            $(document).ready(function() {
+                                $('#pageComment').focus();
+                            });    
+                        });
                     }).fail(function (res) {
                         error({ messageId: res.messageId });
                     }).always(function () {
                         block.clear();
                     });
+                }).ifNo(()=>{
+                    $('#pageComment').focus();
                 });
 			}
             
@@ -143,6 +160,7 @@ module nts.uk.at.view.kdp010.i {
                             }
                         }); 
                     }
+                    $('#btnSave').focus();
                 });    
             }
         }

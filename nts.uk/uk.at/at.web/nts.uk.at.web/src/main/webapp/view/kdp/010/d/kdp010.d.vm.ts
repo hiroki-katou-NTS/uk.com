@@ -34,6 +34,9 @@ module nts.uk.at.view.kdp010.d {
                         self.portalStampSettings.update(data);
                     }
                     dfd.resolve();
+                    $(document).ready(function() {
+                        $('#d-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
                 }).always(function () {
