@@ -1,24 +1,44 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
 const adminModeTemplate = `
+<!-- ko with: data -->
 <tr>
 	<td data-bind="i18n: 'KDP003_3'"></td>
 	<td>
-		<div tabindex="1" id="company-code-select"
-			data-bind="ntsComboBox: {
-				width: '350px',
-				name: '',
-				options: listCompany,
-				visibleItemsCount: 5,
-				value: model.companyCode,
-				optionsText: 'companyName',
-				optionsValue: 'companyCode',
-				editable: false,
-				columns: [
-					{ prop: 'companyCode', length: 5 },
-					{ prop: 'companyName', length: 11 },
-				]
-			}"></div>
+		<!-- ko if: ko.unwrap($component.listCompany).length > 1 -->
+			<!-- ko if: ko.unwrap(params.companyDesignation) === true -->
+				<input tabindex="1" id="company-code"
+					data-bind="ntsTextEditor: {
+						name: '',
+						constraint: 'CompanyCode',
+						value: model.companyCode,
+						option: {
+							width: '100px',
+							textmode: 'text'
+						}
+					}" />
+			<!-- /ko -->
+			<!-- ko if: ko.unwrap(params.companyDesignation) !== true -->
+			<div tabindex="1" id="company-code-select"
+				data-bind="ntsComboBox: {
+					width: '350px',
+					name: '',
+					options: $component.listCompany,
+					visibleItemsCount: 5,
+					value: model.companyCode,
+					optionsText: 'companyName',
+					optionsValue: 'companyCode',
+					editable: false,
+					columns: [
+						{ prop: 'companyCode', length: 5 },
+						{ prop: 'companyName', length: 11 },
+					]
+				}"></div>
+			<!-- /ko -->
+		<!-- /ko -->
+		<!-- ko if: ko.unwrap($component.listCompany).length === 1 -->
+		<div data-bind="text: model.companyCode() + '&nbsp;' + model.companyName()"></div>
+		<!-- /ko -->
 	</td>
 </tr>
 <tr>
@@ -49,25 +69,30 @@ const adminModeTemplate = `
 				}
 			}" />
 	</td>
-</tr>`;
+</tr>
+<!-- /ko -->`;
+
+const KDP003F_AMIN_MODE_API = {
+	COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
+};
 
 @component({
 	name: 'kdp-003-f-admin-mode',
 	template: adminModeTemplate
 })
 class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
-	subscriber!: any;
 	listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
 
-	constructor(public model: Kdp003FModel) {
+	constructor(public data: { model: Kdp003FModel; params: Kdp003FParamData; }) {
 		super();
 	}
 
 	created() {
 		const vm = this;
-		const { model } = vm;
+		const { data } = vm;
+		const { model } = data;
 
-		vm.subscriber = vm.model.companyCode
+		model.companyCode
 			.subscribe((code: string) => {
 				const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
 
@@ -76,12 +101,12 @@ class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
 
 					if (exist) {
 						// update companyId by subscribe companyCode
-						vm.model.companyId(exist.companyId);
+						model.companyId(exist.companyId);
 					}
 				}
 			});
 
-		vm.$ajax('/ctx/sys/gateway/kdp/login/getLogginSetting')
+		vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
 			.done((data: Kdp003FCompanyItem[]) => {
 				const exist: Kdp003FCompanyItem = _.first(data);
 
@@ -92,15 +117,5 @@ class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
 					model.companyName(exist.companyName);
 				}
 			});
-	}
-
-	mounted() {
-		const vm = this;
-	}
-	
-	destroy() {
-		const vm = this;
-		
-		console.log('shit');
 	}
 }

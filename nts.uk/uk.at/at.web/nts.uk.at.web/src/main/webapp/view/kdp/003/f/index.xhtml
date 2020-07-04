@@ -8,7 +8,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
-				var dialogSize = { width: 480, height: 280 };
+				var dialogSize = { width: 480, height: 270 };
 			</script>
 			
 			<com:ValidatorScript>
@@ -19,8 +19,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="./kdp003.f.style.css" />
 			<com:scriptfile path="./components/admin-mode.js" />
-			<com:scriptfile path="./components/employee-mode.js" />
-			<com:scriptfile path="./components/finger-vein-mode.js" />
+			<com:scriptfile path="./components/emp-or-finger-vein-mode.js" />
 			<com:scriptfile path="./viewmodel.js" />
 		</ui:define>
 
@@ -28,13 +27,10 @@
 			<div id="contents-area" class="kdp-003-f">
 				<table class="layout">
 					<com:ko-if bind="ko.toJS(mode) === 'admin'">
-						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: model }"></tbody>
+						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: { model, params} }"></tbody>
 					</com:ko-if>
-					<com:ko-if bind="ko.toJS(mode) === 'employee'">
-						<tbody data-bind="component: { name: 'kdp-003-f-employee-mode', params: model }"></tbody>
-					</com:ko-if>
-					<com:ko-if bind="ko.toJS(mode) === 'fingerVein'">
-						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: model }"></tbody>
+					<com:ko-if bind="['employee', 'fingerVein'].indexOf(ko.toJS(mode)) &gt; -1">
+						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: { model, params} }"></tbody>
 					</com:ko-if>
 				</table>
 			</div>

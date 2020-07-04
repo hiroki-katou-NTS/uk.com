@@ -1,6 +1,36 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
+interface Kdp003FCodeNameData {
+	code?: string;
+	name?: string;
+}
+
+// admin mode param
+interface Kdp003FAdminModeParam {
+	mode: 'admin';
+	companyDesignation?: boolean;
+}
+
+// employee mode param
+interface Kdp003FEmployeeModeParam {
+	mode: 'employee';
+	company: Kdp003FCodeNameData;
+	employee?: Kdp003FCodeNameData;
+	passwordRequired?: boolean;
+}
+
+// finger mode param
+interface Kdp003FFingerVeinModeParam {
+	mode: 'fingerVein';
+	company: Kdp003FCodeNameData;
+	employee?: Kdp003FCodeNameData;
+}
+
 type MODE = 'admin' | 'employee' | 'fingerVein';
+
+const KDP003F_VM_API = {
+	LOGIN: 'ctx/sys/gateway/kdp/login/adminmode'
+};
 
 @bean()
 class Kdp003FViewModel extends ko.ViewModel {
@@ -10,7 +40,7 @@ class Kdp003FViewModel extends ko.ViewModel {
 
 	listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
 
-	constructor(private params: Kdp003FParamData) {
+	constructor(private params?: Kdp003FAdminModeParam | Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam) {
 		super();
 	}
 
@@ -18,12 +48,33 @@ class Kdp003FViewModel extends ko.ViewModel {
 		const vm = this;
 		const { params } = vm;
 
+		if (!params) {
+			vm.params = {} as any;
+		}
+
 		// get mode from params or set default
 		vm.mode(params.mode || 'admin');
 	}
 
 	public mounted() {
 		const vm = this;
+		const { model, params } = vm;
+
+		if (params) {
+			const { company, employee } = params as Kdp003FEmployeeModeParam;
+
+			if (company) {
+				model.companyCode(company.code);
+				model.companyName(company.name);
+			}
+
+			if (employee) {
+				model.employeeCode(employee.code);
+				model.employeeName(employee.name);
+			}
+
+
+		}
 	}
 
 	public submitLogin() {
@@ -31,28 +82,24 @@ class Kdp003FViewModel extends ko.ViewModel {
 		const model: Kdp003FModelData = ko.toJS(vm.model);
 
 		vm.$blockui('show')
-			.then(() => {
-				vm.$ajax('ctx/sys/gateway/kdp/login/adminmode', model)
-					.done((response: Kdp003FTimeStampLoginData) => {
-						if (!!response.successMsg) {
-							vm.$dialog
-								.info({ messageId: response.successMsg })
-								.then(() => {
-									vm.doSuccessLogin(response);
-								});
-						} else {
-							vm.doSuccessLogin(response);
-						}
-					}).fail((response: any) => {
-						if (!response.messageId) {
-							vm.$dialog.error(response.message);
-						} else {
-							vm.$dialog.error({ messageId: response.messageId });
-						}
-					})
-					.always(() => {
-						vm.$blockui('clear');
-					});
+			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN, model))
+			.done((response: Kdp003FTimeStampLoginData) => {
+				if (!!response.successMsg) {
+					vm.$dialog
+						.info({ messageId: response.successMsg })
+						.then(() => vm.doSuccessLogin(response));
+				} else {
+					vm.doSuccessLogin(response);
+				}
+			}).fail((response: any) => {
+				if (!response.messageId) {
+					vm.$dialog.error(response.message);
+				} else {
+					vm.$dialog.error({ messageId: response.messageId });
+				}
+			})
+			.always(() => {
+				vm.$blockui('clear');
 			});
 	}
 
@@ -75,25 +122,7 @@ class Kdp003FViewModel extends ko.ViewModel {
 
 		vm.$window.close();
 	}
-}
-
-interface Kdp003FCompanyParamData {
-	companyCode: string;
-	companyName: string;
-}
-
-interface Kdp003FEmployeeParamData {
-	readonly: boolean;
-	employeeCode: string;
-	employeeName: string;
-}
-
-interface Kdp003FParamData {
-	mode?: MODE;
-	company: Kdp003FCompanyParamData;
-	employee: Kdp003FEmployeeParamData;
-	passwordRequired?: boolean;
-}
+} 
 
 interface Kdp003FCompanyItem {
 	companyId: string;
