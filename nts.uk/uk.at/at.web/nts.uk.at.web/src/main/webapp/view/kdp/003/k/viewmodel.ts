@@ -17,8 +17,9 @@ class Kdp003kViewModel extends ko.ViewModel {
 		super();
 	}
 
-	created(params?: Kdp003FParams) {
+	created() {
 		const vm = this;
+		const { params } = vm;
 
 		if (!params || !params.multiSelect) {
 			vm.selectedId = ko.observable('');
