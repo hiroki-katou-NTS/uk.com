@@ -17,12 +17,14 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputReposi
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -52,7 +54,16 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	/**打刻の前準備(共有)を登録する*/
 	public void saveStampSetCommunal(StampSetCommunalCommand command) {
-		stampSetCommunalRepo.save(command.toDomain());
+		String companyId = AppContexts.user().companyId();
+		Optional<StampSetCommunal> domainPre = stampSetCommunalRepo.gets(companyId);
+		StampSetCommunal domain = command.toDomain();
+		if (domainPre.isPresent()) {
+			domain.setLstStampPageLayout(domainPre.get().getLstStampPageLayout());
+			stampSetCommunalRepo.save(domain);
+		}else {
+			domain.setLstStampPageLayout(new ArrayList<>());
+			stampSetCommunalRepo.save(domain);
+		}
 	}
 	
 	/**打刻の前準備(スマホ)を登録する*/
@@ -106,6 +117,30 @@ public class TimeStampInputSettingsCommandHandler {
 		if(oldDomain.isPresent()) {
 			oldDomain.get().setPageLayoutSettings(new ArrayList<StampPageLayout>());
 			settingsSmartphoneStampRepo.save(oldDomain.get());
+		}
+	}
+
+	public void saveStampPageLayout(StampPageLayoutCommand command) {
+		String companyId = AppContexts.user().companyId();
+		Optional<StampSetCommunal> domainPre = stampSetCommunalRepo.gets(companyId);
+		if (domainPre.isPresent()) {
+			domainPre.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
+			domainPre.get().getLstStampPageLayout().add(command.toDomain());
+			stampSetCommunalRepo.save(domainPre.get());
+		}else {
+			DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(
+					new CorrectionInterval(10), 
+					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
+					new ResultDisplayTime(3));
+			StampSetCommunal domain = new StampSetCommunal(
+					companyId, 
+					displaySettingsStampScreen, 
+					Arrays.asList(command.toDomain()), 
+					false,
+					true, 
+					false, 
+					Optional.of(new NumberAuthenfailures(1)));
+			stampSetCommunalRepo.save(domain);
 		}
 	}
 }

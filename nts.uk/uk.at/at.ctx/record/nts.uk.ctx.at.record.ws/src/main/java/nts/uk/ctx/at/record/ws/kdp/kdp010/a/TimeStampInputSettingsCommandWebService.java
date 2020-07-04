@@ -34,6 +34,12 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 		commandHandler.saveStampSetCommunal(command);
 	}
 	
+	@POST
+	@Path("stampsetcommunal/stamppagelayout/save")
+	public void saveStampPageLayout(StampPageLayoutCommand command) {
+		commandHandler.saveStampPageLayout(command);
+	}
+	
 	/**打刻の前準備(スマホ)を登録する */
 	@POST
 	@Path("settingssmartphonestamp/save")

@@ -86,11 +86,11 @@
 				<tr>
 					<td>
 						<div class="row-label">
-							<button tabindex="9" data-bind="" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
-							<com:ko-if bind = "lstStampPageLayout() == true">
+							<button tabindex="9" data-bind="click:openGDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+							<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length > 0">
 								<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
-							<com:ko-if bind = "lstStampPageLayout() == false">
+							<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length == 0">
 								<label style="color: #ff0000; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
 						</div>
