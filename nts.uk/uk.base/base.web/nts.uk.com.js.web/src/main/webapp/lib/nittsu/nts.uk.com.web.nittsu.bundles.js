@@ -11,6 +11,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __spreadArrays = (this && this.__spreadArrays) || function () {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
@@ -47400,7 +47406,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
                     .join('');
                 return JSON.parse($string).$value;
             }
-            return null;
+            return windows.getShared(name);
         });
     }
 }, $storage = function ($data) {
@@ -47462,6 +47468,13 @@ function component(options) {
                                 _.extend($viewModel, { $el: $el.element });
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
+                                }
+                            });
+                            Object.defineProperty($viewModel, 'dispose', {
+                                value: function dispose() {
+                                    if (typeof $viewModel.destroyed === 'function') {
+                                        $viewModel.destroyed.apply($viewModel, []);
+                                    }
                                 }
                             });
                             return $viewModel;
@@ -47596,7 +47609,34 @@ Object.defineProperties($jump, {
         }
     }
 });
+var $size = function (height, width) {
+    var wd = nts.uk.ui.windows.getSelf();
+    if (wd) {
+        wd.setSize(height, width);
+    }
+};
+Object.defineProperties($size, {
+    width: {
+        value: function (width) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setWidth(width);
+            }
+        }
+    },
+    height: {
+        value: function (height) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setHeight(height);
+            }
+        }
+    }
+});
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+    size: {
+        value: $size
+    },
     close: {
         value: function $close(result) {
             if (window.top !== window) {
@@ -47607,10 +47647,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modal: {
-        value: function $modal(path, params) {
+        value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modal(path).onClosed(function () {
+                windows.sub.modal(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
@@ -47620,10 +47660,10 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modeless: {
-        value: function $modeless(path, params) {
+        value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
             $storage(params).then(function () {
-                windows.sub.modeless(path).onClosed(function () {
+                windows.sub.modeless(webapp, path).onClosed(function () {
                     $storage().then(function ($data) {
                         jdf.resolve($data);
                     });
@@ -47638,9 +47678,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
                 return $storeSession(name);
             }
             else {
-                $storeSession(name, params);
-                // for old page
-                windows.setShared(name, params);
+                return $.Deferred().resolve()
+                    .then(function () {
+                    $storeSession(name, params);
+                    // for old page
+                    windows.setShared(name, params);
+                });
             }
         }
     }
@@ -47758,4 +47801,20 @@ BaseViewModel.prototype.$validate = function $validate(act) {
     }
 };
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+var I18nBindingHandler = /** @class */ (function () {
+    function I18nBindingHandler() {
+    }
+    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var msg = ko.unwrap(valueAccessor());
+        var params = ko.unwrap(allBindingsAccessor.get('params'));
+        $(element).text(nts.uk.resource.getText(msg, params));
+    };
+    I18nBindingHandler = __decorate([
+        handler({
+            bindingName: 'i18n',
+            validatable: true
+        })
+    ], I18nBindingHandler);
+    return I18nBindingHandler;
+}());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

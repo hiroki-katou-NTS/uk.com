@@ -1,8 +1,15 @@
-#contents-area {
-	height: auto !important;
+.kdp-003-f table {
+	width: 100%;
 }
 
-.rowbutton {
-	height: 60px;
+.kdp-003-f table.layout tr:not(:last-child)>td {
+	padding-bottom: 15px;
 }
 
+.kdp-003-f table.layout tr>td:first-child {
+	width: 100px;
+}
+
+.kdp-003-f table.layout tr>td>div {
+	line-height: 32px;
+}
