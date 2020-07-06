@@ -609,7 +609,8 @@ public class AppOvertimeFinder {
 		
 		// 01-05_申請定型理由を取得
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
-			overTimeDto.setTypicalReasonDisplayFlg(true);
+			// error EA refactor 4
+			/*overTimeDto.setTypicalReasonDisplayFlg(true);
 			List<ApplicationReason> applicationReasons = otherCommonAlgorithm.getApplicationReasonType(
 					companyID,
 					appTypeDiscreteSetting.getTypicalReasonDisplayFlg(),
@@ -620,7 +621,7 @@ public class AppOvertimeFinder {
 						applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 				applicationReasonDtos.add(applicationReasonDto);
 			}
-			overTimeDto.setApplicationReasonDtos(applicationReasonDtos);
+			overTimeDto.setApplicationReasonDtos(applicationReasonDtos);*/
 		}else{
 			overTimeDto.setTypicalReasonDisplayFlg(false);
 		}
@@ -1048,7 +1049,8 @@ public class AppOvertimeFinder {
 		// 01-05_申請定型理由を取得
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
 			result.setTypicalReasonDisplayFlg(true);
-			List<ApplicationReason> applicationReasons = otherCommonAlgorithm.getApplicationReasonType(
+			// error EA refactor 4
+			/*List<ApplicationReason> applicationReasons = otherCommonAlgorithm.getApplicationReasonType(
 					companyID,
 					appTypeDiscreteSetting.getTypicalReasonDisplayFlg(),
 					ApplicationType_Old.OVER_TIME_APPLICATION);
@@ -1058,7 +1060,7 @@ public class AppOvertimeFinder {
 						applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 				applicationReasonDtos.add(applicationReasonDto);
 			}
-			result.setApplicationReasonDtos(applicationReasonDtos);
+			result.setApplicationReasonDtos(applicationReasonDtos);*/
 		}
 		
 		//01-06_申請理由を取得

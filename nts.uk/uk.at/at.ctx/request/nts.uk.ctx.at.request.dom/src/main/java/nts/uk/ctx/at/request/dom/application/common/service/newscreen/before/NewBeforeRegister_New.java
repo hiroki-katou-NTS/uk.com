@@ -3,13 +3,15 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 
 /**
  * 
@@ -55,7 +57,7 @@ public interface NewBeforeRegister_New {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType_Old appType, PrePostAtr_Old postAtr, GeneralDate startDate, GeneralDate endDate, OverTimeAtr overTimeAtr);
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate, OvertimeAppAtr overtimeAppAtr);
 	
 	/**
 	 * 3.確定チェック
@@ -85,5 +87,5 @@ public interface NewBeforeRegister_New {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
-			Application_New application, OverTimeAtr overTimeAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd);
+			Application application, OvertimeAppAtr overtimeAppAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd);
 }

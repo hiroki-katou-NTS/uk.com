@@ -210,7 +210,8 @@ public class SaveHolidayShipmentCommandHandler
 		if (isSaveRec(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -218,12 +219,13 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		if (isSaveAbs(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -231,7 +233,7 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		
 		return result;

@@ -549,7 +549,8 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	@Override
 	public AppHdWorkDispInfoOutput getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
-		AppHdWorkDispInfoOutput result = new AppHdWorkDispInfoOutput();
+		// error EA refactor 4
+		/*AppHdWorkDispInfoOutput result = new AppHdWorkDispInfoOutput();
 		// 起動時の申請表示情報を取得する
 		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart( 
 				companyID, 
@@ -595,7 +596,8 @@ public class HolidayServiceImpl implements HolidayService {
 		result.setBreaktimeFrames(breaktimeFrames);
 		result.setComboDivergenceReason(CollectionUtil.isEmpty(divergenceReasonLst) ? Optional.empty() : Optional.of(divergenceReasonLst));
 		result.setOvertimeRestAppCommonSetting(overtimeRestAppCommonSet.get());
-		return result;
+		return result;*/
+		return null;
 	}
 	@Override
 	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate,
@@ -749,7 +751,8 @@ public class HolidayServiceImpl implements HolidayService {
 		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 申請全般登録時チェック処理
-		List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
+		// error EA refactor 4
+		/*List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
 				companyID, 
 				EmploymentRootAtr.APPLICATION, 
 				agentAtr, 
@@ -757,7 +760,7 @@ public class HolidayServiceImpl implements HolidayService {
 				null, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
 				Collections.emptyList());
-		outputLst.addAll(confirmMsgLst1);
+		outputLst.addAll(confirmMsgLst1);*/
 		// 3.個別エラーチェック
 		HdWorkCheckRegisterOutput output = this.individualErrorCheck(
 				companyID, 

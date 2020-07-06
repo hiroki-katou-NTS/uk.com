@@ -129,12 +129,14 @@ public class AppAbsenceFinder {
 	 */
 	public AppAbsenceStartInfoDto getAppForLeave(String appDate, String employeeID,List<String> employeeIDs) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = new ArrayList<>();
 		if(appDate != null) {
 			dateLst.add(GeneralDate.fromString(appDate, DATE_FORMAT));
 		}
 		// 申請共通の起動処理
+		// error EA refactor 4
 		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
 				ApplicationType_Old.ABSENCE_APPLICATION, 
@@ -159,7 +161,7 @@ public class AppAbsenceFinder {
 				holidayAppTypes,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
 		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
-		result.holidayAppTypeName = holidayAppTypes;
+		result.holidayAppTypeName = holidayAppTypes;*/
 		
 		return result;
 	}
