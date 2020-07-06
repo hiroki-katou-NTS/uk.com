@@ -18,6 +18,9 @@ class Kdp003SViewModel extends ko.ViewModel {
 	created() {
 		const vm = this;
 		const { randomId } = nts.uk.util;
+		const { GOING_TO_WORK, WORKING_OUT } = Kdp003SChangeClockArt;
+		const { GO_OUT, RETURN } = Kdp003SChangeClockArt;
+		const { FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK } = Kdp003SChangeClockArt;
 
 		vm.dataSources.filtereds = ko.computed({
 			read: () => {
@@ -29,27 +32,31 @@ class Kdp003SViewModel extends ko.ViewModel {
 					const d = moment(item.stampDate, 'YYYY/MM/DD');
 					const day = d.clone().locale('en').format('dddd');
 
+					const pushable = {
+						id: randomId(),
+						time: `${item.stampHow} ${item.stampTime}`,
+						date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
+						name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.changeClockArtName}</div>`
+					};
+
 					switch (engraving) {
 						default:
 						case '1':
-							filtereds.push({
-								id: randomId(),
-								time: `${item.stampHow} ${item.stampTime}`,
-								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-								name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArtName}</div>`
-							});
+							filtereds.push(pushable);
 							break;
 						case '2':
+							if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+								filtereds.push(pushable);
+							}
+							break;
 						case '3':
+							if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
+								filtereds.push(pushable);
+							}
 						case '4':
 							// S1 bussiness logic
-							if (engraving === '2') {
-								filtereds.push({
-									id: randomId(),
-									time: `${item.stampHow} ${item.stampTime}`,
-									date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-									name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArtName}</div>`
-								});
+							if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
+								filtereds.push(pushable);
 							}
 							break;
 					}
@@ -86,6 +93,49 @@ class Kdp003SViewModel extends ko.ViewModel {
 }
 
 type KDP003S_ENGRAVING = '1' | '2' | '3' | '4';
+
+enum Kdp003SChangeClockArt {
+	GOING_TO_WORK = 0, // 出勤
+
+	/** 退勤 */
+	WORKING_OUT = 1,
+
+	/** 入門 */
+	OVER_TIME = 2,
+
+	/** 退門 */
+	BRARK = 3,
+
+	/** 外出 */
+	GO_OUT = 4,
+
+	/** 戻り */
+	RETURN = 5,
+
+	/** 応援開始 */
+	FIX = 6,
+
+	/** 臨時出勤 */
+	TEMPORARY_WORK = 7,
+
+	/** 応援終了 */
+	END_OF_SUPPORT = 8,
+
+	/** 臨時退勤 */
+	TEMPORARY_LEAVING = 9,
+
+	/** PCログオン */
+	PC_LOG_ON = 10,
+
+	/** PCログオフ */
+	PC_LOG_OFF = 11,
+
+	/** 応援出勤 */
+	SUPPORT = 12,
+
+	/** 臨時+応援出勤 */
+	TEMPORARY_SUPPORT_WORK = 13
+}
 
 interface Kdp003SFilter {
 	day: KnockoutObservable<number>;
