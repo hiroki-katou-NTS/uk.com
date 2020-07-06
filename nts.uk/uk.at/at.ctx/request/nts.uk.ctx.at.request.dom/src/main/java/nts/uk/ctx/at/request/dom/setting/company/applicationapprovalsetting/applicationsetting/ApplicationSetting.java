@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;
@@ -40,7 +42,7 @@ public class ApplicationSetting implements DomainAggregate {
 	/**
 	 * 締切設定
 	 */
-	private AppDeadlineSetting appDeadlineSetting;
+	private List<AppDeadlineSetting> appDeadlineSetLst;
 	
 	/**
 	 * 申請表示設定
@@ -59,13 +61,13 @@ public class ApplicationSetting implements DomainAggregate {
 	
 	public ApplicationSetting(String companyID, AppLimitSetting appLimitSetting,
 			AppTypeSetting appTypeSetting, AppSetForProxyApp appSetForProxyApp,
-			AppDeadlineSetting appDeadlineSetting, AppDisplaySetting appDisplaySetting,
+			List<AppDeadlineSetting> appDeadlineSetLst, AppDisplaySetting appDisplaySetting,
 			ReceptionRestrictionSetting receptionRestrictionSetting, RecordDate recordDate) {
 		this.companyID = companyID;
 		this.appLimitSetting = appLimitSetting;
 		this.appTypeSetting = appTypeSetting;
 		this.appSetForProxyApp = appSetForProxyApp;
-		this.appDeadlineSetting = appDeadlineSetting;
+		this.appDeadlineSetLst = appDeadlineSetLst;
 		this.appDisplaySetting = appDisplaySetting;
 		this.receptionRestrictionSetting = receptionRestrictionSetting;
 		this.recordDate = recordDate;

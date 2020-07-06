@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -54,6 +55,17 @@ public class OTAppBeforeAccepRestric {
 		this.opEarlyOvertime = opEarlyOvertime;
 		this.opNormalOvertime = opNormalOvertime;
 		this.opEarlyNormalOvertime = opEarlyNormalOvertime;
+	}
+	
+	public static OTAppBeforeAccepRestric createNew(int methodCheck, int dateBeforehandRestrictions, boolean toUse, 
+			Integer opEarlyOvertime, Integer opNormalOvertime, Integer opEarlyNormalOvertime) {
+		return new OTAppBeforeAccepRestric(
+				EnumAdaptor.valueOf(methodCheck, BeforeAddCheckMethod.class), 
+				EnumAdaptor.valueOf(dateBeforehandRestrictions, AppAcceptLimitDay.class), 
+				toUse, 
+				opEarlyOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opEarlyOvertime)), 
+				opNormalOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opNormalOvertime)), 
+				opEarlyNormalOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opEarlyNormalOvertime)));
 	}
 	
 }

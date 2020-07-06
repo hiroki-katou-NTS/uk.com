@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 /**
  * refactor 4
@@ -24,6 +25,12 @@ public class BeforehandRestriction {
 	public BeforehandRestriction(AppAcceptLimitDay dateBeforehandRestrictions, boolean toUse) {
 		this.dateBeforehandRestrictions = dateBeforehandRestrictions;
 		this.toUse = toUse;
+	}
+	
+	public static BeforehandRestriction createNew(int dateBeforehandRestrictions, boolean toUse) {
+		return new BeforehandRestriction(
+				EnumAdaptor.valueOf(dateBeforehandRestrictions, AppAcceptLimitDay.class), 
+				toUse);
 	}
 	
 }

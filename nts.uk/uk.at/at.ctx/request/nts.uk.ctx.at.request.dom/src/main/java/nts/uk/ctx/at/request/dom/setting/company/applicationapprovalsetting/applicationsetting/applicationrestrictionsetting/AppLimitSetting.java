@@ -41,4 +41,15 @@ public class AppLimitSetting {
 	 */
 	private boolean canAppAchievementConfirm;
 	
+	public AppLimitSetting(boolean canAppAchievementMonthConfirm, boolean canAppAchievementLock,
+			boolean canAppFinishWork, boolean requiredAppReason,
+			boolean standardReasonRequired, boolean canAppAchievementConfirm) {
+		this.canAppAchievementMonthConfirm = canAppAchievementMonthConfirm;
+		this.canAppAchievementLock = canAppAchievementLock;
+		this.canAppFinishWork = canAppFinishWork;
+		this.requiredAppReason = requiredAppReason;
+		this.standardReasonRequired = standardReasonRequired;
+		this.canAppAchievementConfirm = canAppAchievementConfirm;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdispset;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -26,6 +27,12 @@ public class AppDisplaySetting {
 	public AppDisplaySetting(DisplayAtr prePostDisplayAtr, NotUseAtr manualSendMailAtr) {
 		this.prePostDisplayAtr = prePostDisplayAtr;
 		this.manualSendMailAtr = manualSendMailAtr;
+	}
+	
+	public static AppDisplaySetting createNew(int prePostDisplayAtr, int manualSendMailAtr) {
+		return new AppDisplaySetting(
+				EnumAdaptor.valueOf(prePostDisplayAtr, DisplayAtr.class), 
+				EnumAdaptor.valueOf(manualSendMailAtr, NotUseAtr.class));
 	}
 	
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 
 /**
@@ -38,6 +39,15 @@ public class AppDeadlineSetting {
 		this.closureId = closureId;
 		this.deadline = deadline;
 		this.deadlineCriteria = deadlineCriteria;
+	}
+	
+	public static AppDeadlineSetting createNew(int useAtr, int closureId,
+			int deadline, int deadlineCriteria) {
+		return new AppDeadlineSetting(
+				EnumAdaptor.valueOf(useAtr, UseDivision.class), 
+				closureId, 
+				new Deadline(deadline), 
+				EnumAdaptor.valueOf(deadlineCriteria, DeadlineCriteria.class));
 	}
 	
 }

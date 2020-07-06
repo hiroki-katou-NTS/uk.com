@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
@@ -45,6 +46,17 @@ public class AppTypeSetting {
 		this.sendMailWhenApproval = sendMailWhenApproval;
 		this.displayInitialSegment = displayInitialSegment;
 		this.canClassificationChange = canClassificationChange;
+	}
+	
+	public static AppTypeSetting createNew(int appType, boolean sendMailWhenRegister,
+			boolean sendMailWhenApproval, int displayInitialSegment,
+			boolean canClassificationChange) {
+		return new AppTypeSetting(
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				sendMailWhenRegister, 
+				sendMailWhenApproval, 
+				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class), 
+				canClassificationChange);
 	}
 	
 }
