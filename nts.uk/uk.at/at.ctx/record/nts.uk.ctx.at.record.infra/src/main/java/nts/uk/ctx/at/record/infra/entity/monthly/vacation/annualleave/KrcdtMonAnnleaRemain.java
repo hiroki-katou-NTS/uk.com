@@ -37,7 +37,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
@@ -1098,6 +1097,24 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		}
 
 		// 年休月別残数明細：残数
+//		List<GeneralDate> normalGrantDateList = new ArrayList<>();
+//		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRemain = new HashMap<>();
+//		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRealRemain = new HashMap<>();
+//		for (val detail : normal.getRemainingNumber().getDetails()) {
+//			val grantDate = detail.getGrantDate();
+//			if (!normalGrantDateList.contains(grantDate))
+//				normalGrantDateList.add(grantDate);
+//			normalRemain.putIfAbsent(grantDate, detail);
+//		}
+//		for (val detail : real.getRemainingNumber().getDetails()) {
+//			val grantDate = detail.getGrantDate();
+//			if (!normalGrantDateList.contains(grantDate))
+//				normalGrantDateList.add(grantDate);
+//			normalRealRemain.putIfAbsent(grantDate, detail);
+//		}
+//		normalGrantDateList.removeIf(c -> {
+//			return (!normalRemain.containsKey(c) || !normalRealRemain.containsKey(c));
+//		});
 		List<GeneralDate> normalGrantDateList = new ArrayList<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRemain = new HashMap<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRealRemain = new HashMap<>();
@@ -1116,7 +1133,7 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		normalGrantDateList.removeIf(c -> {
 			return (!normalRemain.containsKey(c) || !normalRealRemain.containsKey(c));
 		});
-
+		
 		// 年休月別残数明細：残数付与前
 		List<GeneralDate> beforeGrantDateList = new ArrayList<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> beforeRemain = new HashMap<>();

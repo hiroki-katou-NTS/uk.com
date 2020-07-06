@@ -41,10 +41,8 @@ public class AnnualLeave implements Cloneable {
 	
 	/**
 	 * ファクトリー
-	 * @param usedNumber 使用数
-	 * @param remainingNumber 残数
-	 * @param remainingNumberBeforeGrant 残数付与前
-	 * @param remainingNumberAfterGrant 残数付与後
+	 * @param usedNumberInfo 使用数
+	 * @param remainingNumberInfo 残数
 	 * @return 実年休
 	 */
 	public static AnnualLeave of(

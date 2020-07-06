@@ -103,6 +103,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	 * @param realMaxRemainingTime 実上限残時間
 	 * @param attendanceRateDays 年休出勤率日数
 	 * @param grantAtr 付与区分
+	 * @param undigestedNumber 未消化数
 	 * @return 年休月別残数データ
 	 */
 	public static AnnLeaRemNumEachMonth of(
