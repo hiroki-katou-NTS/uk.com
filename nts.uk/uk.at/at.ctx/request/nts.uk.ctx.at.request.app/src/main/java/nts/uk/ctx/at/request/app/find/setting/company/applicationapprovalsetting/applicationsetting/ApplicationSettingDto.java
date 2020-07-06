@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -42,7 +45,7 @@ public class ApplicationSettingDto {
 	/**
 	 * 締切設定
 	 */
-	private AppDeadlineSettingDto appDeadlineSetting;
+	private List<AppDeadlineSettingDto> appDeadlineSetLst;
 	
 	/**
 	 * 申請表示設定
@@ -65,7 +68,7 @@ public class ApplicationSettingDto {
 				applicationSetting.getAppLimitSetting(), 
 				AppTypeSettingDto.fromDomain(applicationSetting.getAppTypeSetting()), 
 				AppSetForProxyAppDto.fromDomain(applicationSetting.getAppSetForProxyApp()), 
-				AppDeadlineSettingDto.fromDomain(applicationSetting.getAppDeadlineSetting()), 
+				applicationSetting.getAppDeadlineSetLst().stream().map(x -> AppDeadlineSettingDto.fromDomain(x)).collect(Collectors.toList()), 
 				AppDisplaySettingDto.fromDomain(applicationSetting.getAppDisplaySetting()), 
 				ReceptionRestrictionSetDto.fromDomain(applicationSetting.getReceptionRestrictionSetting()), 
 				applicationSetting.getRecordDate().value);
@@ -77,7 +80,7 @@ public class ApplicationSettingDto {
 				appLimitSetting, 
 				appTypeSetting.toDomain(), 
 				appSetForProxyApp.toDomain(), 
-				appDeadlineSetting.toDomain(), 
+				appDeadlineSetLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				appDisplaySetting.toDomain(), 
 				receptionRestrictionSetting.toDomain(), 
 				EnumAdaptor.valueOf(recordDate, RecordDate.class));
