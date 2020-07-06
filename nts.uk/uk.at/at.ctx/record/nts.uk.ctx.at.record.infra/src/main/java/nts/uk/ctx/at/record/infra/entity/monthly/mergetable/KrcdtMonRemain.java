@@ -47,7 +47,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
@@ -2107,22 +2106,34 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 		// 積立年休：残数
 		this.rsvleaRemainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
-		this.rsvleaRemainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (normal.getRemainingNumberAfterGrant().isPresent()) {
-			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
-			this.rsvleaRemainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
+//		this.rsvleaRemainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+//		if (normal.getRemainingNumberAfterGrant().isPresent()) {
+//			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+//			this.rsvleaRemainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
+//		}
+		this.rsvleaRemainingDaysBefore = normal.getRemainingNumber().getBeforeGrant().v();
+		if (normal.getRemainingNumber().getAfterGrant().isPresent()) {
+			val normalRemainAfter = normal.getRemainingNumber().getAfterGrant().get();
+			this.rsvleaRemainingDaysAfter = normalRemainAfter.v();
 		}
 
 		// 実積立年休：残数
 		this.rsvleaFactRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
-		this.rsvleaFactRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (real.getRemainingNumberAfterGrant().isPresent()) {
-			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
-			this.rsvleaFactRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
+//		this.rsvleaFactRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+//		if (real.getRemainingNumberAfterGrant().isPresent()) {
+//			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
+//			this.rsvleaFactRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
+//		}
+		this.rsvleaRemainingDaysBefore = real.getRemainingNumber().getBeforeGrant().v();
+		if (real.getRemainingNumber().getAfterGrant().isPresent()) {
+			val realRemainAfter = real.getRemainingNumber().getAfterGrant().get();
+			this.rsvleaRemainingDaysAfter = realRemainAfter.v();
 		}
 
 		// 積立年休：未消化数
-		val normalUndigest = normal.getUndigestedNumber();
+//		val normalUndigest = normal.getUndigestedNumber();
+//		this.rsvleaNotUsedDays = normalUndigest.getUndigestedDays().v();
+		val normalUndigest = domain.getUndigestedNumber();
 		this.rsvleaNotUsedDays = normalUndigest.getUndigestedDays().v();
 
 		// 付与区分
@@ -3243,7 +3254,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				valRemainingTimeAfter = new AnnualLeaveRemainingTime(this.annleaRemainingMinutesAfter);
 			}
 					
-			//ooooo
+			// 未消化時間
 			UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
 			if (this.annleaUnusedMinutes != null){
 				valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.annleaUnusedMinutes));
@@ -3286,8 +3297,6 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						Optional.of(AnnualLeaveRemainingNumber.of(valRemainingDaysAfter, Optional.of(valRemainingTimeAfter), new ArrayList<>())))
 				);
 		}
-		
-		
 		
 		// 実年休
 		AnnualLeave realAnnualLeave;
@@ -3557,6 +3566,24 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 		
 		return AnnLeaRemNumEachMonth.of(
+				 /*
+				 * @param employeeId 社員ID
+				 * @param yearMonth 年月
+				 * @param closureId 締めID
+				 * @param closureDate 締め日
+				 * @param closurePeriod 締め期間
+				 * @param closureStatus 締め処理状態
+				 * @param annualLeave 年休
+				 * @param realAnnualLeave 実年休
+				 * @param halfDayAnnualLeave 半日年休
+				 * @param realHalfDayAnnualLeave 実半日年休
+				 * @param annualLeaveGrant 年休付与情報
+				 * @param maxRemainingTime 上限残時間
+				 * @param realMaxRemainingTime 実上限残時間
+				 * @param attendanceRateDays 年休出勤率日数
+				 * @param grantAtr 付与区分
+				 * @param undigestedNumber 未消化数
+				 * */
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
@@ -3574,13 +3601,19 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						new MonthlyDays((double)this.annleaLaborDays),
 						new MonthlyDays((double)this.annleaPredeterminedDays),
 						new MonthlyDays((double)this.annleaDeductionDays)),
-				(this.annleaGrantAtr != 0));
+				(this.annleaGrantAtr != 0),
+				AnnualLeaveUndigestedNumber.of(
+						UndigestedAnnualLeaveDays.of(
+							new AnnualLeaveUsedDayNumber(this.getAnnleaUnusedDays())), 
+						Optional.of(UndigestedTimeAnnualLeaveTime.of(
+							new UsedMinutes(this.getAnnleaUnusedMinutes())
+							))));
 	}
 	
 	/**
 	 * KRCDT_MON_RSVLEA_REMAIN
 	 * ドメインに変換
-	 * @return 年休月別残数データ
+	 * @return 積立年休月別残数データ
 	 */
 	public RsvLeaRemNumEachMonth toDomainRsvLeaRemNumEachMonth(){
 		
@@ -3593,11 +3626,9 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		List<ReserveLeaveRemainingDetail> realDetailAfter = new ArrayList<>();
 		
 		// 積立年休：残数付与後
-		ReserveLeaveRemainingNumber valRemainAfter = null;
+		ReserveLeaveRemainingDayNumber valRemainAfter = null;
 		if (this.rsvleaRemainingDaysAfter != null){
-			valRemainAfter = ReserveLeaveRemainingNumber.of(
-					new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysAfter),
-					normalDetailAfter);
+			valRemainAfter = new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysAfter);
 		}
 		
 		// 積立年休
@@ -3605,6 +3636,20 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (this.rsvleaUsedDaysAfter != null){
 			valUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.rsvleaUsedDaysAfter);
 		}
+//		ReserveLeave reserveLeave = ReserveLeave.of(
+//				ReserveLeaveUsedNumber.of(
+//						new ReserveLeaveUsedDayNumber(this.rsvleaUsedDays),
+//						new ReserveLeaveUsedDayNumber(this.rsvleaUsedDaysBefore),
+//						Optional.ofNullable(valUsedDaysAfter)),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDays),
+//						normalDetail),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysBefore),
+//						normalDetailBefore),
+//				Optional.ofNullable(valRemainAfter),
+//				ReserveLeaveUndigestedNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.rsvleaNotUsedDays)));
 		ReserveLeave reserveLeave = ReserveLeave.of(
 				ReserveLeaveUsedNumber.of(
 						new ReserveLeaveUsedDayNumber(this.rsvleaUsedDays),
@@ -3612,20 +3657,20 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						Optional.ofNullable(valUsedDaysAfter)),
 				ReserveLeaveRemainingNumber.of(
 						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDays),
-						normalDetail),
-				ReserveLeaveRemainingNumber.of(
 						new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysBefore),
-						normalDetailBefore),
-				Optional.ofNullable(valRemainAfter),
-				ReserveLeaveUndigestedNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.rsvleaNotUsedDays)));
-
+						Optional.of(new ReserveLeaveRemainingDayNumber(this.rsvleaRemainingDaysAfter)),
+						normalDetail));
+		
 		// 実積立年休：残数付与後
-		ReserveLeaveRemainingNumber valFactRemainAfter = null;
+		ReserveLeaveRemainingDayNumber valFactRemainAfter = null;
+//		if (this.rsvleaFactRemainingDaysAfter != null){
+//			valFactRemainAfter = ReserveLeaveRemainingNumber.of(
+//					new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysAfter),
+//					realDetailAfter);
+//		}
 		if (this.rsvleaFactRemainingDaysAfter != null){
-			valFactRemainAfter = ReserveLeaveRemainingNumber.of(
-					new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysAfter),
-					realDetailAfter);
+			valFactRemainAfter = 
+					new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysAfter);
 		}
 		
 		// 実積立年休
@@ -3633,18 +3678,28 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (this.rsvleaFactUsedDaysAfter != null){
 			valFactUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysAfter);
 		}
-		RealReserveLeave realReserveLeave = RealReserveLeave.of(
+//		ReserveLeave realReserveLeave = ReserveLeave.of(
+//				ReserveLeaveUsedNumber.of(
+//						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDays),
+//						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysBefore),
+//						Optional.ofNullable(valFactUsedDaysAfter)),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDays),
+//						realDetail),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
+//						realDetailBefore),
+//				Optional.ofNullable(valFactRemainAfter));
+		ReserveLeave realReserveLeave = ReserveLeave.of(
 				ReserveLeaveUsedNumber.of(
 						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDays),
 						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysBefore),
 						Optional.ofNullable(valFactUsedDaysAfter)),
 				ReserveLeaveRemainingNumber.of(
 						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDays),
-						realDetail),
-				ReserveLeaveRemainingNumber.of(
 						new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
-						realDetailBefore),
-				Optional.ofNullable(valFactRemainAfter));
+						Optional.ofNullable(valFactRemainAfter),
+						realDetail));
 		
 		// 積立年休付与情報
 		ReserveLeaveGrant reserveLeaveGrant = null;

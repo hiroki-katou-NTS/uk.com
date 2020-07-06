@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndige
  * @author shuichu_ishida
  */
 @Getter
-public class ReserveLeaveRemainingNumber implements Cloneable {
+public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 積立年休（マイナスなし） */
 	private ReserveLeave reserveLeaveNoMinus;
@@ -25,7 +25,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/**
 	 * コンストラクタ
 	 */
-	public ReserveLeaveRemainingNumber(){
+	public ReserveLeaveRemainingNumberInfo(){
 		
 		this.reserveLeaveNoMinus = new ReserveLeave();
 		this.reserveLeaveWithMinus = new ReserveLeave();
@@ -37,19 +37,19 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	 * @param reserveLeaveWithMinus 積立年休（マイナスあり）
 	 * @return 積立年休情報残数
 	 */
-	public static ReserveLeaveRemainingNumber of(
+	public static ReserveLeaveRemainingNumberInfo of(
 			ReserveLeave reserveLeaveNoMinus,
 			ReserveLeave reserveLeaveWithMinus){
 		
-		ReserveLeaveRemainingNumber domain = new ReserveLeaveRemainingNumber();
+		ReserveLeaveRemainingNumberInfo domain = new ReserveLeaveRemainingNumberInfo();
 		domain.reserveLeaveNoMinus = reserveLeaveNoMinus;
 		domain.reserveLeaveWithMinus = reserveLeaveWithMinus;
 		return domain;
 	}
 	
 	@Override
-	public ReserveLeaveRemainingNumber clone() {
-		ReserveLeaveRemainingNumber cloned = new ReserveLeaveRemainingNumber();
+	public ReserveLeaveRemainingNumberInfo clone() {
+		ReserveLeaveRemainingNumberInfo cloned = new ReserveLeaveRemainingNumberInfo();
 		try {
 			cloned.reserveLeaveNoMinus = this.reserveLeaveNoMinus.clone();
 			cloned.reserveLeaveWithMinus = this.reserveLeaveWithMinus.clone();
