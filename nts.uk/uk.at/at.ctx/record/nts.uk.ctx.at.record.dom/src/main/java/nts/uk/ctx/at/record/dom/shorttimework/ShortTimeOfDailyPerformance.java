@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,8 +47,11 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 
 		List<ShortWorkingTimeSheet> sWTimeSheets = this.getShortWorkingTimeSheets();
 		for (SChildCareFrame childF : sChildCFs) {
-			if (!editStates.stream().filter(x -> x.getAttendanceItemId() == childF.timeSlot).findAny().isPresent()) {
-				// 時間帯を作成
+			// 編集状態を確認
+			Pair<Integer, Integer> pairItem = itemIdFromNo(childF.timeSlot);
+			if (!editStates.stream().filter(x -> x.getAttendanceItemId() == pairItem.getLeft()
+					|| x.getAttendanceItemId() == pairItem.getRight()).findAny().isPresent()) {
+				// 短時間勤務時間帯を取り
 				Optional<ShortWorkingTimeSheet> sWTimeSheetOpt = sWTimeSheets.stream()
 						.filter(s -> s.getShortWorkTimeFrameNo().v() == childF.timeSlot).findFirst();
 
@@ -77,7 +82,16 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 				.collect(Collectors.toList());
 
 		// 時間帯を削除
-		this.getShortWorkingTimeSheets().removeIf(x -> !attendances.contains(x.getShortWorkTimeFrameNo().v()));
+		this.getShortWorkingTimeSheets()
+				.removeIf(x -> !attendances.contains(itemIdFromNo(x.getShortWorkTimeFrameNo().v()).getLeft())
+						&& !attendances.contains(itemIdFromNo(x.getShortWorkTimeFrameNo().v()).getRight()));
 	}
 
+	// Pair<育児開始時刻, 育児終了時刻>
+	private Pair<Integer, Integer> itemIdFromNo(int timSlot) {
+		if (timSlot == 1) {
+			return Pair.of(759, 760);
+		}
+		return Pair.of(761, 762);
+	}
 }

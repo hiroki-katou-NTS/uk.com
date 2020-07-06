@@ -58,7 +58,7 @@ public class CorrectionAfterTimeChange {
 
 		// 矛盾した時刻をクリアする
 		clearConflictTimeWithDay.clear(companyId, workCondOpt.get(), domainDaily.getWorkInformation(),
-				domainDaily.getAttendanceLeave());
+				domainDaily.getAttendanceLeave(), domainDaily.getEditState());
 
 		// TODO: 休憩時間帯をセットし直す dang thiet ke 設計中
 		// correctRestTime.correct(domainDaily);
