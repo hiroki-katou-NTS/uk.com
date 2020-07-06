@@ -10,14 +10,17 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.RequestMsgInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 
 /**
  * refactor 4
- * スマホ申請共通アルゴリズム
+ * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.スマホ申請共通アルゴリズム
  * @author Doan Duy Hung
  *
  */
@@ -94,4 +97,18 @@ public interface CommonAlgorithmMobile {
 	 */
 	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
 			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.KAFS00_A_申請メッセージ.アルゴリズム.起動する.起動する
+	 * @param companyID 会社ID
+	 * @param employeeID 社員ID
+	 * @param employmentCD 雇用コード
+	 * @param applicationUseSetting 申請利用設定
+	 * @param receptionRestrictionSetting 受付制限設定
+	 * @param opOvertimeAppAtr Optional＜残業申請区分＞
+	 * @return
+	 */
+	public RequestMsgInfoOutput getRequestMsgInfoOutputMobile(String companyID, String employeeID, String employmentCD, 
+			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
+			Optional<OvertimeAppAtr> opOvertimeAppAtr);
 }
