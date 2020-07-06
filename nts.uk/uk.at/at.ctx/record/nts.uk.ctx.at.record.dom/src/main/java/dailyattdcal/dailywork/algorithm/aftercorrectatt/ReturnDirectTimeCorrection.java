@@ -1,6 +1,5 @@
 package dailyattdcal.dailywork.algorithm.aftercorrectatt;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class ReturnDirectTimeCorrection {
 		if (!outingTime.isPresent())
 			return outingTime;
 
-		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
+		List<OutingTimeSheet> outingTimeSheets = outingTime.get().getOutingTimeSheets();
 		for (TimeLeavingWork leavWork : lstTimeLeaving) {
 			Integer timeAttendance = (leavWork.getAttendanceStamp().isPresent()
 					&& leavWork.getAttendanceStamp().get().getActualStamp().isPresent())
@@ -57,7 +56,10 @@ public class ReturnDirectTimeCorrection {
 									timeLeave))
 					.sorted((x, y) -> compareTime(x, y)).findFirst();
 
-			outingTimeSheet.ifPresent(x -> outingTimeSheets.add(setOutTimeSheet(x, leavWork)));
+			outingTimeSheet.ifPresent(x -> {
+				outingTimeSheets.remove(outingTimeSheet.get());
+				outingTimeSheets.add(setOutTimeSheet(x, leavWork));
+			});
 		}
 		return Optional.ofNullable(outingTimeSheets.isEmpty() ? null
 				: new OutingTimeOfDailyPerformance(outingTime.get().getEmployeeId(), outingTime.get().getYmd(),

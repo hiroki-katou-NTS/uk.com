@@ -30,7 +30,7 @@ public class ClearHolidayWorkTime {
 			List<EditStateOfDailyPerformance> lstEditState) {
 
 		List<Integer> lstIstEdit = lstEditState.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
-		// 残業時間をクリア
+		// 休出時間をクリア
 		List<Integer> holdayIndexRemove = HOLIDAY_ID.stream().filter(x -> !lstIstEdit.contains(x))
 				.map(x -> ((x - 266) / 5)).collect(Collectors.toList());
 
