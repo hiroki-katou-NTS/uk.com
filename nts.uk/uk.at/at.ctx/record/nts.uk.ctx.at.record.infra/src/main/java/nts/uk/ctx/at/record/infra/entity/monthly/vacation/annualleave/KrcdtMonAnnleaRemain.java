@@ -853,58 +853,126 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		this.deductionDaysAfter = null;
 		this.attendanceRate = null;
 
+//		val normal = domain.getAnnualLeave();
+//		val normalUsed = normal.getUsedNumber();
+//		val real = domain.getRealAnnualLeave();
+//		val realUsed = real.getUsedNumber();
+
 		val normal = domain.getAnnualLeave();
-		val normalUsed = normal.getUsedNumber();
+		val normalInfo = normal.getUsedNumberInfo();
 		val real = domain.getRealAnnualLeave();
-		val realUsed = real.getUsedNumber();
+		val realInfo = real.getUsedNumberInfo();
 
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getClosurePeriod().start();
 		this.endDate = domain.getClosurePeriod().end();
 
 		// 年休：使用数
-		this.usedDays = normalUsed.getUsedDays().getUsedDays().v();
-		this.usedDaysBefore = normalUsed.getUsedDays().getUsedDaysBeforeGrant().v();
-		if (normalUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
-			this.usedDaysAfter = normalUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
+//		this.usedDays = normalUsed.getUsedDays().getUsedDays().v();
+//		this.usedDaysBefore = normalUsed.getUsedDays().getUsedDaysBeforeGrant().v();
+//		if (normalUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
+//			this.usedDaysAfter = normalUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
+//		}
+//		if (normalUsed.getUsedTime().isPresent()) {
+//			val normalUsedTime = normalUsed.getUsedTime().get();
+//			this.usedMinutes = normalUsedTime.getUsedTime().v();
+//			this.usedMinutesBefore = normalUsedTime.getUsedTimeBeforeGrant().v();
+//			if (normalUsedTime.getUsedTimeAfterGrant().isPresent()) {
+//				this.usedMinutesAfter = normalUsedTime.getUsedTimeAfterGrant().get().v();
+//			}
+//			this.usedTimes = normalUsedTime.getUsedTimes().v();
+//		}
+		this.usedDays = normalInfo.getUsedNumber().getUsedDays().getUsedDayNumber().v();
+		this.usedDaysBefore = normalInfo.getUsedNumberBeforeGrant().getUsedDays().getUsedDayNumber().v();
+		if (normalInfo.getUsedNumberAfterGrantOpt().isPresent()) {
+			this.usedDaysAfter = normalInfo.getUsedNumberAfterGrantOpt().get().getUsedDays().getUsedDayNumber().v();
 		}
-		if (normalUsed.getUsedTime().isPresent()) {
-			val normalUsedTime = normalUsed.getUsedTime().get();
+		if (normalInfo.getUsedNumber().getUsedTime().isPresent()) {
+			val normalUsedTime = normalInfo.getUsedNumber().getUsedTime().get();
 			this.usedMinutes = normalUsedTime.getUsedTime().v();
-			this.usedMinutesBefore = normalUsedTime.getUsedTimeBeforeGrant().v();
-			if (normalUsedTime.getUsedTimeAfterGrant().isPresent()) {
-				this.usedMinutesAfter = normalUsedTime.getUsedTimeAfterGrant().get().v();
+			if ( normalInfo.getUsedNumberBeforeGrant().getUsedTime().isPresent() ){
+				this.usedMinutesBefore = normalInfo.getUsedNumberBeforeGrant().getUsedTime().get().getUsedTime().v();
 			}
-			this.usedTimes = normalUsedTime.getUsedTimes().v();
+			Optional<AnnualLeaveUsedNumber> usedNumberAfterGrantOpt
+				= normalInfo.getUsedNumberAfterGrantOpt();
+			if (usedNumberAfterGrantOpt.isPresent()) {
+				Optional<AnnualLeaveUsedTime> annualLeaveUsedTimeOpt 
+					= usedNumberAfterGrantOpt.get().getUsedTime();
+				if ( annualLeaveUsedTimeOpt.isPresent() ){
+					this.usedMinutesAfter = annualLeaveUsedTimeOpt.get().getUsedTime().v();
+				}
+			}
+			this.usedTimes = normalInfo.getAnnualLeaveUsedTimes().v();
 		}
 
 		// 実年休：使用数
-		this.factUsedDays = realUsed.getUsedDays().getUsedDays().v();
-		this.factUsedDaysBefore = realUsed.getUsedDays().getUsedDaysBeforeGrant().v();
-		if (realUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
-			this.factUsedDaysAfter = realUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
+//		this.factUsedDays = realUsed.getUsedDays().getUsedDays().v();
+//		this.factUsedDaysBefore = realUsed.getUsedDays().getUsedDaysBeforeGrant().v();
+//		if (realUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
+//			this.factUsedDaysAfter = realUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
+//		}
+//		if (realUsed.getUsedTime().isPresent()) {
+//			val realUsedTime = realUsed.getUsedTime().get();
+//			this.factUsedMinutes = realUsedTime.getUsedTime().v();
+//			this.factUsedMinutesBefore = realUsedTime.getUsedTimeBeforeGrant().v();
+//			if (realUsedTime.getUsedTimeAfterGrant().isPresent()) {
+//				this.factUsedMinutesAfter = realUsedTime.getUsedTimeAfterGrant().get().v();
+//			}
+//			this.factUsedTimes = realUsedTime.getUsedTimes().v();
+//		}
+		this.usedDays = realInfo.getUsedNumber().getUsedDays().getUsedDayNumber().v();
+		this.usedDaysBefore = realInfo.getUsedNumberBeforeGrant().getUsedDays().getUsedDayNumber().v();
+		if (realInfo.getUsedNumberAfterGrantOpt().isPresent()) {
+			this.usedDaysAfter = realInfo.getUsedNumberAfterGrantOpt().get().getUsedDays().getUsedDayNumber().v();
 		}
-		if (realUsed.getUsedTime().isPresent()) {
-			val realUsedTime = realUsed.getUsedTime().get();
-			this.factUsedMinutes = realUsedTime.getUsedTime().v();
-			this.factUsedMinutesBefore = realUsedTime.getUsedTimeBeforeGrant().v();
-			if (realUsedTime.getUsedTimeAfterGrant().isPresent()) {
-				this.factUsedMinutesAfter = realUsedTime.getUsedTimeAfterGrant().get().v();
+		if (realInfo.getUsedNumber().getUsedTime().isPresent()) {
+			val realUsedTime = realInfo.getUsedNumber().getUsedTime().get();
+			this.usedMinutes = realUsedTime.getUsedTime().v();
+			if ( realInfo.getUsedNumberBeforeGrant().getUsedTime().isPresent() ){
+				this.usedMinutesBefore = realInfo.getUsedNumberBeforeGrant().getUsedTime().get().getUsedTime().v();
 			}
-			this.factUsedTimes = realUsedTime.getUsedTimes().v();
+			Optional<AnnualLeaveUsedNumber> usedNumberAfterGrantOpt
+				= realInfo.getUsedNumberAfterGrantOpt();
+			if (usedNumberAfterGrantOpt.isPresent()) {
+				Optional<AnnualLeaveUsedTime> annualLeaveUsedTimeOpt 
+					= usedNumberAfterGrantOpt.get().getUsedTime();
+				if ( annualLeaveUsedTimeOpt.isPresent() ){
+					this.usedMinutesAfter = annualLeaveUsedTimeOpt.get().getUsedTime().v();
+				}
+			}
+			this.usedTimes = realInfo.getAnnualLeaveUsedTimes().v();
 		}
-
+		
 		// 年休：残数
-		this.remainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
-		if (normal.getRemainingNumber().getTotalRemainingTime().isPresent()) {
-			this.remainingMinutes = normal.getRemainingNumber().getTotalRemainingTime().get().v();
+//		this.remainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
+//		if (normal.getRemainingNumber().getTotalRemainingTime().isPresent()) {
+//			this.remainingMinutes = normal.getRemainingNumber().getTotalRemainingTime().get().v();
+//		}
+//		this.remainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+//		if (normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
+//			this.remainingMinutesBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+//		}
+//		if (normal.getRemainingNumberAfterGrant().isPresent()) {
+//			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+//			this.remainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
+//			if (normalRemainAfter.getTotalRemainingTime().isPresent()) {
+//				this.remainingMinutesAfter = normalRemainAfter.getTotalRemainingTime().get().v();
+//			}
+//		}
+		// 年休：残数
+		this.remainingDays = normal.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
+		if (normal.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()) {
+			this.remainingMinutes = normal.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().get().v();
 		}
-		this.remainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
-			this.remainingMinutesBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+		this.remainingDaysBefore = normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+		if (normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
+			this.remainingMinutesBefore 
+				= normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
 		}
-		if (normal.getRemainingNumberAfterGrant().isPresent()) {
-			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+		Optional<AnnualLeaveRemainingNumber> normalRemainingNumberAfterGrantOpt
+			= normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+		if (normalRemainingNumberAfterGrantOpt.isPresent()) {
+			val normalRemainAfter = normalRemainingNumberAfterGrantOpt.get();
 			this.remainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
 			if (normalRemainAfter.getTotalRemainingTime().isPresent()) {
 				this.remainingMinutesAfter = normalRemainAfter.getTotalRemainingTime().get().v();
@@ -912,24 +980,47 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		}
 
 		// 実年休：残数
-		this.factRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
-		if (real.getRemainingNumber().getTotalRemainingTime().isPresent()) {
-			this.factRemainingMinutes = real.getRemainingNumber().getTotalRemainingTime().get().v();
+//		this.factRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
+//		if (real.getRemainingNumber().getTotalRemainingTime().isPresent()) {
+//			this.factRemainingMinutes = real.getRemainingNumber().getTotalRemainingTime().get().v();
+//		}
+//		this.factRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+//		if (real.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
+//			this.factRemainingMinutesBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+//		}
+//		if (real.getRemainingNumberAfterGrant().isPresent()) {
+//			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
+//			this.factRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
+//			if (realRemainAfter.getTotalRemainingTime().isPresent()) {
+//				this.factRemainingMinutesAfter = realRemainAfter.getTotalRemainingTime().get().v();
+//			}
+//		}
+		this.remainingDays = real.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
+		if (real.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()) {
+			this.remainingMinutes = real.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().get().v();
 		}
-		this.factRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (real.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
-			this.factRemainingMinutesBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+		this.remainingDaysBefore = real.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+		if (real.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
+			this.remainingMinutesBefore 
+				= real.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
 		}
-		if (real.getRemainingNumberAfterGrant().isPresent()) {
-			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
-			this.factRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
+		Optional<AnnualLeaveRemainingNumber> realRemainingNumberAfterGrantOpt
+			= real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+		if (realRemainingNumberAfterGrantOpt.isPresent()) {
+			val realRemainAfter = realRemainingNumberAfterGrantOpt.get();
+			this.remainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
 			if (realRemainAfter.getTotalRemainingTime().isPresent()) {
-				this.factRemainingMinutesAfter = realRemainAfter.getTotalRemainingTime().get().v();
+				this.remainingMinutesAfter = realRemainAfter.getTotalRemainingTime().get().v();
 			}
 		}
 
 		// 年休：未消化数
-		val normalUndigest = normal.getUndigestedNumber();
+//		val normalUndigest = normal.getUndigestedNumber();
+//		this.unusedDays = normalUndigest.getUndigestedDays().getUndigestedDays().v();
+//		if (normalUndigest.getUndigestedTime().isPresent()) {
+//			this.unusedMinutes = normalUndigest.getUndigestedTime().get().getUndigestedTime().v();
+//		}
+		val normalUndigest = domain.getUndigestedNumber();
 		this.unusedDays = normalUndigest.getUndigestedDays().getUndigestedDays().v();
 		if (normalUndigest.getUndigestedTime().isPresent()) {
 			this.unusedMinutes = normalUndigest.getUndigestedTime().get().getUndigestedTime().v();
