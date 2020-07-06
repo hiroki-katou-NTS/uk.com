@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.request.dom.setting.workplace;
+package nts.uk.ctx.at.request.dom.setting.workplace.appuseset;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 申請利用設定の備考
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.職場別設定.申請利用設定.申請利用設定の備考
  * @author Doan Duy Hung
  *
  */
