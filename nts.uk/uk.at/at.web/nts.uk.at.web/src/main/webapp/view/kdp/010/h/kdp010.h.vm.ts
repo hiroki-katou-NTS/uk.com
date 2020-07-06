@@ -37,7 +37,6 @@ module nts.uk.at.view.kdp010.h {
 			dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
 			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
 
-
 			lstChangeClock: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeClockArt);
 			lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
 			lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
@@ -46,6 +45,8 @@ module nts.uk.at.view.kdp010.h {
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
 			isChange: KnockoutObservable<number> = ko.observable(0);
 			checkGoOut :  KnockoutObservable<number> = ko.observable(0);
+            
+            showSelectedAudio = ko.observable(false);
 			constructor() {
 				let self = this;
 				self.selectedDay.subscribe((newValue) => {
@@ -93,6 +94,7 @@ module nts.uk.at.view.kdp010.h {
 
 				let self = this;
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
+                self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
 					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;

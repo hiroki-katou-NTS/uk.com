@@ -362,7 +362,8 @@ module nts.uk.at.view.kdp010.g {
 				};
 				let dataG = {
 					dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
-					buttonPositionNo: enumVal
+					buttonPositionNo: enumVal,
+                    fromScreen: self.mode == 0? 'A': ''
 				}
 				nts.uk.ui.windows.setShared('KDP010_G', dataG);
 				nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
