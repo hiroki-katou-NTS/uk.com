@@ -94,4 +94,20 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 		this.usedDaysAfterGrant = Optional.of(new ReserveLeaveUsedDayNumber(
 				this.usedDaysAfterGrant.get().v() + days));
 	}
+	
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		usedDaysBeforeGrant = new ReserveLeaveUsedDayNumber(usedDays.v());
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		usedDaysAfterGrant = Optional.of(new ReserveLeaveUsedDayNumber(usedDays.v()));
+	}
 }

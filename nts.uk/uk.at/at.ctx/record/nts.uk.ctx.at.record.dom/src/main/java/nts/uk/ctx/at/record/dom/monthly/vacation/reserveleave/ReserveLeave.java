@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 
@@ -139,4 +141,47 @@ public class ReserveLeave implements Cloneable {
 //			remainingNumberAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 //		}
 	}
+	
+	/**
+	 * 積立年休付与残数データから積立年休残数を作成
+	 * @param remainingDataList 積立年休付与残数データリスト
+	 * @param afterGrantAtr 付与後フラグ
+	 */
+	public void createRemainingNumberFromGrantRemaining(
+			List<ReserveLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
+		
+		// 積立年休付与残数データから残数を作成
+		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
+		
+		// 「付与後フラグ」をチェック
+		if (afterGrantAtr){
+			// 残数付与後　←　残数
+			//this.remainingNumberAfterGrant = Optional.of(this.remainingNumber.clone());
+			saveStateAfterGrant();
+		}
+		else {
+			// 残数付与前　←　残数
+			//this.remainingNumberBeforeGrant = this.remainingNumber.clone();
+			saveStateBeforeGrant();
+		}
+	}
+
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		this.usedNumber.saveStateBeforeGrant();
+		this.remainingNumber.saveStateBeforeGrant();
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		this.usedNumber.saveStateAfterGrant();
+		this.remainingNumber.saveStateAfterGrant();
+	}
+	
 }

@@ -227,7 +227,11 @@ public class ReserveLeaveInfo implements Cloneable {
 		
 		// 現在の積立年休（マイナスあり）の残数を付与前として退避する
 		val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
-		withMinus.setRemainingNumberBeforeGrant(withMinus.getRemainingNumber().clone());
+		//withMinus.setRemainingNumberBeforeGrant(withMinus.getRemainingNumber().clone());
+		
+		withMinus.getRemainingNumber().setBeforeGrant(.getTotalRemainingDays());
+		
+		
 
 		// 現在の積立年休（マイナスなし）の残数を付与前として退避する
 		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
