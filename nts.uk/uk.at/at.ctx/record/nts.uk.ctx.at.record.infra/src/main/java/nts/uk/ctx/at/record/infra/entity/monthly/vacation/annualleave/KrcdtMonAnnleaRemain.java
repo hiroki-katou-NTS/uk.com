@@ -27,9 +27,12 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
@@ -42,11 +45,13 @@ import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -309,34 +314,108 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 				}
 			}
 		}
-
-		// 年休：使用時間
-		UsedMinutes valUsedMinutesAfter = null;
-		if (this.usedMinutesAfter != null) {
-			valUsedMinutesAfter = new UsedMinutes(this.usedMinutesAfter);
-		}
-		TimeAnnualLeaveUsedTime valUsedTime = null;
-		if (this.usedTimes != null && this.usedMinutes != null && this.usedMinutesBefore != null) {
-			valUsedTime = TimeAnnualLeaveUsedTime.of(new UsedTimes(this.usedTimes), new UsedMinutes(this.usedMinutes),
-					new UsedMinutes(this.usedMinutesBefore), Optional.ofNullable(valUsedMinutesAfter));
-		}
-
-		// 年休：残数付与後
-		AnnualLeaveRemainingNumber valRemainAfter = null;
-		if (this.remainingDaysAfter != null) {
-			RemainingMinutes valRemainMinutesAfter = null;
-			if (this.remainingMinutesAfter != null) {
-				valRemainMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
-			}
-			valRemainAfter = AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDaysAfter),
-					Optional.ofNullable(valRemainMinutesAfter), normalDetailAfter);
-		}
-
-		// 年休
+		
+		// 年休：使用日数
+//		TimeAnnualLeaveUsedTime valUsedTime = null;
+//		if (this.usedTimes != null && this.usedMinutes != null && this.usedMinutesBefore != null) {
+//			valUsedTime = TimeAnnualLeaveUsedTime.of(new UsedTimes(this.usedTimes), new UsedMinutes(this.usedMinutes),
+//					new UsedMinutes(this.usedMinutesBefore), Optional.ofNullable(valUsedMinutesAfter));
+//		}
+		AnnualLeaveUsedDayNumber valUsedDays = null;
+		valUsedDays = new AnnualLeaveUsedDayNumber(this.usedDays);
+		
+		AnnualLeaveUsedDayNumber valUsedDaysBefore = null;
+		valUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.usedDaysBefore);
+		
 		AnnualLeaveUsedDayNumber valUsedDaysAfter = null;
 		if (this.usedDaysAfter != null) {
 			valUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.usedDaysAfter);
 		}
+
+		// 年休：使用時間
+//		TimeAnnualLeaveUsedTime valUsedTime = null;
+//		if (this.usedTimes != null && this.usedMinutes != null && this.usedMinutesBefore != null) {
+//			valUsedTime = TimeAnnualLeaveUsedTime.of(new UsedTimes(this.usedTimes), new UsedMinutes(this.usedMinutes),
+//					new UsedMinutes(this.usedMinutesBefore), Optional.ofNullable(valUsedMinutesAfter));
+//		}
+		UsedMinutes valUsedMinutes = null;
+		if (this.usedMinutes != null) {
+			valUsedMinutes = new UsedMinutes(this.usedMinutes);
+		}
+		UsedMinutes valUsedMinutesBefore = null;
+		if (this.usedMinutesBefore != null) {
+			valUsedMinutesBefore = new UsedMinutes(this.usedMinutesBefore);
+		}
+		UsedMinutes valUsedMinutesAfter = null;
+		if (this.usedMinutesAfter != null) {
+			valUsedMinutesAfter = new UsedMinutes(this.usedMinutesAfter);
+		}
+	
+		// 年休：残数付与後
+//		AnnualLeaveRemainingNumber valRemainAfter = null;
+//		if (this.remainingDaysAfter != null) {
+//			RemainingMinutes valRemainMinutesAfter = null;
+//			if (this.remainingMinutesAfter != null) {
+//				valRemainMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
+//			}
+//			valRemainAfter = AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDaysAfter),
+//					Optional.ofNullable(valRemainMinutesAfter), normalDetailAfter);
+//		}
+		RemainingMinutes valRemainMinutesAfter = null;
+		if (this.remainingMinutesAfter != null) {
+			valRemainMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
+		}
+		AnnualLeaveRemainingNumber valRemainAfter = null;
+		if (this.remainingDaysAfter != null) {
+			valRemainAfter = AnnualLeaveRemainingNumber.of(
+					new AnnualLeaveRemainingDayNumber(this.remainingDaysAfter),
+					Optional.ofNullable(valRemainMinutesAfter),
+					normalDetailAfter);
+		}
+
+//		// 年休
+//		AnnualLeaveUsedDayNumber valUsedDaysAfter = null;
+//		if (this.usedDaysAfter != null) {
+//			valUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.usedDaysAfter);
+//		}
+//		RemainingMinutes valRemainMinutes = null;
+//		if (this.remainingMinutes != null) {
+//			valRemainMinutes = new RemainingMinutes(this.remainingMinutes);
+//		}
+//		RemainingMinutes valRemainMinutesBefore = null;
+//		if (this.remainingMinutesBefore != null) {
+//			valRemainMinutesBefore = new RemainingMinutes(this.remainingMinutesBefore);
+//		}
+//		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
+//		if (this.unusedMinutes != null) {
+//			valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.unusedMinutes));
+//		}
+//		AnnualLeave annualLeave = AnnualLeave.of(
+//				AnnualLeaveUsedNumber.of(AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.usedDays),
+//						new AnnualLeaveUsedDayNumber(this.usedDaysBefore), Optional.ofNullable(valUsedDaysAfter)),
+//						Optional.ofNullable(valUsedTime)),
+//				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDays),
+//						Optional.ofNullable(valRemainMinutes), normalDetail),
+//				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDaysBefore),
+//						Optional.ofNullable(valRemainMinutesBefore), normalDetailBefore),
+//				Optional.ofNullable(valRemainAfter),
+//				AnnualLeaveUndigestedNumber.of(
+//						UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.unusedDays)),
+//						Optional.ofNullable(valUnusedMinutes)));
+
+		// 年休：　日数
+		AnnualLeaveRemainingDayNumber valRemainDays = null;
+		valRemainDays = new AnnualLeaveRemainingDayNumber(this.remainingDays);
+			
+		AnnualLeaveRemainingDayNumber valRemainDaysBefore = null;
+		valRemainDaysBefore = new AnnualLeaveRemainingDayNumber(this.remainingDaysBefore);
+		
+		AnnualLeaveRemainingDayNumber valRemainDaysAfter = null;
+		if (this.remainingDaysAfter != null) {
+			valRemainDaysAfter = new AnnualLeaveRemainingDayNumber(this.remainingDaysAfter);
+		}
+		
+		// 年休：　時間
 		RemainingMinutes valRemainMinutes = null;
 		if (this.remainingMinutes != null) {
 			valRemainMinutes = new RemainingMinutes(this.remainingMinutes);
@@ -345,52 +424,177 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		if (this.remainingMinutesBefore != null) {
 			valRemainMinutesBefore = new RemainingMinutes(this.remainingMinutesBefore);
 		}
+		RemainingMinutes valRemainingMinutesAfter = null;
+		if (this.remainingMinutesAfter != null) {
+			valRemainingMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
+		}
+		
 		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
 		if (this.unusedMinutes != null) {
 			valUnusedMinutes = UndigestedTimeAnnualLeaveTime.of(new UsedMinutes(this.unusedMinutes));
 		}
 		AnnualLeave annualLeave = AnnualLeave.of(
-				AnnualLeaveUsedNumber.of(AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.usedDays),
-						new AnnualLeaveUsedDayNumber(this.usedDaysBefore), Optional.ofNullable(valUsedDaysAfter)),
-						Optional.ofNullable(valUsedTime)),
-				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDays),
-						Optional.ofNullable(valRemainMinutes), normalDetail),
-				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDaysBefore),
-						Optional.ofNullable(valRemainMinutesBefore), normalDetailBefore),
-				Optional.ofNullable(valRemainAfter),
-				AnnualLeaveUndigestedNumber.of(
-						UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.unusedDays)),
-						Optional.ofNullable(valUnusedMinutes)));
+				/* @param usedNumberInfo 使用数
+				 * @param remainingNumberInfo 残数*/
+				AnnualLeaveUsedInfo.of(
+						/**
+						 * @param usedNumber 合計
+						 * @param usedNumberBeforeGrant 付与前
+						 * @param annualLeaveUsedTimes 時間年休使用回数
+						 * @param annualLeaveUsedDayTimes 時間年休使用日数
+						 * @param usedNumberAfterGrant 付与後 
+						 */
+						AnnualLeaveUsedNumber.of(
+							AnnualLeaveUsedDays.of(valUsedDays),
+							Optional.of(AnnualLeaveUsedTime.of(valUsedMinutes))),
+						AnnualLeaveUsedNumber.of(
+							AnnualLeaveUsedDays.of(valUsedDaysBefore),
+							Optional.of(AnnualLeaveUsedTime.of(valUsedMinutesBefore))),
+						new UsedTimes(this.usedTimes),
+						new UsedTimes(0),
+						Optional.of(AnnualLeaveUsedNumber.of(
+								AnnualLeaveUsedDays.of(valUsedDaysAfter),
+								Optional.of(AnnualLeaveUsedTime.of(valUsedMinutesAfter))
+								))
+						),
+				
+				AnnualLeaveRemainingNumberInfo.of(
+						/**
+						 * @param remainingNumber 合計
+						 * @param remainingNumberBeforeGrant 付与前
+						 * @param remainingNumberAfterGrantOpt 付与後 
+						 */
+						AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valRemainDays, Optional.of(valRemainMinutes), normalDetail),
+						
+						AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valRemainDaysBefore, Optional.of(valRemainMinutesBefore), normalDetailBefore),
+						
+						Optional.of(AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valRemainDaysAfter, Optional.of(valRemainMinutesAfter), normalDetailAfter)
+						))
+				);
+		
+		val undigestedNumber = AnnualLeaveUndigestedNumber.of(
+				UndigestedAnnualLeaveDays.of(new AnnualLeaveUsedDayNumber(this.unusedDays)),
+				Optional.ofNullable(valUnusedMinutes));
 
-		// 実年休：使用時間
-		UsedMinutes valFactUsedMinutesAfter = null;
-		if (this.factUsedMinutesAfter != null) {
-			valFactUsedMinutesAfter = new UsedMinutes(this.factUsedMinutesAfter);
-		}
-		TimeAnnualLeaveUsedTime valFactUsedTime = null;
-		if (this.factUsedTimes != null && this.factUsedMinutes != null && this.factUsedMinutesBefore != null) {
-			valFactUsedTime = TimeAnnualLeaveUsedTime.of(new UsedTimes(this.factUsedTimes),
-					new UsedMinutes(this.factUsedMinutes), new UsedMinutes(this.factUsedMinutesBefore),
-					Optional.ofNullable(valFactUsedMinutesAfter));
-		}
+		
+//		// 実年休：使用時間
+//		UsedMinutes valFactUsedMinutesAfter = null;
+//		if (this.factUsedMinutesAfter != null) {
+//			valFactUsedMinutesAfter = new UsedMinutes(this.factUsedMinutesAfter);
+//		}
+//		TimeAnnualLeaveUsedTime valFactUsedTime = null;
+//		if (this.factUsedTimes != null && this.factUsedMinutes != null && this.factUsedMinutesBefore != null) {
+//			valFactUsedTime = TimeAnnualLeaveUsedTime.of(new UsedTimes(this.factUsedTimes),
+//					new UsedMinutes(this.factUsedMinutes), new UsedMinutes(this.factUsedMinutesBefore),
+//					Optional.ofNullable(valFactUsedMinutesAfter));
+//		}
+//
+//		// 実年休：残数付与後
+//		AnnualLeaveRemainingNumber valFactRemainAfter = null;
+//		if (this.factRemainingDaysAfter != null) {
+//			RemainingMinutes valFactRemainMinutesAfter = null;
+//			if (this.factRemainingMinutesAfter != null) {
+//				valFactRemainMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
+//			}
+//			valFactRemainAfter = AnnualLeaveRemainingNumber.of(
+//					new AnnualLeaveRemainingDayNumber(this.factRemainingDaysAfter),
+//					Optional.ofNullable(valFactRemainMinutesAfter), realDetailAfter);
+//		}
+//
+//		// 実年休
+//		AnnualLeaveUsedDayNumber valFactUsedDaysAfter = null;
+//		if (this.factUsedDaysAfter != null) {
+//			valFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.factUsedDaysAfter);
+//		}
+//		RemainingMinutes valFactRemainMinutes = null;
+//		if (this.factRemainingMinutes != null) {
+//			valFactRemainMinutes = new RemainingMinutes(this.factRemainingMinutes);
+//		}
+//		RemainingMinutes valFactRemainMinutesBefore = null;
+//		if (this.factRemainingMinutesBefore != null) {
+//			valFactRemainMinutesBefore = new RemainingMinutes(this.factRemainingMinutesBefore);
+//		}
+//		AnnualLeave realAnnualLeave = AnnualLeave.of(
+//				AnnualLeaveUsedNumber.of(AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.factUsedDays),
+//						new AnnualLeaveUsedDayNumber(this.factUsedDaysBefore),
+//						Optional.ofNullable(valFactUsedDaysAfter)), Optional.ofNullable(valFactUsedTime)),
+//				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.factRemainingDays),
+//						Optional.ofNullable(valFactRemainMinutes), realDetail),
+//				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.factRemainingDaysBefore),
+//						Optional.ofNullable(valFactRemainMinutesBefore), realDetailBefore),
+//				Optional.ofNullable(valFactRemainAfter));
 
-		// 実年休：残数付与後
-		AnnualLeaveRemainingNumber valFactRemainAfter = null;
-		if (this.factRemainingDaysAfter != null) {
-			RemainingMinutes valFactRemainMinutesAfter = null;
-			if (this.factRemainingMinutesAfter != null) {
-				valFactRemainMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
-			}
-			valFactRemainAfter = AnnualLeaveRemainingNumber.of(
-					new AnnualLeaveRemainingDayNumber(this.factRemainingDaysAfter),
-					Optional.ofNullable(valFactRemainMinutesAfter), realDetailAfter);
-		}
 
-		// 実年休
+		// 実年休：使用日数
+		AnnualLeaveUsedDayNumber valFactUsedDays = null;
+		valFactUsedDays = new AnnualLeaveUsedDayNumber(this.factUsedDays);
+		
+		AnnualLeaveUsedDayNumber valFactUsedDaysBefore = null;
+		valFactUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.factUsedDaysBefore);
+		
 		AnnualLeaveUsedDayNumber valFactUsedDaysAfter = null;
 		if (this.factUsedDaysAfter != null) {
 			valFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.factUsedDaysAfter);
 		}
+
+		// 実年休：使用時間
+		UsedMinutes valFactUsedMinutes = null;
+		if (this.factUsedMinutes != null) {
+			valFactUsedMinutes = new UsedMinutes(this.factUsedMinutes);
+		}
+		UsedMinutes valFactUsedMinutesBefore = null;
+		if (this.factUsedMinutesBefore != null) {
+			valFactUsedMinutesBefore = new UsedMinutes(this.factUsedMinutesBefore);
+		}
+		UsedMinutes valFactUsedMinutesAfter = null;
+		if (this.factUsedMinutesAfter != null) {
+			valFactUsedMinutesAfter = new UsedMinutes(this.factUsedMinutesAfter);
+		}
+	
+		// 実年休：残数付与後
+		RemainingMinutes valFactRemainMinutesAfter = null;
+		if (this.factRemainingMinutesAfter != null) {
+			valFactRemainMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
+		}
+		AnnualLeaveRemainingNumber valFactRemainAfter = null;
+		if (this.factRemainingDaysAfter != null) {
+			valFactRemainAfter = AnnualLeaveRemainingNumber.of(
+					new AnnualLeaveRemainingDayNumber(this.factRemainingDaysAfter),
+					Optional.ofNullable(valFactRemainMinutesAfter),
+					normalDetailAfter);
+		}
+
+		// 実年休：　日数
+		AnnualLeaveRemainingDayNumber valFactRemainDays = null;
+		valFactRemainDays = new AnnualLeaveRemainingDayNumber(this.factRemainingDays);
+			
+		AnnualLeaveRemainingDayNumber valFactRemainDaysBefore = null;
+		valFactRemainDaysBefore = new AnnualLeaveRemainingDayNumber(this.factRemainingDaysBefore);
+		
+		AnnualLeaveRemainingDayNumber valFactRemainDaysAfter = null;
+		if (this.factRemainingDaysAfter != null) {
+			valFactRemainDaysAfter = new AnnualLeaveRemainingDayNumber(this.factRemainingDaysAfter);
+		}
+		
+		// 実年休：　時間
 		RemainingMinutes valFactRemainMinutes = null;
 		if (this.factRemainingMinutes != null) {
 			valFactRemainMinutes = new RemainingMinutes(this.factRemainingMinutes);
@@ -399,16 +603,70 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		if (this.factRemainingMinutesBefore != null) {
 			valFactRemainMinutesBefore = new RemainingMinutes(this.factRemainingMinutesBefore);
 		}
-		RealAnnualLeave realAnnualLeave = RealAnnualLeave.of(
-				AnnualLeaveUsedNumber.of(AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.factUsedDays),
-						new AnnualLeaveUsedDayNumber(this.factUsedDaysBefore),
-						Optional.ofNullable(valFactUsedDaysAfter)), Optional.ofNullable(valFactUsedTime)),
-				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.factRemainingDays),
-						Optional.ofNullable(valFactRemainMinutes), realDetail),
-				AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.factRemainingDaysBefore),
-						Optional.ofNullable(valFactRemainMinutesBefore), realDetailBefore),
-				Optional.ofNullable(valFactRemainAfter));
-
+		RemainingMinutes valFactRemainingMinutesAfter = null;
+		if (this.factRemainingMinutesAfter != null) {
+			valFactRemainingMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
+		}
+		
+		
+		AnnualLeave realAnnualLeave = AnnualLeave.of(
+				/* @param usedNumberInfo 使用数
+				 * @param remainingNumberInfo 残数*/
+				AnnualLeaveUsedInfo.of(
+						/**
+						 * @param usedNumber 合計
+						 * @param usedNumberBeforeGrant 付与前
+						 * @param annualLeaveUsedTimes 時間年休使用回数
+						 * @param annualLeaveUsedDayTimes 時間年休使用日数
+						 * @param usedNumberAfterGrant 付与後 
+						 */
+						AnnualLeaveUsedNumber.of(
+							AnnualLeaveUsedDays.of(valFactUsedDays),
+							Optional.of(AnnualLeaveUsedTime.of(valFactUsedMinutes))),
+						AnnualLeaveUsedNumber.of(
+							AnnualLeaveUsedDays.of(valFactUsedDaysBefore),
+							Optional.of(AnnualLeaveUsedTime.of(valFactUsedMinutesBefore))),
+						new UsedTimes(this.factUsedTimes),
+						new UsedTimes(0),
+						Optional.of(AnnualLeaveUsedNumber.of(
+								AnnualLeaveUsedDays.of(valFactUsedDaysAfter),
+								Optional.of(AnnualLeaveUsedTime.of(valFactUsedMinutesAfter))
+								))
+						),
+				
+				AnnualLeaveRemainingNumberInfo.of(
+						/**
+						 * @param remainingNumber 合計
+						 * @param remainingNumberBeforeGrant 付与前
+						 * @param remainingNumberAfterGrantOpt 付与後 
+						 */
+						AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valFactRemainDays, Optional.of(valFactRemainMinutes), normalDetail),
+						
+						AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valFactRemainDaysBefore, Optional.of(valFactRemainMinutesBefore), normalDetailBefore),
+						
+						Optional.of(AnnualLeaveRemainingNumber.of(
+							/*
+							 * @param totalRemainingDays 合計残日数
+							 * @param totalRemainingTime 合計残時間
+							 * @param details 明細
+							 * */
+							valFactRemainDaysAfter, Optional.of(valFactRemainMinutesAfter), normalDetailAfter)
+						))
+				);
+		
+		
 		// 半日年休
 		HalfDayAnnualLeave halfDayAnnualLeave = null;
 		if (this.halfRemainingTimes != null && this.halfRemainingTimesBefore != null && this.halfUsedTimes != null
@@ -486,17 +744,45 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 					Optional.ofNullable(valFactTimeRemainMinutesAfter));
 		}
 
-		return AnnLeaRemNumEachMonth.of(this.PK.employeeId, new YearMonth(this.PK.yearMonth),
+		/**
+		 * ファクトリー
+		 * @param employeeId 社員ID
+		 * @param yearMonth 年月
+		 * @param closureId 締めID
+		 * @param closureDate 締め日
+		 * @param closurePeriod 締め期間
+		 * @param closureStatus 締め処理状態
+		 * @param annualLeave 年休
+		 * @param realAnnualLeave 実年休
+		 * @param halfDayAnnualLeave 半日年休
+		 * @param realHalfDayAnnualLeave 実半日年休
+		 * @param annualLeaveGrant 年休付与情報
+		 * @param maxRemainingTime 上限残時間
+		 * @param realMaxRemainingTime 実上限残時間
+		 * @param attendanceRateDays 年休出勤率日数
+		 * @param grantAtr 付与区分
+		 * @param undigestedNumber 未消化数
+		 * @return 年休月別残数データ
+		 */
+		return AnnLeaRemNumEachMonth.of(
+				this.PK.employeeId, 
+				new YearMonth(this.PK.yearMonth),
 				EnumAdaptor.valueOf(this.PK.closureId, ClosureId.class),
 				new ClosureDate(this.PK.closureDay, (this.PK.isLastDay != 0)),
 				new DatePeriod(this.startDate, this.endDate),
-				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class), annualLeave, realAnnualLeave,
-				Optional.ofNullable(halfDayAnnualLeave), Optional.ofNullable(realHalfDayAnnualLeave),
-				Optional.ofNullable(annualLeaveGrant), Optional.ofNullable(maxRemainingTime),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class), 
+				annualLeave,
+				realAnnualLeave,
+				Optional.ofNullable(halfDayAnnualLeave),
+				Optional.ofNullable(realHalfDayAnnualLeave),
+				Optional.ofNullable(annualLeaveGrant), 
+				Optional.ofNullable(maxRemainingTime),
 				Optional.ofNullable(realMaxRemainingTime),
 				AnnualLeaveAttdRateDays.of(new MonthlyDays((double) this.laborDays),
 						new MonthlyDays((double) this.predeterminedDays), new MonthlyDays((double) this.deductionDays)),
-				(this.grantAtr != 0));
+				(this.grantAtr != 0),
+				undigestedNumber
+				);
 	}
 
 	/**
