@@ -26,7 +26,7 @@ public class GetNewestStampNotRegisteredService {
 	 * @return List<StampInfoDisp> List<表示する打刻情報>
 	 */
 
-	public List<StampInfoDisp> get(Require require, DatePeriod period) {
+	public static List<StampInfoDisp> get(Require require, DatePeriod period) {
 
 		// $打刻情報リスト = 打刻カード未登録の打刻データを取得する#取得する(require, 期間)
 		List<StampInfoDisp> list = RetrieveNoStampCardRegisteredService.get(require, period);
