@@ -59,7 +59,7 @@ public class ApplicationUseAtrFinder {
 						.map(c -> c.getAppUseSetting())
 						.collect(Collectors.toList());
 			}
-			lstResult = lstAppUseSet.stream().map(c -> new AppUseAtrDto(c.getAppType().value, c.getUserAtr().value)).collect(Collectors.toList());
+			lstResult = lstAppUseSet.stream().map(c -> new AppUseAtrDto(c.getAppType().value, c.getUseDivision().value)).collect(Collectors.toList());
 			return lstResult;
 		}
 		//lay setting theo work place || person
@@ -75,7 +75,7 @@ public class ApplicationUseAtrFinder {
 		List<ApprovalFunctionSetting> lstSet = repoAppLst.detailSetKAF022(companyId, workplaceID, GeneralDate.today());
 		
 		lstResult = lstSet.stream().filter(c -> !c.getAppUseSetting().getAppType().equals(ApplicationType_Old.APPLICATION_36))
-				.map(c -> new AppUseAtrDto(c.getAppUseSetting().getAppType().value, c.getAppUseSetting().getUserAtr().value))
+				.map(c -> new AppUseAtrDto(c.getAppUseSetting().getAppType().value, c.getAppUseSetting().getUseDivision().value))
 				.collect(Collectors.toList());
 		Collections.sort(lstResult, Comparator.comparing(AppUseAtrDto::getAppType));
 		return lstResult;

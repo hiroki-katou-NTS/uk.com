@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.workplace.appuseset;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 
 /**
  * refactor 4
@@ -16,17 +16,18 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 public class ApplicationUseSetting {
 	
 	/**
-	 * 備考
-	 */
-	private AppUseSetRemark memo;
-	
-	/**
 	 * 利用区分
 	 */
-	private UseAtr userAtr;
+	private UseDivision useDivision;
 	
 	/**
 	 * 申請種類
 	 */
 	private ApplicationType appType;
+	
+	/**
+	 * 備考
+	 */
+	private AppUseSetRemark memo;
+	
 }

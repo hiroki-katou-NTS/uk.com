@@ -18,6 +18,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -158,7 +159,7 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 						companyID, 
 						approvalFunctionSetting.getAppUseSetting().getAppType().value))
 				.memo(approvalFunctionSetting.getAppUseSetting().getMemo().v())
-				.useAtr(approvalFunctionSetting.getAppUseSetting().getUserAtr().value) 
+				.useAtr(approvalFunctionSetting.getAppUseSetting().getUseDivision().value) 
 				.prerequisiteForpauseFlg(approvalFunctionSetting.getPrerequisiteForpause().value) 
 				.otAppSettingFlg(approvalFunctionSetting.getOvertimeAppSetting().value) 
 				.holidayTimeAppCalFlg(approvalFunctionSetting.getHolidayTimeAppCal().value) 
@@ -190,9 +191,9 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 				SettingFlg.toEnum(this.lateOrLeaveAppCancelFlg), 
 				SettingFlg.toEnum(this.lateOrLeaveAppSettingFlg), 
 				new ApplicationUseSetting(
-						new AppUseSetRemark(this.memo), 
-						UseAtr.toEnum(this.useAtr), 
-						EnumAdaptor.valueOf(this.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
+						EnumAdaptor.valueOf(this.useAtr, UseDivision.class), 
+						EnumAdaptor.valueOf(this.krqstWpAppConfigDetailPK.appType, ApplicationType.class),
+						new AppUseSetRemark(this.memo)), 
 				Optional.of(new ApplicationDetailSetting(
 						this.breakInputFieldDisFlg == 1? true : false, 
 						this.breakTimeDisFlg == 1? true : false, 

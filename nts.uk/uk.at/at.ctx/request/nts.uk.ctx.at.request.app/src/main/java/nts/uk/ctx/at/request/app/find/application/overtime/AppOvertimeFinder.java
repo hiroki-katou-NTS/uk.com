@@ -86,6 +86,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeAndSiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
@@ -1589,7 +1590,7 @@ public class AppOvertimeFinder {
 				companyID, employeeID, rootAtr, ApplicationType_Old.OVER_TIME_APPLICATION, date);
 		
 		// ドメインモデル「申請承認機能設定」．「申請利用設定」．利用区分をチェックする(check 利用区分 trong domain 「申請承認機能設定」．「申請利用設定」  )
-		if (appCommonSettingOutput.getApprovalFunctionSetting().getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)) {
+		if (appCommonSettingOutput.getApprovalFunctionSetting().getAppUseSetting().getUseDivision() == UseDivision.NOT_USE) {
 			// 利用区分が利用しない
 			throw new BusinessException("Msg_323");
 		}

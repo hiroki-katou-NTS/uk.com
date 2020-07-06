@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -80,9 +81,9 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 							SettingFlg.toEnum(x.lateOrLeaveAppCancelFlg), 
 							SettingFlg.toEnum(x.lateOrLeaveAppSettingFlg), 
 							new ApplicationUseSetting(
-									new AppUseSetRemark(x.memo), 
-									UseAtr.toEnum(x.useAtr), 
-									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
+									EnumAdaptor.valueOf(x.useAtr, UseDivision.class), 
+									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class),
+									new AppUseSetRemark(x.memo)), 
 							Optional.of(new ApplicationDetailSetting(
 									x.breakInputFieldDisFlg == 1? true : false, 
 									x.breakTimeDisFlg == 1? true : false, 
@@ -101,7 +102,7 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 					detail.krqstWpAppConfigDetailPK = new KrqstWpAppConfigDetailPK(domain.getCompanyID(),
 							domain.getWorkPlaceID(), setting.getAppUseSetting().getAppType().value);
 					detail.memo = setting.getAppUseSetting().getMemo().v();
-					detail.useAtr = setting.getAppUseSetting().getUserAtr().value;
+					detail.useAtr = setting.getAppUseSetting().getUseDivision().value;
 					detail.prerequisiteForpauseFlg = setting.getPrerequisiteForpause().value;
 					detail.otAppSettingFlg = setting.getOvertimeAppSetting().value;
 					detail.holidayTimeAppCalFlg = setting.getHolidayTimeAppCal().value;
