@@ -26,7 +26,7 @@ interface Kdp003FFingerVeinModeParam {
 	employee?: Kdp003FCodeNameData;
 }
 
-type MODE = 'admin' | 'employee' | 'fingerVein';
+type KDP003F_MODE = 'admin' | 'employee' | 'fingerVein';
 
 const KDP003F_VM_API = {
 	LOGIN: 'ctx/sys/gateway/kdp/login/adminmode'
@@ -34,7 +34,7 @@ const KDP003F_VM_API = {
 
 @bean()
 class Kdp003FViewModel extends ko.ViewModel {
-	mode: KnockoutObservable<MODE> = ko.observable('admin');
+	mode: KnockoutObservable<KDP003F_MODE> = ko.observable('admin');
 
 	model: Kdp003FModel = new Kdp003FModel();
 
