@@ -22,10 +22,10 @@ module nts.uk.at.view.kdp010.h {
 			simpleValue: KnockoutObservable<string> = ko.observable("");
 
 			// H5_2
-			letterColors: KnockoutObservable<string> = ko.observable('#0033cc');
+			letterColors: KnockoutObservable<string> = ko.observable('#000000');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#ccccff');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
