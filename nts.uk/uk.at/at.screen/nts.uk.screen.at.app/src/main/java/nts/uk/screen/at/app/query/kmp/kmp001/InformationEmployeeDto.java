@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmp.kmp001.b;
+package nts.uk.screen.at.app.query.kmp.kmp001;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetEmployeeInformationDto {
+public class InformationEmployeeDto {
 
 	private String pid;
 
