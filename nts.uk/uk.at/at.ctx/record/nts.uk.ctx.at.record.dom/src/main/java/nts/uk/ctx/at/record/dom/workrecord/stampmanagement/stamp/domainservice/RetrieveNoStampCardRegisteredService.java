@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 打刻カード未登録の打刻データを取得する
@@ -19,7 +20,7 @@ public class RetrieveNoStampCardRegisteredService {
 
 	public static List<StampInfoDisp> get(Require require, DatePeriod period) {
 		List<StampRecord> listStampRecord = require.getStempRcNotResgistNumber(period);
-		List<Stamp> listStamp = require.getStempRcNotResgistNumberStamp(period);
+		List<Stamp> listStamp = require.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
 		return createStampInfoDisplay(listStampRecord, listStamp);
 	}
 
@@ -66,7 +67,7 @@ public class RetrieveNoStampCardRegisteredService {
 		 * @param period
 		 * @return
 		 */
-		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period);
+		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period);
 
 	}
 }
