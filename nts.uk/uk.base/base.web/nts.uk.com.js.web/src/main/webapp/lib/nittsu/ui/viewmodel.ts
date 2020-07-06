@@ -4,7 +4,7 @@ const prefix = 'nts.uk.storage'
 	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
-	, $storeSession = function(name: string, params?: any) {
+	, $storeSession = function (name: string, params?: any) {
 		if (arguments.length === 2) {
 			// setter method
 			const $value = JSON.stringify({ $value: params })
@@ -29,11 +29,11 @@ const prefix = 'nts.uk.storage'
 						return JSON.parse($string).$value;
 					}
 
-					return null;
+					return windows.getShared(name);
 				});
 		}
 	}
-	, $storage = function($data?: any) {
+	, $storage = function ($data?: any) {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
@@ -49,7 +49,7 @@ const prefix = 'nts.uk.storage'
 
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
 				const $viewModel = new ctor($params)
@@ -78,7 +78,7 @@ function bean(): any {
 }
 
 function component(options: { name: string; template: string; }): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		return $.Deferred().resolve(options.template.match(/\.html$/))
 			.then((url: boolean) => {
 				return url ? $.get(options.template) : options.template;
@@ -108,6 +108,15 @@ function component(options: { name: string; template: string; }): any {
 									}
 								});
 
+								Object.defineProperty($viewModel, 'dispose', {
+									value: function dispose() {
+
+										if (typeof $viewModel.destroyed === 'function') {
+											$viewModel.destroyed.apply($viewModel, []);
+										}
+									}
+								});
+
 								return $viewModel;
 							}
 						}
@@ -117,16 +126,16 @@ function component(options: { name: string; template: string; }): any {
 	}
 }
 
-function handler(params: { virtual?: boolean; bindingName: string;	validatable?: boolean; }) {
-    return function (constructor: { new(): KnockoutBindingHandler; }) {
-        ko.bindingHandlers[params.bindingName] = new constructor();
-        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
+	return function (constructor: { new(): KnockoutBindingHandler; }) {
+		ko.bindingHandlers[params.bindingName] = new constructor();
+		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
 
-        // block rewrite binding
-        if (params.validatable) {
-            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
-        }
-    }
+		// block rewrite binding
+		if (params.validatable) {
+			ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
+		}
+	}
 }
 
 // create base viewmodel for all implement
@@ -268,7 +277,39 @@ Object.defineProperties($jump, {
 	}
 });
 
+const $size = function (height: string | number, width: string | number) {
+	const wd = nts.uk.ui.windows.getSelf();
+
+	if (wd) {
+		wd.setSize(height, width);
+	}
+};
+
+Object.defineProperties($size, {
+	width: {
+		value: function (width: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setWidth(width);
+			}
+		}
+	},
+	height: {
+		value: function (height: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setHeight(height);
+			}
+		}
+	}
+});
+
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+	size: {
+		value: $size
+	},
 	close: {
 		value: function $close(result?: any) {
 			if (window.top !== window) {
@@ -279,12 +320,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		}
 	},
 	modal: {
-		value: function $modal(path: string, params?: any) {
+		value: function $modal(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
 
 			$storage(params).then(() => {
-				windows.sub.modal(path).onClosed(() => {
-					$storage().then(($data) => {
+				windows.sub.modal(webapp, path).onClosed(() => {
+					$storage().then(($data: any) => {
 						jdf.resolve($data);
 					});
 				});
@@ -294,12 +335,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		}
 	},
 	modeless: {
-		value: function $modeless(path: string, params?: any) {
+		value: function $modeless(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
 
 			$storage(params).then(() => {
-				windows.sub.modeless(path).onClosed(() => {
-					$storage().then(($data) => {
+				windows.sub.modeless(webapp, path).onClosed(() => {
+					$storage().then(($data: any) => {
 						jdf.resolve($data);
 					});
 				});
@@ -313,9 +354,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 			if (arguments.length == 1) {
 				return $storeSession(name);
 			} else {
-				$storeSession(name, params);
-				// for old page
-				windows.setShared(name, params);
+				return $.Deferred().resolve()
+					.then(() => {
+						$storeSession(name, params);
+						// for old page
+						windows.setShared(name, params);
+					});
 			}
 		}
 	}
@@ -441,3 +485,16 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 };
 
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+
+@handler({
+	bindingName: 'i18n',
+	validatable: true
+})
+class I18nBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
+		const msg = ko.unwrap(valueAccessor());
+		const params = ko.unwrap(allBindingsAccessor.get('params'));
+		
+		$(element).text(nts.uk.resource.getText(msg, params));
+	}
+}

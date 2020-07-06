@@ -268,16 +268,17 @@ public class StampRecordDto {
 				) {
 			return ContentsStampType.START_SUPPORT_BREAK.nameId;
 		}
-		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.RESERVATION.value) {
-			return ContentsStampType.RESERVATION.nameId;
-		}
-		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
-				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
-				&& this.revervationAtr == ReservationArt.CANCEL_RESERVATION.value) {
-			return ContentsStampType.CANCEL_RESERVATION.nameId;
-		}
+		
+//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& ReservationArt.RESERVATION.value == this.revervationAtr) {
+//			return ContentsStampType.RESERVATION.nameId;
+//		}
+//		if (this.changeClockArt == ChangeClockArt.GOING_TO_WORK.value && this.changeCalArt == ChangeCalArt.BRARK.value
+//				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
+//				&& ReservationArt.CANCEL_RESERVATION.value == this.revervationAtr) {
+//			return ContentsStampType.CANCEL_RESERVATION.nameId;
+//		}
 
 		return null;
 	}

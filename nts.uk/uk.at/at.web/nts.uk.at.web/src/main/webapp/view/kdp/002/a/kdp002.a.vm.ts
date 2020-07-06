@@ -26,15 +26,15 @@ module nts.uk.at.view.kdp002.a {
                         self.stampGrid().yearMonth.subscribe((val) => {
                             self.getTimeCardData();
                         });
-                        let stampToSuppress = res.stampToSuppress;
-                        stampToSuppress.isUse = res.stampSetting.buttonEmphasisArt;
+                        let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
+                        stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
                         self.stampToSuppress(stampToSuppress);
                         self.stampResultDisplay(res.stampResultDisplay);
                         // add correction interval
                         self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId , messageParams: res.parameterIds}).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
                     }).always(() => {
