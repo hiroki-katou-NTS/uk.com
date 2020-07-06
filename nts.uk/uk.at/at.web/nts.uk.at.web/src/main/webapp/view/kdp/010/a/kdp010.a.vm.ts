@@ -170,7 +170,9 @@ module nts.uk.at.view.kdp010.a {
                 let self = this;
                 block.grayout();
                 service.getData().done(function(data) {
-                    self.stampSetCommunal.lstStampPageLayout(data? data.lstStampPageLayout : []);
+                    if(data){
+                        self.stampSetCommunal.lstStampPageLayout(data.lstStampPageLayout || []);
+                    }
                 }).fail(function (res) {
                     error({ messageId: res.messageId });
                 }).always(function () {
@@ -254,7 +256,7 @@ module nts.uk.at.view.kdp010.a {
                     self.passwordRequiredArt(data.passwordRequiredArt);
                     self.employeeAuthcUseArt(data.employeeAuthcUseArt);
                     self.authcFailCnt(data.authcFailCnt);
-                    self.lstStampPageLayout(data.lstStampPageLayout);
+                    self.lstStampPageLayout(data.lstStampPageLayout || []);
                 }
             }
         }
