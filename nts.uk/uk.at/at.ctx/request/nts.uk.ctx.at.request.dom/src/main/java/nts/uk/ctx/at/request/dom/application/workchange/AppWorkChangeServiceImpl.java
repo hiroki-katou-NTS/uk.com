@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -42,6 +43,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
@@ -268,24 +270,29 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application,
-			AppWorkChange_Old appWorkChange) {
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application,
+			AppWorkChange appWorkChange) {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
-		// 休日の申請日を取得する
-		List<GeneralDate> lstDateHd = this.checkHoliday(
-				application.getEmployeeID(), 
-				new DatePeriod(application.getStartDate().get(), application.getEndDate().get()));
+		List<GeneralDate> lstDateHd = null;
+		if (application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+			// 休日の申請日を取得する
+			lstDateHd = this.checkHoliday(
+					application.getEmployeeID(), 
+					new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()));
+		}
+	
 		// 登録時チェック処理（全申請共通）
-		List<ConfirmMsgOutput> confirmMsgLst = newBeforeRegister.processBeforeRegister_New(
-				companyID, 
-				EmploymentRootAtr.APPLICATION, 
-				false, 
-				application, 
-				null, 
-				errorFlag, 
-				lstDateHd);
+		List<ConfirmMsgOutput> confirmMsgLst = null;
+//				newBeforeRegister.processBeforeRegister_New(
+//				companyID, 
+//				EmploymentRootAtr.APPLICATION, 
+//				false, 
+//				application, 
+//				null, 
+//				errorFlag, 
+//				lstDateHd);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -293,7 +300,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public void checkRegisterWorkChange(Application_New application, AppWorkChange_Old appWorkChange) {
+	public void checkRegisterWorkChange(Application application, AppWorkChange appWorkChange) {
 		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
 		List<String> errorLst = this.detailWorkHoursCheck(application, appWorkChange);
@@ -307,39 +314,62 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange_Old appWorkChange) {
+	public List<String> detailWorkHoursCheck(Application application, AppWorkChange appWorkChange) {
 		List<String> errorLst = new ArrayList<>();
 		// INPUT．「申請．申請開始日」と「INPUT．「申請．申請終了日」をチェックする
-		if(application.getEndDate().isPresent() && 
-				application.getStartDate().get().after(application.getEndDate().get())) {
+		if(application.getOpAppEndDate().isPresent() && application.getOpAppStartDate().isPresent() 
+				) {
+			if (application.getOpAppStartDate().get().getApplicationDate().after(application.getOpAppEndDate().get().getApplicationDate()))
 			// エラーメッセージ(Msg_150)をOUTPUT「エラーリスト」にセットする
 			errorLst.add("Msg_150");
 		}
-		// INPUT．「勤務変更申請．勤務時間開始1」と「INPUT．「勤務変更申請．勤務時間終了1」の大小チェック
-		if(appWorkChange.getWorkTimeStart1() != null && appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeStart1() > appWorkChange.getWorkTimeEnd1())  {
-			// エラーメッセージ(Msg_579)をOUTPUT「エラーリスト」にセットする
-			errorLst.add("Msg_579");
+		Optional<TimeZoneWithWorkNo> time1 = appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(item -> item.getWorkNo().v() == 1).findFirst();
+		
+		if (time1.isPresent()) {
+			// INPUT．「勤務変更申請．勤務時間開始1」と「INPUT．「勤務変更申請．勤務時間終了1」の大小チェック
+			if(time1.get().getTimeZone().getStartTime().v() != null 
+					&& time1.get().getTimeZone().getEndTime().v() != null 
+					&& time1.get().getTimeZone().getStartTime().v() > time1.get().getTimeZone().getEndTime().v())  {
+				// エラーメッセージ(Msg_579)をOUTPUT「エラーリスト」にセットする
+				errorLst.add("Msg_579");
+			}
 		}
-		// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
-		if(appWorkChange.getWorkTimeStart2() != null && appWorkChange.getWorkTimeEnd2() != null && appWorkChange.getWorkTimeStart2() > appWorkChange.getWorkTimeEnd2())  {
-			// エラーメッセージ(Msg_580)をOUTPUT「エラーリスト」にセットする
-			errorLst.add("Msg_580");
+		
+		Optional<TimeZoneWithWorkNo> time2 = appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(item -> item.getWorkNo().v() == 2).findFirst();
+		
+		if (time2.isPresent()) {
+			// INPUT．「勤務変更申請．勤務時間開始2」と「INPUT．「勤務変更申請．勤務時間終了2」の大小チェック
+			if(time2.get().getTimeZone().getStartTime().v() != null 
+					&& time2.get().getTimeZone().getEndTime().v() != null 
+					&& time2.get().getTimeZone().getStartTime().v() > time2.get().getTimeZone().getEndTime().v())  {
+				// エラーメッセージ(Msg_580)をOUTPUT「エラーリスト」にセットする
+				errorLst.add("Msg_580");
+			}
 		}
-		// INPUT．「勤務変更申請．勤務時間終了1」と「INPUT．「勤務変更申請．勤務時間開始2」の大小チェック
-		if(appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeStart2() != null && appWorkChange.getWorkTimeEnd1() > appWorkChange.getWorkTimeStart2())  {
-			// エラーメッセージ(Msg_581)をOUTPUT「エラーリスト」にセットする
-			errorLst.add("Msg_581");
+		if (time1.isPresent() && time2.isPresent()) {
+			// INPUT．「勤務変更申請．勤務時間終了1」と「INPUT．「勤務変更申請．勤務時間開始2」の大小チェック
+			if(time1.get().getTimeZone().getEndTime().v() != null 
+					&& time2.get().getTimeZone().getStartTime().v() != null 
+					&& time1.get().getTimeZone().getEndTime().v() > time2.get().getTimeZone().getStartTime().v())  {
+				// エラーメッセージ(Msg_581)をOUTPUT「エラーリスト」にセットする
+				errorLst.add("Msg_581");
+			}
 		}
-		// INPUT．「勤務変更申請．勤務時間開始1」の入力範囲チェック
-		if(appWorkChange.getWorkTimeStart1() != null && appWorkChange.getWorkTimeStart1() < 5 * 60) {
-			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
-			errorLst.add("Msg_307");
+		if (time1.isPresent()) {
+			// INPUT．「勤務変更申請．勤務時間開始1」の入力範囲チェック
+			if(time1.get().getTimeZone().getStartTime().v() != null 
+					&& time1.get().getTimeZone().getStartTime().v() < 5 * 60) {
+				// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
+				errorLst.add("Msg_307");
+			}
+			// INPUT．「勤務変更申請．勤務時間終了1」の入力範囲チェック
+			if(time1.get().getTimeZone().getEndTime().v() != null 
+					&& time1.get().getTimeZone().getEndTime().v() > 29 * 60) {
+				// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
+				errorLst.add("Msg_307");
+			}
 		}
-		// INPUT．「勤務変更申請．勤務時間終了1」の入力範囲チェック
-		if(appWorkChange.getWorkTimeEnd1() != null && appWorkChange.getWorkTimeEnd1() > 29 * 60) {
-			// エラーメッセージ(Msg_307)をOUTPUT「エラーリスト」にセットする
-			errorLst.add("Msg_307");
-		}
+		
 		return errorLst.stream().distinct().collect(Collectors.toList());
 	}
 
@@ -390,20 +420,21 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application,
-			AppWorkChange_Old appWorkChange, boolean agentAtr) {
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
+			AppWorkChange appWorkChange, boolean agentAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 詳細画面の登録時チェック処理（全申請共通）
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
-				companyID, 
-				application.getEmployeeID(), 
-				application.getAppDate(), 
-				EmploymentRootAtr.APPLICATION.value, 
-				application.getAppID(), 
-				application.getPrePostAtr(), 
-				application.getVersion(), 
-				appWorkChange.getWorkTypeCd(), 
-				appWorkChange.getWorkTimeCd());
+		// waitting
+//		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+//				companyID, 
+//				application.getEmployeeID(), 
+//				application.getAppDate().getApplicationDate(), 
+//				EmploymentRootAtr.APPLICATION.value, 
+//				application.getAppID(), 
+//				application.getPrePostAtr(), 
+//				Long.valueOf(application.getVersion()), 
+//				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
+//				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
@@ -505,6 +536,29 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		appWorkChangeSettingOutput.setAppWorkChangeReflect(appWorkChangeReflect);
 		
 		return appWorkChangeSettingOutput;
+	}
+
+	@Override
+	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId,
+			AppWorkChangeDispInfo_New appWorkChangeDispInfo_New) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public WorkChangeCheckRegOutput checkBefore(Boolean mode, String companyId, Application application,
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag) {
+		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
+//		INPUT．「画面モード」をチェックする
+		if (mode ) {
+//			登録前のエラーチェック処理
+			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange);
+		}else {
+//			更新前のエラーチェック処理
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false));
+		}
+
+		return workChangeCheckRegOutput;
 	}
 
 }

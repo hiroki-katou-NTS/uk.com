@@ -51,6 +51,9 @@ export class KafS07AComponent extends Vue {
 
     public valueWorkHours2: { start: number, end: number } = null;
 
+    // handle visible of view
+
+    public isCondition1: Boolean = false;
 
     public data: any;
 
@@ -87,7 +90,7 @@ export class KafS07AComponent extends Vue {
 
     public mounted() {
         let self = this;
-        self.$mask('show');
+        // self.$mask('show');
         // self.$http.post('at', API.startNew, {
         //     empLst: [],
         //     dateLst: []
@@ -101,14 +104,19 @@ export class KafS07AComponent extends Vue {
 
         //     });
 
-        this.$http.post('at', API.startS07, {
+        // this.$http.post('at', API.startS07, {
 
-        })
-            .then((res: any) => {
+        // })
+        //     .then((res: any) => {
+        //         if (!res) {
+        //             return;
+        //         }
+        //         let appWorkChangeDispInfo = res.appWorkChangeDispInfo;
 
-            }).catch((err: any) => {
-                this.$mask('hide');
-            });
+
+        //     }).catch((err: any) => {
+        //         this.$mask('hide');
+        //     });
     }
 
     public register() {
@@ -136,17 +144,20 @@ export class KafS07AComponent extends Vue {
     // A2_1
 
     // A4_3  「勤務変更申請の表示情報．就業時間帯の必須区分」が「必須」または「任意」
-    public isDisplay1() {
+    public isDisplay1(params: any) {
+        // return params.setupType == 1;
         return true;
 
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-    public isDisplay2() {
+    public isDisplay2(params: any) {
+        // return params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
         return true;
 
     }
     // A6_1 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
-    public isDisplay3() {
+    public isDisplay3(params: any) {
+        // return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
         return true;
     }
 
@@ -156,14 +167,23 @@ export class KafS07AComponent extends Vue {
         return true;
 
     }
-    // Display error message
-    // UI処理【1】
-    public isDisplay5() {
-        return true;
+    // // Display error message
+    // // UI処理【1】
+    // public isDisplay5() {
+    //     return true;
 
-    }
+    // }
     // handle message dialog
 
+
+
+    // bind visible of view 
+    public bindVisibleView(data: any) {
+        let appWorkChangeDispInfo = data.appWorkChangeDispInfo;
+
+        this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
+
+    }
     public openKDL002() {
         this.$modal(
             'worktype',

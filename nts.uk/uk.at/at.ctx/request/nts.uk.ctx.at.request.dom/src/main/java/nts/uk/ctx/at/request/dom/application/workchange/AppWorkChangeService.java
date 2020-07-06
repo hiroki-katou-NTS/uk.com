@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -80,14 +81,14 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application_New application, AppWorkChange_Old appWorkChange);
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application, AppWorkChange appWorkChange);
 	
 	/**
 	 * 登録時チェック処理（勤務変更申請）
 	 * @param application 申請
 	 * @param appWorkChange 勤務変更申請
 	 */
-	public void checkRegisterWorkChange(Application_New application, AppWorkChange_Old appWorkChange);
+	public void checkRegisterWorkChange(Application application, AppWorkChange appWorkChange);
 	
 	/**
 	 * 勤務変更申請就業時間チェックの内容
@@ -95,7 +96,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public List<String> detailWorkHoursCheck(Application_New application, AppWorkChange_Old appWorkChange);
+	public List<String> detailWorkHoursCheck(Application application, AppWorkChange appWorkChange);
 	
 	/**
 	 * 1日休日のチェック
@@ -121,8 +122,8 @@ public interface AppWorkChangeService {
 	 * @param agentAtr 代行申請区分
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application_New application, 
-			AppWorkChange_Old appWorkChange, boolean agentAtr);
+	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application, 
+			AppWorkChange appWorkChange, boolean agentAtr);
 	/**
 	 * 勤務変更申請の起動処理
 	 * Refactor4
@@ -155,4 +156,16 @@ public interface AppWorkChangeService {
 	 */
 	public AppWorkChangeSettingOutput getAppWorkChangeSettingOutput(String companyId);
 	
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param appId
+	 * @param appWorkChangeDispInfo_New
+	 * @return
+	 */
+	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo_New appWorkChangeDispInfo_New);
+	
+	
+	public WorkChangeCheckRegOutput checkBefore(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag);
 }

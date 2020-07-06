@@ -1,8 +1,8 @@
 <template>
   <div class="kafs07a">
-    <div>
+    <!-- <div>
       <kafs00-a v-if="true" v-bind:params="{application: application}" />
-    </div>
+    </div> -->
 
     <div v-if="!$valid" class="alert error">
       <img
@@ -14,13 +14,13 @@
       <div class="contentError">{{'KAFS07_1'| i18n}}</div>
     </div>
     <div>
-      <kafs00-b
+      <!-- <kafs00-b
         v-if="true"
         v-bind:params="{
             application: application, 
             appDispInfoStartupOutput: appDispInfoStartupOutput
         }"
-      />
+      /> -->
     </div>
 
     <div class="card card-label">
@@ -42,7 +42,7 @@
         <span class="textSize uk-text-dark-gray">{{'KAFS07_4' | i18n}}</span>
         <button
           type="button"
-          v-bind:enable="isDisplay1()"
+          v-bind:enable="isCondition1"
           class="btn btn-selection mt-2 mb-2"
           v-on:click="openKDL002()"
         >
@@ -77,7 +77,7 @@
         <span>{{'KAFS07_6' | i18n}}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div v-if="isDisplay3()" v-bind:enable="isDisplay1()" class="card-body">
+      <div v-if="isDisplay3()" v-bind:enable="isCondition1" class="card-body">
         <nts-time-range-input v-model="valueWorkHours1" />
       </div>
     </div>
@@ -94,13 +94,13 @@
       </div>
     </div>
     <div>
-      <kafs00-c
+      <!-- <kafs00-c
         v-if="true"
         v-bind:params="{
             application: application,
             appDispInfoStartupOutput: appDispInfoStartupOutput
         }"
-      />
+      /> -->
     </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
