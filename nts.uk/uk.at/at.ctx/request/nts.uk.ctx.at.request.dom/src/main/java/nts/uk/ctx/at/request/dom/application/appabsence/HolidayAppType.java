@@ -37,11 +37,7 @@ public enum HolidayAppType {
 	/**
 	 * 時間消化
 	 */
-	DIGESTION_TIME(6, "時間消化"),
-	/**
-	 * 【廃止】振休
-	 */
-	REST_TIME(7, "【廃止】振休");
+	DIGESTION_TIME(6, "時間消化");
 	
 	public final int value;
 	
