@@ -1,319 +1,382 @@
-module nts.uk.at.view.kdp004.a {
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="kdp004.a.model.ts" />
 
-	export module viewmodel {
 
-		import modal = nts.uk.ui.windows.sub.modal;
-		import setShared = nts.uk.ui.windows.setShared;
-		import getShared = nts.uk.ui.windows.getShared;
-		import block = nts.uk.ui.block;
-		import dialog = nts.uk.ui.dialog;
-		import jump = nts.uk.request.jump;
-		import getText = nts.uk.resource.getText;
-		import getMessage = nts.uk.resource.getMessage;
+const url = {
+	startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
+	stampInput: 'at/record/stamp/finger/get-finger-stamp-setting',
+	confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
+	loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
+	loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
+	fingerAuth: '',
+	getError: 'at/record/stamp/employment_system/get_omission_contents'
+}
 
-		export class ScreenModel {
-			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
-			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
-			stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
-			stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
-			serverTime: KnockoutObservable<any> = ko.observable('');
-			isUsed: KnockoutObservable<boolean> = ko.observable(false);
-			errorMessage: KnockoutObservable<string> = ko.observable('');
-			loginInfo: any = null;
-			retry: number = 0;
-			constructor() {
-				let self = this;
-			}
+const stampTypes = [
+	{ text: "KDP002_120", name: "氏名選択" },
+	{ text: "KDP002_120", name: "指認証打刻" },
+	{ text: "KDP002_120", name: "ICカード打刻" },
+	{ text: "KDP002_120", name: "個人打刻" },
+	{ text: "KDP002_120", name: "ポータル打刻" },
+	{ text: "KDP002_121", name: "スマホ打刻" },
+	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
+]
 
-			public startPage(): JQueryPromise<void> {
-				let self = this;
-				let dfd = $.Deferred<void>();
+@bean()
+class KDP004AViewModel extends ko.ViewModel {
 
-				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
-					if (!loginInfo) {
-						self.openDialogF().done((loginSuccess) => {
-							if (!loginSuccess) {
-								self.isUsed(false);
-								self.errorMessage(getText("Msg_1647"));
-								dfd.resolve();
-								return;
-							}
-							self.openDialogK().done((chooseItem) => {
-								if (!chooseItem) {
-									self.isUsed(false);
-									self.errorMessage(getText("Msg_1647"));
-									dfd.resolve();
-									return;
-								}
+	stampSetting: KnockoutObservable<Kdp004StampSetting> = ko.observable(new Kdp004StampSetting());
+	stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
+	stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable();
+	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable();
+	serverTime: KnockoutObservable<any> = ko.observable('');
+	isUsed: KnockoutObservable<boolean> = ko.observable(false);
+	errorMessage: KnockoutObservable<string> = ko.observable('');
+	loginInfo: any = null;
+	retry: number = 0;
 
-								nts.uk.characteristics.save("loginKDP004", {});
-								dfd.resolve();
+	constuctor() {
+		let vm = this;
+		$(window).resize(function() {
+			vm.reCalGridWidthHeight();
+		});
+	}
 
-							});
+
+	created(params: any) {
+		let vm = this;
+		vm.startPage().done(() => {
+			vm.reCalGridWidthHeight();
+		});
+	}
+
+	public startPage(): JQueryPromise<void> {
+		let vm = this;
+		let dfd = $.Deferred<void>();
+		nts.uk.characteristics.remove("loginKDP004");
+		nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
+			if (!loginInfo) {
+				vm.setLoginInfo().done((loginInfo) => {
+
+					if (loginInfo) {
+						vm.doFirstLoad(loginInfo).done(() => {
+							dfd.resolve();
 						});
 					} else {
-
-						self.loginInfo = loginInfo;
-						//login
-						block.grayout();
-						service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
-							self.isUsed(res.used == 0);
-							if (self.isUsed()) {
-								let isAdmin = true;
-								service.login(isAdmin, loginInfo).done((res) => {
-									if (res.result) {
-										block.grayout();
-										service.startPage()
-											.done((res: any) => {
-												self.stampSetting(res.stampSetting);
-												self.stampTab().bindData(res.stampSetting.pageLayouts);
-												self.stampResultDisplay(res.stampResultDisplay);
-												dfd.resolve();
-											}).fail((res) => {
-												dialog.alertError({ messageId: res.messageId }).then(() => {
-													jump("com", "/view/ccg/008/a/index.xhtml");
-												});
-											}).always(() => {
-												block.clear();
-											});
-									} else {
-										self.isUsed(false);
-										self.errorMessage(getMessage(res.errorMessage));
-										dfd.resolve();
-									}
-								}).fail((res) => {
-									self.isUsed(false);
-									self.errorMessage(getMessage(res.messageId));
-									dfd.resolve();
-								}).always(() => {
-									block.clear();
+						vm.$ajax(url.startPage)
+							.done((res: any) => {
+								vm.stampSetting(res.stampSetting);
+								if (!!res.stampSetting.pageLayouts.length) {
+									vm.stampTab().bindData(res.stampSetting.pageLayouts);
+								}
+								vm.stampResultDisplay(res.stampResultDisplay);
+								dfd.resolve();
+							}).fail((res) => {
+								vm.$dialog.error({ messageId: res.messageId }).then(() => {
+									vm.$jump("com", "/view/ccg/008/a/index.xhtml");
 								});
-							} else {
-								self.errorMessage(getMessage(res.messageId));
-							}
-						});
+							}).always(() => {
+								vm.$blockui("clear");
+							});
+						vm.isUsed(false);
+						vm.errorMessage(vm.$i18n.message('Msg_1647'));
 					}
 				});
 
+			} else {
+				vm.doFirstLoad(loginInfo).done(() => {
+					dfd.resolve();
+				});
 
-				return dfd.promise();
 			}
+		});
 
-			public fingerAuth(): JQueryPromise<any> {
-				let dfd = $.Deferred<any>();
+		return dfd.promise();
+	}
 
-				service.fingerAuth().done((res) => {
+	doFirstLoad(loginInfo) {
+		let vm = this, dfd = $.Deferred<void>();;
+		vm.loginInfo = loginInfo;
+		//login
+		vm.$blockui("grayout");
+		vm.$ajax(url.confirmUseOfStampInput, { employeeId: null, stampMeans: 1 }).then((res) => {
+			vm.isUsed(res.used == 0);
+			if (vm.isUsed()) {
+
+				vm.$ajax(url.loginAdminMode, loginInfo).then((res) => {
+					if (res.result) {
+						vm.$blockui("grayout");
+						vm.$ajax(url.startPage)
+							.done((res: any) => {
+								vm.stampSetting(res.stampSetting);
+								vm.stampTab().bindData(res.stampSetting.pageLayouts);
+								vm.stampResultDisplay(res.stampResultDisplay);
+								dfd.resolve();
+							}).fail((res) => {
+								vm.$dialog.error({ messageId: res.messageId }).then(() => {
+									vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+								});
+							}).always(() => {
+								vm.$blockui("clear");
+							});
+					} else {
+						vm.isUsed(false);
+						vm.errorMessage(vm.$i18n.message(res.errorMessage));
+						dfd.resolve();
+					}
+				}).fail((res) => {
+					vm.isUsed(false);
+					vm.errorMessage(vm.$i18n.message(res.messageId));
+					dfd.resolve();
+				}).always(() => {
+					vm.$blockui("clear");
+				});
+			} else {
+				vm.errorMessage(vm.$i18n.message(res.messageId));
+			}
+		});
+		return dfd.promise();
+	}
+
+	setLoginInfo(): JQueryPromise<any> {
+		let vm = this, dfd = $.Deferred<any>();
+		vm.openDialogF({
+			mode: 'admin',
+			companyDesignation: false
+		}).done((loginResult) => {
+			if (!loginResult) {
+				vm.isUsed(false);
+				vm.errorMessage(vm.$i18n.text("Msg_1647"));
+				dfd.resolve();
+				return;
+			}
+			vm.loginInfo = loginResult;
+			vm.openDialogK().done((selectedWP) => {
+				if (!selectedWP) {
+					vm.isUsed(false);
+					vm.errorMessage(vm.$i18n.text("Msg_1647"));
+					dfd.resolve();
+					return;
+				}
+				vm.loginInfo.selectedWP = selectedWP;
+				//nts.uk.characteristics.save("loginKDP004", vm.loginInfo);
+				dfd.resolve(vm.loginInfo);
+
+			});
+		});
+
+		return dfd.promise();
+	}
+
+	public fingerAuth(): JQueryPromise<any> {
+		let dfd = $.Deferred<any>(),
+			vm = this;
+
+		vm.$ajax(url.fingerAuth).then((res) => {
+			dfd.resolve(res);
+		});
+
+		return dfd.promise();
+	}
+
+	public openDialogF(param): JQueryPromise<any> {
+		let vm = this;
+		let dfd = $.Deferred<any>();
+
+		vm.$window.modal('at', '/view/kdp/003/f/index.xhtml', param).then(function(result): any {
+			dfd.resolve(result);
+		});
+
+		return dfd.promise();
+	}
+
+	public openDialogK(): JQueryPromise<any> {
+		let vm = this;
+		let dfd = $.Deferred<any>();
+		vm.$window.modal('/view/kdp/003/k/index.xhtml').then((result) => {
+			let chooseItem = result.selectedId;
+			dfd.resolve(chooseItem);
+		});
+		return dfd.promise();
+	}
+
+	public getPageLayout(pageNo: number) {
+		let vm = this;
+		let layout = _.find(vm.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo });
+
+		if (layout) {
+			let btnSettings = layout.buttonSettings;
+			btnSettings.forEach(btn => {
+				btn.onClick = vm.clickBtn1;
+			});
+			layout.buttonSettings = btnSettings;
+		}
+
+		return layout;
+	}
+
+	public openScreenG(button, layout): JQueryPromise<IAuthResult> {
+		let vm = this;
+		let dfd = $.Deferred<any>();
+		setShared('ModelGParam', { retry: vm.retry, errorMessage: vm.errorMessage() });
+		vm.$window.modal('/view/kdp/003/k/index.xhtml', vm.retry).then((result) => {
+			let redirect: "retry" | "loginPass" | "cancel" = getShared('actionName');
+			if (redirect === "retry") {
+				vm.retry = vm.retry + 1;
+				vm.doAuthent(button, layout).done((res: IAuthResult) => {
+					dfd.resolve(res);
+				});
+			}
+			if (redirect === "loginPass") {
+				vm.openDialogF().done((res) => {
+					if (res) {
+						vm.retry = 0;
+					} else {
+						vm.errorMessage(vm.$i18n.text("Msg_1647"));
+					}
+					dfd.resolve({ isSuccess: vm.isUsed(), authType: 2 });
+				});
+			}
+			dfd.resolve({ isSuccess: false, authType: 0 });
+		});
+		return dfd.promise();
+	}
+
+	public clickBtn1(vm, layout) {
+		let button = this;
+
+		vm.doAuthent(layout, button).done((res: IAuthResult) => {
+			if (res.isSuccess) {
+				vm.registerData(button, layout, res.authType);
+			}
+			vm.isUsed(res.isSuccess);
+		});
+	}
+
+	public doAuthent(layout, button): JQueryPromise<IAuthResult> {
+		let vm = this;
+		let dfd = $.Deferred<any>();
+
+		vm.fingerAuth().done((res) => {
+			if (res.result) {
+				vm.$ajax(url.confirmUseOfStampInput, { employeeId: vm.loginInfo.employeeId, stampMeans: 1 }).then((res) => {
+					vm.isUsed(res.used == 0);
+					if (!vm.isUsed()) {
+						vm.errorMessage(vm.$i18n.message(res.messageId));
+					}
+					dfd.resolve({ isSuccess: vm.isUsed(), authType: 0 });
+				});
+
+			} else {
+				vm.errorMessage(vm.$i18n.message(res.messageId));
+				vm.openScreenG(button, layout).done((res: IAuthResult) => {
 					dfd.resolve(res);
 				});
 
-				return dfd.promise();
 			}
 
-			public openDialogF(): JQueryPromise<any> {
-				let self = this;
-				let dfd = $.Deferred<any>();
+		});
 
-				modal('/view/kdp/003/f/index.xhtml').onClosed(function(): any {
-					let loginSuccess = true;
+		return dfd.promise();
+	}
 
-					dfd.resolve(loginSuccess);
-				});
+	public registerData(button, layout, authcMethod) {
+		let vm = this;
 
-				return dfd.promise();
-			}
-
-			public openDialogK(): JQueryPromise<any> {
-				let self = this;
-				let dfd = $.Deferred<any>();
-				modal('/view/kdp/003/k/index.xhtml').onClosed(() => {
-					let chooseItem = true;
-					dfd.resolve(chooseItem);
-				});
-				return dfd.promise();
-			}
-
-			public getPageLayout(pageNo: number) {
-				let self = this;
-				let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo });
-
-				if (layout) {
-					let btnSettings = layout.buttonSettings;
-					btnSettings.forEach(btn => {
-						btn.onClick = self.clickBtn1;
-					});
-					layout.buttonSettings = btnSettings;
-				}
-
-				return layout;
-			}
-
-			public openScreenG(button, layout): JQueryPromise<IAuthResult> {
-				let self = this;
-				let dfd = $.Deferred<any>();
-				setShared('ModelGParam', { retry: self.retry, errorMessage: self.errorMessage() });
-				modal('/view/kdp/003/k/index.xhtml', self.retry).onClosed(() => {
-					let redirect: "retry" | "loginPass" | "cancel" = getShared('actionName');
-					if (redirect === "retry") {
-						self.retry = self.retry + 1;
-						self.doAuthent(button, layout).done((res: IAuthResult) => {
-							dfd.resolve(res);
-						});
-					}
-					if (redirect === "loginPass") {
-						self.openDialogF().done((res) => {
-							if (res) {
-								self.retry = 0;
-							} else {
-								self.errorMessage(getText("Msg_1647"));
-							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
-						});
-					}
-					dfd.resolve({ isSuccess: false, authType: 0 });
-				});
-				return dfd.promise();
-			}
-
-			public clickBtn1(vm, layout) {
-				let button = this;
-
-				vm.doAuthent(layout, button).done((res: IAuthResult) => {
-					if (res.isSuccess) {
-						vm.registerData(button, layout, res.authType);
-					}
-					vm.isUsed(res.isSuccess);
-				});
-			}
-
-			public doAuthent(layout, button): JQueryPromise<IAuthResult> {
-				let self = this;
-				let dfd = $.Deferred<any>();
-
-				self.fingerAuth().done((res) => {
-					if (res.result) {
-						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-							self.isUsed(res.used == 0);
-							if (!self.isUsed()) {
-								self.errorMessage(getMessage(res.messageId));
-							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 0 });
-						});
-
-					} else {
-						self.errorMessage(getMessage(res.messageId));
-						self.openScreenG(button, layout).done((res: IAuthResult) => {
-							dfd.resolve(res);
-						});
-
-					}
-
-				});
-
-				return dfd.promise();
-			}
-
-			public registerData(button, layout, authcMethod) {
-				let self = this;
-
-				nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-					let data = {
-						employeeId: self.loginInfo.employeeId,
-						datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
-						stampNumber: null,
-						stampButton: {
-							pageNo: layout.pageNo,
-							buttonPositionNo: button.btnPositionNo
-						},
-						refActualResult: {
-							cardNumberSupport: null,
-							workLocationCD: null,
-							workTimeCode: null,
-							overtimeDeclaration: null
-						},
-						authcMethod: authcMethod
-					};
-
-					service.stampInput(data).done((res) => {
-						if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
-							self.openScreenC(button, layout);
-						} else {
-							self.openScreenB(button, layout);
-						}
-					}).fail((res) => {
-						dialog.alertError({ messageId: res.messageId });
-					});
-				});
-
-
-			}
-
-			public openScreenB(button, layout) {
-				let self = this;
-
-				setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
-				setShared("infoEmpToScreenB", {
-					employeeId: __viewContext.user.employeeId,
-					employeeCode: __viewContext.user.employeeCode,
-					mode: Mode.Personal,
-				});
-
-				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-
-					self.stampToSuppress.valueHasMutated();
-					self.openKDP002T(button, layout);
-				});
-			}
-
-			public openScreenC(button, layout) {
-				let self = this;
-				setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
-				setShared("infoEmpToScreenC", {
-					employeeId: __viewContext.user.employeeId,
-					employeeCode: __viewContext.user.employeeCode,
-					mode: Mode.Personal,
-				});
-
-				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
-
-					self.stampToSuppress.valueHasMutated();
-					self.openKDP002T(button, layout);
-				});
-			}
-
-			public openKDP002T(button: ButtonSetting, layout) {
-				let data = {
+		vm.$ajax("com", "server/time/now/").then((res) => {
+			let data = {
+				employeeId: vm.loginInfo.employeeId,
+				datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+				stampNumber: null,
+				stampButton: {
 					pageNo: layout.pageNo,
-					buttonDisNo: button.btnPositionNo
+					buttonPositionNo: button.btnPositionNo
+				},
+				refActualResult: {
+					cardNumberSupport: null,
+					workLocationCD: null,
+					workTimeCode: null,
+					overtimeDeclaration: null
+				},
+				authcMethod: authcMethod
+			};
+
+
+			vm.$ajax(url.stampInput, data).then((res) => {
+				if (vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+					vm.openScreenC(button, layout);
+				} else {
+					vm.openScreenB(button, layout);
 				}
-				service.getError(data).done((res) => {
-					if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
-						setShared('KDP010_2T', res, true);
-						modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
-							let returnData = getShared('KDP010_T');
-							if (!returnData.isClose && returnData.errorDate) {
-								console.log(returnData);
-								// T1	打刻結果の取得対象項目の追加
-								// 残業申請（早出）
-								let transfer = returnData.btn.transfer;
-								jump(returnData.btn.screen, transfer);
-							}
-						});
+			}).fail((res) => {
+				vm.$dialog.error({ messageId: res.messageId });
+			});
+		});
+
+
+	}
+
+	public openScreenB(button, layout) {
+		let vm = this;
+
+		setShared("resultDisplayTime", vm.stampSetting().resultDisplayTime);
+		setShared("infoEmpToScreenB", {
+			employeeId: vm.$user.employeeId,
+			employeeCode: vm.$user.employeeCode,
+			mode: Mode.Personal,
+		});
+
+		vm.$window.modal('/view/kdp/002/b/index.xhtml').then(() => {
+
+			vm.stampToSuppress.valueHasMutated();
+			vm.openKDP002T(button, layout);
+		});
+	}
+
+	public openScreenC(button, layout) {
+		let vm = this;
+		setShared('KDP010_2C', vm.stampResultDisplay().displayItemId, true);
+		setShared("infoEmpToScreenC", {
+			employeeId: vm.$user.employeeId,
+			employeeCode: vm.$user.employeeCode,
+			mode: Mode.Personal,
+		});
+
+		vm.$window.modal('/view/kdp/002/c/index.xhtml').then(function(): any {
+
+			vm.stampToSuppress.valueHasMutated();
+			vm.openKDP002T(button, layout);
+		});
+	}
+
+	public openKDP002T(button: ButtonSetting, layout) {
+		let vm = this;
+		let data = {
+			pageNo: layout.pageNo,
+			buttonDisNo: button.btnPositionNo
+		}
+		vm.$ajax(url.getError, data).then((res) => {
+			if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+				setShared('KDP010_2T', res, true);
+				vm.$window.modal('/view/kdp/002/t/index.xhtml').then(function(): any {
+					let returnData = getShared('KDP010_T');
+					if (!returnData.isClose && returnData.errorDate) {
+						console.log(returnData);
+						// T1	打刻結果の取得対象項目の追加
+						// 残業申請（早出）
+						let transfer = returnData.btn.transfer;
+						vm.$jump(returnData.btn.screen, transfer);
 					}
 				});
 			}
-
-			public reCalGridWidthHeight() {
-				let windowHeight = window.innerHeight - 250;
-				$('#stamp-history-list').igGrid("option", "height", windowHeight);
-				$('#time-card-list').igGrid("option", "height", windowHeight);
-				$('#content-area').css('height', windowHeight + 109);
-			}
-
-		}
-
+		});
 	}
-	enum Mode {
-		Personal = 1, // 個人
-		Shared = 2  // 共有 
+
+	public reCalGridWidthHeight() {
+		let windowHeight = window.innerHeight - 250;
+		$('#stamp-history-list').igGrid("option", "height", windowHeight);
+		$('#time-card-list').igGrid("option", "height", windowHeight);
+		$('#content-area').css('height', windowHeight + 109);
 	}
+
 }

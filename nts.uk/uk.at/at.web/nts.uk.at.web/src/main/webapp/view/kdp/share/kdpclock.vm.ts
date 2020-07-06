@@ -21,12 +21,12 @@ module nts.uk.at.view.kdp.share {
     `})
 	export class StampClock extends ko.ViewModel {
 		systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
-		stampSetting: KnockoutObservable<any> = ko.observable({});
-		countTime: number = 0;
+		stampSetting: KnockoutObservable<any> ;
+		countTime: number = 20;
 		interval: any;
 		constructor(params) {
 			let self = this;
-			self.stampSetting(params.setting());
+			self.stampSetting = params.setting;
 			moment.locale('ja');
 			nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
 				self.systemDate(moment.utc(res));
