@@ -16,6 +16,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
@@ -35,7 +36,6 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -64,6 +64,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private AppReflectManagerFromRecordImport appReflectService;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
+	
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override

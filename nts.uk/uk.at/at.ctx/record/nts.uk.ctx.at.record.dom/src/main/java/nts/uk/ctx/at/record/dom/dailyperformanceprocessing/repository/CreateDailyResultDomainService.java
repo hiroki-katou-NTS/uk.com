@@ -15,7 +15,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  * 日別実績処理
  * 作成処理
  * アルゴリズム : ③日別実績の作成処理
- *
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.日別実績作成処理.作成処理.日別作成Mgrクラス.アルゴリズム
  */
 public interface CreateDailyResultDomainService {
 

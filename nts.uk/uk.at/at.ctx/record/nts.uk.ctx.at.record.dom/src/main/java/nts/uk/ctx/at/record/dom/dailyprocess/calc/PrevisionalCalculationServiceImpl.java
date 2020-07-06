@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
