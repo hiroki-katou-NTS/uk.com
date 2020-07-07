@@ -110,6 +110,7 @@ class Kdp003FViewModel extends ko.ViewModel {
 		const vm = this;
 		const { passwordRequired } = vm.params as Kdp003FEmployeeModeParam;
 		const model: Kdp003FModelData = ko.toJS(vm.model);
+		const { password } = model;
 
 		if (passwordRequired === false) {
 			_.omit(model, ['password']);
@@ -135,6 +136,10 @@ class Kdp003FViewModel extends ko.ViewModel {
 				return response;
 			})
 			.then((response: Kdp003FTimeStampLoginData) => {
+				_.extend(response.em, {
+					password
+				});
+
 				vm.$window.close(response);
 			})
 			.fail((response: any) => {
