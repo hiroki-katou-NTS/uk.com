@@ -112,7 +112,9 @@ module nts.uk.at.view.kdp010.c {
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.pageLayoutSettings(data.pageLayoutSettings || []);
-                    self.buttonEmphasisArt(data.buttonEmphasisArt);
+                    if(data.buttonEmphasisArt){
+                        self.buttonEmphasisArt(data.buttonEmphasisArt);    
+                    }
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }
