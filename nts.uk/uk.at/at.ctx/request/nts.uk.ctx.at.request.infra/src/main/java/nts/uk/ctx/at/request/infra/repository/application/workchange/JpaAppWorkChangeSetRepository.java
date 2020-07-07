@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet_Old;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk_Old;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -20,13 +20,13 @@ public class JpaAppWorkChangeSetRepository extends JpaRepository implements IApp
 
 	@Override
 	public List<AppWorkChangeSet_Old> getAllAppWorkChangeSet() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqstAppWorkChangeSet.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqstAppWorkChangeSet_Old.class)
 				.getList(item -> toDomain(item));
 	}
 
 	@Override
 	public Optional<AppWorkChangeSet_Old> findWorkChangeSetByID(String cid) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet.class).setParameter("companyID", cid)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet_Old.class).setParameter("companyID", cid)
 				.getSingle(c -> toDomain(c));
 	}
 
@@ -47,18 +47,18 @@ public class JpaAppWorkChangeSetRepository extends JpaRepository implements IApp
 
 	@Override
 	public void remove(String key) {
-		this.commandProxy().remove(KrqstAppWorkChangeSetPk.class, new KrqstAppWorkChangeSetPk(key));
+		this.commandProxy().remove(KrqstAppWorkChangeSetPk_Old.class, new KrqstAppWorkChangeSetPk_Old(key));
 	}
 
-	private static AppWorkChangeSet_Old toDomain(KrqstAppWorkChangeSet entity) {
+	private static AppWorkChangeSet_Old toDomain(KrqstAppWorkChangeSet_Old entity) {
 		return AppWorkChangeSet_Old.createFromJavaType(entity.appWorkChangeSetPk.cid, entity.excludeHoliday,
 				entity.workChangeTimeAtr, entity.displayResultAtr, entity.initDisplayWorktime, entity.commentContent1,
 				entity.commentFontWeight1, entity.commentFontColor1, entity.commentContent2, entity.commentFontWeight2,
 				entity.commentFontColor2);
 	}
 
-	private KrqstAppWorkChangeSet toEntity(AppWorkChangeSet_Old domain) {
-		return new KrqstAppWorkChangeSet(new KrqstAppWorkChangeSetPk(domain.getCid()), domain.getExcludeHoliday(),
+	private KrqstAppWorkChangeSet_Old toEntity(AppWorkChangeSet_Old domain) {
+		return new KrqstAppWorkChangeSet_Old(new KrqstAppWorkChangeSetPk_Old(domain.getCid()), domain.getExcludeHoliday(),
 				domain.getWorkChangeTimeAtr().value, domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value,
 				domain.getCommentContent1() == null ? null : domain.getCommentContent1().v(), 
 				domain.getCommentFontWeight1().value,

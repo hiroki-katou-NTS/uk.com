@@ -15,8 +15,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange_Old;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk_Old;
 
 @Stateless
 public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAppWorkChangeRepository
@@ -32,13 +32,13 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 
     @Override
     public List<AppWorkChange_Old> getAllAppWorkChange(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqdtAppWorkChange.class)
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqdtAppWorkChange_Old.class)
                 .getList(item -> toDomain(item));
     }
     
     @Override
     public Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId){
-    	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppWorkChange.class)
+    	return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppWorkChange_Old.class)
 				.setParameter("companyID", cid)
 				.setParameter("appId", appId)
 				.getSingle(c -> toDomain(c));
@@ -51,8 +51,8 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 
     @Override
     public void update(AppWorkChange_Old domain){
-    	KrqdtAppWorkChange newAppWC = toEntity(domain);
-    	KrqdtAppWorkChange updateWorkChange = this.queryProxy().find(newAppWC.appWorkChangePk, KrqdtAppWorkChange.class).get();
+    	KrqdtAppWorkChange_Old newAppWC = toEntity(domain);
+    	KrqdtAppWorkChange_Old updateWorkChange = this.queryProxy().find(newAppWC.appWorkChangePk, KrqdtAppWorkChange_Old.class).get();
     	if (null == updateWorkChange) {
 			return;
 		}
@@ -77,10 +77,10 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
     
     @Override
     public void delete(String cid, String appId){
-        this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(cid, appId));
+        this.commandProxy().remove(KrqdtAppWorkChange_Old.class, new KrqdtAppWorkChangePk_Old(cid, appId));
     }
     
-	private static AppWorkChange_Old toDomain(KrqdtAppWorkChange entity) {
+	private static AppWorkChange_Old toDomain(KrqdtAppWorkChange_Old entity) {
 		AppWorkChange_Old appWorkChange = AppWorkChange_Old.createFromJavaType(entity.appWorkChangePk.cid,
 				entity.appWorkChangePk.appId, entity.workTypeCd, entity.workTimeCd, entity.excludeHolidayAtr,
 				entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1, entity.breakTimeStart1,
@@ -91,8 +91,8 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 		return appWorkChange;
 	}
 
-	private KrqdtAppWorkChange toEntity(AppWorkChange_Old domain) {
-		return new KrqdtAppWorkChange(domain.getVersion(), new KrqdtAppWorkChangePk(domain.getCid(), domain.getAppId()),
+	private KrqdtAppWorkChange_Old toEntity(AppWorkChange_Old domain) {
+		return new KrqdtAppWorkChange_Old(domain.getVersion(), new KrqdtAppWorkChangePk_Old(domain.getCid(), domain.getAppId()),
 				Strings.isBlank(domain.getWorkTypeCd()) ? null : domain.getWorkTypeCd(), 
 				Strings.isBlank(domain.getWorkTimeCd()) ? null : domain.getWorkTimeCd(), 
 				domain.getExcludeHolidayAtr(),
@@ -116,7 +116,7 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 		}
 		List<AppWorkChange_Old> resultList = new ArrayList<>();
 		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange_Old.class)
 								  .setParameter("companyID", companyID)
 								  .setParameter("lstAppId", subList)
 								  .getList(item -> toDomain(item)));

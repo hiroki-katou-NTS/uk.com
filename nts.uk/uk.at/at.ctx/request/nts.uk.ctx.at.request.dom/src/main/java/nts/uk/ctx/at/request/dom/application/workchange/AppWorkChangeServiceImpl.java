@@ -466,10 +466,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			
 			
 		}else {
-			if (appWorkChange.isPresent()) {
-				appWorkChangeOutput.setAppWorkChange(appWorkChange.get());
-				
-			}
+				appWorkChangeOutput.setAppWorkChange(appWorkChange);
+
 		}
 		return appWorkChangeOutput;
 	}
