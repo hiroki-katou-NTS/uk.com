@@ -12,12 +12,12 @@ public class AppWorkChangeOutputDto {
 //	勤務変更申請の表示情報
 	private AppWorkChangeDispInfo_NewDto appWorkChangeDispInfo;
 //	勤務変更申請＜Optional＞
-	private AppWorkChange_NewDto appWorkChange;
+	private AppWorkChangeDto appWorkChange;
 	
 	public static AppWorkChangeOutputDto fromDomain(AppWorkChangeOutput appWorkChangeOutput) {
 		AppWorkChangeOutputDto appWorkChangeOutputDto = new AppWorkChangeOutputDto();
 		appWorkChangeOutputDto.setAppWorkChangeDispInfo(AppWorkChangeDispInfo_NewDto.fromDomain(appWorkChangeOutput.getAppWorkChangeDispInfo()));
-		appWorkChangeOutputDto.setAppWorkChange(AppWorkChange_NewDto.fromDomain(appWorkChangeOutput.getAppWorkChange()));
+		appWorkChangeOutputDto.setAppWorkChange(AppWorkChangeDto.fromDomain(appWorkChangeOutput.getAppWorkChange()));
 		return appWorkChangeOutputDto;
 	}
 }
