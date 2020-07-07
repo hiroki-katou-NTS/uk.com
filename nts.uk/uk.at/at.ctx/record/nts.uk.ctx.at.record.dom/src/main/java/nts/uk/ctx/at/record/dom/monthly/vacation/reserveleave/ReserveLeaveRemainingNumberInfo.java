@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
- * 積立年休残数情報
+ * 積立年休残情報
  * @author masaaki_jinno
  *
  */
@@ -16,43 +16,37 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 合計残日数 */
 	@Setter
-	private ReserveLeaveRemainingDayNumber totalRemainingDays;
+	private ReserveLeaveRemainingNumber totalRemaining;
 	/** 付与前 */
 	@Setter
-	private ReserveLeaveRemainingDayNumber beforeGrant;
+	private ReserveLeaveRemainingNumber beforeGrant;
 	/** 付与後 */
 	@Setter
-	private Optional<ReserveLeaveRemainingDayNumber> afterGrant;
-	
-//	/** 明細 */
-//	private List<ReserveLeaveRemainingDetail> details;
+	private Optional<ReserveLeaveRemainingNumber> afterGrant;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeaveRemainingNumberInfo(){
-		
-		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
-		this.beforeGrant = new ReserveLeaveRemainingDayNumber(0.0);
+		this.totalRemaining = new ReserveLeaveRemainingNumber();
+		this.beforeGrant = new ReserveLeaveRemainingNumber();
 		this.afterGrant = Optional.empty();
-		//this.details = new ArrayList<>();
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param totalRemainingDays 合計残日数
+	 * @param totalRemaining 合計残日数
 	 * @param details 明細
 	 * @return 積立年休残数
 	 */
 	public static ReserveLeaveRemainingNumberInfo of(
-			ReserveLeaveRemainingDayNumber totalRemainingDays,
-			ReserveLeaveRemainingDayNumber beforeGrant,
-			Optional<ReserveLeaveRemainingDayNumber> afterGrant
+			ReserveLeaveRemainingNumber totalRemaining,
+			ReserveLeaveRemainingNumber beforeGrant,
+			Optional<ReserveLeaveRemainingNumber> afterGrant
 			){
 		
 		ReserveLeaveRemainingNumberInfo domain = new ReserveLeaveRemainingNumberInfo();
-		domain.totalRemainingDays = totalRemainingDays;
-		//domain.details = details;
+		domain.totalRemaining = totalRemaining;
 		domain.beforeGrant = beforeGrant;
 		domain.afterGrant = afterGrant;
 		return domain;
@@ -62,8 +56,13 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 	public ReserveLeaveRemainingNumberInfo clone() {
 		ReserveLeaveRemainingNumberInfo cloned = new ReserveLeaveRemainingNumberInfo();
 		try {
-			cloned.totalRemainingDays = new ReserveLeaveRemainingDayNumber(this.totalRemainingDays.v());
-			// for (val detail : this.details) cloned.details.add(detail.clone());
+			cloned.totalRemaining = this.totalRemaining.clone();
+			cloned.beforeGrant = this.beforeGrant.clone();
+			if ( this.afterGrant.isPresent() ){
+				cloned.afterGrant = Optional.of(this.afterGrant.get().clone());
+			} else {
+				cloned.afterGrant = Optional.empty();
+			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("ReserveLeaveRemainingNumberInfo clone error.");
@@ -110,4 +109,21 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 //	public void setDaysOfAllDetail(Double days){
 //		for (val detail : this.details) detail.setDays(new ReserveLeaveRemainingDayNumber(days));
 //	}
+	
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		beforeGrant = totalRemaining.clone();
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		afterGrant = Optional.of(totalRemaining.clone());
+	}
+	
 }

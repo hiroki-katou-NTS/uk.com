@@ -59,6 +59,8 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 			if (this.usedDaysAfterGrant.isPresent()){
 				cloned.usedDaysAfterGrant = Optional.of(
 						new ReserveLeaveUsedDayNumber(this.usedDaysAfterGrant.get().v()));
+			} else {
+				cloned.usedDaysAfterGrant = Optional.empty();
 			}
 		}
 		catch (Exception e){
