@@ -1,6 +1,7 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 interface Kdp003FCodeNameData {
+	id?: string;
 	code?: string;
 	name?: string;
 }
@@ -29,7 +30,8 @@ interface Kdp003FFingerVeinModeParam {
 type KDP003F_MODE = 'admin' | 'employee' | 'fingerVein';
 
 const KDP003F_VM_API = {
-	LOGIN: 'ctx/sys/gateway/kdp/login/adminmode'
+	LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
+	LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode'
 };
 
 @bean()
@@ -53,7 +55,7 @@ class Kdp003FViewModel extends ko.ViewModel {
 		}
 
 		// get mode from params or set default
-		vm.mode(params.mode || 'admin');
+		vm.mode(vm.params.mode || 'admin');
 	}
 
 	public mounted() {
@@ -64,65 +66,91 @@ class Kdp003FViewModel extends ko.ViewModel {
 			const { company, employee } = params as Kdp003FEmployeeModeParam;
 
 			if (company) {
+				model.employeeId(employee.id);
 				model.companyCode(company.code);
 				model.companyName(company.name);
 			}
 
 			if (employee) {
+				model.employeeId(employee.id);
 				model.employeeCode(employee.code);
 				model.employeeName(employee.name);
 			}
-
-
 		}
 	}
 
 	public submitLogin() {
 		const vm = this;
+		const { params } = vm;
+
+		switch (params.mode) {
+			default:
+			case 'admin':
+				vm.loginAdmin();
+				break;
+			case 'employee':
+			case 'fingerVein':
+				vm.loginEmployeeOrFingerVein();
+				break;
+		}
+	}
+
+	loginAdmin() {
+		const vm = this;
 		const model: Kdp003FModelData = ko.toJS(vm.model);
 
 		vm.$blockui('show')
-			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN, model))
+			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN_ADMIN, model))
 			.done((response: Kdp003FTimeStampLoginData) => {
 				if (!!response.successMsg) {
-					vm.$dialog
+					return vm.$dialog
 						.info({ messageId: response.successMsg })
-						.then(() => vm.doSuccessLogin(response));
+						.then(() => response);
 				} else {
-					vm.doSuccessLogin(response);
+					return $.Deferred().resolve(response);
 				}
-			}).fail((response: any) => {
+			})
+			.then((response: Kdp003FTimeStampLoginData) => {
+				_.omit(model, ['password', 'companyId']);
+				
+				vm.$window
+					.storage('form3LoginInfo', model)
+					.then(() => {
+						vm.$window.close(response);
+						// vm.$jump('com', '/view/ccg/008/a/index.xhtml', { screen: 'login' });
+					});
+			})
+			.fail((response: any) => {
 				if (!response.messageId) {
 					vm.$dialog.error(response.message);
 				} else {
 					vm.$dialog.error({ messageId: response.messageId });
 				}
 			})
-			.always(() => {
-				vm.$blockui('clear');
-			});
+			.always(() =>  vm.$blockui('clear'));
 	}
 
-	private doSuccessLogin(messError?: Kdp003FTimeStampLoginData) {
+	loginEmployeeOrFingerVein() {
 		const vm = this;
 		const model: Kdp003FModelData = ko.toJS(vm.model);
-
-		_.omit(model, ['password', 'companyId']);
-
-		vm.$window
-			.storage('form3LoginInfo', model)
-			.then(() => {
-				vm.$window.close();
-				// vm.$jump('com', '/view/ccg/008/a/index.xhtml', { screen: 'login' });
-			});
+		
+		vm.$blockui('show')
+			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN_EMPLOYEE, model))
+			.then((response: any) => {
+				
+			})
+			.fail((message: any) => {
+				
+			})
+			.always(() =>  vm.$blockui('clear'));
 	}
 
-	public cancelLogin() {
+	cancelLogin() {
 		const vm = this;
 
 		vm.$window.close();
 	}
-} 
+}
 
 interface Kdp003FCompanyItem {
 	companyId: string;
@@ -154,6 +182,7 @@ interface Kdp003FTimeStampLoginData {
 interface Kdp003FModelData {
 	companyId: string;
 	companyCode: string;
+	employeeId: string;
 	employeeCode: string;
 	password: string;
 }
@@ -162,7 +191,8 @@ class Kdp003FModel {
 	companyId: KnockoutObservable<string> = ko.observable('');
 	companyCode: KnockoutObservable<string> = ko.observable('');
 	companyName: KnockoutObservable<string> = ko.observable('');
-
+	
+	employeeId: KnockoutObservable<string> = ko.observable('');
 	employeeCode: KnockoutObservable<string> = ko.observable('');
 	employeeName: KnockoutObservable<string> = ko.observable('');
 

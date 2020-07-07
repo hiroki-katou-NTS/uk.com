@@ -83,7 +83,7 @@ const KDP003F_AMIN_MODE_API = {
 class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
 	listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
 
-	constructor(public data: { model: Kdp003FModel; params: Kdp003FParamData; }) {
+	constructor(public data: { model: Kdp003FModel; params: Kdp003FAdminModeParam; }) {
 		super();
 	}
 
@@ -115,6 +115,10 @@ class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
 
 					model.companyCode(exist.companyCode);
 					model.companyName(exist.companyName);
+				} else {
+					vm.$dialog
+						.error({ messageId: 'Msg_1527' })
+						.then(() => vm.$window.close());
 				}
 			});
 	}

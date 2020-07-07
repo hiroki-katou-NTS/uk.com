@@ -53,7 +53,7 @@ const fingerVeinModeTemplate = `
 	template: fingerVeinModeTemplate
 })
 class Kdp003FLoginWithFingerVeinModeCoponent extends ko.ViewModel {
-	constructor(public data: { model: Kdp003FModel; params: Kdp003FParamData; }) {
+	constructor(public data: { model: Kdp003FModel; params: Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam; }) {
 		super();
 	}
 
