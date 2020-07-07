@@ -16,6 +16,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -291,14 +292,14 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 		// 登録時チェック処理（全申請共通）
 		List<ConfirmMsgOutput> confirmMsgLst = null;
-//				newBeforeRegister.processBeforeRegister_New(
-//				companyID, 
-//				EmploymentRootAtr.APPLICATION, 
-//				false, 
-//				application, 
-//				null, 
-//				errorFlag, 
-//				lstDateHd);
+				newBeforeRegister.processBeforeRegister_New(
+				companyID, 
+				EmploymentRootAtr.APPLICATION, 
+				false, 
+				application, 
+				null, 
+				errorFlag, 
+				lstDateHd);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -530,6 +531,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 //		ドメインモデル「勤務変更申請設定」を取得する
 		Optional<AppWorkChangeSet> appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyId);
 //		ドメインモデル「勤務変更申請の反映」を取得する
+		// table is not existed
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
 		appWorkChangeReflect.setCompanyID(companyId);
 //		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));

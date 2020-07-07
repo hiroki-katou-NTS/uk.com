@@ -1,5 +1,5 @@
 <template>
-  <div class="kafs07a">
+  <div class="kafs07a" v-bind="data">
     <!-- <div>
       <kafs00-a v-if="true" v-bind:params="{application: application}" />
     </div> -->

@@ -55,7 +55,8 @@ export class KafS07AComponent extends Vue {
 
     public isCondition1: Boolean = false;
 
-    public data: any;
+    // data is fetched service
+    public data: any = 'hhh';
 
     public application: any = {
         employeeName: 'employee',
@@ -101,25 +102,26 @@ export class KafS07AComponent extends Vue {
 
         //     });
 
-        this.$http.post('at', API.startS07, {
-            mode: true,
-            companyId: '',
-            employeeId: '',
-            listDates: null,
-            appWorkChangeOutputDto: null,
-            appWorkChangeDto: null
-        })
-            .then((res: any) => {
-                if (!res) {
-                    return;
-                }
-                this.data = res;
-                let appWorkChangeDispInfo = res.appWorkChangeDispInfo;
-                let appWorkChange = res.appWorkChange;
-                this.$mask('hide');
-            }).catch((err: any) => {
-                this.$mask('hide');
-            });
+
+        // this.$http.post('at', API.startS07, {
+        //     mode: true,
+        //     companyId: '',
+        //     employeeId: '',
+        //     listDates: null,
+        //     appWorkChangeOutputDto: null,
+        //     appWorkChangeDto: null
+        // })
+        //     .then((res: any) => {
+        //         if (!res) {
+        //             return;
+        //         }
+        //         this.data = res;
+        //         let appWorkChangeDispInfo = res.appWorkChangeDispInfo;
+        //         let appWorkChange = res.appWorkChange;
+        //         this.$mask('hide');
+        //     }).catch((err: any) => {
+        //         this.$mask('hide');
+        //     });
     }
 
     public register() {
@@ -132,38 +134,38 @@ export class KafS07AComponent extends Vue {
             return;
         }
         // check before registering application
-        this.$http.post('at', API.checkBeforRegister, {
-            mode: true,
-            companyId: '',
-            applicationDto: null,
-            appWorkChangeDto: null,
-            isError: 1
-        }).then((res: any) => {
-            // confirmMsgLst
-            // holidayDateLst
-            if (!_.isEmpty(res)) {
-                // display dialog
-                return;
-            }
-            // 勤務変更申請の登録処理
-            // register application
+        // this.$http.post('at', API.checkBeforRegister, {
+        //     mode: true,
+        //     companyId: '',
+        //     applicationDto: null,
+        //     appWorkChangeDto: null,
+        //     isError: 1
+        // }).then((res: any) => {
+        //     // confirmMsgLst
+        //     // holidayDateLst
+        //     if (!_.isEmpty(res)) {
+        //         // display dialog
+        //         return;
+        //     }
+        //     // 勤務変更申請の登録処理
+        //     // register application
 
-            this.$http.post('at', API.registerAppWorkChange, {
-                mode: true,
-                companyId: '',
-                applicationDto: null,
-                appWorkChangeDto: null,
-                holidayDates: res.holidayDateLst,
-                isMail: true
-            }).then((res: any) => {
-                // KAFS00_D_申請登録後画面に移動する
-            }).catch((res: any) => {
+        //     this.$http.post('at', API.registerAppWorkChange, {
+        //         mode: true,
+        //         companyId: '',
+        //         applicationDto: null,
+        //         appWorkChangeDto: null,
+        //         holidayDates: res.holidayDateLst,
+        //         isMail: true
+        //     }).then((res: any) => {
+        //         // KAFS00_D_申請登録後画面に移動する
+        //     }).catch((res: any) => {
 
-            });
+        //     });
 
-        }).catch((res: any) => {
-            // show message error
-        });
+        // }).catch((res: any) => {
+        //     // show message error
+        // });
 
         // this.app = new AppWorkChange(
         //     this.worktype.code + '  ' + this.worktype.name,
@@ -272,5 +274,5 @@ const API = {
     startNew: 'at/request/application/workchange/startNew',
     startS07: 'at/at/request/application/workchange/startMobile',
     checkBeforRegister: 'at/at/request/application/workchange/checkBeforeRegister_New',
-    registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New'.
+    registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New',
 };
