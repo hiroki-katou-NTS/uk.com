@@ -36,7 +36,8 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 	/**
 	 * ファクトリー
 	 * @param totalRemaining 合計残日数
-	 * @param details 明細
+	 * @param beforeGrant 付与前
+	 * @param afterGrant 付与後
 	 * @return 積立年休残数
 	 */
 	public static ReserveLeaveRemainingNumberInfo of(

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
@@ -173,19 +174,25 @@ public class KrcdtMonRsvleaRemain extends UkJpaEntity implements Serializable {
 			valUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.usedDaysAfter);
 		}
 		ReserveLeave reserveLeave = ReserveLeave.of(
+				/**
+				 * @param usedNumber 使用数
+				 * @param remainingNumberInfo 残数
+				 */
 				ReserveLeaveUsedNumber.of(
 						new ReserveLeaveUsedDayNumber(this.usedDays),
 						new ReserveLeaveUsedDayNumber(this.usedDaysBefore),
 						Optional.ofNullable(valUsedDaysAfter)),
-				ReserveLeaveRemainingNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.remainingDays),
-						normalDetail),
-				ReserveLeaveRemainingNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.remainingDaysBefore),
-						normalDetailBefore),
-				Optional.ofNullable(valRemainAfter),
-				ReserveLeaveUndigestedNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.notUsedDays)));
+				ReserveLeaveRemainingNumberInfo.of(
+					ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.remainingDays),
+							normalDetail),
+					ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.remainingDaysBefore),
+							normalDetailBefore),
+					Optional.of(ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.remainingDaysAfter),
+							normalDetailAfter)))
+			);
 
 		// 実積立年休：残数付与後
 		ReserveLeaveRemainingNumber valFactRemainAfter = null;
@@ -200,18 +207,39 @@ public class KrcdtMonRsvleaRemain extends UkJpaEntity implements Serializable {
 		if (this.factUsedDaysAfter != null){
 			valFactUsedDaysAfter = new ReserveLeaveUsedDayNumber(this.factUsedDaysAfter);
 		}
-		RealReserveLeave realReserveLeave = RealReserveLeave.of(
+		ReserveLeave realReserveLeave = ReserveLeave.of(
+				/**
+				 * @param usedNumber 使用数
+				 * @param remainingNumberInfo 残数
+				 */
 				ReserveLeaveUsedNumber.of(
 						new ReserveLeaveUsedDayNumber(this.factUsedDays),
 						new ReserveLeaveUsedDayNumber(this.factUsedDaysBefore),
 						Optional.ofNullable(valFactUsedDaysAfter)),
-				ReserveLeaveRemainingNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.factRemainingDays),
-						realDetail),
-				ReserveLeaveRemainingNumber.of(
-						new ReserveLeaveRemainingDayNumber(this.factRemainingDaysBefore),
-						realDetailBefore),
-				Optional.ofNullable(valFactRemainAfter));
+				ReserveLeaveRemainingNumberInfo.of(
+					ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.factRemainingDays),
+							normalDetail),
+					ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.factRemainingDaysBefore),
+							normalDetailBefore),
+					Optional.of(ReserveLeaveRemainingNumber.of(
+							new ReserveLeaveRemainingDayNumber(this.factRemainingDaysAfter),
+							normalDetailAfter))
+				));
+
+				
+//				ReserveLeaveUsedNumber.of(
+//						new ReserveLeaveUsedDayNumber(this.factUsedDays),
+//						new ReserveLeaveUsedDayNumber(this.factUsedDaysBefore),
+//						Optional.ofNullable(valFactUsedDaysAfter)),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.factRemainingDays),
+//						realDetail),
+//				ReserveLeaveRemainingNumber.of(
+//						new ReserveLeaveRemainingDayNumber(this.factRemainingDaysBefore),
+//						realDetailBefore),
+//				Optional.ofNullable(valFactRemainAfter));
 		
 		// 積立年休付与情報
 		ReserveLeaveGrant reserveLeaveGrant = null;
@@ -285,23 +313,23 @@ public class KrcdtMonRsvleaRemain extends UkJpaEntity implements Serializable {
 		}
 		
 		// 積立年休：残数
-		this.remainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
-		this.remainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (normal.getRemainingNumberAfterGrant().isPresent()){
-			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+		this.remainingDays = normal.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v();
+		this.remainingDaysBefore = normal.getRemainingNumberInfo().getBeforeGrant().getTotalRemainingDays().v();
+		if (normal.getRemainingNumberInfo().getAfterGrant().isPresent()){
+			val normalRemainAfter = normal.getRemainingNumberInfo().getAfterGrant().get();
 			this.remainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
 		}
 		
 		// 実積立年休：残数
-		this.factRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
-		this.factRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (real.getRemainingNumberAfterGrant().isPresent()){
-			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
-			this.factRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
+		this.remainingDays = real.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v();
+		this.remainingDaysBefore = real.getRemainingNumberInfo().getBeforeGrant().getTotalRemainingDays().v();
+		if (real.getRemainingNumberInfo().getAfterGrant().isPresent()){
+			val realRemainAfter = real.getRemainingNumberInfo().getAfterGrant().get();
+			this.remainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
 		}
 		
 		// 積立年休：未消化数
-		val normalUndigest = normal.getUndigestedNumber();
+		val normalUndigest = domain.getUndigestedNumber();
 		this.notUsedDays = normalUndigest.getUndigestedDays().v();
 		
 		// 付与区分
@@ -317,12 +345,12 @@ public class KrcdtMonRsvleaRemain extends UkJpaEntity implements Serializable {
 		List<GeneralDate> normalGrantDateList = new ArrayList<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> normalRemain = new HashMap<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> normalRealRemain = new HashMap<>();
-		for (val detail : normal.getRemainingNumber().getDetails()){
+		for (val detail : normal.getRemainingNumberInfo().getTotalRemaining().getDetails()){
 			val grantDate = detail.getGrantDate();
 			if (!normalGrantDateList.contains(grantDate)) normalGrantDateList.add(grantDate);
 			normalRemain.putIfAbsent(grantDate, detail);
 		}
-		for (val detail : real.getRemainingNumber().getDetails()){
+		for (val detail : real.getRemainingNumberInfo().getTotalRemaining().getDetails()){
 			val grantDate = detail.getGrantDate();
 			if (!normalGrantDateList.contains(grantDate)) normalGrantDateList.add(grantDate);
 			normalRealRemain.putIfAbsent(grantDate, detail);
@@ -334,31 +362,33 @@ public class KrcdtMonRsvleaRemain extends UkJpaEntity implements Serializable {
 		List<GeneralDate> beforeGrantDateList = new ArrayList<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> beforeRemain = new HashMap<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> beforeRealRemain = new HashMap<>();
-		for (val detail : normal.getRemainingNumberBeforeGrant().getDetails()){
+		for (val detail : normal.getRemainingNumberInfo().getBeforeGrant().getDetails()){
 			val grantDate = detail.getGrantDate();
 			if (!beforeGrantDateList.contains(grantDate)) beforeGrantDateList.add(grantDate);
 			beforeRemain.putIfAbsent(grantDate, detail);
 		}
-		for (val detail : real.getRemainingNumberBeforeGrant().getDetails()){
-			val grantDate = detail.getGrantDate();
-			if (!beforeGrantDateList.contains(grantDate)) beforeGrantDateList.add(grantDate);
-			beforeRealRemain.putIfAbsent(grantDate, detail);
+		if ( real.getRemainingNumberInfo().getAfterGrant().isPresent() ){
+			for (val detail : real.getRemainingNumberInfo().getAfterGrant().get().getDetails()){
+				val grantDate = detail.getGrantDate();
+				if (!beforeGrantDateList.contains(grantDate)) beforeGrantDateList.add(grantDate);
+				beforeRealRemain.putIfAbsent(grantDate, detail);
+			}
+			beforeGrantDateList.removeIf(
+					c -> {return (!beforeRemain.containsKey(c) || !beforeRealRemain.containsKey(c));} );
 		}
-		beforeGrantDateList.removeIf(
-				c -> {return (!beforeRemain.containsKey(c) || !beforeRealRemain.containsKey(c));} );
 		
 		// 積立年休月別残数明細：残数付与後
 		List<GeneralDate> afterGrantDateList = new ArrayList<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> afterRemain = new HashMap<>();
 		Map<GeneralDate, ReserveLeaveRemainingDetail> afterRealRemain = new HashMap<>();
-		if (normal.getRemainingNumberAfterGrant().isPresent() &&
-			real.getRemainingNumberAfterGrant().isPresent()){
-			for (val detail : normal.getRemainingNumberAfterGrant().get().getDetails()){
+		if (normal.getRemainingNumberInfo().getAfterGrant().isPresent() &&
+			real.getRemainingNumberInfo().getAfterGrant().isPresent()){
+			for (val detail : normal.getRemainingNumberInfo().getAfterGrant().get().getDetails()){
 				val grantDate = detail.getGrantDate();
 				if (!afterGrantDateList.contains(grantDate)) afterGrantDateList.add(grantDate);
 				afterRemain.putIfAbsent(grantDate, detail);
 			}
-			for (val detail : real.getRemainingNumberAfterGrant().get().getDetails()){
+			for (val detail : real.getRemainingNumberInfo().getAfterGrant().get().getDetails()){
 				val grantDate = detail.getGrantDate();
 				if (!afterGrantDateList.contains(grantDate)) afterGrantDateList.add(grantDate);
 				afterRealRemain.putIfAbsent(grantDate, detail);

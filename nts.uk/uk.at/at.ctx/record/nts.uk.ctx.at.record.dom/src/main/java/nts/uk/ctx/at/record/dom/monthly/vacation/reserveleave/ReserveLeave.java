@@ -44,16 +44,16 @@ public class ReserveLeave implements Cloneable {
 	/**
 	 * ファクトリー
 	 * @param usedNumber 使用数
-	 * @param remainingNumber 残数
+	 * @param remainingNumberInfo 残数
 	 * @return 積立年休
 	 */
 	public static ReserveLeave of(
 			ReserveLeaveUsedNumber usedNumber,
-			ReserveLeaveRemainingNumberInfo remainingNumber){
+			ReserveLeaveRemainingNumberInfo remainingNumberInfo){
 
 		ReserveLeave domain = new ReserveLeave();
 		domain.usedNumber = usedNumber;
-		domain.remainingNumberInfo = remainingNumber;
+		domain.remainingNumberInfo = remainingNumberInfo;
 //		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
 //		domain.remainingNumberAfterGrant = remainingNumberAfterGrant;
 //		domain.undigestedNumber = undigestedNumber;

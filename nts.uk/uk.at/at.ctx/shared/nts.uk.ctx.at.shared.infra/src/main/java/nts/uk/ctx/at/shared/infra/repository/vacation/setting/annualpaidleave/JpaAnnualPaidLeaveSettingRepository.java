@@ -61,6 +61,8 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
     @Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
+    	
+    	
 		String sqlJdbc = "SELECT *, KMAS.ROUND_PRO_CLA KMASROUND_PRO_CLA, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA "
 				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
 				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "

@@ -360,9 +360,9 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 //			valRemainAfter = AnnualLeaveRemainingNumber.of(new AnnualLeaveRemainingDayNumber(this.remainingDaysAfter),
 //					Optional.ofNullable(valRemainMinutesAfter), normalDetailAfter);
 //		}
-		RemainingMinutes valRemainMinutesAfter = null;
+		AnnualLeaveRemainingTime valRemainMinutesAfter = null;
 		if (this.remainingMinutesAfter != null) {
-			valRemainMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
+			valRemainMinutesAfter = new AnnualLeaveRemainingTime(this.remainingMinutesAfter);
 		}
 		AnnualLeaveRemainingNumber valRemainAfter = null;
 		if (this.remainingDaysAfter != null) {
@@ -415,17 +415,17 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		}
 		
 		// 年休：　時間
-		RemainingMinutes valRemainMinutes = null;
+		AnnualLeaveRemainingTime valRemainMinutes = null;
 		if (this.remainingMinutes != null) {
-			valRemainMinutes = new RemainingMinutes(this.remainingMinutes);
+			valRemainMinutes = new AnnualLeaveRemainingTime(this.remainingMinutes);
 		}
-		RemainingMinutes valRemainMinutesBefore = null;
+		AnnualLeaveRemainingTime valRemainMinutesBefore = null;
 		if (this.remainingMinutesBefore != null) {
-			valRemainMinutesBefore = new RemainingMinutes(this.remainingMinutesBefore);
+			valRemainMinutesBefore = new AnnualLeaveRemainingTime(this.remainingMinutesBefore);
 		}
-		RemainingMinutes valRemainingMinutesAfter = null;
+		AnnualLeaveRemainingTime valRemainingMinutesAfter = null;
 		if (this.remainingMinutesAfter != null) {
-			valRemainingMinutesAfter = new RemainingMinutes(this.remainingMinutesAfter);
+			valRemainingMinutesAfter = new AnnualLeaveRemainingTime(this.remainingMinutesAfter);
 		}
 		
 		UndigestedTimeAnnualLeaveTime valUnusedMinutes = null;
@@ -569,9 +569,9 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		}
 	
 		// 実年休：残数付与後
-		RemainingMinutes valFactRemainMinutesAfter = null;
+		AnnualLeaveRemainingTime valFactRemainMinutesAfter = null;
 		if (this.factRemainingMinutesAfter != null) {
-			valFactRemainMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
+			valFactRemainMinutesAfter = new AnnualLeaveRemainingTime(this.factRemainingMinutesAfter);
 		}
 		AnnualLeaveRemainingNumber valFactRemainAfter = null;
 		if (this.factRemainingDaysAfter != null) {
@@ -594,17 +594,17 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		}
 		
 		// 実年休：　時間
-		RemainingMinutes valFactRemainMinutes = null;
+		AnnualLeaveRemainingTime valFactRemainMinutes = null;
 		if (this.factRemainingMinutes != null) {
-			valFactRemainMinutes = new RemainingMinutes(this.factRemainingMinutes);
+			valFactRemainMinutes = new AnnualLeaveRemainingTime(this.factRemainingMinutes);
 		}
-		RemainingMinutes valFactRemainMinutesBefore = null;
+		AnnualLeaveRemainingTime valFactRemainMinutesBefore = null;
 		if (this.factRemainingMinutesBefore != null) {
-			valFactRemainMinutesBefore = new RemainingMinutes(this.factRemainingMinutesBefore);
+			valFactRemainMinutesBefore = new AnnualLeaveRemainingTime(this.factRemainingMinutesBefore);
 		}
-		RemainingMinutes valFactRemainingMinutesAfter = null;
+		AnnualLeaveRemainingTime valFactRemainingMinutesAfter = null;
 		if (this.factRemainingMinutesAfter != null) {
-			valFactRemainingMinutesAfter = new RemainingMinutes(this.factRemainingMinutesAfter);
+			valFactRemainingMinutesAfter = new AnnualLeaveRemainingTime(this.factRemainingMinutesAfter);
 		}
 		
 		
@@ -1118,13 +1118,13 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		List<GeneralDate> normalGrantDateList = new ArrayList<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRemain = new HashMap<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> normalRealRemain = new HashMap<>();
-		for (val detail : normal.getRemainingNumber().getDetails()) {
+		for (val detail : normal.getRemainingNumberInfo().getRemainingNumber().getDetails()) {
 			val grantDate = detail.getGrantDate();
 			if (!normalGrantDateList.contains(grantDate))
 				normalGrantDateList.add(grantDate);
 			normalRemain.putIfAbsent(grantDate, detail);
 		}
-		for (val detail : real.getRemainingNumber().getDetails()) {
+		for (val detail : real.getRemainingNumberInfo().getRemainingNumber().getDetails()) {
 			val grantDate = detail.getGrantDate();
 			if (!normalGrantDateList.contains(grantDate))
 				normalGrantDateList.add(grantDate);
@@ -1138,13 +1138,13 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		List<GeneralDate> beforeGrantDateList = new ArrayList<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> beforeRemain = new HashMap<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> beforeRealRemain = new HashMap<>();
-		for (val detail : normal.getRemainingNumberBeforeGrant().getDetails()) {
+		for (val detail : normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDetails()) {
 			val grantDate = detail.getGrantDate();
 			if (!beforeGrantDateList.contains(grantDate))
 				beforeGrantDateList.add(grantDate);
 			beforeRemain.putIfAbsent(grantDate, detail);
 		}
-		for (val detail : real.getRemainingNumberBeforeGrant().getDetails()) {
+		for (val detail : real.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDetails()) {
 			val grantDate = detail.getGrantDate();
 			if (!beforeGrantDateList.contains(grantDate))
 				beforeGrantDateList.add(grantDate);
@@ -1158,14 +1158,15 @@ public class KrcdtMonAnnleaRemain extends UkJpaEntity implements Serializable {
 		List<GeneralDate> afterGrantDateList = new ArrayList<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> afterRemain = new HashMap<>();
 		Map<GeneralDate, AnnualLeaveRemainingDetail> afterRealRemain = new HashMap<>();
-		if (normal.getRemainingNumberAfterGrant().isPresent() && real.getRemainingNumberAfterGrant().isPresent()) {
-			for (val detail : normal.getRemainingNumberAfterGrant().get().getDetails()) {
+		if (normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()
+				&& real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()) {
+			for (val detail : normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDetails()) {
 				val grantDate = detail.getGrantDate();
 				if (!afterGrantDateList.contains(grantDate))
 					afterGrantDateList.add(grantDate);
 				afterRemain.putIfAbsent(grantDate, detail);
 			}
-			for (val detail : real.getRemainingNumberAfterGrant().get().getDetails()) {
+			for (val detail : real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDetails()) {
 				val grantDate = detail.getGrantDate();
 				if (!afterGrantDateList.contains(grantDate))
 					afterGrantDateList.add(grantDate);
