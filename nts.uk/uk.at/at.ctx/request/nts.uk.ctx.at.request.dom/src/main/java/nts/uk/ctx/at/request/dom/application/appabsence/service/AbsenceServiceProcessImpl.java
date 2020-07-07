@@ -173,7 +173,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public void createAbsence(AppAbsence domain, Application_New newApp, ApprovalRootStateImport_New approvalRootState) {
 		// insert Application
-		this.appRepository.insert(newApp);
+		// error EA refactor 4
+		/*this.appRepository.insert(newApp);*/
 		this.approvalRootStateAdapter.insertFromCache(
 				newApp.getCompanyID(), 
 				newApp.getAppID(), 

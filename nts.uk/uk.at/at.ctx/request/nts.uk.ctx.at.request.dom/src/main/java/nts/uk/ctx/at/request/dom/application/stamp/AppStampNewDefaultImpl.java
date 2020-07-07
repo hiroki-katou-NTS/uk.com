@@ -77,7 +77,8 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(), OverTimeAtr.ALL, checkOver1Year, Collections.emptyList());
 		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);
-		applicationApprovalService.insert(appStamp.getApplication_New());
+		// error EA refactor 4
+		/*applicationApprovalService.insert(appStamp.getApplication_New());*/
 		// error EA refactor 4
 		/*registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(
 				appStamp.getApplication_New().getEmployeeID(), 

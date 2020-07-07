@@ -418,8 +418,8 @@ public class SaveHolidayShipmentCommandHandler
 		// ドメイン「振出申請」を1件登録する
 
 		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(command.getAbsCmd());
-		
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		absRepo.insert(absApp);
 		
 		// 暫定データの登録
@@ -457,7 +457,8 @@ public class SaveHolidayShipmentCommandHandler
 		CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振出申請」を1件登録する
 		RecruitmentApp recApp = createNewRecDomainFromCmd(command.getRecCmd());
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		recRepo.insert(recApp);
 		
 		// 暫定データの登録

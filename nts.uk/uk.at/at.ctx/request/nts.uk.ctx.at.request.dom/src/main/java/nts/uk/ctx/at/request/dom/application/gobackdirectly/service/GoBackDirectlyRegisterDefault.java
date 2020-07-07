@@ -132,7 +132,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
-		appRepo.insert(application);
+		// error EA refactor 4
+		/*appRepo.insert(application);*/
 		// 2-2.新規画面登録時承認反映情報の整理
 		// error EA refactor 4
 		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);*/

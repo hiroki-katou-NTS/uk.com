@@ -378,7 +378,8 @@ public class HolidayServiceImpl implements HolidayService {
 	@Override
 	public void createHolidayWork(AppHolidayWork domain, Application_New newApp) {
 		//Register application
-		appRepository.insert(newApp);
+		// error EA refactor 4
+		/*appRepository.insert(newApp);*/
 		// insert appHolidayWork,HolidayWorkInput
 		appHolidayWorkRepository.Add(domain);
 	}

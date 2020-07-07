@@ -185,7 +185,8 @@ public class SaveChangeAbsDateCommandHandler
 		if (!AppContexts.user().employeeId().equals(employeeID)) {
 			commonApp.setEnteredPersonID(AppContexts.user().employeeId());
 		}
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		return commonApp;
 	}
 

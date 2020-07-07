@@ -33,7 +33,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationApprovalImpl_New implements ApplicationApprovalService_New {
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository_New applicationRepository_Old;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
@@ -71,16 +74,14 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	private ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
-	public void insert(Application_New application) {
+	public void insert(Application application) {
 		String companyID = AppContexts.user().companyId();
 		applicationRepository.insert(application);
-		if(application.getAppType() != ApplicationType_Old.ABSENCE_APPLICATION) {
-			BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
-					.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
-			GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate();
-			approvalRootStateAdapter.insertByAppType(application.getCompanyID(), application.getEmployeeID(),
-					application.getAppType().value, application.getAppDate(), application.getAppID(), targetDate);
-		}
+		BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
+				.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
+		GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate().getApplicationDate();
+		approvalRootStateAdapter.insertByAppType(companyID, application.getEmployeeID(),
+				application.getAppType().value, application.getAppDate().getApplicationDate(), application.getAppID(), targetDate);
 	}
 
 	@Override
@@ -105,12 +106,12 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){
-				Optional<Application_New> optapplicationLeaveApp = this.applicationRepository.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
+				Optional<Application_New> optapplicationLeaveApp = this.applicationRepository_Old.findByID(companyID, brOptional.get().getAbsenceLeaveAppID());
 				if(optapplicationLeaveApp.isPresent()){
 					Application_New applicationLeaveApp = optapplicationLeaveApp.get();
 					applicationLeaveApp.setVersion(applicationLeaveApp.getVersion());
 					applicationLeaveApp.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-					applicationRepository.update(applicationLeaveApp);
+					applicationRepository_Old.update(applicationLeaveApp);
 				}
 				this.brkOffSupChangeMngRepository.remove(appID, brOptional.get().getAbsenceLeaveAppID());
 			}
@@ -125,7 +126,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		default:
 			break;
 		}
-		applicationRepository.delete(companyID, appID);
+		applicationRepository_Old.delete(companyID, appID);
 		approvalRootStateAdapter.deleteApprovalRootState(appID);
 
 	}

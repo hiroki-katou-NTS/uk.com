@@ -110,7 +110,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 				lateOrLeaveEarly.getApplication().getAppDate(), 
 				lateOrLeaveEarly.getApplication().getAppID());*/
 		// Add LateOrLeaveEarly
-		appRepository.insert(lateOrLeaveEarly.getApplication());
+		// error EA refactor 4
+		/*appRepository.insert(lateOrLeaveEarly.getApplication());*/
 		lateOrLeaveEarlyRepository.add(lateOrLeaveEarly);
 		//applicationRepository_New.insert(lateOrLeaveEarly.getApplication());
 	}
