@@ -4,13 +4,13 @@
 @bean()
 class KDP004GViewModel extends ko.ViewModel {
 
-	retry: KnockoutObservable<number> = ko.observable(0);
+	displayLoginBtn: KnockoutObservable<boolean> = ko.observable(false);
 	errorMessage: KnockoutObservable<string> = ko.observable('');
 
 	created(params: any) {
 		let vm = this;
 		vm.$window.storage('ModelGParam').then((param: any) => {
-			vm.retry(param.retry);
+			vm.displayLoginBtn(param.displayLoginBtn);
 			vm.errorMessage(vm.$i18n.message(param.errorMessage));
 		});
 	}

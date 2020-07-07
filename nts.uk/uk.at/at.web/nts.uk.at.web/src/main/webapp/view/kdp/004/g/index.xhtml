@@ -25,7 +25,7 @@
 				<div class='div_line flex btn-panel'>
 					<button class="retry-btn proceed x-large"
 						data-bind="click:function(){closeDialog('retry')}">#{i18n.getText('KDP004_3')}</button>
-					<com:ko-if bind="retry() == 3 ">
+					<com:ko-if bind="displayLoginBtn ">
 						<button class="password-login-btn proceed x-large"
 							data-bind="click:function(){closeDialog('loginPass')}">#{i18n.getText('KDP004_4')}</button>
 					</com:ko-if>

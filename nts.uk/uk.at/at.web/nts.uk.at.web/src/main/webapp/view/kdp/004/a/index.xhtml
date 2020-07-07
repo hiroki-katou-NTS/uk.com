@@ -23,14 +23,16 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
+			<div id="functions-area">
+			<div data-bind="ntsCheckBox: { checked: fingerAuthCkb }">FingerAuth Success</div>
+			</div>
 
 			<div id="content-area" class="cf">
 				<!-- A1 -->
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
 						<stamp-clock params="setting: stampSetting"></stamp-clock>
-
+						
 						<div data-bind="if:isUsed" class="panel"
 							style="padding: 0 10px 10px 10px">
 							<div id="stamp-desc"

@@ -6,6 +6,7 @@ interface StampSetting {
 	backGroundColor: string;
 	resultDisplayTime: number;
 	pageLayouts: Array<PageLayout>;
+	authcFailCnt:number;
 }
 
 interface PageLayout {
@@ -43,49 +44,12 @@ interface IAuthResult {
 	authType: number;
 }
 
-
-class Kdp004StampSetting {
-	buttonEmphasisArt: boolean = true;
-	historyDisplayMethod: number = 1;
-	correctionInterval: number = 1;
-	textColor: string = '#ffffff';
-	backGroundColor: string = '#0D86D1';
-	resultDisplayTime: number = 1;
-	pageLayouts: Array<Kdp004PageLayout> = [new Kdp004PageLayout()];
-}
-
-class Kdp004PageLayout {
-	pageNo: number = 1;
-	stampPageName: string = '';
-	stampPageComment: string = '';
-	stampPageCommentColor: string = '';
-	buttonLayoutType: number = 1;
-	buttonSettings: Array<Kdp004ButtonSetting> = [new Kdp004ButtonSetting()];
-}
-
-class Kdp004ButtonSetting {
-	btnPositionNo: number = 1;
-	btnName: string = '';
-	btnTextColor: string = '';
-	btnBackGroundColor: string = '';
-	btnReservationArt: number = 1;
-	changeHalfDay: boolean = true;
-	goOutArt: number = 1;
-	setPreClockArt: number = 1;
-	changeClockArt: number = 1;
-	changeCalArt: number = 1;
-	usrArt: number = 1;
-	audioType: number = 1;
-	onClick: any = null;
-
-}
-
 class StampTab {
 	tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray([]);
 	selectedTab: KnockoutObservable<string> = ko.observable('');
 	stampPageComment: KnockoutObservable<string> = ko.observable('');
 	stampPageCommentColor: KnockoutObservable<string> = ko.observable('');
-	layouts: KnockoutObservableArray<Kdp004PageLayout> = ko.observableArray([]);
+	layouts: KnockoutObservableArray<PageLayout> = ko.observableArray([]);
 
 	constructor() {
 		let self = this;
