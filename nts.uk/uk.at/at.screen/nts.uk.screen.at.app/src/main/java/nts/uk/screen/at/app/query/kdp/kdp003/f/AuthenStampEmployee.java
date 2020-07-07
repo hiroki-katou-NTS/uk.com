@@ -28,11 +28,10 @@ public class AuthenStampEmployee {
 	
 	@Inject
 	private IPersonInfoPub personInfoPub;
-	
+
 	@Inject
 	private TimeStampLoginCommandHandler timeStampLoginCommandHandler;
-	
-	
+
 	/**
 	 *【input】
 	  ・会社ID cid
@@ -47,10 +46,12 @@ public class AuthenStampEmployee {
 	  ・社員
 	  ・エラーメッセージ 
 	 */
-	public TimeStampInputLoginDto authenticateStampedEmployees(String cid, Optional<String> scd, Optional<String> sid, Optional<String> passWord,
-			boolean passwordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreat, @Context HttpServletRequest request){
-		
+	public TimeStampInputLoginDto authenticateStampedEmployees(String cid, Optional<String> scd, Optional<String> sid,
+			Optional<String> passWord, boolean passwordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreat,
+			@Context HttpServletRequest request) {
+
 		TimeStampInputLoginDto result = null;
+
 		if (!scd.isPresent()) {
 			// truong hop scd = null là cảu màn KDP004, KDP005. Khi đó sẽ truyền sid lên
 			// Imported（GateWay）「社員」を取得する
@@ -67,8 +68,7 @@ public class AuthenStampEmployee {
 			command.setRequest(request);
 
 			result = this.timeStampLoginCommandHandler.handle(command);
-			
-		}else if(scd.isPresent()){
+		} else if (scd.isPresent()) {
 			// アルゴリズム「打刻入力ログイン」を実行する
 			TimeStampLoginCommand command = new TimeStampLoginCommand();
 			command.setContractCode(AppContexts.user().contractCode());
@@ -79,10 +79,10 @@ public class AuthenStampEmployee {
 			command.setAdminMode(isAdminMode);
 			command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
 			command.setRequest(request);
-			
+
 			result = this.timeStampLoginCommandHandler.handle(command);
 		}
-		
+
 		return result;
 	}
 

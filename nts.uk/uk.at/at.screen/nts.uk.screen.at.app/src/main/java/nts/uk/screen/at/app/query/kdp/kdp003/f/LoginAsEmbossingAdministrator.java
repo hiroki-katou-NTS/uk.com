@@ -25,8 +25,6 @@ public class LoginAsEmbossingAdministrator {
 
 	public TimeStampInputLoginDto loginAsEmbossingAdmin(String cid, String scd, String passWord,String companyCode, Boolean isAdminMode, boolean runtimeEnvironmentCreat,
 			@Context HttpServletRequest request) {
-		
-		TimeStampInputLoginDto result = null;
 		runtimeEnvironmentCreat = true;
 
 		// アルゴリズム「打刻入力ログイン」を実行する
@@ -41,8 +39,6 @@ public class LoginAsEmbossingAdministrator {
 		command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
 		command.setRequest(request);
 		
-		result = this.timeStampLoginCommandHandler.handle(command);
-		return result;
-
+		return this.timeStampLoginCommandHandler.handle(command);
 	}
 }
