@@ -1068,7 +1068,8 @@ public class HolidayServiceImpl implements HolidayService {
 		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
 		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
 		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				application.getEmployeeID(), 
 				application.getAppDate(), 
@@ -1077,7 +1078,7 @@ public class HolidayServiceImpl implements HolidayService {
 				application.getPrePostAtr(), 
 				application.getVersion(),
 				holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(),
-				holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v());
+				holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v());*/
 		// 3.個別エラーチェック
 		HdWorkCheckRegisterOutput output = this.individualErrorCheck(
 				companyID, 

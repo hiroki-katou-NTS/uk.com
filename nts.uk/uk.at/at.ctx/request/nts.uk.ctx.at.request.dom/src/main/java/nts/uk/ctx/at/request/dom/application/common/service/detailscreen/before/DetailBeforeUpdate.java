@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 
 /**
@@ -22,7 +23,7 @@ public interface DetailBeforeUpdate {
 	 * @param wkTimeCd
 	 */
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
-			PrePostAtr_Old postAtr, Long version,String wkTypeCD, String wkTimeCd);
+			PrePostAtr postAtr, Long version,String wkTypeCD, String wkTimeCd);
 	
 	/**
 	 * 1.排他チェック

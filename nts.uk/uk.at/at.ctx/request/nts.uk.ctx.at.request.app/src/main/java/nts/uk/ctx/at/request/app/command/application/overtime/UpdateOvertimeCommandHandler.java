@@ -150,7 +150,8 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setVersion(appOverTime.getVersion());
 		appOverTime.getApplication().setVersion(command.getVersion());
 		//4-1.詳細画面登録前の処理を実行する
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appOverTime.getApplication().getEmployeeID(), 
 				appOverTime.getApplication().getAppDate(), 
@@ -158,7 +159,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				appOverTime.getAppID(), 
 				appOverTime.getApplication().getPrePostAtr(), command.getVersion(),
 				appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(),
-				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
+				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());*/
 		//ドメインモデル「残業申請」を更新する
 		overtimeRepository.update(appOverTime);
 		applicationRepository.updateWithVersion(appOverTime.getApplication());

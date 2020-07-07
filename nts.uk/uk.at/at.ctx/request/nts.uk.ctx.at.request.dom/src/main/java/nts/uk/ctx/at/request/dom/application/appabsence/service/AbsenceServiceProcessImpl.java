@@ -1133,7 +1133,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
 		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appAbsence.getApplication().getEmployeeID(), 
 				appAbsence.getApplication().getAppDate(), 
@@ -1142,7 +1143,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getApplication().getPrePostAtr(), 
 				appAbsence.getApplication().getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());*/
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst = this.checkAppAbsenceRegister(
 				false, 

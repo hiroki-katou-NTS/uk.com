@@ -62,14 +62,15 @@ public class UpdateLateOrLeaveEarlyCommandHandler
 		domainLateOrLeaveEarly.setVersion(version);
 
 		// 「4-1.詳細画面登録前の処理」を実行する
-		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyID,
+		// error EA refactor 4
+		/*detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyID,
 				// ApplicantSID = EmployeeID
 				domainLateOrLeaveEarly.getApplication().getEmployeeID(),
 				domainLateOrLeaveEarly.getApplication().getAppDate(),
 				domainLateOrLeaveEarly.getApplication().getAppType().value,
 				domainLateOrLeaveEarly.getApplication().getAppID(),
 				domainLateOrLeaveEarly.getApplication().getPrePostAtr(), domainLateOrLeaveEarly.getVersion(), null,
-				null);
+				null);*/
 
 		// ドメインモデル「遅刻早退取消申請」の更新する
 		// Update the domain model 'Cancellation for late arrival cancellation'

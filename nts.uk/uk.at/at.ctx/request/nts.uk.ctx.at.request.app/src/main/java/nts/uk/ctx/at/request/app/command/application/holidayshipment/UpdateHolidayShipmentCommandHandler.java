@@ -154,9 +154,10 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
 			ApplicationType_Old appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
-		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
+		// error EA refactor 4
+		/*beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
 				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
-				Long.valueOf(appVer), wkTypeCD, wkTimeCD);
+				Long.valueOf(appVer), wkTypeCD, wkTimeCD);*/
 
 	}
 

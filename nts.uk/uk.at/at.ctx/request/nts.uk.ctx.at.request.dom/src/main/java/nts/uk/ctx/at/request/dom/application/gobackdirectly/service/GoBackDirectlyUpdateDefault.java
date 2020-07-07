@@ -73,7 +73,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	public void checkErrorBeforeUpdate(GoBackDirectly goBackDirectly, String companyID, String appID, Long version) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 		Application_New application_New = appRepo.findByID(companyID, appID).get();
-		this.detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*this.detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				application_New.getEmployeeID(), 
 				application_New.getAppDate(), 
@@ -82,7 +83,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				application_New.getPrePostAtr(), 
 				version,
 				!goBackDirectly.getWorkTypeCD().isPresent() || goBackDirectly.getWorkTypeCD().get() == null ? null : goBackDirectly.getWorkTypeCD().get().v(),
-				!goBackDirectly.getSiftCD().isPresent() || goBackDirectly.getSiftCD().get() == null ? null : goBackDirectly.getSiftCD().get().v());
+				!goBackDirectly.getSiftCD().isPresent() || goBackDirectly.getSiftCD().get() == null ? null : goBackDirectly.getSiftCD().get().v());*/
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
