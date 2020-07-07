@@ -95,7 +95,7 @@ module nts.uk.at.view.kdp004.a {
 									dfd.resolve();
 									block.clear();
 								});
-							
+
 							self.getStampToSuppress();
 
 						}).fail((res) => {
@@ -221,14 +221,14 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public openScreenG(button, layout): JQueryPromise<any> {
+			public openScreenG(): JQueryPromise<any> {
 				let self = this;
 				const vm = new ko.ViewModel();
 				let retry = 0,
 					errorMessage = 'Msg_301';
 
 				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry== self.stampSetting().authcFailCnt, errorMessage })
+					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry == self.stampSetting().authcFailCnt, errorMessage })
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
@@ -274,14 +274,14 @@ module nts.uk.at.view.kdp004.a {
 			public clickBtn1(vm, layout) {
 				let button = this;
 
-				vm.doAuthent(layout, button).done((res: IAuthResult) => {
+				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
 						vm.registerData(button, layout, res.authType);
 					}
 				});
 			}
 
-			public doAuthent(layout, button): JQueryPromise<IAuthResult> {
+			public doAuthent(): JQueryPromise<IAuthResult> {
 				let self = this;
 				let dfd = $.Deferred<any>();
 
@@ -298,7 +298,7 @@ module nts.uk.at.view.kdp004.a {
 					} else {
 						self.errorMessage(getMessage("Msg_302"));
 
-						self.openScreenG(button, layout).done((res) => {
+						self.openScreenG().done((res) => {
 							dfd.resolve(res);
 						});
 					}
@@ -316,6 +316,34 @@ module nts.uk.at.view.kdp004.a {
 				if (audioType === 2) {
 					//osakini
 				}
+			}
+
+			checkHis(self: ScreenModel) {
+				let vm = new ko.ViewModel();
+				self.doAuthent().done((res: IAuthResult) => {
+					if (res.isSuccess) {
+						vm.$window.modal('at', '/view/kdp/003/s/index.xhtml');
+					}
+				});
+			}
+
+			settingUser(self: ScreenModel) {
+				self.openDialogF({
+					mode: 'admin'
+				}).done((loginResult) => {
+					if (loginResult) {
+						loginResult.em.selectedWP = self.loginInfo.selectedWP;
+						self.loginInfo = loginResult.em;
+						self.openDialogK().done((result) => {
+							if (result) {
+								self.loginInfo.selectedWP = result;
+							}
+							nts.uk.characteristics.save("loginKDP004", self.loginInfo);
+							jump("at", "/view/kdp/004/a/index.xhtml");
+						});
+					}
+
+				});
 			}
 
 			public registerData(button, layout, authcMethod) {

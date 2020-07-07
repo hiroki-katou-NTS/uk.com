@@ -13,26 +13,28 @@ module nts.uk.at.view.kdp.share {
                 <div class="panel" id="stamp-time"
                 data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
 				<span id="stamp-time-text" data-bind="text: displayTime()"></span>
-				<button class="btn-setting" type="button" tabindex="16"></button>
-                <button class="proceed btnA4">打刻履歴</button>
+				<button data-bind="click:settingUser" class="btn-setting" type="button" tabindex="16"></button>
+                <button data-bind="click:checkHis" class="proceed btnA4">打刻履歴</button>
 
             </div>
         </div>
     `})
 	export class StampClock extends ko.ViewModel {
 		systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
-		stampSetting: KnockoutObservable<any> ;
+		stampSetting: KnockoutObservable<any>;
 		countTime: number = 20;
 		interval: any;
 		constructor(params) {
 			let self = this;
-			let vm= new ko.ViewModel();
+			let vm = new ko.ViewModel();
 			self.stampSetting = params.setting;
+			self.checkHis = !!params.checkHis? params.checkHis: ko.observable();
+			self.settingUser = !!params.settingUser?params.settingUser: ko.observable();
 			moment.locale('ja');
 			self.systemDate(moment(vm.$date.now()));
 			self.addCorrectionInterval();
 
-			self.stampSetting.subscribe((data) =>  {
+			self.stampSetting.subscribe((data) => {
 				self.addCorrectionInterval(self.stampSetting().correctionInterval);
 			});
 		}
@@ -49,13 +51,13 @@ module nts.uk.at.view.kdp.share {
 
 		public addCorrectionInterval() {
 			let self = this;
-			let vm= new ko.ViewModel();
+			let vm = new ko.ViewModel();
 			clearInterval(self.interval);
 
 			self.interval = setInterval(() => {
 				if (self.stampSetting().correctionInterval === self.countTime) {
 					self.systemDate(moment(vm.$date.now()));
-						self.countTime = 0;
+					self.countTime = 0;
 				} else {
 					self.systemDate(self.systemDate().add(1, 'seconds'));
 					self.countTime = self.countTime + 1;

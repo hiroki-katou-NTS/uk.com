@@ -31,7 +31,7 @@
 				<!-- A1 -->
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
-						<stamp-clock params="setting: stampSetting"></stamp-clock>
+						<stamp-clock params="setting: stampSetting ,checkHis:function(data, event) { checkHis($vm) } , settingUser: function(data, event) { settingUser($vm)} "></stamp-clock>
 						
 						<div data-bind="if:isUsed" class="panel"
 							style="padding: 0 10px 10px 10px">
