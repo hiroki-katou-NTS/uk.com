@@ -12,6 +12,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class ProcessCompenSuspensionAll {
 
+	private ProcessCompenSuspensionAll() {
+	};
+
 	// 今から処理が必要な振出振休を全て集める
 	public static List<AccumulationAbsenceDetail> process(Require require, AbsRecMngInPeriodRefactParamInput input) {
 

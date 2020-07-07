@@ -13,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  *         7.発生数・使用数を計算する
  */
 public class CalcCompenNumberOccurUses {
+	
+	private CalcCompenNumberOccurUses() {};
 
 	// 7.発生数・使用数を計算する
 	public static CompenSuspensionAggrResult calc(List<AccumulationAbsenceDetail> lstAbsRec, DatePeriod period) {

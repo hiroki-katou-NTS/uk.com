@@ -13,6 +13,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class CalcCarryForwardNumber {
 
+	private CalcCarryForwardNumber() {
+	};
+
 	// 繰越数を計算する
 	public static AbsDaysRemain calc(List<AccumulationAbsenceDetail> data, GeneralDate date, boolean isMode) {
 

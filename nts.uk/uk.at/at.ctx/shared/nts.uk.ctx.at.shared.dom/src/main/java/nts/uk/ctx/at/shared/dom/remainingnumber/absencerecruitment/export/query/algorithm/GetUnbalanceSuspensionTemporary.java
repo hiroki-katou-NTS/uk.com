@@ -31,6 +31,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
  */
 public class GetUnbalanceSuspensionTemporary {
 
+	private GetUnbalanceSuspensionTemporary() {
+	};
+
 	// 3.未相殺の振休(暫定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, AbsRecMngInPeriodRefactParamInput input) {
 
@@ -62,7 +65,7 @@ public class GetUnbalanceSuspensionTemporary {
 
 		}
 
-		//対象期間のドメインモデル「暫定振休管理データ」を上書き用の暫定管理データに置き換える
+		// 対象期間のドメインモデル「暫定振休管理データ」を上書き用の暫定管理データに置き換える
 		ProcessDataTemporary.processOverride(input, input.getUseAbsMng(), lstInterimMng, lstAbsMng);
 
 		// 取得した件数をチェックする

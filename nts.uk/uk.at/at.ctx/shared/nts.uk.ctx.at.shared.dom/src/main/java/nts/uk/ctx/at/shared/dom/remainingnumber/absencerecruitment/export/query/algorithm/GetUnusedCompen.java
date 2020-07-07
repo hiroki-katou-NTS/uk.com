@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
  *         2.未使用の振出(確定)を取得する
  */
 public class GetUnusedCompen {
+	
+	private GetUnusedCompen() {};
 
 	// 2.未使用の振出(確定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, String cid, String employeeId,
@@ -44,7 +46,7 @@ public class GetUnusedCompen {
 		return require.getByUnUseState(cid, employeeId, ymd, 0, DigestionAtr.UNUSED);
 	}
 
-	// 1-3.暫定振出と紐付けをしない確定振休を取得する
+	// 2-3.暫定振休と紐付けをしない確定振出を取得する
 	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(String employeeId, GeneralDate ymd,
 			PayoutManagementData data) {
 

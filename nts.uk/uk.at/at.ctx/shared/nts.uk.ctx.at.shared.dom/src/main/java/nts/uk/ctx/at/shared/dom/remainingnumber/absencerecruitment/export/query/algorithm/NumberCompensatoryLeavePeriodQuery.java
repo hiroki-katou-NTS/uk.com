@@ -23,6 +23,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
  */
 public class NumberCompensatoryLeavePeriodQuery {
 
+	private NumberCompensatoryLeavePeriodQuery() {
+	};
+
 	/**
 	 * Requestlist204 期間内の振出振休残数を取得する
 	 * 

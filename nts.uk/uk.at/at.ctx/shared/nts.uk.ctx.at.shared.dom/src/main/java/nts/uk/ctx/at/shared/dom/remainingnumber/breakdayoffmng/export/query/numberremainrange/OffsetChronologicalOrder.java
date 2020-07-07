@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
 import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
@@ -50,9 +51,7 @@ public class OffsetChronologicalOrder {
 			if (timeLapSet == null)
 				continue;
 			// ループ中の「逐次発生の休暇明細」（消化）．未相殺数をチェックする
-			if (!timeLapSet.getManagerTimeCate().isPresent()
-					|| (timeLapSet.getManagerTimeCate().get() && (!accAbsence.getUnbalanceNumber().getTime().isPresent()
-							|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0)))
+			if (checkUnbalNum(timeLapSet, accAbsence))
 				continue;
 
 			// 逐次発生の休暇明細（消化）.年月日が期間に含まれる逐次発生の休暇設定を取得
@@ -66,11 +65,7 @@ public class OffsetChronologicalOrder {
 					break;
 				else {
 					// 「逐次発生の休暇明細」（消化）.未相殺数 > 0
-					if ((timeLapSet.getManagerTimeCate().get()
-							&& (!accAbsence.getUnbalanceNumber().getTime().isPresent()
-									|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0))
-							|| (!timeLapSet.getManagerTimeCate().get()
-									&& accAbsence.getUnbalanceNumber().getDay().v() <= 0)) {
+					if (checkUnbalNum(timeLapSet, accAbsence)) {
 						break;
 					} else {
 						continue;
@@ -94,15 +89,14 @@ public class OffsetChronologicalOrder {
 			AccumulationAbsenceDetail occur, TypeOffsetJudgment typeJudgment) {
 
 		// 期限切れかをチェックする
-		if (!occur.getUnbalanceVacation().isPresent() || !accdigest.getDateOccur().getDayoffDate().isPresent() || occur
-				.getUnbalanceVacation().get().getDeadline().before(accdigest.getDateOccur().getDayoffDate().get())) {
+		Optional<? extends LeaveOccurrDetail> occurrDetail = occurrDetail(occur, typeJudgment);
+		if (!occurrDetail.isPresent() || !accdigest.getDateOccur().getDayoffDate().isPresent()
+				|| occurrDetail.get().getDeadline().before(accdigest.getDateOccur().getDayoffDate().get())) {
 			return Pair.of(OffsetJudgment.SUCCESS, Optional.empty());
 		}
 
 		// 逐次発生の休暇明細（発生）.休暇数をチェックする
-		if ((timeLapVacationSetting.isManagerCate() && occur.getUnbalanceNumber().getDay().v() <= 0)
-				|| (!timeLapVacationSetting.isManagerCate() && (!occur.getUnbalanceNumber().getTime().isPresent()
-						|| occur.getUnbalanceNumber().getTime().get().v() <= 0))) {
+		if (checkUnbalNum(timeLapVacationSetting, occur)) {
 			return Pair.of(OffsetJudgment.SUCCESS, Optional.empty());
 
 		}
@@ -123,9 +117,38 @@ public class OffsetChronologicalOrder {
 				accdigest.getUnbalanceNumber().getDay(), TypeOffsetJudgment.REAMAIN);
 
 		// 未相殺数を更新 in process 振休
-		UpdateUnbalancedNumber.updateUnbalanced(timeLapVacationSetting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(timeLapVacationSetting, accdigest, occur, typeJudgment);
 
 		return Pair.of(OffsetJudgment.SUCCESS, seqVacation);
+
+	}
+
+	// 期限切れかをチェックする
+	private static Optional<? extends LeaveOccurrDetail> occurrDetail(AccumulationAbsenceDetail occur,
+			TypeOffsetJudgment typeJudgment) {
+		if (typeJudgment == TypeOffsetJudgment.ABSENCE) {
+			return occur.getUnbalanceCompensation();
+		} else {
+			return occur.getUnbalanceVacation();
+		}
+
+	}
+
+	private static boolean checkUnbalNum(TimeLapseVacationSetting timeLapSet, AccumulationAbsenceDetail accAbsence) {
+
+		// 逐次発生休暇設定.時間管理区分 = true
+		// 逐次発生の休暇明細（消化）.未相殺数.時間 ＞０
+		// 逐次発生休暇設定.時間管理区分 = false
+		// 逐次発生の休暇明細（消化）.未相殺数.日数 ＞０
+		if ((!timeLapSet.getManagerTimeCate().isPresent() || !timeLapSet.getManagerTimeCate().get())
+				&& accAbsence.getUnbalanceNumber().getDay().v() <= 0) {
+			return true;
+		} else if (timeLapSet.getManagerTimeCate().isPresent() && timeLapSet.getManagerTimeCate().get()
+				&& (!accAbsence.getUnbalanceNumber().getTime().isPresent()
+						|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0)) {
+			return true;
+		}
+		return false;
 
 	}
 

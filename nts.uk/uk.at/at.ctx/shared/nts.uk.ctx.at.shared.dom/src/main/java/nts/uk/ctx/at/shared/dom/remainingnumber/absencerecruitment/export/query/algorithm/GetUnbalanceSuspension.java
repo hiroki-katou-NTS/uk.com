@@ -17,9 +17,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManageme
  * @author ThanhNX
  *
  *         1.未相殺の振休(確定)を取得する
- *         
+ * 
  */
 public class GetUnbalanceSuspension {
+
+	private GetUnbalanceSuspension() {
+	};
 
 	// 1.未相殺の振休(確定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, String cid, String employeeId,
