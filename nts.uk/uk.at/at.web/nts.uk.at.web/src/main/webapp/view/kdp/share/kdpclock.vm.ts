@@ -26,11 +26,10 @@ module nts.uk.at.view.kdp.share {
 		interval: any;
 		constructor(params) {
 			let self = this;
+			let vm= new ko.ViewModel();
 			self.stampSetting = params.setting;
 			moment.locale('ja');
-			nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-				self.systemDate(moment.utc(res));
-			});
+			self.systemDate(moment(vm.$date.now()));
 			self.addCorrectionInterval();
 
 			self.stampSetting.subscribe((data) =>  {
@@ -50,15 +49,13 @@ module nts.uk.at.view.kdp.share {
 
 		public addCorrectionInterval() {
 			let self = this;
+			let vm= new ko.ViewModel();
 			clearInterval(self.interval);
 
 			self.interval = setInterval(() => {
 				if (self.stampSetting().correctionInterval === self.countTime) {
-					nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-						self.systemDate(moment.utc(res));
-					}).always(() => {
+					self.systemDate(moment(vm.$date.now()));
 						self.countTime = 0;
-					});
 				} else {
 					self.systemDate(self.systemDate().add(1, 'seconds'));
 					self.countTime = self.countTime + 1;
