@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application.workchange;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqdtAppWorkChangePk {
+public class KrqdtAppWorkChangePk implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

@@ -32,7 +32,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 
 	@Override
 	public Optional<AppWorkChange> findbyID(String appID) {
-		return new NtsStatement(FIND_BY_ID, this.jdbcProxy()).paramString(appID, appID)
+		return new NtsStatement(FIND_BY_ID, this.jdbcProxy()).paramString("appID", appID)
 				.getSingle(res -> KrqdtAppWorkChange.MAPPER.toEntity(res).toDomain());
 	}
 
@@ -45,19 +45,19 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 	@Override
 	public void update(AppWorkChange appWorkChange) {
 		KrqdtAppWorkChange krqdtAppWorkChange = toEntity(appWorkChange);
-		KrqdtAppWorkChange updateWorkChange = this.queryProxy().find(krqdtAppWorkChange.appWorkChangePk, KrqdtAppWorkChange.class).get();
-    	if (updateWorkChange == null) {
+		Optional<KrqdtAppWorkChange> updateWorkChange = this.queryProxy().find(krqdtAppWorkChange.appWorkChangePk, KrqdtAppWorkChange.class);
+    	if (!updateWorkChange.isPresent()) {
 			return;
 		}
-    	updateWorkChange.goWorkAtr = krqdtAppWorkChange.goWorkAtr;
-    	updateWorkChange.backHomeAtr = krqdtAppWorkChange.backHomeAtr;
-    	updateWorkChange.workTypeCd = krqdtAppWorkChange.workTypeCd;
-    	updateWorkChange.workTimeCd = krqdtAppWorkChange.workTimeCd;
-    	updateWorkChange.workTimeStart1 = krqdtAppWorkChange.workTimeStart1;
-    	updateWorkChange.workTimeEnd1 = krqdtAppWorkChange.workTimeEnd1;
-    	updateWorkChange.workTimeStart2 = krqdtAppWorkChange.workTimeStart2;
-    	updateWorkChange.workTimeEnd2 = krqdtAppWorkChange.workTimeEnd2;
-    	this.commandProxy().update(updateWorkChange);
+    	updateWorkChange.get().goWorkAtr = krqdtAppWorkChange.goWorkAtr;
+    	updateWorkChange.get().backHomeAtr = krqdtAppWorkChange.backHomeAtr;
+    	updateWorkChange.get().workTypeCd = krqdtAppWorkChange.workTypeCd;
+    	updateWorkChange.get().workTimeCd = krqdtAppWorkChange.workTimeCd;
+    	updateWorkChange.get().workTimeStart1 = krqdtAppWorkChange.workTimeStart1;
+    	updateWorkChange.get().workTimeEnd1 = krqdtAppWorkChange.workTimeEnd1;
+    	updateWorkChange.get().workTimeStart2 = krqdtAppWorkChange.workTimeStart2;
+    	updateWorkChange.get().workTimeEnd2 = krqdtAppWorkChange.workTimeEnd2;
+    	this.commandProxy().update(updateWorkChange.get());
 	}
 
 	@Override

@@ -1,71 +1,69 @@
 package nts.uk.ctx.at.request.infra.repository.application.workchange;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet_Old;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk_Old;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaAppWorkChangeSetRepository extends JpaRepository implements IAppWorkChangeSetRepository {
+public class JpaAppWorkChangeSetRepository extends JpaRepository implements AppWorkChangeSetRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstAppWorkChangeSet f";
-	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-														+ " WHERE f.appWorkChangeSetPk.cid =:companyID";
+	public static final String FIND_BY_ID = "SELECT \r\n" + "  * FROM KRQST_APP_WORK_CHANGE WHERE CID = @companyId";
 
 	@Override
-	public List<AppWorkChangeSet_Old> getAllAppWorkChangeSet() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, KrqstAppWorkChangeSet_Old.class)
-				.getList(item -> toDomain(item));
+	public Optional<AppWorkChangeSet> findByCompanyId(String companyId) {
+		return new NtsStatement(FIND_BY_ID, this.jdbcProxy()).paramString("companyId", companyId)
+				.getSingle(res -> KrqstAppWorkChangeSet.MAPPER.toEntity(res).toDomain());
 	}
 
 	@Override
-	public Optional<AppWorkChangeSet_Old> findWorkChangeSetByID(String cid) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqstAppWorkChangeSet_Old.class).setParameter("companyID", cid)
-				.getSingle(c -> toDomain(c));
-	}
-
-	@Override
-	public void add(AppWorkChangeSet_Old domain) {
+	public void add(AppWorkChangeSet domain) {
 		this.commandProxy().insert(toEntity(domain));
+
 	}
 
 	@Override
-	public void update(AppWorkChangeSet_Old domain) {
-		this.commandProxy().update(toEntity(domain));
+	public void update(AppWorkChangeSet domain) {
+		KrqstAppWorkChangeSet krqstAppWorkChangeSet = toEntity(domain);
+		Optional<KrqstAppWorkChangeSet> upAppWorkChangeSet = this.queryProxy()
+				.find(krqstAppWorkChangeSet.appWorkChangeSetPk, KrqstAppWorkChangeSet.class);
+		if (!upAppWorkChangeSet.isPresent()) {
+			return;
+		}
+		upAppWorkChangeSet.get().initDisplayWorktime = krqstAppWorkChangeSet.initDisplayWorktime;
+		upAppWorkChangeSet.get().commentContent1 = krqstAppWorkChangeSet.commentContent1;
+		upAppWorkChangeSet.get().commentFontWeight1 = krqstAppWorkChangeSet.commentFontWeight1;
+		upAppWorkChangeSet.get().commentFontColor1 = krqstAppWorkChangeSet.commentFontColor1;
+
+		upAppWorkChangeSet.get().commentContent2 = krqstAppWorkChangeSet.commentContent2;
+		upAppWorkChangeSet.get().commentFontWeight2 = krqstAppWorkChangeSet.commentFontWeight2;
+		upAppWorkChangeSet.get().commentFontColor2 = krqstAppWorkChangeSet.commentFontColor2;
+
+		this.commandProxy().update(upAppWorkChangeSet.get());
 	}
 
 	@Override
-	public void remove(AppWorkChangeSet_Old domain) {
-		this.commandProxy().remove(toEntity(domain));
+	public void remove(String companyId) {
+		this.commandProxy().remove(KrqstAppWorkChangeSet.class,
+				new KrqstAppWorkChangeSetPk(companyId));
+
 	}
 
-	@Override
-	public void remove(String key) {
-		this.commandProxy().remove(KrqstAppWorkChangeSetPk_Old.class, new KrqstAppWorkChangeSetPk_Old(key));
-	}
-
-	private static AppWorkChangeSet_Old toDomain(KrqstAppWorkChangeSet_Old entity) {
-		return AppWorkChangeSet_Old.createFromJavaType(entity.appWorkChangeSetPk.cid, entity.excludeHoliday,
-				entity.workChangeTimeAtr, entity.displayResultAtr, entity.initDisplayWorktime, entity.commentContent1,
-				entity.commentFontWeight1, entity.commentFontColor1, entity.commentContent2, entity.commentFontWeight2,
-				entity.commentFontColor2);
-	}
-
-	private KrqstAppWorkChangeSet_Old toEntity(AppWorkChangeSet_Old domain) {
-		return new KrqstAppWorkChangeSet_Old(new KrqstAppWorkChangeSetPk_Old(domain.getCid()), domain.getExcludeHoliday(),
-				domain.getWorkChangeTimeAtr().value, domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value,
-				domain.getCommentContent1() == null ? null : domain.getCommentContent1().v(), 
-				domain.getCommentFontWeight1().value,
-				domain.getCommentFontColor1().v(), 
-				domain.getCommentContent2() == null ? null : domain.getCommentContent2().v(),
-				domain.getCommentFontWeight2().value, 
-				domain.getCommentFontColor2().v());
+	public KrqstAppWorkChangeSet toEntity(AppWorkChangeSet appWorkChangeSet) {
+		return new KrqstAppWorkChangeSet(new KrqstAppWorkChangeSetPk(appWorkChangeSet.getCompanyID()),
+				appWorkChangeSet.getInitDisplayWorktimeAtr().value, appWorkChangeSet.getComment1().getComment().v(),
+				appWorkChangeSet.getComment1().isBold() ? 1 : 0, appWorkChangeSet.getComment1().getColorCode().v(),
+				appWorkChangeSet.getComment2().getComment().v(), appWorkChangeSet.getComment2().isBold() ? 1 : 0,
+				appWorkChangeSet.getComment2().getColorCode().v(), null);
 	}
 
 }
