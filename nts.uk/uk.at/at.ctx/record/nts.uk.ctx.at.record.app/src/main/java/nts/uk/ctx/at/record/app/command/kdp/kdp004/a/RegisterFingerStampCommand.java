@@ -23,7 +23,7 @@ public class RegisterFingerStampCommand {
 	private String employeeId;
 
 	// 打刻日時
-	private String stampDatetime;
+	private String datetime;
 
 	// 打刻ボタン
 	private StampButtonComamnd stampButton;
@@ -35,7 +35,7 @@ public class RegisterFingerStampCommand {
 	private Integer authcMethod;
 
 	public GeneralDateTime getStampDatetime() {
-		return GeneralDateTime.fromString(this.stampDatetime, "yyyy/MM/dd HH:mm:ss");
+		return GeneralDateTime.fromString(this.datetime, "yyyy/MM/dd HH:mm:ss");
 	}
 
 	public StampButton getStampButton() {

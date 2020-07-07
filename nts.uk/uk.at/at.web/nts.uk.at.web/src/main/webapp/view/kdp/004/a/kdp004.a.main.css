@@ -47,6 +47,7 @@ html{
 }
 #stamp-time-text {
   font-size: 10vmin !important;
+  margin-left: 120px;
 }
 .full-width{
   width: 100%;

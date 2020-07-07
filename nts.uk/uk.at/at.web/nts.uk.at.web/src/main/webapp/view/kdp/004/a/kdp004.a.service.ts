@@ -5,11 +5,13 @@ module nts.uk.at.view.kdp004.a {
 	export module service {
 		let url = {
 			startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
-			stampInput: 'at/record/stamp/finger/get-finger-stamp-setting',
+			stampInput: 'at/record/stamp/finger/register-finger-stamp',
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
 			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
 			fingerAuth: '',
+			getError: 'at/record/stamp/employment_system/get_omission_contents',
+			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -29,7 +31,18 @@ module nts.uk.at.view.kdp004.a {
 		}
 
 		export function fingerAuth() {
-			return ajax("at", url.fingerAuth);
+			let dfd = $.Deferred<any>();
+			dfd.resolve({ result: true });
+			//return ajax("at", url.fingerAuth);
+			return dfd.promise();
+		}
+
+		export function getError(data): JQueryPromise<any> {
+			return ajax("at", url.getError, data);
+		}
+		
+		export function getStampToSuppress(): JQueryPromise<any> {
+			return ajax("at", url.getStampToSuppress);
 		}
 	}
 

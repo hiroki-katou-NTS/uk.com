@@ -85,7 +85,7 @@ class StampTab {
 	selectedTab: KnockoutObservable<string> = ko.observable('');
 	stampPageComment: KnockoutObservable<string> = ko.observable('');
 	stampPageCommentColor: KnockoutObservable<string> = ko.observable('');
-	layouts: KnockoutObservableArray<PageLayout> = ko.observableArray([]);
+	layouts: KnockoutObservableArray<Kdp004PageLayout> = ko.observableArray([]);
 
 	constructor() {
 		let self = this;
