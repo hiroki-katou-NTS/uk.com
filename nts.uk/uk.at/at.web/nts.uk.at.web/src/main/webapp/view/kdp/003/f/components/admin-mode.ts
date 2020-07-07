@@ -9,7 +9,7 @@ const adminModeTemplate = `
 			<!-- ko if: ko.unwrap(params.companyDesignation) === true -->
 				<input tabindex="1" id="company-code"
 					data-bind="ntsTextEditor: {
-						name: '',
+						name: $component.$i18n('KDP003_3'),
 						constraint: 'CompanyCode',
 						value: model.companyCode,
 						option: {
@@ -22,7 +22,7 @@ const adminModeTemplate = `
 			<div tabindex="1" id="company-code-select"
 				data-bind="ntsComboBox: {
 					width: '350px',
-					name: '',
+					name: $component.$i18n('KDP003_3'),
 					options: $component.listCompany,
 					visibleItemsCount: 5,
 					value: model.companyCode,
@@ -46,7 +46,7 @@ const adminModeTemplate = `
 	<td>
 		<input tabindex="2" id="employee-code-inp-2"
 			data-bind="ntsTextEditor: {
-				name: '',
+				name: $component.$i18n('KDP003_4'),
 				constraint: 'EmployeeCode',
 				value: model.employeeCode,
 				option: {
@@ -61,7 +61,7 @@ const adminModeTemplate = `
 	<td>
 		<input tabindex="3" id="password-input"
 			data-bind="ntsTextEditor: {
-				name: $vm.$i18n('CCG007_2'),
+				name: $vm.$i18n('KDP003_5'),
 				value: model.password,
 				option: {										
 					width: '330px',

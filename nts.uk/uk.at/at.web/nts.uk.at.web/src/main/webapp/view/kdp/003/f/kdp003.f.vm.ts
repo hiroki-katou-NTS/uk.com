@@ -27,7 +27,9 @@ interface Kdp003FFingerVeinModeParam {
 	employee?: Kdp003FCodeNameData;
 }
 
-type KDP003F_MODE = 'admin' | 'employee' | 'fingerVein';
+type KDP003F_MODE = null | 'admin' | 'employee' | 'fingerVein';
+
+const KDP003F_LOGINDATA = 'KDP003F_LOGINDATA';
 
 const KDP003F_VM_API = {
 	LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
@@ -36,7 +38,7 @@ const KDP003F_VM_API = {
 
 @bean()
 class Kdp003FViewModel extends ko.ViewModel {
-	mode: KnockoutObservable<KDP003F_MODE> = ko.observable('admin');
+	mode: KnockoutObservable<KDP003F_MODE> = ko.observable(null);
 
 	model: Kdp003FModel = new Kdp003FModel();
 
@@ -54,8 +56,16 @@ class Kdp003FViewModel extends ko.ViewModel {
 			vm.params = {} as any;
 		}
 
-		// get mode from params or set default
-		vm.mode(vm.params.mode || 'admin');
+		vm.$window.storage(KDP003F_LOGINDATA)
+			.then((data: Kdp003FModelData) => {
+				if (data.companyCode) {
+					_.extend(vm.params, {
+						companyDesignation: true
+					});
+				}
+			})
+			// get mode from params or set default
+			.always(() => vm.mode(vm.params.mode || 'admin'));
 	}
 
 	public mounted() {
@@ -66,7 +76,7 @@ class Kdp003FViewModel extends ko.ViewModel {
 			const { company, employee } = params as Kdp003FEmployeeModeParam;
 
 			if (company) {
-				model.employeeId(employee.id);
+				model.companyId(company.id);
 				model.companyCode(company.code);
 				model.companyName(company.name);
 			}
@@ -82,67 +92,61 @@ class Kdp003FViewModel extends ko.ViewModel {
 	public submitLogin() {
 		const vm = this;
 		const { params } = vm;
+		const { LOGIN_ADMIN, LOGIN_EMPLOYEE } = KDP003F_VM_API;
 
 		switch (params.mode) {
 			default:
 			case 'admin':
-				vm.loginAdmin();
+				vm.loginAdmin(LOGIN_ADMIN);
 				break;
 			case 'employee':
 			case 'fingerVein':
-				vm.loginEmployeeOrFingerVein();
+				vm.loginAdmin(LOGIN_EMPLOYEE);
 				break;
 		}
 	}
 
-	loginAdmin() {
+	loginAdmin(api: string) {
 		const vm = this;
+		const { passwordRequired } = vm.params as Kdp003FEmployeeModeParam;
 		const model: Kdp003FModelData = ko.toJS(vm.model);
 
+		if (passwordRequired === false) {
+			_.omit(model, ['password']);
+		}
+
 		vm.$blockui('show')
-			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN_ADMIN, model))
-			.done((response: Kdp003FTimeStampLoginData) => {
-				if (!!response.successMsg) {
+			.then(() => vm.$ajax(api, model))
+			.then((response: Kdp003FTimeStampLoginData) => {
+				const { successMsg } = response;
+
+				if (!!successMsg) {
 					return vm.$dialog
-						.info({ messageId: response.successMsg })
+						.info({ messageId: successMsg })
 						.then(() => response);
-				} else {
-					return $.Deferred().resolve(response);
 				}
+
+				return response;
 			})
 			.then((response: Kdp003FTimeStampLoginData) => {
-				_.omit(model, ['password', 'companyId']);
-				
 				vm.$window
-					.storage('form3LoginInfo', model)
-					.then(() => {
-						vm.$window.close(response);
-						// vm.$jump('com', '/view/ccg/008/a/index.xhtml', { screen: 'login' });
-					});
+					.storage(KDP003F_LOGINDATA, _.chain(model).clone().omit(['password']).value());
+
+				return response;
+			})
+			.then((response: Kdp003FTimeStampLoginData) => {
+				vm.$window.close(response);
 			})
 			.fail((response: any) => {
-				if (!response.messageId) {
-					vm.$dialog.error(response.message);
+				const { message, messageId } = response;
+
+				if (!messageId) {
+					vm.$dialog.error(message);
 				} else {
-					vm.$dialog.error({ messageId: response.messageId });
+					vm.$dialog.error({ messageId });
 				}
 			})
-			.always(() =>  vm.$blockui('clear'));
-	}
-
-	loginEmployeeOrFingerVein() {
-		const vm = this;
-		const model: Kdp003FModelData = ko.toJS(vm.model);
-		
-		vm.$blockui('show')
-			.then(() => vm.$ajax(KDP003F_VM_API.LOGIN_EMPLOYEE, model))
-			.then((response: any) => {
-				
-			})
-			.fail((message: any) => {
-				
-			})
-			.always(() =>  vm.$blockui('clear'));
+			.always(() => vm.$blockui('clear'));
 	}
 
 	cancelLogin() {
@@ -191,7 +195,7 @@ class Kdp003FModel {
 	companyId: KnockoutObservable<string> = ko.observable('');
 	companyCode: KnockoutObservable<string> = ko.observable('');
 	companyName: KnockoutObservable<string> = ko.observable('');
-	
+
 	employeeId: KnockoutObservable<string> = ko.observable('');
 	employeeCode: KnockoutObservable<string> = ko.observable('');
 	employeeName: KnockoutObservable<string> = ko.observable('');

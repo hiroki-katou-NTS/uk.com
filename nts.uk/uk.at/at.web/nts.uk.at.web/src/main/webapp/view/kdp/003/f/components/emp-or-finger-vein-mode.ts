@@ -15,7 +15,7 @@ const fingerVeinModeTemplate = `
 		<!-- ko if: !ko.unwrap(model.employeeName) -->
 		<input tabindex="2" id="employee-code-inp-2"
 			data-bind="ntsTextEditor: {
-				name: '',
+				name: $component.$i18n('KDP003_4'),
 				constraint: 'EmployeeCode',
 				value: model.employeeCode,
 				option: {
@@ -35,7 +35,7 @@ const fingerVeinModeTemplate = `
 	<td>
 		<input tabindex="3" id="password-input"
 			data-bind="ntsTextEditor: {
-				name: $vm.$i18n('CCG007_2'),
+				name: $vm.$i18n('KDP003_5'),
 				value: model.password,
 				option: {										
 					width: '330px',
