@@ -51,4 +51,16 @@ public class TargetWorkTypeByApp {
 	 */
 	private Optional<BusinessTripAppWorkType> opBusinessTripAppWorkType;
 	
+	public TargetWorkTypeByApp(ApplicationType appType, boolean displayWorkType, List<String> workTypeLst,
+			Optional<BreakOrRestTime> opBreakOrRestTime, Optional<Boolean> opHolidayTypeUse,
+			Optional<HolidayAppType> opHolidayAppType, Optional<BusinessTripAppWorkType> opBusinessTripAppWorkType) {
+		this.appType = appType;
+		this.displayWorkType = displayWorkType;
+		this.workTypeLst = workTypeLst;
+		this.opBreakOrRestTime = opBreakOrRestTime;
+		this.opHolidayTypeUse = opHolidayTypeUse;
+		this.opHolidayAppType = opHolidayAppType;
+		this.opBusinessTripAppWorkType = opBusinessTripAppWorkType;
+	}
+	
 }

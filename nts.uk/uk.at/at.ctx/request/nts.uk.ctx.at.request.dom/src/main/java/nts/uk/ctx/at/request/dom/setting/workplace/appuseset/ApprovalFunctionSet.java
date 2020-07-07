@@ -18,4 +18,8 @@ public class ApprovalFunctionSet {
 	 */
 	private List<ApplicationUseSetting> appUseSetLst;
 	
+	public ApprovalFunctionSet(List<ApplicationUseSetting> appUseSetLst) {
+		this.appUseSetLst = appUseSetLst;
+	}
+	
 }

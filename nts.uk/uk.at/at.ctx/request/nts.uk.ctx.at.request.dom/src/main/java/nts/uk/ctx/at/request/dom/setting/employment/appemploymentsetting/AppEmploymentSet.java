@@ -21,11 +21,17 @@ public class AppEmploymentSet {
 	/**
 	 * 雇用区分コード
 	 */
-	private String epmloymentCD;
+	private String employmentCD;
 	
 	/**
 	 * 申請別対象勤務種類
 	 */
 	private List<TargetWorkTypeByApp> targetWorkTypeByAppLst;
+	
+	public AppEmploymentSet(String companyID, String employmentCD, List<TargetWorkTypeByApp> targetWorkTypeByAppLst) {
+		this.companyID = companyID;
+		this.employmentCD = employmentCD;
+		this.targetWorkTypeByAppLst = targetWorkTypeByAppLst;
+	}
 	
 }
