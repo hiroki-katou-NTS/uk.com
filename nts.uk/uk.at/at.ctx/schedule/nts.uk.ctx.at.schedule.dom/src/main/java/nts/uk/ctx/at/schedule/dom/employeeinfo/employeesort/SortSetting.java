@@ -15,6 +15,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 
+
 public class SortSetting implements DomainAggregate{
 	@Getter   
 	/** 会社ID **/
@@ -31,14 +32,12 @@ public class SortSetting implements DomainAggregate{
 			throw new BusinessException("Msg_1612");
 		}
 		//inv-2	1 <= @並び替え優先順.Size <= 3			
-		if(lstOrderedList.size() <=3){
+		if((lstOrderedList.size() == 0) || (lstOrderedList.size()>4 )){
 			throw new BusinessException("Msg_1613");
 		}
 		this.companyID = companyID;
 		this.lstOrderedList = lstOrderedList;
 	}
-	
-	
 	
 }
 

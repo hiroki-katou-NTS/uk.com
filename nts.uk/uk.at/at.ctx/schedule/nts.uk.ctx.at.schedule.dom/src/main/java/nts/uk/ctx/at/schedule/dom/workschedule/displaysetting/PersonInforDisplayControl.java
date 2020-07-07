@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -11,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Value
-@AllArgsConstructor
+@RequiredArgsConstructor
 
 public class PersonInforDisplayControl {
 	/**条件区分 --- 勤務予定の条件区分**/

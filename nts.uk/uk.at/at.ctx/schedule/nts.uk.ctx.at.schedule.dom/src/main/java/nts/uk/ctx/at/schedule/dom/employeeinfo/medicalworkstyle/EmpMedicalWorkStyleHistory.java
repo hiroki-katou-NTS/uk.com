@@ -38,6 +38,4 @@ public class EmpMedicalWorkStyleHistory implements DomainAggregate {
 		}
 		return new EmpMedicalWorkStyleHistory(empID, listDateHistoryItem);
 	}
-	
-	
 }
