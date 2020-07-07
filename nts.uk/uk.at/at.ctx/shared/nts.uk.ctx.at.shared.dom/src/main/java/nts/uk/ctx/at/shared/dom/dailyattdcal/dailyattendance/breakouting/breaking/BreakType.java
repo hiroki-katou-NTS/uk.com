@@ -12,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 @AllArgsConstructor
 public enum BreakType {
 	
-	/* 就業時間帯から参照 */
+	/* 就業時間帯から参照 */   // 実績
 	REFER_WORK_TIME(0),
-	/* スケジュールから参照 */
-	REFER_SCHEDULE(1);
+	/* スケジュールから参照 */    // 予定
+	REFER_SCHEDULE(1); 
 	
 	public final int value;
 	

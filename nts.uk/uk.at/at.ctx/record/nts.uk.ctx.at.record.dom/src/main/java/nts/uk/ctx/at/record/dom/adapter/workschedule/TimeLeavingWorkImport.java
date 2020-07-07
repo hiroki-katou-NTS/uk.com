@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.pub.schedule.workschedule;
+package nts.uk.ctx.at.record.dom.adapter.workschedule;
 
 import java.util.Optional;
 
@@ -14,19 +14,19 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 @NoArgsConstructor
-public class TimeLeavingWorkExport extends DomainObject{
+public class TimeLeavingWorkImport extends DomainObject{
 	
 	/*
 	 * 勤務NO
 	 */
 	private int workNo;
 	//出勤
-	private Optional<TimeActualStampExport> attendanceStamp;
+	private Optional<TimeActualStampImport> attendanceStamp;
 	//退勤
-	private Optional<TimeActualStampExport> leaveStamp;
+	private Optional<TimeActualStampImport> leaveStamp;
 	
-	public TimeLeavingWorkExport(int workNo, TimeActualStampExport attendanceStamp,
-			TimeActualStampExport leaveStamp) {
+	public TimeLeavingWorkImport(int workNo, TimeActualStampImport attendanceStamp,
+			TimeActualStampImport leaveStamp) {
 		super();
 		this.workNo = workNo;
 		this.attendanceStamp = Optional.ofNullable(attendanceStamp);
