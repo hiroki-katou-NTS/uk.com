@@ -80,8 +80,9 @@ public class CreateLateOrLeaveEarlyCommandHandler
 		// ドメインモデル「遅刻早退取消申請」の新規登録する
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplication().getEmployeeID(),
-				domainLateOrLeaveEarly.getApplication());
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplication().getEmployeeID(),
+				domainLateOrLeaveEarly.getApplication());*/
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
 		return newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());
 

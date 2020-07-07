@@ -51,7 +51,8 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		workChangeRepository.add(workChange);
 		
 		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		registerService.newScreenRegisterAtApproveInfoReflect(app.getEmployeeID(), app);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(app.getEmployeeID(), app);*/
 		
 		// 暫定データの登録
 		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());

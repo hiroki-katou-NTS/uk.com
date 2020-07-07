@@ -112,7 +112,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 			this.brkOffSupChangeMngRepository.insert(brkOffSupChangeMng);
 		}*/
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 		
 		// 暫定データの登録
 		interimRemainDataMngRegisterDateChange.registerDateChange(

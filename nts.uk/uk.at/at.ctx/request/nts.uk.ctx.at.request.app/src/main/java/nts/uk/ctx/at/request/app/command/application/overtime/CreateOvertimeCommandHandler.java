@@ -123,7 +123,8 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
 
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);

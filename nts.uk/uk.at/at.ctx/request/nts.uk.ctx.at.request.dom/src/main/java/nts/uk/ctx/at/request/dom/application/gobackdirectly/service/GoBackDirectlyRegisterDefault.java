@@ -134,7 +134,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		goBackDirectRepo.insert(goBackDirectly);
 		appRepo.insert(application);
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		// error EA refactor 4
+		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);*/
 		
 		// 暫定データの登録
 		interimRemainDataMngRegisterDateChange.registerDateChange(

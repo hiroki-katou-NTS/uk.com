@@ -425,7 +425,8 @@ public class SaveHolidayShipmentCommandHandler
 		// 暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
+		// error EA refactor 4
+		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 
 		return commonApp;
 
@@ -462,7 +463,8 @@ public class SaveHolidayShipmentCommandHandler
 		// 暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
+		// error EA refactor 4
+		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 
 		return commonApp;
 	}
