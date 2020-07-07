@@ -36,7 +36,7 @@ public enum ReasonNotReflect {
 	 */
 	TIGHTENING_PROCESS_COMPLETED(3, "締め処理が完了している");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

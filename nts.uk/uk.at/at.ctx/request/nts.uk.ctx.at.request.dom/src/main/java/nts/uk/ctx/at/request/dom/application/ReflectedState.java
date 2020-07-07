@@ -29,7 +29,7 @@ public enum ReflectedState {
 	/** 否認 */
 	DENIAL(5, "否認");
 	
-	public final Integer value;
+	public final int value;
 	
 	public final String name;
 }

@@ -34,4 +34,12 @@ public class DailyAttendanceUpdateStatus {
 	 */
 	private Optional<ReasonNotReflect> opReasonScheduleCantReflected;
 	
+	public DailyAttendanceUpdateStatus(Optional<GeneralDateTime> actualResultDateTime, Optional<GeneralDateTime> scheduleReflectionDateTime,
+			Optional<ReasonNotReflectDaily> opReasonResultsCantReflected, Optional<ReasonNotReflect> opReasonScheduleCantReflected) {
+		this.actualResultDateTime = actualResultDateTime;
+		this.scheduleReflectionDateTime = scheduleReflectionDateTime;
+		this.opReasonResultsCantReflected = opReasonResultsCantReflected;
+		this.opReasonScheduleCantReflected = opReasonScheduleCantReflected;
+	}
+	
 }

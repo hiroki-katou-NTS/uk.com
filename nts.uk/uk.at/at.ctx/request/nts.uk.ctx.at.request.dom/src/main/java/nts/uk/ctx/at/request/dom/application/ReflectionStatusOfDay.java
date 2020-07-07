@@ -39,4 +39,13 @@ public class ReflectionStatusOfDay {
 	 */
 	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancellation;
 	
+	public ReflectionStatusOfDay(ReflectedState resultsReflectedStatus, ReflectedState scheduleReflectionStatus, GeneralDate targetDate,
+			Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflection, Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancellation) {
+		this.resultsReflectedStatus = resultsReflectedStatus;
+		this.scheduleReflectionStatus = scheduleReflectionStatus;
+		this.targetDate = targetDate;
+		this.opUpdateStatusAppReflection = opUpdateStatusAppReflection;
+		this.opUpdateStatusAppCancellation = opUpdateStatusAppCancellation;
+	} 
+	
 }
