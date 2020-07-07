@@ -11,11 +11,9 @@
 	overflow-x: hidden;
 }
 
-/* #extable {
-	float: left;
-	top: 2px;
-	left: 80px;
-} */
+#extable {
+	left: 10px !important;
+}
 
 #extable td, #extable td>* {
 	font-size: 10.5px;
@@ -87,7 +85,7 @@ table th, table td {
 	float: left;
 	width: 100%;
 	border-bottom: 1px solid #B1B1B1;
-	margin-left: 80px;
+	margin-left: 10px;
 	margin-top: 3px;
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
@@ -106,7 +104,10 @@ table th, table td {
 
 #qViewModel {
 	margin-top: 3px;
-	height: 120px
+}
+
+#oViewModel {
+	margin-top: 3px;
 }
 
 #group-btmode {
@@ -322,6 +323,7 @@ table th, table td {
 	margin-top: 5px;
 	float: left;
 	width: 10%;
+	margin-left: 10px;
 }
 
 #date-time-prev, #date-time-after {

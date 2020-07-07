@@ -13,15 +13,16 @@
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
 
-			<!-- COMPONENT CCG001 -->
+			<!-- COMPONENT CCG001 
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js"
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<!-- #CCG001 -->
+			#CCG001 -->
+			
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:stylefile path="ksu001.a.main.css" />
 			<com:scriptfile path="ksu001.a.start.js" />
 			<com:scriptfile path="ksu001.a.vm.js" />
@@ -277,7 +278,7 @@
 
 									<div tabindex="-1" class="cf" style="margin-left: 5px"
 										data-bind="ntsSwitchButton: {
-										options: modeDisplay,
+										options: modeDisplay ,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedModeDisplay}">
@@ -290,7 +291,7 @@
 							</div>
 						</div>
 						<div style="float: left;">
-							<div style="float: left; margin-left: 80px;width: max-content; margin-top: 10px;">
+							<div style="float: left; margin-left: 10px;width: max-content; margin-top: 10px;">
 								<button  class="editMode" style="height: 38px;" data-bind="click: editMode">#{i18n.getText('KSU001_140')}</button>
 								<br />
 								<button  class="confirmMode" style="height: 38px; margin-top: 3px;" data-bind="click: confirmMode">#{i18n.getText('KSU001_141')}</button>
@@ -306,14 +307,18 @@
 									<button id="redo" class="size-image-button2"
 										data-bind="click: undoData, timeClick: -1"></button>
 								</div>
-								<div id="oViewModel">
-									<div data-bind="with: $parent.viewO">
-										<ui:include src="../o/index.xhtml" />
+								<div data-bind="ifnot: visibleShiftPalette">
+									<div id="oViewModel">
+										<div data-bind="with: $parent.viewO">
+											<ui:include src="../o/index.xhtml" />
+										</div>
 									</div>
 								</div>
-								<div id="qViewModel" style="display: none">
-									<div data-bind="with: $parent.viewQ">
-										<ui:include src="../q/index.xhtml" />
+								<div data-bind="if: visibleShiftPalette">
+									<div id="qViewModel">
+										<div data-bind="with: $parent.viewQ">
+											<ui:include src="../q/index.xhtml" />
+										</div>
 									</div>
 								</div>
 							</div>

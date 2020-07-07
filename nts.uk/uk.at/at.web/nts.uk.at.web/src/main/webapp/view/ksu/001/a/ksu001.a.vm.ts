@@ -17,18 +17,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
      * reference file a.start.ts
      */
     export class ScreenModel {
+        
         employeeIdLogin: string = null;
-        //tree-grid
-        itemsTree: KnockoutObservableArray<Node>;
-        selectedCodeTree: KnockoutObservableArray<Node>;
-        singleSelectedCodeTree: KnockoutObservable<Node>;
 
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
         dataSource: KnockoutObservableArray<BasicSchedule> = ko.observableArray([]);
-        ccgcomponent: GroupOption = ko.observable();
-        selectedCode: KnockoutObservableArray<any> = ko.observableArray([]);
-        showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(true);
 
+        visibleShiftPalette : KnockoutObservable<boolean> = ko.observable(false);
         
         // popup-area6
         formatSelection: KnockoutObservableArray<any> = ko.observableArray([
@@ -43,14 +38,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             new BoxModel(2, getText("KSU001_136")),
         ]);
         selectedDisplay: any = ko.observable(1);
-        
-                backgroundColorSelList: KnockoutObservableArray<ItemModel> = ko.observableArray([
+
+        backgroundColorSelList: KnockoutObservableArray<ItemModel> = ko.observableArray([
             new ItemModel('1', getText("KSU001_143")),
             new ItemModel('2', getText("KSU001_144"))
         ]);
         backgroundColorSelected: KnockoutObservable<string> = ko.observable('1');
-        
-       
+
+
         selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
         isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
         isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
@@ -66,12 +61,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dateTimeAfter: KnockoutObservable<string>;
 
         //Switch
-        timePeriod: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '抽出' },
-            { code: 2, name: '２８日' },
-            { code: 3, name: '末日' }]);
-        selectedTimePeriod: KnockoutObservable<number> = ko.observable(1);
-
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText("KSU001_39") },
             { code: 2, name: getText("KSU001_40") },
@@ -79,14 +68,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
-        modeDisplayObject: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '予定' },
-            { code: 2, name: '実績' }]);
-        selectedModeDisplayObject: KnockoutObservable<number> = ko.observable(1);
-
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         lengthListSid: KnockoutObservable<string> = ko.observable('開発本部　第一開発部　　　UK就業　チーム１0');
+        
         affiliationId: any = null;
         affiliationName: KnockoutObservable<string> = ko.observable('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
@@ -109,10 +94,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         constructor() {
             let self = this;
-            //Tree grid
-            self.itemsTree = ko.observableArray([]);
-            self.selectedCodeTree = ko.observableArray([]);
-            self.singleSelectedCodeTree = ko.observable(null);
 
             //Date time
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
@@ -272,6 +253,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
+                self.getDataWkpPattern();
                 self.dtPrev(moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD'));
                 self.dtAft(moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD'));
                 self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
@@ -343,73 +325,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     });
                 }
             }).fail(() => { self.stopRequest(true); });
-        }
-
-        initCCG001(): JQueryPromise<any>  {
-            let self = this, dfd = $.Deferred();
-            // Component option
-            self.ccgcomponent = {
-                maxPeriodRange: 'oneMonth',
-                /** Common properties */
-                systemType: 2, // システム区分
-                showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: false, // クイック検索
-                showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: false, // 基準日利用
-                showClosure: false, // 就業締め日利用
-                showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
-                periodFormatYM: false, // 対象期間精度
-
-                /** Required parameter */
-                periodStartDate: self.dateTimePrev, // 対象期間開始日
-                periodEndDate: self.dateTimeAfter, // 対象期間終了日
-                inService: true, // 在職区分
-                leaveOfAbsence: false, // 休職区分
-                closed: false, // 休業区分
-                retirement: false, // 退職区分
-
-                /** Quick search tab options */
-                showAllReferableEmployee: true, // 参照可能な社員すべて
-                showOnlyMe: false, // 自分だけ
-                showSameWorkplace: true, // 同じ職場の社員
-                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
-                /** Advanced search properties */
-                showEmployment: true, // 雇用条件
-                showWorkplace: true, // 職場条件
-                showClassification: true, // 分類条件
-                showJobTitle: true, // 職位条件
-                showWorktype: true, // 勤種条件
-                isMutipleCheck: true, // 選択モード
-                showOnStart: true,
-
-                /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.searchEmployee(data.listEmployee);
-                    // set startDate-endDate
-                    let isAllowUpdateExTable = false;
-                    if (moment(self.dtPrev()).format('YYYYMMDD') !== moment(data.periodStart).format('YYYYMMDD')) {
-                        self.dtPrev(new Date(data.periodStart));
-                        isAllowUpdateExTable = true;
-                    }
-
-                    if (moment(self.dtAft()).format('YYYYMMDD') !== moment(data.periodEnd).format('YYYYMMDD')) {
-                        self.dtAft(new Date(data.periodEnd));
-                        isAllowUpdateExTable = true;
-                    }
-
-                    if (isAllowUpdateExTable) {
-                        self.updateDetailAndHorzSum();
-                    }
-                }
-            }
-            // Start component
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                dfd.resolve();
-            });
-            
-            return dfd.promise();
         }
 
         /**
@@ -1152,18 +1067,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
 
-        /**
-         * Shift condition A2_4
-         */
-        initShiftCondition(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            service.buildTreeShiftCondition().done(function(itemsTree) {
-                self.itemsTree(itemsTree);
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
+     
 
         /**
          * Get data of Basic Schedule = listDataShortName + listDataTimeZone + dataWScheState
@@ -1947,10 +1851,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * get data form COM_PATTERN (for screen Q)
          */
-        getDataComPattern(): JQueryPromise<any> {
+        getDataComPattern(selectedLinkButton): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataComPattern().done((data) => {
                 __viewContext.viewModel.viewQ.listComPattern(data);
+                __viewContext.viewModel.viewQ.handleInitCom(
+                        data,
+                        __viewContext.viewModel.viewQ.textButtonArrComPattern, 
+                        __viewContext.viewModel.viewQ.dataSourceCompany, 
+                        selectedLinkButton == null ||  selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton );
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1962,11 +1871,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * get data form WKP_PATTERN (for screen Q)
          */
-        getDataWkpPattern(): JQueryPromise<any> {
+        getDataWkpPattern(selectedLinkButton): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let obj: string = self.empItems()[0] ? self.empItems()[0].affiliationId : '';
+            let obj: string = 'dea95de1-a462-4028-ad3a-d68b8f180412';  //self.empItems()[0] ? self.empItems()[0].affiliationId : '';
+            
+           // let workplaceId : 'dea95de1-a462-4028-ad3a-d68b8f180412'; 
             service.getDataWkpPattern(obj).done((data) => {
                 __viewContext.viewModel.viewQ.listWkpPattern(data);
+                __viewContext.viewModel.viewQ.handleInitWkp(
+                        data, 
+                        __viewContext.viewModel.viewQ.textButtonArrComPattern, 
+                        __viewContext.viewModel.viewQ.dataSourceCompany,  
+                        selectedLinkButton == null ||  selectedLinkButton == undefined ? ko.observable(0) : selectedLinkButton );
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1975,18 +1891,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * open dialog C
-         */
-        openDialogC(): void {
-            let self = this;
-            $('#popup-area3').ntsPopup('hide');
-            nts.uk.ui.windows.setShared('selectionCondition', self.selectedCodeTree());
-            nts.uk.ui.windows.setShared('startDate', self.dateTimePrev());
-            nts.uk.ui.windows.setShared('endDate', self.dateTimeAfter());
-            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/c/index.xhtml");
-        }
 
         /**
          * open dialog D

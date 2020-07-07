@@ -10,9 +10,7 @@ module nts.uk.at.view.ksu001.a {
         nts.uk.ui.block.grayout();
         __viewContext.viewModel.viewA.startKSU001().done(() => {
             __viewContext.bind(__viewContext.viewModel);
-            __viewContext.viewModel.viewA.initCCG001().done(() => {
-                nts.uk.ui.block.clear();
-            });
+            nts.uk.ui.block.clear();
         });
 
         initEvent();

@@ -4,12 +4,23 @@ module nts.uk.at.view.ksu001.q.viewmodel {
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-        selectedTab: KnockoutObservable<string> = ko.observable('company');
-        contextMenu: Array<any>;
+
+        modeCompany: KnockoutObservable<boolean> = ko.observable(true);
+
+        palletUnit: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 1, name: getText("Com_Company") },
+            { code: 2, name: getText("Com_Workplace") }
+        ]);
+        selectedpalletUnit: KnockoutObservable<number>;
+        overwrite: KnockoutObservable<boolean> = ko.observable(false);
+
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         dataSourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         sourceCompany: KnockoutObservableArray<any> = ko.observableArray([]);
         sourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedButtonTableCompany: KnockoutObservable<any> = ko.observable({});
+        selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
+
         checked: KnockoutObservable<boolean> = ko.observable(false);
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
@@ -21,14 +32,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         indexLinkButtonCom: number = null;
         indexLinkButtonWkp: number = null;
         dataToStick: any = null;
-        selectedButtonTableCompany: KnockoutObservable<any> = ko.observable({});
-        selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
-        indexBtnSelected: number = 0;
 
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
-            { id: 'company', title: getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-            { id: 'workplace', title: getText("Com_Workplace"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-        ]);
+        indexBtnSelected: number = 0;
 
         textButtonArrComPattern: KnockoutObservableArray<any> = ko.observableArray([
             { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
@@ -64,37 +69,39 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
                 { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
-
-            self.selectedTab.subscribe((newValue) => {
-                if (newValue === 'workplace' && self.flag) {
+            
+            self.selectedpalletUnit = ko.observable(1);
+            self.selectedpalletUnit.subscribe((newValue) => {
+                if (newValue) {
                     self.initScreenQ();
-                    self.flag = false;
                 }
             });
 
-            self.selectedButtonTableCompany.subscribe(function() {
-                self.dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0] ? $("#test1").ntsButtonTable("getSelectedCells")[0].data.data : null;
+            self.selectedButtonTableCompany.subscribe( (value) => {
+                console.log(value);
+                self.dataToStick = $("#tableButton").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton").ntsButtonTable("getSelectedCells")[0].data.data : null;
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row*10;
+                self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row * 10;
             });
 
             self.selectedButtonTableWorkplace.subscribe(function() {
-                self.dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0] ? $("#test2").ntsButtonTable("getSelectedCells")[0].data.data : null;
+                self.dataToStick = $("#tableButton").ntsButtonTable("getSelectedCells")[0] ? $("#tableButton").ntsButtonTable("getSelectedCells")[0].data.data : null;
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableWorkplace().column + self.selectedButtonTableWorkplace().row*10;
+                self.indexBtnSelected = self.selectedButtonTableWorkplace().column + self.selectedButtonTableWorkplace().row * 10;
             });
 
-            $("#test1").bind("getdatabutton", function(evt, data) {
+            $("#tableButton").bind("getdatabutton", function(evt, data) {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
 
-            $("#test2").bind("getdatabutton", function(evt, data) {
+            $("#tableButton").bind("getdatabutton", function(evt, data) {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
+            
         }
 
         /**
@@ -102,10 +109,16 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         initScreenQ(): void {
             let self = this;
-            if (self.selectedTab() === 'company') {
-                self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
+            if (self.selectedpalletUnit() === 1) {
+                self.modeCompany(true);
+                __viewContext.viewModel.viewA.getDataComPattern().done(() => {
+                    console.log("get data com done");
+                });
             } else {
-                self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, ko.observable(0));
+                self.modeCompany(false);
+                __viewContext.viewModel.viewA.getDataWkpPattern().done(() => {
+                     console.log("get data workplace done");
+                });
             }
         }
 
@@ -114,59 +127,56 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          * change text of linkbutton
          * set data for datasource
          */
-        handleInit(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+        handleInitCom(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
             let self = this;
+            self.selectedLinkButtonCom = index;
             //set default for listTextButton and dataSource
-            listTextButton([
-                { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-                { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-                { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-                { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-                { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-                { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-                { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-                { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-                { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-                { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
+            self.dataSourceCompany([null, null, null, null, null, null, null, null, null, null]);
+            self.textButtonArrComPattern([
+                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
             ]);
-            dataSource([null, null, null, null, null, null, null, null, null, null]);
-
+            
+            let textLinkButton = [];
             for (let i = 0; i < listPattern.length; i++) {
                 let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
                 //change text of linkbutton
-                listTextButton()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+                self.textButtonArrComPattern()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
                 //set data for dataSource
                 _.each(listPattern[i].patternItem, (pattItem) => {
                     let text = pattItem.patternName;
-                    let arrPairShortName = [], arrPairObject: any = [];
+                    let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        let workType = null, workTime = null, pairShortName = null;
-                        workType = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': wPSet.workTypeCode });
-                        let workTypeShortName = workType.abbreviationName;
-                        workTime = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wPSet.workTimeCode });
-                        let workTimeShortName = workTime ? workTime.abName : null;
-                        pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
-                        arrPairShortName.push(pairShortName);
+                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                        //                            : arrPairSt.workTypeCode + ']');
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
+                        let value = "";
+                        if (self.selectedpalletUnit() === 1) {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        } else {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        }
                         arrPairObject.push({
-                            index: wPSet.pairNo,
-                            data: {
-                                workTypeCode: workType.workTypeCode,
-                                workTypeName: workType.name,
-                                workTimeCode: workTime ? workTime.workTimeCode : null,
-                                workTimeName: workTime ? workTime.name : null,
-                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.startTime : '',
-                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.endTime : '',
-                                symbolName: null
-                            }
+                            index: self.selectedpalletUnit() === 1 ? wPSet.order : wPSet.pairNo,
+                            value: value,
+                            shiftMasterCode: self.selectedpalletUnit() === 1 ? wPSet.shiftCode : wPSet.workTypeCode
                         });
                     });
-                    let arrDataOfArrPairObject: any = [];
-                    _.each(arrPairObject, (data) => {
-                        arrDataOfArrPairObject.push(data.data);
-                    });
-                    //set symbol for arrPairObject
-                    //                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)).done(() => {
-                    __viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)
+
+                    // screen JA must not set symbol for arrPairObject
                     // set tooltip
                     let arrTooltipClone = _.clone(arrPairShortName);
                     for (let i = 7; i < arrTooltipClone.length; i += 7) {
@@ -175,26 +185,92 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                     }
                     let tooltip: string = arrPairShortName.join('→');
                     tooltip = tooltip.replace(/→lb/g, '\n');
-
-                    //insert data to source
+                    // Insert data to source
                     source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
-                    //                });
                 });
-                dataSource().splice(listPattern[i].groupNo - 1, 1, source);
+                self.dataSourceCompany().splice(listPattern[i].groupNo - 1, 1, source);
             }
             
-            self.clickLinkButton(null, index);
+            self.clickLinkButton(null, self.selectedLinkButtonCom);
+        }
+        
+        handleInitWkp(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+            let self = this;
+            self.selectedLinkButtonWkp = index;
+            //set default for listTextButton and dataSource
+            self.dataSourceWorkplace([null, null, null, null, null, null, null, null, null, null]);
+            self.textButtonArrWkpPattern([
+                { name: ko.observable(nts.uk.resource.getText("ページ1", ['１'])), id: 0, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ2", ['２'])), id: 1, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ3", ['３'])), id: 2, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ4", ['４'])), id: 3, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ5", ['５'])), id: 4, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ6", ['６'])), id: 5, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ7", ['７'])), id: 6, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ8", ['８'])), id: 7, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ9", ['９'])), id: 8, formatter: _.escape },
+                { name: ko.observable(nts.uk.resource.getText("ページ10", ['１０'])), id: 9, formatter: _.escape },
+            ]);
+
+            for (let i = 0; i < listPattern.length; i++) {
+                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+                //change text of linkbutton
+                self.textButtonArrWkpPattern()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
+
+                //set data for dataSource
+                _.each(listPattern[i].patternItem, (pattItem) => {
+                    let text = pattItem.patternName;
+                    let arrPairShortName = [], arrPairObject = [];
+                    _.forEach(pattItem.workPairSet, (wPSet) => {
+                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
+                        //                            : arrPairSt.workTypeCode + ']');
+
+                        let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
+                        let value = "";
+                        if (self.selectedpalletUnit() === 1 ) {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        } else {
+                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            value = shortName;
+                            arrPairShortName.push(shortName);
+                        }
+                        arrPairObject.push({
+                            index: self.selectedpalletUnit() === 1 ? wPSet.order : wPSet.pairNo,
+                            value: value,
+                            shiftMasterCode: self.selectedpalletUnit() === 1 ? wPSet.shiftCode : wPSet.workTypeCode
+                        });
+                    });
+
+                    // screen JA must not set symbol for arrPairObject
+                    // set tooltip
+                    let arrTooltipClone = _.clone(arrPairShortName);
+                    for (let i = 7; i < arrTooltipClone.length; i += 7) {
+                        arrPairShortName.splice(i, 0, 'lb');
+                        i++;
+                    }
+                    
+                    let tooltip: string = arrPairShortName.join('→');
+                    tooltip = tooltip.replace(/→lb/g, '\n');
+                    // Insert data to source
+                    source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
+                });
+                self.dataSourceWorkplace().splice(listPattern[i].groupNo - 1, 1, source);
+            }
+             self.clickLinkButton(null, self.selectedLinkButtonWkp);
         }
 
         /**
          * Click to link button
          */
-        clickLinkButton(element: any, index?: any): void {
+        clickLinkButton(element: any, param?: any): void {
             let self = this,
-                source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-
-            if (self.selectedTab() === 'company') {
-                self.indexLinkButtonCom = index();
+                source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
+                index: number = param();
+            
+            if (self.selectedpalletUnit() === 1) {
+                self.indexLinkButtonCom = index;
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
@@ -204,7 +280,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 //set sourceCompany
                 self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
             } else {
-                self.indexLinkButtonWkp = index();
+                self.indexLinkButtonWkp = index;
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
@@ -221,12 +297,12 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         openPopup(button): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $("#test2").trigger("getdatabutton", { text: button[0].innerText });
+            $("#tableButton").trigger("getdatabutton", { text: button[0].innerText });
             $("#popup-area").css('visibility', 'visible');
             let buttonWidth = button.outerWidth(true) - 30;
             $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
-            $("#test2").bind("namechanged", function(evt, data) {
-                $("#test2").unbind("namechanged");
+            $("#tableButton").bind("namechanged", function(evt, data) {
+                $("#tableButton").unbind("namechanged");
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     dfd.resolve(data);
                 } else {
@@ -243,7 +319,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         decision(): void {
             let self = this;
             $("#popup-area").css('visibility', 'hidden');
-            $("#test2").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip() });
+            $("#tableButton").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip() });
         }
 
         /**
@@ -252,37 +328,39 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         closePopup(): void {
             nts.uk.ui.errors.clearAll()
             $("#popup-area").css('visibility', 'hidden');
-            $("#test2").trigger("namechanged", undefined);
+            $("#tableButton").trigger("namechanged", undefined);
         }
 
         /**
-         * Open dialog JA
+         * Open dialog JB
          */
-        openDialogJA(): JQueryPromise<any> {
+        openDialogJB1(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             setShared('dataForJB', {
-                selectedTab: self.selectedTab(),
-                workplaceName: __viewContext.viewModel.viewA.workPlaceNameDisplay(),
-                workplaceCode: __viewContext.viewModel.viewA.workplaceCode(), 
-                workplaceId: self.selectedTab() === 'company' ? null : __viewContext.viewModel.viewA.workplaceId,
+                selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
+                workplaceName: '経理部職',
+                workplaceCode: '0000000001',
+                workplaceId: self.selectedpalletUnit() === 1 ? null : 'dea95de1-a462-4028-ad3a-d68b8f180412', // __viewContext.viewModel.viewA.workplaceId
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
-                selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
+                selectedLinkButton: self.selectedpalletUnit() === 1 ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
                 // listCheckNeededOfWorkTime for JA to JA send to JB
                 listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
-                let selectedLB: any = ko.observable(getShared("dataFromJB").selectedLinkButton);
-                if (self.selectedTab() == 'company') {
-                    $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
-                        self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
+                let selectedLinkButton: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
+                
+                if (self.selectedpalletUnit() === 1) {
+                    self.modeCompany(true);
+                    __viewContext.viewModel.viewA.getDataComPattern(selectedLinkButton).done(() => {
+                        console.log("get data com done");
                     });
                 } else {
-                    $.when(__viewContext.viewModel.viewA.getDataWkpPattern()).done(() => {
-                        self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, selectedLB);
+                    self.modeCompany(false);
+                    __viewContext.viewModel.viewA.getDataWkpPattern().done(() => {
+                        console.log("get data workplace done");
                     });
                 }
-
                 dfd.resolve(undefined);
             });
             return dfd.promise();
@@ -293,7 +371,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         openDialogJB(evt, data): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            
+
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
             setShared("dataForJB", {
@@ -310,14 +388,14 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                     self.tooltip(data.tooltip);
                     let dataBasicSchedule = _.map(data.data, 'data');
                     //set symbol for object
-                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(dataBasicSchedule)).done(() => {
+                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(dataBasicSchedule)).done(() => {
                         dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
                         self.refreshDataSource();
                         // neu buttonTable do dang dc select, set lai data cho dataToStick 
-                        if(self.indexBtnSelected == $(evt).attr('data-idx')){
+                        if (self.indexBtnSelected == $(evt).attr('data-idx')) {
                             $("#extable").exTable("stickData", dataBasicSchedule);
                         }
-                     });
+                    });
                 }
             });
             return dfd.promise();
@@ -342,7 +420,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         refreshDataSource(): void {
             let self = this;
-            if (self.selectedTab() === 'company') {
+            if (self.selectedpalletUnit() === 1) {
                 self.dataSourceCompany()[self.indexLinkButtonCom] = self.sourceCompany();
             } else {
                 self.dataSourceWorkplace()[self.indexLinkButtonWkp] = self.sourceWorkplace();

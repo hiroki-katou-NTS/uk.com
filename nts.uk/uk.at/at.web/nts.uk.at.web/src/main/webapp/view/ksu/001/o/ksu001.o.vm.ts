@@ -6,6 +6,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
+                
         listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType> = ko.observableArray([]);
         listWorkTime: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime> = ko.observableArray([]);
         itemName: KnockoutObservable<string>;
@@ -219,23 +220,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.workEmpCombines = data.workEmpCombines;
                 self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 self.listTimeZoneForSearch = data.listWorkTime;
-                //set data for listWorkTime
-                //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                //                    workTimeCode: '',
-                //                    name: getText("KSU001_97"),
-                //                    abName: '',
-                //                    symbolName: '',
-                //                    dailyWorkAtr: undefined,
-                //                    worktimeSetMethod: undefined,
-                //                    abolitionAtr: undefined,
-                //                    color: null,
-                //                    note: null,
-                //                    startTime: undefined,
-                //                    endTime: undefined,
-                //                    workNo: undefined,
-                //                    useAtr: undefined
-                //                }));
-                // insert item 「なし」 with code = ''
+            
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '',
                     name: self.nashi,
@@ -251,22 +236,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     workNo: undefined,
                     useAtr: undefined
                 }));
-                // insert item 「個人情報設定」 with code = ''
-                //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                //                    workTimeCode: '',
-                //                    name: getText("KSU001_99"),
-                //                    abName: '',
-                //                    symbolName: '',
-                //                    dailyWorkAtr: undefined,
-                //                    worktimeSetMethod: undefined,
-                //                    abolitionAtr: undefined,
-                //                    color: null,
-                //                    note: null,
-                //                    startTime: undefined,
-                //                    endTime: undefined,
-                //                    workNo: undefined,
-                //                    useAtr: undefined
-                //                }));
+    
                 _.each(data.listWorkTime, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {

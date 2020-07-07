@@ -9,9 +9,10 @@ module nts.uk.at.view.ksu001.a.service {
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
-        getDataComPattern: "screen/at/schedule/basicschedule/getDataComPattern",
-        getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
         findWorkPlaceById: "bs/employee/workplace/info/findDetail",
+        
+        getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
+        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
