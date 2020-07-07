@@ -1,7 +1,7 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-
-const fingerVeinModeTemplate = `
+module nts.uk.kdp003.f {
+	const fingerVeinModeTemplate = `
 <!-- ko with: data -->
 <tr>
 	<td data-bind="i18n: 'KDP003_3'"></td>
@@ -29,7 +29,7 @@ const fingerVeinModeTemplate = `
 		<!-- /ko -->
 	</td>
 </tr>
-<!-- ko if: ko.unwrap(params.mode) === 'employee' && ko.unwrap(params.passwordRequired) !== false -->
+<!-- ko if: (ko.unwrap(params.mode) === 'employee' && ko.unwrap(params.passwordRequired) !== false) || ko.unwrap(params.mode) !== 'employee' -->
 <tr>
 	<td data-bind="i18n: 'KDP003_5'"></td>
 	<td>
@@ -48,20 +48,21 @@ const fingerVeinModeTemplate = `
 <!-- /ko -->
 `;
 
-@component({
-	name: 'kdp-003-f-finger-vein-mode',
-	template: fingerVeinModeTemplate
-})
-class Kdp003FLoginWithFingerVeinModeCoponent extends ko.ViewModel {
-	constructor(public data: { model: Kdp003FModel; params: Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam; }) {
-		super();
-	}
+	@component({
+		name: 'kdp-003-f-finger-vein-mode',
+		template: fingerVeinModeTemplate
+	})
+	export class Kdp003FLoginWithFingerVeinModeCoponent extends ko.ViewModel {
+		constructor(public data: { model: Kdp003FModel; params: Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam; }) {
+			super();
+		}
 
-	created() {
-		const vm = this;
-	}
+		created() {
+			const vm = this;
+		}
 
-	mounted() {
-		const vm = this;
+		mounted() {
+			const vm = this;
+		}
 	}
 }

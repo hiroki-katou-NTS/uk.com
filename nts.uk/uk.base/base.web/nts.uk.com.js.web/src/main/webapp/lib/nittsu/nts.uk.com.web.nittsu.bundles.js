@@ -37,14 +37,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -57,7 +57,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -70,7 +70,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -80,7 +80,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -90,28 +90,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -134,7 +134,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -203,7 +203,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -7781,8 +7781,7 @@ var nts;
                         self.$container.classList.add(NAMESPACE);
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -19743,7 +19742,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -21199,7 +21198,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -22320,8 +22319,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -32402,8 +32400,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -35814,7 +35811,8 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60, formatter: function createButton(deleteField, row) {
+                            width: 60,
+                            formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -43462,8 +43460,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -43858,7 +43855,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -47391,7 +47389,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
         return $.Deferred().resolve()
             .then(function () {
-            nts.uk.sessionStorage.setItem(name, $saveValue_1);
+            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
         })
             .then(function () { return $storeSession(name); });
     }
@@ -47399,7 +47397,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         // getter method
         return $.Deferred().resolve()
             .then(function () {
-            var $result = nts.uk.sessionStorage.getItem(name);
+            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
             if ($result.isPresent()) {
                 var $string = atob($result.value)
                     .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
@@ -47417,7 +47415,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.sessionStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(OPENWD);
             return value;
         });
     }
@@ -47649,26 +47647,50 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
     modal: {
         value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modal(webapp, path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modal(webapp).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modal(webapp, path).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
     modeless: {
         value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modeless(webapp, path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modeless(webapp).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modeless(webapp, path).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
@@ -47812,9 +47834,53 @@ var I18nBindingHandler = /** @class */ (function () {
     I18nBindingHandler = __decorate([
         handler({
             bindingName: 'i18n',
-            validatable: true
+            validatable: true,
+            virtual: false
         })
     ], I18nBindingHandler);
     return I18nBindingHandler;
+}());
+var IconBindingHandler = /** @class */ (function () {
+    function IconBindingHandler() {
+    }
+    IconBindingHandler.prototype.update = function (el, value) {
+        ko.computed(function () {
+            var numb = ko.toJS(value());
+            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+            $.get(url)
+                .then(function () {
+                $(el).css({
+                    'background-image': "url('" + url + "')",
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
+            });
+        });
+    };
+    IconBindingHandler = __decorate([
+        handler({
+            bindingName: 'icon',
+            validatable: true,
+            virtual: false
+        })
+    ], IconBindingHandler);
+    return IconBindingHandler;
+}());
+var DateBindingHandler = /** @class */ (function () {
+    function DateBindingHandler() {
+    }
+    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var date = ko.unwrap(valueAccessor());
+        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+        $(element).text(moment(date).format(format));
+    };
+    DateBindingHandler = __decorate([
+        handler({
+            bindingName: 'date',
+            validatable: true,
+            virtual: false
+        })
+    ], DateBindingHandler);
+    return DateBindingHandler;
 }());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
