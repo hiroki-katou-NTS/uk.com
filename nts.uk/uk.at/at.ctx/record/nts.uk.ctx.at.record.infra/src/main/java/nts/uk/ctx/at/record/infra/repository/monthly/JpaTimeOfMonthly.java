@@ -177,7 +177,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 				+ " where SID in @emps"
 				+ " and YM in @yms";
 		
-		val results = NtsStatement.In.split(employeeIds, emps -> {
+		List<KrcdtMonMerge> results = NtsStatement.In.split(employeeIds, emps -> {
 			return new NtsStatement(sql, this.jdbcProxy())
 					.paramString("emps", emps)
 					.paramInt("yms", yearMonthValues)
