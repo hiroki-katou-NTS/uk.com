@@ -25,7 +25,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	private AnnualLeaveRemainingDayNumber totalRemainingDays;
 	
 	/** 合計残時間 */
-	private Optional<RemainingMinutes> totalRemainingTime;
+	private Optional<AnnualLeaveRemainingTime> totalRemainingTime;
 	
 	/** 明細 */
 	private List<AnnualLeaveRemainingDetail> details;
@@ -49,7 +49,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 */
 	public static AnnualLeaveRemainingNumber of(
 			AnnualLeaveRemainingDayNumber totalRemainingDays,
-			Optional<RemainingMinutes> totalRemainingTime,
+			Optional<AnnualLeaveRemainingTime> totalRemainingTime,
 			List<AnnualLeaveRemainingDetail> details){
 		
 		AnnualLeaveRemainingNumber domain = new AnnualLeaveRemainingNumber();
@@ -65,7 +65,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		try {
 			cloned.totalRemainingDays = new AnnualLeaveRemainingDayNumber(this.totalRemainingDays.v());
 			if (this.totalRemainingTime.isPresent()){
-				cloned.totalRemainingTime = Optional.of(new RemainingMinutes(this.totalRemainingTime.get().v()));
+				cloned.totalRemainingTime = Optional.of(new AnnualLeaveRemainingTime(this.totalRemainingTime.get().v()));
 			}
 			for (val detail : this.details) cloned.details.add(detail.clone());
 		}
@@ -84,7 +84,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
 		this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(0.0);
-		this.totalRemainingTime = Optional.of( new RemainingMinutes(0));
+		this.totalRemainingTime = Optional.of( new AnnualLeaveRemainingTime(0));
 		
 		// 「年休付与残数データ」を取得  ooooo 順序を考慮する
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
@@ -113,7 +113,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			
 			// 合計残時間　←　「明細．時間」の合計
 			if ( remainingNumber.getMinutes().isPresent() ){
-				this.totalRemainingTime = Optional.of( new RemainingMinutes(
+				this.totalRemainingTime = Optional.of( new AnnualLeaveRemainingTime(
 					this.totalRemainingTime.get().v() + remainingNumber.getMinutes().get().v()));
 			}
 		}
