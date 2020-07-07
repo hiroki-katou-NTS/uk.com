@@ -9,7 +9,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
  * 勤務変更申請の登録を実行する
  */
 public interface IWorkChangeRegisterService {
-	
+	/**
+	 * Refactor4
+	 */
 	/**
 	 * ドメインモデル「勤務変更申請設定」の新規登録をする
 	 * 勤務変更申請（新規）登録処理
@@ -49,6 +51,6 @@ public interface IWorkChangeRegisterService {
 	 * @param lstDates
 	 * @param isMail
 	 */
-	public void registerProcess(Boolean mode, String companyId, Application application, AppWorkChange appWorkchange, List<GeneralDate> lstDates, Boolean isMail);
+	public ProcessResult registerProcess(Boolean mode, String companyId, Application application, AppWorkChange appWorkchange, List<GeneralDate> lstDates, Boolean isMail);
 	
 }

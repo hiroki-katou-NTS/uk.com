@@ -1,18 +1,15 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDto;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AddAppWorkChangeCommand {
-	
+public class AddAppWorkChangeCommandCheck {
 //	画面モード
 	private Boolean mode;
 //	会社ID
@@ -21,8 +18,6 @@ public class AddAppWorkChangeCommand {
 	private ApplicationDto applicationDto;
 //	勤務変更申請 
 	private AppWorkChangeDto appWorkChangeDto;
-//	休日の申請日<List>
-	private List<String> holidayDates;
-//	メールサーバ設定済区分
-	private Boolean isMail;
+//	承認ルートエラー情報
+	private int isError;
 }

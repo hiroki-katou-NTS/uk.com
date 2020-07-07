@@ -126,12 +126,12 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	}
 
 	@Override
-	public void registerProcess(Boolean mode, String companyId, Application application, AppWorkChange appWorkchange,
+	public ProcessResult registerProcess(Boolean mode, String companyId, Application application, AppWorkChange appWorkchange,
 			List<GeneralDate> lstDates, Boolean isMail) {
 		if (mode) {
-			this.registerData(companyId, application, appWorkchange, lstDates, isMail);
+			return this.registerData(companyId, application, appWorkchange, lstDates, isMail);
 		}else {
-			workChangeUpdateService.updateWorkChange(companyId, application, appWorkchange);
+			return workChangeUpdateService.updateWorkChange(companyId, application, appWorkchange);
 		}
 		
 	}

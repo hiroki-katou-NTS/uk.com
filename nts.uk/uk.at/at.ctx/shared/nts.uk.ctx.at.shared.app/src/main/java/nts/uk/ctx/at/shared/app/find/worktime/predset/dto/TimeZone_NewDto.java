@@ -19,4 +19,8 @@ public class TimeZone_NewDto {
 	public static TimeZone_NewDto fromDomain(TimeZone timeZone) {
 		return new TimeZone_NewDto(timeZone.getStartTime().v(), timeZone.getEndTime().v());
 	}
+	
+	public TimeZone toDomain() {
+		return new TimeZone(startTime, endTime);
+	}
 }

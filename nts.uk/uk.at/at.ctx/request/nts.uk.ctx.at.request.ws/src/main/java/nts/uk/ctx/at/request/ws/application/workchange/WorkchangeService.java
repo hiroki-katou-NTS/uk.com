@@ -13,7 +13,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand_Old;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
@@ -69,8 +71,9 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("addworkchange")
-	public ProcessResult addWorkChange(AddAppWorkChangeCommand command) {
-		return addHandler.handle(command);
+	public ProcessResult addWorkChange(AddAppWorkChangeCommand_Old command) {
+//		return addHandler.handle(command);
+		return null;
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("updateworkchange")
-	public ProcessResult updateWorkChange(AddAppWorkChangeCommand command) {
+	public ProcessResult updateWorkChange(AddAppWorkChangeCommand_Old command) {
 		return updateHandler.handle(command);
 	}
 
@@ -131,15 +134,17 @@ public class WorkchangeService extends WebService {
 	
 	@POST
 	@Path("checkBeforeRegister")
-	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
-		return appWorkFinder.checkBeforeRegister(command);
+	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand_Old command) {
+//		return appWorkFinder.checkBeforeRegister(command);
+		return null;
 	}
 	
 	@POST
 	@Path("checkBeforeUpdate")
-	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand command) {
-		appWorkFinder.checkBeforeUpdate(command);
-		return new WorkChangeCheckRegisterDto(Collections.emptyList(), Collections.emptyList());
+	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand_Old command) {
+//		appWorkFinder.checkBeforeUpdate(command);
+//		return new WorkChangeCheckRegisterDto(Collections.emptyList(), Collections.emptyList());
+		return null;
 	}
 	
 	@POST
@@ -149,6 +154,18 @@ public class WorkchangeService extends WebService {
 		GeneralDate today = GeneralDate.today();
 		dates.add(today);
 		return appWorkFinder.getStartKAFS07(true, "000000000000-0117", "292ae91c-508c-4c6e-8fe8-3e72277dec16", dates);
+	}
+	
+	@POST
+	@Path("checkBeforeRegister_New")
+	public WorkChangeCheckRegisterDto checkBeforeRegisterNew(AddAppWorkChangeCommandCheck command) {
+		return appWorkFinder.checkBeforeRegisterNew(command);
+	}
+	
+	@POST
+	@Path("addWorkChange_New")
+	public ProcessResult addWorkChange_New(AddAppWorkChangeCommand command) {
+		return addHandler.handle(command);
 	}
 	
 
