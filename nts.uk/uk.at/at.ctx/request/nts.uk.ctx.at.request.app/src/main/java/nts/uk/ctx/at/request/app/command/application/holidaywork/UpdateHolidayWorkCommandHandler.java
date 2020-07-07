@@ -122,7 +122,9 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 				Arrays.asList(updateHolidayWorkCommand.getApplicationDate()));
 		
 		// 4-2.詳細画面登録後の処理
-		return detailAfterUpdate.processAfterDetailScreenRegistration(appHolidayWork.getApplication());
+		// error EA refactor 4
+		/*return detailAfterUpdate.processAfterDetailScreenRegistration(appHolidayWork.getApplication());*/
+		return null;
 	}
 
 }

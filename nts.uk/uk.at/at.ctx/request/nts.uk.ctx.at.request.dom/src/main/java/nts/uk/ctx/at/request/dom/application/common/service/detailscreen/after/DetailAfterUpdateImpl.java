@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
@@ -40,8 +42,8 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
-	public ProcessResult processAfterDetailScreenRegistration(Application_New application) {
-		String companyID = application.getCompanyID();
+	public ProcessResult processAfterDetailScreenRegistration(Application application) {
+		String companyID = AppContexts.user().companyId();
 		List<String> destinationList = new ArrayList<>();
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;

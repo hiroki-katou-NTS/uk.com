@@ -200,7 +200,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					Arrays.asList(recCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (recApp != null) {
-				this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);
+				// error EA refactor 4
+				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);*/
 			}
 		}
 
@@ -217,7 +218,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					Arrays.asList(absCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (absApp != null) {
-				this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);
+				// error EA refactor 4
+				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);*/
 			}
 		}
 

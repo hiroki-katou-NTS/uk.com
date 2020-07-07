@@ -60,6 +60,7 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 				appStamp.getApplication_New().getVersion(), null, null);*/
 		appStampRepository.updateStamp(appStamp);
 		applicationRepository.updateWithVersion(appStamp.getApplication_New());
-		return afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getApplication_New());
+		/*return afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getApplication_New());*/
+		return null;
 	}
 }

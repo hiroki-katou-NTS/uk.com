@@ -153,7 +153,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				Arrays.asList(application.getAppDate()));
 		
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
+		// error EA refactor 4
+		/*return this.detailAfterUpdate.processAfterDetailScreenRegistration(application);*/
+		return null;
 	}
 
 }

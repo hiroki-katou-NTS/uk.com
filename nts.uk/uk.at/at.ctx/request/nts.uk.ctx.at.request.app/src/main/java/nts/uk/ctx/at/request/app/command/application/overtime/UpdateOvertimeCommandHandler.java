@@ -169,7 +169,9 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				command.getApplicantSID(), 
 				Arrays.asList(command.getApplicationDate()));
 		//4-2.詳細画面登録後の処理を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());
+		// error EA refactor 4
+		/*return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());*/
+		return null;
 	}
 
 }
