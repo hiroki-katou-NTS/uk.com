@@ -47834,9 +47834,53 @@ var I18nBindingHandler = /** @class */ (function () {
     I18nBindingHandler = __decorate([
         handler({
             bindingName: 'i18n',
-            validatable: true
+            validatable: true,
+            virtual: false
         })
     ], I18nBindingHandler);
     return I18nBindingHandler;
+}());
+var IconBindingHandler = /** @class */ (function () {
+    function IconBindingHandler() {
+    }
+    IconBindingHandler.prototype.update = function (el, value) {
+        ko.computed(function () {
+            var numb = ko.toJS(value());
+            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+            $.get(url)
+                .then(function () {
+                $(el).css({
+                    'background-image': "url('" + url + "')",
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
+            });
+        });
+    };
+    IconBindingHandler = __decorate([
+        handler({
+            bindingName: 'icon',
+            validatable: true,
+            virtual: false
+        })
+    ], IconBindingHandler);
+    return IconBindingHandler;
+}());
+var DateBindingHandler = /** @class */ (function () {
+    function DateBindingHandler() {
+    }
+    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var date = ko.unwrap(valueAccessor());
+        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+        $(element).text(moment(date).format(format));
+    };
+    DateBindingHandler = __decorate([
+        handler({
+            bindingName: 'date',
+            validatable: true,
+            virtual: false
+        })
+    ], DateBindingHandler);
+    return DateBindingHandler;
 }());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

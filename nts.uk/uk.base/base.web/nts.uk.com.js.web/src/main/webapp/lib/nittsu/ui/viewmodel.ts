@@ -510,7 +510,8 @@ Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 
 @handler({
 	bindingName: 'i18n',
-	validatable: true
+	validatable: true,
+	virtual: false
 })
 class I18nBindingHandler implements KnockoutBindingHandler {
 	update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
@@ -518,5 +519,42 @@ class I18nBindingHandler implements KnockoutBindingHandler {
 		const params = ko.unwrap(allBindingsAccessor.get('params'));
 
 		$(element).text(nts.uk.resource.getText(msg, params));
+	}
+}
+
+@handler({
+	bindingName: 'icon',
+	validatable: true,
+	virtual: false
+})
+class IconBindingHandler implements KnockoutBindingHandler {
+	update(el: HTMLElement, value: () => KnockoutObservable<number> | number) {
+		ko.computed(() => {
+			const numb: number = ko.toJS(value());
+			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
+
+			$.get(url)
+				.then(() => {
+					$(el).css({
+						'background-image': `url('${url}')`,
+						'background-repeat': 'no-repeat',
+						'background-position': 'center'
+					});
+				});
+		});
+	}
+}
+
+@handler({
+	bindingName: 'date',
+	validatable: true,
+	virtual: false
+})
+class DateBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => KnockoutObservable<Date> | Date, allBindingsAccessor?: KnockoutAllBindingsAccessor) {
+		const date = ko.unwrap(valueAccessor());
+		const format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+
+		$(element).text(moment(date).format(format));
 	}
 }
