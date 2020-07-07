@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.workplace.appuseset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 
@@ -29,5 +30,12 @@ public class ApplicationUseSetting {
 	 * 備考
 	 */
 	private AppUseSetRemark memo;
+	
+	public static ApplicationUseSetting createNew(int useDivision, int appType, String memo) {
+		return new ApplicationUseSetting(
+				EnumAdaptor.valueOf(useDivision, UseDivision.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				new AppUseSetRemark(memo));
+	}
 	
 }
