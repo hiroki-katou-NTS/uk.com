@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 
 @Data
@@ -47,7 +48,7 @@ public class CommonLeaveRemainingNumberDto implements ItemConst {
 	public AnnualLeaveRemainingNumber toDomain() {
 		return AnnualLeaveRemainingNumber.of(
 				new AnnualLeaveRemainingDayNumber(totalRemainingDays), 
-				Optional.of(new RemainingMinutes(totalRemainingTime)), 
+				Optional.of(new AnnualLeaveRemainingTime(totalRemainingTime)), 
 				ConvertHelper.mapTo(details, c -> c == null ? new AnnualLeaveRemainingDetail(GeneralDate.today()) : c.toDomain()));
 	}
 }

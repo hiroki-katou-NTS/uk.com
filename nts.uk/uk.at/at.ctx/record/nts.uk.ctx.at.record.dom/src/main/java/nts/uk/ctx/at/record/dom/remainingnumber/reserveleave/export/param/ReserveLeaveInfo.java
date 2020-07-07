@@ -228,12 +228,12 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 現在の積立年休（マイナスあり）の残数を付与前として退避する
 		val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
 		//withMinus.setRemainingNumberBeforeGrant(withMinus.getRemainingNumber().clone());
-		withMinus.getRemainingNumber().saveStateBeforeGrant();
+		withMinus.getRemainingNumberInfo().saveStateBeforeGrant();
 		
 		// 現在の積立年休（マイナスなし）の残数を付与前として退避する
 		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
 		//noMinus.setRemainingNumberBeforeGrant(noMinus.getRemainingNumber().clone());
-		noMinus.getRemainingNumber().saveStateBeforeGrant();
+		noMinus.getRemainingNumberInfo().saveStateBeforeGrant();
 		
 	}
 	
@@ -363,7 +363,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 上限日数と積立年休残日数を比較
 		Integer maxDays = aggrPeriodWork.getMaxDays().v();
 		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
-		double totalRemain = noMinus.getRemainingNumber().getTotalRemainingDays().v();
+		double totalRemain = noMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v();
 		if (maxDays.doubleValue() < totalRemain){
 			
 			// 上限を超過した日数を計算　→　上限超過日数
@@ -504,7 +504,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		{
 			// 残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
-			if (withMinus.getRemainingNumber().getTotalRemainingDays().v() < 0.0){
+			if (withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v() < 0.0){
 				if (this.afterGrantAtr){
 					
 					// 「積立年休不足エラー（付与後）」を追加

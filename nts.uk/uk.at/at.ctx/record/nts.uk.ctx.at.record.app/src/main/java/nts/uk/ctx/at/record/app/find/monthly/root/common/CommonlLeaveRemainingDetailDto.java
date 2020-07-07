@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 @Data
-/** 年休残明細 */
+/** 休暇残明細 */
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonlLeaveRemainingDetailDto implements ItemConst {
