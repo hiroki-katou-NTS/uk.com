@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,16 +27,15 @@ public class CorrectWorkSchedule {
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
 		//TODO : Chưa remove từ record sang shared nên chưa sử dụng được (tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
-		IntegrationOfDaily daily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), null, null, 
-				 null, workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
-				 workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), 
-				 null, null, 
-				 null, workSchedule.getLstEditState(), null, null);
+		IntegrationOfDaily daily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
+				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
+				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
+				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
 		//勤怠ルールの補正処理 
 		//TODO Thuật toán này hiện chưa ai làm + cũng chưa phải làm. nên tạm thời bỏ qua (TKT-TQP)
 		//勤務予定情報を計算する
-		//TODO: đang để record -> có thể sẽ chuyển về shared, 
-		centerNew.calculate(employeeId, targetDate, ExecutionType.NORMAL_EXECUTION, null, true);
+		//TODO: đang để record -> có thể sẽ chuyển về shared (mr Hoshina dang ban vs a Lau)
+		//centerNew.calculate(employeeId, targetDate, ExecutionType.NORMAL_EXECUTION, null, true);
 		return workSchedule; //Return tạm thời
 		
 	}

@@ -18,6 +18,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -323,6 +324,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 		AtomicBoolean checkStop = new AtomicBoolean(false);
+		CacheCarrier carrier = new CacheCarrier();
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
 				scheduleCreator -> {
@@ -376,7 +378,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 							listBasicSchedule,
 							asyncTask,
 							companySetting,
-							scheduleCreator);
+							scheduleCreator,
+							carrier);
 				});
 			} else {
 				String errorContent = this.internationalization.localize("Msg_1509").get();
