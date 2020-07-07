@@ -39,6 +39,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Leav
  */
 public class GetUnusedCompenTemporary {
 
+	private GetUnusedCompenTemporary() {
+	};
+
 	// 4.未使用の振出(暫定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, AbsRecMngInPeriodRefactParamInput input) {
 
@@ -76,9 +79,6 @@ public class GetUnusedCompenTemporary {
 		LeaveSetOutput leaveSetOut = GetSettingCompensaLeave.process(require, input.getCid(), input.getSid(),
 				input.getDateData().end());
 
-		if (leaveSetOut == null)
-			return lstOutput;
-
 		// 取得した件数をチェックする
 		List<String> mapId = lstRecMng.stream().map(x -> x.getRecruitmentMngId()).collect(Collectors.toList());
 		List<InterimRecAbsMng> lstInterimRecAbsMng = require.getRecOrAbsMngs(mapId, false, DataManagementAtr.INTERIM);
@@ -100,7 +100,7 @@ public class GetUnusedCompenTemporary {
 			List<InterimRecAbsMng> lstInterimRecAbsMng) {
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する
 		List<InterimRecAbsMng> lstInterimMng = lstInterimRecAbsMng.stream()
-				.filter(x -> x.getAbsenceMngId().equals(recMng.getRecruitmentMngId())).collect(Collectors.toList());
+				.filter(x -> x.getRecruitmentMngId().equals(recMng.getRecruitmentMngId())).collect(Collectors.toList());
 
 		// 未使用日数←SELF.発生日数
 		double unUseDays = recMng.getOccurrenceDays().v();

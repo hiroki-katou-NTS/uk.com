@@ -13,6 +13,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class PrepareInfoBeginOfMonth {
 
+	private PrepareInfoBeginOfMonth() {
+	};
+
 	// 月初時点の情報を整える
 	public static AbsDaysRemain prepare(Require require, String companyId, String employeeId, GeneralDate ymd,
 			boolean isMode, List<AccumulationAbsenceDetail> result) {

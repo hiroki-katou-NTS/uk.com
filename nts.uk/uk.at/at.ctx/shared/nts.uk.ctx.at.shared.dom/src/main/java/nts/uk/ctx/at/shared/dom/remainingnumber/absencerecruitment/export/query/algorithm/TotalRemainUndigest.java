@@ -14,6 +14,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
  */
 public class TotalRemainUndigest {
 
+	private TotalRemainUndigest() {
+	};
+
 	public static AbsDaysRemain process(List<AccumulationAbsenceDetail> lstData, GeneralDate date, boolean isMode) {
 
 		AbsDaysRemain outData = new AbsDaysRemain(0, 0, false);
