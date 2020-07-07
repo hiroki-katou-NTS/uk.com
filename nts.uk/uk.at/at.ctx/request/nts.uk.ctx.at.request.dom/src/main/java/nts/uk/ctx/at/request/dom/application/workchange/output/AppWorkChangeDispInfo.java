@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -26,7 +26,7 @@ public class AppWorkChangeDispInfo {
 	/**
 	 * 申請表示情報
 	 */
-	private AppDispInfoStartupOutput_Old appDispInfoStartupOutput;
+	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 	
 	/**
 	 * 勤務変更申請設定

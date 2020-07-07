@@ -73,7 +73,8 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 
 	@Override
 	public AppDispInfoStartupOutput_Old getCommonSetBeforeDetail(String companyID, String appID) {
-		// 詳細画面の申請データを取得する
+		// error EA refactor 4
+		/*// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 起動時の申請表示情報を取得する
 		ApplicationType_Old appType = detailScreenAppData.getApplication().getAppType();
@@ -108,7 +109,8 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));
 		appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo));
 		// 更新した「申請表示情報」を返す
-		return appDispInfoStartupOutput;
+		return appDispInfoStartupOutput;*/
+		return null;
 	}
 
 }

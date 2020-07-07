@@ -255,7 +255,8 @@ public class AppAbsenceFinder {
 	 */
 	public AppAbsenceStartInfoDto getChangeAppDate(String startAppDate, boolean displayHalfDayValue, String employeeID,
 			String workTypeCode, Integer holidayType, int alldayHalfDay, int prePostAtr, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = new ArrayList<>();
 		GeneralDate targetDate = GeneralDate.fromString(startAppDate, "yyyy/MM/dd");
 		dateLst.add(targetDate);
@@ -304,7 +305,8 @@ public class AppAbsenceFinder {
 		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
 		result.holidayAppTypeName = holidayAppTypes;
 		// 「休暇申請起動時の表示情報」を返す
-		return result;
+		return result;*/
+		return null;
 	}
 
 	/**

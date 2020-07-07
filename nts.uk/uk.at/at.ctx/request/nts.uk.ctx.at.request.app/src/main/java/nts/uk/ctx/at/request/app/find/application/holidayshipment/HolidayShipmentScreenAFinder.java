@@ -293,8 +293,8 @@ public class HolidayShipmentScreenAFinder {
 	
 	//振出日を変更する
 	public DisplayInforWhenStarting changeWorkingDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
-		
-		String companyId = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyId = AppContexts.user().companyId();
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
 		listTagetDate.add(workingDate == null ? null : workingDate);
@@ -322,13 +322,14 @@ public class HolidayShipmentScreenAFinder {
 			//「振休振出申請起動時の表示情報」．振出申請起動時の表示情報=上記取得した「振出申請起動時の表示情報」
 			displayInforWhenStarting.setApplicationForWorkingDay(applicationForWorkingDay);
 		}
-		return displayInforWhenStarting;
+		return displayInforWhenStarting;*/
+		return null;
 	}
 	
 	//振休日を変更する
 	public DisplayInforWhenStarting changeHolidayDateRefactor(GeneralDate workingDate, GeneralDate holidayDate, DisplayInforWhenStarting displayInforWhenStarting) {
-		
-		String companyId = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyId = AppContexts.user().companyId();
 		
 		List<GeneralDate> listTagetDate = new ArrayList<>();
 		listTagetDate.add(workingDate == null ? null : workingDate);
@@ -353,7 +354,8 @@ public class HolidayShipmentScreenAFinder {
 			//「振休振出申請起動時の表示情報」．振休申請起動時の表示情報=上記取得した「振休申請起動時の表示情報」
 			displayInforWhenStarting.setApplicationForHoliday(applicationForHoliday);
 		}
-		return displayInforWhenStarting;
+		return displayInforWhenStarting;*/
+		return null;
 	}
 	
 

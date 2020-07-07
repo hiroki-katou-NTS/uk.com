@@ -39,7 +39,8 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
-		AddAppWorkChangeCommand command = context.getCommand();
+		// error EA refactor 4
+		/*AddAppWorkChangeCommand command = context.getCommand();
 		
 		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		// Application command
@@ -108,6 +109,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				.map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
 		
 		//ドメインモデル「勤務変更申請設定」の新規登録をする
-        return workChangeRegisterService.registerData(workChangeDomain, app, lstDateHd);
+        return workChangeRegisterService.registerData(workChangeDomain, app, lstDateHd);*/
+		return null;
 	}
 }

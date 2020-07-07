@@ -46,7 +46,8 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
-		AddAppWorkChangeCommand command = context.getCommand();
+		// error EA refactor 4
+		/*AddAppWorkChangeCommand command = context.getCommand();
 		// Command data
 		CreateApplicationCommand appCommand = command.getApplication();
 		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
@@ -138,7 +139,8 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		workChangeDomain.setVersion(appCommand.getVersion());
 		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
-		return updateService.updateWorkChange(updateApp, workChangeDomain);
+		return updateService.updateWorkChange(updateApp, workChangeDomain);*/
+		return null;
 	}
 
 }

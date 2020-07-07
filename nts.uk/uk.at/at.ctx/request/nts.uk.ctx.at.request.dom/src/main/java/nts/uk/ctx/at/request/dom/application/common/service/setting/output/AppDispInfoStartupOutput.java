@@ -23,6 +23,7 @@ public class AppDispInfoStartupOutput {
 	/**
 	 * 申請設定（基準日関係あり）
 	 */
+	@Setter
 	private AppDispInfoWithDateOutput appDispInfoWithDateOutput;
 	
 	/**

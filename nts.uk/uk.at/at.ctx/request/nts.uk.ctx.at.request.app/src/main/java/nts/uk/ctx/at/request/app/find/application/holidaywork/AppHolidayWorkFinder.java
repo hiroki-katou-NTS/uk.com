@@ -214,8 +214,8 @@ public class AppHolidayWorkFinder {
 				overtimeRestAppCommonSet);
 
 		return result;*/
-		
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		GeneralDate targetDate = GeneralDate.fromString(appDate, "yyyy/MM/dd");
 		List<GeneralDate> dateLst = Arrays.asList(targetDate);
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = appHdWorkDispInfoCmd.toDomain();
@@ -266,7 +266,8 @@ public class AppHolidayWorkFinder {
 		appHdWorkDispInfoOutput.setPreAppCheckResult(preAppCheckResult);
 		appHdWorkDispInfoOutput.setActualStatusCheckResult(actualStatusCheckResult);
 		
-		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
+		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);*/
+		return null;
 	}
 	/**
 	 * getCaculationValue

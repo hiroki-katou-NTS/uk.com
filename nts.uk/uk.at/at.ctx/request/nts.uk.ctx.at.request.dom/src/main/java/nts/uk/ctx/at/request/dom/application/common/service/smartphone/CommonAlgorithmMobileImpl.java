@@ -51,10 +51,11 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -114,6 +115,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
+	
+	@Inject
+	private AppEmploymentSetRepository appEmploymentSetRepository;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -232,11 +236,11 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = this.getBaseDate(applicationSetting, appType, appDateLst);
 		// 社員IDから申請承認設定情報の取得
-		ApprovalFunctionSetting approvalFunctionSet = this.commonAlgorithm.getApprovalFunctionSet(
+		ApprovalFunctionSet approvalFunctionSet = this.commonAlgorithm.getApprovalFunctionSet(
 				companyID, 
 				employeeID, 
 				baseDate, 
-				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+				appType);
 		// 取得した「利用区分」をチェックする
 		// chuyển đến UI
 		// INPUT．「申請種類」をチェックする
@@ -249,7 +253,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		// 社員所属雇用履歴を取得する
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
 		// 雇用別申請承認設定を取得する
-		Optional<AppEmploymentSetting> opAppEmploymentSetting = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), appType.value);
+		Optional<AppEmploymentSet> opAppEmploymentSet = appEmploymentSetRepository.findByCompanyIDAndEmploymentCD(companyID, empHistImport.getEmploymentCode());
 		// INPUT．「起動モード」を確認する
 		Optional<List<ApprovalPhaseStateImport_New>> opListApprovalPhaseState = Optional.empty();
 		Optional<ErrorFlagImport> opErrorFlag = Optional.empty();
@@ -301,7 +305,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				baseDate, 
 				empHistImport, 
 				NotUseAtr.NOT_USE);
-		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSetting);
+		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
 		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
 		appDispInfoWithDateOutput.setOpAchievementOutputLst(opAchievementOutputLst);

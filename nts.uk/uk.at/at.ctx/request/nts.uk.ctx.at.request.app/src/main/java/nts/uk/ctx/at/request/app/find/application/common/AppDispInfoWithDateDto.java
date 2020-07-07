@@ -9,10 +9,10 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.employment.appemploymentsetting.AppEmploymentSetDto;
+import nts.uk.ctx.at.request.app.find.setting.workplace.appuseset.ApprovalFunctionSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -46,7 +46,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 申請承認機能設定
 	 */
-	private ApprovalFunctionSettingDto approvalFunctionSet;
+	private ApprovalFunctionSetDto approvalFunctionSet;
 	
 	/**
 	 * 事前事後区分
@@ -71,7 +71,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	private AppEmploymentSettingDto opEmploymentSet;
+	private AppEmploymentSetDto opEmploymentSet;
 	
 	/**
 	 * 承認ルート
@@ -105,12 +105,12 @@ public class AppDispInfoWithDateDto {
 	
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
 		return new AppDispInfoWithDateDto(
-				ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet()), 
+				ApprovalFunctionSetDto.fromDomain(appDispInfoWithDateOutput.getApprovalFunctionSet()), 
 				appDispInfoWithDateOutput.getPrePostAtr().value, 
 				appDispInfoWithDateOutput.getBaseDate().toString(), 
 				SEmpHistImportDto.fromDomain(appDispInfoWithDateOutput.getEmpHistImport()), 
 				appDispInfoWithDateOutput.getAppDeadlineUseCategory().value, 
-				appDispInfoWithDateOutput.getOpEmploymentSet().map(x -> AppEmploymentSettingDto.fromDomain(x)).orElse(null), 
+				appDispInfoWithDateOutput.getOpEmploymentSet().map(x -> AppEmploymentSetDto.fromDomain(x)).orElse(null), 
 				appDispInfoWithDateOutput.getOpListApprovalPhaseState()
 					.map(x -> x.stream().map(y -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpErrorFlag().map(x -> x.value).orElse(null), 
@@ -144,7 +144,7 @@ public class AppDispInfoWithDateDto {
 	
 	public AppDispInfoWithDateOutput toDomain() {
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = new AppDispInfoWithDateOutput(
-				ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet), 
+				approvalFunctionSet.toDomain(), 
 				EnumAdaptor.valueOf(prePostAtr, PrePostInitAtr.class), 
 				GeneralDate.fromString(baseDate, "yyyy/MM/dd"), 
 				empHistImport.toDomain(), 

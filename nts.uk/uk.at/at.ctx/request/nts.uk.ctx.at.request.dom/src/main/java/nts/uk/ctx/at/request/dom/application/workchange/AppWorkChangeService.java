@@ -6,7 +6,6 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutp
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -36,10 +35,10 @@ public interface AppWorkChangeService {
 	
 	/**
 	 * 勤務種類を取得する
-	 * @param appEmploymentSetting ドメインモデル「雇用別申請承認設定」
+	 * @param appEmploymentSet ドメインモデル「雇用別申請承認設定」
 	 * @return 勤務種類リスト
 	 */
-	public List<WorkType> getWorkTypeLst(AppEmploymentSetting appEmploymentSetting);
+	public List<WorkType> getWorkTypeLst(AppEmploymentSet appEmploymentSet);
 	
 	/**
 	 * 勤務種類・就業時間帯の初期選択項目を取得する
@@ -110,9 +109,10 @@ public interface AppWorkChangeService {
 	 * 勤務変更申請画面初期（更新）
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
+	 * @param appDispInfoStartupOutput 申請表示情報
 	 * @return
 	 */
-	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID);
+	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 更新前のエラーチェック処理

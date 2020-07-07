@@ -96,7 +96,8 @@ public class AppWorkChangeFinder {
 	}
 	
 	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
-		AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
+		// error EA refactor 4
+		/*AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
 		AppWorkChangeDispInfoDto result = new AppWorkChangeDispInfoDto(
 				cmd.appDispInfoStartupOutput, 
 				cmd.appWorkChangeSet, 
@@ -117,11 +118,13 @@ public class AppWorkChangeFinder {
 			changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get().saveToMemento(predetemineTimeSettingDto);
 		}
 		result.predetemineTimeSetting = predetemineTimeSettingDto;
-		return result;
+		return result;*/
+		return null;
 	}
 	
 	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
-		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
+		// error EA refactor 4
+		/*AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		// Application command
 		CreateApplicationCommand appCommand = command.getApplication();
 		// Work change command
@@ -190,17 +193,21 @@ public class AppWorkChangeFinder {
 				app, 
 				workChangeDomain);
 		
-		return WorkChangeCheckRegisterDto.fromDomain(output);
+		return WorkChangeCheckRegisterDto.fromDomain(output);*/
+		return null;
 	}
 	
 	public AppWorkChangeDetailDto startDetailScreen(String appID) {
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		AppWorkChangeDetailOutput output = appWorkChangeService.startDetailScreen(companyID, appID);
-		return AppWorkChangeDetailDto.fromDomain(output);
+		return AppWorkChangeDetailDto.fromDomain(output);*/
+		return null;
 	}
 	
 	public void checkBeforeUpdate(AddAppWorkChangeCommand command) {
-		// Command data
+		// error EA refactor 4
+		/*// Command data
 		CreateApplicationCommand appCommand = command.getApplication();
 		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
 		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
@@ -290,7 +297,7 @@ public class AppWorkChangeFinder {
 		//OptimisticLock
 		workChangeDomain.setVersion(appCommand.getVersion());
 		
-		appWorkChangeService.checkBeforeUpdate(companyId, updateApp, workChangeDomain, false);
+		appWorkChangeService.checkBeforeUpdate(companyId, updateApp, workChangeDomain, false);*/
 	}
 	
 	public AppWorkChangeOutputDto getStartKAFS07(boolean mode, String companyId, String employeeId, List<GeneralDate> dates) {

@@ -12,8 +12,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFl
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -29,7 +29,7 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 申請承認機能設定
 	 */
-	private ApprovalFunctionSetting approvalFunctionSet;
+	private ApprovalFunctionSet approvalFunctionSet;
 	
 	/**
 	 * 事前事後区分
@@ -55,7 +55,7 @@ public class AppDispInfoWithDateOutput {
 	 * 雇用別申請承認設定
 	 */
 	@Setter
-	private Optional<AppEmploymentSetting> opEmploymentSet;
+	private Optional<AppEmploymentSet> opEmploymentSet;
 	
 	/**
 	 * 承認ルート
@@ -94,7 +94,7 @@ public class AppDispInfoWithDateOutput {
 	private Optional<List<WorkTimeSetting>> opWorkTimeLst;
 	
 	public AppDispInfoWithDateOutput(
-			ApprovalFunctionSetting approvalFunctionSet,
+			ApprovalFunctionSet approvalFunctionSet,
 			PrePostInitAtr prePostAtr,
 			GeneralDate baseDate,
 			SEmpHistImport empHistImport,

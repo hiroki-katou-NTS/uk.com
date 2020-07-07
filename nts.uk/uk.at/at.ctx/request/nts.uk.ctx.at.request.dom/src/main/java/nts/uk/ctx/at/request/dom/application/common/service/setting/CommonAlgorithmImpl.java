@@ -10,43 +10,34 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -58,25 +49,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	private AtEmployeeAdapter atEmployeeAdapter;
 	
 	@Inject
-	private RequestSettingRepository requestSettingRepository;
-	
-	@Inject
-	private BaseDateGet baseDateGet;
-	
-	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
-	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
-	
-	@Inject
-	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
-	
-	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
 	
 	@Inject
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
@@ -88,11 +64,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	private WorkTypeRepository wkTypeRepo;
 	
 	@Inject
-	private HolidayShipmentService holidayShipmentService;
+	private RequestByCompanyRepository requestByCompanyRepository;
+	
+	@Inject
+	private RequestByWorkplaceRepository requestByWorkplaceRepository;
 
 	@Override
-	public AppDispInfoNoDateOutput_Old getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType_Old appType) {
-		// 申請者情報を取得する
+	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType) {
+		// error EA refactor 4
+		/*// 申請者情報を取得する
 		List<EmployeeInfoImport> employeeInfoLst = this.getEmployeeInfoLst(applicantLst);
 		// 申請承認設定を取得する
 		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
@@ -106,7 +86,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// OUTPUT「申請表示情報(基準日関係なし)」にセットする
 		AppDispInfoNoDateOutput_Old output = new AppDispInfoNoDateOutput_Old(employeeInfoLst, requestSetting, appReasonLst);
 		// 「申請表示情報(基準日関係なし)」を返す
-		return output;
+		return output;*/
+		return null;
 	}
 
 	@Override
@@ -127,7 +108,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public AppDispInfoWithDateOutput_Old getAppDispInfoWithDate(String companyID, ApplicationType_Old appType,
 			List<GeneralDate> dateLst, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, boolean mode) {
 		AppDispInfoWithDateOutput_Old output = new AppDispInfoWithDateOutput_Old();
-		// 基準日=INPUT．「申請対象日リスト」の1個目
+		// error EA refactor 4
+		/*// 基準日=INPUT．「申請対象日リスト」の1個目
 		Optional<GeneralDate> targetDate = Optional.empty();
 		if(!CollectionUtil.isEmpty(dateLst)) {
 			GeneralDate firstDate = dateLst.get(0);
@@ -195,26 +177,26 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		output.setBaseDate(baseDate);
 		output.setAchievementOutputLst(appDispInfoWithDateOutput.getAchievementOutputLst());
 		output.setAppDetailContentLst(appDispInfoWithDateOutput.getAppDetailContentLst());
-		output.setEmpHistImport(empHistImport);
+		output.setEmpHistImport(empHistImport);*/
 		// 「申請表示情報(基準日関係あり)」を返す
 		return output;
 	}
 
 	@Override
-	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType_Old targetApp) {
+	public ApprovalFunctionSet getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp) {
 		// [No.571]職場の上位職場を基準職場を含めて取得する
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, date);
 		for(String workPlaceID : workPlaceIDs) {
 			// 職場別申請承認設定の取得
-			Optional<ApprovalFunctionSetting> settingOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getFunctionSetting(companyID, workPlaceID, targetApp.value);
+			Optional<ApprovalFunctionSet> opApprovalFunctionSet = requestByWorkplaceRepository.findByWkpAndAppType(companyID, workPlaceID, targetApp);
 			// 取得した「申請承認機能設定」をチェック
-			if(settingOfEarchWorkplaceOp.isPresent()) {
-				return settingOfEarchWorkplaceOp.get();
+			if(opApprovalFunctionSet.isPresent()) {
+				return opApprovalFunctionSet.get();
 			}
 		}
 		// 会社別申請承認設定の取得
-		Optional<ApprovalFunctionSetting> rqOptional = requestOfEachCompanyRepository.getFunctionSetting(companyID, targetApp.value);
-		return rqOptional.get();
+		Optional<ApprovalFunctionSet> opApprovalFunctionSet = requestByCompanyRepository.findByAppType(companyID, targetApp);
+		return opApprovalFunctionSet.get();
 	}
 
 	@Override
@@ -254,22 +236,25 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput_Old getAppDispInfoStart(String companyID, ApplicationType_Old appType,
+	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType,
 			List<String> applicantLst, List<GeneralDate> dateLst, boolean mode) {
-		// 申請表示情報(基準日関係なし)を取得する
-		AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
+		// error EA refactor 4
+		/*// 申請表示情報(基準日関係なし)を取得する
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
 		// 申請表示情報(基準日関係あり)を取得する
-		AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
 		// OUTPUT「申請表示情報」にセットする
-		AppDispInfoStartupOutput_Old output = new AppDispInfoStartupOutput_Old(appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
+		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput);
 		// OUTPUT「申請表示情報」を返す
-		return output;
+		return output;*/
+		return null;
 	}
 
 	@Override
-	public AppDispInfoWithDateOutput_Old changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
-			ApplicationType_Old appType, AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, AppDispInfoWithDateOutput_Old appDispInfoWithDateOutput) {
-		// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
+	public AppDispInfoWithDateOutput changeAppDateProcess(String companyID, List<GeneralDate> dateLst,
+			ApplicationType appType, AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
+		// error EA refactor 4
+		/*// INPUT．「申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
 		if(appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
 			AppTypeSetting appTypeSetting = appDispInfoNoDateOutput.getRequestSetting().getApplicationSetting()
@@ -285,7 +270,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		} else {
 			// 申請表示情報(基準日関係あり)を取得する
 			return this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, true);
-		}
+		}*/
+		return null;
 	}
 
 	@Override
