@@ -234,4 +234,6 @@ export class Model extends AppWorkChange {
 const API = {
     startNew: 'at/request/application/workchange/startNew',
     startS07: 'at/at/request/application/workchange/startMobile',
+    checkBeforRegister : 'at/at/request/application/workchange/checkBeforeRegister_New',
+    registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New'.
 };

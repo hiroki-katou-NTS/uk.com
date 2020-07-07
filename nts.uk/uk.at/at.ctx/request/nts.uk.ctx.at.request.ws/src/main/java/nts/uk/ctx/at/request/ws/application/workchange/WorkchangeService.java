@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
@@ -104,7 +104,7 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("workChangeSet")
-	public AppWorkChangeSetDto getWorkChangeSet() {
+	public AppWorkChangeSetDto_Old getWorkChangeSet() {
 		return appWorkFinder.findByCom();
 	}
 	

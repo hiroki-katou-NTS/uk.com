@@ -42,13 +42,13 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,11 +71,11 @@ public class AppWorkChangeFinder {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 
-	public AppWorkChangeSetDto findByCom() {
+	public AppWorkChangeSetDto_Old findByCom() {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppWorkChangeSet> app = appWRep.findWorkChangeSetByID(companyId);
+		Optional<AppWorkChangeSet_Old> app = appWRep.findWorkChangeSetByID(companyId);
 		if (app.isPresent()) {
-			return AppWorkChangeSetDto.fromDomain(app.get());
+			return AppWorkChangeSetDto_Old.fromDomain(app.get());
 		}
 		return null;
 	}
@@ -88,7 +88,7 @@ public class AppWorkChangeFinder {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
-		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
+		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
 				dateLst);
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
@@ -97,7 +97,7 @@ public class AppWorkChangeFinder {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
-		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
+		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
 				param.appWorkChangeDispInfoCmd.toDomain());
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
@@ -291,7 +291,7 @@ public class AppWorkChangeFinder {
 		ApplicationDto application = command.getApplicationDto();
 		AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
 		int isError = command.getIsError();
-		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBefore(mode, companyId,
+		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
 				application.toDomain(), appWorkChangeDto.toDomain(),
 				EnumAdaptor.valueOf(isError, ErrorFlagImport.class));
 

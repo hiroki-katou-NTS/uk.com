@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;

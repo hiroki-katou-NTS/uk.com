@@ -10,14 +10,15 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFl
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_New;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -31,7 +32,7 @@ public interface AppWorkChangeService {
 	 * @param dateLst 申請対象日リスト
 	 * @return
 	 */
-	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst);
+	public AppWorkChangeDispInfo_Old getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst);
 	
 	/**
 	 * 勤務種類を取得する
@@ -70,7 +71,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChangeDispInfo 勤務変更申請の表示情報
 	 * @return
 	 */
-	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo appWorkChangeDispInfo);
+	public AppWorkChangeDispInfo_Old changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo_Old appWorkChangeDispInfo);
 	
 	/**
 	 * 登録前のエラーチェック処理
@@ -137,7 +138,7 @@ public interface AppWorkChangeService {
 	 * @return 
 	 */
 	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId, Optional<String> employeeId,
-			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
+			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo_Old> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
 	
 	/**
 	 * 勤務変更申請画面初期（新規）
@@ -147,7 +148,7 @@ public interface AppWorkChangeService {
 	 * @param appDispInfoStartupOutput 申請表示情報
 	 * @return 勤務変更申請の表示情報
 	 */
-	public AppWorkChangeDispInfo_New getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public AppWorkChangeDispInfo getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 勤務変更申請設定を取得する
@@ -164,8 +165,16 @@ public interface AppWorkChangeService {
 	 * @param appWorkChangeDispInfo_New
 	 * @return
 	 */
-	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo_New appWorkChangeDispInfo_New);
+	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo appWorkChangeDispInfo_New);
 	
-	
-	public WorkChangeCheckRegOutput checkBefore(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag);
+	/**
+	 * 勤務変更申請の登録前チェック処理
+	 * @param mode
+	 * @param companyId
+	 * @param application
+	 * @param appWorkChange
+	 * @param opErrorFlag
+	 * @return
+	 */
+	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag);
 }

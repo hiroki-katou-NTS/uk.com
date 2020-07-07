@@ -28,18 +28,19 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_New;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -104,7 +105,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 	
 	@Override
-	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
+	public AppWorkChangeDispInfo_Old getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
 		// error EA refactor 4
 		/*AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
 		// 共通申請
@@ -245,7 +246,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCD);
 		result.setSetupType(setupType);
 		// INPUT．「勤務変更申請設定」をチェックする
-		if(workTimeCD.isPresent() && appWorkChangeSet.getInitDisplayWorktime() == InitDisplayWorktimeAtr.FIXEDTIME) {
+		if(workTimeCD.isPresent() && appWorkChangeSet.getInitDisplayWorktimeAtr() == InitDisplayWorktimeAtr.FIXEDTIME) {
 			// ドメインモデル所定時間設定」を取得する
 			Optional<PredetemineTimeSetting> opPredetemineTimeSetting = 
 					predetemineTimeSettingRepository.findByWorkTimeCode(companyID, workTimeCD.get());
@@ -256,8 +257,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst,
-			AppWorkChangeDispInfo appWorkChangeDispInfo) {
+	public AppWorkChangeDispInfo_Old changeAppDate(String companyID, List<GeneralDate> dateLst,
+			AppWorkChangeDispInfo_Old appWorkChangeDispInfo) {
 		// 共通インタラクション「申請日を変更する」を実行する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
@@ -400,11 +401,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Override
 	public AppWorkChangeDetailOutput startDetailScreen(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		AppWorkChangeDetailOutput result = new AppWorkChangeDetailOutput();
-		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
+		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = new AppWorkChangeDispInfo_Old();
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
 		AppWorkChange_Old appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, appID).get();
 		// ドメインモデル「勤務変更申請設定」より取得する 
-		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
+		AppWorkChangeSet_Old appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
 		// 勤務種類を取得する
 		AppEmploymentSet appEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
 		List<WorkType> workTypeLst = this.getWorkTypeLst(appEmploymentSet);
@@ -441,7 +442,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId,
-			Optional<String> employeeId, Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo,
+			Optional<String> employeeId, Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo_Old> appWorkChangeDispInfo,
 			Optional<AppWorkChange> appWorkChange) {
 		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();	
 		// new mode
@@ -456,7 +457,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					dates.isPresent() ? dates.get(): null, 
 					null);
 //			勤務変更申請画面初期（新規）
-			AppWorkChangeDispInfo_New appWorkChangeDisp = this.getAppWorkChangeDisInfo(
+			AppWorkChangeDispInfo appWorkChangeDisp = this.getAppWorkChangeDisInfo(
 					companyId, 
 					employeeId.isPresent() ? employeeId.get() : null, 
 					dates.isPresent() ? dates.get() : null,
@@ -474,9 +475,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 	
 	@Override
-	public AppWorkChangeDispInfo_New getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates,
+	public AppWorkChangeDispInfo getAppWorkChangeDisInfo(String companyId, String employeeId, List<GeneralDate> dates,
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
-		AppWorkChangeDispInfo_New appWorkChangeDispInfo = new AppWorkChangeDispInfo_New();
+		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
 		
 //		勤務変更申請設定を取得する
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyId);
@@ -526,7 +527,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = new AppWorkChangeSettingOutput();
 		
 //		ドメインモデル「勤務変更申請設定」を取得する
-		Optional<AppWorkChangeSet> appWorkChangeSet = iAppWorkChangeSetRepository.findWorkChangeSetByID(companyId);
+		Optional<AppWorkChangeSet> appWorkChangeSet = Optional.ofNullable(null);
 //		ドメインモデル「勤務変更申請の反映」を取得する
 		ReflectWorkChangeApp appWorkChangeReflect = null;
 		
@@ -539,13 +540,13 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId,
-			AppWorkChangeDispInfo_New appWorkChangeDispInfo_New) {
+			AppWorkChangeDispInfo appWorkChangeDispInfo_New) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public WorkChangeCheckRegOutput checkBefore(Boolean mode, String companyId, Application application,
+	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
 			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする

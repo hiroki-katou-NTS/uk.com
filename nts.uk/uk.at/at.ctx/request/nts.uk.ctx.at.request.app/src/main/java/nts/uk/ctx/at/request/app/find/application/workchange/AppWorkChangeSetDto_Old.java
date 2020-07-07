@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.workchange;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 
 /**
  * 勤務変更申請設定
  */
 @Value
-public class AppWorkChangeSetDto {
+public class AppWorkChangeSetDto_Old {
 
 	/**
 	 * 会社ID
@@ -64,8 +64,8 @@ public class AppWorkChangeSetDto {
 	 */
 	private String commentFontColor2;
 
-	public static AppWorkChangeSetDto fromDomain(AppWorkChangeSet domain) {
-		return new AppWorkChangeSetDto(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr().value,
+	public static AppWorkChangeSetDto_Old fromDomain(AppWorkChangeSet_Old domain) {
+		return new AppWorkChangeSetDto_Old(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr().value,
 				domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value, 
 				domain.getCommentContent1() != null ? domain.getCommentContent1().v() : null,
 				domain.getCommentFontWeight1() != null ? domain.getCommentFontWeight1().value : null, 
@@ -75,8 +75,8 @@ public class AppWorkChangeSetDto {
 				domain.getCommentFontColor2() != null ? domain.getCommentFontColor2().v() : null);
 	}
 	
-	public AppWorkChangeSet toDomain() {
-		return AppWorkChangeSet.createFromJavaType(
+	public AppWorkChangeSet_Old toDomain() {
+		return AppWorkChangeSet_Old.createFromJavaType(
 				cid, 
 				excludeHoliday, 
 				workChangeTimeAtr, 

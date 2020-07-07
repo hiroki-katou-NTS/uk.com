@@ -3,24 +3,26 @@ package nts.uk.ctx.at.request.dom.application.workchange.output;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+
 /**
- * Refactor4
- * UKDesign.UniversalK.就業.KAF_申請.KAF007_勤務変更申請.A:勤務変更申請（新規）.アルゴリズム.勤務変更申請画面初期（新規）.勤務変更申請の表示情報
- * @author hoangnd
+ * 勤務変更申請の表示情報
+ * @author Doan Duy Hung
  *
  */
-public class AppWorkChangeDispInfo_New {
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class AppWorkChangeDispInfo_Old {
+	
 	/**
 	 * 申請表示情報
 	 */
@@ -29,7 +31,7 @@ public class AppWorkChangeDispInfo_New {
 	/**
 	 * 勤務変更申請設定
 	 */
-	private AppWorkChangeSet appWorkChangeSet;
+	private AppWorkChangeSet_Old appWorkChangeSet;
 	
 	/**
 	 * 勤務種類リスト
@@ -56,6 +58,4 @@ public class AppWorkChangeDispInfo_New {
 	 */
 	private String workTimeCD;
 	
-//	勤務変更申請の反映
-	private ReflectWorkChangeApp reflectWorkChangeApp;
 }

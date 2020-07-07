@@ -15,7 +15,7 @@ public class AppWorkChangeDetailOutput {
 	/**
 	 * 勤務変更申請の表示情報
 	 */
-	private AppWorkChangeDispInfo appWorkChangeDispInfo;
+	private AppWorkChangeDispInfo_Old appWorkChangeDispInfo;
 	
 	/**
 	 * 勤務変更申請

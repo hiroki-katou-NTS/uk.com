@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.comment.FontWeightF
 /**
  * 勤務変更申請設定
  */
-public class AppWorkChangeSet extends AggregateRoot {
+public class AppWorkChangeSet_Old extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -72,10 +72,10 @@ public class AppWorkChangeSet extends AggregateRoot {
 	 */
 	private CommentFontColor commentFontColor2;
 
-	public static AppWorkChangeSet createFromJavaType(String cid, int excludeHoliday, int workChangeTimeAtr,
+	public static AppWorkChangeSet_Old createFromJavaType(String cid, int excludeHoliday, int workChangeTimeAtr,
 			int displayResultAtr, int initDisplayWorktime, String commentContent1, int commentFontWeight1,
 			String commentFontColor1, String commentContent2, int commentFontWeight2, String commentFontColor2) {
-		return new AppWorkChangeSet(cid, excludeHoliday, 
+		return new AppWorkChangeSet_Old(cid, excludeHoliday, 
 				EnumAdaptor.valueOf(workChangeTimeAtr, UseAtr.class), displayResultAtr,
 				EnumAdaptor.valueOf(initDisplayWorktime, InitDisplayWorktimeAtr.class),
 				commentContent1 == null ? null : new CommentContent(commentContent1), 
