@@ -117,26 +117,26 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumber().getUsedDays().getUsedDays());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
 
 			result.setUsedMinutes(
-					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-							.getUsedTime()
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+							.getUsedNumber().getUsedTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime()
+											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
 											.v())
 									: Optional.empty());
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getRemainingNumber().getTotalRemainingDays());
+					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
 
 			result.setRemainMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+											.getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 											.get().v())
 									: Optional.empty());
 
@@ -326,17 +326,17 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				Integer annualLeaveGrantTime = 0;
 				// set 年休残数日数
 				Double annualLeaveGrantDay = 0.00;
-				if(realAnnualLeave.getRemainingNumberAfterGrant().isPresent()){
-					AnnualLeaveRemainingNumber remainingNumberAfterGrant = realAnnualLeave.getRemainingNumberAfterGrant().get();
+				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
+					AnnualLeaveRemainingNumber remainingNumberAfterGrant = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get();
 					if(remainingNumberAfterGrant.getTotalRemainingTime().isPresent()){
 						annualLeaveGrantPostTime = remainingNumberAfterGrant.getTotalRemainingTime().get().v();
 					}
 					annualLeaveGrantPostDay = remainingNumberAfterGrant.getTotalRemainingDays().v();
 				}
-				if(realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
-					annualLeaveGrantPreTime = realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
+					annualLeaveGrantPreTime = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
 				}
-				annualLeaveGrantPreDay = realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+				annualLeaveGrantPreDay = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
 				// 取得結果を出力用クラスに格納 
 				AnnualLeaveRemainingNumberExport annualLeaveRemainingNumberExport = new AnnualLeaveRemainingNumberExport(
 						annualLeaveGrantPreDay,
@@ -581,26 +581,27 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				return null;
 			}
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumber().getUsedDays().getUsedDays());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
 
 			result.setUsedMinutes(
-					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getUsedNumberInfo().getUsedNumber()
 							.getUsedTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime()
+											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
 											.v())
 									: Optional.empty());
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getRemainingNumber().getTotalRemainingDays());
+					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
 
 			result.setRemainMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+											.getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 											.get().v())
 									: Optional.empty());
 
