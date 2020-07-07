@@ -53,7 +53,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 					"from KRQST_APPLICATION a left join KRQST_APP_TYPE b on a.CID =  b.CID " +
 					"left join KRQST_APP_MCLOSE c on a.CID = c.CID " +
 					"left join KRQST_REPRESENT_APP d on b.CID = d.CID and b.APP_TYPE = d.APP_TYPE " +
-					"and b.CID = @companyID and b.APP_TYPE = @appType";
+					"where b.CID = @companyID and b.APP_TYPE = @appType";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
 				.paramInt("appType", appType.value)

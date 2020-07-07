@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 
@@ -61,6 +62,19 @@ public class TargetWorkTypeByApp {
 		this.opHolidayTypeUse = opHolidayTypeUse;
 		this.opHolidayAppType = opHolidayAppType;
 		this.opBusinessTripAppWorkType = opBusinessTripAppWorkType;
+	}
+	
+	public static TargetWorkTypeByApp createNew(int appType, boolean displayWorkType, List<String> workTypeLst,
+			Integer opBreakOrRestTime, Boolean opHolidayTypeUse,
+			Integer opHolidayAppType, Integer opBusinessTripAppWorkType) {
+		return new TargetWorkTypeByApp(
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				displayWorkType, 
+				workTypeLst, 
+				opBreakOrRestTime == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opBreakOrRestTime, BreakOrRestTime.class)), 
+				opHolidayTypeUse == null ? Optional.empty() : Optional.of(opHolidayTypeUse), 
+				opHolidayAppType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opHolidayAppType, HolidayAppType.class)), 
+				opBusinessTripAppWorkType == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opBusinessTripAppWorkType, BusinessTripAppWorkType.class)));
 	}
 	
 }
