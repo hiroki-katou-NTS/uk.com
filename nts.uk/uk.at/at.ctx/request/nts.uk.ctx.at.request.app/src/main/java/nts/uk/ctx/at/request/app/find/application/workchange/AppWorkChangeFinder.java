@@ -84,7 +84,7 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 
-	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam_Old param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
@@ -93,7 +93,7 @@ public class AppWorkChangeFinder {
 		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
@@ -102,7 +102,7 @@ public class AppWorkChangeFinder {
 		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
 		// error EA refactor 4
 		/*
 		 * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
@@ -277,7 +277,8 @@ public class AppWorkChangeFinder {
 	}
 
 	public AppWorkChangeOutputDto getStartKAFS07(boolean mode, String companyId, String employeeId,
-			List<GeneralDate> dates) {
+			List<GeneralDate> dates, AppWorkChangeOutputDto appWorkChangeOutputDto, AppWorkChangeDto appWorkChangeDto ) {
+		
 		return AppWorkChangeOutputDto.fromDomain(
 				appWorkChangeService.getAppWorkChangeOutput(true, companyId, Optional.ofNullable(employeeId),
 						Optional.ofNullable(dates), Optional.ofNullable(null), Optional.ofNullable(null)));

@@ -138,7 +138,7 @@ public interface AppWorkChangeService {
 	 * @return 
 	 */
 	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId, Optional<String> employeeId,
-			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo_Old> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
+			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
 	
 	/**
 	 * 勤務変更申請画面初期（新規）

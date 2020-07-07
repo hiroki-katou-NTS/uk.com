@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -20,13 +21,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 
 	@Inject
-	private IAppWorkChangeRepository workChangeRepository;
+	private AppWorkChangeRepository workChangeRepository;
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
@@ -36,9 +37,9 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Override
 	public ProcessResult updateWorkChange(String companyId, Application application, AppWorkChange workChange) {
 		// ドメインモデル「勤務変更申請」の更新をする
-		// appRepository.updateWithVersion(app);
+//		 appRepository.updateWithVersion(application);
 
-		// workChangeRepository.update(workChange);
+		 workChangeRepository.update(workChange);
 
 		// 年月日Listを作成する
 		GeneralDate startDateParam = application.getOpAppStartDate().isPresent()
@@ -62,8 +63,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-//		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
-		return null;
+		return detailAfterUpdate.processAfterDetailScreenRegistration(application);
 	}
 
 }

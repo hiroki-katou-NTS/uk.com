@@ -8,11 +8,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSet;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqstAppWorkChangeSetPk;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaAppWorkChangeSetRepository extends JpaRepository implements AppWorkChangeSetRepository {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.workchange;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +26,11 @@ public class AppWorkChangeOutputDto {
 					.setAppWorkChange(AppWorkChangeDto.fromDomain(appWorkChangeOutput.getAppWorkChange().get()));
 		}
 		return appWorkChangeOutputDto;
+	}
+	public AppWorkChangeOutput toDomain() {
+		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();
+		appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDispInfo.toDomain());
+		appWorkChangeOutput.setAppWorkChange(Optional.ofNullable(appWorkChange.toDomain()));
+		return appWorkChangeOutput;
 	}
 }

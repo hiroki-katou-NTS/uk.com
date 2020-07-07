@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.enums.EnumAdaptor;
 
 @Stateless
 public class AppWorkChangeServiceImpl implements AppWorkChangeService {
@@ -99,6 +100,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private CommonAlgorithmMobile algorithmMobile;
+	
+	@Inject
+	private AppWorkChangeSetRepository appWorkChangeSetRepoNew;
 
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType_Old hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
@@ -442,7 +446,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId,
-			Optional<String> employeeId, Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo_Old> appWorkChangeDispInfo,
+			Optional<String> employeeId, Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo,
 			Optional<AppWorkChange> appWorkChange) {
 		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();	
 		// new mode
@@ -524,10 +528,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = new AppWorkChangeSettingOutput();
 		
 //		ドメインモデル「勤務変更申請設定」を取得する
-		Optional<AppWorkChangeSet> appWorkChangeSet = Optional.ofNullable(null);
+		Optional<AppWorkChangeSet> appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyId);
 //		ドメインモデル「勤務変更申請の反映」を取得する
-		ReflectWorkChangeApp appWorkChangeReflect = null;
-		
+		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
+		appWorkChangeReflect.setCompanyID(companyId);
+//		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));
 		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);
 		
 		appWorkChangeSettingOutput.setAppWorkChangeReflect(appWorkChangeReflect);
