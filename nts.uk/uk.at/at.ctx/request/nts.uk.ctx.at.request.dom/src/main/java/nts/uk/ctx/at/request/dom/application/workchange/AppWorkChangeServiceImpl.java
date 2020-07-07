@@ -510,11 +510,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		
 		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		appWorkChangeDispInfo.setWorkTypeLst(workTypes);
-		appWorkChangeDispInfo.setSetupType(changeWkTypeTimeOutput.getSetupType());
-		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().isPresent() 
-				? changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get(): null );
-		appWorkChangeDispInfo.setWorkTypeCD(woSelect.getWorkType().getWorkTypeCode().v());
-		appWorkChangeDispInfo.setWorkTimeCD(woSelect.getWorkTime().getWorktimeCode().v());
+		appWorkChangeDispInfo.setSetupType(Optional.ofNullable(changeWkTypeTimeOutput.getSetupType()));
+		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
+		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(woSelect.getWorkType().getWorkTypeCode().v()));
+		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(woSelect.getWorkTime().getWorktimeCode().v()));
 		
 //		勤務変更申請の表示情報．勤務変更申請の反映 = 取得した「勤務変更申請の反映」
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());

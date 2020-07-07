@@ -7,12 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-@AllArgsConstructor
+
 @NoArgsConstructor
-public class AppWorkChangeDispInfo_NewDto {
+@AllArgsConstructor
+public class AppWorkChangeDispInfoDto_Old {
+	
 	/**
 	 * 申請表示情報
 	 */
@@ -48,13 +50,8 @@ public class AppWorkChangeDispInfo_NewDto {
 	 */
 	public String workTimeCD;
 	
-//	勤務変更申請の反映
-	public ReflectWorkChangeAppDto reflectWorkChangeAppDto;
-	
-	
-	
-	public static AppWorkChangeDispInfo_NewDto fromDomain(AppWorkChangeDispInfo appWorkChangeDispInfo) {
-		AppWorkChangeDispInfo_NewDto result = new AppWorkChangeDispInfo_NewDto();
+	public static AppWorkChangeDispInfoDto_Old fromDomain(AppWorkChangeDispInfo_Old appWorkChangeDispInfo) {
+		AppWorkChangeDispInfoDto_Old result = new AppWorkChangeDispInfoDto_Old();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
 		result.appWorkChangeSet = AppWorkChangeSetDto_Old.fromDomain(appWorkChangeDispInfo.getAppWorkChangeSet());
 		result.workTypeLst = appWorkChangeDispInfo.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
@@ -66,7 +63,7 @@ public class AppWorkChangeDispInfo_NewDto {
 		}
 		result.workTypeCD = appWorkChangeDispInfo.getWorkTypeCD();
 		result.workTimeCD = appWorkChangeDispInfo.getWorkTimeCD();
-		result.reflectWorkChangeAppDto = ReflectWorkChangeAppDto.fromDomain(appWorkChangeDispInfo.getReflectWorkChangeApp());
 		return result;
 	}
+	
 }

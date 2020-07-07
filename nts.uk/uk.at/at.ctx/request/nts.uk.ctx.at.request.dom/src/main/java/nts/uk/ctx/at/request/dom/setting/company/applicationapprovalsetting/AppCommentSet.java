@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.shr.com.color.ColorCode;
 
@@ -10,6 +11,7 @@ import nts.uk.shr.com.color.ColorCode;
  * @author Doan Duy Hung
  *
  */
+@Setter
 @Getter
 public class AppCommentSet {
 	

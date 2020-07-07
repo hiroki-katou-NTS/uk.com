@@ -22,8 +22,8 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCom
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfo_NewDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -84,25 +84,25 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 
-	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
 		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
 				dateLst);
-		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
+		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto changeAppDate(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
 		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
 				param.appWorkChangeDispInfoCmd.toDomain());
-		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
+		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam param) {
 		// error EA refactor 4
 		/*
 		 * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;

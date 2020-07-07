@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.workchange.output;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -41,22 +41,22 @@ public class AppWorkChangeDispInfo {
 	/**
 	 * 就業時間帯の必須区分
 	 */
-	private SetupType setupType;
+	private Optional<SetupType> setupType;
 	
 	/**
 	 * 所定時間設定
 	 */
-	private PredetemineTimeSetting predetemineTimeSetting;
+	private Optional<PredetemineTimeSetting> predetemineTimeSetting;
 	
 	/**
 	 * 選択中の勤務種類
 	 */
-	private String workTypeCD;
+	private Optional<String> workTypeCD;
 	
 	/**
 	 * 選択中の就業時間帯
 	 */
-	private String workTimeCD;
+	private Optional<String> workTimeCD;
 	
 //	勤務変更申請の反映
 	private ReflectWorkChangeApp reflectWorkChangeApp;
