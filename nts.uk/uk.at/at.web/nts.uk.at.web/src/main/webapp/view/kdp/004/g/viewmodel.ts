@@ -11,13 +11,12 @@ class KDP004GViewModel extends ko.ViewModel {
 		let vm = this;
 		vm.$window.storage('ModelGParam').then((param: any) => {
 			vm.retry(param.retry);
-			vm.errorMessage(param.errorMessage);
+			vm.errorMessage(vm.$i18n.message(param.errorMessage));
 		});
 	}
 
 	public closeDialog(actionName: string) {
 		let vm = this;
-		vm.$window.storage('actionName', actionName);
-		nts.uk.ui.windows.close();
+		vm.$window.close({ actionName: actionName });
 	}
 }
