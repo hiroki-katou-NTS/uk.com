@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
+package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.apptypeset;
 
 import java.util.Optional;
 
