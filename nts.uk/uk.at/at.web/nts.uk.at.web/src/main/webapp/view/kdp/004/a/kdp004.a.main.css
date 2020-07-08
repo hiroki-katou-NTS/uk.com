@@ -36,18 +36,8 @@ html{
   text-align: center;
   margin-top: 10px;
 }
-#stamp-header {
-  padding: 10px;
-}
 #stamp-header .panel {
   padding: 0px;
-}
-#stamp-date-text {
-  font-size: 5vmin !important;
-}
-#stamp-time-text {
-  font-size: 10vmin !important;
-  margin-left: 120px;
 }
 .full-width{
   width: 100%;
