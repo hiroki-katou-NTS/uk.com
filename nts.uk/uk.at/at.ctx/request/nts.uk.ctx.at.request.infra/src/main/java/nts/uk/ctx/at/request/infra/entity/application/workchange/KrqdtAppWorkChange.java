@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -25,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 /**
  * 勤務変更申請
  */
-@Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_WORK_CHANGE")

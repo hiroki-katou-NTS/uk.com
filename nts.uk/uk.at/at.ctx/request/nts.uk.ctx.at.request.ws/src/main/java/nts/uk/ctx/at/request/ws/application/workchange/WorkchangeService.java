@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
@@ -29,7 +30,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecord
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -85,7 +86,7 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("getWorkchangeByAppID/{appId}")
-	public AppWorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
+	public AppWorkChangeDetailDto_Old getWorkchangeByAppID(@PathParam("appId") String appId) {
 		return appWorkFinder.startDetailScreen(appId);
 	}
 
@@ -170,6 +171,13 @@ public class WorkchangeService extends WebService {
 	@Path("addWorkChange_New")
 	public ProcessResult addWorkChange_New(AddAppWorkChangeCommand command) {
 		return addHandler.handle(command);
+	}
+	
+	@POST
+	@Path("startDetailMobile")
+	public AppWorkChangeOutputDto startMobile(AppWorkChangeDetailParam appWorkChangeDetailParam) {
+		
+		return appWorkFinder.getDetailKAFS07(appWorkChangeDetailParam);
 	}
 
 }
