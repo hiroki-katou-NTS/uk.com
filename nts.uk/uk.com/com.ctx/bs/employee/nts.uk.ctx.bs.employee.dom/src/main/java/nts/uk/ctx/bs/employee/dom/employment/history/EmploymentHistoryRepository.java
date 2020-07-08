@@ -186,7 +186,7 @@ public interface EmploymentHistoryRepository {
 	 * @param empId
 	 * @return
 	 */
-	Optional<EmploymentHistory> getByCidAndListEmpID(String companyId , List<String> empId);
+	Optional<EmploymentHistory> getByCidAndListEmpID(String companyId , List<String> empIds);
 	/**
 	 * [4-1] 履歴IDを指定して履歴項目を取得する ( 履歴ID )
 	 * @param histId
