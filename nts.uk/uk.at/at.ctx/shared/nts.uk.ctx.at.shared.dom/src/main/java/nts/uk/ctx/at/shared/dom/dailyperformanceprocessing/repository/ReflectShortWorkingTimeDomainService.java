@@ -8,4 +8,8 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWo
 //短時間勤務時間帯を反映する
 public interface ReflectShortWorkingTimeDomainService {
 	public ReflectShortWorkingOutPut reflect(String empCalAndSumExecLogID, String companyId,GeneralDate date, String employeeId,  WorkInfoOfDailyAttendance WorkInfo, TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance);
+ 
+	public ConfirmReflectWorkingTimeOuput confirmReflectWorkingTime(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId,
+			WorkInfoOfDailyAttendance workInfo, TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance);
+
 }
