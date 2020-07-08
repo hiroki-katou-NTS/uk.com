@@ -1,473 +1,257 @@
 module nts.uk.at.view.kdp003.a {
-    import service = nts.uk.at.view.kdp003.a.service;
-    import blockUI = nts.uk.ui.block;
-    import dialog = nts.uk.ui.dialog;
-    
+
     export module viewmodel {
-        
-        const DATE_FORMAT_YYYY_MM_DD = "YYYY/MM/DD";
+        import modal = nts.uk.ui.windows.sub.modal;
+        import setShared = nts.uk.ui.windows.setShared;
+        import getShared = nts.uk.ui.windows.getShared;
+        import showDialog = nts.uk.ui.dialog;
+        import text = nts.uk.resource.getText;
+        import format = nts.uk.text.format;
+        import subModal = nts.uk.ui.windows.sub.modal;
+        import hasError = nts.uk.ui.errors.hasError;
+        import info = nts.uk.ui.dialog.info;
+        import alert = nts.uk.ui.dialog.alert;
+        import confirm = nts.uk.ui.dialog.confirm;
+        import jump = nts.uk.request.jump;
+
+        const __viewContext: any = window['__viewContext'] || {},
+            block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+            unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+            invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
         
         export class ScreenModel {
-           
-            // CCG001
-            ccg001ComponentOption: GroupOption;
-            
-            datepickerValue: KnockoutObservable<any>;
-            startDateString: KnockoutObservable<string>;
-            endDateString: KnockoutObservable<string>;            
-            
-            // KCP005 start
-            listComponentOption: any;
-            selectedCodeEmployee: KnockoutObservableArray<string>;
-            isShowAlreadySet: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            isDialog: KnockoutObservable<boolean>;
-            isShowNoSelectRow: KnockoutObservable<boolean>;
-            isMultiSelect: KnockoutObservable<boolean>;
-            isShowWorkPlaceName: KnockoutObservable<boolean>;
-            isShowSelectAllButton: KnockoutObservable<boolean>;
-            employeeList: KnockoutObservableArray<UnitModel>;
-            showOptionalColumn: KnockoutObservable<boolean>;
-            // KCP005 end
-            
-            
-            lstOutputItemCode: KnockoutObservableArray<ItemModel>;
-            selectedOutputItemCode: KnockoutObservable<string>;
-            
-            checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
-            enableCardNOUnregisteStamp: KnockoutObservable<boolean>;
-            
+            stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
+            stampClock: StampClock = new StampClock();
+            stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
+            stampGrid: KnockoutObservable<EmbossGridInfo> = ko.observable({});
+            stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
+            stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
+            serverTime: KnockoutObservable<any> = ko.observable('');
+            showSelectEmpComponent: KnockoutObservable<boolean> = ko.observable(true);
+            input: any;
+            firstLogin: boolean;
+            employeeSelected : any;
+
             constructor() {
                 let self = this;
-                self.declareCCG001();
-               
-                self.startDateString = ko.observable("");
-                self.endDateString = ko.observable("");
-                self.datepickerValue = ko.observable({});
-                
-                self.selectedCodeEmployee = ko.observableArray([]);
-                self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList = ko.observableArray([]);
-                self.isDialog = ko.observable(true);
-                self.isShowNoSelectRow = ko.observable(true);
-                self.isMultiSelect = ko.observable(true);
-                self.isShowWorkPlaceName = ko.observable(true);
-                self.isShowSelectAllButton = ko.observable(false);
-                self.showOptionalColumn = ko.observable(false);
-                self.employeeList = ko.observableArray<UnitModel>([]);
-                self.listComponentOption = {
-                    isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
-                    listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
-                    selectType: SelectType.NO_SELECT,
-                    selectedCode: self.selectedCodeEmployee,
-                    isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList,
-                    isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton(),
-                    showOptionalColumn: self.showOptionalColumn(),
-                    maxRows: 15
-                };
-                
-                self.lstOutputItemCode = ko.observableArray([]);
-        
-                self.selectedOutputItemCode = ko.observable('');
-                self.checkedCardNOUnregisteStamp = ko.observable(false);
-                self.enableCardNOUnregisteStamp = ko.observable(true);
-                
-                self.conditionBinding();
+                self.input = {};
             }
-            
-            /**
-            * start screen
-            */
-            public startPage(): JQueryPromise<void>  {
-                var dfd = $.Deferred<void>();
-                let self = this,
-                    companyId: string = __viewContext.user.companyId,
-                    userId: string = __viewContext.user.employeeId;
-                
-                $.when(service.getDataStartPage(), service.restoreCharacteristic(companyId, userId))
-                                    .done((dataStartPage, dataCharacteristic) => {
-                    // get data from server
-                    self.startDateString(dataStartPage.startDate);
-                    self.endDateString(dataStartPage.endDate);
-                    self.ccg001ComponentOption.periodStartDate = moment.utc(dataStartPage.startDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
-                    self.ccg001ComponentOption.periodEndDate = moment.utc(dataStartPage.endDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
-                      
-                    let arrOutputItemCodeTmp: ItemModel[] = [];
-                    _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
-                        arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
-                    });
-                    self.lstOutputItemCode(arrOutputItemCodeTmp);                    
-                                        
-                    // get data from characteris
-                    if (!_.isUndefined(dataCharacteristic)) {
-                        self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
-                        self.selectedOutputItemCode(dataCharacteristic.outputSetCode);    
-                    }
-                    
-                    // enable button when exist Authority of employment form                                        
-                    self.enableCardNOUnregisteStamp(dataStartPage.existAuthEmpl);
-                                        
-                    dfd.resolve();
-                })
-                return dfd.promise();
-            }
-            
-            /**
-            * binding component CCG001 and KCP005
-            */
-            public executeComponent(): JQueryPromise<void> {
-                var dfd = $.Deferred<void>();
+
+            public seletedEmployee(data): void {
                 let self = this;
-                blockUI.grayout();
-                $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption), 
-                        $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {
-                   self.changeHeightKCP005(); 
-                   dfd.resolve();     
-                });
-                return dfd.promise();
+                console.log(data);
+                self.employeeSelected =  data;
             }
-            
-            private declareCCG001(): void {
+
+            public startPage(infoAdministrator): JQueryPromise<void> {
                 let self = this;
-                // Set component option
-                self.ccg001ComponentOption = {
-                    /** Common properties */
-                    systemType: 2,
-                    showEmployeeSelection: false,
-                    showQuickSearchTab: true,
-                    showAdvancedSearchTab: true,
-                    showBaseDate: false,
-                    showClosure: false,
-                    showAllClosure: false,
-                    showPeriod: true,
-                    periodFormatYM: false,
+                let dfd = $.Deferred<void>();
+                console.log('start ' + infoAdministrator);
+                
+                
+                if (infoAdministrator) {
+                    self.firstLogin = false;
+                    // sẽ dùng thông tin lưu trong cache để tự động login.
                     
-                    /** Required parameter */
-                    baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
-                    inService: true,
-                    leaveOfAbsence: true,
-                    closed: true,
-                    retirement: false,
                     
-                    /** Quick search tab options */
-                    showAllReferableEmployee: true,
-                    showOnlyMe: true,
-                    showSameWorkplace: true,
-                    showSameWorkplaceAndChild: true,
                     
-                    /** Advanced search properties */
-                    showEmployment: true,
-                    showWorkplace: true,
-                    showClassification: true,
-                    showJobTitle: true,
-                    showWorktype: false,
-                    isMutipleCheck: true,
-                    
-                    /**
-                    * Self-defined function: Return data from CCG001
-                    * @param: data: the data return from CCG001
-                    */
-                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        let arrEmployeelst: UnitModel[] = [];
-                        _.forEach(data.listEmployee, function(value) {
-                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, affiliationName: value.affiliationName, id: value.employeeId });
+                } else {
+                    self.firstLogin = true;
+                    setShared('mode', { modeAdmin: true });
+
+                    nts.uk.ui.block.grayout();
+                    service.startPage().done((res: IStartPage) => {
+                        self.stampSetting(res.stampSetting);
+                        // add correction interval
+                        self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
+                        
+                        self.openScreenF();
+                        
+                        dfd.resolve();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
-                        self.employeeList(arrEmployeelst);
-                    }
-                }    
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                };
+                dfd.resolve();
+                return dfd.promise();
             }
             
-            /**
-            * Export excel
-            */
-            private exportExcel(): void {
-                
-                let self = this,
-                    companyId: string = __viewContext.user.companyId,
-                    userId: string = __viewContext.user.employeeId,
-                    data: any = {};
-                
-                if (!self.validateExportExcel()) {
-                    return;
-                }
-                blockUI.grayout();
-                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
-                service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
-                 
-                data.startDate = self.datepickerValue().startDate;
-                data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
-                data.outputSetCode = self.selectedOutputItemCode();
-                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
-                service.exportExcel(data).fail((data) => {
-                    console.log(data);
-                }).then(() => {
-                    blockUI.clear();
-                })
-            }
-            
-            /**
-            * validate when export
-            */
-            private validateExportExcel(): boolean {
+            public openScreenF() {
                 let self = this;
-                if (!self.checkedCardNOUnregisteStamp()) {
-                    if (_.isEmpty(self.selectedCodeEmployee())) {
-                        dialog.alertError({ messageId: "Msg_1204"});
-                        return false;
-                    }
-                } 
-                
-                if (_.isEmpty(self.selectedOutputItemCode())) {
-                    dialog.alertError({ messageId: "Msg_1205"});
-                    return false;
-                }
-                
-                // when don't have error
-                return true;
+                // hiển thị màn hình login.
+                subModal('/view/kdp/003/f/index.xhtml', { title: '' }).onClosed(() => {
+                    self.openScreenK();
+                });
+
+            }
+
+            public openScreenK() {
+                let self = this;
+                // hiển thị màn hình login.
+                subModal('/view/kdp/003/k/index.xhtml', { title: '' }).onClosed(() => {
+
+                });
+
             }
             
-            /**
-            * Open screen C
-            */
-            private openPreviewScrC(): void {
-                let self = this,
-                data: any = {};
-                if (!self.validateExportExcel()) {
+            public loginAuto() {
+                let self = this;
+
+            }
+            
+            public setWidth(){
+                let self = this;
+                if(!self.showSelectEmpComponent()){
+                    $("#tab-1").css("min-width", "945px");
+                    $("#tab-2").css("min-width", "945px");
+                    $("#tab-3").css("min-width", "945px");
+                    $("#tab-4").css("min-width", "945px");
+                    $("#tab-5").css("min-width", "945px");
+                
+                }else{
+                    $("#tab-1").css("min-width", "63vmin");
+                    $("#tab-2").css("min-width", "63vmin");
+                    $("#tab-3").css("min-width", "63vmin");
+                    $("#tab-4").css("min-width", "63vmin");
+                    $("#tab-5").css("min-width", "63vmin");
+                }
+            }
+
+            public getTimeCardData() {
+                nts.uk.ui.errors.clearAll();
+                $(".nts-input").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                //parameter
-                data.startDate = self.datepickerValue().startDate;
-                data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
-                data.outputSetCode = self.selectedOutputItemCode();
-                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
-                nts.uk.request.jump("/view/kdp/003/c/index.xhtml",data);
-               
-               
-            }
-            
-            /**
-            * Open screen B
-            */
-            private openScrB(): void {
-                   let _self = this;
-                    nts.uk.ui.windows.setShared("datakdp003.b",  _self.selectedOutputItemCode());
-                    nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
-                    let currentStampOutputCd = nts.uk.ui.windows.getShared("datakdp003.a");
-                    if (!_.isNil(currentStampOutputCd)) {
-                        service.findAll().done((lstStampingOutputItem) => {
-                            let arrOutputItemCodeTmp: ItemModel[] = [];
-                            _.forEach(lstStampingOutputItem, function(value) {
-                                arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
-                            });
-                            _self.lstOutputItemCode(arrOutputItemCodeTmp);
-                            _self.selectedOutputItemCode(currentStampOutputCd);
-                        }) 
-                    }
+
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let data = {
+                    date: self.stampGrid().yearMonth() + '/15'
+                };
+                service.getTimeCardData(data).done((timeCard) => {
+                    self.stampGrid().bindItemData(timeCard.listAttendances);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
                     nts.uk.ui.block.clear();
                 });
             }
-            
-            /**
-            * Subscribe Event
-            */
-            private conditionBinding(): void {
-                let self = this;
-                
-                self.startDateString.subscribe(function(value){
-                    self.datepickerValue().startDate = value;
-                    self.datepickerValue.valueHasMutated();        
-                });
-                
-                self.endDateString.subscribe(function(value){
-                    self.datepickerValue().endDate = value;   
-                    self.datepickerValue.valueHasMutated();      
-                });
-                
-                self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
-//                    if (newValue) {
-//                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
-//                    } else {
-//                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
-//                    }
-                })
-            }
-            
-            /**
-            * convert data to data object matching java
-            */
-            private convertDataEmployee(data: UnitModel[], employeeCd: string[]): EmployeeInfor[] {
-                let mapCdId : { [key:string]:string; } = {};
-                let mapCdName : { [key:string]:string; } = {};
-                
-                let arrEmployee: EmployeeInfor[] = [];
-                _.forEach(data, function(value) {
-                    mapCdId[value.code] = value.id; 
-                    mapCdName[value.code] = value.name; 
-                });
-                
-                _.forEach(employeeCd, function(value) {
-                    arrEmployee.push({employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value]}); 
-                });
-                
-                return arrEmployee;
-            }
-            
-            /**
-            * set height table in KCP005 after initialize
-            */
-            private changeHeightKCP005(): void {
-                let _document: any = document,
-                    isIE = /*@cc_on!@*/false || !!_document.documentMode;
-                if (isIE) {
-                    let heightKCP = $('div[id$=displayContainer]').height();
-                    $('div[id$=displayContainer]').height(heightKCP + 3);
-                    $('div[id$=scrollContainer]').height(heightKCP + 3);    
+
+            public getStampData() {
+                nts.uk.ui.errors.clearAll();
+                $(".nts-input").trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
                 }
+
+                let self = this;
+                nts.uk.ui.block.grayout();
+                service.getStampData(self.stampGrid().dateValue()).done((stampDatas) => {
+                    self.stampGrid().bindItemData(stampDatas);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
-        }
-        
-        export interface EmployeeInfor {
-            employeeID: string;
-            employeeCD: string;
-            employeeName?: string;
-        }
-        
-        export interface GroupOption {
-            /** Common properties */
-            showEmployeeSelection?: boolean; // 検索タイプ
-            systemType: number; // システム区分
-            showQuickSearchTab?: boolean; // クイック検索
-            showAdvancedSearchTab?: boolean; // 詳細検索
-            showBaseDate?: boolean; // 基準日利用
-            showClosure?: boolean; // 就業締め日利用
-            showAllClosure?: boolean; // 全締め表示
-            showPeriod?: boolean; // 対象期間利用
-            periodFormatYM?: boolean; // 対象期間精度
-            isInDialog?: boolean;
-        
-            /** Required parameter */
-            baseDate?: string; // 基準日
-            periodStartDate?: string; // 対象期間開始日
-            periodEndDate?: string; // 対象期間終了日
-            inService: boolean; // 在職区分
-            leaveOfAbsence: boolean; // 休職区分
-            closed: boolean; // 休業区分
-            retirement: boolean; // 退職区分
-        
-            /** Quick search tab options */
-            showAllReferableEmployee?: boolean; // 参照可能な社員すべて
-            showOnlyMe?: boolean; // 自分だけ
-            showSameWorkplace?: boolean; // 同じ職場の社員
-            showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
-        
-            /** Advanced search properties */
-            showEmployment?: boolean; // 雇用条件
-            showWorkplace?: boolean; // 職場条件
-            showClassification?: boolean; // 分類条件
-            showJobTitle?: boolean; // 職位条件
-            showWorktype?: boolean; // 勤種条件
-            isMutipleCheck?: boolean; // 選択モード
-            isTab2Lazy?: boolean;
-        
-            /** Data returned */
-            returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
-        }
-        
-        export interface EmployeeSearchDto {
-            employeeId: string;
-            employeeCode: string;
-            employeeName: string;
-            workplaceId: string;
-            workplaceName: string;
-        }
-        
-        export interface Ccg001ReturnedData {
-            baseDate: string; // 基準日
-            closureId?: number; // 締めID
-            periodStart: string; // 対象期間（開始)
-            periodEnd: string; // 対象期間（終了）
-            listEmployee: Array<EmployeeSearchDto>; // 検索結果
-        }
-        
-        
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
+
+            public getPageLayout(pageNo: number) {
+                let self = this;
+                let layout = _.find(self.stampTab().layouts(), (ly) => { return ly.pageNo === pageNo });
+
+                if (layout) {
+                    let btnSettings = layout.buttonSettings;
+                    btnSettings.forEach(btn => {
+                        btn.onClick = self.clickBtn1;
+                    });
+                    layout.buttonSettings = btnSettings;
+                }
+
+                return layout;
+            }
+
+            public clickBtn1(vm, layout) {
+                let button = this;
+                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
+                    let data = {
+                        datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                        authcMethod: 0,
+                        stampMeans: 3,
+                        reservationArt: button.btnReservationArt,
+                        changeHalfDay: button.changeHalfDay,
+                        goOutArt: button.goOutArt,
+                        setPreClockArt: button.setPreClockArt,
+                        changeClockArt: button.changeClockArt,
+                        changeCalArt: button.changeCalArt
+                    };
+                    service.stampInput(data).done((res) => {
+                        if (vm.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+                            vm.openScreenC(button, layout);
+                        } else {
+                            vm.openScreenB(button, layout);
+                        }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
+                });
+            }
+
+            public openScreenB(button, layout) {
+                let self = this;
+                nts.uk.ui.windows.setShared("fromScreenBToFScreen", 
+                {   passwordRequiredArt : 'se lay tu domain',
+                    employeeSelected:     self.employeeSelected,
+                    companyCdAndName: '',
+                    employeeCodeAndName: ''
+                });
+                
+
+            }
+
+            public openScreenC(button, layout) {
+                let self = this;
+                        
+            }
+
+            public openKDP002T(button: ButtonSetting, layout) {
+                let data = {
+                    pageNo: layout.pageNo,
+                    buttonDisNo: button.btnPositionNo
+                }
+                service.getError(data).done((res) => {
+                    if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+                        nts.uk.ui.windows.setShared('KDP010_2T', res, true);
+                        nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
+                            let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+                            if (!returnData.isClose && returnData.errorDate) {
+                                console.log(returnData);
+                                // T1   打刻結果の取得対象項目の追加
+                                // 残業申請（早出）
+                                let transfer = returnData.btn.transfer;
+                                nts.uk.request.jump(returnData.btn.screen, transfer);
+                            }
+                        });
+                    }
+                });
+            }
+
+            public reCalGridWidthHeight() {
+                let windowHeight = window.innerHeight - 250;
+                $('#stamp-history-list').igGrid("option", "height", windowHeight);
+                $('#time-card-list').igGrid("option", "height", windowHeight);
+                $('#content-area').css('height', windowHeight + 109);
+            }
+
         }
 
-        export interface UnitModel {
-            code: string;
-            name?: string;
-            affiliationName?: string;
-            id?: string;
-            isAlreadySetting?: boolean;
-        }
-        
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-        
-        export interface UnitAlreadySettingModel {
-            code: string;
-            isAlreadySetting: boolean;
-        }   
-        
-        export class ItemModel {
-            code: string;
-            name: string;
-        
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-        
-        export class OutputConditionEmbossing {
-            userID: string;
-            outputSetCode: string;
-            cardNumNotRegister: boolean;
-            
-            constructor(userID: string, outputSetCode: string, cardNumNotRegister: boolean) {
-                this.userID = userID;
-                this.outputSetCode = outputSetCode;
-                this.cardNumNotRegister = cardNumNotRegister;
-            }
-        }
-        
-        class OutputConditionOfEmbossingDto {
-            startDate: string;
-            endDate: string;
-            lstStampingOutputItemSetDto: StampingOutputItemSetDto[];
-            
-            constructor(startDate: string, endDate: string, lstStampingOutputItemSetDto: StampingOutputItemSetDto[]) {
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.lstStampingOutputItemSetDto = lstStampingOutputItemSetDto;
-            }
-        }
-        
-        class StampingOutputItemSetDto {
-            stampOutputSetName: string;
-            stampOutputSetCode: string;
-            
-            constructor(stampOutputSetName: string, stampOutputSetCode: string) {
-                this.stampOutputSetName = stampOutputSetName;
-                this.stampOutputSetCode = stampOutputSetCode;
-            }
-        }
+    }
+    enum Mode {
+        Personal = 1, // 個人
+        Shared = 2  // 共有 
     }
 }

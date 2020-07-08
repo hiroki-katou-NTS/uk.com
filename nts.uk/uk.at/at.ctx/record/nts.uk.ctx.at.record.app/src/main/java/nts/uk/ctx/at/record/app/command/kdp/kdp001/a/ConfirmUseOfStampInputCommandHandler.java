@@ -51,9 +51,6 @@ public class ConfirmUseOfStampInputCommandHandler
 		extends CommandHandlerWithResult<ConfirmUseOfStampInputCommand, ConfirmUseOfStampInputResult> {
 
 	@Inject
-	private StampFunctionAvailableService stampAvailableService;
-
-	@Inject
 	private SettingsUsingEmbossingRepository stampUsageRepo;
 
 	@Inject

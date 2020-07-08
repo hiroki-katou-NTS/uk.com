@@ -69,4 +69,12 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	Optional<CompanyExport622> getCompanyNotAbolitionByCid(String cid);
+	
+	/**
+	 * Contract code,  
+	 * abolition classification = not abolished
+	 * màn KDP003 sử dụng
+	 * @return
+	 */
+	List<CompanyExportForKDP003> get(String contractCd, Optional<String> cid,Boolean isAbolition);
 }

@@ -13,7 +13,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommandHandler;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -82,9 +81,6 @@ public class StampSettingsEmbossFinder {
 	private PortalStampSettingsRepository portalStampSettingsrepo;
 
 	@Inject
-	private SettingsUsingEmbossingRepository stampUsageRepo;
-
-	@Inject
 	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
 
 	//
@@ -92,9 +88,9 @@ public class StampSettingsEmbossFinder {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-
+		
 		this.confirmHandler.handle(new ConfirmUseOfStampEmbossCommand());
-
+		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
 
