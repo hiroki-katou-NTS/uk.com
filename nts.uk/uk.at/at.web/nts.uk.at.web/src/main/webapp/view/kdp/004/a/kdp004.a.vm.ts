@@ -228,7 +228,7 @@ module nts.uk.at.view.kdp004.a {
 					errorMessage = 'Msg_301';
 
 				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry == self.stampSetting().authcFailCnt, errorMessage })
+					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt, errorMessage })
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
