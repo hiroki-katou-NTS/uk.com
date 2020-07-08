@@ -1,69 +1,77 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kdp.share {
-	const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
-	const TIME_FORMAT = 'HH:mm';
+	const template = `
+	<div class="panel" id="stamp-date"
+		data-bind="style: {
+			'color': ko.toJS(settings).textColor,
+			'background-color': ko.toJS(settings).backGroundColor
+		}">
+    	<span id="stamp-date-text" data-bind="date: time, format: 'YYYY年M月D日(ddd)'"></span>
+    </div>
+    <div class="panel" id="stamp-time"
+		data-bind="style: {
+			'color': ko.toJS(settings).textColor,
+			'background-color': ko.toJS(settings).backGroundColor
+		}">
+        <span id="stamp-time-text" data-bind="date: time, format: 'HH:mm'"></span>
+    </div>
+	<div class="button-group" data-bind="if: !!events">
+		<div data-bind="if: !!events.setting">
+			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
+		</div>
+		<div data-bind="if: !!events.company">
+			<button class="btn-company proceed x-large" data-bind="i18n: 'KDP003_3', click: events.company"></button>
+		</div>
+	</div>
+`;
 
 	@component({
 		name: 'stamp-clock',
-		template: `
-        <div id="stamp-header">
-            <div class="panel" id="stamp-date"
-                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-            <span id="stamp-date-text" data-bind="text: displayDate()"></span>
-            </div>
-                <div class="panel" id="stamp-time"
-                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-				<span id="stamp-time-text" data-bind="text: displayTime()"></span>
-				<button data-bind="click:settingUser" class="btn-setting" type="button" tabindex="16"></button>
-                <button data-bind="click:checkHis" class="proceed btnA4">打刻履歴</button>
-
-            </div>
-        </div>
-    `})
+		template
+	})
 	export class StampClock extends ko.ViewModel {
-		systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
-		stampSetting: KnockoutObservable<any>;
-		countTime: number = 20;
-		interval: any;
-		constructor(params) {
-			let self = this;
-			let vm = new ko.ViewModel();
-			self.stampSetting = params.setting;
-			self.checkHis = !!params.checkHis? params.checkHis: ko.observable();
-			self.settingUser = !!params.settingUser?params.settingUser: ko.observable();
-			moment.locale('ja');
-			self.systemDate(moment(vm.$date.now()));
-			self.addCorrectionInterval();
+		time: KnockoutObservable<Date> = ko.observable(new Date());
+		settings: KnockoutObservable<StampColor> = ko.observable({
+			textColor: 'rgb(255, 255, 255)',
+			backGroundColor: 'rgb(0, 51, 204)'
+		});
 
-			self.stampSetting.subscribe((data) => {
-				self.addCorrectionInterval(self.stampSetting().correctionInterval);
-			});
+		events!: ClickEvent;
+
+		created(params?: StampClocParam) {
+			const vm = this;
+
+			if (params) {
+				const { setting, events } = ko.toJS(params);
+				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+				
+				vm.events = events;
+				vm.settings({ textColor, backGroundColor });
+			}
+
+			setInterval(() => vm.time(vm.$date.now()), 1000);
 		}
 
-		displayTime() {
-			let self = this;
-			return self.systemDate().format(TIME_FORMAT);
+		mounted() {
+			const vm = this;
+
+			$(vm.$el).attr('id', 'stamp-header');
 		}
+	}
 
-		displayDate() {
-			let self = this;
-			return self.systemDate().format(DATE_FORMAT);
-		}
+	export interface StampClocParam {
+		events?: ClickEvent;
+		setting?: StampColor;
+	}
 
-		public addCorrectionInterval() {
-			let self = this;
-			let vm = new ko.ViewModel();
-			clearInterval(self.interval);
+	export interface ClickEvent {
+		setting: () => void;
+		company:  () =>void;
+	}
 
-			self.interval = setInterval(() => {
-				if (self.stampSetting().correctionInterval === self.countTime) {
-					self.systemDate(moment(vm.$date.now()));
-					self.countTime = 0;
-				} else {
-					self.systemDate(self.systemDate().add(1, 'seconds'));
-					self.countTime = self.countTime + 1;
-				}
-
-			}, 1000);
-		}
+	export interface StampColor {
+		textColor: string;
+		backGroundColor: string;
 	}
 }

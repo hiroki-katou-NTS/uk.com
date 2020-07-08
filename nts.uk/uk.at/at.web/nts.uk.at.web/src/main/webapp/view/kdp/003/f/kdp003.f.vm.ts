@@ -60,10 +60,24 @@ module nts.uk.kdp003.f {
 			vm.$window.storage(KDP003F_LOGINDATA)
 				.then((data: Kdp003FModelData) => {
 					if (data) {
+						if (data.companyId) {
+							vm.model.companyId(data.companyId);
+						}
+
 						if (data.companyCode) {
+							vm.model.companyCode(data.companyCode);
+
 							_.extend(vm.params, {
 								companyDesignation: true
 							});
+						}
+
+						if (data.employeeId) {
+							vm.model.employeeId(data.employeeId);
+						}
+
+						if (data.employeeCode) {
+							vm.model.employeeCode(data.employeeCode);
 						}
 					}
 				})

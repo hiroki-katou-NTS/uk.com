@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../share/kdp.main.css" />
+			<com:scriptfile path="../../share/kdpbutton.vm.js" />
+			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			
+			<com:stylefile path="../selemp/kdpselemp.style.css" />
+			<com:scriptfile path="../selemp/kdpselemp.service.js" />
+			<com:scriptfile path="../selemp/kdpselemp.start.js" />
+			<com:scriptfile path="../selemp/kdpselemp.vm.js" />
+			
+			<com:stylefile path="kdp003.a.style.css" />
+			<com:scriptfile path="kdp003.a.service.js" />
+			<com:scriptfile path="kdp003.a.vm.js" />
+			<com:scriptfile path="kdp003.a.start.js" />
+			<com:scriptfile path="kdp003.a.model.js" />
+			<com:scriptfile path="kdp003.a.ebs.info.model.js" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="content-area" class="cf">
+				<div class="cf floatoneline" data-bind="visible : showSelectEmpComponent ">
+					<select-employee-by-name params="input: input , callback: seletedEmployee"></select-employee-by-name>
+				</div>
+				
+				<!-- A1 -->
+				<div id="kdp002a" class="cf floatoneline">
+					<div class="pull-left" id="stamp-input">
+						<stamp-clock params="setting: stampSetting()"></stamp-clock>
+
+						<div class="panel" style="padding: 0 10px 10px 10px">
+							<div id="stamp-desc"
+								data-bind="style: {'color': stampTab().stampPageCommentColor }">
+								<span data-bind="text: stampTab().stampPageComment"></span>
+							</div>
+							<ui:include src="stamp-tab.xhtml" />
+						</div>
+					</div>
+					<div class="pull-left" id="stamp-info">
+						<ui:include src="emboss-info.xhtml" />
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
