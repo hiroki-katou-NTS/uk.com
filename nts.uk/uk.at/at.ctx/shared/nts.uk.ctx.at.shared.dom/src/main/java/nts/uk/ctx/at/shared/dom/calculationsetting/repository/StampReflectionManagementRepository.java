@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.calculationsetting.repository;
+package nts.uk.ctx.at.shared.dom.calculationsetting.repository;
 
 import java.util.Optional;
 
