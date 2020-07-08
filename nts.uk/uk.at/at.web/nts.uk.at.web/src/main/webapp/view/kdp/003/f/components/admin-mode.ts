@@ -26,9 +26,9 @@ module nts.uk.kdp003.f {
 						name: $component.$i18n('KDP003_3'),
 						options: $component.listCompany,
 						visibleItemsCount: 5,
-						value: model.companyCode,
+						value: model.companyId,
+						optionsValue: 'companyId',
 						optionsText: 'companyName',
-						optionsValue: 'companyCode',
 						editable: false,
 						columns: [
 							{ prop: 'companyCode', length: 5 },
@@ -93,29 +93,31 @@ module nts.uk.kdp003.f {
 			const { data } = vm;
 			const { model } = data;
 
-			model.companyCode
-				.subscribe((code: string) => {
+			model.companyId
+				.subscribe((id: string) => {
 					const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
 
 					if (dataSources.length) {
-						const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyCode === code);
+						const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
 
 						if (exist) {
-							// update companyId by subscribe companyCode
-							model.companyId(exist.companyId);
+							// update companyCode by subscribe companyId
+							model.companyCode(exist.companyCode);
+							model.companyName(exist.companyName);
 						}
 					}
 				});
 
 			vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
 				.done((data: Kdp003FCompanyItem[]) => {
-					const exist: Kdp003FCompanyItem = _.first(data);
+					const exist: Kdp003FCompanyItem = _.find(data);
 
 					if (exist) {
 						vm.listCompany(data);
-
-						model.companyCode(exist.companyCode);
-						model.companyName(exist.companyName);
+						
+						if (!ko.unwrap(model.companyId)) {
+							model.companyId(exist.companyId);
+						}
 					} else {
 						vm.$dialog
 							.error({ messageId: 'Msg_1527' })
