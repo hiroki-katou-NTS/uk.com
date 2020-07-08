@@ -27,34 +27,34 @@ public class KrqdtAppReflectState extends UkJpaEntity {
 	private KrqdpAppReflectState pk;
 	
 	@Column(name="REFLECT_PLAN_STATE")
-	public int scheReflectStatus;
+	private int scheReflectStatus;
 	
 	@Column(name="REFLECT_PER_STATE")
-	public int actualReflectStatus;
+	private int actualReflectStatus;
 
 	@Column(name="REFLECT_PLAN_SCHE_REASON")
-	public Integer opReasonScheCantReflect;
+	private Integer opReasonScheCantReflect;
 	
 	@Column(name="REFLECT_PLAN_TIME")
-	public GeneralDateTime opScheReflectDateTime;
+	private GeneralDateTime opScheReflectDateTime;
 	
 	@Column(name="REFLECT_PER_SCHE_REASON")
-	public Integer opReasonActualCantReflect;
+	private Integer opReasonActualCantReflect;
 	
 	@Column(name="REFLECT_PER_TIME")
-	public GeneralDateTime opActualReflectDateTime;
+	private GeneralDateTime opActualReflectDateTime;
 	
 	@Column(name="CANCEL_PLAN_SCHE_REASON")
-	public Integer opReasonScheCantReflectCancel;
+	private Integer opReasonScheCantReflectCancel;
 	
 	@Column(name="CANCEL_PLAN_TIME")
-	public GeneralDateTime opScheReflectDateTimeCancel;
+	private GeneralDateTime opScheReflectDateTimeCancel;
 	
 	@Column(name="CANCEL_PER_SCHE_REASON")
-	public Integer opReasonActualCantReflectCancel;
+	private Integer opReasonActualCantReflectCancel;
 	
 	@Column(name="CANCEL_PER_TIME")
-	public GeneralDateTime opActualReflectDateTimeCancel;
+	private GeneralDateTime opActualReflectDateTimeCancel;
 	
 	@ManyToOne
     @PrimaryKeyJoinColumns({

@@ -34,53 +34,53 @@ public class KrqdtApplication extends UkJpaEntity {
 	
 	@Version
 	@Column(name="EXCLUS_VER")
-	public int version;
+	private int version;
 	
 	@Column(name="PRE_POST_ATR")
-	public int prePostAtr;
+	private int prePostAtr;
 	
 	@Column(name="INPUT_DATE")
-	public GeneralDateTime inputDate;
+	private GeneralDateTime inputDate;
 	
 	@Column(name="ENTERED_PERSON_SID")
-	public String enteredPerson;
+	private String enteredPerson;
 	
 	@Column(name="REASON_REVERSION")
-	public String opReversionReason;
+	private String opReversionReason;
 	
 	@Column(name="APP_DATE")
-	public GeneralDate appDate;
+	private GeneralDate appDate;
 	
 	@Column(name="FIXED_REASON")
-	public Integer opAppStandardReasonCD;
+	private Integer opAppStandardReasonCD;
 	
 	@Column(name="APP_REASON")
-	public String opAppReason;
+	private String opAppReason;
 	
 	@Column(name="APP_TYPE")
-	public int appType;
+	private int appType;
 	
 	@Column(name="APPLICANTS_SID")
-	public String employeeID;
+	private String employeeID;
 	
 	@Column(name="REFLECT_PLAN_ENFORCE_ATR")
-	public int REFLECT_PLAN_ENFORCE_ATR;
+	private int REFLECT_PLAN_ENFORCE_ATR;
 	
 	@Column(name="REFLECT_PER_ENFORCE_ATR")
-	public int REFLECT_PER_ENFORCE_ATR;
+	private int REFLECT_PER_ENFORCE_ATR;
 	
 	@Column(name="APP_START_DATE")
-	public GeneralDate opAppStartDate;
+	private GeneralDate opAppStartDate;
 	
 	@Column(name="APP_END_DATE")
-	public GeneralDate opAppEndDate;
+	private GeneralDate opAppEndDate;
 	
 	@Column(name="STAMP_OPTION_ATR")
-	public Integer opStampRequestMode;
+	private Integer opStampRequestMode;
 	
 	@OneToMany(targetEntity = KrqdtAppReflectState.class, mappedBy = "krqdtApplication", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_REFLECT_STATE")
-	public List<KrqdtAppReflectState> krqdtAppReflectStateLst;
+	private List<KrqdtAppReflectState> krqdtAppReflectStateLst;
 
 	@Override
 	protected Object getKey() {
