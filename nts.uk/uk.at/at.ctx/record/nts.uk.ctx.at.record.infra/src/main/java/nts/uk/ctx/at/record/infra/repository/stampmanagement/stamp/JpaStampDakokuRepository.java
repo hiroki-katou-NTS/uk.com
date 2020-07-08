@@ -261,6 +261,15 @@ private Stamp toDomainVer3(Object[] object) {
 				.getList(x -> toDomainVer2(x));
 
 	}
+	
+	@Override
+	public List<Stamp> getByDateTimeperiod(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+		return this.queryProxy().query(GET_STAMP_BY_DATEPERIOD, Object[].class)
+				.setParameter("startStampDate", startDate)
+				.setParameter("endStampDate", endDate)
+				.setParameter("cid", companyId)
+				.getList(x -> toDomainVer2(x));
+	}
 
 	@Override
 	public List<Stamp> getByCardAndPeriod(String companyId, List<String> listCard, DatePeriod period) {
@@ -283,5 +292,7 @@ private Stamp toDomainVer3(Object[] object) {
 		});
 		return data;
 	}
+
+	
 
 }

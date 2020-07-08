@@ -51,22 +51,7 @@ public interface CreateDailyResultEmployeeDomainServiceNew {
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
 			ExecutionTypeDaily executionType, Optional<Boolean> checkLock);
-
-	@SuppressWarnings("rawtypes")
-	OutputCreateDailyResult createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
-			GeneralDate executedDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
-			boolean reCreateRestTime, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
-			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement);
 	
-	
-
-
-
 	/**
 	 * create method for kbt002 call
 	 * 

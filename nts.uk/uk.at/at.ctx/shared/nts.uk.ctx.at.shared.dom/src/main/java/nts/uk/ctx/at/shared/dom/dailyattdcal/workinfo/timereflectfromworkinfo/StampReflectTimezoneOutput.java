@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
