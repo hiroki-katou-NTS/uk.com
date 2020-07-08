@@ -13,9 +13,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -60,7 +60,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		OvertimeSettingData overtimeSettingData = command.getOvertimeSettingDataDto().toDomain();
 		
 		AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
-				.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
+				.stream().filter(x -> x.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION).findAny().get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -90,8 +90,8 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		Integer prePostAtr = command.getPrePostAtr();
 		
 		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
-		boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
-		boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
+		boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
+		boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
 		if(displayDivergenceReasonCombox){
 			divergenceReasonCombox += command.getDivergenceReasonContent();
 		}
@@ -123,7 +123,8 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
 
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);

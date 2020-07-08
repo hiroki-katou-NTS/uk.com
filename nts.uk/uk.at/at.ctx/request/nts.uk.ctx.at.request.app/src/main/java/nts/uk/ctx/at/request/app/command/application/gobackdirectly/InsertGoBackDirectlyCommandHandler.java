@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -50,7 +50,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		//get new Application Item
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				companyId, 
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value).get();
+				ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value).get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -85,7 +85,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 //				new AppReason(appReason));
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, command.appCommand.getApplicationDate(),
 				command.appCommand.getPrePostAtr(), appReason,appReason,
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
+				ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
 				companyId, 

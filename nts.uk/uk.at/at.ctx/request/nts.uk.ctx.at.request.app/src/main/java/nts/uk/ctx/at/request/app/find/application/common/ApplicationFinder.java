@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
@@ -115,7 +115,7 @@ public class ApplicationFinder {
 		getDetailMob.authorComment = detailScreenAppData.getDetailScreenApprovalData().getAuthorComment();
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, application.getEmployeeID(), 1, 
-				EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), application.getAppDate());
+				EnumAdaptor.valueOf(ApplicationType_Old.OVER_TIME_APPLICATION.value, ApplicationType_Old.class), application.getAppDate());
 		// 14-2.詳細画面起動前モードの判断
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = 
 				beforePreBootMode.judgmentDetailScreenMode(companyID, loginEmpID, appID, appCommonSettingOutput.getGeneralDate());

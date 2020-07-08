@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
@@ -55,7 +55,7 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppSt
 		if(!appStampCmd.getTitleReason().isEmpty() || !appStampCmd.getDetailReason().isEmpty()) {
 			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
 		}
-		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
+		StampRequestMode_Old stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode_Old.class);
 		Optional<Application_New> optApplication = applicationRepository.findByID(companyID, appStampCmd.getAppID());
 		if(!optApplication.isPresent()){
 			throw new BusinessException("Msg_198");

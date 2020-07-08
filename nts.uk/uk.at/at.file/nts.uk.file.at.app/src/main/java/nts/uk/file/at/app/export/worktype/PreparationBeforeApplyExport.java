@@ -1,6 +1,6 @@
 package nts.uk.file.at.app.export.worktype;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 
@@ -149,43 +149,43 @@ public class PreparationBeforeApplyExport {
     }
 
     public static String getTextApplication(int value){
-        if(value == ApplicationType.OVER_TIME_APPLICATION.value) {
+        if(value == ApplicationType_Old.OVER_TIME_APPLICATION.value) {
             return TextResource.localize("KAF022_3");
         }
-        if(value == ApplicationType.ABSENCE_APPLICATION.value) {
+        if(value == ApplicationType_Old.ABSENCE_APPLICATION.value) {
             return TextResource.localize("KAF022_4");
         }
-        if(value == ApplicationType.WORK_CHANGE_APPLICATION.value) {
+        if(value == ApplicationType_Old.WORK_CHANGE_APPLICATION.value) {
             return TextResource.localize("KAF022_5");
         }
-        if(value == ApplicationType.BUSINESS_TRIP_APPLICATION.value) {
+        if(value == ApplicationType_Old.BUSINESS_TRIP_APPLICATION.value) {
             return TextResource.localize("KAF022_6");
         }
-        if(value == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value) {
+        if(value == ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value) {
             return TextResource.localize("KAF022_7");
         }
-        if(value == ApplicationType.BREAK_TIME_APPLICATION.value) {
+        if(value == ApplicationType_Old.BREAK_TIME_APPLICATION.value) {
             return TextResource.localize("KAF022_8");
         }
-        if(value == ApplicationType.STAMP_APPLICATION.value) {
+        if(value == ApplicationType_Old.STAMP_APPLICATION.value) {
             return TextResource.localize("KAF022_11");
         }
-        if(value == ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value) {
+        if(value == ApplicationType_Old.ANNUAL_HOLIDAY_APPLICATION.value) {
             return TextResource.localize("KAF022_9");
         }
-        if(value == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value) {
+        if(value == ApplicationType_Old.EARLY_LEAVE_CANCEL_APPLICATION.value) {
             return TextResource.localize("KAF022_286");
         }
-        if(value == ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value) {
+        if(value == ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value) {
             return TextResource.localize("KAF022_12");
         }
-        if(value == ApplicationType.STAMP_NR_APPLICATION.value) {
+        if(value == ApplicationType_Old.STAMP_NR_APPLICATION.value) {
             return TextResource.localize("KAF022_55");
         }
-        if(value == ApplicationType.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER.value) {
+        if(value == ApplicationType_Old.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER.value) {
             return TextResource.localize("KAF022_56");
         }
-        if(value == ApplicationType.APPLICATION_36.value) {
+        if(value == ApplicationType_Old.APPLICATION_36.value) {
             return TextResource.localize("KAF022_13");
         }
         return "";

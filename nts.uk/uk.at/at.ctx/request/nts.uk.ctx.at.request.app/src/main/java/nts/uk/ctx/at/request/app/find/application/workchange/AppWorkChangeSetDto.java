@@ -1,93 +1,50 @@
 package nts.uk.ctx.at.request.app.find.application.workchange;
 
-import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
-
-/**
- * 勤務変更申請設定
- */
-@Value
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.AppCommentSetDto;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class AppWorkChangeSetDto {
-
 	/**
 	 * 会社ID
 	 */
-	private String cid;
-
+	private String companyID;
+	
 	/**
-	 * スケジュールが休日の場合は除くを表示する
+	 * コメント1
 	 */
-	private int excludeHoliday;
-
+	private AppCommentSetDto comment1;
+	
 	/**
-	 * 勤務時間を変更できる
+	 * コメント2
 	 */
-	private int workChangeTimeAtr;
-
-	/**
-	 * 実績を表示する
-	 */
-	private int displayResultAtr;
-
+	private AppCommentSetDto comment2;
+	
 	/**
 	 * 勤務時間の初期表示
 	 */
-	private int initDisplayWorktime;
-
-	/**
-	 * コメント
-	 */
-	private String commentContent1;
-
-	/**
-	 * 太字
-	 */
-	private int commentFontWeight1;
-
-	/**
-	 * 文字色
-	 */
-	private String commentFontColor1;
-
-	/**
-	 * コメント
-	 */
-	private String commentContent2;
-
-	/**
-	 * 太字
-	 */
-	private int commentFontWeight2;
-
-	/**
-	 * 文字色
-	 */
-	private String commentFontColor2;
-
-	public static AppWorkChangeSetDto fromDomain(AppWorkChangeSet domain) {
-		return new AppWorkChangeSetDto(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr().value,
-				domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value, 
-				domain.getCommentContent1() != null ? domain.getCommentContent1().v() : null,
-				domain.getCommentFontWeight1() != null ? domain.getCommentFontWeight1().value : null, 
-				domain.getCommentFontColor1() != null ? domain.getCommentFontColor1().v() : null,
-				domain.getCommentContent2() != null ? domain.getCommentContent2().v() : null,
-				domain.getCommentFontWeight2() != null ? domain.getCommentFontWeight2().value : null,
-				domain.getCommentFontColor2() != null ? domain.getCommentFontColor2().v() : null);
-	}
+	private int initDisplayWorktimeAtr;
 	
-	public AppWorkChangeSet toDomain() {
-		return AppWorkChangeSet.createFromJavaType(
-				cid, 
-				excludeHoliday, 
-				workChangeTimeAtr, 
-				displayResultAtr, 
-				initDisplayWorktime, 
-				commentContent1, 
-				commentFontWeight1, 
-				commentFontColor1, 
-				commentContent2, 
-				commentFontWeight2, 
-				commentFontColor2); 
+	
+	public static AppWorkChangeSetDto fromDomain(AppWorkChangeSet appWorkChangeSet) {
+		return new AppWorkChangeSetDto(
+				appWorkChangeSet.getCompanyID(), 
+				AppCommentSetDto.fromDomain(appWorkChangeSet.getComment1()), 
+				AppCommentSetDto.fromDomain(appWorkChangeSet.getComment2()), 
+				appWorkChangeSet.getInitDisplayWorktimeAtr().value);
 	}
-
+	public AppWorkChangeSet toDomain() {
+		AppWorkChangeSet appWorkChangeSet = new AppWorkChangeSet();
+		appWorkChangeSet.setCompanyID(companyID);
+		appWorkChangeSet.setComment1(comment1.toDomain());
+		appWorkChangeSet.setComment2(comment2.toDomain());
+		appWorkChangeSet.setInitDisplayWorktimeAtr(EnumAdaptor.valueOf(initDisplayWorktimeAtr, InitDisplayWorktimeAtr.class));
+		return appWorkChangeSet; 
+	}
 }

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -59,7 +59,7 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 			if(overtimeRestAppCommonSetting.isPresent()){
 				if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
-					List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+					List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr_Old.PREDICT.value, appType);
 					if(application.size() > 0){
 						Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
 								.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());

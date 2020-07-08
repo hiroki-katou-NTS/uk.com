@@ -8,15 +8,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.AppUseSetRemark;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.AppUseSetRemark;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 
 @AllArgsConstructor
 @Data
@@ -44,7 +45,7 @@ public class ApprovalFunctionSettingDto {
 		if (domain == null)
 			return null;
 		return new ApprovalFunctionSettingDto(domain.getAppUseSetting().getAppType().value,
-				domain.getAppUseSetting().getMemo().v(), domain.getAppUseSetting().getUserAtr().value,
+				domain.getAppUseSetting().getMemo().v(), domain.getAppUseSetting().getUseDivision().value,
 				domain.getPrerequisiteForpause().value, domain.getOvertimeAppSetting().value,
 				domain.getHolidayTimeAppCal().value, domain.getLateOrLeaveAppCancelFlg().value,
 				domain.getLateOrLeaveAppSettingFlg().value,
@@ -72,9 +73,9 @@ public class ApprovalFunctionSettingDto {
 				EnumAdaptor.valueOf(approvalFunctionSettingDto.getLateOrLeaveAppCancelFlg(), SettingFlg.class),
 				EnumAdaptor.valueOf(approvalFunctionSettingDto.getLateOrLeaveAppSettingFlg(), SettingFlg.class),
 				new ApplicationUseSetting(
-					new AppUseSetRemark(approvalFunctionSettingDto.getMemo()),
-					EnumAdaptor.valueOf(approvalFunctionSettingDto.getUseAtr(), UseAtr.class),
-					EnumAdaptor.valueOf(approvalFunctionSettingDto.getAppType(), ApplicationType.class)),
+					EnumAdaptor.valueOf(approvalFunctionSettingDto.getUseAtr(), UseDivision.class),
+					EnumAdaptor.valueOf(approvalFunctionSettingDto.getAppType(), ApplicationType.class),
+					new AppUseSetRemark(approvalFunctionSettingDto.getMemo())),
 				Optional.of(new ApplicationDetailSetting(
 					new Boolean(approvalFunctionSettingDto.getBreakInputFieldDisFlg() != 0),
 					new Boolean(approvalFunctionSettingDto.getBreakTimeDisFlg() != 0),

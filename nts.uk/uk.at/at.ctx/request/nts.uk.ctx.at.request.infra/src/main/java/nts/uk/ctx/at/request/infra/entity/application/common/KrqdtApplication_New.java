@@ -15,10 +15,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -131,13 +131,13 @@ public class KrqdtApplication_New extends UkJpaEntity {
 				.version(this.version)
 				.companyID(this.krqdpApplicationPK.companyID)
 				.appID(this.krqdpApplicationPK.appID)
-				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr.class))
+				.prePostAtr(EnumAdaptor.valueOf(this.prePostAtr, PrePostAtr_Old.class))
 				.inputDate(this.inputDate)
 				.enteredPersonID(this.enteredPersonID)
 				.reversionReason(new AppReason(this.reversionReason))
 				.appDate(this.appDate)
 				.appReason(new AppReason(this.appReason))
-				.appType(EnumAdaptor.valueOf(this.appType, ApplicationType.class))
+				.appType(EnumAdaptor.valueOf(this.appType, ApplicationType_Old.class))
 				.employeeID(this.employeeID)
 				.startDate(Optional.ofNullable(this.startDate))
 				.endDate(Optional.ofNullable(this.endDate))

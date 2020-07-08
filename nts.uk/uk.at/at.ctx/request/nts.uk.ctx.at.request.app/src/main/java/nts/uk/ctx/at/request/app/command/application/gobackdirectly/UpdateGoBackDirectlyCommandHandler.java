@@ -14,10 +14,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -53,7 +53,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		// get new Application Item
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				companyId, 
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value).get();
+				ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION.value).get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -83,11 +83,11 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 		appReason = typicalReason + displayReason;
 		
 		Application_New updateApp = new Application_New(0L, companyId, command.goBackCommand.getAppID(),
-				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),
+				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr_Old.class),
 				command.appCommand.getInputDate(), command.appCommand.getEnteredPersonSID(),
 				new AppReason(command.appCommand.getReversionReason()), command.appCommand.getApplicationDate(),
 				new AppReason(appReason),
-				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class),
+				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType_Old.class),
 				command.appCommand.getApplicantSID(), Optional.of(command.appCommand.getStartDate()),
 				Optional.of(command.appCommand.getEndDate()),
 				ReflectionInformation_New.builder()

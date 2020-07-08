@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -120,6 +120,6 @@ public class AppStampFinder {
 				companyID, 
 				employeeIDLst, 
 				GeneralDate.fromString(date, "yyyy/MM/dd"), 
-				EnumAdaptor.valueOf(stampRequestMode, StampRequestMode.class));
+				EnumAdaptor.valueOf(stampRequestMode, StampRequestMode_Old.class));
 	}
 }

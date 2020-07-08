@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessDeleteResult;
@@ -34,7 +34,7 @@ public class UpdateApplicationDelete extends CommandHandlerWithResult<UpdateAppl
 		//5.2(hieult)
 		ProcessDeleteResult processDeleteResult = afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId(), context.getCommand().getVersion());
 		// アルゴリズム「11.休出申請（振休変更）削除」を実行する
-		if(processDeleteResult.getAppType()==ApplicationType.BREAK_TIME_APPLICATION){
+		if(processDeleteResult.getAppType()==ApplicationType_Old.BREAK_TIME_APPLICATION){
 			holidayService.delHdWorkByAbsLeaveChange(context.getCommand().getAppId());
 		}
 		return processDeleteResult.getProcessResult();

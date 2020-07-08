@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscre
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -53,7 +53,7 @@ public class AppTypeDiscreteSettingDto {
 	public AppTypeDiscreteSetting toDomain() {
 		return new AppTypeDiscreteSetting(
 				companyID, 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType_Old.class), 
 				EnumAdaptor.valueOf(prePostInitFlg, InitValueAtr.class), 
 				EnumAdaptor.valueOf(prePostCanChangeFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(typicalReasonDisplayFlg, DisplayAtr.class), 

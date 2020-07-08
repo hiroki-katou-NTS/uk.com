@@ -16,7 +16,7 @@ public class WorkChangeDetailDto {
 	/**
 	* 勤務変更申請
 	*/
-	AppWorkChangeDto workChangeDto;
+	AppWorkChangeDto_Old workChangeDto;
 	/**
 	 * 申請
 	 */
@@ -56,7 +56,7 @@ public class WorkChangeDetailDto {
 	DataWorkDto dataWorkDto;
 	
 	public static WorkChangeDetailDto  formDomain(WorkChangeDetail domain){
-		return new WorkChangeDetailDto(AppWorkChangeDto.fromDomain(domain.getAppWorkChange()), 
+		return new WorkChangeDetailDto(AppWorkChangeDto_Old.fromDomain(domain.getAppWorkChange()), 
 				ApplicationDto_New.fromDomain(domain.getApplication()), 
 				domain.getEmployeeName(), domain.getSID(), 
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),

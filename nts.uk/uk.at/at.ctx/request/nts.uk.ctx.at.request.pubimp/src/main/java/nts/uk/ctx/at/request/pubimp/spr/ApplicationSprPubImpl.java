@@ -12,9 +12,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
@@ -38,7 +38,7 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 	public Optional<AppOverTimeSprExport> getAppOvertimeByDate(GeneralDate appDate, String employeeID, Integer overTimeAtr) {
 		List<Application_New> listApplication = applicationRepository_New.getApplicationBySIDs(Arrays.asList(employeeID), appDate, appDate);
 		List<Application_New> listPreApp = listApplication.stream()
-				.filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)&&x.getPrePostAtr().equals(PrePostAtr.PREDICT))
+				.filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)&&x.getPrePostAtr().equals(PrePostAtr_Old.PREDICT))
 				.collect(Collectors.toList());
 		List<AppOverTimeSprExport> resultList = listPreApp.stream()
 			.filter(x -> {

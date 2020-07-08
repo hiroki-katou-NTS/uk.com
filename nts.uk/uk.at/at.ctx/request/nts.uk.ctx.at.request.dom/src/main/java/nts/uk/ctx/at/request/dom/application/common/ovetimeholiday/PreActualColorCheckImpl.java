@@ -15,9 +15,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
@@ -31,9 +31,9 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -66,7 +66,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
+			ApplicationType_Old appType, PrePostAtr_Old prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
 			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
@@ -105,10 +105,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType) {
+	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType) {
 		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
 		// ドメインモデル「申請」を取得(lây domain "đơn xin")
-		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
+		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr_Old.PREDICT.value);
 		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
 		// 事前申請漏れチェック
 		if(!opAppBefore.isPresent()){
@@ -129,7 +129,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
+	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType_Old appType,
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
 		// Imported(申請承認)「勤務実績」を取得する
@@ -176,7 +176,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 							judgmentStampResult.getCalcLeaveStamp(), 
 							breakStartTime, 
 							breakEndTime);
-			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+			if(appType==ApplicationType_Old.OVER_TIME_APPLICATION) {
 				actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
 						.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
 				actualLst.add(OvertimeColorCheck.createActual(1, 11, dailyAttendanceTimeCaculationImport.getMidNightTime().getCalTime()));
@@ -192,7 +192,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
 			}
 		} else {
-			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+			if(appType==ApplicationType_Old.OVER_TIME_APPLICATION) {
 				actualLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 				actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
@@ -256,14 +256,14 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public JudgmentWorkTypeResult judgmentWorkTypeChange(String companyID, ApplicationType appType, String actualWorkType,
+	public JudgmentWorkTypeResult judgmentWorkTypeChange(String companyID, ApplicationType_Old appType, String actualWorkType,
 			String screenWorkType) {
 		// 勤務分類変更
 		boolean workTypeChange = false;
 		// 計算勤務種類
 		String calcWorkType = "";
 		// 申請種類をチェックする
-		if(appType==ApplicationType.OVER_TIME_APPLICATION){
+		if(appType==ApplicationType_Old.OVER_TIME_APPLICATION){
 			workTypeChange = false;
 		}
 		// 画面に勤務種類が表示されているかチェックする
@@ -396,14 +396,14 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
+	public void preAppErrorCheck(ApplicationType_Old appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
 		if(null != opAppBefore && opAppBefore.isPresent()){
 			Application_New appBefore = opAppBefore.get();
 			// 申請種類をチェックする
-			if(appType==ApplicationType.OVER_TIME_APPLICATION){
+			if(appType==ApplicationType_Old.OVER_TIME_APPLICATION){
 				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
 				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
 				if(!CollectionUtil.isEmpty(overTimeInputLst)) {

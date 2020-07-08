@@ -20,9 +20,9 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmen
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -178,14 +178,15 @@ public class SaveChangeAbsDateCommandHandler
 			String appReason) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = command.getAppCmd().getEmployeeID();
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = Application_New.firstCreate(companyID,
-				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absCmd.getAppDate(),
+				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr_Old.class), absCmd.getAppDate(),
 				appType, employeeID, new AppReason(appReason));
 		if (!AppContexts.user().employeeId().equals(employeeID)) {
 			commonApp.setEnteredPersonID(AppContexts.user().employeeId());
 		}
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		return commonApp;
 	}
 
@@ -207,7 +208,7 @@ public class SaveChangeAbsDateCommandHandler
 	private String errorCheckBeforeReg(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		String appReason = saveHanler.preconditionCheck(command, companyID, appType, ApplicationCombination.Abs.value);
 		// アルゴリズム「同日申請存在チェック」を実行する

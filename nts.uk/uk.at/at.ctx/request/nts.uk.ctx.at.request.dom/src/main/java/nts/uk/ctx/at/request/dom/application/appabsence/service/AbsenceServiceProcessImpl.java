@@ -173,7 +173,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public void createAbsence(AppAbsence domain, Application_New newApp, ApprovalRootStateImport_New approvalRootState) {
 		// insert Application
-		this.appRepository.insert(newApp);
+		// error EA refactor 4
+		/*this.appRepository.insert(newApp);*/
 		this.approvalRootStateAdapter.insertFromCache(
 				newApp.getCompanyID(), 
 				newApp.getAppID(), 
@@ -668,7 +669,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(), 
 				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
 		// 申請全般登録時チェック処理
-		List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
+		// error EA refactor 4
+		/*List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
 				companyID, 
 				EmploymentRootAtr.APPLICATION, 
 				agentAtr, 
@@ -676,7 +678,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				null, 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
 				holidayDateLst);
-		confirmMsgLst.addAll(confirmMsgLst1);
+		confirmMsgLst.addAll(confirmMsgLst1);*/
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst2 = this.checkAppAbsenceRegister(
 				true, 
@@ -816,7 +818,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		boolean chkSuperBreak = true;
 		
 		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
-		chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
+		// chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
 		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
 		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
 		
@@ -1132,7 +1134,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
 		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appAbsence.getApplication().getEmployeeID(), 
 				appAbsence.getApplication().getAppDate(), 
@@ -1141,7 +1144,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getApplication().getPrePostAtr(), 
 				appAbsence.getApplication().getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());*/
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst = this.checkAppAbsenceRegister(
 				false, 

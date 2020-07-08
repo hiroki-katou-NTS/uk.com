@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputApproveData;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -85,7 +85,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 				boolean displayFixedReason = false;
 				boolean displayAppReason = false;
 				Integer appType = command.getApplicationType();
-				if(appType==ApplicationType.ABSENCE_APPLICATION.value){
+				if(appType==ApplicationType_Old.ABSENCE_APPLICATION.value){
 					List<DisplayReasonDto> displayReasonDtoLst = 
 							displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 					DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == context.getCommand().getHolidayAppType())

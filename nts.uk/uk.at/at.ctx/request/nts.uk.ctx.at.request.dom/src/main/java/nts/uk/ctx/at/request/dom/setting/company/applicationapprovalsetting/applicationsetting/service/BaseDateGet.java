@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import java.util.Optional;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 
 public interface BaseDateGet {
 	

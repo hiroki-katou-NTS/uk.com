@@ -15,13 +15,13 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -39,7 +39,17 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
+		// error EA refactor 4
 		AddAppWorkChangeCommand command = context.getCommand();
+		
+		return workChangeRegisterService.registerProcess(
+				command.getMode(),
+				command.getCompanyId(),
+				command.getApplicationDto().toDomain(),
+				command.getAppWorkChangeDto().toDomain(),
+				command.getHolidayDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
+				command.getIsMail());
+		/*
 		
 		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();
 		// Application command
@@ -56,7 +66,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
@@ -83,10 +93,10 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		
 		// 申請
 		Application_New app = iFactoryApplication.buildApplication(appID, appCommand.getStartDate(), appCommand.getPrePostAtr(), appReason, 
-				appReason, ApplicationType.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
+				appReason, ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(), appCommand.getEndDate(), applicantSID);
 					
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(
 				companyId, 
 				appID,
 				workChangeCommand.getWorkTypeCd(), 
@@ -108,6 +118,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				.map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
 		
 		//ドメインモデル「勤務変更申請設定」の新規登録をする
-        return workChangeRegisterService.registerData(workChangeDomain, app, lstDateHd);
+        return workChangeRegisterService.registerData(workChangeDomain, app, lstDateHd);*/
+//		return null;
 	}
 }

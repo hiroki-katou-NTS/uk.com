@@ -15,7 +15,7 @@ import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -213,8 +213,8 @@ public class ApplicationListFinder {
 		}
 		if(isSpr && extractCondition == 1){
 			if(!this.findAppTypeOt(lstAppType)){
-				String name = repoAppDispName.getDisplay(ApplicationType.OVER_TIME_APPLICATION.value).get().getDispName().v();
-				lstAppType.add(new AppInfor(ApplicationType.OVER_TIME_APPLICATION.value, name));
+				String name = repoAppDispName.getDisplay(ApplicationType_Old.OVER_TIME_APPLICATION.value).get().getDispName().v();
+				lstAppType.add(new AppInfor(ApplicationType_Old.OVER_TIME_APPLICATION.value, name));
 			}
 		}
 		return lstAppType.stream().sorted((x, y) -> x.getAppType()-y.getAppType()).collect(Collectors.toList());

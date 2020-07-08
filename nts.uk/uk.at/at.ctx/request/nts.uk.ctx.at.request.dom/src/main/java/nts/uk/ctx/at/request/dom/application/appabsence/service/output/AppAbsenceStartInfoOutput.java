@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -29,7 +29,7 @@ public class AppAbsenceStartInfoOutput {
 	/**
 	 * 申請表示情報
 	 */
-	private AppDispInfoStartupOutput appDispInfoStartupOutput;
+	private AppDispInfoStartupOutput_Old appDispInfoStartupOutput;
 	
 	/**
 	 * 休暇申請設定

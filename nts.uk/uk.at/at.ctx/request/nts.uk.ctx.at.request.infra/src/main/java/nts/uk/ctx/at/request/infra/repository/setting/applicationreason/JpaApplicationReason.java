@@ -14,7 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
@@ -79,10 +79,10 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 				.setParameter("appType", appType)
 				.getList(c ->toDomain(c));
 		List<ApplicationReason> dataTmp = data.stream().filter(x -> x.getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
-		ApplicationReason firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, new ReasonTemp("選択してください"), DefaultFlg.NOTDEFAULT);
+		ApplicationReason firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType_Old.class), "", 0, new ReasonTemp("選択してください"), DefaultFlg.NOTDEFAULT);
 		if(CollectionUtil.isEmpty(dataTmp)) {
 			String defaultRsName = StringUtil.isNullOrEmpty(defaultResource, true) ? "選択してください" : TextResource.localize(defaultResource);
-			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, new ReasonTemp(defaultRsName), DefaultFlg.DEFAULT);
+			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType_Old.class), "", 0, new ReasonTemp(defaultRsName), DefaultFlg.DEFAULT);
 		}
 		Collections.sort(data, Comparator.comparing(ApplicationReason :: getDispOrder));
 		data.add(0, firstData);

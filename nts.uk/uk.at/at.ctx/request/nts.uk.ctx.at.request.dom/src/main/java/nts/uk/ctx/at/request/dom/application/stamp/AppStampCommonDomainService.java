@@ -25,5 +25,5 @@ public interface AppStampCommonDomainService {
 	
 	public AppStamp findByID(String companyID, String appID);
 	
-	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode stampRequestMode);
+	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode_Old stampRequestMode);
 }

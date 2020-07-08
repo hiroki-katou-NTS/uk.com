@@ -19,8 +19,8 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeSettingData;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -80,7 +80,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		String divergenceReason = opAppOverTime.get().getDivergenceReason(); 
 		if(output.getOutputMode()==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
-					.stream().filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION).findAny().get();
+					.stream().filter(x -> x.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION).findAny().get();
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
 			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(DisplayAtr.DISPLAY)){
@@ -112,8 +112,8 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 			Integer prePostAtr = opAppOverTime.get().getApplication().getPrePostAtr().value;
 			
 			OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
-			boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
-			boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
+			boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
+			boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr_Old.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
 			if(displayDivergenceReasonCombox){
 				divergenceReasonCombox += command.getDivergenceReasonContent();
 			}
@@ -150,7 +150,8 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setVersion(appOverTime.getVersion());
 		appOverTime.getApplication().setVersion(command.getVersion());
 		//4-1.詳細画面登録前の処理を実行する
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appOverTime.getApplication().getEmployeeID(), 
 				appOverTime.getApplication().getAppDate(), 
@@ -158,7 +159,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				appOverTime.getAppID(), 
 				appOverTime.getApplication().getPrePostAtr(), command.getVersion(),
 				appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v(),
-				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
+				appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());*/
 		//ドメインモデル「残業申請」を更新する
 		overtimeRepository.update(appOverTime);
 		applicationRepository.updateWithVersion(appOverTime.getApplication());
@@ -168,7 +169,9 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 				command.getApplicantSID(), 
 				Arrays.asList(command.getApplicationDate()));
 		//4-2.詳細画面登録後の処理を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());
+		// error EA refactor 4
+		/*return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());*/
+		return null;
 	}
 
 }

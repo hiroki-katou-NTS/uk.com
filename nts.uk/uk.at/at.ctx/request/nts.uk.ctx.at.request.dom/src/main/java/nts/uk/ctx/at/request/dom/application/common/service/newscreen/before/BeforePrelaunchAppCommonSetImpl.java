@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -48,7 +48,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
 	private AppEmploymentSettingRepository appEmploymentSetting;
-	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
+	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType_Old targetApp, GeneralDate appDate){
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
 		// ドメインモデル「申請承認設定」を取得する ( Acquire the domain model "application approval setting" )

@@ -42,7 +42,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
@@ -302,8 +302,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
-		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
-		AppWorkChange appWkChange = workChange.get();
+		Optional<AppWorkChange_Old> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
+		AppWorkChange_Old appWkChange = workChange.get();
 		String workTypeName = "";
 		if (appWkChange.getWorkTypeCd() != null && !Strings.isBlank(appWkChange.getWorkTypeCd())) {
 			// 勤務就業名称を作成 - WorkType
@@ -666,10 +666,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 			List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		List<AppWorkChangeFull> lstAppFull = new ArrayList<>();
 		// get list app work change by lstId
-		List<AppWorkChange> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
+		List<AppWorkChange_Old> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
 		Map<String, String> mapWorkTypeName = new HashMap<>();
 		Map<String, String> mapWorkTimeName = new HashMap<>();
-		for (AppWorkChange appWkChange : lstWorkChange) {
+		for (AppWorkChange_Old appWkChange : lstWorkChange) {
 			// find work type name
 			String wkTypeCD = appWkChange.getWorkTypeCd();
 			String workTypeName = "";

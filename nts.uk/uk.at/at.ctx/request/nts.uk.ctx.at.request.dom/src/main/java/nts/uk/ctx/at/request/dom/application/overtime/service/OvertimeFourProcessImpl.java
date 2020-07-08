@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
@@ -42,7 +42,7 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 									companyID,
 									appDate, 
 									inputDate, 
-									EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+									EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class), 
 									overtimeInputCaculation.getAttendanceID(), 
 									convert(overtimeInput),
 									employeeID);

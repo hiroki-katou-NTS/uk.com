@@ -11,37 +11,27 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
-//import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.pub.screen.AppGroupExport;
 import nts.uk.ctx.at.request.pub.screen.AppWithDetailExport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationDeadlineExport;
@@ -51,23 +41,12 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class ApplicationPubImpl implements ApplicationPub {
 	@Inject
 	private ApplicationRepository_New applicationRepository_New;
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
-//	@Inject
-//	private HdAppDispNameRepository hdAppDispNameRepository;
-	@Inject
-	private ApplicationDeadlineRepository appDeadlineRepository;
-	@Inject
-	private RqClosureAdapter rqClosureAdapter;
-	@Inject
-	private WorkplaceAdapter workplaceAdapter;
-	@Inject
-	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
@@ -83,6 +62,9 @@ public class ApplicationPubImpl implements ApplicationPub {
 	@Inject
 	private JudgmentOneDayHoliday judgmentOneDayHoliday;
 	
+	@Inject
+	private AppDeadlineSettingGet appDeadlineSettingGet;
+	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<ApplicationExport> getApplicationBySID(List<String> employeeID, GeneralDate startDate,
@@ -94,8 +76,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 			return applicationExports;
 		}
 		List<Application_New> applicationExcessHoliday = application.stream()
-				.filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value &&
-							x.getAppType().value != ApplicationType.WORK_CHANGE_APPLICATION.value)
+				.filter(x -> x.getAppType().value != ApplicationType_Old.ABSENCE_APPLICATION.value &&
+							x.getAppType().value != ApplicationType_Old.WORK_CHANGE_APPLICATION.value)
 				.collect(Collectors.toList());
 		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
 		if(!applicationExcessHoliday.isEmpty()){
@@ -144,7 +126,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				}
 			}
 		}
-		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType_Old.ABSENCE_APPLICATION.value).collect(Collectors.toList());
 		if(!applicationHoliday.isEmpty()){
 			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 			List<AppAbsence> apps = appAbsenceRepository.getAbsenceByIds(companyID, applicationHoliday.stream().map(c -> c.getAppID()).distinct().collect(Collectors.toList()));
@@ -198,9 +180,9 @@ public class ApplicationPubImpl implements ApplicationPub {
 			}
 		}
 		
-		List<Application_New> appWorkChangeLst = application.stream().filter(x -> x.getAppType().value == ApplicationType.WORK_CHANGE_APPLICATION.value).collect(Collectors.toList());
+		List<Application_New> appWorkChangeLst = application.stream().filter(x -> x.getAppType().value == ApplicationType_Old.WORK_CHANGE_APPLICATION.value).collect(Collectors.toList());
 		if(!appWorkChangeLst.isEmpty()){
-			List<AppWorkChange> appWorkChanges = new ArrayList<>();
+			List<AppWorkChange_Old> appWorkChanges = new ArrayList<>();
 			List<ScBasicScheduleImport> basicSchedules = new ArrayList<>();
 			List<WorkType> workTypes = new ArrayList<>();
 			GeneralDate minD = appWorkChangeLst.stream().map(c -> c.getStartDate().orElse(null)).filter(c -> c != null).min((c1, c2) -> c1.compareTo(c2)).get();
@@ -222,7 +204,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExports.add(applicationExport);
 				} else {
 					// 申請種類＝勤務変更申請　＆　休日を除外するの場合
-					AppWorkChange appWorkChange = appWorkChanges.stream().filter(c -> c.getAppId().equals(app.getAppID())).findFirst().get();
+					AppWorkChange_Old appWorkChange = appWorkChanges.stream().filter(c -> c.getAppId().equals(app.getAppID())).findFirst().get();
 					for(GeneralDate loopDate = app.getStartDate().get(); loopDate.beforeOrEquals(app.getEndDate().get()); loopDate = loopDate.addDays(1)){
 						if(appWorkChange.getExcludeHolidayAtr()==0){
 							ApplicationExport applicationExport = new ApplicationExport();
@@ -269,7 +251,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 		return basicSchedules.stream().filter(c -> c.getEmployeeId().equals(empId) && c.getDate().equals(loopDate)).findFirst();
 	}
 	
-	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
+	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType_Old appType) {
 		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
 														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
 														.getDispName().toString();
@@ -277,48 +259,12 @@ public class ApplicationPubImpl implements ApplicationPub {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ApplicationDeadlineExport getApplicationDeadline(String companyID, Integer closureID) {
-		String employeeId = AppContexts.user().employeeId();
-		ApplicationDeadlineExport result = new ApplicationDeadlineExport();
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID,
-				closureID);
-		if (!appDeadlineOp.isPresent()) {
-			throw new RuntimeException(
-					"Not found ApplicationDeadline in table KRQST_APP_DEADLINE, closureID =" + closureID);
-		}
-		ApplicationDeadline appDeadline = appDeadlineOp.get();
-
-		GeneralDate systemDate = GeneralDate.today();
-		// ドメインモデル「申請締切設定」．利用区分をチェックする(check利用区分)
-		if (appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) {
-			result.setUseApplicationDeadline(false);
-			return result;
-		}
-		Optional<PresentClosingPeriodImport> presentClosingPeriodImport = this.rqClosureAdapter.getClosureById(companyID, closureID);
-		if(presentClosingPeriodImport.isPresent()){
-				GeneralDate deadline = null;
-				// ドメインモデル「申請締切設定」．締切基準をチェックする
-				if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
-					// アルゴリズム「社員所属職場履歴を取得」を実行する
-					WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeId, systemDate);
-					// アルゴリズム「締切日を取得する」を実行する
-					// nếu wkpHistImport = null thì xem QA http://192.168.50.4:3000/issues/97192
-					if(wkpHistImport==null || Strings.isBlank(wkpHistImport.getWorkplaceId())){
-						throw new BusinessException("EA No.2110: 終了状態：申請締切日取得エラー");
-					}
-					deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
-							presentClosingPeriodImport.get().getClosureEndDate(), 
-							appDeadline.getDeadline().v(), 
-							wkpHistImport.getWorkplaceId(), 
-							companyID);
-				} else {
-					// 「申請締切設定」．締切基準が暦日
-					deadline = presentClosingPeriodImport.get().getClosureEndDate().addDays(appDeadline.getDeadline().v());
-				}
-				result.setDateDeadline(deadline);
-		}
-		result.setUseApplicationDeadline(true);
-		return result;
+		String employeeID = AppContexts.user().employeeId();
+		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
+		ApplicationDeadlineExport applicationDeadlineExport = new ApplicationDeadlineExport();
+		applicationDeadlineExport.setUseApplicationDeadline(deadlineLimitCurrentMonth.isUseAtr());
+		applicationDeadlineExport.setDateDeadline(deadlineLimitCurrentMonth.getOpAppDeadline().orElse(null));
+		return applicationDeadlineExport;
 	}
 	private String getAppAbsenceName(int holidayCode, Optional<HdAppSet> hdAppSet){
 		String holidayAppTypeName ="";
@@ -367,7 +313,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 		mapDate.entrySet().stream().forEach(x -> {
 			Map<Object, List<AppGroupExport>> mapDateType = x.getValue().stream().collect(Collectors.groupingBy(y -> y.getAppType()));
 			mapDateType.entrySet().stream().forEach(y -> {
-				if(Integer.valueOf(y.getKey().toString())==ApplicationType.ABSENCE_APPLICATION.value){
+				if(Integer.valueOf(y.getKey().toString())==ApplicationType_Old.ABSENCE_APPLICATION.value){
 					Map<Object, List<AppGroupExport>> mapDateTypeAbsence = y.getValue().stream().collect(Collectors.groupingBy(z -> z.getAppTypeName()));
 					mapDateTypeAbsence.entrySet().stream().forEach(z -> {
 						result.add(z.getValue().get(0));
@@ -389,50 +335,50 @@ public class ApplicationPubImpl implements ApplicationPub {
 			if(appDispName.getDispName() == null){
 				continue;
 			}
-			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
+			if(appDispName.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION){
 				// outputパラメータに残業申請のモード別の値をセットする
 				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
+						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")", 
 						OverTimeAtr.PREOVERTIME.value + 1,
 						null));
 				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
+						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")", 
 						OverTimeAtr.REGULAROVERTIME.value + 1,
 						null));
 				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
+						ApplicationType_Old.OVER_TIME_APPLICATION.value, 
 						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")", 
 						OverTimeAtr.ALL.value + 1,
 						null));
-			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
+			} else if(appDispName.getAppType()==ApplicationType_Old.STAMP_APPLICATION){
 				// outputパラメータに打刻申請のモード別の値をセットする
 				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_GO_OUT_PERMIT.name + ")", 
+						ApplicationType_Old.STAMP_APPLICATION.value, 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")", 
 						null,
-						StampRequestMode.STAMP_GO_OUT_PERMIT.value));
+						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
 				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_WORK.name + ")", 
+						ApplicationType_Old.STAMP_APPLICATION.value, 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")", 
 						null,
-						StampRequestMode.STAMP_WORK.value));
+						StampRequestMode_Old.STAMP_WORK.value));
 				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_CANCEL.name + ")", 
+						ApplicationType_Old.STAMP_APPLICATION.value, 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")", 
 						null,
-						StampRequestMode.STAMP_CANCEL.value));
+						StampRequestMode_Old.STAMP_CANCEL.value));
 				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.STAMP_ONLINE_RECORD.name + ")", 
+						ApplicationType_Old.STAMP_APPLICATION.value, 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")", 
 						null,
-						StampRequestMode.STAMP_ONLINE_RECORD.value));
+						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
 				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode.OTHER.name + ")", 
+						ApplicationType_Old.STAMP_APPLICATION.value, 
+						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")", 
 						null,
-						StampRequestMode.OTHER.value));
+						StampRequestMode_Old.OTHER.value));
 			} else {
 				// outputパラメータに値をセットする
 				result.add(new AppWithDetailExport(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));

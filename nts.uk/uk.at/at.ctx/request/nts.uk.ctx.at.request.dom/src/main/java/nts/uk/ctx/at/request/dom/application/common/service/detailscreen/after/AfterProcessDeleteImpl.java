@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessDeleteResult;
@@ -56,7 +56,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
 		Application_New application = applicationRepo.findByID(companyID, appID).get();
-		ApplicationType appType = application.getAppType();
+		ApplicationType_Old appType = application.getAppType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
 		List<String> converList = new ArrayList<String>();

@@ -1,115 +1,64 @@
 package nts.uk.ctx.at.request.app.find.application.workchange;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
-
-/**
-* 勤務変更申請
-*/
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZoneWithWorkNoDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
-@Value
-public class AppWorkChangeDto
-{    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 申請ID
-    */
-    private String appId;
-    
-    /**
-    * 勤務種類コード
-    */
-    private String workTypeCd;
-    
-    /**
-    * 就業時間帯コード
-    */
-    private String workTimeCd;
-    
-    /**
-    * 休日を除外する
-    */
-    private Integer excludeHolidayAtr;
-    
-    /**
-    * 勤務を変更する
-    */
-    private Integer workChangeAtr;
-    
-    /**
-    * 勤務直行1
-    */
-    private Integer goWorkAtr1;
-    
-    /**
-    * 勤務直帰1
-    */
-    private Integer backHomeAtr1;
-    
-    /**
-    * 休憩時間開始1
-    */
-    private Integer breakTimeStart1;
-    
-    /**
-    * 休憩時間終了1
-    */
-    private Integer breakTimeEnd1;
-    
-    /**
-    * 勤務時間開始1
-    */
-    private Integer workTimeStart1;
-    
-    /**
-    * 勤務時間終了1
-    */
-    private Integer workTimeEnd1;
-    
-    /**
-    * 勤務時間開始2
-    */
-    private Integer workTimeStart2;
-    
-    /**
-    * 勤務時間終了2
-    */
-    private Integer workTimeEnd2;
-    
-    /**
-    * 勤務直行2
-    */
-    private Integer goWorkAtr2;
-    
-    /**
-    * 勤務直帰2
-    */
-    private Integer backHomeAtr2;
-    
-    private Long version;
-    
-    /**
-     * 勤務種類名
-     */
-    private String workTypeName;
-    
-    /**
-     * 就業時間帯名
-     */
-    private String workTimeName;
-
-	public static AppWorkChangeDto fromDomain(AppWorkChange domain) {
-		return new AppWorkChangeDto(domain.getCid(), domain.getAppId(), domain.getWorkTypeCd(), domain.getWorkTimeCd(),
-				domain.getExcludeHolidayAtr(), domain.getWorkChangeAtr(), domain.getGoWorkAtr1(),
-				domain.getBackHomeAtr1(), domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(),
-				domain.getWorkTimeStart1(), domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(),
-				domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(), domain.getBackHomeAtr2(), domain.getVersion(),
-				domain.getWorkTypeName(), domain.getWorkTimeName());
+@NoArgsConstructor
+@Data
+public class AppWorkChangeDto {
+	/**
+	 * 直行区分
+	 */
+	private int straightGo;
+	
+	/**
+	 * 直帰区分
+	 */
+	private int straightBack;
+	
+	/**
+	 * 勤務種類コード
+	 */
+	private String opWorkTypeCD;
+	
+	/**
+	 * 就業時間帯コード
+	 */
+	private String opWorkTimeCD;
+	
+	/**
+	 * 勤務時間帯
+	 */
+	private List<TimeZoneWithWorkNoDto> timeZoneWithWorkNoLst;
+	
+	
+	public static AppWorkChangeDto fromDomain(AppWorkChange appWorkChange) {
+		AppWorkChangeDto appWorkChange_NewDto =  new AppWorkChangeDto();
+		appWorkChange_NewDto.setStraightGo(appWorkChange.getStraightGo().value);
+		appWorkChange_NewDto.setStraightBack(appWorkChange.getStraightBack().value);
+		appWorkChange_NewDto.setOpWorkTypeCD(appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null );
+		appWorkChange_NewDto.setOpWorkTimeCD(appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
+		
+		appWorkChange_NewDto.setTimeZoneWithWorkNoLst(appWorkChange.getTimeZoneWithWorkNoLst().stream().map(item -> TimeZoneWithWorkNoDto.fromDomain(item)).collect(Collectors.toList()));
+		return appWorkChange_NewDto;
 	}
-
+	public AppWorkChange toDomain() {
+		return new AppWorkChange(
+				NotUseAtr.valueOf(this.straightGo),
+				NotUseAtr.valueOf(this.straightBack),
+				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
+				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
+				null);
+	}
 }

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 public class ApplyPossibleCheckImpl implements ApplyPossibleCheck {
 
 	@Override
-	public boolean check(ApplicationType appType, GeneralDate startDate, OverTimeAtr overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
+	public boolean check(ApplicationType_Old appType, GeneralDate startDate, OverTimeAtr overTimeAtr, AppTypeDiscreteSetting appTypeDiscreteSetting, 
 			int i, List<ReceptionRestrictionSetting> receptionRestrictionSetting) {
 		GeneralDate loopDay = startDate.addDays(i);
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
@@ -33,7 +33,7 @@ public class ApplyPossibleCheckImpl implements ApplyPossibleCheck {
 				return true;
 			}
 		} else {
-			if(appType.equals(ApplicationType.OVER_TIME_APPLICATION)){
+			if(appType.equals(ApplicationType_Old.OVER_TIME_APPLICATION)){
 				// ループする日とシステム日付を比較する
 				if(loopDay.before(systemDate)){
 					return true;

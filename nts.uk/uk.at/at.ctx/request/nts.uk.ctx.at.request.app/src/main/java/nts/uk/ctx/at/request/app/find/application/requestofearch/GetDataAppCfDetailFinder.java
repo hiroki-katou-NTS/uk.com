@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -87,7 +87,7 @@ public class GetDataAppCfDetailFinder {
 				companyID, 
 				sid, 
 				1,
-				EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class),
+				EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType_Old.class),
 				GeneralDate.today()).approvalFunctionSetting;
 		/*
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
@@ -134,17 +134,17 @@ public class GetDataAppCfDetailFinder {
 			}
 			//「事前の受付制限」．チェック方法が時刻
 			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {		
-				ApplicationType appType = EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class);
-				if(appType!=ApplicationType.OVER_TIME_APPLICATION){
+				ApplicationType_Old appType = EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType_Old.class);
+				if(appType!=ApplicationType_Old.OVER_TIME_APPLICATION){
 					RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
 					int minuteData = 0;
 					if(retrictPreTimeDay.v()==null){
 						strDate = "[error data]";
 					} else {
-						if(appType==ApplicationType.ABSENCE_APPLICATION||
-							appType==ApplicationType.WORK_CHANGE_APPLICATION||
-							appType==ApplicationType.BREAK_TIME_APPLICATION||
-							appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
+						if(appType==ApplicationType_Old.ABSENCE_APPLICATION||
+							appType==ApplicationType_Old.WORK_CHANGE_APPLICATION||
+							appType==ApplicationType_Old.BREAK_TIME_APPLICATION||
+							appType==ApplicationType_Old.ANNUAL_HOLIDAY_APPLICATION){
 							strDate = "[error data]";
 						} else {
 							minuteData = retrictPreTimeDay.v();
@@ -158,7 +158,7 @@ public class GetDataAppCfDetailFinder {
 					Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 					List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
 					if(requestSetting.isPresent()){
-						receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)).collect(Collectors.toList());
+						receptionRestrictionSetting = requestSetting.get().getApplicationSetting().getListReceptionRestrictionSetting().stream().filter(x -> x.getAppType().equals(ApplicationType_Old.OVER_TIME_APPLICATION)).collect(Collectors.toList());
 					}
 					if(!CollectionUtil.isEmpty(receptionRestrictionSetting)){
 						if(overtimeAtr == OverTimeAtr.PREOVERTIME.value){

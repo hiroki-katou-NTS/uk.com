@@ -10,7 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterDeny;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -34,9 +34,10 @@ public class UpdateApplicationDenyHandler extends CommandHandlerWithResult<Input
 		
 		//共通アルゴリズム「詳細画面否認前の処理」を実行する(thực hiện xử lý 「詳細画面否認前の処理)
 		// 4.1
-		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicantSID(),
+		// error EA refactor 4
+		/*beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicantSID(),
 				GeneralDate.today(), 1, command.getApplicationID(),
-				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion(), null, null);
+				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr_Old.class), command.getVersion(), null, null);*/
 		
 		//9.2 
 		return detailAfterDeny.doDeny(companyID, command.getApplicationID(), employeeID, memo);

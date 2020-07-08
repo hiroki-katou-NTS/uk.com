@@ -199,7 +199,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public void CreateOvertime(AppOverTime domain, Application_New newApp){
 		//Register application
-		appRepository.insert(newApp);
+		// error EA refactor 4
+		/*appRepository.insert(newApp);*/
 		//Register overtime
 		overTimeRepository.Add(domain);
 	}

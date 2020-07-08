@@ -37,7 +37,7 @@ import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
@@ -740,7 +740,7 @@ public class ToppageStartupProcessMobFinder {
 			List<Application_New> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
 			List<Application_New> listApplicationFilter = listApplication.stream()
-					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
+					.filter(c -> (c.getAppType() == ApplicationType_Old.OVER_TIME_APPLICATION)
 							&& c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {

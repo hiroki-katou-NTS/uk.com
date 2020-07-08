@@ -24,7 +24,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
@@ -442,7 +442,7 @@ public class ApprovalStatusFinder {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
 			int detailSet = app.getDetailSet();
-			ApplicationType appType = app.getAppDispName().getAppType();
+			ApplicationType_Old appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
 			String appId = applicaton_N.getApplicationID();

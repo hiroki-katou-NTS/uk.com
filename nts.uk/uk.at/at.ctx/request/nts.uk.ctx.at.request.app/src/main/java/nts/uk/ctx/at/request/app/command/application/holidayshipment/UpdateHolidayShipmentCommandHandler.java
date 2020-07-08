@@ -14,10 +14,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
@@ -146,17 +146,18 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	}
 
 	private void preRegisComonProcessing(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType_Old appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
 		processBeforeRegOfDetailedScreen(companyID, employeeID, appDate, rootAtr, appType, prePostAtr, appID, appVer,
 				wkTypeCD, wkTimeCD);
 
 	}
 
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
-		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
-				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-				Long.valueOf(appVer), wkTypeCD, wkTimeCD);
+			ApplicationType_Old appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
+		// error EA refactor 4
+		/*beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
+				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),
+				Long.valueOf(appVer), wkTypeCD, wkTimeCD);*/
 
 	}
 
@@ -183,7 +184,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		RecruitmentAppCommand recCmd = command.getRecCmd();
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		String employeeID = command.getAppCmd().getEmployeeID();
 		if (isSaveRec(comType)) {
 			// アルゴリズム「登録前共通処理（更新）」を実行する
@@ -199,7 +200,8 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					Arrays.asList(recCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (recApp != null) {
-				this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);
+				// error EA refactor 4
+				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(recApp);*/
 			}
 		}
 
@@ -216,14 +218,15 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 					Arrays.asList(absCmd.getAppDate()));
 			// アルゴリズム「詳細画面登録後の処理」を実行する
 			if (absApp != null) {
-				this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);
+				// error EA refactor 4
+				/*this.detailAfterUpdate.processAfterDetailScreenRegistration(absApp);*/
 			}
 		}
 
 	}
 
 	private String errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, int comType) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		// アルゴリズム「事前条件チェック」を実行する
 		return saveHanler.preconditionCheck(command, companyID, appType, comType);
 

@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 /**
  * 申請一覧抽出条件
  * @author hoatt
@@ -21,7 +21,7 @@ public class AppListExtractCondition {
 	/**申請一覧区分*/
 	private ApplicationListAtr appListAtr;
 	/**申請種類*/
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	/**承認状況＿未承認*/
 	private boolean unapprovalStatus;
 	/**承認状況＿承認済*/

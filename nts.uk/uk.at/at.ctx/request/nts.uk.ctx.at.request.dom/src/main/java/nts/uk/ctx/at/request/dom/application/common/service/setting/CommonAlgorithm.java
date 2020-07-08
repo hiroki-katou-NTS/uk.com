@@ -4,16 +4,19 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface CommonAlgorithm {
@@ -43,8 +46,8 @@ public interface CommonAlgorithm {
 	 * @param mode 新規詳細モード(新規モード/詳細モード) 新規モード: true/詳細モード: false
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType appType, List<GeneralDate> dateLst,
-			AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode);
+	public AppDispInfoWithDateOutput_Old getAppDispInfoWithDate(String companyID, ApplicationType_Old appType, List<GeneralDate> dateLst,
+			AppDispInfoNoDateOutput_Old appDispInfoNoDateOutput, boolean mode);
 	
 	/**
 	 * 社員IDから申請承認設定情報の取得
@@ -54,7 +57,7 @@ public interface CommonAlgorithm {
 	 * @param targetApp 申請種類
 	 * @return
 	 */
-	public ApprovalFunctionSetting getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp);
+	public ApprovalFunctionSet getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp);
 	
 	/**
 	 * 12_承認ルートを取得
@@ -66,7 +69,7 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public ApprovalRootContentImport_New getApprovalRoot(String companyID, String employeeID, 
-			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
+			EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate);
 	
 	/**
 	 * 申請表示情報(申請対象日関係あり)を取得する
@@ -78,8 +81,8 @@ public interface CommonAlgorithm {
 	 * @param initValueAtr 事前事後区分の初期表示
 	 * @return
 	 */
-	public AppDispInfoWithDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
-			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitialAtr initValueAtr);
+	public AppDispInfoWithDateOutput_Old getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
+			ApplicationType_Old appType, DisplayAtr prePostAtrDisp, PrePostInitialAtr initValueAtr);
 	
 	/**
 	 * 起動時の申請表示情報を取得する

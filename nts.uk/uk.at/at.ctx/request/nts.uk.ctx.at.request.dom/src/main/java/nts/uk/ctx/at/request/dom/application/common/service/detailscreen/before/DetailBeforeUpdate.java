@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 
 /**
  * 
@@ -38,7 +39,7 @@ public interface DetailBeforeUpdate {
 	 * @param postAtr 事前事後区分
 	 */
 	public boolean processBefDetailScreenReg(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
-			PrePostAtr postAtr, Long version);
+			PrePostAtr_Old postAtr, Long version);
 	/**
 	 * 1.排他チェック (CMM045)
 	 * @param companyID

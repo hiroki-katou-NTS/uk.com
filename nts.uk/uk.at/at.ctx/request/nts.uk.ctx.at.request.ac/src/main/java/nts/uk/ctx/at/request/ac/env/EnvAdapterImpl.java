@@ -7,15 +7,25 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.ImapInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.PopInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.SmtpInfoImport;
 import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
 import nts.uk.ctx.sys.env.pub.maildestination.OutGoingMail;
+import nts.uk.ctx.sys.env.pub.mailserver.MailServerPub;
+import nts.uk.ctx.sys.env.pub.mailserver.MailServerSetExport;
 
 @Stateless
 public class EnvAdapterImpl implements EnvAdapter {
 	@Inject
 	private IMailDestinationPub iMailDestinationPub;
+	
+	@Inject
+	private MailServerPub mailServerPub;
 
 	@Override
 	public List<MailDestinationImport> getEmpEmailAddress(String cID, List<String> sIDs, Integer functionID) {
@@ -37,5 +47,31 @@ public class EnvAdapterImpl implements EnvAdapter {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public MailServerSetImport checkMailServerSet(String companyID) {
+		MailServerSetExport mailServerSetExport = mailServerPub.checkMailServerSet(companyID);
+		return new MailServerSetImport(
+				mailServerSetExport.isMailServerSet(), 
+				mailServerSetExport.getOpMailServerExport()
+				.map(x -> new MailServerImport(
+						x.getCompanyId(), 
+						x.getUseAuthentication(), 
+						x.getEncryptionMethod(), 
+						x.getAuthenticationMethod(), 
+						x.getEmailAuthentication(), 
+						x.getPassword(), 
+						new SmtpInfoImport(
+								x.getSmtpInfo().getServer(), 
+								x.getSmtpInfo().getPort()), 
+						new PopInfoImport(
+								x.getPopInfo().getServer(), 
+								x.getPopInfo().getUseServer(), 
+								x.getPopInfo().getPort()), 
+						new ImapInfoImport(
+								x.getImapInfo().getServer(), 
+								x.getImapInfo().getUseServer(), 
+								x.getImapInfo().getPort()))));
 	}
 }

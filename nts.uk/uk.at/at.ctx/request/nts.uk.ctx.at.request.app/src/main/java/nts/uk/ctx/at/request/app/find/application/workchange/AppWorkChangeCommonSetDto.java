@@ -17,7 +17,7 @@ public class AppWorkChangeCommonSetDto {
 	/**
 	 * 勤務変更申請設定
 	 */
-	AppWorkChangeSetDto workChangeSetDto;
+	AppWorkChangeSetDto_Old workChangeSetDto;
 	/**
 	 * 社員.社員名
 	 */
@@ -48,7 +48,7 @@ public class AppWorkChangeCommonSetDto {
 	boolean isTimeRequired;
 
 	public static AppWorkChangeCommonSetDto fromDomain(WorkChangeBasicData domain) {
-		return new AppWorkChangeCommonSetDto(AppWorkChangeSetDto.fromDomain(domain.getWorkChangeCommonSetting().get()),
+		return new AppWorkChangeCommonSetDto(AppWorkChangeSetDto_Old.fromDomain(domain.getWorkChangeCommonSetting().get()),
 				domain.getEmployeeName(), domain.getSID(), domain.isMultipleTime(),
 				domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x)).collect(
 						Collectors.toList()),

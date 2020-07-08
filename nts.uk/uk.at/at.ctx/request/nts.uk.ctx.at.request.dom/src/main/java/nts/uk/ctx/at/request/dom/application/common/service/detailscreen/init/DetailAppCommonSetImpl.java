@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 //import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -72,11 +72,12 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput getCommonSetBeforeDetail(String companyID, String appID) {
-		// 詳細画面の申請データを取得する
+	public AppDispInfoStartupOutput_Old getCommonSetBeforeDetail(String companyID, String appID) {
+		// error EA refactor 4
+		/*// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 起動時の申請表示情報を取得する
-		ApplicationType appType = detailScreenAppData.getApplication().getAppType();
+		ApplicationType_Old appType = detailScreenAppData.getApplication().getAppType();
 		List<String> applicantLst = Arrays.asList(detailScreenAppData.getApplication().getEmployeeID());
 		GeneralDate startDate = detailScreenAppData.getApplication().getStartDate().orElse(detailScreenAppData.getApplication().getAppDate());
 		GeneralDate endDate = detailScreenAppData.getApplication().getEndDate().orElse(detailScreenAppData.getApplication().getAppDate());
@@ -84,7 +85,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)) {
 			dateLst.add(loopDate);
 		}
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyID, appType, applicantLst, dateLst, false);
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyID, appType, applicantLst, dateLst, false);
 		// 詳細画面の利用者とステータスを取得する
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 
@@ -108,7 +109,8 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));
 		appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo));
 		// 更新した「申請表示情報」を返す
-		return appDispInfoStartupOutput;
+		return appDispInfoStartupOutput;*/
+		return null;
 	}
 
 }

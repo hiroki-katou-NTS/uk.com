@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 
 /**
  * @author loivt
@@ -25,7 +26,7 @@ public class OvertimeRestAppCommonSetting {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 	/**
 	 * 乖離理由入力区分
@@ -113,7 +114,7 @@ public class OvertimeRestAppCommonSetting {
 																		int appDateContradictionAtr,
 																		int calculationOvertimeDisplayAtr){
 		return new OvertimeRestAppCommonSetting(companyID,
-				EnumAdaptor.valueOf(appType,ApplicationType.class),
+				EnumAdaptor.valueOf(appType,ApplicationType_Old.class),
 				EnumAdaptor.valueOf(divergenceReasonInputAtr,UseAtr.class),
 				EnumAdaptor.valueOf(divergenceReasonFormAtr,UseAtr.class),
 				EnumAdaptor.valueOf(divergenceReasonRequired,UseAtr.class),

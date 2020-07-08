@@ -20,9 +20,9 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -64,7 +64,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
@@ -703,10 +704,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 
 		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().isAppOverTime())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
 				.collect(Collectors.toList());
 		List<ApplicationFullOutput> lstHdPost = lstAppFull.stream().filter(c -> c.getApplication().isAppHdWork())
-				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
+				.filter(c -> c.getApplication().getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR))
 				.collect(Collectors.toList());
 
 		// 事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
@@ -725,8 +726,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//ドメインモデル「申請」を取得する
 				//※2018/04/17
 				//複数存在する場合は、最後に新規登録された内容を対象とする
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType.OVER_TIME_APPLICATION.value);
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
+						ApplicationType_Old.OVER_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
 				} else {
@@ -760,7 +761,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					lstRestEnd.add(restTime.getEndTime());
 				}
 				WkTypeWkTime wkT = this.findWkTOt(lstAppOt, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.OVER_TIME_APPLICATION,
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType_Old.OVER_TIME_APPLICATION,
 						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
@@ -805,8 +806,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//承認一覧表示設定.休出の事前申請
 			if (displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)) {// 表示する
 				//ドメインモデル「申請」を取得する
-				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value,
-						ApplicationType.BREAK_TIME_APPLICATION.value);
+				List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr_Old.PREDICT.value,
+						ApplicationType_Old.BREAK_TIME_APPLICATION.value);
 				if (lstAppPre.isEmpty()) {
 					checkColor = new CheckColorTime(appID, 1);
 				} else {
@@ -834,7 +835,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 				List<OverTimeFrame> time = appHdPost.getLstFrame();
 				WkTypeWkTime wkT = this.findWkTHd(lstAppHdWork, appID);
-				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType.BREAK_TIME_APPLICATION,
+				TimeResultOutput result = this.getDataActual(sID, appDate, time, ApplicationType_Old.BREAK_TIME_APPLICATION,
 						wkT.getWkTypeCd(), wkT.getWkTimeCd(), lstWkType, lstWkTime);
 				if (result.isCheckColor()) {
 					if (this.checkExistColor(lstColorTime, appID)) {
@@ -883,11 +884,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time,
-			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
+			ApplicationType_Old appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
 		OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
 		Optional<CalcStampMiss> calStampMiss = Optional.empty();
-		if (appType.equals(ApplicationType.OVER_TIME_APPLICATION)) {
+		if (appType.equals(ApplicationType_Old.OVER_TIME_APPLICATION)) {
 			Optional<AppOvertimeSetting> otSet = appOtSetRepo.getAppOver();
 			overrideSet = otSet.isPresent() ? otSet.get().getPriorityStampSetAtr() : overrideSet;
 		} else {
@@ -949,7 +950,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		;
 		String workTypeName = "";
 		String workTimeName = "";
-		if (appType.equals(ApplicationType.BREAK_TIME_APPLICATION)) {
+		if (appType.equals(ApplicationType_Old.BREAK_TIME_APPLICATION)) {
 			if (Strings.isNotBlank(cal.workType)) {
 				workTypeName = repoAppDetail.findWorkTypeName(lstWkType, cal.workType);
 			}
@@ -994,13 +995,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public Boolean getListAppStampIsCancel(Application_New application, String companyID) {
 		String applicantID = "";
 		// 申請種類-(Check AppType)
-		if (!application.getAppType().equals(ApplicationType.STAMP_APPLICATION)) {
+		if (!application.getAppType().equals(ApplicationType_Old.STAMP_APPLICATION)) {
 			return null;
 		}
 		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
 		// get domain 打刻申請
 		AppStamp stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if (!stamp.getStampRequestMode().equals(StampRequestMode.STAMP_CANCEL)) {
+		if (!stamp.getStampRequestMode().equals(StampRequestMode_Old.STAMP_CANCEL)) {
 			return null;
 		}
 		// アルゴリズム「実績の取得」を実行する - 13/KAF
@@ -1147,7 +1148,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 
 	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
+	private String findAppName(List<AppDispName> appDispName, ApplicationType_Old appType) {
 		for (AppDispName appName : appDispName) {
 			if (appName.getAppType().value == appType.value) {
 				return appName.getDispName().v();
@@ -1173,7 +1174,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
-		if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)) {
+		if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE) {
 			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
 		}
 		//取得できなかった場合
@@ -1183,14 +1184,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for (int i = 1; i < lstWpkIDPr.size(); i++) {
 				//ドメイン「職場別申請承認設定」を取得する
 				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
-				if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)) {
+				if (appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE) {
 					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
 				}
 			}
 		}
 		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
-		return appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)
+		return appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE
 				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
 	}
 
@@ -1827,7 +1828,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				int detailSet = this.finddetailSet(lstMaster, appID);
 				AppOverTimeInfoFull overTime = this.find005(lstAppOt, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentOverTimeAf(overTime, detailSet, appReasonDisAtr, appReason,
 							subData);
 				} else {
@@ -1861,7 +1862,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			case BREAK_TIME_APPLICATION: {//休出時間申請
 				AppHolidayWorkFull hdWork = this.find010(ldtAppHdWork, appID);
 				AppPrePostGroup subData = this.findSubData(lstSubData, appID);
-				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr.POSTERIOR)) {//承認モード(事後)
+				if (appMode.equals(ApplicationListAtr.APPROVER) && app.getPrePostAtr().equals(PrePostAtr_Old.POSTERIOR)) {//承認モード(事後)
 					content = contentDtail.getContentHdWorkAf(hdWork, appReasonDisAtr, appReason, subData);
 				} else {
 					content = contentDtail.getContentHdWorkBf(hdWork, companyID, appID, appReasonDisAtr, appReason,

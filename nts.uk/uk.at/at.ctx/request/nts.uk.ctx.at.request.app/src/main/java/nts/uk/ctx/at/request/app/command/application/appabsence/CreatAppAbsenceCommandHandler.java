@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -105,7 +105,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		}
 		Application_New appRoot = iFactoryApplication.buildApplication(appID, startDate,
 				command.getApplicationCommand().getPrePostAtr(), appReason, appReason,
-				ApplicationType.ABSENCE_APPLICATION, startDate, endDate, command.getApplicationCommand().getApplicantSID());
+				ApplicationType_Old.ABSENCE_APPLICATION, startDate, endDate, command.getApplicationCommand().getApplicantSID());
 		AppForSpecLeave specHd = null;
 		AppForSpecLeaveCmd appForSpecLeaveCmd = command.getAppAbsenceCommand().getAppForSpecLeave();
 		if(command.getAppAbsenceCommand().getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && appForSpecLeaveCmd != null){
@@ -128,7 +128,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		// insert
 		absenceServiceProcess.createAbsence(appAbsence, appRoot, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalRootState());
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 		// 暫定データの登録
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getApplicationCommand().getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getApplicationCommand().getEndDate(), DATE_FORMAT);

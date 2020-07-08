@@ -53,12 +53,14 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	}
 	
 	private ProcessResult appStampUpdateProcess(AppStamp appStamp) {
-		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(appStamp.getApplication_New().getCompanyID(),
+		// error EA refactor 4
+		/*detailBeforeProcessRegister.processBeforeDetailScreenRegistration(appStamp.getApplication_New().getCompanyID(),
 				appStamp.getApplication_New().getEmployeeID(), appStamp.getApplication_New().getAppDate(), 1,
 				appStamp.getApplication_New().getAppID(), appStamp.getApplication_New().getPrePostAtr(),
-				appStamp.getApplication_New().getVersion(), null, null);
+				appStamp.getApplication_New().getVersion(), null, null);*/
 		appStampRepository.updateStamp(appStamp);
 		applicationRepository.updateWithVersion(appStamp.getApplication_New());
-		return afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getApplication_New());
+		/*return afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getApplication_New());*/
+		return null;
 	}
 }

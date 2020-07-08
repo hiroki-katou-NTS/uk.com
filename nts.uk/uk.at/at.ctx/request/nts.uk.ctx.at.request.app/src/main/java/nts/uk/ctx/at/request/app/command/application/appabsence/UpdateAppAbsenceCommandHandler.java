@@ -172,7 +172,9 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		}
 		
 		// 4-2.詳細画面登録後の処理
-		return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());
+		// error EA refactor 4
+		/*return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());*/
+		return null;
 	}
 
 }

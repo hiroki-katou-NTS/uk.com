@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto_Old;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absencelea
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.De
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -95,7 +95,7 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
 
-	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+	private static final ApplicationType_Old APP_TYPE = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
 	 * find by Id
@@ -329,8 +329,8 @@ public class HolidayShipmentScreenBFinder {
 		String companyID = AppContexts.user().companyId();
 		
 		//詳細画面起動前申請共通設定を取得する(Lấy setting chung của đơn xin trước khi khởi động màn hình chi tiết)
-		AppDispInfoStartupOutput appDispInfoStartupOutput = detailService.getCommonSetBeforeDetail(companyID, applicationID);
-		result.setAppDispInfoStartup(AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput));
+		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = detailService.getCommonSetBeforeDetail(companyID, applicationID);
+		result.setAppDispInfoStartup(AppDispInfoStartupDto_Old.fromDomain(appDispInfoStartupOutput));
 
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])
 		Optional<RecruitmentApp> recAppOpt = recRepo.findByID(applicationID);

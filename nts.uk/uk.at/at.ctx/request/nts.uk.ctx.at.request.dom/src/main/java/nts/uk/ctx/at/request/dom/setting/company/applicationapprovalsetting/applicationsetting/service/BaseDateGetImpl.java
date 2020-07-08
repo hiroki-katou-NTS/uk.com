@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 
 @Stateless
 public class BaseDateGetImpl implements BaseDateGet {

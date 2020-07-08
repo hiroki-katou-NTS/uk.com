@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStampDetail;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
@@ -66,7 +66,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		List<AppStampWork> appStampWorks = new ArrayList<AppStampWork>();
 		List<AppStampCancel> appStampCancels = new ArrayList<AppStampCancel>();
 		AppStampOnlineRecord appStampOnlineRecord = null;
-		switch(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class)) {
+		switch(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode_Old.class)) {
 			case STAMP_GO_OUT_PERMIT:
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampGoOutPermit appStampGoOutPermit = this.toDomainAppStampGoOutPermit(krqdtAppStampDetail);
@@ -104,7 +104,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				
 		}
 		AppStamp appStamp = AppStamp.builder()
-				.stampRequestMode(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class))
+				.stampRequestMode(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode_Old.class))
 				.application_New(Application_New.builder().appID(krqdtAppStamp.krqdpAppStampPK.appID).build())
 				.appStampGoOutPermits(appStampGoOutPermits)
 				.appStampWorks(appStampWorks)

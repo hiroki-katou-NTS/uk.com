@@ -28,7 +28,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
@@ -166,7 +166,7 @@ public class SaveHolidayShipmentCommandHandler
 	private ProcessResult createNewForHolidayBreakge(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, GeneralDate absDate, int comType) {
 		// アルゴリズム「事前条件チェック」を実行する
-		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
+		String appReason = preconditionCheck(command, companyID, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, comType);
 //		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 //		errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason);
 //		//振休残数不足チェック
@@ -199,18 +199,19 @@ public class SaveHolidayShipmentCommandHandler
 		List<ConfirmMsgDto> result = new ArrayList<>();
 		
 		// アルゴリズム「事前条件チェック」を実行する
-		String appReason = preconditionCheck(command, companyID, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, comType);
+		String appReason = preconditionCheck(command, companyID, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION, comType);
 		// アルゴリズム「登録前エラーチェック（新規）」を実行する
 		result.addAll(errorCheckBeforeRegister(command, companyID, sID, recDate, absDate, comType, appReason));
 		//振休残数不足チェック
 		checkForlackOfRest(companyID, sID, command);
 		
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		
 		if (isSaveRec(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -218,12 +219,13 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		if (isSaveAbs(comType)) {
 			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -231,7 +233,7 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		
 		return result;
@@ -407,7 +409,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private Application_New createNewAbsApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate absDate, String appReason) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
 				command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
 
@@ -416,14 +418,15 @@ public class SaveHolidayShipmentCommandHandler
 		// ドメイン「振出申請」を1件登録する
 
 		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(command.getAbsCmd());
-		
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		absRepo.insert(absApp);
 		
 		// 暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
+		// error EA refactor 4
+		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 
 		return commonApp;
 
@@ -444,7 +447,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private Application_New createNewRecApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, String appReason) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+		ApplicationType_Old appType = ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION;
 		
 		Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
 				command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
@@ -454,13 +457,15 @@ public class SaveHolidayShipmentCommandHandler
 		CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振出申請」を1件登録する
 		RecruitmentApp recApp = createNewRecDomainFromCmd(command.getRecCmd());
-		appImp.insert(commonApp);
+		// error EA refactor 4
+		/*appImp.insert(commonApp);*/
 		recRepo.insert(recApp);
 		
 		// 暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
+		// error EA refactor 4
+		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
 
 		return commonApp;
 	}
@@ -901,7 +906,7 @@ public class SaveHolidayShipmentCommandHandler
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
 		// ドメインモデル「申請」を取得する
 		List<Application_New> sameDateApps = appRepo
-				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
+				.getApp(sID, appDate, prePostAtr, ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).stream()
 				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
 						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
 						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
@@ -949,7 +954,7 @@ public class SaveHolidayShipmentCommandHandler
 //
 //	}
 
-	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType appType,
+	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType_Old appType,
 			int comType) {
 		if (isSaveRec(comType)) {
 			// 勤務種類、就業時間帯チェックのメッセージを表示
@@ -1023,11 +1028,11 @@ public class SaveHolidayShipmentCommandHandler
 	}
 
 	private String GenAndInspectionOfAppReason(SaveHolidayShipmentCommand command, String companyID,
-			ApplicationType appType) {
+			ApplicationType_Old appType) {
 		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
 		
 		AppTypeSetting appTypeSetting = requestSetting.getApplicationSetting().getListAppTypeSetting()
-				.stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION)
+				.stream().filter(x -> x.getAppType() == ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION)
 				.findFirst().get();
 
 		String typicalReason = getTypicalReason(command, appTypeSetting);

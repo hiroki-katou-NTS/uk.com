@@ -11,7 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -61,7 +61,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 		
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				companyId, 
-				ApplicationType.BREAK_TIME_APPLICATION.value).get();
+				ApplicationType_Old.BREAK_TIME_APPLICATION.value).get();
 		String appReason = Strings.EMPTY;	
 		String typicalReason = Strings.EMPTY;
 		String displayReason = Strings.EMPTY;
@@ -112,7 +112,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 			this.brkOffSupChangeMngRepository.insert(brkOffSupChangeMng);
 		}*/
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
+		// error EA refactor 4
+		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 		
 		// 暫定データの登録
 		interimRemainDataMngRegisterDateChange.registerDateChange(

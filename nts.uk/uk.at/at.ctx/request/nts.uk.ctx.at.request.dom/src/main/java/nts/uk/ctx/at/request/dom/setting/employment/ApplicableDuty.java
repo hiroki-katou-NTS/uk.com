@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class ApplicableDuty extends DomainObject {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 	/**
 	 * 表示する勤務種類を設定する

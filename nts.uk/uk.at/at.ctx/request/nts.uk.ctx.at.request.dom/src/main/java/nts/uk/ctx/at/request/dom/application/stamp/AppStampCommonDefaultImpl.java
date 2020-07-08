@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
@@ -71,7 +71,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	@Override
 	public AppStampSetOutput appStampSet(String companyID) {
 		StampRequestSetting stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
-		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
+		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType_Old.STAMP_APPLICATION.value);
 		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
 	}
 
@@ -83,7 +83,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 				appStamp.getApplication_New().getCompanyID(), 
-				ApplicationType.STAMP_APPLICATION.value).get();
+				ApplicationType_Old.STAMP_APPLICATION.value).get();
 		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
 				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
 			if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
@@ -108,7 +108,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 	}
 	
 	@Override
-	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode stampRequestMode){
+	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode_Old stampRequestMode){
 		List<AttendanceResultImport> attendanceResultLst = new ArrayList<>();
 		List<Integer> itemIDGoout = Arrays.asList(
 				86,87,88,89,90,

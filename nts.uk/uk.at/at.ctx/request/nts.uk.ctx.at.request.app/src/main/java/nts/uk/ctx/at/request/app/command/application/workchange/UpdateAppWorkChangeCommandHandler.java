@@ -16,19 +16,19 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -36,7 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, ProcessResult> {
+public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand_Old, ProcessResult> {
 	//private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
@@ -45,8 +45,9 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 	private ApplicationRepository_New applicationRepository;
 
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
-		AddAppWorkChangeCommand command = context.getCommand();
+	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand_Old> context) {
+		// error EA refactor 4
+		/*AddAppWorkChangeCommand command = context.getCommand();
 		// Command data
 		CreateApplicationCommand appCommand = command.getApplication();
 		AppWorkChangeCommand workChangeCommand = command.getWorkChange();
@@ -61,7 +62,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		String appReason = applicationRepository.findByID(companyId, appID).get().getAppReason().v();
 		AppTypeSetting appTypeSetting = appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
 				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst().get();
+				.filter(x -> x.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
 		if(outputMode==OutputMode.EDITMODE){
 			String typicalReason = Strings.EMPTY;
 			String displayReason = Strings.EMPTY;
@@ -97,13 +98,13 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				appCommand.getVersion(), 
 				companyId, 
 				appID,
-				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
+				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr_Old.class), 
 				GeneralDateTime.now(), 
 				appCommand.getEnteredPersonSID(), 
 				new AppReason(Strings.EMPTY), 
 				appCommand.getStartDate(),
 				new AppReason(appReason),
-				ApplicationType.WORK_CHANGE_APPLICATION, 
+				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
 				Optional.of(appCommand.getStartDate()),
 				Optional.of(appCommand.getEndDate()), 
@@ -126,7 +127,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 								.ofNullable(appCommand.getReflectPerTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
 						.build());
 		// 勤務変更申請
-		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
+		AppWorkChange_Old workChangeDomain = AppWorkChange_Old.createFromJavaType(workChangeCommand.getCid(),
 				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
 				workChangeCommand.getExcludeHolidayAtr(), workChangeCommand.getWorkChangeAtr(),
 				workChangeCommand.getGoWorkAtr1(), workChangeCommand.getBackHomeAtr1(),
@@ -138,7 +139,8 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 		workChangeDomain.setVersion(appCommand.getVersion());
 		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
-		return updateService.updateWorkChange(updateApp, workChangeDomain);
+		return updateService.updateWorkChange(updateApp, workChangeDomain);*/
+		return null;
 	}
 
 }

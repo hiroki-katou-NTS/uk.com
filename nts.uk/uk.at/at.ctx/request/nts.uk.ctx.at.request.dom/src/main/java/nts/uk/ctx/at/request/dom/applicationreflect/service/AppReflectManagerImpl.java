@@ -25,9 +25,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -45,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectRecordPara;
@@ -158,7 +158,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		//申請を取得 (lấy đơn)
 		switch (appInfor.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			if(appInfor.getPrePostAtr() != PrePostAtr.PREDICT) {
+			if(appInfor.getPrePostAtr() != PrePostAtr_Old.PREDICT) {
 				return;
 			}
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getAppOvertimeFrame(appInfor.getCompanyID(), appInfor.getAppID());
@@ -205,11 +205,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 			break;
 		case WORK_CHANGE_APPLICATION:
-			Optional<AppWorkChange> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
+			Optional<AppWorkChange_Old> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
 				return;
 			}
-			AppWorkChange workChange = getAppworkChangeById.get();
+			AppWorkChange_Old workChange = getAppworkChangeById.get();
 			workchangeData = this.getWorkChange(appInfor, workChange, reflectSetting, excLogId);
 			if(workchangeData == null) {
 				return;
@@ -249,8 +249,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				continue;
 			}
 			//休暇申請の申請日は休日　又は　勤務変更申請の申請日は休日と休日を除外するチェックの場合反映するが残数データを作成してない
-			if(appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION
-					|| (appInfor.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION && workchangeData.getExcludeHolidayAtr() == 1)) {
+			if(appInfor.getAppType() == ApplicationType_Old.ABSENCE_APPLICATION
+					|| (appInfor.getAppType() == ApplicationType_Old.WORK_CHANGE_APPLICATION && workchangeData.getExcludeHolidayAtr() == 1)) {
 				List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(appInfor.getCompanyID(),
 						appInfor.getEmployeeID(), new DatePeriod(loopDate,loopDate));
 				lstHoliday.stream().forEach(x -> {
@@ -277,7 +277,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			//事前チェック処理
             ScheAndRecordIsReflect checkReflectResult = checkReflect.appReflectProcessRecord(appInfor, execuTionType, loopDate,isCalWhenLock);
 			//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
-			if(appInfor.getPrePostAtr() == PrePostAtr.PREDICT
+			if(appInfor.getPrePostAtr() == PrePostAtr_Old.PREDICT
 					&& checkReflectResult.isScheReflect()) {
 				scheReflect.workscheReflect(appPara);
 			} else {
@@ -313,7 +313,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}				
 		}
 	}	
-	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange,
+	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange_Old workChange,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		CommonReflectPara workchangeInfor = null;
 		workchangeInfor = new CommonReflectPara(appInfor.getEmployeeID(), 

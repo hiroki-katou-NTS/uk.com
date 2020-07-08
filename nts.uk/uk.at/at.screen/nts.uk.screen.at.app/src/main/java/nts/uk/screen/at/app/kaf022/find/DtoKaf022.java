@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.triprequestsetting.TripRequestSetDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
@@ -49,7 +49,7 @@ public class DtoKaf022 {
 	public GoBackDirectlyCommonSettingDto goBack;
 	public AppOvertimeSettingDto appOt;
 	public HdAppSetDto hdSet;
-	public AppWorkChangeSetDto appChange;
+	public AppWorkChangeSetDto_Old appChange;
 	public TripRequestSetDto tripReq;
 	public WithdrawalAppSetDto wdApp;
 	public TimeHdAppSetDto timeHd;

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoI
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 
 /**
  * 勤務変更申請基本データ
@@ -21,7 +21,7 @@ public class WorkChangeBasicData {
 	/**
 	 * ドメインモデル「勤務変更申請設定」より取得する
 	 */
-	private Optional<AppWorkChangeSet> workChangeCommonSetting;
+	private Optional<AppWorkChangeSet_Old> workChangeCommonSetting;
 	/**
 	 * 申請者名
 	 */

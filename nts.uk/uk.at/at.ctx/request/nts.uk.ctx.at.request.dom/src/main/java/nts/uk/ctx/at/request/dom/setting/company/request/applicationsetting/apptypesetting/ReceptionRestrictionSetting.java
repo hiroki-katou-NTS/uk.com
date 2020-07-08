@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 /**
  * 受付制限設定
  * @author Doan Duy Hung
@@ -17,7 +17,7 @@ public class ReceptionRestrictionSetting extends DomainObject {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appType;
+	private ApplicationType_Old appType;
 	
 	/**
 	 * 事前の受付制限
@@ -32,7 +32,7 @@ public class ReceptionRestrictionSetting extends DomainObject {
 	public static ReceptionRestrictionSetting toDomain(Integer appType, 
 			BeforehandRestriction beforehandRestriction, AfterhandRestriction afterhandRestriction){
 		return new ReceptionRestrictionSetting(
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType_Old.class), 
 				beforehandRestriction, 
 				afterhandRestriction);
 	}

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListApprovalRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppVersion;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
@@ -50,7 +50,7 @@ public class ApprovalListAppCommandHandler extends CommandHandlerWithResult<List
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
 		//アルゴリズム「申請一覧承認登録チェック」を実行する - 15
-		boolean checkAppv = repoAppListAppv.checkResAppvListApp(appCommonSet.get(), PrePostAtr.POSTERIOR, "", "");
+		boolean checkAppv = repoAppListAppv.checkResAppvListApp(appCommonSet.get(), PrePostAtr_Old.POSTERIOR, "", "");
 		List<String> lstRefAppId = new ArrayList<>();
 		if(checkAppv){
 			//アルゴリズム「申請一覧承認登録実行」を実行する - 16

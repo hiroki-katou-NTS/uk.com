@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -57,7 +57,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 		}
 		
 		AppStamp appStamp = null;
-		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
+		StampRequestMode_Old stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode_Old.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
 				List<AppStampGoOutPermitCmd> appStampGoOutPermitCmdsReal = appStampCmd.getAppStampGoOutPermitCmds()
