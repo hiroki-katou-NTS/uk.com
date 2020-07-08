@@ -8,7 +8,6 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -39,7 +38,7 @@ public class DateAndTimePeriod implements DomainValue {
 		this.statDateTime = statDateTime;
 		this.endDateTime = endDateTime;
 	}
-	
+
 	/**
 	 * [C-1] 1日範囲を求める
 	 * 
@@ -82,6 +81,25 @@ public class DateAndTimePeriod implements DomainValue {
 		GeneralDateTime endDateTime = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
 				.addMinutes(startDateClock.v());
 		return new DateAndTimePeriod(statDateTime, endDateTime);
+	}
+
+	public static interface Require extends GetEmpStampDataService.Require {
+
+		/**
+		 * [R-1] 労働条件を取得する
+		 * 
+		 * @param companyId
+		 * @return
+		 */
+		Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate);
+
+		/**
+		 * [R-2] 所定時間設定を取得する
+		 * 
+		 * @param companyId
+		 * @return
+		 */
+		Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode);
 	}
 
 }

@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  *    打刻の申請促す設定
@@ -11,6 +14,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @Getter
+@AllArgsConstructor 
 public class StampPromptApplication  implements DomainAggregate {
 
 	/** 会社ID */
@@ -18,21 +22,19 @@ public class StampPromptApplication  implements DomainAggregate {
 	
 	/** 申請促すエラーリスト */
 	private List<StampRecordDis> lstStampRecordDis;
-
-	public StampPromptApplication(String companyId, List<StampRecordDis> lstStampRecordDis) {
-		this.companyId = companyId;
-		this.lstStampRecordDis = lstStampRecordDis;
-	}
 	
-	/*
-	 * [1] 申請促すエラーリストを取得する
-	 * 
-	 * @return:  申請促すエラーリスト
+	/**
+	 * [1] 申請促すエラーリストを取得する	
+	 * @return 申請促すエラーリスト
 	 */
-	
-	public List<StampRecordDis> getErrorListApply() {
-		// List<StampRecordDis> list = this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
-		return null; // this.lstStampRecordDis.stream().filter(t -> t.getUseArt() ==  );
+	public List<ErrorInformationApplication> getErrorListApply() {
+		
+		List<StampRecordDis> result =  this.lstStampRecordDis
+						.stream().filter(t -> t.getUseArt().equals(NotUseAtr.USE)).collect(Collectors.toList());
+		
+		List<ErrorInformationApplication> list = result.stream().map(x -> x.getErrornformation()).collect(Collectors.toList());
+		
+		return list;
 	}
 	
 }

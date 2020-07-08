@@ -21,6 +21,6 @@ public class StampPronptAppDto {
 	
 	
 	public static StampPronptAppDto fromDomain (StampRecordDis x){
-		return new StampPronptAppDto(x.getUseArt().value, x.getCheckErrorType().value, x.getPromptingMssage().getMessageContent().v(), x.getPromptingMssage().getMessageColor().v());
+		return new StampPronptAppDto(x.getUseArt().value, x.getCheckErrorType().value, x.getPromptingMssage().get().getMessageContent().v(), x.getPromptingMssage().get().getMessageColor().v());
 	}
 }
