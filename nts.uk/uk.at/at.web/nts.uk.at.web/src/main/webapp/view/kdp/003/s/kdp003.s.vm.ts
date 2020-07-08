@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 const KDP003S_API = {
-	GET_STAMP_MANAGEMENT: 'at/record/stamp/management/personal/stamp/getStampData'
+	GET_STAMP_MANAGEMENT: '/at/record/stamp/management/personal/stamp/getStampData'
 };
 
 @bean()
@@ -28,39 +28,42 @@ class Kdp003SViewModel extends ko.ViewModel {
 				const allStamps: Kdp003sStampData[] = ko.unwrap(vm.dataSources.all);
 				const engraving: KDP003S_ENGRAVING = ko.unwrap(vm.filter.engraving);
 
-				_.each(allStamps, (item: Kdp003sStampData) => {
-					const d = moment(item.stampDate, 'YYYY/MM/DD');
-					const day = d.clone().locale('en').format('dddd');
+				_.chain(allStamps)
+					.orderBy(['stampDate', 'stampTime'], ['desc', 'desc'])
+					.each((item: Kdp003sStampData) => {
+						const d = moment(item.stampDate, 'YYYY/MM/DD');
+						const day = d.clone().locale('en').format('dddd');
 
-					const pushable = {
-						id: randomId(),
-						time: `${item.stampHow} ${item.stampTime}`,
-						date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-						name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.changeClockArtName}</div>`
-					};
+						const pushable = {
+							id: randomId(),
+							time: `${item.stampHow} ${item.stampTime}`,
+							date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
+							name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.changeClockArtName}</div>`
+						};
 
-					switch (engraving) {
-						default:
-						case '1':
-							filtereds.push(pushable);
-							break;
-						case '2':
-							if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+						switch (engraving) {
+							default:
+							case '1':
 								filtereds.push(pushable);
-							}
-							break;
-						case '3':
-							if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
-								filtereds.push(pushable);
-							}
-						case '4':
-							// S1 bussiness logic
-							if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
-								filtereds.push(pushable);
-							}
-							break;
-					}
-				});
+								break;
+							case '2':
+								if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+									filtereds.push(pushable);
+								}
+								break;
+							case '3':
+								if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
+									filtereds.push(pushable);
+								}
+							case '4':
+								// S1 bussiness logic
+								if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
+									filtereds.push(pushable);
+								}
+								break;
+						}
+					})
+					.value();
 
 				return filtereds;
 			},
