@@ -18,6 +18,8 @@
 			<com:scriptfile path="../../share/kdp-tabbutton.js" />
 
 			<com:stylefile path="./kdp003.a.style.css" />
+			<com:stylefile path="./components/stamp-employee-selection.css" />
+			<com:scriptfile path="./components/stamp-employee-selection.js" />
 			<com:scriptfile path="./kdp003.a.vm.js" />
 		</ui:define>
 
@@ -25,8 +27,11 @@
 			<div id="functions-area"></div>
 			<div id="contents-area" class="kdp-003-a">
 				<div class="time-sheet">
-					<div>
-					hi
+					<div data-bind="component: {
+							name: 'stamp-employee-selection',
+							params: {
+							}
+						}">
 					</div>
 				</div>
 				<div id="stamp-input" class="time-stamp">
