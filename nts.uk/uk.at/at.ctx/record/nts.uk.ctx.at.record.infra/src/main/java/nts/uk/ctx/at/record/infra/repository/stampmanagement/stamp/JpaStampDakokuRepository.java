@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.apache.log4j.spi.LocationInfo;
-
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -20,11 +18,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
-<<<<<<< HEAD
-=======
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
->>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;

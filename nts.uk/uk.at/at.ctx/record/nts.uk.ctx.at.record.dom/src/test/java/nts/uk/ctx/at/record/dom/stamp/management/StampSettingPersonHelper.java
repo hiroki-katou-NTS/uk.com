@@ -6,11 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
-<<<<<<< HEAD
-=======
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
->>>>>>> pj/at/release_ver4
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;

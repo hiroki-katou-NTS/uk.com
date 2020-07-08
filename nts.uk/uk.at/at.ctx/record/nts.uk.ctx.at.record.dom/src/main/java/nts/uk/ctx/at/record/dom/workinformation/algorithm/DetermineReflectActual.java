@@ -36,7 +36,7 @@ public class DetermineReflectActual {
 
 		// 就業時間帯の設定を取得
 		Optional<WorkTimeSetting> wTimeSettingOpt = workTimeSettingRepository.findByCode(companyId,
-				workInfo.getRecordInfo().getWorkTimeCode().v());
+				workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v());
 		// 勤務区分をチェックする
 		WorkDivision wDiv = CheckWorkDivision.check(wTimeSettingOpt.get());
 		if (wDiv != WorkDivision.SYSTEM)

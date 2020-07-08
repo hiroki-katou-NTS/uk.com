@@ -10,16 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-<<<<<<< HEAD
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-=======
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
->>>>>>> pj/at/release_ver4
+
 
 /**
  * 
@@ -32,16 +30,8 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 
 	/** 社員ID: 社員ID */
 	private String employeeId;
-<<<<<<< HEAD
 	
 	/** 年月日: 年月日*/
-=======
-
-	/** 時間帯: 短時間勤務時間帯 */
-	private List<ShortWorkingTimeSheet> shortWorkingTimeSheets;
-
-	/** 年月日: 年月日 */
->>>>>>> pj/at/release_ver4
 	private GeneralDate ymd;
 	
 	/** 時間帯*/
@@ -55,7 +45,6 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 		this.timeZone = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 	}
 
-<<<<<<< HEAD
 	public ShortTimeOfDailyPerformance(String employeeId, GeneralDate ymd, ShortTimeOfDailyAttd timeZone) {
 		super();
 		this.employeeId = employeeId;
@@ -63,7 +52,6 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 		this.timeZone = timeZone;
 	}
 	
-=======
 	// 短時間勤務を変更
 	public void change(ShortWorkTimeHistoryItem shortWTHistItem, List<EditStateOfDailyPerformance> editStates) {
 
@@ -73,12 +61,12 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 		if (sChildCFs.isEmpty())
 			return;
 
-		List<ShortWorkingTimeSheet> sWTimeSheets = this.getShortWorkingTimeSheets();
+		List<ShortWorkingTimeSheet> sWTimeSheets = this.timeZone.getShortWorkingTimeSheets();
 		for (SChildCareFrame childF : sChildCFs) {
 			// 編集状態を確認
 			Pair<Integer, Integer> pairItem = itemIdFromNo(childF.timeSlot);
-			if (!editStates.stream().filter(x -> x.getAttendanceItemId() == pairItem.getLeft()
-					|| x.getAttendanceItemId() == pairItem.getRight()).findAny().isPresent()) {
+			if (!editStates.stream().filter(x -> x.getEditState().getAttendanceItemId() == pairItem.getLeft()
+					|| x.getEditState().getAttendanceItemId() == pairItem.getRight()).findAny().isPresent()) {
 				// 短時間勤務時間帯を取り
 				Optional<ShortWorkingTimeSheet> sWTimeSheetOpt = sWTimeSheets.stream()
 						.filter(s -> s.getShortWorkTimeFrameNo().v() == childF.timeSlot).findFirst();
@@ -102,15 +90,15 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 	public void clear(List<EditStateOfDailyPerformance> editStates) {
 
 		// 時間帯を取得
-		List<ShortWorkingTimeSheet> sWTimeSheets = this.getShortWorkingTimeSheets();
+		List<ShortWorkingTimeSheet> sWTimeSheets = this.getTimeZone().getShortWorkingTimeSheets();
 		if (sWTimeSheets.isEmpty())
 			return;
 
-		List<Integer> attendances = editStates.stream().map(x -> x.getAttendanceItemId()).distinct()
+		List<Integer> attendances = editStates.stream().map(x -> x.getEditState().getAttendanceItemId()).distinct()
 				.collect(Collectors.toList());
 
 		// 時間帯を削除
-		this.getShortWorkingTimeSheets()
+		this.getTimeZone().getShortWorkingTimeSheets()
 				.removeIf(x -> !attendances.contains(itemIdFromNo(x.getShortWorkTimeFrameNo().v()).getLeft())
 						&& !attendances.contains(itemIdFromNo(x.getShortWorkTimeFrameNo().v()).getRight()));
 	}
@@ -122,5 +110,4 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 		}
 		return Pair.of(761, 762);
 	}
->>>>>>> pj/at/release_ver4
 }
