@@ -42,6 +42,9 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	
 	@Inject
 	private IWorkChangeUpdateService workChangeUpdateService;
+	
+	@Inject
+	private AppWorkChangeRepository workChangeRepository;
 
 	@Override
 	public ProcessResult registerData(String companyId, Application application, AppWorkChange workChange,
@@ -51,10 +54,10 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		 registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 		 
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
-//		 appRepository.insert(application);
+		 appRepository.insert(application);
 		// ドメインモデル「勤務変更申請」の新規登録をする
 		// KAFS07
-		// workChangeRepository.add(workChange);
+		 workChangeRepository.add(workChange);
 
 		// 年月日Listを作成する
 		GeneralDate startDateParam = application.getOpAppStartDate().isPresent()

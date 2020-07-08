@@ -9,24 +9,22 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+* 勤務変更申請設定: 主キー情報
+*/
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqdtAppWorkChangePk implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 会社ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
-
-	/**
-	 * 申請ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "APP_ID")
-	public String appId;
+public class KrqstAppWorkChangeSetPk_Old implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    
+    /**
+    * 会社ID
+    */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+    
 }

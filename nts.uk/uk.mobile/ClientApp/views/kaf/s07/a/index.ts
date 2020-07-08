@@ -55,7 +55,8 @@ export class KafS07AComponent extends Vue {
 
     public isCondition1: Boolean = false;
 
-    public data: any;
+    // data is fetched service
+    public data: any = 'hhh';
 
     public application: any = {
         employeeName: 'employee',
@@ -83,14 +84,11 @@ export class KafS07AComponent extends Vue {
         this.worktype.name = 'worktype';
         this.worktime.code = 'dd';
         this.worktime.name = 'worktime';
-
-
-
     }
 
     public mounted() {
         let self = this;
-        // self.$mask('show');
+        self.$mask('show');
         // self.$http.post('at', API.startNew, {
         //     empLst: [],
         //     dateLst: []
@@ -104,16 +102,23 @@ export class KafS07AComponent extends Vue {
 
         //     });
 
-        // this.$http.post('at', API.startS07, {
 
+        // this.$http.post('at', API.startS07, {
+        //     mode: true,
+        //     companyId: '',
+        //     employeeId: '',
+        //     listDates: null,
+        //     appWorkChangeOutputDto: null,
+        //     appWorkChangeDto: null
         // })
         //     .then((res: any) => {
         //         if (!res) {
         //             return;
         //         }
+        //         this.data = res;
         //         let appWorkChangeDispInfo = res.appWorkChangeDispInfo;
-
-
+        //         let appWorkChange = res.appWorkChange;
+        //         this.$mask('hide');
         //     }).catch((err: any) => {
         //         this.$mask('hide');
         //     });
@@ -128,16 +133,50 @@ export class KafS07AComponent extends Vue {
 
             return;
         }
-        this.app = new AppWorkChange(
-            this.worktype.code + '  ' + this.worktype.name,
-            this.worktime.code + '  ' + this.worktime.name,
-            this.valueWorkHours1.start + ' ~ ' + this.valueWorkHours1.end,
-            this.valueWorkHours2.start + ' ~ ' + this.valueWorkHours2.end,
-            this.switchbox1 == 1,
-            this.switchbox2 == 1
-        );
+        // check before registering application
+        // this.$http.post('at', API.checkBeforRegister, {
+        //     mode: true,
+        //     companyId: '',
+        //     applicationDto: null,
+        //     appWorkChangeDto: null,
+        //     isError: 1
+        // }).then((res: any) => {
+        //     // confirmMsgLst
+        //     // holidayDateLst
+        //     if (!_.isEmpty(res)) {
+        //         // display dialog
+        //         return;
+        //     }
+        //     // 勤務変更申請の登録処理
+        //     // register application
 
-        console.log(this.app);
+        //     this.$http.post('at', API.registerAppWorkChange, {
+        //         mode: true,
+        //         companyId: '',
+        //         applicationDto: null,
+        //         appWorkChangeDto: null,
+        //         holidayDates: res.holidayDateLst,
+        //         isMail: true
+        //     }).then((res: any) => {
+        //         // KAFS00_D_申請登録後画面に移動する
+        //     }).catch((res: any) => {
+
+        //     });
+
+        // }).catch((res: any) => {
+        //     // show message error
+        // });
+
+        // this.app = new AppWorkChange(
+        //     this.worktype.code + '  ' + this.worktype.name,
+        //     this.worktime.code + '  ' + this.worktime.name,
+        //     this.valueWorkHours1.start + ' ~ ' + this.valueWorkHours1.end,
+        //     this.valueWorkHours2.start + ' ~ ' + this.valueWorkHours2.end,
+        //     this.switchbox1 == 1,
+        //     this.switchbox2 == 1
+        // );
+
+        // console.log(this.app);
     }
 
     // visible/ invisible
@@ -234,6 +273,6 @@ export class Model extends AppWorkChange {
 const API = {
     startNew: 'at/request/application/workchange/startNew',
     startS07: 'at/at/request/application/workchange/startMobile',
-    checkBeforRegister : 'at/at/request/application/workchange/checkBeforeRegister_New',
-    registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New'.
+    checkBeforRegister: 'at/at/request/application/workchange/checkBeforeRegister_New',
+    registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New',
 };

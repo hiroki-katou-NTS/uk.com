@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRe
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -107,6 +106,7 @@ public interface AppWorkChangeService {
 	public List<GeneralDate> checkHoliday(String employeeID, DatePeriod period);
 	
 	/**
+	 * 勤務変更申請の起動処理 B Refactor 4
 	 * 勤務変更申請画面初期（更新）
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
@@ -138,7 +138,7 @@ public interface AppWorkChangeService {
 	 * @return 
 	 */
 	public AppWorkChangeOutput getAppWorkChangeOutput(boolean mode, String companyId, Optional<String> employeeId,
-			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo_Old> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
+			Optional<List<GeneralDate>> dates, Optional<AppWorkChangeDispInfo> appWorkChangeDispInfo, Optional<AppWorkChange> appWorkChange );
 	
 	/**
 	 * 勤務変更申請画面初期（新規）
@@ -162,10 +162,10 @@ public interface AppWorkChangeService {
 	 * 
 	 * @param companyId
 	 * @param appId
-	 * @param appWorkChangeDispInfo_New
+	 * @param appWorkChangeDispInfo
 	 * @return
 	 */
-	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo appWorkChangeDispInfo_New);
+	public AppWorkChangeOutput getAppWorkChangeUpdateOutput(String companyId, String appId, AppWorkChangeDispInfo appWorkChangeDispInfo);
 	
 	/**
 	 * 勤務変更申請の登録前チェック処理

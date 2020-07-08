@@ -1,16 +1,24 @@
 package nts.uk.ctx.at.request.app.find.application.workchange.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppWorkChangeDispInfoDto {
@@ -74,4 +82,31 @@ public class AppWorkChangeDispInfoDto {
 		result.reflectWorkChangeAppDto = ReflectWorkChangeAppDto.fromDomain(appWorkChangeDispInfo.getReflectWorkChangeApp());
 		return result;
 	}
+	public AppWorkChangeDispInfo toDomain() {
+		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
+		PredetermineTime predetermineTime = new PredetermineTime();
+		predetermineTime.saveToMemento(predetemineTimeSetting.getPredTime());
+		
+		PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting();
+		prescribedTimezoneSetting.saveToMemento(predetemineTimeSetting.prescribedTimezoneSetting);
+		PredetemineTimeSetting prescribedTimeSetting = new PredetemineTimeSetting(
+				predetemineTimeSetting.companyId,
+				new AttendanceTime(predetemineTimeSetting.rangeTimeDay),
+				new WorkTimeCode(predetemineTimeSetting.workTimeCode),
+				predetermineTime,
+				predetemineTimeSetting.nightShift,
+				prescribedTimezoneSetting,
+				new TimeWithDayAttr(predetemineTimeSetting.startDateClock),
+				predetemineTimeSetting.predetermine);
+		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput.toDomain());
+		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSet.toDomain());
+		appWorkChangeDispInfo.setWorkTypeLst(workTypeLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
+		appWorkChangeDispInfo.setSetupType(Optional.of(EnumAdaptor.valueOf(setupType, SetupType.class)));
+		appWorkChangeDispInfo.setPredetemineTimeSetting(Optional.of(prescribedTimeSetting));
+		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(workTypeCD));
+		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(workTimeCD));
+		appWorkChangeDispInfo.setReflectWorkChangeApp(reflectWorkChangeAppDto.toDomain());
+		return appWorkChangeDispInfo;
+	}
+	 
 }

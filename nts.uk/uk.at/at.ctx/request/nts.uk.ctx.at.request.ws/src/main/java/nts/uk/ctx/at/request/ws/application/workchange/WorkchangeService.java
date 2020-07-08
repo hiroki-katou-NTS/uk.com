@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +21,16 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -72,7 +75,7 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("addworkchange")
 	public ProcessResult addWorkChange(AddAppWorkChangeCommand_Old command) {
-//		return addHandler.handle(command);
+		// return addHandler.handle(command);
 		return null;
 	}
 
@@ -83,7 +86,7 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("getWorkchangeByAppID/{appId}")
-	public AppWorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
+	public AppWorkChangeDetailDto_Old getWorkchangeByAppID(@PathParam("appId") String appId) {
 		return appWorkFinder.startDetailScreen(appId);
 	}
 
@@ -107,66 +110,74 @@ public class WorkchangeService extends WebService {
 	public AppWorkChangeSetDto_Old getWorkChangeSet() {
 		return appWorkFinder.findByCom();
 	}
-	
+
 	@POST
 	@Path("isTimeRequired")
 	public boolean isTimeRequired(String workTypeCD) {
 		return appWorkFinder.isTimeRequired(workTypeCD);
 	}
-	
+
 	@POST
 	@Path("startNew")
-	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam_Old param) {
 		return appWorkFinder.getStartNew(param);
 	}
-	
+
 	@POST
 	@Path("changeAppDate")
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
 		return appWorkFinder.changeAppDate(param);
 	}
-	
+
 	@POST
 	@Path("changeWorkSelection")
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
 		return appWorkFinder.changeWorkSelection(param);
 	}
-	
+
 	@POST
 	@Path("checkBeforeRegister")
 	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand_Old command) {
-//		return appWorkFinder.checkBeforeRegister(command);
+		// return appWorkFinder.checkBeforeRegister(command);
 		return null;
 	}
-	
+
 	@POST
 	@Path("checkBeforeUpdate")
 	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand_Old command) {
-//		appWorkFinder.checkBeforeUpdate(command);
-//		return new WorkChangeCheckRegisterDto(Collections.emptyList(), Collections.emptyList());
+		// appWorkFinder.checkBeforeUpdate(command);
+		// return new WorkChangeCheckRegisterDto(Collections.emptyList(),
+		// Collections.emptyList());
 		return null;
 	}
-	
+
 	@POST
 	@Path("startMobile")
-	public AppWorkChangeOutputDto startMobile() {
+	public AppWorkChangeOutputDto startMobile(AppWorkChangeParam appWorkChangeParam) {
 		List<GeneralDate> dates = new ArrayList<GeneralDate>();
 		GeneralDate today = GeneralDate.today();
 		dates.add(today);
-		return appWorkFinder.getStartKAFS07(true, "000000000000-0117", "292ae91c-508c-4c6e-8fe8-3e72277dec16", dates);
+		return appWorkFinder.getStartKAFS07(appWorkChangeParam.getMode(), "000000000000-0117",
+				"292ae91c-508c-4c6e-8fe8-3e72277dec16", dates, null, null);
 	}
-	
+
 	@POST
 	@Path("checkBeforeRegister_New")
 	public WorkChangeCheckRegisterDto checkBeforeRegisterNew(AddAppWorkChangeCommandCheck command) {
 		return appWorkFinder.checkBeforeRegisterNew(command);
 	}
-	
+
 	@POST
 	@Path("addWorkChange_New")
 	public ProcessResult addWorkChange_New(AddAppWorkChangeCommand command) {
 		return addHandler.handle(command);
 	}
 	
+	@POST
+	@Path("startDetailMobile")
+	public AppWorkChangeOutputDto startMobile(AppWorkChangeDetailParam appWorkChangeDetailParam) {
+		
+		return appWorkFinder.getDetailKAFS07(appWorkChangeDetailParam);
+	}
 
 }

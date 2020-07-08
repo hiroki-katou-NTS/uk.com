@@ -21,7 +21,9 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
@@ -41,7 +43,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
@@ -84,7 +86,7 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 
-	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam_Old param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
@@ -93,7 +95,7 @@ public class AppWorkChangeFinder {
 		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
@@ -102,7 +104,7 @@ public class AppWorkChangeFinder {
 		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
 		// error EA refactor 4
 		/*
 		 * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
@@ -184,7 +186,7 @@ public class AppWorkChangeFinder {
 		return null;
 	}
 
-	public AppWorkChangeDetailDto startDetailScreen(String appID) {
+	public AppWorkChangeDetailDto_Old startDetailScreen(String appID) {
 		// error EA refactor 4
 		/*
 		 * String companyID = AppContexts.user().companyId(); AppWorkChangeDetailOutput
@@ -275,17 +277,23 @@ public class AppWorkChangeFinder {
 		 * workChangeDomain, false);
 		 */
 	}
+	// start at create and modify mode
+	public AppWorkChangeOutputDto getStartKAFS07(AppWorkChangeParam appWorkChangeParam) {
 
-	public AppWorkChangeOutputDto getStartKAFS07(boolean mode, String companyId, String employeeId,
-			List<GeneralDate> dates) {
+		boolean mode = appWorkChangeParam.getMode();
+		String companyId = appWorkChangeParam.getCompanyId();
+		String employeeId = appWorkChangeParam.getEmployeeId();
+		List<GeneralDate> dates = appWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
+		AppWorkChangeDispInfoDto appWorkChangeDispInfoDto = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo();
+		AppWorkChangeDto appWorkChangeDto = appWorkChangeParam.getAppWorkChangeDto();
 		return AppWorkChangeOutputDto.fromDomain(
-				appWorkChangeService.getAppWorkChangeOutput(true, companyId, Optional.ofNullable(employeeId),
-						Optional.ofNullable(dates), Optional.ofNullable(null), Optional.ofNullable(null)));
+				appWorkChangeService.getAppWorkChangeOutput(mode, companyId, Optional.ofNullable(employeeId),
+						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfoDto.toDomain()), Optional.ofNullable(appWorkChangeDto.toDomain())));
 	}
 
 	// 勤務変更申請の登録前チェック処理
 	public WorkChangeCheckRegisterDto checkBeforeRegisterNew(AddAppWorkChangeCommandCheck command) {
-		
+
 		Boolean mode = command.getMode();
 		String companyId = command.getCompanyId();
 		ApplicationDto application = command.getApplicationDto();
@@ -297,6 +305,19 @@ public class AppWorkChangeFinder {
 
 		return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 
+	}
+
+	// 起動する B KAFS07
+	public AppWorkChangeOutputDto getDetailKAFS07(AppWorkChangeDetailParam appWorkChangeDetailParam) {
+		String companyId = appWorkChangeDetailParam.getCompanyId();
+		String appId = appWorkChangeDetailParam.getAppId();
+		AppDispInfoStartupDto appDispInfoStartupDto = appWorkChangeDetailParam.getAppDispInfoStartupDto();
+		AppWorkChangeOutputDto appWorkChangeOutputDto = new AppWorkChangeOutputDto();
+		AppWorkChangeDetailDto appWorkChangeDetailDto = AppWorkChangeDetailDto
+				.fromDomain(appWorkChangeService.startDetailScreen(companyId, appId, appDispInfoStartupDto.toDomain()));
+		appWorkChangeOutputDto.setAppWorkChangeDispInfo(appWorkChangeDetailDto.appWorkChangeDispInfo);
+		appWorkChangeOutputDto.setAppWorkChange(appWorkChangeDetailDto.appWorkChange);
+		return appWorkChangeOutputDto;
 	}
 
 }
