@@ -26,9 +26,12 @@ module nts.uk.at.view.kdp002.b {
             resultDisplayTime : KnockoutObservable<number>  = ko.observable(0);
             disableResultDisplayTime : KnockoutObservable<boolean>  = ko.observable(true);
             interval :KnockoutObservable<number>  = ko.observable(0);
+            infoEmpFromScreenA: {};
             constructor() {
                 let self = this;
                 self.resultDisplayTime(nts.uk.ui.windows.getShared("resultDisplayTime"));
+                self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenB");
+                
                 self.disableResultDisplayTime(self.resultDisplayTime()>0?true:false);
                 
                 self.columns2 = ko.observableArray([
@@ -80,7 +83,8 @@ module nts.uk.at.view.kdp002.b {
             getAllStampingResult(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getAllStampingResult().done(function(data) {
+                let sid = self.infoEmpFromScreenA.employeeId;
+                service.getAllStampingResult(sid).done(function(data) {
                     _.forEach(data, (a) => {
                         let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
                         _.forEach(items, (sr) => {
@@ -100,10 +104,10 @@ module nts.uk.at.view.kdp002.b {
                             let dateDisplay = nts.uk.time.applyFormat("Short_YMDW", sr.stampDate)
                             if(moment(sr.stampDate).day() ==6){
                                 dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
-                                sr.stampDate ="<span class='color-schedule-saturday' style='float:left;'>"+sr.stampDate + "</span>";
+                                sr.stampDate ="<span class='color-schedule-saturday' >"+sr.stampDate + "</span>";
                             }else if(moment(sr.stampDate).day() == 0){
                                 dateDisplay = "<span class='color-schedule-sunday'>" + dateDisplay + "</span>";
-                                sr.stampDate ="<span class='color-schedule-sunday' style='float:left;'>" + sr.stampDate + "</span>";
+                                sr.stampDate ="<span class='color-schedule-sunday'>" + sr.stampDate + "</span>";
                             }
                             self.items.push(new model.ItemModels( 
                                 dateDisplay,
@@ -122,7 +126,7 @@ module nts.uk.at.view.kdp002.b {
             getEmpInfo(): JQueryPromise<any> { 
                 let self = this;
                 let dfd = $.Deferred();
-                let employeeId = __viewContext.user.employeeId;
+                let employeeId = self.infoEmpFromScreenA.employeeId;
                 service.getEmpInfo(employeeId).done(function(data) {
                     self.employeeCodeName(data.employeeCode +" "+ data.personalName);
                     dfd.resolve();

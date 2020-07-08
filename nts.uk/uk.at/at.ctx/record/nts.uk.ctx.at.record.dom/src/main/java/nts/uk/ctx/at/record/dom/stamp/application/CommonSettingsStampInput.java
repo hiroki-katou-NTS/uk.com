@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * AR:	打刻入力の共通設定
@@ -13,7 +14,7 @@ import lombok.Getter;
  */
 
 @AllArgsConstructor
-public class CommonSettingsStampInput {
+public class CommonSettingsStampInput implements DomainAggregate{
 	
 	/**
 	 * 	会社ID
@@ -25,11 +26,14 @@ public class CommonSettingsStampInput {
 	 * 	職場選択を利用できる権限
 	 */
 	@Getter
-	private List<String> permission;
+	private List<String> roles;
 	
 	/**
 	 * 	GoogleMap利用するか
 	 */
 	@Getter
 	private boolean googlemap;
+	
+	@Getter
+	private MapAddress mapAddres; 
 }

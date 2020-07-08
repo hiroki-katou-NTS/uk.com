@@ -13,7 +13,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
@@ -38,6 +37,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -666,8 +666,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 //				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(), x.getCardNumber(), x.getStampDateTime(), x.getRelieve(),
+				x.getType(), x.getRefActualResults(),
+				Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 		if (indexPCLogOnInfo == -1) {
@@ -889,8 +890,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			break;
 		}
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -1223,8 +1224,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 
@@ -1305,8 +1306,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 
@@ -1526,8 +1527,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 		int numberOfReflectionStamp = 0;
@@ -1603,8 +1604,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							? timeLeavingWork.getLeaveStamp().get() : null);
 		}
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 
@@ -2125,8 +2126,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		}
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 		stamps.add(stamp);
 		return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(new TimeActualStamp(
@@ -2225,8 +2226,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 = true
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -2324,8 +2325,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true, x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -2405,8 +2406,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}
 
 		// 反映済み区分 ← true stamp
-		Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-				x.getRefActualResults(), true,x.getLocationInfor().isPresent()?x.getLocationInfor().get():null);
+		Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+				x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 		stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 //		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 //				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
@@ -2621,8 +2622,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 					// 5*
 					// gan 反映済み区分 = true, trường này chưa có trong StampItem
-					Stamp stamp = new Stamp(x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
-							x.getRefActualResults(), true,x.getLocationInfor().isPresent()? x.getLocationInfor().get():null);
+					Stamp stamp = new Stamp(x.getContractCode(),x.getCardNumber(), x.getStampDateTime(), x.getRelieve(), x.getType(), 
+							x.getRefActualResults(), Optional.ofNullable(x.getLocationInfor().isPresent() ? x.getLocationInfor().get() : null));
 					stamp.setAttendanceTime(x.getAttendanceTime().isPresent()?x.getAttendanceTime().get():null);
 				}
 

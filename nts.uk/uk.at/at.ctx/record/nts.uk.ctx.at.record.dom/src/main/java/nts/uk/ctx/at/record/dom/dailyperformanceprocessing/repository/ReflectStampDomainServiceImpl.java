@@ -24,11 +24,11 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.CheckAttendanceHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
@@ -66,7 +66,9 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.St
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ReflectShortWorkingTimeDomainService;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -298,13 +300,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 			// 短時間勤務時間帯を反映する
 			ReflectShortWorkingOutPut outPut = this.reflectShortWorkingTimeDomainService.reflect(empCalAndSumExecLogID,
-					companyID, processingDate, employeeID, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
+					companyID, processingDate, employeeID, workInfoOfDailyPerformance.getWorkInformation(), timeLeavingOfDailyPerformance.getAttendance());
 			if (outPut.getErrMesInfos() != null && !outPut.getErrMesInfos().isEmpty()) {
 				errMesInfos.addAll(outPut.getErrMesInfos());
 				newReflectStampOutput.setErrMesInfos(errMesInfos);
 				return newReflectStampOutput;
 			}
-			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
+			ShortTimeOfDailyPerformance dailyPerformances = new ShortTimeOfDailyPerformance(employeeID, processingDate, outPut.getShortTimeOfDailyPerformance());
+			reflectStamp.setShortTimeOfDailyPerformance(dailyPerformances);
 			WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfoOfDailyPerformance.getWorkInformation());
 			// エラーチェック
 			this.errorCheck(companyID, employeeID, processingDate, dailyPerformance,
@@ -1006,14 +1009,15 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 			// 短時間勤務時間帯を反映する
 			ReflectShortWorkingOutPut outPut = this.reflectShortWorkingTimeDomainService.reflect(empCalAndSumExecLogID,
-					companyId, processingDate, employeeId, workInfoOfDailyPerformanceOpt.get(),
-					timeLeavingOfDailyPerformance);
+					companyId, processingDate, employeeId, workInfoOfDailyPerformanceOpt.get().getWorkInformation(),
+					timeLeavingOfDailyPerformance.getAttendance());
 			if (outPut.getErrMesInfos() != null && !outPut.getErrMesInfos().isEmpty()) {
 				errMesInfos.addAll(outPut.getErrMesInfos());
 				newReflectStampOutput.setErrMesInfos(errMesInfos);
 				return newReflectStampOutput;
 			}
-			reflectStamp.setShortTimeOfDailyPerformance(outPut.getShortTimeOfDailyPerformance());
+			ShortTimeOfDailyPerformance dailyPerformances = new ShortTimeOfDailyPerformance(employeeId, processingDate, outPut.getShortTimeOfDailyPerformance());
+			reflectStamp.setShortTimeOfDailyPerformance(dailyPerformances);
 			Optional<WorkInfoOfDailyPerformance> optional = Optional.ofNullable(new WorkInfoOfDailyPerformance(employeeId, processingDate, workInfoOfDailyPerformanceOpt.get().getWorkInformation()));
 			// エラーチェック
 			this.errorCheck(companyId, employeeId, processingDate, optional.get(),

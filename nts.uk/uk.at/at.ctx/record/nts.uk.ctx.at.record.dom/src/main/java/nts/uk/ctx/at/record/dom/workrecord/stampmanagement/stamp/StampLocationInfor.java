@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.gul.location.GeoCoordinate;
@@ -10,24 +11,19 @@ import nts.gul.location.GeoCoordinate;
  * @author tutk
  *
  */
+@AllArgsConstructor
 public class StampLocationInfor implements DomainValue {
-	/**
-	 * エリア外の打刻区分
-	 */
-	@Getter
-	private final boolean outsideAreaAtr;
 	
 	/**
 	 * 打刻位置情報
 	 */
 	@Getter
 	private final GeoCoordinate positionInfor;
-
-	public StampLocationInfor(boolean outsideAreaAtr, GeoCoordinate positionInfor) {
-		super();
-		this.outsideAreaAtr = outsideAreaAtr;
-		this.positionInfor = positionInfor;
-	}
-
+	
+	/**
+	 * エリア外の打刻区分
+	 */
+	@Getter
+	private final boolean outsideAreaAtr;
 	
 }

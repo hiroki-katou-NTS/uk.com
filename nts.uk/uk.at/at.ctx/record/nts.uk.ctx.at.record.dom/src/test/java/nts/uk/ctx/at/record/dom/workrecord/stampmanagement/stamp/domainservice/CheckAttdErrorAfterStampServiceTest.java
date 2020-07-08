@@ -15,6 +15,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService.Require;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 /**
  * 
@@ -40,15 +43,14 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_1() {
 		String employeeId = "employeeId";//dummy
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		new Expectations() {
 			{
 				require.getStampSetPer();
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -60,8 +62,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_2() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		new Expectations() {
 			{
 				require.getStampSetPer();
@@ -72,7 +73,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -86,8 +87,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_3() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeneralDate baseDate = GeneralDate.today();
 		new Expectations() {
 			{
@@ -104,7 +104,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -121,8 +121,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_4() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeneralDate baseDate = GeneralDate.today();
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		new Expectations() {
@@ -144,7 +143,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -161,8 +160,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_5() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeneralDate baseDate = GeneralDate.today();
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		new Expectations() {
@@ -181,7 +179,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isFalse();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isFalse();
 	}
 	
 	/**
@@ -198,8 +196,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_6() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeneralDate baseDate = GeneralDate.today();
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		new Expectations() {
@@ -218,7 +215,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -236,8 +233,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 	@Test
 	public void testCheckAttdErrorAfterStampService_7() {
 		String employeeId = "employeeId";
-		int pageNo = 1;
-		int buttonDisNo = 1;
+		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeneralDate baseDate = GeneralDate.today();
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		new Expectations() {
@@ -260,7 +256,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, pageNo, buttonDisNo).isEmpty()).isFalse();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isFalse();
 	}
 
 }

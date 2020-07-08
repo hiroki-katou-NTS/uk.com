@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
@@ -23,6 +25,9 @@ public class CorrectWorkSchedule {
 	
 	@Inject
 	private CalculateDailyRecordServiceCenterNew centerNew;
+	
+//	@Inject
+//	private ICorrectionAttendanceRule rule;
 	
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
@@ -38,6 +43,14 @@ public class CorrectWorkSchedule {
 		//centerNew.calculate(employeeId, targetDate, ExecutionType.NORMAL_EXECUTION, null, true);
 		return workSchedule; //Return tạm thời
 		
+	}
+	
+	private OutputCalcSchedule calcWorkScheduleInfo(IntegrationOfDaily integrationOfDaily, String employeeId,GeneralDate targetDate) {
+		List<IntegrationOfDaily> lstInteOfDaily = new ArrayList<>();
+		lstInteOfDaily.add(integrationOfDaily);
+		lstInteOfDaily = centerNew.calculatePassCompanySetting(CalculateOption.asDefault(), lstInteOfDaily, ExecutionType.valueOf(ExecutionType.NORMAL_EXECUTION.nameId));
+		
+		return null;
 	}
 
 }
