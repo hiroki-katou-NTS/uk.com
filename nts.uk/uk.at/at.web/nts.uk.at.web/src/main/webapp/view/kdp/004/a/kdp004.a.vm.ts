@@ -308,14 +308,24 @@ module nts.uk.at.view.kdp004.a {
 				return dfd.promise();
 			}
 
-			playAudio(audioType) {
+			playAudio(audioType: number) {
+
+				const url = {
+					oha: '../../share/voice/0_oha.mp3',
+					otsu: '../../share/voice/1_otsu.mp3'
+				}
+				const audio: HTMLAudioElement = document.createElement('audio');
+				const source: HTMLSourceElement = document.createElement('source');
+
 				if (audioType === 1) {
-					//ohaio
+					source.src = url.oha;
 				}
 
 				if (audioType === 2) {
-					//osakini
+					source.src = url.otsu;
 				}
+				audio.append(source);
+				audio.play();
 			}
 
 			checkHis(self: ScreenModel) {
@@ -370,7 +380,6 @@ module nts.uk.at.view.kdp004.a {
 				service.stampInput(data).done((res) => {
 					//phat nhac
 					self.playAudio(button.audioType);
-
 
 					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
 						self.openScreenC(button, layout);
