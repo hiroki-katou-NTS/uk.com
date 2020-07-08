@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommon
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeModifyParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam_Old;
@@ -154,11 +155,7 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("startMobile")
 	public AppWorkChangeOutputDto startMobile(AppWorkChangeParam appWorkChangeParam) {
-		List<GeneralDate> dates = new ArrayList<GeneralDate>();
-		GeneralDate today = GeneralDate.today();
-		dates.add(today);
-		return appWorkFinder.getStartKAFS07(appWorkChangeParam.getMode(), "000000000000-0117",
-				"292ae91c-508c-4c6e-8fe8-3e72277dec16", dates, null, null);
+		return appWorkFinder.getStartKAFS07(appWorkChangeParam);
 	}
 
 	@POST
@@ -175,7 +172,7 @@ public class WorkchangeService extends WebService {
 	
 	@POST
 	@Path("startDetailMobile")
-	public AppWorkChangeOutputDto startMobile(AppWorkChangeDetailParam appWorkChangeDetailParam) {
+	public AppWorkChangeOutputDto startDetail(AppWorkChangeDetailParam appWorkChangeDetailParam) {
 		
 		return appWorkFinder.getDetailKAFS07(appWorkChangeDetailParam);
 	}

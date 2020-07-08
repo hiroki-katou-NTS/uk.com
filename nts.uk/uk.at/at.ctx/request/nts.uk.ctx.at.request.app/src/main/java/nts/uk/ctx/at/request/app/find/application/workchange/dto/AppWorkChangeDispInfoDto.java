@@ -64,7 +64,8 @@ public class AppWorkChangeDispInfoDto {
 	
 	public static AppWorkChangeDispInfoDto fromDomain(AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		AppWorkChangeDispInfoDto result = new AppWorkChangeDispInfoDto();
-		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
+		// waitting hadnle complete
+//		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput());
 		result.appWorkChangeSet = AppWorkChangeSetDto.fromDomain(appWorkChangeDispInfo.getAppWorkChangeSet());
 		result.workTypeLst = appWorkChangeDispInfo.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
 		result.setupType = appWorkChangeDispInfo.getSetupType().isPresent() ? appWorkChangeDispInfo.getSetupType().get().value : null;

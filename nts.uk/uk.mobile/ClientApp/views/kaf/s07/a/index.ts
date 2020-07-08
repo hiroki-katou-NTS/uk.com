@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
 import {
@@ -34,6 +34,8 @@ import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
 export class KafS07AComponent extends Vue {
     public title: string = 'KafS07A';
 
+    public model: Model = new Model();
+
     // data that is fetched from server 
     public app: AppWorkChange;
 
@@ -54,6 +56,10 @@ export class KafS07AComponent extends Vue {
     // handle visible of view
 
     public isCondition1: Boolean = false;
+
+    public isCondition2: Boolean = false;
+
+    public isCondition3: Boolean = false;
 
     // data is fetched service
     public data: any = 'hhh';
@@ -88,40 +94,33 @@ export class KafS07AComponent extends Vue {
 
     public mounted() {
         let self = this;
-        self.$mask('show');
-        // self.$http.post('at', API.startNew, {
-        //     empLst: [],
-        //     dateLst: []
-        // })
-        //     .then((resApp: any) => {
-        //         self.appDispInfoStartupOutput = resApp.data.appDispInfoStartupOutput;
-        //         self.$mask('hide');
-        //     }).catch((res: any) => {
-        //         self.$mask('hide');
+        this.$http.post('at', API.startS07, {
+            mode: true,
+            companyId: '000000000000-0117',
+            employeeId: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+            listDates: ['2020/07/08'],
+            appWorkChangeOutputDto: null,
+            appWorkChangeDto: null
+        })
+            .then((res: any) => {
+                if (!res) {
+                    return;
+                }
+                this.data = res.data;
+                let appWorkChangeDispInfo = res.data.appWorkChangeDispInfo;
+                // this.bindVisibleView(appWorkChangeDispInfo);
+                let appWorkChange = res.data.appWorkChange;
+                this.model.workType.code = appWorkChangeDispInfo.workTypeCD;
+                this.model.workType.name = _.find(appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == appWorkChangeDispInfo.workTypeCD).abbreviationName;
 
+                this.model.workTime.code = appWorkChangeDispInfo.workTimeCD;
 
-        //     });
-
-
-        // this.$http.post('at', API.startS07, {
-        //     mode: true,
-        //     companyId: '',
-        //     employeeId: '',
-        //     listDates: null,
-        //     appWorkChangeOutputDto: null,
-        //     appWorkChangeDto: null
-        // })
-        //     .then((res: any) => {
-        //         if (!res) {
-        //             return;
-        //         }
-        //         this.data = res;
-        //         let appWorkChangeDispInfo = res.appWorkChangeDispInfo;
-        //         let appWorkChange = res.appWorkChange;
-        //         this.$mask('hide');
-        //     }).catch((err: any) => {
-        //         this.$mask('hide');
-        //     });
+                // _.find(appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == appWorkChangeDispInfo.workTimeCD).workTimeDisplayName;
+                this.model.workTime.name = 'appWorkChangeDispInfo.workTimeCD';
+                this.$mask('hide');
+            }).catch((err: any) => {
+                this.$mask('hide');
+            });
     }
 
     public register() {
@@ -184,20 +183,16 @@ export class KafS07AComponent extends Vue {
 
     // A4_3  「勤務変更申請の表示情報．就業時間帯の必須区分」が「必須」または「任意」
     public isDisplay1(params: any) {
-        // return params.setupType == 1;
-        return true;
-
+        return params.setupType == 1;
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
     public isDisplay2(params: any) {
-        // return params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-        return true;
+        return params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 
     }
     // A6_1 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay3(params: any) {
-        // return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
-        return true;
+        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
     }
 
     // 「勤務変更申請の表示情報．勤務変更申請設定．勤務時間の初期表示」が「空白」 => clear data
@@ -221,25 +216,27 @@ export class KafS07AComponent extends Vue {
         let appWorkChangeDispInfo = data.appWorkChangeDispInfo;
 
         this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
+        this.isCondition2 = this.isDisplay2(appWorkChangeDispInfo);
+        this.isCondition3 = this.isDisplay3(appWorkChangeDispInfo);
 
     }
     public openKDL002() {
         this.$modal(
             'worktype',
             {
-                seledtedWkTypeCDs: ['001', '02', '03'],
-                selectedWorkTypeCD: '001',
+                seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+                selectedWorkTypeCD: this.model.workType.code,
                 seledtedWkTimeCDs: ['112', '001', '13'],
                 selectedWorkTimeCD: '001',
                 isSelectWorkTime: true,
             }
         ).then((f: any) => {
             if (f) {
-                this.worktype.code = f.selectedWorkType.workTypeCode;
-                this.worktype.name = f.selectedWorkType.name;
-                this.worktime.code = f.selectedWorkTime.code;
-                this.worktime.name = f.selectedWorkTime.name;
-                this.worktime.time = f.selectedWorkTime.workTime1;
+                this.model.workType.code = f.selectedWorkType.workTypeCode;
+                this.model.workType.name = f.selectedWorkType.name;
+                // this.worktime.code = f.selectedWorkTime.code;
+                // this.worktime.name = f.selectedWorkTime.name;
+                // this.worktime.time = f.selectedWorkTime.workTime1;
             }
         }).catch((res: any) => {
             this.$modal.error({ messageId: res.messageId });
@@ -261,18 +258,34 @@ export class WorkTime extends Work {
         super();
     }
 }
+
 // data that is fetched from server 
 
-export class Model extends AppWorkChange {
+export class Model {
 
-    constructor(workType: String, workTime: String, workHours1: String, workHours2: String, straight: boolean, bounce: boolean) {
-        super(workType, workTime, workHours1, workHours2, straight, bounce);
+    public workType: Work = new Work();
+
+    public workTime: Work = new Work();
+
+    public workHours1: String = '';
+
+    public workHours2: String = '';
+
+    public straight: Boolean = true;
+
+    public bounce: Boolean = true;
+
+    // public valueWorkHours1: { start: number, end: number } = null;
+
+    // public valueWorkHours2: { start: number, end: number } = null;
+    constructor() {
+
     }
 }
 
 const API = {
     startNew: 'at/request/application/workchange/startNew',
-    startS07: 'at/at/request/application/workchange/startMobile',
+    startS07: 'at/request/application/workchange/startMobile',
     checkBeforRegister: 'at/at/request/application/workchange/checkBeforeRegister_New',
     registerAppWorkChange: 'at/at/request/application/workchange/addWorkChange_New',
 };

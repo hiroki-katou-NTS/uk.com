@@ -1,5 +1,5 @@
 <template>
-  <div class="kafs07a" v-bind="data">
+  <div class="kafs07a">
     <!-- <div>
       <kafs00-a v-if="true" v-bind:params="{application: application}" />
     </div> -->
@@ -34,8 +34,8 @@
         <span class="textSize uk-text-dark-gray">{{'KAFS07_3' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary ">{{worktype.code}}</span>
-          <span>{{worktype.name}}</span>
+          <span class="badge badge-secondary ">{{model.workType.code}}</span>
+          <span>{{model.workType.name}}</span>
         </button>
 
         <!-- A4_3 -->
@@ -47,8 +47,8 @@
           v-on:click="openKDL002()"
         >
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary ">{{worktime.code}}</span>
-          <span>{{worktime.name}}</span>
+          <span class="badge badge-secondary ">{{model.workTime.code}}</span>
+          <span>{{model.workTime.name}}</span>
           <!-- A4_3_2 -->
           <span class="d-block mt-1">{{worktime.time}}</span>
         </button>

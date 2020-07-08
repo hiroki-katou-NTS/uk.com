@@ -41,9 +41,11 @@ import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
+import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
@@ -282,13 +284,30 @@ public class AppWorkChangeFinder {
 
 		boolean mode = appWorkChangeParam.getMode();
 		String companyId = appWorkChangeParam.getCompanyId();
-		String employeeId = appWorkChangeParam.getEmployeeId();
-		List<GeneralDate> dates = appWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList());
-		AppWorkChangeDispInfoDto appWorkChangeDispInfoDto = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo();
-		AppWorkChangeDto appWorkChangeDto = appWorkChangeParam.getAppWorkChangeDto();
+		String employeeId = null;
+		if (appWorkChangeParam.getEmployeeId() != null) {
+			employeeId = appWorkChangeParam.getEmployeeId();
+		}
+		List<GeneralDate> dates = null;
+
+		if (appWorkChangeParam.getListDates() != null) {
+			dates = appWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
+					.collect(Collectors.toList());
+		}
+		AppWorkChangeDispInfo appWorkChangeDispInfo = null;
+		if (appWorkChangeParam.getAppWorkChangeOutputDto() != null) {
+			appWorkChangeDispInfo = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().toDomain();
+		}
+		AppWorkChange appWorkChange = null;
+		if (appWorkChangeParam.getAppWorkChangeDto() != null) {
+			appWorkChange = appWorkChangeParam.getAppWorkChangeDto().toDomain();
+
+		}
+
 		return AppWorkChangeOutputDto.fromDomain(
 				appWorkChangeService.getAppWorkChangeOutput(mode, companyId, Optional.ofNullable(employeeId),
-						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfoDto.toDomain()), Optional.ofNullable(appWorkChangeDto.toDomain())));
+						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfo),
+						Optional.ofNullable(appWorkChange)));
 	}
 
 	// 勤務変更申請の登録前チェック処理

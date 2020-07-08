@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import nts.arc.enums.EnumAdaptor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AppWorkChangeServiceImpl implements AppWorkChangeService {
@@ -470,10 +471,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					mode, 
 					companyId, 
 					employeeId.isPresent() ? employeeId.get() : null, 
-							ApplicationType.WORK_CHANGE_APPLICATION, 
-					null, 
+					ApplicationType.WORK_CHANGE_APPLICATION, 
+					Optional.ofNullable(null), 
 					dates.isPresent() ? dates.get(): null, 
-					null);
+					Optional.ofNullable(null));
 //			勤務変更申請画面初期（新規）
 			AppWorkChangeDispInfo appWorkChangeDisp = this.getAppWorkChangeDisInfo(
 					companyId, 
@@ -481,7 +482,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					dates.isPresent() ? dates.get() : null,
 					appDispInfoStartupOutput);
 			appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDisp);
-			
+			appWorkChangeOutput.setAppWorkChange(Optional.ofNullable(null));
 			
 		}else {
 				appWorkChangeOutput.setAppWorkChange(appWorkChange);
@@ -546,6 +547,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 //		ドメインモデル「勤務変更申請の反映」を取得する
 		// table is not existed
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
+		appWorkChangeReflect.setCompanyID(companyId);
+		appWorkChangeReflect.setWhetherReflectAttendance(NotUseAtr.valueOf(1));
+		
 		appWorkChangeReflect.setCompanyID(companyId);
 //		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));
 		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);
