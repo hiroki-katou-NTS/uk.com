@@ -7,8 +7,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
 
     export class ScreenModel {
                 
-        listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType> = ko.observableArray([]);
-        listWorkTime: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime> = ko.observableArray([]);
+        listWorkType: KnockoutObservableArray<ksu001.common.modelgrid.WorkType> = ko.observableArray([]);
+        listWorkTime: KnockoutObservableArray<ksu001.common.modelgrid.WorkTime> = ko.observableArray([]);
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedWorkTypeCode: KnockoutObservable<string>;
@@ -17,9 +17,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
+        nameWorkTimeType: KnockoutComputed<ksu001.common.modelgrid.ExCell>;
         currentScreen: any = null;
-        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime> = ko.observableArray([]);
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.modelgrid.WorkTime> = ko.observableArray([]);
         listTimeZoneForSearch: any[] = [];
         startDateScreenA: any = null;
         endDateScreenA: any = null;
@@ -94,14 +94,15 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                         endTime = '';
                     }
                 }
-                return new ksu001.common.viewmodel.ExCell({
-                    workTypeCode: workTypeCode,
-                    workTypeName: workTypeName,
-                    workTimeCode: workTimeCode,
-                    workTimeName: workTimeName,
-                    startTime: startTime,
-                    endTime: endTime
-                });
+                return new ksu001.common.modelgrid.ExCell(
+                     workTypeCode,
+                     workTypeName,
+                     workTimeCode,
+                     workTimeName,
+                     startTime,
+                     endTime,
+                     'symbolName',
+                );
             });
 
             self.nameWorkTimeType.subscribe(function(value) {
@@ -221,7 +222,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 self.listTimeZoneForSearch = data.listWorkTime;
             
-                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+                self.listWorkTime.push(new ksu001.common.modelgrid.WorkTime({
                     workTimeCode: '',
                     name: self.nashi,
                     abName: '',
@@ -238,7 +239,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 }));
     
                 _.each(data.listWorkTime, function(wT) {
-                    let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
+                    let workTimeObj: ksu001.common.modelgrid.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {
                         workTimeObj.timeZone1 = formatById("Clock_Short_HM", wT.startTime) + getText("KSU001_66")
                             + formatById("Clock_Short_HM", wT.endTime);
@@ -246,7 +247,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                         workTimeObj.timeZone2 = wT.useAtr == 1 ? (formatById("Clock_Short_HM", wT.startTime)
                             + getText("KSU001_66") + formatById("Clock_Short_HM", wT.endTime)) : '';
                     } else {
-                        self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+                        self.listWorkTime.push(new ksu001.common.modelgrid.WorkTime({
                             workTimeCode: wT.workTimeCode,
                             name: wT.name,
                             abName: wT.abName,

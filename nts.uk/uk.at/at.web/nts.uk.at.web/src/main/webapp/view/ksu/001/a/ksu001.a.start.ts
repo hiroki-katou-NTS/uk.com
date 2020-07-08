@@ -7,8 +7,9 @@ module nts.uk.at.view.ksu001.a {
             viewQ: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
+        let settingHeightGrid = nts.uk.localStorage.getItem('HEIGHT_OF_GIRD');
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001().done(() => {
+        __viewContext.viewModel.viewA.startKSU001(settingHeightGrid).done(() => {
             __viewContext.bind(__viewContext.viewModel);
             nts.uk.ui.block.clear();
         });
@@ -48,7 +49,7 @@ module nts.uk.at.view.ksu001.a {
             $('#popup-area5').ntsPopup("toggle");
         });
 
-        //popup A3-20
+        //popup A3-20 popup-setting-grid
         $('#popup-area6').ntsPopup({
             position: {
                 my: 'left top',
@@ -56,6 +57,7 @@ module nts.uk.at.view.ksu001.a {
                 of: $('#A4')
             }
         });
+        
 
         $('#A4').click(function() {
             $('#popup-area6').ntsPopup("toggle");
@@ -74,5 +76,17 @@ module nts.uk.at.view.ksu001.a {
             $('#popup-area9').ntsPopup("toggle");
         });
 
+        //popup setting grid
+        $('#popup-setting-grid').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom+3',
+                of: $('.create')
+            }
+        });
+
+        $('.create').click(function() {
+            $('#popup-setting-grid').ntsPopup("toggle");
+        });
     }
 }

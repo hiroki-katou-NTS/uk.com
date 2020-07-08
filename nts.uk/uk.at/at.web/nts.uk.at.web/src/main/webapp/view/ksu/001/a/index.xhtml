@@ -13,13 +13,6 @@
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
 
-			<!-- COMPONENT CCG001 
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			#CCG001 -->
-			
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -36,7 +29,7 @@
 			<com:scriptfile path="../q/ksu001.q.vm.js" />
 			<com:scriptfile path="../q/ksu001.q.service.js" />
 
-			<com:scriptfile path="../common/ksu001.js" />
+			<com:scriptfile path="../common/modelgrid.js" />
 
 		</ui:define>
 		<ui:define name="content">
@@ -170,7 +163,38 @@
 						
 					</div>
 				</div>
-				
+
+				<div id="popup-setting-grid" class="popup-area popup-panel A16">
+					<table style="border: 0px solid #ccc;">
+						<tr>
+							<td>
+								<div class="inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_53')}</div>
+							</td>
+							<td>
+								<div class="inline" style="width: 170px;"
+									data-bind="ntsRadioBoxGroup: {
+											options: [{id: 1, name: '#{i18n.getText('KSU001_48')}'}, {id: 2, name: '#{i18n.getText('KSU001_49')}'}] ,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedTypeHeightExTable ,
+											enable: true}"></div>
+							</td>
+							<td>		
+								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 10px;"
+									data-bind="ntsNumberEditor: {value: heightGridSetting, 
+											constraint: 'ItemGridHeight', 
+											enable: isEnableInputHeight, 
+											required: isEnableInputHeight, 
+											name: '#[KSU001_49]' }" />
+							</td>
+						</tr>
+					</table>
+					<hr />
+					<div style="text-align: center;">
+						<button style="width: 90px" class="proceed" data-bind = "click : saveHeightGridToLocal">#{i18n.getText('KSU001_93')}</button>
+					</div>
+				</div>
+
 				<div id="popup-area9" class="popup-area popup-panel">
 					<span>#{i18n.getText('KSU001_306')}</span>
 					<hr />
@@ -261,12 +285,12 @@
 						<div id="ccgcomponent"></div>
 					</div>
 					<div class="right-content">
-						<div id="top-area">
-							<div id="top-area-left">
+						<div id="functon-area-row2">
+							<div id="functon-area-row2-left">
 								<button data-bind="enable: true ">#{i18n.getText('KSU001_37')}</button>
-								<span data-bind="text: lengthListSid"></span>
+								<span data-bind="text: targetOrganizationName"></span>
 							</div>
-							<div id="top-area-center">
+							<div id="functon-area-row2-center">
 								<div id="period-setting">
 									<button tabindex="-1" id="prevMonth" class="size-image-button3"
 										data-bind="click: backMonth, timeClick: -1"></button>
@@ -285,18 +309,19 @@
 									</div>
 								</div>
 							</div>
-							<div id="top-area-right">
+							<div id="functon-area-row2-right">
 								<button id="A4" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
 								<button id="A5" tabindex="-1" class="color-button ml-2 size-image-button1"></button>
 							</div>
 						</div>
-						<div style="float: left;">
-							<div style="float: left; margin-left: 10px;width: max-content; margin-top: 10px;">
+						<div style="clear: left"></div>
+						<div style="white-space: nowrap;">
+							<div id="contain-view-left">
 								<button  class="editMode" style="height: 38px;" data-bind="click: editMode">#{i18n.getText('KSU001_140')}</button>
 								<br />
 								<button  class="confirmMode" style="height: 38px; margin-top: 3px;" data-bind="click: confirmMode">#{i18n.getText('KSU001_141')}</button>
 							</div>
-							<div id="contain-view">
+							<div id="contain-view-right" class="inline">
 								<div id="group-bt">
 									<button id="paste" class="" data-bind="click: pasteData">貼り付け</button>
 									<button id="copy" class="" data-bind="click: copyData">コピペ</button>
@@ -323,8 +348,16 @@
 								</div>
 							</div>
 						</div>
-
-						<div id="extable"></div>
+						<div style="clear: left"></div>
+						<div style="">
+							<button class="toLeft inline"  data-bind = "click : toLeft"></button>
+							<button class="toRight inline" data-bind = "click : toRight"></button>
+						</div>
+						<div style="clear: left"></div>
+						<div>
+							<div class="inline" style="margin-left: 12px; display: none" ><button class="toDown"></button></div>
+							<div id="extable" class="inline" style="margin-left: 27px;"></div>
+						</div>
 					</div>
 				</div>
 			</div>

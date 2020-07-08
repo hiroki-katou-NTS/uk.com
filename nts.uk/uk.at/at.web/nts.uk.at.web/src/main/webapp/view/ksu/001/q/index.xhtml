@@ -1,26 +1,26 @@
-<div id="contents-area cf">
+<div>
 	<div class="tab-content-2">
 		<div id="group-link-button-ja">
-			<div id="Aa1_2" class="cf" style="margin-left: 5px"
+			<div id="Aa1_2" class="cf"
 				data-bind="ntsSwitchButton: {
 										options: palletUnit ,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedpalletUnit }">
 			</div>
-			<div  class="inline" data-bind="if : modeCompany" >
-				<div class="inline bg-green caret-background caret-bottom cf" data-bind="foreach: textButtonArrComPattern ">
+			<div  class="inline listLink" data-bind="if : modeCompany" >
+				<div class="inline cf" style="width: 500px; white-space: nowrap;" data-bind="foreach: textButtonArrComPattern ">
 					<a class="hyperlink" data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name"></a>
 				</div>
 			</div>
-			<div  class="inline" data-bind="ifnot : modeCompany">
-				<div class="inline bg-green caret-background caret-bottom cf" data-bind="foreach: textButtonArrWkpPattern ">
+			<div  class="inline listLink" style="width: 500px; white-space: nowrap;" data-bind="ifnot : modeCompany">
+				<div class="inline cf" data-bind="foreach: textButtonArrWkpPattern ">
 					<a class="hyperlink" data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name"></a>
 				</div>
 			</div>
 			<div class="overwrite inline"
-				data-bind="ntsCheckBox: { checked: overwrite , enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
-			<button class="openDialogJA inline" data-bind="click: openDialogJB1">#{i18n.getText('KSU001_1602')}</button>
+				data-bind="ntsCheckBox: { checked: overwrite , enable: true, text: '#{i18n.getText('KSU001_1601')}' }">#{i18n.getText('KSU001_92')}</div>
+			<button class="openDialogJA inline" data-bind="click: openDialogJB1 "></button>
 		</div>
 		<div data-bind="if : modeCompany">
 			<div id="tableButton"

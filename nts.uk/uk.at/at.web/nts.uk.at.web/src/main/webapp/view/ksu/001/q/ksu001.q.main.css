@@ -36,25 +36,39 @@
 }
 
 #tableButton {
-	background-color: #FBE5D6;
-	width: 1015px;
-	height: 53px;
+	background-color: rgb(237,250,194);
+	width: 915px;
+	height: 57px;
 	margin-top: 5px;
 }
 
 #tableButton button {
-	width: 95px !important;
+	width: 85px !important;
 	height: 20px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid grey;
+	color : black;
 }
 
 #tableButton table td {
 	padding: 3px 3px !important;
 }
 
+#Aa1_2 {
+	margin-left: 5px; 
+	margin-bottom: 10px
+}
+
+.listLink {
+    width: 563px;
+    white-space: nowrap;
+}
+
 #qViewModel .hyperlink {
 	color: #0066CC;
-	margin-left: 15px;
-	margin-top: 1px
+	margin-top: 14px;
+	width: max-content;
+	height: 32px;
 }
 
 #part-1-1, #part-1-2 {
@@ -98,9 +112,12 @@
 	color: gray !important
 }
 
+.back-ground-link-btn {
+	background: rgb(237,250,194);	
+}
+
 #group-link-button-ja {
 	height: 30px;
-	width: fit-content;
 	margin-top: -5px;
 
 }
@@ -114,12 +131,15 @@
 
 .overwrite {
 	margin-top: 5px;
-	margin-left: 10px;
+	margin-left: 5px;
 }
 
 .openDialogJA {
 	margin-top: 5px;
-	margin-left: 10px;
+	background: url(../image/iconsetting.png) no-repeat center;
+	width: 27px;
+	height: 27px !important;
+	background-color: white;
 }
 
 .inline {

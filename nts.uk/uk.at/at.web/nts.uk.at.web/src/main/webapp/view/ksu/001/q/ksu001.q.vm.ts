@@ -274,8 +274,10 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
+                    $(a).removeClass('back-ground-link-btn');
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
+                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('back-ground-link-btn');
                 self.selectedLinkButtonCom(self.indexLinkButtonCom);
                 //set sourceCompany
                 self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
@@ -284,8 +286,10 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
+                    $(a).removeClass('back-ground-link-btn');
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
+                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('back-ground-link-btn');
                 self.selectedLinkButtonWkp(self.indexLinkButtonWkp);
                 //set sourceWorkplace
                 self.sourceWorkplace(self.dataSourceWorkplace()[self.indexLinkButtonWkp] || source);
@@ -345,7 +349,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
                 // listCheckNeededOfWorkTime for JA to JA send to JB
-                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
+                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime(),
+                overwrite : self.overwrite()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 let selectedLinkButton: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
