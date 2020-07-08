@@ -61,7 +61,7 @@ module nts.uk.at.kdp003.a {
 			audio.play();
 		}
 
-		stampButtonClick(btn: any) {
+		stampButtonClick(btn: any, layout: any) {
 			const vm = this;
 
 			vm.$ajax('at', API.HIGHTLIGHT)

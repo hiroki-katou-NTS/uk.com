@@ -24,7 +24,7 @@ module nts.uk.at.view.kdp.share {
 						if: ko.toJS($component.selected) === stampPageName,
 						css: 'btn-layout-type-' + buttonLayoutType">
 					<!-- ko foreach: buttonSettings -->
-					<button class="stamp-rec-btn" data-bind="btn-setting: $data, click: function() { $component.params.click($data); }"></button>
+					<button class="stamp-rec-btn" data-bind="btn-setting: $data, click: function() { $component.params.click($data, ko.toJS($component.currentTab)); }"></button>
 					<!-- /ko -->
 				</div>
 			</div>
