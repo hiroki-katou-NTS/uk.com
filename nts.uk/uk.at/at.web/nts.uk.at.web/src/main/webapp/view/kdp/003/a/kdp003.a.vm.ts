@@ -1,156 +1,34 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-const mocktabs = [
-	{
-		"pageNo": 1,
-		"stampPageName": "f",
-		"stampPageComment": "",
-		"stampPageCommentColor": "#000000",
-		"buttonLayoutType": 0,
-		"buttonSettings": [
-			{
-				"btnPositionNo": 1,
-				"btnName": "出勤",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": null,
-				"setPreClockArt": 0,
-				"changeClockArt": 0,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 1
-			},
-			{
-				"btnPositionNo": 2,
-				"btnName": "直行",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 1,
-				"changeCalArt": 2,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 2
-			},
-			{
-				"btnPositionNo": 3,
-				"btnName": "早出",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 4,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 3
-			},
-			{
-				"btnPositionNo": 4,
-				"btnName": "戻り",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 5,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 4
-			}
-		]
-	},
-	{
-		"pageNo": 2,
-		"stampPageName": "Page",
-		"stampPageComment": "DKM",
-		"stampPageCommentColor": "#000000",
-		"buttonLayoutType": 1,
-		"buttonSettings": [
-			{
-				"btnPositionNo": 1,
-				"btnName": "出勤",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": null,
-				"setPreClockArt": 0,
-				"changeClockArt": 0,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 1
-			},
-			{
-				"btnPositionNo": 2,
-				"btnName": "直行",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 1,
-				"changeCalArt": 2,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 2
-			},
-			{
-				"btnPositionNo": 3,
-				"btnName": "早出",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 4,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 3
-			},
-			{
-				"btnPositionNo": 4,
-				"btnName": "戻り",
-				"btnTextColor": "#0033cc",
-				"btnBackGroundColor": "#ccccff",
-				"btnReservationArt": 0,
-				"changeHalfDay": false,
-				"goOutArt": 0,
-				"setPreClockArt": 0,
-				"changeClockArt": 5,
-				"changeCalArt": 0,
-				"usrArt": 1,
-				"audioType": 0,
-				"btnDisplayType": 4
-			}
-		]
-	}
-];
-
 module nts.uk.at.kdp003.a {
+	const API = {
+		SETTING: 'at/record/stamp/management/personal/startPage',
+		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+	};
+
 	@bean()
 	export class KDP003AViewModel extends ko.ViewModel {
-		tabs = mocktabs;
+		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
+		stampToSuppress: KnockoutObservable<any> = ko.observable({});
+
 		created() {
-		}
+			const vm = this;
 
-		mounted() {
-		}
+			vm.$ajax('at', API.SETTING)
+				.then((data: any) => {
+					if (data) {
+						if (data.stampSetting) {
+							vm.tabs(data.stampSetting.pageLayouts);
+						}
 
+						if (data.stampToSuppress) {
+							vm.stampToSuppress(data.stampToSuppress);
+						}
+					}
+				});
+
+			_.extend(window, { vm });
+		}
 
 		setting() {
 			const vm = this;
@@ -182,11 +60,20 @@ module nts.uk.at.kdp003.a {
 
 			audio.play();
 		}
-		
+
 		stampButtonClick(btn: any) {
 			const vm = this;
-			
-			console.log(vm, btn);
+
+			vm.$ajax('at', API.HIGHTLIGHT)
+				.then((data: any) => {
+					const oldData = ko.unwrap(vm.stampToSuppress);
+
+					if (!_.isEqual(data, oldData)) {
+						vm.stampToSuppress(data);
+					} else {
+						vm.stampToSuppress.valueHasMutated();
+					}
+				});
 		}
 	}
 }
