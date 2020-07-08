@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
             const vm = this;
             console.log(ko.toJS(vm.application()));
             console.log(ko.toJS(vm.appWorkChange()));
+            vm.appWorkChange(new AppWorkChange(500, 200));    
         }
     }
     

@@ -1,0 +1,12 @@
+#listApproverRootState #table-phase, #table-phase td, #table-phase th {
+	border: 1px solid black;
+	text-align: center;
+	height: 25px;
+}
+#listApproverRootState #table-phase td {
+	height: 25px;
+}
+#listApproverRootState #label-1 {
+	width: 150px;
+	vertical-align: top;
+}

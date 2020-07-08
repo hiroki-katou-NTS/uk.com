@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -24,8 +25,9 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @param application
 	 * @param appApprovalPhases
+	 * @return 
 	 */
-	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year);
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する
@@ -60,4 +62,24 @@ public interface GoBackDirectlyRegisterService {
 	 * @return
 	 */
 	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate);
+	/**
+	 * 
+	 * @param companyId
+	 * @param agentAtr
+	 * @param application
+	 * @param goBackDirectly
+	 * @param inforGoBackCommonDirectOutput
+	 * @param mode
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode);
+	/**
+	 * 「直行直帰登録」処理を実行する
+	 * @param companyId 会社ID
+	 * @param application_New 申請
+	 * @param goBackDirectly 直行直帰申請
+	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
+	 * @return メール送信の結果
+	 */
+	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
 }

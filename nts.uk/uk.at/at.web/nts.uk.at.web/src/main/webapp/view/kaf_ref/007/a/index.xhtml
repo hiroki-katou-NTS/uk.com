@@ -8,8 +8,13 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
+			<com:stylefile path="/view/kaf_ref/007/a/kaf007.a.css" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
 			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/a/kaf007.a.vm.js" />
@@ -19,13 +24,24 @@
 				<button class="proceed" data-bind="click: register">Register</button>
 			</div>
 			<div id="contents-area">
-				<div data-bind="component: { name: 'kaf000-a-component1', 
+				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div data-bind="component: { name: 'kaf007-share', params: appWorkChange }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component3', 
+				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="kaf007-component" data-bind="component: { name: 'kaf007-share', 
+											params: appWorkChange }"></div>
+				<div class="kaf007-component" data-bind="component: { name: 'kaf000-a-component6', 
 											params: {
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>

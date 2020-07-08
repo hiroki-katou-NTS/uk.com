@@ -11,6 +11,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
  */
 @Value
 @AllArgsConstructor
+/**
+ * 表示する実績内容
+ */
 public class AchievementDto {
 
 	private String date;
