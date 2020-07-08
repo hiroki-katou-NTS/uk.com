@@ -176,10 +176,10 @@ module nts.uk.at.view.kdp010.h {
 			}
 			public getTypeButton(data): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType.changeHalfDay,
+					changeClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeClockArt,
+					changeCalArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeCalArt,
+					setPreClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.setPreClockArt,
+					changeHalfDay = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeHalfDay,
 					reservationArt = data.buttonType.reservationArt;
 				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
 				self.selectedDay(typeNumber);
