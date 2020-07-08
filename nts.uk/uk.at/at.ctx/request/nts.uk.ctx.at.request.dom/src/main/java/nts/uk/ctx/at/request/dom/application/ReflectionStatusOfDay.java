@@ -17,12 +17,12 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 実績反映状態
 	 */
-	private ReflectedState resultsReflectedStatus;
+	private ReflectedState actualReflectStatus;
 	
 	/**
 	 * 予定反映状態
 	 */
-	private ReflectedState scheduleReflectionStatus;
+	private ReflectedState scheReflectStatus;
 	
 	/**
 	 * 対象日
@@ -32,20 +32,20 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 申請反映の更新状態
 	 */
-	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflection;
+	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflect;
 	
 	/**
 	 * 申請取消の更新状態
 	 */
-	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancellation;
+	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancel;
 	
-	public ReflectionStatusOfDay(ReflectedState resultsReflectedStatus, ReflectedState scheduleReflectionStatus, GeneralDate targetDate,
-			Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflection, Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancellation) {
-		this.resultsReflectedStatus = resultsReflectedStatus;
-		this.scheduleReflectionStatus = scheduleReflectionStatus;
+	public ReflectionStatusOfDay(ReflectedState actualReflectStatus, ReflectedState scheReflectStatus, GeneralDate targetDate,
+			Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppReflect, Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancel) {
+		this.actualReflectStatus = actualReflectStatus;
+		this.scheReflectStatus = scheReflectStatus;
 		this.targetDate = targetDate;
-		this.opUpdateStatusAppReflection = opUpdateStatusAppReflection;
-		this.opUpdateStatusAppCancellation = opUpdateStatusAppCancellation;
+		this.opUpdateStatusAppReflect = opUpdateStatusAppReflect;
+		this.opUpdateStatusAppCancel = opUpdateStatusAppCancel;
 	} 
 	
 }
