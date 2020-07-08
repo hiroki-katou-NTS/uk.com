@@ -1,52 +1,69 @@
 module nts.uk.at.view.kdp.share {
-    const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
-    const TIME_FORMAT = 'HH:mm';
-    
-    @component({
-        name: 'stamp-clock',
-        template: `
+	const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
+	const TIME_FORMAT = 'HH:mm';
+
+	@component({
+		name: 'stamp-clock',
+		template: `
         <div id="stamp-header">
             <div class="panel" id="stamp-date"
                 data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-            <span id="stamp-date-text" data-bind="text: displayDate"></span>
+            <span id="stamp-date-text" data-bind="text: displayDate()"></span>
             </div>
                 <div class="panel" id="stamp-time"
                 data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-                <span id="stamp-time-text" data-bind="text: displayTime"></span>
+				<span id="stamp-time-text" data-bind="text: displayTime()"></span>
+				<button data-bind="click:settingUser" class="btn-setting" type="button" tabindex="16"></button>
+                <button data-bind="click:checkHis" class="proceed btnA4">打刻履歴</button>
+
             </div>
         </div>
     `})
-    export class StampClock extends ko.ViewModel {
-        time: KnockoutObservable<Date>;
-        displayDate: KnockoutObservable<String> = ko.observable('');
-        displayTime: KnockoutObservable<String> = ko.observable('');
-        stampSetting: KnockoutObservable<any>;
+	export class StampClock extends ko.ViewModel {
+		systemDate: KnockoutObservable<any> = ko.observable(moment.utc());
+		stampSetting: KnockoutObservable<any>;
+		countTime: number = 20;
+		interval: any;
+		constructor(params) {
+			let self = this;
+			let vm = new ko.ViewModel();
+			self.stampSetting = params.setting;
+			self.checkHis = !!params.checkHis? params.checkHis: ko.observable();
+			self.settingUser = !!params.settingUser?params.settingUser: ko.observable();
+			moment.locale('ja');
+			self.systemDate(moment(vm.$date.now()));
+			self.addCorrectionInterval();
 
-        constructor(params) {
-            let self = this;
-            self.stampSetting = ko.observable(params.setting());
-            moment.locale('ja');
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayTime(moment.utc(res).format(TIME_FORMAT));
-                self.displayDate(moment.utc(res).format(DATE_FORMAT));
-            });
-            
-            setInterval(() => {
-                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                    self.displayTime(moment.utc(res).format(TIME_FORMAT));
-                });
-            }, 2000);
+			self.stampSetting.subscribe((data) => {
+				self.addCorrectionInterval(self.stampSetting().correctionInterval);
+			});
+		}
 
-            self.addCorrectionInterval(self.stampSetting().correctionInterval);
-        }
+		displayTime() {
+			let self = this;
+			return self.systemDate().format(TIME_FORMAT);
+		}
 
-        public addCorrectionInterval(minute: number) {
-            let self = this;
-            setInterval(() => {
-                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                    self.displayDate(moment.utc(res).format(DATE_FORMAT));
-                });
-            }, minute * 60000);
-        }
-    }
+		displayDate() {
+			let self = this;
+			return self.systemDate().format(DATE_FORMAT);
+		}
+
+		public addCorrectionInterval() {
+			let self = this;
+			let vm = new ko.ViewModel();
+			clearInterval(self.interval);
+
+			self.interval = setInterval(() => {
+				if (self.stampSetting().correctionInterval === self.countTime) {
+					self.systemDate(moment(vm.$date.now()));
+					self.countTime = 0;
+				} else {
+					self.systemDate(self.systemDate().add(1, 'seconds'));
+					self.countTime = self.countTime + 1;
+				}
+
+			}, 1000);
+		}
+	}
 }

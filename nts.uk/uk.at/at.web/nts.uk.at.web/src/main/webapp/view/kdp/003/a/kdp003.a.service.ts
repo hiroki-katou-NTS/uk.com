@@ -1,54 +1,37 @@
 module nts.uk.at.view.kdp003.a {
+    
+    import ajax = nts.uk.request.ajax;
+    
     export module service {
-        
-        const SLASH = "/";
-        
-        var paths = {
-            getDataStartPage: "at/function/statement/startPage",
-            exportExcel: "screen/at/statement/export",
-            findStampingOutputItemSet: "at/function/statement/findAll",
+        let url = {
+            startPage: 'at/record/stamp/management/personal/startPage',
+            getStampData: 'at/record/stamp/management/personal/stamp/getStampData',
+            getTimeCard: 'at/record/stamp/management/personal/stamp/getTimeCard',
+            stampInput: 'at/record/stamp/management/personal/stamp/input',
+            getError: 'at/record/stamp/management/personal/getDailyError' 
         }
-        
-        export function getDataStartPage(): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.getDataStartPage);
-        }
-        
-        export function saveCharacteristic(companyId: string, userId: string, obj: any): void {
-            nts.uk.characteristics.save("OutputConditionOfEmbossing" + 
-                                                    "_companyId_" + companyId + 
-                                                    "_userId_" + userId, obj);
-        }
-        
-        export function restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
-            return nts.uk.characteristics.restore("OutputConditionOfEmbossing" + 
-                                                    "_companyId_" + companyId +  
-                                                    "_userId_" + userId);
-        }
-        
-        export function exportExcel(data: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportExcel, data);
-        }
-        
-        export function findAll(): JQueryPromise<Array<model.StampingOutputItemSetDto>> {
-            return nts.uk.request.ajax(paths.findStampingOutputItemSet);
 
+        export function startPage(): JQueryPromise<any> {
+            return ajax("at", url.startPage);
+        }
+
+        export function getStampData(data): JQueryPromise<any> {
+            return ajax("at", url.getStampData, data);
+        }
+
+        export function getTimeCardData(data): JQueryPromise<any> {
+            return ajax("at", url.getTimeCard, data);
+        }
+
+
+        export function stampInput(data): JQueryPromise<any> {
+            return ajax("at", url.stampInput, data);
+        }
+
+        export function getError(data): JQueryPromise<any> {
+            return ajax("at", url.getError + "/" + data.pageNo + "/" + data.buttonDisNo);
         }
     }
-    
-    export module model {
-            export interface StampingOutputItemSetDto {
-                stampOutputSetCode: string;
-                stampOutputSetName: string;
-                outputEmbossMethod: boolean;
-                outputWorkHours: boolean
-                outputSetLocation: boolean;
-                outputPosInfor: boolean;
-                outputOT: boolean;
-                outputNightTime: boolean;
-                outputSupportCard: boolean;
-            }
-           
 
-        }
 }
 

@@ -112,5 +112,7 @@ public interface CompanyRepository {
 	Optional<Company> getCompany(String cid);
 	
 	Optional<Company> getComanyNotAbolitionByCid(String cid);
+	
+	Optional<Company> getComanyInfoByCidContractCdAndAboAtr(String cid,String contractCd, int isAbolition);
 }
 
