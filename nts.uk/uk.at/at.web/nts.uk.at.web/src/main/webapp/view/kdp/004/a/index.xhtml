@@ -31,7 +31,21 @@
 				<!-- A1 -->
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
-						<stamp-clock params="setting: stampSetting ,checkHis:function(data, event) { checkHis($vm) } , settingUser: function(data, event) { settingUser($vm)} "></stamp-clock>
+					
+					<div
+						data-bind="component: {
+						name: 'stamp-clock',
+						params: {
+							setting: {
+								textColor: 'rgb(255, 255, 255)',
+								backGroundColor: 'rgb(0, 51, 204)'
+							},
+							events: {
+								setting: function(data, event) { settingUser($vm)},
+								company: function(data, event) { checkHis($vm) }
+							}
+						}
+					}"></div>
 						
 						<div data-bind="if:isUsed" class="panel"
 							style="padding: 0 10px 10px 10px">
