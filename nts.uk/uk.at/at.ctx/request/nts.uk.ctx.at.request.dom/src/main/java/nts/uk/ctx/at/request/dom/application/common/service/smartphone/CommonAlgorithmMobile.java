@@ -95,7 +95,7 @@ public interface CommonAlgorithmMobile {
 	 * @param overtimeAppAtr 残業区分<Optional>
 	 * @return
 	 */
-	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
+	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
 			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr);
 	
 	/**

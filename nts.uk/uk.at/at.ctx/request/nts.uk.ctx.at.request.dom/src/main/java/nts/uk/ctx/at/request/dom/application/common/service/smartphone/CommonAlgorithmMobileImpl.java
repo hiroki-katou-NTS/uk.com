@@ -270,7 +270,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		}
 		// 事前事後の初期選択状態を取得する
 		PrePostInitAtr prePostInitAtr = this.getPrePostInitAtr(
-				appDateLst.get(0), 
+				appDateLst.stream().findFirst(), 
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
 				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
@@ -333,7 +333,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	}
 
 	@Override
-	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
+	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
 			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr) {
 		// INPUT．事前事後区分表示をチェックする(check INPUT. hiển thị phân loại xin trước xin sau)
 		if(prePostDisplayAtr == DisplayAtr.DISPLAY) {
@@ -341,14 +341,14 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			return displayInitialSegment;
 		}
 		// INPUT．申請対象日リストをチェックする(Check INPUT. ApplicationTargerDateList)
-		if(appDate==null) {
+		if(!opAppDate.isPresent()) {
 			// OUTPUT．「事前事後区分」=事前(OUTPUT. [phân loại xin trước xin sau]= xin trước)
 			return PrePostInitAtr.PREDICT;
 		}
 		// 3.事前事後の判断処理(事前事後非表示する場合)
 		PrePostAtr_Old prePostAtr_Old = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
-				appDate, 
+				opAppDate.get(), 
 				overtimeAppAtr.value);
 		return EnumAdaptor.valueOf(prePostAtr_Old.value, PrePostInitAtr.class);
 	}
