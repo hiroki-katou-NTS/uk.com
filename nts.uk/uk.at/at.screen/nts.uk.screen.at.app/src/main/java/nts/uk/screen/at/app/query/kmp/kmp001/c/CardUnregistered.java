@@ -33,6 +33,7 @@ public class CardUnregistered {
 	public List<CardUnregisteredDto> getAll(DatePeriod period) {
 		RetrieveNoStampCardRegisteredServiceRequireImpl require = new RetrieveNoStampCardRegisteredServiceRequireImpl(recordRepo, dakokuRepo);
 		
+		//1: 取得する(@Require, 期間): List<表示する打刻情報>
 		List<StampInfoDisp> stampInfoDisps = GetNewestStampNotRegisteredService.get(require, period);
 		
 		if (stampInfoDisps.isEmpty()) {
@@ -60,7 +61,7 @@ public class CardUnregistered {
 		
 		@Override
 		public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period) {
-			return recordRepo.getStempRcNotResgistNumber(period);
+			return recordRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(), period);
 		}
 
 		@Override
