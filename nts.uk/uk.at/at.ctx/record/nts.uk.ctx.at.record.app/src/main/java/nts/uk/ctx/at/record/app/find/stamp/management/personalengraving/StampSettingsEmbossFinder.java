@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp002.a.ConfirmUseOfStampEmbossCommandHandler;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageOutput;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
@@ -27,9 +27,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.E
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetTimeCardService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -71,31 +74,26 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
-	// 
+	@Inject
+	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
+
+	@Inject
+	private PortalStampSettingsRepository portalStampSettingsrepo;
+
+	@Inject
+	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
+
+	//
 	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
-		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampCardRepo);
-		
-		boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
-		
-		if(!isAvailable) {
-			throw new BusinessException("Msg_1619");
-		}
+		this.confirmHandler.handle(new ConfirmUseOfStampEmbossCommand());
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
-		
-		if(!stampSetting.isPresent()) {
-			throw new BusinessException("Msg_1644");
-		}
-		
-		if(CollectionUtil.isEmpty(stampSetting.get().getLstStampPageLayout()) ) {		
-			throw new BusinessException("Msg_1645","KDP002_1");
-		}
-		
+
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
@@ -111,7 +109,7 @@ public class StampSettingsEmbossFinder {
 
 		return new KDP002AStartPageOutput(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
 	}
-	
+
 	public List<EmployeeStampInfo> getEmployeeStampDatas(DatePeriod period, String employeeId) {
 		List<EmployeeStampInfo> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
@@ -126,17 +124,18 @@ public class StampSettingsEmbossFinder {
 				employeeStampDatas.add(employeeStampData.get());
 			}
 		}
-		
+
 		return employeeStampDatas;
 	}
-	
+
 	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
-				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo);
-		
+				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo,
+				settingsSmartphoneStampRepo, portalStampSettingsrepo);
+
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
-	} 
-	
+	}
+
 	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
 		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
 		return GetTimeCardService.getTimeCard(required, employeeId, date.yearMonth());
@@ -179,7 +178,7 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampDakokuRepo.get(stampNumbers, date);
+			return stampDakokuRepo.get(AppContexts.user().contractCode(),stampNumbers, date);
 		}
 
 	}
@@ -196,44 +195,51 @@ public class StampSettingsEmbossFinder {
 		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
+		@Inject
+		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
+
+		@Inject
+		private PortalStampSettingsRepository portalStampSettingsrepo;
+
 		public StampTypeToSuppressRequiredImpl(StampCardRepository stampCardRepo, StampRecordRepository stampRecordRepo,
 				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
 				WorkingConditionService workingConditionService,
-				PredetemineTimeSettingRepository predetemineTimeSettingRepo) {
+				PredetemineTimeSettingRepository predetemineTimeSettingRepo,
+				SettingsSmartphoneStampRepository settingsSmartphoneStampRepo,
+				PortalStampSettingsRepository portalStampSettingsrepo) {
 			super(stampCardRepo, stampRecordRepo, stampDakokuRepo);
 			this.stampSetPerRepo = stampSetPerRepo;
 			this.workingConditionService = workingConditionService;
 			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
-		}
-
-		@Override
-		public Optional<StampSettingPerson> getStampSet() {
-			return stampSetPerRepo.getStampSet(AppContexts.user().companyId());
+			this.settingsSmartphoneStampRepo = settingsSmartphoneStampRepo;
+			this.portalStampSettingsrepo = portalStampSettingsrepo;
 		}
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+			return this.workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
-			return predetemineTimeSettingRepo.findByWorkTimeCode(AppContexts.user().companyId(), workTimeCode);
+			String companyId = AppContexts.user().companyId();
+			return this.predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
 		}
 
-	}
-	
-	@AllArgsConstructor
-	private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
-		
-		@Inject
-		private StampCardRepository stampCardRepo;
-		
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return stampCardRepo.getListStampCard(sid);
+		public Optional<StampSettingPerson> getStampSet(String companyId) {
+			return this.stampSetPerRepo.getStampSet(companyId);
 		}
-		
+
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+			return this.settingsSmartphoneStampRepo.get(companyId);
+		}
+
+		@Override
+		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
+			return this.portalStampSettingsrepo.get(comppanyID);
+		}
 	}
 
 }

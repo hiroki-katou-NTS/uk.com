@@ -1,108 +1,216 @@
 .img-link {
-    position: absolute;
-    top: 5%;
-    width: 100% !important;
-    left: 0%;
+	position: absolute;
+	top: 5%;
+	width: 100% !important;
+	left: 0%;
 }
 
 .text-button {
-    position: absolute;
-    bottom: -5%;
-    width: 100%;
-    left: 0%;
+	position: absolute;
+	bottom: -5%;
+	width: 100%;
+	left: 0%;
 }
 
 .td-button {
-    padding-left: 3px;
-    padding-top: 5px;
+	padding-left: 3px;
+	padding-top: 5px;
 }
 
 .button {
-    border-radius: 5px;
+	border-radius: 5px;
 }
 
 .stamp-rec-btn {
-    height: 100%;
-    width: 100%; 
+	height: 100%;
+	width: 100%;
 }
 
-.btn1,
-.btn2 {
-    height: 130px;
-    width: 230px;
+.btn1, .btn2 {
+	height: 130px;
+	width: 230px;
 }
 
-.btn3,
-.btn4,
-.btn5,
-.btn6 {
-    height: 55px;
-    width: 230px;
-    margin-top: 5px;
+.btn3, .btn4, .btn5, .btn6 {
+	height: 55px;
+	width: 230px;
+	margin-top: 5px;
 }
 
-.btn2,
-.btn4,
-.btn6 {
-    margin-left: 10px;
+.btn2, .btn4, .btn6 {
+	margin-left: 10px;
 }
 
-.btn5,
-.btn3,
-.btn1 {
-    margin-left: 9px;
+.btn5, .btn3, .btn1 {
+	margin-left: 9px;
 }
+
 .stamp-square-btn {
-    width: 100px;
-    height: 100px;
-}
-.btn_2,
-.btn_3,
-.btn_4 {
-    margin-top: 18px;
-    margin-left: 5px;
+	width: 100px;
+	height: 100px;
 }
 
-.btn_6,
-.btn_7,
-.btn_8 {
-    margin-top: 20px;
-    margin-left: 5px;
+.btn_2, .btn_3, .btn_4 {
+	margin-top: 18px;
+	margin-left: 5px;
+}
+
+.btn_6, .btn_7, .btn_8 {
+	margin-top: 20px;
+	margin-left: 5px;
 }
 
 .btn_1 {
-    margin-top: 18px;
-    margin-left: 33px;
+	margin-top: 18px;
+	margin-left: 33px;
 }
 
 .btn_5 {
-    margin-left: 33px;
-    margin-top: 20px;
+	margin-left: 33px;
+	margin-top: 20px;
 }
 
-.btn-grid-container{
-    width: 68vmin;
-    margin: 0 auto;
+.btn-grid-container {
+	width: 68vmin;
+	margin: 0 auto;
 }
 
-.stamp-rec-btn-container{
-    height: 10vmin;
-    width: 33vmin;
-    margin: 0.5vmin;
-    font-size: 4vmin;
+.stamp-rec-btn-container {
+	height: 10vmin;
+	width: 33vmin;
+	margin: 0.5vmin;
+	font-size: 4vmin;
 }
 
 .btn-pos-1, .btn-pos-2 {
-    height: 20vmin;
+	height: 20vmin;
+}
+
+#stamp-input {
+	min-width: 63vmin;
+}
+
+#stamp-info {
+	min-width: 37vmin;
+}
+
+#stamp-desc {
+	height: 73px;
+	width: 73vmin;
+	font-size: 1.5vmin;
+	padding: 0 0 0 0.5vmin;
+	word-break: break-word;
+	word-wrap: break-word;
+}
+
+#stamp-header {
+	padding-bottom: 10px;
+	position: relative;
+	overflow: hidden;
+}
+
+#stamp-header #stamp-date {
+	padding: 5px 0;
+	text-align: center;
+}
+
+#stamp-header #stamp-time {
+	padding: 5px 0;
+	margin-top: 10px;
+	text-align: center;
+}
+
+#stamp-header #stamp-date #stamp-date-text {
+	font-size: 5vmin !important;
+}
+
+#stamp-header #stamp-time #stamp-time-text {
+	font-size: 10vmin !important;
+}
+
+#stamp-header .button-group {
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+	padding: 0 5px 5px 0;
+	text-align: center;
+}
+
+#stamp-header .button-group .btn-setting {
+	height: 38px;
+	width: 38px;
+	border: 0;
+	margin: 0;
+	margin-bottom: 10px;
+	box-shadow: none;
+	background-color: transparent;
+}
+
+#tab-button-group .ui-tabs-panel {
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container {
+	box-sizing: border-box;
+}
+
+#tab-button-group .ui-tabs-tab {
+	text-align: center;
+	min-width: 72px;
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container>button {
+	box-sizing: border-box;
+	margin-bottom: 10px;
+	font-size: 3vmin;	
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button {
+	width: calc(50% - 3px);
+	height: 10vmin;
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button:first-child,
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>button:first-child+button {
+	height: 20vmin;
+}
+
+#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-1>button {
+	width: calc(25% - 4px);
+	height: 10vmin;
 }
 
 .stamp-square-btn-container {
-    width: 15vmin;
-    height: 15vmin;
-    margin: 1vmin;
-    font-size: 2.5vmin;
+	width: 15vmin;
+	height: 15vmin;
+	margin: 1vmin;
+	font-size: 2.5vmin;
 }
-.square-container{
-    width: 68vmin;
-    padding: 4vmin 0vmin 4vmin 0vmin;
+
+.square-container {
+	width: 68vmin;
+	padding: 4vmin 0vmin 4vmin 0vmin;
+}
+
+/* truong hop co component danh sach nhan vien */
+.btnA4 {
+	float: right;
+	width: 90px;
+	height: 40px;
+	margin-top: 73px;
+	left: 55px;
+}
+
+/* truong hop co component danh sach nhan vien */
+.btn-setting {
+	width: 55px;
+	margin-top: 10px;
+	height: 55px;
+	background-position-x: center;
+	background-position-y: center;
+	background-image: url(set.png);
+	float: right;
+	margin-right: 9px;
+	border-radius: 41px;
 }

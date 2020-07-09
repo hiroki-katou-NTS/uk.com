@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />			
+			<com:stylefile path="kdp003.a.main.css" />
+			<com:scriptfile path="kdp003.a.service.js" />
+			<com:scriptfile path="kdp003.a.vm.js" />
+			<com:scriptfile path="kdp003.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button tabindex="1" id="btnExportExcel" class="proceed"  data-bind="click: exportExcel, enable: $root.errors.isEmpty">#{i18n.getText('KDP003_4')}</button>
+				<!-- A1_2 -->
+				<button tabindex="2" data-bind="click: openPreviewScrC, enable: $root.errors.isEmpty">#{i18n.getText('KDP003_5')}</button>
+			</div>
+			
+			<div id="content-area">
+				<!-- A2_1 -->
+				<div tabindex="3" id="com-ccg001"></div>
+				<div class="main-content flex-layout">
+					<div class="">
+						<!-- A3_1 -->
+						<div class="panel panel-frame flex-layout period-panel">
+							<!-- A3_2 -->
+							<div data-bind="ntsFormLabel: { inline: true, required: true}">#{i18n.getText('KDP003_6')}</div>
+							<!-- A3_3 -->
+							<!-- A3_4 -->
+							<!-- A3_5 -->
+							<div id="daterangepicker" tabindex="4" data-bind="ntsDateRangePicker: { required: true, 
+																									enable: true, 
+																									showNextPrevious: true, 
+																									value: datepickerValue, 
+																									maxRange: 'oneMonth',
+																									name: '#[KDP003_6]'}"/>
+						</div>
+						
+						<!-- A4_1 -->
+						<div class="panel panel-frame flex-layout">
+							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}" ></div>
+							<!-- A4_2 -->
+							<div data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
+								<div tabindex="5" id="employee-list"></div>
+							</div>
+							
+						</div>
+					</div>
+					<!-- A5_1 -->
+					<div class="flex-layout output-item-cond-panel flex-layout-row panel panel-frame">
+						
+							<!-- A5_2 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_9')}</div>
+							<div class="flex-layout">
+								<!-- A5_3 -->
+								<div tabindex="6" id="combo-box" data-bind="ntsComboBox: {	name: '#[KDP003_10]',
+																				options: lstOutputItemCode,
+																				optionsValue: 'code',
+																				optionsText: 'name',
+																				visibleItemsCount: 5,
+																				value: selectedOutputItemCode,
+																				width: '240px',
+																				columns: [
+																					{ prop: 'code', length: 2 },
+																					{ prop: 'name', length: 8 },
+																				]}"></div>
+								<!-- A5_6 -->
+								<button id="btn-configure" data-bind="click: openScrB, enable: enableCardNOUnregisteStamp" tabindex="7">#{i18n.getText('KDP003_11')}</button>
+							</div>
+							<!-- A5_7 -->
+							<div tabindex="8" data-bind="ntsCheckBox: { checked: checkedCardNOUnregisteStamp }">#{i18n.getText('KDP003_21')}</div>
+					</div>				
+				</div>
+
+			</div>
+			
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

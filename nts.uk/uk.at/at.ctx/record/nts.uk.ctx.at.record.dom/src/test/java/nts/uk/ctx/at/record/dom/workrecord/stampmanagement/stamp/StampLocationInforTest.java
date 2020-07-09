@@ -21,9 +21,9 @@ public class StampLocationInforTest {
 	public void testStampLocationInfor() {
 		boolean outsideAreaAtr = true; //dummy
 		GeoCoordinate positionInfor =  new GeoCoordinate(1, 2); //dummy
-		StampLocationInfor stampLocationInfor = new StampLocationInfor(
-				outsideAreaAtr, 
-				positionInfor);
+		StampLocationInfor stampLocationInfor = new StampLocationInfor(positionInfor,
+				outsideAreaAtr
+				);
 		NtsAssert.invokeGetters(stampLocationInfor); 
 	}
 

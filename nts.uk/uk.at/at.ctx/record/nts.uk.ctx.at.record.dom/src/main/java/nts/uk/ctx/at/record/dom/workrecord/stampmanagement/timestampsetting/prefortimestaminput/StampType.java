@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pre
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -14,7 +15,7 @@ import nts.uk.shr.com.i18n.TextResource;
  * @author phongtq
  *
  */
-
+@AllArgsConstructor
 public class StampType implements DomainValue {
 	
 	/** 勤務種類を半休に変更する */
@@ -86,13 +87,31 @@ public class StampType implements DomainValue {
 	 * @return
 	 */
 	public String createStampTypeDisplay() {
+		
 		if (this.setPreClockArt == SetPreClockArt.DIRECT) {
 			return TextResource.localize("KDP011_35");
-		} else if (this.setPreClockArt == SetPreClockArt.BOUNCE) {
+		}
+		if (this.setPreClockArt == SetPreClockArt.BOUNCE) {
 			return TextResource.localize("KDP011_36");
-		} else if (changeCalArt == ChangeCalArt.EARLY_APPEARANCE) {
+		}
+		
+		if (this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE && this.changeClockArt.equals(ChangeClockArt.GOING_TO_WORK)) {
 			return TextResource.localize("KDP011_37");
-		} else if (changeCalArt == ChangeCalArt.BRARK) {
+		}
+		
+		if (this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE && this.changeClockArt.equals(ChangeClockArt.FIX)) {
+			return TextResource.localize("KDP011_40");
+		}
+		
+		if (this.changeCalArt == ChangeCalArt.BRARK && this.changeClockArt.equals(ChangeClockArt.GOING_TO_WORK)) {
+			return TextResource.localize("KDP011_38");
+		}
+		
+		if (this.changeCalArt == ChangeCalArt.BRARK && this.changeClockArt.equals(ChangeClockArt.FIX)) {
+			return TextResource.localize("KDP011_41");
+		}
+		
+		if (this.changeCalArt == ChangeCalArt.BRARK) {
 			return TextResource.localize("KDP011_38");
 		}
 

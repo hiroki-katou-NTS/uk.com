@@ -1,22 +1,18 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var nts;
 (function (nts) {
@@ -31,14 +27,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -51,7 +47,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -64,7 +60,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -74,7 +70,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -84,28 +80,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -128,7 +124,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -197,7 +193,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -568,7 +564,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2693,7 +2689,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6644,11 +6639,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7746,6 +7739,10 @@ var nts;
                             options.overflowTooltipOn = this.overflowTooltipOn;
                         }
                     };
+                    ExTable.prototype.getChartRuler = function () {
+                        var self = this;
+                        return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+                    };
                     /**
                      * Create.
                      */
@@ -7775,8 +7772,7 @@ var nts;
                         self.$container.classList.add(NAMESPACE);
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -9418,7 +9414,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -16239,7 +16235,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -16270,7 +16265,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -16279,7 +16273,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -16299,7 +16292,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -16598,7 +16590,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -16611,7 +16602,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -16628,7 +16618,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -18617,10 +18607,10 @@ var nts;
                                 }
                                 if (constraint) {
                                     var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
-                                    if (primitive) { // if primitive is avaiable
+                                    if (primitive) {
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-                                            case 'String': // check length
+                                            case 'String':// check length
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -18670,7 +18660,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -18712,7 +18702,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -18744,7 +18734,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -19297,7 +19287,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -19737,7 +19727,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -21193,7 +21183,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -22314,8 +22304,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -26487,7 +26476,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -26520,7 +26509,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
+                                for (var i = 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28677,7 +28666,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28686,7 +28675,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -31669,7 +31658,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                    if (_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -32396,8 +32385,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -34585,6 +34573,342 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var chart;
+            (function (chart_1) {
+                chart_1.warning = [];
+                var Ruler = /** @class */ (function () {
+                    function Ruler(chartArea) {
+                        this.definedType = {};
+                        this.gcChart = {};
+                        this.lineLock = {};
+                        if (_.isNil(chartArea)) {
+                            chart_1.warning.push(new Error("chartArea is undefined."));
+                        }
+                        this.chartArea = chartArea;
+                    }
+                    Ruler.prototype.addType = function (options) {
+                        var self = this;
+                        if (_.isNil(options.name)) {
+                            chart_1.warning.push(new Warn("Set type name"));
+                            return;
+                        }
+                        self.definedType[options.name] = new DefinedType(options);
+                        if (options.locked) {
+                            self.lineLock[options.lineNo] = true;
+                        }
+                    };
+                    Ruler.prototype.addChart = function (options) {
+                        var self = this, chart = new GanttChart(options);
+                        if (chart.locked) {
+                            self.lineLock[chart.lineNo] = true;
+                        }
+                        if ((self.gcChart[options.lineNo] || {})[options.id]) {
+                            chart_1.warning.push(new Warn("Chart id existed"));
+                            return;
+                        }
+                        if (chart.newChart())
+                            return;
+                        if (_.isNil(self.gcChart[options.lineNo])) {
+                            self.gcChart[options.lineNo] = {};
+                        }
+                        self.gcChart[options.lineNo][options.id] = chart;
+                        if (!_.isNil(options.parent)) {
+                            var parent = self.gcChart[options.lineNo][options.parent];
+                            if (parent) {
+                                parent.children.push(chart);
+                            }
+                        }
+                        self.chartArea.appendChild(chart.html);
+                        var docMove = function () {
+                            if (_.keys(self.slideTrigger).length === 0)
+                                return;
+                            var diff = event.pageX - self.slideTrigger.pageX, nearestLine, parentChart;
+                            if (!_.isNil(chart.parent)) {
+                                parentChart = self.gcChart[chart.lineNo][chart.parent];
+                            }
+                            if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
+                                if (!chart.canSlide)
+                                    return;
+                                nearestLine = Math.round((self.slideTrigger.start + diff / chart.unitToPx) / chart.snatchInterval);
+                                var step_1 = nearestLine - self.slideTrigger.start, pDec_1 = { left: nearestLine * chart.unitToPx, start: nearestLine, end: self.slideTrigger.end + step_1 };
+                                if (chart.limitStart > pDec_1.start || chart.limitEnd < pDec_1.end)
+                                    return;
+                                if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
+                                    return;
+                                _.forEach(chart.children, function (child) {
+                                    var childSlide;
+                                    if (child.followParent) {
+                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                        if (!childSlide)
+                                            return;
+                                        child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: (childSlide.start + step_1) * child.unitToPx });
+                                    }
+                                    if (diff > 0 && child.start < pDec_1.start) {
+                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                        if (!childSlide)
+                                            return;
+                                        child.reposition({ width: childSlide.length + (childSlide.start - pDec_1.start) * child.unitToPx, left: pDec_1.start * child.unitToPx, start: pDec_1.start });
+                                    }
+                                    else if (diff < 0 && child.end > pDec_1.end) {
+                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                        if (!childSlide)
+                                            return;
+                                        child.reposition({ width: childSlide.length + (pDec_1.end - childSlide.end) * child.unitToPx, end: pDec_1.end });
+                                    }
+                                });
+                                chart.reposition(pDec_1);
+                            }
+                            else if (self.slideTrigger.holdPos === HOLD_POS.START) {
+                                if (chart.fixed === CHART_FIXED.START || chart.fixed === CHART_FIXED.BOTH)
+                                    return;
+                                nearestLine = Math.round((self.slideTrigger.start + diff / chart.unitToPx) / chart.snatchInterval);
+                                var pDec_2 = { width: self.slideTrigger.length + (self.slideTrigger.start - nearestLine) * chart.unitToPx, left: nearestLine * chart.unitToPx, start: nearestLine };
+                                if (chart.limitStart > pDec_2.start)
+                                    return;
+                                if (pDec_2.start + chart.snatchInterval > chart.end
+                                    || (parentChart && !self.slideTrigger.overlap && pDec_2.start < parentChart.start))
+                                    return;
+                                _.forEach(chart.children, function (child) {
+                                    if (child.start < pDec_2.start) {
+                                        var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                        if (!childSlide)
+                                            return;
+                                        child.reposition({ width: childSlide.length + (childSlide.start - pDec_2.start) * child.unitToPx, left: pDec_2.start * child.unitToPx, start: pDec_2.start });
+                                    }
+                                });
+                                if (self.slideTrigger.overlap) {
+                                    parentChart.reposition({ width: self.slideTrigger.overlap.parentLength + (self.slideTrigger.start - nearestLine) * parentChart.unitToPx, left: pDec_2.left, start: pDec_2.start });
+                                }
+                                chart.reposition(pDec_2);
+                            }
+                            else {
+                                if (chart.fixed === CHART_FIXED.END || chart.fixed === CHART_FIXED.BOTH)
+                                    return;
+                                nearestLine = Math.round((self.slideTrigger.end + diff / chart.unitToPx) / chart.snatchInterval);
+                                var pDec_3 = { width: self.slideTrigger.length + (nearestLine - self.slideTrigger.end) * chart.unitToPx, end: nearestLine };
+                                if (chart.limitEnd < pDec_3.end)
+                                    return;
+                                if (chart.start + chart.snatchInterval > pDec_3.end
+                                    || (parentChart && !self.slideTrigger.overlap && pDec_3.end > parentChart.end))
+                                    return;
+                                _.forEach(chart.children, function (child) {
+                                    if (child.end > pDec_3.end) {
+                                        var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                        if (!childSlide)
+                                            return;
+                                        child.reposition({ width: childSlide.length + (pDec_3.end - childSlide.end) * child.unitToPx, end: pDec_3.end });
+                                    }
+                                });
+                                if (self.slideTrigger.overlap) {
+                                    parentChart.reposition({ width: self.slideTrigger.overlap.parentLength + (nearestLine - self.slideTrigger.end) * parentChart.unitToPx, end: pDec_3.end });
+                                }
+                                chart.reposition(pDec_3);
+                            }
+                        };
+                        var docUp = function () {
+                            document.removeEventListener("mousemove", docMove);
+                            document.removeEventListener("mouseup", docUp);
+                            var e = document.createEvent('CustomEvent');
+                            if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
+                                e.initCustomEvent("gcDrag", true, true, [chart.start, chart.end]);
+                            }
+                            else {
+                                e.initCustomEvent("gcResize", true, true, [chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START]);
+                            }
+                            self.slideTrigger = {};
+                            chart.html.dispatchEvent(e);
+                        };
+                        chart.html.addEventListener("mousedown", function () {
+                            var holdPos = self.getHoldPos(chart);
+                            if (holdPos === HOLD_POS.OUT)
+                                return;
+                            self.slideTrigger = {
+                                pageX: event.pageX,
+                                holdPos: holdPos,
+                                length: parseFloat(chart.html.style.width),
+                                start: chart.start,
+                                end: chart.end,
+                                children: _.map(chart.children, function (c) { return { id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width) }; })
+                            };
+                            if (!_.isNil(chart.parent)) {
+                                var parentChart = self.gcChart[chart.lineNo][chart.parent];
+                                if ((holdPos === HOLD_POS.START && parentChart.start === chart.start)
+                                    || (holdPos === HOLD_POS.END && parentChart.end === chart.end)) {
+                                    self.slideTrigger.overlap = { parentLength: parseFloat(parentChart.html.style.width) };
+                                }
+                            }
+                            document.addEventListener("mousemove", docMove);
+                            document.addEventListener("mouseup", docUp);
+                        });
+                        chart.html.addEventListener("mousemove", function () {
+                            var holdPos = self.getHoldPos(chart);
+                            if (holdPos === HOLD_POS.START || holdPos === HOLD_POS.END) {
+                                chart.cursor = "col-resize";
+                            }
+                            else if (holdPos === HOLD_POS.BODY) {
+                                chart.cursor = "e-resize";
+                            }
+                            chart.html.style.cursor = chart.cursor;
+                        });
+                        return chart.html;
+                    };
+                    Ruler.prototype.getHoldPos = function (chart) {
+                        var self = this;
+                        if (self.lineLock[chart.lineNo] || chart.fixed === CHART_FIXED.BOTH)
+                            return HOLD_POS.OUT;
+                        if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
+                            return HOLD_POS.START;
+                        }
+                        else if (chart.fixed !== CHART_FIXED.END
+                            && (chart.end - chart.start) * chart.unitToPx - chart.drawerSize < event.offsetX) {
+                            return HOLD_POS.END;
+                        }
+                        else {
+                            return HOLD_POS.BODY;
+                        }
+                    };
+                    Ruler.prototype.addChartWithType = function (typeName, options) {
+                        var self = this, chartType = self.definedType[typeName];
+                        if (_.isNil(options)) {
+                            options = {};
+                        }
+                        if (chartType) {
+                            _.forEach(_.keys(chartType), function (key) {
+                                if (chartType[key] !== undefined) {
+                                    options[key === "name" ? "definedType" : key] = chartType[key];
+                                }
+                            });
+                        }
+                        return self.addChart(options);
+                    };
+                    Ruler.prototype.setLock = function (lines, lock) {
+                        var self = this;
+                        _.forEach(lines, function (line) { return self.lineLock[line] = lock; });
+                    };
+                    return Ruler;
+                }());
+                chart_1.Ruler = Ruler;
+                var DefinedType = /** @class */ (function () {
+                    function DefinedType(options) {
+                        this.name = options.name;
+                        this.parent = options.parent;
+                        this.lineNo = options.lineNo;
+                        this.color = options.color;
+                        this.followParent = options.followParent;
+                        this.canSlide = options.canSlide;
+                        this.cursor = options.cursor;
+                        this.limitStart = options.limitStart;
+                        this.limitEnd = options.limitEnd;
+                        this.unitToPx = options.unitToPx;
+                        this.fixed = options.fixed;
+                        this.locked = options.locked;
+                        this.chartWidth = options.chartWidth;
+                        this.lineWidth = options.lineWidth;
+                        this.snatchInterval = options.snatchInterval;
+                        this.drawerSize = options.drawerSize;
+                    }
+                    return DefinedType;
+                }());
+                var GanttChart = /** @class */ (function () {
+                    function GanttChart(options) {
+                        this.children = [];
+                        this.maxArea = 50;
+                        this.zIndex = 1000;
+                        this.color = "#b8f441";
+                        this.origin = [0, 0];
+                        this.chartWidth = 15;
+                        this.lineWidth = 20;
+                        this.unitToPx = 10;
+                        this.snatchInterval = 1;
+                        this.canSlide = false;
+                        this.limitStart = 0;
+                        this.followParent = false;
+                        this.fixed = CHART_FIXED.NONE;
+                        this.drawerSize = 3;
+                        this.locked = false;
+                        var self = this;
+                        if (!_.keys(options).length)
+                            return;
+                        self.limitEnd = options.limitEnd || options.maxArea || self.maxArea;
+                        $.extend(self, options);
+                    }
+                    GanttChart.prototype.newChart = function () {
+                        if (_.isNil(this.id)) {
+                            chart_1.warning.push(new Warn("Not set id"));
+                            return 1;
+                        }
+                        if (_.isNil(this.lineNo)) {
+                            chart_1.warning.push(new Warn("Not set lineNo"));
+                            return 1;
+                        }
+                        if (this.limitStart > this.start || this.limitEnd < this.end) {
+                            chart_1.warning.push(new Warn("Start/end is not valid"));
+                            return 1;
+                        }
+                        var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
+                        chart.setAttribute("id", self.lineNo + "-" + self.id);
+                        chart.className = "nts-ganttchart";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + (self.end - self.start) * self.unitToPx + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; ";
+                        self.html = chart;
+                        self.html.addEventListener("selectstart", function () { return false; });
+                    };
+                    GanttChart.prototype.reposition = function (style) {
+                        var self = this;
+                        //            if ((_.has(style, "start") && style.start < self.limitStart)
+                        //                || (_.has(style, "end") && style.end > self.limitEnd)) return;
+                        if (_.has(style, "start")) {
+                            self.start = style.start;
+                        }
+                        if (_.has(style, "end")) {
+                            self.end = style.end;
+                        }
+                        if (_.has(style, "top")) {
+                            self.html.style.top = style.top + "px";
+                        }
+                        if (_.has(style, "left")) {
+                            self.html.style.left = style.left + "px";
+                        }
+                        if (_.has(style, "width")) {
+                            if (style.width <= 0) {
+                                self.html.parentNode.removeChild(self.html);
+                            }
+                            else {
+                                self.html.style.width = style.width + "px";
+                            }
+                        }
+                    };
+                    return GanttChart;
+                }());
+                var Warn = /** @class */ (function () {
+                    function Warn(msg) {
+                        this.message = msg;
+                    }
+                    return Warn;
+                }());
+                var CHART_FIXED;
+                (function (CHART_FIXED) {
+                    CHART_FIXED["NONE"] = "None";
+                    CHART_FIXED["START"] = "Start";
+                    CHART_FIXED["END"] = "End";
+                    CHART_FIXED["BOTH"] = "Both";
+                })(CHART_FIXED || (CHART_FIXED = {}));
+                var HOLD_POS;
+                (function (HOLD_POS) {
+                    HOLD_POS["START"] = "Start";
+                    HOLD_POS["END"] = "End";
+                    HOLD_POS["BODY"] = "Body";
+                    HOLD_POS["OUT"] = "Out";
+                })(HOLD_POS || (HOLD_POS = {}));
+            })(chart = ui.chart || (ui.chart = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -35808,7 +36132,8 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60, formatter: function createButton(deleteField, row) {
+                            width: 60,
+                            formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -35987,7 +36312,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -41990,7 +42315,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -42813,7 +43138,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -43456,8 +43781,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -43852,7 +44176,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -46828,7 +47153,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -46856,7 +47180,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -47385,7 +47709,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
         return $.Deferred().resolve()
             .then(function () {
-            nts.uk.sessionStorage.setItem(name, $saveValue_1);
+            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
         })
             .then(function () { return $storeSession(name); });
     }
@@ -47393,14 +47717,14 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         // getter method
         return $.Deferred().resolve()
             .then(function () {
-            var $result = nts.uk.sessionStorage.getItem(name);
+            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
             if ($result.isPresent()) {
                 var $string = atob($result.value)
                     .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
                     .join('');
                 return JSON.parse($string).$value;
             }
-            return null;
+            return windows.getShared(name);
         });
     }
 }, $storage = function ($data) {
@@ -47411,7 +47735,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.sessionStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(OPENWD);
             return value;
         });
     }
@@ -47464,6 +47788,13 @@ function component(options) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            Object.defineProperty($viewModel, 'dispose', {
+                                value: function dispose() {
+                                    if (typeof $viewModel.destroyed === 'function') {
+                                        $viewModel.destroyed.apply($viewModel, []);
+                                    }
+                                }
+                            });
                             return $viewModel;
                         }
                     }
@@ -47474,13 +47805,13 @@ function component(options) {
 }
 function handler(params) {
     return function (constructor) {
-        var _a;
         ko.bindingHandlers[params.bindingName] = new constructor();
         ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
         // block rewrite binding
         if (params.validatable) {
             ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
         }
+        var _a;
     };
 }
 // create base viewmodel for all implement
@@ -47546,28 +47877,28 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
     info: {
         value: function $info() {
             var dfd = $.Deferred();
-            dialog.info.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            dialog.info.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     alert: {
         value: function $alert() {
             var dfd = $.Deferred();
-            dialog.alert.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            dialog.alert.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     error: {
         value: function $error() {
             var dfd = $.Deferred();
-            dialog.error.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            dialog.error.apply(null, arguments.slice()).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     confirm: {
         value: function $confirm() {
             var dfd = $.Deferred();
-            var $cf = dialog.confirm.apply(null, __spreadArrays(arguments));
+            var $cf = dialog.confirm.apply(null, arguments.slice());
             $cf.ifYes(function () {
                 dfd.resolve('yes');
             });
@@ -47585,7 +47916,7 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
     self: {
         value: function $to() {
-            $jump.apply(null, __spreadArrays([].slice.apply(arguments, [])));
+            $jump.apply(null, [].slice.apply(arguments, []).slice());
         }
     },
     blank: {
@@ -47596,7 +47927,34 @@ Object.defineProperties($jump, {
         }
     }
 });
+var $size = function (height, width) {
+    var wd = nts.uk.ui.windows.getSelf();
+    if (wd) {
+        wd.setSize(height, width);
+    }
+};
+Object.defineProperties($size, {
+    width: {
+        value: function (width) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setWidth(width);
+            }
+        }
+    },
+    height: {
+        value: function (height) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setHeight(height);
+            }
+        }
+    }
+});
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+    size: {
+        value: $size
+    },
     close: {
         value: function $close(result) {
             if (window.top !== window) {
@@ -47607,28 +47965,52 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
         }
     },
     modal: {
-        value: function $modal(path, params) {
+        value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modal(path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modal(webapp).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modal(webapp, path).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
     modeless: {
-        value: function $modeless(path, params) {
+        value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modeless(path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modeless(webapp).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modeless(webapp, path).onClosed(function () {
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
@@ -47638,9 +48020,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
                 return $storeSession(name);
             }
             else {
-                $storeSession(name, params);
-                // for old page
-                windows.setShared(name, params);
+                return $.Deferred().resolve()
+                    .then(function () {
+                    $storeSession(name, params);
+                    // for old page
+                    windows.setShared(name, params);
+                });
             }
         }
     }
@@ -47720,7 +48105,6 @@ BaseViewModel.prototype.$errors = function $errors() {
         }
     }
     return $.Deferred().resolve()
-        /** Nếu có lỗi thì trả về false, không thì true */
         .then(function () { return !$('.nts-input').ntsError('hasError'); });
     ;
 };
@@ -47729,9 +48113,7 @@ BaseViewModel.prototype.$validate = function $validate(act) {
     var args = Array.prototype.slice.apply(arguments);
     if (args.length === 0) {
         return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
             .then(function () { return $('.nts-input').trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
             .then(function () { return !$('.nts-input').ntsError('hasError'); });
     }
     else if (args.length === 1) {
@@ -47743,19 +48125,75 @@ BaseViewModel.prototype.$validate = function $validate(act) {
             selectors_1 = act.join(', ');
         }
         return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
             .then(function () { return $(selectors_1).trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
             .then(function () { return !$(selectors_1).ntsError('hasError'); });
     }
     else {
         var selectors_2 = args.join(', ');
         return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
             .then(function () { return $(selectors_2).trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
             .then(function () { return !$(selectors_2).ntsError('hasError'); });
     }
 };
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+var I18nBindingHandler = /** @class */ (function () {
+    function I18nBindingHandler() {
+    }
+    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var msg = ko.unwrap(valueAccessor());
+        var params = ko.unwrap(allBindingsAccessor.get('params'));
+        $(element).text(nts.uk.resource.getText(msg, params));
+    };
+    I18nBindingHandler = __decorate([
+        handler({
+            bindingName: 'i18n',
+            validatable: true,
+            virtual: false
+        })
+    ], I18nBindingHandler);
+    return I18nBindingHandler;
+}());
+var IconBindingHandler = /** @class */ (function () {
+    function IconBindingHandler() {
+    }
+    IconBindingHandler.prototype.update = function (el, value) {
+        ko.computed(function () {
+            var numb = ko.toJS(value());
+            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+            $.get(url)
+                .then(function () {
+                $(el).css({
+                    'background-image': "url('" + url + "')",
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
+            });
+        });
+    };
+    IconBindingHandler = __decorate([
+        handler({
+            bindingName: 'icon',
+            validatable: true,
+            virtual: false
+        })
+    ], IconBindingHandler);
+    return IconBindingHandler;
+}());
+var DateBindingHandler = /** @class */ (function () {
+    function DateBindingHandler() {
+    }
+    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var date = ko.unwrap(valueAccessor());
+        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+        $(element).text(moment(date).format(format));
+    };
+    DateBindingHandler = __decorate([
+        handler({
+            bindingName: 'date',
+            validatable: true,
+            virtual: false
+        })
+    ], DateBindingHandler);
+    return DateBindingHandler;
+}());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

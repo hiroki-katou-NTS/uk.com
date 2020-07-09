@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.stamp.application;
 import java.util.Arrays;
 import java.util.List;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+
 /**
  * エラー種類
  * @author phongtq
@@ -73,11 +75,11 @@ public enum CheckErrorType {
 	 * @param value
 	 * @return
 	 */
-	public List<String> getErrorAlarm(){
+	public List<ErrorAlarmWorkRecordCode> getErrorAlarm(){
 		if(this == CheckErrorType.IMPRINT_LEAKAGE)
-			return  Arrays.asList("S001");
+			return  Arrays.asList(new ErrorAlarmWorkRecordCode("S001"));
 		if(this == CheckErrorType.HOKIDAY_EMBOSSING)
-			return Arrays.asList("S005");
-		return Arrays.asList("D001", "D003");
+			return Arrays.asList(new ErrorAlarmWorkRecordCode("S005"));
+		return Arrays.asList(new ErrorAlarmWorkRecordCode("D001"), new ErrorAlarmWorkRecordCode("D003"));
 	} 
 }

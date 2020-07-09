@@ -1,52 +1,77 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kdp.share {
-    const DATE_FORMAT = 'YYYY年 M月 D日 (ddd)';
-    const TIME_FORMAT = 'HH:mm';
-    
-    @component({
-        name: 'stamp-clock',
-        template: `
-        <div id="stamp-header">
-            <div class="panel" id="stamp-date"
-                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-            <span id="stamp-date-text" data-bind="text: displayDate"></span>
-            </div>
-                <div class="panel" id="stamp-time"
-                data-bind="style: {'background-color' : stampSetting().backGroundColor, 'color': stampSetting().textColor }">
-                <span id="stamp-time-text" data-bind="text: displayTime"></span>
-            </div>
-        </div>
-    `})
-    export class StampClock extends ko.ViewModel {
-        time: KnockoutObservable<Date>;
-        displayDate: KnockoutObservable<String> = ko.observable('');
-        displayTime: KnockoutObservable<String> = ko.observable('');
-        stampSetting: KnockoutObservable<any>;
+	const template = `
+	<div class="panel" id="stamp-date"
+		data-bind="style: {
+			'color': ko.toJS(settings).textColor,
+			'background-color': ko.toJS(settings).backGroundColor
+		}">
+    	<span id="stamp-date-text" data-bind="date: time, format: 'YYYY年M月D日(ddd)'"></span>
+    </div>
+    <div class="panel" id="stamp-time"
+		data-bind="style: {
+			'color': ko.toJS(settings).textColor,
+			'background-color': ko.toJS(settings).backGroundColor
+		}">
+        <span id="stamp-time-text" data-bind="date: time, format: 'HH:mm'"></span>
+    </div>
+	<div class="button-group" data-bind="if: !!events">
+		<div data-bind="if: !!events.setting">
+			<button class="btn-setting" data-bind="icon: 5, attr: { title: $component.$i18n('KDP003_3') }, click: events.setting"></button>
+		</div>
+		<div data-bind="if: !!events.company">
+			<button class="btn-company proceed x-large" data-bind="i18n: 'KDP003_3', click: events.company"></button>
+		</div>
+	</div>
+`;
 
-        constructor(params) {
-            let self = this;
-            self.stampSetting = ko.observable(params.setting());
-            moment.locale('ja');
-            nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                self.displayTime(moment.utc(res).format(TIME_FORMAT));
-                self.displayDate(moment.utc(res).format(DATE_FORMAT));
-            });
-            
-            setInterval(() => {
-                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                    self.displayTime(moment.utc(res).format(TIME_FORMAT));
-                });
-            }, 2000);
+	@component({
+		name: 'stamp-clock',
+		template
+	})
+	export class StampClock extends ko.ViewModel {
+		time: KnockoutObservable<Date> = ko.observable(new Date());
+		settings: KnockoutObservable<StampColor> = ko.observable({
+			textColor: 'rgb(255, 255, 255)',
+			backGroundColor: 'rgb(0, 51, 204)'
+		});
 
-            self.addCorrectionInterval(self.stampSetting().correctionInterval);
-        }
+		events!: ClickEvent;
 
-        public addCorrectionInterval(minute: number) {
-            let self = this;
-            setInterval(() => {
-                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                    self.displayDate(moment.utc(res).format(DATE_FORMAT));
-                });
-            }, minute * 60000);
-        }
-    }
+		created(params?: StampClocParam) {
+			const vm = this;
+
+			if (params) {
+				const { setting, events } = ko.toJS(params);
+				const { textColor, backGroundColor } = setting || { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+				
+				vm.events = events;
+				vm.settings({ textColor, backGroundColor });
+			}
+
+			setInterval(() => vm.time(vm.$date.now()), 1000);
+		}
+
+		mounted() {
+			const vm = this;
+
+			$(vm.$el).attr('id', 'stamp-header');
+		}
+	}
+
+	export interface StampClocParam {
+		events?: ClickEvent;
+		setting?: StampColor;
+	}
+
+	export interface ClickEvent {
+		setting: () => void;
+		company:  () =>void;
+	}
+
+	export interface StampColor {
+		textColor: string;
+		backGroundColor: string;
+	}
 }

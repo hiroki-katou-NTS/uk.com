@@ -4,7 +4,7 @@ const prefix = 'nts.uk.storage'
 	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
-	, $storeSession = function(name: string, params?: any) {
+	, $storeSession = function (name: string, params?: any) {
 		if (arguments.length === 2) {
 			// setter method
 			const $value = JSON.stringify({ $value: params })
@@ -12,14 +12,14 @@ const prefix = 'nts.uk.storage'
 
 			return $.Deferred().resolve()
 				.then(() => {
-					nts.uk.sessionStorage.setItem(name, $saveValue);
+					nts.uk.localStorage.setItem(`${prefix}.${name}`, $saveValue);
 				})
 				.then(() => $storeSession(name));
 		} else if (arguments.length === 1) {
 			// getter method
 			return $.Deferred().resolve()
 				.then(() => {
-					const $result = nts.uk.sessionStorage.getItem(name);
+					const $result = nts.uk.localStorage.getItem(`${prefix}.${name}`);
 
 					if ($result.isPresent()) {
 						const $string = atob($result.value)
@@ -29,18 +29,18 @@ const prefix = 'nts.uk.storage'
 						return JSON.parse($string).$value;
 					}
 
-					return null;
+					return windows.getShared(name);
 				});
 		}
 	}
-	, $storage = function($data?: any) {
+	, $storage = function ($data?: any) {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
 			return $.Deferred().resolve()
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
-					nts.uk.sessionStorage.removeItem(OPENWD);
+					nts.uk.localStorage.removeItem(OPENWD);
 
 					return value;
 				});
@@ -49,7 +49,7 @@ const prefix = 'nts.uk.storage'
 
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
 				const $viewModel = new ctor($params)
@@ -78,7 +78,7 @@ function bean(): any {
 }
 
 function component(options: { name: string; template: string; }): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		return $.Deferred().resolve(options.template.match(/\.html$/))
 			.then((url: boolean) => {
 				return url ? $.get(options.template) : options.template;
@@ -108,6 +108,15 @@ function component(options: { name: string; template: string; }): any {
 									}
 								});
 
+								Object.defineProperty($viewModel, 'dispose', {
+									value: function dispose() {
+
+										if (typeof $viewModel.destroyed === 'function') {
+											$viewModel.destroyed.apply($viewModel, []);
+										}
+									}
+								});
+
 								return $viewModel;
 							}
 						}
@@ -117,16 +126,17 @@ function component(options: { name: string; template: string; }): any {
 	}
 }
 
-function handler(params: { virtual?: boolean; bindingName: string;	validatable?: boolean; }) {
-    return function (constructor: { new(): KnockoutBindingHandler; }) {
-        ko.bindingHandlers[params.bindingName] = new constructor();
-        ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
 
-        // block rewrite binding
-        if (params.validatable) {
-            ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
-        }
-    }
+	return function (constructor: { new(): KnockoutBindingHandler; }) {
+		ko.bindingHandlers[params.bindingName] = new constructor();
+		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
+
+		// block rewrite binding
+		if (params.validatable) {
+			ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
+		}
+	}
 }
 
 // create base viewmodel for all implement
@@ -268,7 +278,40 @@ Object.defineProperties($jump, {
 	}
 });
 
+
+const $size = function (height: string | number, width: string | number) {
+	const wd = nts.uk.ui.windows.getSelf();
+
+	if (wd) {
+		wd.setSize(height, width);
+	}
+};
+
+Object.defineProperties($size, {
+	width: {
+		value: function (width: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setWidth(width);
+			}
+		}
+	},
+	height: {
+		value: function (height: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setHeight(height);
+			}
+		}
+	}
+});
+
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+	size: {
+		value: $size
+	},
 	close: {
 		value: function $close(result?: any) {
 			if (window.top !== window) {
@@ -279,31 +322,53 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		}
 	},
 	modal: {
-		value: function $modal(path: string, params?: any) {
+		value: function $modal(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
+			const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
-			$storage(params).then(() => {
-				windows.sub.modal(path).onClosed(() => {
-					$storage().then(($data) => {
-						jdf.resolve($data);
+			if (nowapp) {
+				$storage(path).then(() => {
+					windows.sub.modal(webapp).onClosed(() => {
+						$storage().then(($data: any) => {
+							jdf.resolve($data);
+						});
 					});
 				});
-			});
+			} else {
+				$storage(params).then(() => {
+					windows.sub.modal(webapp, path).onClosed(() => {
+						$storage().then(($data: any) => {
+							jdf.resolve($data);
+						});
+					});
+				});
+			}
 
 			return jdf.promise();
 		}
 	},
 	modeless: {
-		value: function $modeless(path: string, params?: any) {
+		value: function $modeless(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
+			const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
-			$storage(params).then(() => {
-				windows.sub.modeless(path).onClosed(() => {
-					$storage().then(($data) => {
-						jdf.resolve($data);
+			if (nowapp) {
+				$storage(path).then(() => {
+					windows.sub.modeless(webapp).onClosed(() => {
+						$storage().then(($data: any) => {
+							jdf.resolve($data);
+						});
 					});
 				});
-			});
+			} else {
+				$storage(params).then(() => {
+					windows.sub.modeless(webapp, path).onClosed(() => {
+						$storage().then(($data: any) => {
+							jdf.resolve($data);
+						});
+					});
+				});
+			}
 
 			return jdf.promise();
 		}
@@ -313,9 +378,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 			if (arguments.length == 1) {
 				return $storeSession(name);
 			} else {
-				$storeSession(name, params);
-				// for old page
-				windows.setShared(name, params);
+				return $.Deferred().resolve()
+					.then(() => {
+						$storeSession(name, params);
+						// for old page
+						windows.setShared(name, params);
+					});
 			}
 		}
 	}
@@ -441,3 +509,54 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 };
 
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+
+@handler({
+	bindingName: 'i18n',
+	validatable: true,
+	virtual: false
+})
+class I18nBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
+		const msg = ko.unwrap(valueAccessor());
+		const params = ko.unwrap(allBindingsAccessor.get('params'));
+
+		$(element).text(nts.uk.resource.getText(msg, params));
+	}
+}
+
+@handler({
+	bindingName: 'icon',
+	validatable: true,
+	virtual: false
+})
+class IconBindingHandler implements KnockoutBindingHandler {
+	update(el: HTMLElement, value: () => KnockoutObservable<number> | number) {
+		ko.computed(() => {
+			const numb: number = ko.toJS(value());
+			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
+
+			$.get(url)
+				.then(() => {
+					$(el).css({
+						'background-image': `url('${url}')`,
+						'background-repeat': 'no-repeat',
+						'background-position': 'center'
+					});
+				});
+		});
+	}
+}
+
+@handler({
+	bindingName: 'date',
+	validatable: true,
+	virtual: false
+})
+class DateBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => KnockoutObservable<Date> | Date, allBindingsAccessor?: KnockoutAllBindingsAccessor) {
+		const date = ko.unwrap(valueAccessor());
+		const format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+
+		$(element).text(moment(date).format(format));
+	}
+}

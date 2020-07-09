@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../share/kdp.main.css" />
+			<com:scriptfile path="../../share/kdpbutton.vm.js" />
+			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			<com:stylefile path="kdp004.a.main.css" />
+			<com:scriptfile path="kdp004.a.model.js" />
+			<com:scriptfile path="kdp004.a.vm.js" />
+			<com:scriptfile path="kdp004.a.start.js" />
+			<com:scriptfile path="kdp004.a.service.js" />
+			<com:EnumScript>
+        nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod
+      </com:EnumScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+			<div data-bind="ntsCheckBox: { checked: fingerAuthCkb }">FingerAuth Success</div>
+			</div>
+
+			<div id="content-area" class="cf">
+				<!-- A1 -->
+				<div id="kdp002a" class="cf">
+					<div class="pull-left" id="stamp-input">
+					
+					<div
+						data-bind="component: {
+						name: 'stamp-clock',
+						params: {
+							setting: {
+								textColor: 'rgb(255, 255, 255)',
+								backGroundColor: 'rgb(0, 51, 204)'
+							},
+							events: {
+								setting: function(data, event) { settingUser($vm)},
+								company: function(data, event) { checkHis($vm) }
+							}
+						}
+					}"></div>
+						
+						<div data-bind="if:isUsed" class="panel"
+							style="padding: 0 10px 10px 10px">
+							<div id="stamp-desc"
+								data-bind="style: {'color': stampTab().stampPageCommentColor }">
+								<span data-bind="text: stampTab().stampPageComment"></span>
+							</div>
+							<ui:include src="stamp-tab.xhtml" />
+						</div>
+						<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">
+							<span class=" not_used_label label " data-bind="text:errorMessage"></span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

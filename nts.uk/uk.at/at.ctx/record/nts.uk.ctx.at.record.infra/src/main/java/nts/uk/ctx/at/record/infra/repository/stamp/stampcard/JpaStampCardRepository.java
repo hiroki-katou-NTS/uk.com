@@ -16,11 +16,12 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -33,6 +34,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	private static final String GET_ALL_BY_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.contractCd = :contractCode ";
 	
 //	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids";
+	
+	private static final String GET_BY_SID_AND_CARD_NO = "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.cardNo = :cardNo";
 
 	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
@@ -49,7 +52,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}') ORDER BY sc.SID, sc.REGISTER_DATE ASC, sc.CARD_NUMBER ASC";
 
-	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.registerDate DESC";
+	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.INS_DATE DESC, a.registerDate DESC";
 
 	
 	@Override
@@ -60,7 +63,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return Collections.emptyList();
 
 		return entities.stream()
-				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 	
@@ -73,7 +76,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return Collections.emptyList();
 
 		return entities.stream()
-				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 	
@@ -150,8 +153,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			this.commandProxy().removeAll(entities);
 	}
 
-	private StampCard toDomain(KwkdtStampCard e) {
-		return StampCard.createFromJavaType(e.cardId, e.sid, e.cardNo, e.registerDate, e.contractCd);
+	private StampCard toDomain(KwkdtStampCard ent) {
+		return new StampCard(new ContractCode(ent.contractCd), new StampNumber(ent.cardNo), ent.sid, ent.registerDate,
+				ent.cardId);
 	}
 
 	private KwkdtStampCard toEntity(StampCard domain) {
@@ -193,7 +197,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return Collections.emptyList();
 
 		return entities.stream()
-				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 
@@ -207,9 +211,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			
 			@SuppressWarnings("unchecked")
 			List<Object[]> result = this.getEntityManager().createNativeQuery(query).getResultList();
-
 			result.forEach(f -> {
-				domains.add(StampCard.createFromJavaType(f[0].toString(), f[1].toString(), f[2].toString(), GeneralDate.fromString(f[3].toString(), "yyyy-MM-dd"), f[4].toString()));
+				domains.add(new StampCard(f[4].toString(), f[2].toString(), f[1].toString()));
 			});
 		});
 
@@ -228,7 +231,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			return Collections.emptyList();
 
 		return entities.stream()
-				.map(x -> StampCard.createFromJavaType(x.cardId, x.sid, x.cardNo, x.registerDate, x.contractCd))
+				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 
@@ -387,6 +390,16 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		});
 
 		return stampCards;
+	}
+
+	@Override
+	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber) {
+		Optional<StampCard> domain = this.queryProxy().query(GET_BY_SID_AND_CARD_NO, KwkdtStampCard.class)
+				.setParameter("sid", employeeId).setParameter("cardNo", CardNumber).getSingle(x -> toDomain(x));
+		if (domain.isPresent())
+			return domain;
+		else
+			return Optional.empty();
 	}
 
 }

@@ -1,7 +1,14 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 /**
  * 
  * @author phongtq
@@ -32,5 +39,14 @@ public class StampTypeCommand {
 		this.setPreClockArt = setPreClockArt;
 		this.changeClockArt = changeClockArt;
 		this.changeCalArt = changeCalArt;
+	}
+	
+	public StampType toDomain() {
+		return new StampType(
+				this.changeHalfDay,
+				this.goOutArt == null ? Optional.empty():Optional.of(GoingOutReason.valueOf(this.goOutArt)), 
+				SetPreClockArt.valueOf(this.setPreClockArt), 
+				ChangeClockArt.valueOf(changeClockArt), 
+				ChangeCalArt.valueOf(this.changeCalArt));
 	}
 }

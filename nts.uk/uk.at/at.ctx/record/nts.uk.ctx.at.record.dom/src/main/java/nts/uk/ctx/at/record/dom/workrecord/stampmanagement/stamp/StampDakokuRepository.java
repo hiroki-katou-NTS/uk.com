@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
+/**
+ * 打刻Repository
+ */
 public interface StampDakokuRepository {
 
 	/**
@@ -30,22 +34,30 @@ public interface StampDakokuRepository {
 
 	/**
 	 * [4] 取得する
+	 * 
+	 * @param 契約コード
+	 *            contractCode
 	 * @param stampNumbers
 	 * @param stampDateTime
 	 * @return
 	 */
-	public List<Stamp> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
+	public List<Stamp> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 * [5] 打刻カード未登録の打刻データを取得する
+	 * 
+	 * @param 契約コード
+	 *            contractCode
 	 * @param period
 	 * @return
 	 */
-	public List<Stamp> getStempRcNotResgistNumber(DatePeriod period);
+	public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period);
 	
 	public List<Stamp> getByListCard(List<String> stampNumbers);
 	
 	public List<Stamp> getByDateperiod(String companyId,DatePeriod period);
 	
 	public List<Stamp> getByCardAndPeriod(String companyId,List<String> listCard,DatePeriod period);
+	
+	public Optional<Stamp> get(String contractCode, StampNumber stampNumber);
 }

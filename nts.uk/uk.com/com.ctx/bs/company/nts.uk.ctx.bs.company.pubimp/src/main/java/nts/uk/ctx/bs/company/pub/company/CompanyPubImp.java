@@ -171,4 +171,26 @@ public class CompanyPubImp implements ICompanyPub {
 		
 		return Optional.empty();
 	}
+
+	@Override
+	public List<CompanyExportForKDP003> get(String contractCd, Optional<String> cid, Boolean isAbolition) {
+		
+		List<CompanyExportForKDP003> result = new ArrayList<>();
+		if (!cid.isPresent()) {
+			result = repo.getAllCompanyByContractCdandAboAtr(contractCd, isAbolition ? 1 : 0 )
+					.stream().map(item -> new CompanyExportForKDP003(item.getCompanyCode().v(),item.getCompanyName().v(), item.getCompanyId(), item.getContractCd().v()))
+					.collect(Collectors.toList());
+			
+		}else {
+			
+			Optional<Company> comOpt = repo.getComanyInfoByCidContractCdAndAboAtr(cid.get(), contractCd, isAbolition ? 1 : 0);
+			if (comOpt.isPresent()) {
+				CompanyExportForKDP003 i =  new CompanyExportForKDP003(comOpt.get().getCompanyCode().v(),comOpt.get().getCompanyName().v(), comOpt.get().getCompanyId(), comOpt.get().getContractCd().v());
+				result.add(i);
+			}
+		}
+		return result;
+		
+		
+	}
 }

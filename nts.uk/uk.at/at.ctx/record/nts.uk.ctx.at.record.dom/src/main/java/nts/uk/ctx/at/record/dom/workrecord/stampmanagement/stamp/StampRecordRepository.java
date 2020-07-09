@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -17,10 +18,11 @@ public interface StampRecordRepository {
 
 	/**
 	 * [2] delete(打刻記録)
+	 * @param contractCd
 	 * @param stampNumber
 	 * @param stampDateTime
 	 */
-	public void delete(String stampNumber, GeneralDateTime stampDateTime);
+	public void delete(String contractCd, String stampNumber, GeneralDateTime stampDateTime);
 
 	/**
 	 * [3] update(打刻記録)
@@ -32,15 +34,28 @@ public interface StampRecordRepository {
 	 * [4] 取得する
 	 * @param stampNumbers
 	 * @param stampDateTime
-	 * @return
+	 * @return 
 	 */
 	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 *  [5] 打刻カード未登録の打刻記録データを取得する
 	 * @param period
-	 * @return
+	 * @return List<打刻記録>	
 	 */
 	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period);
+	
+	/**
+	 * [6] 取得する
+	 * 
+	 * @param contractCd
+	 *            契約コード
+	 * @param stampNumber
+	 *            打刻カード番号
+	 * @param stampDateTime
+	 *            打刻日時
+	 * @return Optional<打刻記録>
+	 */
+	public Optional<StampRecord> get(String contractCd, String stampNumber, GeneralDateTime stampDateTime);
 
 }

@@ -49,6 +49,6 @@ public class AddStampSettingPersonCommand {
 		ResultDisplayTime resultDisplayTimes = new ResultDisplayTime(resultDisplayTime);
 		StampingScreenSet stampingScreenSet = new StampingScreenSet(historyDisplayMethods, correctionIntervals, colorSetting, resultDisplayTimes);
 		
-		return new StampSettingPerson(companyId, buttonEmphasisArt, stampingScreenSet);
+		return new StampSettingPerson(companyId, buttonEmphasisArt, stampingScreenSet, null, null);
 	}
 }

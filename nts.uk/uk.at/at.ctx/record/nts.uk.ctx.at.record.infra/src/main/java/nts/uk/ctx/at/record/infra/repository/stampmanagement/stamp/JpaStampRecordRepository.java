@@ -12,10 +12,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecordPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,10 +30,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " where s.pk.cardNumber in  :cardNumbers " 
-			+ " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " 
-			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+			+ " where s.pk.cardNumber in  :cardNumbers " + " and s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
 	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
 			+ " where k.cardNo is NULL " + " and s.pk.stampDateTime >= :startStampDate "
@@ -46,17 +45,19 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 
 	// [2] delete(打刻記録)
 	@Override
-	public void delete(String stampNumber, GeneralDateTime stampDateTime) {
-		this.commandProxy().remove(KrcdtStampRecord.class, new KrcdtStampRecordPk(stampNumber, stampDateTime));
+	public void delete(String contractCd, String stampNumber, GeneralDateTime stampDateTime) {
+		this.commandProxy().remove(KrcdtStampRecord.class,
+				new KrcdtStampRecordPk(contractCd, stampNumber, stampDateTime));
 	}
 
 	// [3] update(打刻記録)
 	@Override
 	public void update(StampRecord stampRecord) {
-		Optional<KrcdtStampRecord> entity = this.queryProxy().find(
-				new KrcdtStampRecordPk(stampRecord.getStampNumber().v(), stampRecord.getStampDateTime()),
-				KrcdtStampRecord.class);
-		if(!entity.isPresent()) return;
+		Optional<KrcdtStampRecord> entity = this.queryProxy()
+				.find(new KrcdtStampRecordPk(stampRecord.getContractCode().v(), stampRecord.getStampNumber().v(),
+						stampRecord.getStampDateTime()), KrcdtStampRecord.class);
+		if (!entity.isPresent())
+			return;
 		this.commandProxy().update(entity.get().toUpdateEntity(stampRecord));
 	}
 
@@ -86,17 +87,28 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
 
+	// [6] 取得する
+	@Override
+	public Optional<StampRecord> get(String contractCd, String stampNumber, GeneralDateTime stampDateTime) {
+		return this.queryProxy()
+				.find(new KrcdtStampRecordPk(contractCd, stampNumber, stampDateTime), KrcdtStampRecord.class)
+				.map(x -> toDomain(x));
+	}
+
 	public KrcdtStampRecord toEntity(StampRecord domain) {
-		String cid = AppContexts.user().companyId();
-		return new KrcdtStampRecord(new KrcdtStampRecordPk(domain.getStampNumber().v(), domain.getStampDateTime()), cid,
-				domain.isStampArt(), domain.getRevervationAtr().value,
-				domain.getEmpInfoTerCode().isPresent() ? domain.getEmpInfoTerCode().get().v() : null);
+		return new KrcdtStampRecord(
+				new KrcdtStampRecordPk(domain.getContractCode().v(), domain.getStampNumber().v(),
+						domain.getStampDateTime()),
+				AppContexts.user().companyId(),
+				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null,
+				domain.getEmpInfoTerCode() != null ? String.valueOf(domain.getEmpInfoTerCode().get().v()) : null);
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
-		return new StampRecord(new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime, entity.stampArt,
-				ReservationArt.valueOf(entity.reservationArt), Optional.ofNullable(
-						entity.workTerminalInfoCd == null ? null : new EmpInfoTerminalCode(entity.workTerminalInfoCd)));
+		return new StampRecord(new ContractCode(entity.pk.contractCd), new StampNumber(entity.pk.cardNumber),
+				entity.pk.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay),
+				Optional.ofNullable(entity.empInfoTerCode == null ? null
+						: new EmpInfoTerminalCode(Integer.valueOf(entity.empInfoTerCode))));
 	}
 
 }
