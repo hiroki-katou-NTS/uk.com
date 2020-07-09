@@ -9,6 +9,7 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -21,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRQDT_APP_REFLECT_STATE")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrqdtAppReflectState extends UkJpaEntity {
 	
 	@EmbeddedId

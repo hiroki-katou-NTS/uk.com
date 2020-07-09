@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * refactor 4
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
  */
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrqdpApplication {
 	
 	@Column(name = "CID")

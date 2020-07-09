@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -27,6 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRQDT_APPLICATION")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrqdtApplication extends UkJpaEntity {
 	
 	@EmbeddedId
