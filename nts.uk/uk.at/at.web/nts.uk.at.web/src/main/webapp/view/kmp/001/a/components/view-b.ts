@@ -58,7 +58,7 @@ const template = `
 					<td class="data">
 						<div id="td-bottom">
 							<div id="td-bottom" data-bind="text: model.employeeCode"></div>
-							<div id="td-bottom" style="margin-left: 10px" data-bind="text: model.businessName"></div>
+							<div id="td-bottom" style="margin-left: 10px" data-bind="text: employee.businessName"></div>
 						</div>
 					</td>
 				</tr>
@@ -69,7 +69,7 @@ const template = `
 						</div>
 					</td>
 					<td class="data">
-						<div id="td-bottom">2000/01/01</div>
+						<div id="td-bottom" data-bind="text: employee.entryDate"></div>
 					</td>
 				</tr>
 				<tr>
@@ -79,7 +79,7 @@ const template = `
 						</div>
 					</td>
 					<td class="data">
-					<div id="td-bottom">2000/01/01</div>
+					<div id="td-bottom" data-bind="text: employee.retiredDate"></div>
 					</td>
 				</tr>
 			</tbody>
@@ -108,6 +108,7 @@ class ViewBComponent extends ko.ViewModel {
 	public items: KnockoutObservableArray<IStampCard> = ko.observableArray([]);
 	public currentCode: KnockoutObservable<string> = ko.observable('');
 	public model: StampCard = new StampCard();
+	public employee: EmployeeVIewB = new EmployeeVIewB();
 
 	created(params: Params) {
 		const vm = this;
@@ -118,17 +119,14 @@ class ViewBComponent extends ko.ViewModel {
 				const stampCards: IStampCard[] = ko.toJS(vm.items);
 				const current = _.find(stampCards, e => e.stampNumber === c);
 				
-				/*if (current) {
-					vm.$ajax(KMP001A_API.GET_INFO_EMPLOYEE + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
-					.then((data: IModel[]) => {
-						vm.model.update(ko.toJS(data));
-						console.log(data);
-						vm.itemsStamCard(ko.toJS(data.stampCardDto));
-						console.log(ko.toJS(vm.itemsStamCard));
+				if (current) {
+					vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(current.employeeId))
+					.then((data: IEmployeeVIewB[]) => {
+						vm.employee.update(ko.toJS(data));
 					});
 				} else {
 					// reset data ve mode them moi
-				}*/
+				}
 			});
 	}
 
@@ -176,6 +174,17 @@ interface IStampCard {
 	employeeId: string;
 }
 
+interface IEmployeeVIewB {
+	birthDay: Date;
+	businessName:string;
+	employeeCode: string;
+	employeeId: string;
+	entryDate: Date;
+	gender: number;
+	pid: string;
+	retiredDate: Date;
+}
+
 class StampCard {
 	stampNumber: KnockoutObservable<String> = ko.observable('');
 	employeeCode: KnockoutObservable<String> = ko.observable('');
@@ -197,5 +206,37 @@ class StampCard {
 		seft.employeeCode(params.employeeCode);
 		seft.businessName(params.businessName);
 		seft.employeeId(params.employeeId);
+	}
+}
+
+class EmployeeVIewB {
+	birthDay: KnockoutObservable<Date | null> = ko.observable(null);
+	businessName:KnockoutObservable<string> = ko.observable('');
+	employeeCode: KnockoutObservable<string> = ko.observable('');
+	employeeId: KnockoutObservable<string> = ko.observable('');
+	entryDate: KnockoutObservable<Date | null> = ko.observable(null);
+	gender: KnockoutObservable<number> = ko.observable(0);
+	pid: KnockoutObservable<string> = ko.observable('');
+	retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
+	
+	constructor(params?: IEmployeeVIewB) {
+		const seft = this;
+
+		if (params) {
+			seft.employeeId(params.employeeId);
+			seft.update(params);
+		}
+	}
+
+	update(params: IEmployeeVIewB) {
+		const seft = this;
+
+		seft.birthDay(params.birthDay);
+		seft.employeeCode(params.employeeCode);
+		seft.businessName(params.businessName);
+		seft.entryDate(params.entryDate);
+		seft.gender(params.gender);
+		seft.pid(params.pid);
+		seft.retiredDate(params.retiredDate);
 	}
 }
