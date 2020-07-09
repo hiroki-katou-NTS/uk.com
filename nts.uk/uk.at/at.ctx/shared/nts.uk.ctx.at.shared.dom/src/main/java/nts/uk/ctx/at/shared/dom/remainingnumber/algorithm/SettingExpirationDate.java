@@ -40,14 +40,7 @@ public class SettingExpirationDate {
 		}
 
 		// 逐次発生の休暇明細.年月日に休暇使用期限を加算する
-		if (expirationTime.value >= ExpirationTime.ONE_MONTH.value
-				&& expirationTime.value <= ExpirationTime.ONE_YEAR.value) {
-			dateOccuDigest.addDays(expirationTime.value);
-		} else if (expirationTime.value >= ExpirationTime.END_OF_YEAR.value) {
-			return dateOccuDigest.addDays(12 - dateOccuDigest.month());
-		}
-
-		return GeneralDate.max();
+		return dateOccuDigest.addMonths(expirationTime.value - 2);
 
 	}
 

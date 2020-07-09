@@ -30,7 +30,7 @@ public class OffsetProcessing {
 				lstTimeLapse, accAbse, TypeOffsetJudgment.REAMAIN);
 
 		// 消化区分と消滅日を計算する
-		CalcDigestionCateExtinctionDate.calc(accAbse, date);
+		CalcDigestionCateExtinctionDate.calc(accAbse, date, TypeOffsetJudgment.REAMAIN);
 
 		return lstSeqVacation;
 

@@ -24,8 +24,9 @@ public class TotalRemainUndigest {
 
 			if (data.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 
-				if ((isMode && data.getUnbalanceCompensation().get().getDeadline().beforeOrEquals(date))
-						|| (!isMode && data.getUnbalanceCompensation().get().getDeadline().before(date))) {
+				if (data.getUnbalanceCompensation().isPresent()
+						&& ((isMode && data.getUnbalanceCompensation().get().getDeadline().beforeOrEquals(date))
+								|| (!isMode && data.getUnbalanceCompensation().get().getDeadline().before(date)))) {
 					outData.setUnDigestedDays(outData.getUnDigestedDays() + data.getUnbalanceNumber().getDay().v());
 				} else {
 					outData.setRemainDays(outData.getRemainDays() + data.getUnbalanceNumber().getDay().v());

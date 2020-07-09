@@ -478,16 +478,8 @@ public class OffsetChronologicalOrderTest {
 		
 			List<SeqVacationAssociationInfo> resultActual = OffsetChronologicalOrder.process(require, SID, lstTimeLap,
 					lstAccAbse, typeJudgment);
-			assertThat(resultActual)
-					.extracting(x -> x.getDateOfUse(), x -> x.getDayNumberUsed(), x -> x.getOutbreakDay(),
-							x -> x.getTargetSelectionAtr())
-					.contains(
-							Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-									GeneralDate.ymd(2019, 04, 10), TargetSelectionAtr.AUTOMATIC),
-							Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-									GeneralDate.ymd(2019, 04, 10), TargetSelectionAtr.AUTOMATIC),
-							Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-									GeneralDate.ymd(2019, 11, 4), TargetSelectionAtr.AUTOMATIC));
+			assertThat(resultActual).isEqualTo(new ArrayList<>());
+				
 		}
 
 }
