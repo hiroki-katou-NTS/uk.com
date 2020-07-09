@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
@@ -519,7 +520,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		WorkTypeWorkTimeSelect woSelect = this.initWorkTypeWorkTime(
 				companyId,
 				employeeId,
-				dates.get(0), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
 				workTypes,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
 		

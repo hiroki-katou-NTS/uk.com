@@ -36,18 +36,7 @@ export class KafS07AComponent extends Vue {
 
     public model: Model = new Model();
 
-    // data that is fetched from server 
-    // public app: AppWorkChange;
-
     public mode: Boolean = true;
-
-    // public worktype: Work = new Work();
-
-    // public worktime: WorkTime = new WorkTime();
-
-    // public switchbox1: number = 1;
-
-    // public switchbox2: number = 1;
 
     public valueWorkHours1: { start: number, end: number } = null;
 
@@ -68,30 +57,50 @@ export class KafS07AComponent extends Vue {
 
     public kaf000_B_Params: any = {};
 
-    //   {
-    //     employeeName: 'employee',
-    //     appDate: new Date(),
-    //     dateRange: {
-    //         start: new Date(),
-    //         end: new Date()
-    //     },
-    //     useRangeDate: true, // 複数日切り替えを利用する
-    //     isRangeDate: false, // 複数日を初期選択する
-    //     prePostAtr: 0,
-    //     selectedReason: '',
-    //     reason: 'KAF000C',
-    //     appType: 2
-    // };
+    public user: any;
+    public application: any = {
+        version: 1,
+        appID: 'dddd',
+        prePostAtr: 1,
+        employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+        appType: 2,
+        appDate: '2020/01/07',
+        enteredPerson: '1',
+        inputDate: '2020/01/07 20:11:11',
+        reflectionStatus: {
+            listReflectionStatusOfDay: [{
+                actualReflectStatus: 1,
+                scheReflectStatus: 1,
+                targetDate: '2020/01/07',
+                opUpdateStatusAppReflect: {
+                    opActualReflectDateTime: '2020/01/07 20:11:11',
+                    opScheReflectDateTime: '2020/01/07 20:11:11',
+                    opReasonActualCantReflect: 1,
+                    opReasonScheCantReflect: 0
+
+                },
+                opUpdateStatusAppCancel: {
+                    opActualReflectDateTime: '2020/01/07 20:11:11',
+                    opScheReflectDateTime: '2020/01/07 20:11:11',
+                    opReasonActualCantReflect: 1,
+                    opReasonScheCantReflect: 0
+                }
+            }]
+        },
+        opStampRequestMode: 1,
+        opReversionReason: '1',
+        opAppStartDate: '2020/01/07',
+        opAppEndDate: '2020/01/07',
+        opAppReason: 'jdjadja',
+        opAppStandardReasonCD: 1
+
+
+    };
     public appWorkChangeDto: any = {};
     public appDispInfoStartupOutput: any = {};
 
     public created() {
         const self = this;
-        console.log('created');
-        // this.worktype.code = 'dd';
-        // this.worktype.name = 'worktype';
-        // this.worktime.code = 'dd';
-        // this.worktime.name = 'worktime';
         self.kaf000_B_Params = {
             input: {
                 mode: 0,
@@ -119,7 +128,7 @@ export class KafS07AComponent extends Vue {
         };
     }
 
-    get application() {
+    get application1() {
         const self = this;
 
         return {
@@ -129,10 +138,20 @@ export class KafS07AComponent extends Vue {
 
     public mounted() {
         let self = this;
+        this.fetchStart();
+
+    }
+
+    public async fetchStart() {
+        await this.$auth.user.then((usr: any) => {
+            this.user = usr;
+        });
+
+
         this.$http.post('at', API.startS07, {
             mode: this.mode,
-            companyId: '000000000000-0117',
-            employeeId: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
+            companyId: this.user.companyId,
+            employeeId: this.user.employeeId,
             listDates: ['2020/07/08'],
             appWorkChangeOutputDto: null,
             appWorkChangeDto: null
@@ -143,61 +162,88 @@ export class KafS07AComponent extends Vue {
                 }
                 this.data = res.data;
                 let appWorkChangeDispInfo = res.data.appWorkChangeDispInfo;
-                // this.bindVisibleView(appWorkChangeDispInfo);
-                // this.bindCommon(appWorkChangeDispInfo);
+                this.bindVisibleView(appWorkChangeDispInfo);
+                this.bindCommon(appWorkChangeDispInfo);
+                this.bindValueWorkHours(appWorkChangeDispInfo);
 
-                // *4
-                // if (!this.isCondition4) {
-                //     this.valueWorkHours1.start = _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 1).startTime;
-                //     this.valueWorkHours1.end = _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 1).endTime;
-                //     this.valueWorkHours2.start = _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 2).startTime;
-                //     this.valueWorkHours2.end = _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 2).endTime;
-                // }
                 let appWorkChange = res.data.appWorkChange;
                 this.model.workType.code = appWorkChangeDispInfo.workTypeCD;
                 this.model.workType.name = _.find(appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == appWorkChangeDispInfo.workTypeCD).abbreviationName;
 
                 this.model.workTime.code = appWorkChangeDispInfo.workTimeCD;
-                // _.find(appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == appWorkChangeDispInfo.workTimeCD).workTimeDisplayName;
-                this.model.workTime.name = 'workTimeCD';
-                this.model.workTime.time = '';
-                // _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 1).startTime + '~'+ _.find(appWorkChangeDispInfo.predetemineTimeSetting.lstTimezone, (item: any) => item.workNo == 1).endTime;
 
+                this.model.workTime.name = _.find(appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == appWorkChangeDispInfo.workTimeCD).workTimeDisplayName.workTimeName;
+                if (this.isCondition4) {
+                    this.model.workTime.time = '';
+                } else {
+                    let startTime = _.find(appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
+                    let endTime = _.find(appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
+                    this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
+                }
                 this.$mask('hide');
             }).catch((err: any) => {
                 this.$mask('hide');
             });
     }
+    public bindValueWorkHours(params: any) {
+        // *4
+        if (!this.isCondition4) {
+            let time1 = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
+            let time2 = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
+            if (this.valueWorkHours1) {
+                this.valueWorkHours1.start = time1.start;
+                this.valueWorkHours1.end = time1.end;
+            } else {
+                this.valueWorkHours1 = {
+                    start: time1.start,
+                    end: time1.end
+                };
+            }
+            if (this.valueWorkHours2) {
+                this.valueWorkHours2.start = time2.start;
+                this.valueWorkHours2.end = time2.end;
+            } else {
+                this.valueWorkHours2 = {
+                    start: time2.start,
+                    end: time2.end
+                };
+            }
+        }
+    }
+
     public bindCommon(params: any) {
         // bind appDispInfoStartupOutput to common component
-        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
-        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo;
+        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
     }
     public bindAppWorkChangeRegister() {
         this.appWorkChangeDto.straightGo = this.model.straight;
         this.appWorkChangeDto.bounce = this.model.bounce;
         this.appWorkChangeDto.opWorkTypeCD = this.model.workType.code;
         this.appWorkChangeDto.opWorkTimeCD = this.model.workTime.code;
-        this.appWorkChangeDto.timeZoneWithWorkNoLst = [{
-            workNo: 1,
-            timeZone: {
-                startTime: this.valueWorkHours1.start,
-                endTime: this.valueWorkHours1.end
-            }
-        }, {
-            workNo: 2,
-            timeZone: {
-                startTime: this.valueWorkHours2.start,
-                endTime: this.valueWorkHours2.end
-            }
-        }];
+        if (this.isCondition2) {
+            this.appWorkChangeDto.timeZoneWithWorkNoLst = [{
+                workNo: 1,
+                timeZone: {
+                    startTime: this.valueWorkHours1.start,
+                    endTime: this.valueWorkHours1.end
+                }
+            }, {
+                workNo: 2,
+                timeZone: {
+                    startTime: this.valueWorkHours2.start,
+                    endTime: this.valueWorkHours2.end
+                }
+            }];
+        }
+
 
     }
 
     public changeDate() {
         let params = {
-            companyId: '000000000000-0117',
+            companyId: this.user.companyId,
             listDates: ['2020/01/01'],
             appWorkChangeOutputDto: this.data.appWorkChangeDispInfo
         };
@@ -226,11 +272,12 @@ export class KafS07AComponent extends Vue {
         // check before registering application
         this.$http.post('at', API.checkBeforRegister, {
             mode: this.mode,
-            companyId: '000000000000-0117',
+            companyId: this.user.companyId,
             applicationDto: this.application,
             appWorkChangeDto: this.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            isError: this.data.appWorkChangeDispInfo.appDispInfoWithDateOutput.opErrorFlag
+            // this.data.appWorkChangeDispInfo.appDispInfoWithDateOutput.opErrorFlag
+            isError: 1
         }).then((res: any) => {
             // confirmMsgLst
             // holidayDateLst
@@ -251,7 +298,7 @@ export class KafS07AComponent extends Vue {
             if (isConfirm) {
                 this.$http.post('at', API.registerAppWorkChange, {
                     mode: this.mode,
-                    companyId: '000000000000-0117',
+                    companyId: this.user.companyId,
                     applicationDto: this.application,
                     appWorkChangeDto: this.appWorkChangeDto,
                     holidayDates: res.holidayDateLst,
@@ -305,8 +352,8 @@ export class KafS07AComponent extends Vue {
 
 
     // bind visible of view 
-    public bindVisibleView(data: any) {
-        let appWorkChangeDispInfo = data.appWorkChangeDispInfo;
+    public bindVisibleView(params: any) {
+        let appWorkChangeDispInfo = params;
 
         this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
         this.isCondition2 = this.isDisplay2(appWorkChangeDispInfo);
@@ -315,14 +362,15 @@ export class KafS07AComponent extends Vue {
 
     }
     public openKDL002() {
+        console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
         this.$modal(
             'worktype',
             {
                 seledtedWkTypeCDs: _.map(_.uniqBy(this.data.appWorkChangeDispInfo.workTypeLst, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
                 selectedWorkTypeCD: this.model.workType.code,
-                seledtedWkTimeCDs: ['112', '001', '13'],
-                selectedWorkTimeCD: '001',
-                isSelectWorkTime: true,
+                seledtedWkTimeCDs: _.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                selectedWorkTimeCD: this.model.workTime.code,
+                isSelectWorkTime: '1',
             }
         ).then((f: any) => {
             if (f) {
@@ -347,13 +395,11 @@ export class Work {
 
 }
 export class WorkTime extends Work {
-    public time: String = '09:30 ~ 17:30';
+    public time: String = '項目移送';
     constructor() {
         super();
     }
 }
-
-// data that is fetched from server 
 
 export class Model {
 
@@ -361,17 +407,10 @@ export class Model {
 
     public workTime: WorkTime = new WorkTime();
 
-    // public workHours1: String = '';
-
-    // public workHours2: String = '';
-
     public straight: number = 1;
 
     public bounce: number = 1;
 
-    // public valueWorkHours1: { start: number, end: number } = null;
-
-    // public valueWorkHours2: { start: number, end: number } = null;
     constructor() {
 
     }

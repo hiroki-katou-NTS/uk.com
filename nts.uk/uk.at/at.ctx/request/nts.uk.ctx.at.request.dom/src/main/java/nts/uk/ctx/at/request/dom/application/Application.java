@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.application;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
@@ -18,6 +20,9 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class Application implements DomainAggregate {
 	
 	@Setter
