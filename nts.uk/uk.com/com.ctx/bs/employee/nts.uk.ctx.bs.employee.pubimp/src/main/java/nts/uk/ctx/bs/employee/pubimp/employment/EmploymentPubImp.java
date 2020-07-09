@@ -20,11 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.cache.employee.history.DateHistoryItemCache;
-import nts.uk.ctx.bs.employee.app.cache.employment.EmploymentInfoCache;
-import nts.uk.ctx.bs.employee.app.cache.employment.history.EmploymentHistoryCache;
-import nts.uk.ctx.bs.employee.app.cache.employment.history.EmploymentHistoryItemCache;
-import nts.uk.ctx.bs.employee.app.cache.workplace.AffWorkplaceHistoryItemCache;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -34,11 +29,8 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport.AffPeriodEmpCdHistExportBuilder;
-import nts.uk.ctx.bs.employee.pubimp.workplace.WorkplacePubImp;
 import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
@@ -46,7 +38,6 @@ import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -101,7 +92,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		
 		// Query
 		Optional<EmploymentInfo> employmentInfo = require
-				.getDetailEmploymentHistoryItem(employeeId, baseDate);
+				.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
 
 		Optional<DateHistoryItem> optHistoryItem = require
 				.getByEmployeeIdAndStandardDate(employeeId, baseDate);
@@ -301,10 +292,10 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}
 
 		@Override
-		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date) {
+		public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
 //			EmploymentInfoCache cache = cacheCarrier.get(EmploymentInfoCache.DOMAIN_NAME);
 //			return cache.get(sid,date);
-			return empHistItemRepo.getDetailEmploymentHistoryItem(AppContexts.user().companyId(), sid, date);
+			return empHistItemRepo.getDetailEmploymentHistoryItem(companyId, sid, date);
 		}
 
 		@Override
@@ -322,7 +313,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 //		empHistItemRepo.getByListHistoryId(historyIds);
 		List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds);
 //		empHistItemRepo.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
-		Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String sid, GeneralDate date);
+		Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String cid, String sid, GeneralDate date);
 //		empHistRepo.getByEmployeeIdAndStandardDate(employeeId, baseDate);
 		Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate);
 		
