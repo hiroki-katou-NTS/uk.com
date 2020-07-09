@@ -477,15 +477,23 @@ html {
 	background: url(../image/toright.png) no-repeat center;
 	width: 27px;
 	height: 15px;
-	margin-right: 38px;
+	margin-right: 58px;
 	float: right;
 }
 
 .toDown {
 	background: url(../image/todown.png) no-repeat center;
-	width: 15px;
-	margin-top: 537px;
 	height: 25px;
+	margin-left: 6px;
+	float: left;
+}
+
+.toSettingGrid {
+	background: url(../image/iconsetting.png) no-repeat center;
+	width: 27px;
+	height: 27px;
+	float: right;
+	right: 30px;
 }
 
 #popup-setting-grid table td {

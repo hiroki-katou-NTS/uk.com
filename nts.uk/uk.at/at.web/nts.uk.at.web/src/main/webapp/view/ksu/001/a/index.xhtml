@@ -330,7 +330,7 @@
 									<button id="undo" class="size-image-button2"
 										data-bind="click: undoData, timeClick: -1"></button>
 									<button id="redo" class="size-image-button2"
-										data-bind="click: undoData, timeClick: -1"></button>
+										data-bind="click: redoData, timeClick: -1"></button>
 								</div>
 								<div data-bind="ifnot: visibleShiftPalette">
 									<div id="oViewModel">
@@ -355,8 +355,9 @@
 						</div>
 						<div style="clear: left"></div>
 						<div>
-							<div class="inline" style="margin-left: 12px; display: none" ><button class="toDown"></button></div>
-							<div id="extable" class="inline" style="margin-left: 27px;"></div>
+							<button class="toDown inline" data-bind = "click : toDown"></button>
+							<div id="extable" style="float: left"></div>
+							<button class="toSettingGrid inline" ></button>
 						</div>
 					</div>
 				</div>

@@ -98,6 +98,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         indexBtnToLeft : number = 0;
         indexBtnToRight : number = 0;
+        indexBtnToDown : number = 0;
            
         constructor() {
             let self = this;
@@ -253,7 +254,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         getSettingGrid() {
             let self = this;
             // setting height grid
-            var itemOpt = nts.uk.localStorage.getItem('HEIGHT_OF_GIRD');
+            var itemOpt = nts.uk.localStorage.getItem('HEIGHT_BODY_GIRD');
             if (itemOpt.isPresent()) {
                 let item = itemOpt.get();
                 if (item == "null") {
@@ -269,7 +270,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * get data for screen O, Q , A before bind
          */
-        startKSU001(settingHeightGrid): JQueryPromise<any> {
+        startKSU001(settingHeightBodyGrid): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             // get data for screen O 
             // initScreen: get data workType-workTime for 2 combo-box of screen O
@@ -295,7 +296,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
 
-                self.initExTable(settingHeightGrid);
+                self.initExTable(settingHeightBodyGrid);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -359,15 +360,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if(nts.uk.ui.errors.hasError())
             return;
             
-            var item = nts.uk.localStorage.getItem('HEIGHT_OF_GIRD');
+            var item = nts.uk.localStorage.getItem('HEIGHT_BODY_GIRD');
             if (item.isPresent()) {
-                nts.uk.localStorage.removeItem('HEIGHT_OF_GIRD');   
+                nts.uk.localStorage.removeItem('HEIGHT_BODY_GIRD');   
             }
                         
             if(self.selectedTypeHeightExTable() == 1){
-                nts.uk.localStorage.setItem('HEIGHT_OF_GIRD', null); //sử dủng size của trình duyệt để setting chiều cao cho grid
+                nts.uk.localStorage.setItem('HEIGHT_BODY_GIRD', null); //sử dủng size của trình duyệt để setting chiều cao cho grid
             }else if(self.selectedTypeHeightExTable() == 2){
-                nts.uk.localStorage.setItem('HEIGHT_OF_GIRD', self.heightGridSetting());
+                nts.uk.localStorage.setItem('HEIGHT_BODY_GIRD', self.heightGridSetting());
             }
             $('#popup-setting-grid').ntsPopup('hide');
         }
@@ -402,24 +403,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.indexBtnToRight = self.indexBtnToRight + 1; 
         }
         
+        toDown() {
+            let self = this;
+            if(self.indexBtnToDown % 2 == 0){
+                $(".toDown").css("background", "url(../image/toup.png) no-repeat center");
+                
+            }else{
+                $(".toDown").css("background", "url(../image/todown.png) no-repeat center");
+            }
+            self.indexBtnToDown = self.indexBtnToDown + 1; 
+        }
+        
         /**
          * Create exTable
          */
-        initExTable(settingHeightGrid): void {
+        initExTable(settingHeightBodyGrid): void {
             let self = this,
                 timeRanges = [],
                 //Get dates in time period
                 currentDay = new Date(self.dtPrev().toString()),
                 bodyHeightMode = "dynamic",
-                windowXOccupation = 50,
+                windowXOccupation = 65,
                 windowYOccupation = 328;
-
-            
-            if(settingHeightGrid.isPresent()){
-                
-            }else{
-                
-            }
             
             let detailHeaderDs = [];
             let detailContentDeco = [];
@@ -734,9 +739,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 .create();
 
             $("#extable").exTable("scrollBack", 0, { h: 1050 });
+            if(settingHeightBodyGrid.isPresent()){
+                console.log(settingHeightBodyGrid.get());
+                $("#extable").exTable("setHeight", settingHeightBodyGrid.get());
+                let heightBodySetting : number = + settingHeightBodyGrid.get();
+                let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
+                $(".toDown").css({"margin-top" : heightBody + 'px'}); 
+            }else{
+                self.setPositionButonDown();
+            }
             console.log(performance.now() - start);
 
-            //self.setWidth();
+            
+        }
+        
+        setPositionButonDown(){
+            let self = this;
+            let heightExtable = $("#extable").height();
+            let margintop = heightExtable - 52;
+            $(".toDown").css({"margin-top" : margintop + 'px'});
         }
 
         setWidth(): any {
@@ -1455,22 +1476,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editMode() {
             let self = this;
+            nts.uk.ui.block.grayout();
             // set color button
-            $(".editMode").css("background-color", "#007fff");
-            $(".editMode").css("color", "#ffffff");
-            
-            $(".confirmMode").css("background-color", "#ffffff");
-            $(".confirmMode").css("color", "#000000");
+            $(".editMode").css({"background-color" : "#007fff" , "color" : "#ffffff"});
+            $(".confirmMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            nts.uk.ui.block.clear();
         }
 
         confirmMode() {
             let self = this;
+            nts.uk.ui.block.grayout();
             // set color button
-            $(".confirmMode").css("background-color", "#007fff");
-            $(".confirmMode").css("color", "#ffffff");
-            
-            $(".editMode").css("background-color", "#ffffff");
-            $(".editMode").css("color", "#000000");
+            $(".confirmMode").css({"background-color" : "#007fff", "color" : "#ffffff"});
+            $(".editMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            nts.uk.ui.block.clear();
         }
 
         /**
@@ -1479,25 +1498,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pasteData(): void {
             let self = this;
             // set color button
-            $("#paste").css("background-color", "#007fff");
-            $("#paste").css("color", "#ffffff");
-            
-            $("#copy").css("background-color", "#ffffff");
-            $("#copy").css("color", "#000000");
-            
-            $("#input").css("background-color", "#ffffff");
-            $("#input").css("color", "#000000");
-
-            
-            $("#extable").exTable("updateMode", "stick");
-             
-            if (self.selectedModeDisplay() == 1) {
-                // set sticker single
-                $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
-                $("#extable").exTable("stickMode", "single");
-            } else if (self.selectedModeDisplay() == 3) {
-                $("#extable").exTable("stickMode", "multi");
-            }
+            nts.uk.ui.block.grayout();
+            $("#paste").css({"background-color" : "#007fff", "color" : "#ffffff"});
+            $("#copy").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            $("#input").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            nts.uk.ui.block.clear();
         }
 
         /**
@@ -1505,16 +1510,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         copyData(): void {
             // set color button
-            $("#copy").css("background-color", "#007fff");
-            $("#copy").css("color", "#ffffff");
+            nts.uk.ui.block.grayout();
+            $("#copy").css({"background-color" : "#007fff", "color" : "#ffffff"});
+            $("#paste").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            $("#input").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            nts.uk.ui.block.clear();
             
-            $("#paste").css("background-color", "#ffffff");
-            $("#paste").css("color", "#000000");
-            
-            $("#input").css("background-color", "#ffffff");
-            $("#input").css("color", "#000000");
-            
-            $("#extable").exTable("updateMode", "copyPaste");
         }
         
         /**
@@ -1522,14 +1523,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         inputData(): void {
             // set color button
-            $("#input").css("background-color", "#007fff");
-            $("#input").css("color", "#ffffff");
-            
-            $("#copy").css("background-color", "#ffffff");
-            $("#copy").css("color", "#000000");
-            
-            $("#paste").css("background-color", "#ffffff");
-            $("#paste").css("color", "#000000");
+            nts.uk.ui.block.grayout();
+            $("#input").css({"background-color" : "#007fff", "color" : "#ffffff"});
+            $("#copy").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            $("#paste").css({"background-color" : "#ffffff" , "color" : "#000000" });
+            nts.uk.ui.block.clear();
             
         }
         
@@ -1540,6 +1538,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         undoData(): void {
             $("#extable").exTable("stickUndo");
+        }
+        
+        /**
+         * redo data on cell
+         */
+        redoData(): void {
+            $("#extable").exTable("stickRedo");
         }
 
         /**

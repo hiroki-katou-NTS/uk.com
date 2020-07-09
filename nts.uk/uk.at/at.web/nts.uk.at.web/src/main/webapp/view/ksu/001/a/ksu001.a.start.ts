@@ -7,10 +7,15 @@ module nts.uk.at.view.ksu001.a {
             viewQ: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
-        let settingHeightGrid = nts.uk.localStorage.getItem('HEIGHT_OF_GIRD');
+        let settingHeightBodyGrid = nts.uk.localStorage.getItem('HEIGHT_BODY_GIRD');
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001(settingHeightGrid).done(() => {
+        __viewContext.viewModel.viewA.startKSU001(settingHeightBodyGrid).done(() => {
             __viewContext.bind(__viewContext.viewModel);
+            
+            $(window).resize(function() {
+                __viewContext.viewModel.viewA.setPositionButonDown();
+            });
+
             nts.uk.ui.block.clear();
         });
 
@@ -81,11 +86,11 @@ module nts.uk.at.view.ksu001.a {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.create')
+                of: $('.toSettingGrid')
             }
         });
 
-        $('.create').click(function() {
+        $('.toSettingGrid').click(function() {
             $('#popup-setting-grid').ntsPopup("toggle");
         });
     }
