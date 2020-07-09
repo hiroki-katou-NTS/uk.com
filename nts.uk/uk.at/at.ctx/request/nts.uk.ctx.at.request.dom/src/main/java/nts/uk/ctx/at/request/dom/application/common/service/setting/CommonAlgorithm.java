@@ -69,7 +69,7 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public ApprovalRootContentImport_New getApprovalRoot(String companyID, String employeeID, 
-			EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate);
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 	
 	/**
 	 * 申請表示情報(申請対象日関係あり)を取得する

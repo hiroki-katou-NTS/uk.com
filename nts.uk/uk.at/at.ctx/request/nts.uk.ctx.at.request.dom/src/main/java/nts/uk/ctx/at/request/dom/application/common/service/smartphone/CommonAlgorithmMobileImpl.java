@@ -259,11 +259,11 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		Optional<ErrorFlagImport> opErrorFlag = Optional.empty();
 		if(mode) {
 			// 1-4.新規画面起動時の承認ルート取得パターン
-			ApprovalRootContentImport_New approvalRootContentImport_New = collectApprovalRootPatternService.getgetApprovalRootPatternNew(
+			ApprovalRootContentImport_New approvalRootContentImport_New = collectApprovalRootPatternService.getApprovalRootPatternNew(
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class), 
+					appType, 
 					baseDate);
 			opListApprovalPhaseState = Optional.of(approvalRootContentImport_New.getApprovalRootState().getListApprovalPhaseState());
 			opErrorFlag = Optional.of(approvalRootContentImport_New.getErrorFlag());
