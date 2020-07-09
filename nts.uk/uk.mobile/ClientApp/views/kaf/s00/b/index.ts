@@ -103,7 +103,7 @@ export class KafS00BComponent extends Vue {
 }
 
 // 画面モード
-enum ScreenMode {
+export enum ScreenMode {
     // 新規モード
     NEW = 0,
     // 詳細モード
