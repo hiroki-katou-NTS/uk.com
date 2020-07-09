@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.ws.application.smartphone;
+package nts.uk.ctx.at.request.ws.application;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
