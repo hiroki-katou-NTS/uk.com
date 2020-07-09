@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InformationEmployeeDto {
+public class InformationEmployeeDtoViewB {
 
 	private String pid;
 

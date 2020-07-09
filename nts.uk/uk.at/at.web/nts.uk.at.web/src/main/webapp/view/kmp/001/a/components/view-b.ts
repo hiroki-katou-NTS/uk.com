@@ -94,8 +94,8 @@ interface Params {
 
 const KMP001B_API = {
 	GET_STAMPCARD: 'screen/pointCardNumber/getEmployeeFromCardNo/',
-	GET_ALL_STAMPCARD: 'screen/pointCardNumber/getAllEmployeeFromCardNo/'
-	GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getAllEmployeeFromCardNo/'
+	GET_ALL_STAMPCARD: 'screen/pointCardNumber/getAllEmployeeFromCardNo/',
+	GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInformationViewB/'
 };
 
 @component({
@@ -118,8 +118,8 @@ class ViewBComponent extends ko.ViewModel {
 				const stampCards: IStampCard[] = ko.toJS(vm.items);
 				const current = _.find(stampCards, e => e.stampNumber === c);
 				
-				if (current) {
-					vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
+				/*if (current) {
+					vm.$ajax(KMP001A_API.GET_INFO_EMPLOYEE + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
 					.then((data: IModel[]) => {
 						vm.model.update(ko.toJS(data));
 						console.log(data);
@@ -128,7 +128,7 @@ class ViewBComponent extends ko.ViewModel {
 					});
 				} else {
 					// reset data ve mode them moi
-				}
+				}*/
 			});
 	}
 

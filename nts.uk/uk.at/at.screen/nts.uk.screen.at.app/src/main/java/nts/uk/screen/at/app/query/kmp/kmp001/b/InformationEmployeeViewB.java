@@ -12,19 +12,19 @@ import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
  *
  */
 @Stateless
-public class InformationEmployee {
+public class InformationEmployeeViewB {
 	
 	@Inject
 	private IPersonInfoPub IPersonInfoPub;
 	
-	public InformationEmployeeDto get(String sid) {
+	public InformationEmployeeDtoViewB get(String sid) {
 		PersonInfoExport personInfoExport =  IPersonInfoPub.getPersonInfo(sid);
 		
 		if (personInfoExport == null) {
 			throw new RuntimeException("Not found");
 		}
 
-		InformationEmployeeDto dto = new InformationEmployeeDto(
+		InformationEmployeeDtoViewB dto = new InformationEmployeeDtoViewB(
 				personInfoExport.getPid() == null ? "" : personInfoExport.getPid(),
 				personInfoExport.getBusinessName() == null ? "" : personInfoExport.getBusinessName(),
 				personInfoExport.getEntryDate(), personInfoExport.getGender(),

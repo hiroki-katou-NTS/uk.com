@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kmp.kmp001.common;
+package nts.uk.screen.at.app.query.kmp.kmp001.c;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,19 +12,19 @@ import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
  *
  */
 @Stateless
-public class InformationEmployee {
+public class InformationEmployeeViewC {
 	
 	@Inject
 	private IPersonInfoPub IPersonInfoPub;
 	
-	public InformationEmployeeDto get(String sid) {
+	public InformationEmployeeDtoViewC get(String sid) {
 		PersonInfoExport personInfoExport =  IPersonInfoPub.getPersonInfo(sid);
 		
 		if (personInfoExport == null) {
 			throw new RuntimeException("Not found");
 		}
 
-		InformationEmployeeDto dto = new InformationEmployeeDto(
+		InformationEmployeeDtoViewC dto = new InformationEmployeeDtoViewC(
 				personInfoExport.getPid() == null ? "" : personInfoExport.getPid(),
 				personInfoExport.getBusinessName() == null ? "" : personInfoExport.getBusinessName(),
 				personInfoExport.getEntryDate(), personInfoExport.getGender(),

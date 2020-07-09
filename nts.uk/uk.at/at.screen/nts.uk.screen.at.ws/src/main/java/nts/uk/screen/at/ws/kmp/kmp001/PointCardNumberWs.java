@@ -19,10 +19,12 @@ import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigit;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigitDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNo;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNoDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeDtoViewB;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeViewB;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregistered;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregisteredDto;
-import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployee;
-import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeDtoViewC;
+import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeViewC;
 
 @Path("screen/pointCardNumber")
 @Produces("application/json")
@@ -32,7 +34,11 @@ public class PointCardNumberWs extends WebService {
 	private CardUnregistered cardUnregistered;
 	
 	@Inject 
-	private InformationEmployee informationEmployee;
+	private InformationEmployeeViewB informationEmployeeViewB;
+	
+	@Inject 
+	private InformationEmployeeViewC informationEmployeeViewC;
+	
 	
 	@Inject
 	private EmployeeInformationFromCardNo  getEmployeeInformationFromCardNo;
@@ -53,9 +59,15 @@ public class PointCardNumberWs extends WebService {
 	}
 	
 	@POST
-	@Path("getEmployeeInformation/{sid}")
-	public InformationEmployeeDto get(@PathParam("sid") String sid) {
-		return this.informationEmployee.get(sid);
+	@Path("getEmployeeInformationViewB/{sid}")
+	public InformationEmployeeDtoViewB getInfoEmployeeViewB(@PathParam("sid") String sid) {
+		return this.informationEmployeeViewB.get(sid);
+	}
+	
+	@POST
+	@Path("getEmployeeInformationViewC/{sid}")
+	public InformationEmployeeDtoViewC getInfoEmployeeViewC(@PathParam("sid") String sid) {
+		return this.informationEmployeeViewC.get(sid);
 	}
 	
 	@POST
