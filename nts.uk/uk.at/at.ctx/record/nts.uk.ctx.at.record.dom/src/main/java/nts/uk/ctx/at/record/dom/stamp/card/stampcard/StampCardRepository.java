@@ -65,6 +65,8 @@ public interface StampCardRepository {
 	Map<String, StampCard> getByCardNoAndContractCode(Map<String, String> cardNos , String contractCd);
 	
 	Optional<String> getLastCardNo(String contractCode, String startCardNoLetters, int length);
+	
+	Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber);
 
 	/**
 	 * @author lanlt
