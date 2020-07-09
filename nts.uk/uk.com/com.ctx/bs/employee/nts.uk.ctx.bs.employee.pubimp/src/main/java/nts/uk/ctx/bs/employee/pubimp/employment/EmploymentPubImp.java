@@ -21,7 +21,6 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.app.cache.employee.history.DateHistoryItemCache;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -292,8 +291,9 @@ public class EmploymentPubImp implements SyEmploymentPub {
 
 		@Override
 		public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
-			return cache.get(employeeId, standardDate);
+//			DateHistoryItemCache cache = cacheCarrier.get(DateHistoryItemCache.DOMAIN_NAME);
+//			return cache.get(employeeId, standardDate);
+			return empHistRepo.getByEmployeeIdAndStandardDate(employeeId, standardDate);
 		}
 		
 	}
