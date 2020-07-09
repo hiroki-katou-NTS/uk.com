@@ -281,13 +281,13 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			GeneralDate grantDay = rsvDate.getGrantDate().orElse(null);
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
-									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+									.getRemainingNumberInfo().getBeforeGrant().getTotalRemainingDays().v();
 			////積立年休残数
 			Double remainingDays = rsvDate.getRemainingDays().v();
 			//付与後残数
 			Double aftRemainDay = 0.0;
-			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().isPresent()){
-				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().get().getTotalRemainingDays().v();
+			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getAfterGrant().isPresent()){
+				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getAfterGrant().get().getTotalRemainingDays().v();
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, remainingDays, grantDay);
 		}else {
