@@ -31,6 +31,9 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -133,8 +136,10 @@ public class ShClosurePubImpl implements ShClosurePub {
 		private final CacheCarrier cacheCarrier;
 		@Override
 		public Optional<Closure> findById(int closureId) {
-			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
-			return cache.get(closureId);
+//			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
+//			return cache.get(closureId);
+			return closureRepo.findById(AppContexts.user().companyId(), closureId);
+			
 		}
 		
 	}
