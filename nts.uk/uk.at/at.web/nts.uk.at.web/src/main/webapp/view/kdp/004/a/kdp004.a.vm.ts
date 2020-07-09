@@ -83,6 +83,12 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
+									if (!res.stampSetting || !res.stampResultDisplay) {
+										self.errorMessage(self.getErrorNotUsed(1));
+										self.isUsed(false);
+										dfd.resolve();
+										return;
+									}
 									self.stampSetting(res.stampSetting);
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
@@ -112,7 +118,7 @@ module nts.uk.at.view.kdp004.a {
 						dfd.resolve();
 					}
 				}).always(() => {
-
+					block.clear();
 				});
 				return dfd.promise();
 			}
@@ -145,6 +151,11 @@ module nts.uk.at.view.kdp004.a {
 					block.grayout();
 					service.startPage()
 						.done((res: any) => {
+							if (!res.stampSetting || !res.stampResultDisplay) {
+								self.errorMessage(self.getErrorNotUsed(1));
+								self.isUsed(false);
+								return;
+							}
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
