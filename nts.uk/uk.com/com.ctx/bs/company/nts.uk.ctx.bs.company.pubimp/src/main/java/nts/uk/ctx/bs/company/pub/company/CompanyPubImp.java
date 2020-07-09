@@ -68,8 +68,9 @@ public class CompanyPubImp implements ICompanyPub {
 		
 		@Override
 		public Optional<Company> getComanyInfoByCid(String companyId){
-			CompanyCache cache = cacheCarrier.get(CompanyCache.DOMAIN_NAME);
-			return cache.get(companyId);
+//			CompanyCache cache = cacheCarrier.get(CompanyCache.DOMAIN_NAME);
+//			return cache.get(companyId);
+			return repo.getComanyInfoByCid(companyId);
 		}
 	}
 	

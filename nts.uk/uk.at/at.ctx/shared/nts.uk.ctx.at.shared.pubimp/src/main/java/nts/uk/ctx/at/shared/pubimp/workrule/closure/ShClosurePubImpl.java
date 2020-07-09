@@ -30,7 +30,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -41,6 +43,10 @@ public class ShClosurePubImpl implements ShClosurePub {
 	/** The work time hist repo. */
 	@Inject
 	private ClosureRepository closureRepo;
+
+	/** The Closure service. */
+	@Inject
+	private ClosureService closureService;
 
 	/*
 	 * (non-Javadoc)
@@ -65,11 +71,16 @@ public class ShClosurePubImpl implements ShClosurePub {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
+		
+		ClosureDate closureDate = closure.getHistoryByYearMonth(processingYm).get().getClosureDate();
 
 		// Return
-		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
-				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
+		return Optional.of(PresentClosingPeriodExport.builder()
+				.processingYm(processingYm)
+				.closureStartDate(closurePeriod.start())
+				.closureEndDate(closurePeriod.end())
+				.closureDate(ClosureDateExport.from(closureDate))
 				.build());
 	}
 	
@@ -120,7 +131,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		optClosures.forEach(closure -> {
 			// Get Processing Ym 処理年月
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closure, processingYm);
+			DatePeriod closurePeriod = closureService.getClosurePeriod(closure, processingYm);
 			resultExport.put(closure.getClosureId().value, closurePeriod);
 		});
 
@@ -133,8 +144,10 @@ public class ShClosurePubImpl implements ShClosurePub {
 		private final CacheCarrier cacheCarrier;
 		@Override
 		public Optional<Closure> findById(int closureId) {
-			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
-			return cache.get(closureId);
+//			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
+//			return cache.get(closureId);
+			return closureRepo.findById(AppContexts.user().companyId(), closureId);
+			
 		}
 		
 	}
