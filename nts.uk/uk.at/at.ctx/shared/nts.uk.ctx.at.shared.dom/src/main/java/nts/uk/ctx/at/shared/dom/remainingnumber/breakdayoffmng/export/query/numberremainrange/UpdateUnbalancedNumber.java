@@ -44,7 +44,7 @@ public class UpdateUnbalancedNumber {
 								- accdigest.getUnbalanceNumber().getTime().get().v())));
 
 				// 「逐次発生の休暇明細」(消化)．未相殺数 = 0
-				accdigest.getUnbalanceNumber().setTime(Optional.empty());
+				accdigest.getUnbalanceNumber().setTime(Optional.of(new AttendanceTime(0)));
 			}
 		} else {
 			// 振出の場合
@@ -59,7 +59,9 @@ public class UpdateUnbalancedNumber {
 			} else {
 				// 「逐次発生の休暇明細」(発生)．未相殺数 -= 「逐次発生の休暇明細」(消化)．未相殺数
 				// 「逐次発生の休暇明細」(消化)．未相殺数 = 0
-				accdigest.getUnbalanceNumber().setTime(Optional.empty());
+				occur.getUnbalanceNumber().setDay(new ManagementDataRemainUnit(
+						occur.getUnbalanceNumber().getDay().v() - accdigest.getUnbalanceNumber().getDay().v()));
+				accdigest.getUnbalanceNumber().setDay(new ManagementDataRemainUnit(0d));
 			}
 		}
 

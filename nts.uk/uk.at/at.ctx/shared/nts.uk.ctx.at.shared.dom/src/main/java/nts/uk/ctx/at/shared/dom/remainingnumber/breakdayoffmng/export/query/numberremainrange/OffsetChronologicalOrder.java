@@ -114,7 +114,7 @@ public class OffsetChronologicalOrder {
 		// 紐づけ登録処理
 		Optional<SeqVacationAssociationInfo> seqVacation = TypeRegistrationProcess.process(timeLapVacationSetting,
 				occur.getDateOccur().getDayoffDate().get(), accdigest.getDateOccur().getDayoffDate().get(),
-				accdigest.getUnbalanceNumber().getDay(), TypeOffsetJudgment.REAMAIN);
+				accdigest.getUnbalanceNumber().getDay(), typeJudgment);
 
 		// 未相殺数を更新 in process 振休
 		UpdateUnbalancedNumber.updateUnbalanced(timeLapVacationSetting, accdigest, occur, typeJudgment);

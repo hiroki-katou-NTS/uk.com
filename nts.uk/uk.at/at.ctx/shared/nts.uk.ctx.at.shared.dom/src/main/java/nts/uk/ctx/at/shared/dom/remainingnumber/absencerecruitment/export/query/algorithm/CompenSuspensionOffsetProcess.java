@@ -33,7 +33,7 @@ public class CompenSuspensionOffsetProcess {
 				lstTimeLapSet, lstAbsRec, TypeOffsetJudgment.ABSENCE);
 
 		// 消化区分と消滅日を計算する
-		CalcDigestionCateExtinctionDate.calc(lstAbsRec, date);
+		CalcDigestionCateExtinctionDate.calc(lstAbsRec, date, TypeOffsetJudgment.ABSENCE);
 		return lstSeqVacation;
 	}
 

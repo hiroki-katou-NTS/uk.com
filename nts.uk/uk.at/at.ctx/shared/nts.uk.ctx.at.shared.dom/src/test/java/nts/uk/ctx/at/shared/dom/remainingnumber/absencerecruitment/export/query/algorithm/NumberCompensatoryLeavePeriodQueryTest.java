@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +22,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -152,7 +156,16 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 
-		CompenLeaveAggrResult result = new CompenLeaveAggrResult();
+		// @ConstructorProperties(value={"vacationDetails", "remainDay", "unusedDay",
+		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
+		// "pError"})
+		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
+				new ReserveLeaveRemainingDayNumber(-1.0), new ReserveLeaveRemainingDayNumber(0.0),
+				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(4.0),
+				new ReserveLeaveRemainingDayNumber(-1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
+
+		assertData(resultActual, resultExpected);
 
 	}
 
@@ -221,8 +234,16 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 				Optional.empty(), Optional.empty());
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
+		// @ConstructorProperties(value={"vacationDetails", "remainDay", "unusedDay",
+		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
+		// "pError"})
+		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
+				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(0.0),
+				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(2.0),
+				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+				new ArrayList<>());
 
-		CompenLeaveAggrResult result = new CompenLeaveAggrResult();
+		assertData(resultActual, resultExpected);
 
 	}
 
@@ -322,8 +343,28 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 
 		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 
-		CompenLeaveAggrResult result = new CompenLeaveAggrResult();
+		// @ConstructorProperties(value={"vacationDetails", "remainDay", "unusedDay",
+		// "occurrenceDay", "dayUse", "carryoverDay", "nextDay", "lstSeqVacation",
+		// "pError"})
+		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
+				new ReserveLeaveRemainingDayNumber(-1.0), new ReserveLeaveRemainingDayNumber(1.0),
+				new ReserveLeaveRemainingDayNumber(4.5), new ReserveLeaveRemainingDayNumber(2.5),
+				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
+
+		assertData(resultActual, resultExpected);
 
 	}
 
+	public static void assertData(CompenLeaveAggrResult resultActual, CompenLeaveAggrResult resultExpected) {
+
+		assertThat(resultActual.getRemainDay().v()).isEqualTo(resultExpected.getRemainDay().v());
+		assertThat(resultActual.getDayUse().v()).isEqualTo(resultExpected.getDayUse().v());
+		assertThat(resultActual.getOccurrenceDay().v()).isEqualTo(resultExpected.getOccurrenceDay().v());
+		assertThat(resultActual.getCarryoverDay().v()).isEqualTo(resultExpected.getCarryoverDay().v());
+		assertThat(resultActual.getUnusedDay().v()).isEqualTo(resultExpected.getUnusedDay().v());
+		assertThat(resultActual.getNextDay().get()).isEqualTo(resultExpected.getNextDay().get());
+		assertThat(resultActual.getPError()).isEqualTo(resultExpected.getPError());
+
+	}
 }
