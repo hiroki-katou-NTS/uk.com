@@ -181,8 +181,8 @@ public class CalcAnnLeaAttendanceRate {
 				}
 				if (lengthServiceTbl == null) lengthServiceTbl = lengthServiceTbls.get(lengthServiceTbls.size() - 1);
 				Integer months = 0;		// 勤続年月（月数）
-				if (lengthServiceTbl.getYear() != null) months = lengthServiceTbl.getYear().v() * 12;
-				if (lengthServiceTbl.getMonth() != null) months = lengthServiceTbl.getMonth().v();
+				if (lengthServiceTbl.getYear() != null) months += lengthServiceTbl.getYear().v() * 12;
+				if (lengthServiceTbl.getMonth() != null) months += lengthServiceTbl.getMonth().v();
 				if (months >= 7) isOverHalfYear = true;
 				
 				if (!isOverHalfYear){
