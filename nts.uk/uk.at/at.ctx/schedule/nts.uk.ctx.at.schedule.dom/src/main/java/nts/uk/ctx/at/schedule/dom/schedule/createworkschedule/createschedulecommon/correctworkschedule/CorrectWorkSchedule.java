@@ -8,8 +8,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -26,31 +29,56 @@ public class CorrectWorkSchedule {
 	@Inject
 	private CalculateDailyRecordServiceCenterNew centerNew;
 	
-//	@Inject
-//	private ICorrectionAttendanceRule rule;
+	@Inject
+	private ICorrectionAttendanceRule rule;
 	
+	/**
+	 * 勤務予定を補正する method
+	 * @param workSchedule
+	 * @param employeeId
+	 * @param targetDate
+	 * @return
+	 */
 	public WorkSchedule correctWorkSchedule(WorkSchedule workSchedule,String employeeId,GeneralDate targetDate) {
 		//勤務予定から日別勤怠（Work）に変換する
 		//TODO : Chưa remove từ record sang shared nên chưa sử dụng được (tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
-		IntegrationOfDaily daily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
+		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(workSchedule.getWorkInfo(), null, workSchedule.getAffInfo(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
 		//勤怠ルールの補正処理 
+		
+		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false);
+		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
 		//TODO Thuật toán này hiện chưa ai làm + cũng chưa phải làm. nên tạm thời bỏ qua (TKT-TQP)
 		//勤務予定情報を計算する
 		//TODO: đang để record -> có thể sẽ chuyển về shared (mr Hoshina dang ban vs a Lau)
-		//centerNew.calculate(employeeId, targetDate, ExecutionType.NORMAL_EXECUTION, null, true);
-		return workSchedule; //Return tạm thời
+		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
+		
+		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
+				integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
+				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
+				integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
+				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
+		
+		return workSchedules;
 		
 	}
 	
-	private OutputCalcSchedule calcWorkScheduleInfo(IntegrationOfDaily integrationOfDaily, String employeeId,GeneralDate targetDate) {
+	/**
+	 * Call to 勤務予定情報を計算する
+	 * @param integrationOfDaily
+	 * @param employeeId
+	 * @param targetDate
+	 * @return
+	 */
+	private List<IntegrationOfDaily> calcWorkScheduleInfo(IntegrationOfDaily integrationOfDaily, String employeeId,GeneralDate targetDate) {
 		List<IntegrationOfDaily> lstInteOfDaily = new ArrayList<>();
 		lstInteOfDaily.add(integrationOfDaily);
-		lstInteOfDaily = centerNew.calculatePassCompanySetting(CalculateOption.asDefault(), lstInteOfDaily, ExecutionType.valueOf(ExecutionType.NORMAL_EXECUTION.nameId));
+		CalculateOption calculateOption = new CalculateOption(false, true);
+		lstInteOfDaily = centerNew.calculatePassCompanySetting(calculateOption, lstInteOfDaily, ExecutionType.valueOf(ExecutionType.NORMAL_EXECUTION.nameId));
 		
-		return null;
+		return lstInteOfDaily;
 	}
 
 }

@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -56,6 +57,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo.Requi
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -170,9 +175,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
-	@Inject
-	private Require require; 
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -501,7 +503,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			// 期間のループ
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
-				// 「Output」・社員の予定管理状態一覧
+				// 「Output」・社員の予定管理状態一覧- doi hieu viet repo
+				ScheManaStatuTempo.Require require = new ScheManaStatuTempoImpl();
 				ScheManaStatuTempo manaStatuTempo = ScheManaStatuTempo.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
 			}
@@ -712,5 +715,78 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 
 		return new StateAndValueDatePeriod(dateAfterCorrection, false);
+	}
+	
+	@AllArgsConstructor
+	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
+
+		@Override
+		public EmployeeImport findByEmpId(String empId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<EmployeeImport> findByEmpId(List<String> empIds) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<String> getListEmpByWkpAndEmpt(List<String> wkps, List<String> lstempts, DatePeriod dateperiod) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<PersonEmpBasicInfoImport> getPerEmpBasicInfo(List<String> employeeIds) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EmployeeRecordImport findByAllInforEmpId(String empId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<SClsHistImport> lstClassByEmployeeId(String companyId, List<String> employeeIds,
+				DatePeriod datePeriod) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId,
+				GeneralDate baseDate) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
 }

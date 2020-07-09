@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -106,6 +107,8 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
@@ -214,9 +217,6 @@ public class ScheduleCreatorExecutionTransaction {
 	
 	@Inject
 	private ScheCreExeWorkTimeHandler workTimeHandler;
-	
-	@Inject
-	private Require require;
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -868,6 +868,7 @@ public class ScheduleCreatorExecutionTransaction {
 			List<Integer> attendanceItemIdList, DailyRecordToAttendanceItemConverter itemConverter,
 			List<ItemValue> listItemValue) {
 		// 勤務情報が正常な状態かをチェックする
+		WorkInformation.Require require = new WorkInformationImpl();
 		ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 		// 正常の場合
@@ -1586,6 +1587,42 @@ public class ScheduleCreatorExecutionTransaction {
 								itemImports))
 						.collect(Collectors.toList()));
 		return generalInfoImport;
+		
+	}
+	
+	@AllArgsConstructor
+	public static class WorkInformationImpl implements WorkInformation.Require{
+
+		@Override
+		public Optional<WorkType> findByPK(String workTypeCd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+				Integer workNo) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public WorkStyle checkWorkDay(String workTypeCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 
