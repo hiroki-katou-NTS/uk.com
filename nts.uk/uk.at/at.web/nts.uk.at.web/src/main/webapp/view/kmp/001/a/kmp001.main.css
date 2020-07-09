@@ -63,6 +63,10 @@
 	font-size: 18px;
 }
 
+.view-kmp .model-component .table_content {
+	margin-top: 37px;
+}
+
 .view-kmp .model-component table td.data div {
 	font-size: 16px;
 	float: left;
@@ -72,6 +76,21 @@
 	margin-bottom: 10px;
 }
 
-#td-bottom{
+#td-bottom {
 	margin-bottom: 15px;
 }
+
+#top_bottom {
+	margin-left: 5px;
+}
+
+.search_label {
+	float: left;
+	width: 100vw;
+	padding-bottom: 0px;
+}
+.search_label .sub_title {
+	margin-right: 10px;
+}
+
+

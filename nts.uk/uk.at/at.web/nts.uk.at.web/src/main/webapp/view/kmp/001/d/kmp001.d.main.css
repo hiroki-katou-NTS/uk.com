@@ -6,7 +6,14 @@
 }
 
 .view-dialog .box .label-column {
-	width: 100px;
+	width: 120px;
+	margin: 20px;
+}
+
+.view-dialog .box .label-column-select {
+	width: 120px;
+	margin: 20px;
+	padding-top: 20px;
 }
 
 .view-dialog .view-button {

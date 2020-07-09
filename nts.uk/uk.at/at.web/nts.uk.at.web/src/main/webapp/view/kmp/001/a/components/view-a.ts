@@ -11,25 +11,35 @@ const template = `
 </div>
 <div class="view-kmp">
 	<div class="list-component float-left viewa">
-		<div class="caret-right caret-background bg-green" style="padding: 10px;">
-			<table id="list_employee" data-bind="ntsGridList: {
-						height: 483,
-						options: employees,
-						optionsValue: 'code',
-						columns: [
-				            { headerText: $i18n('KMP001_8'), prop: 'code', width: 112 },
-				            { headerText: $i18n('KMP001_9'), prop: 'name', width: 110 },
-				            { headerText: $i18n('KMP001_10'), prop: 'joinDate', width: 110 },
-	 						{ headerText: $i18n('KMP001_11'), prop: 'config', width: 70, template: '<div style=\\'text-align: center\\'>$\{config}</div>' }
-				        ],
-						multiple: false,
-						enable: true,
-						value: model.code
-					}">
-			</table>
-		</div>
+		<div id="list-employee"></div>
 	</div>
 	<div class="float-left model-component" data-bind="component: { name: 'editor-area', params: { model: model } }"></div>
+	<div class="float-left model-component">
+		<div>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<div data-bind="ntsFormLabel: {constraint: constraints, required: true, text: $i18n('KMP001_22') }"></div>
+						</td>
+						<td>
+							
+						<td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<table id="stamp-card-list" data-bind="ntsGridList: {								
+			height: 116,
+			dataSource: itemsStamCard,
+			primaryKey: 'stampNumber',
+			columns: [
+			            { headerText: $i18n('KMP001_32'), prop: 'stampNumber', width: 200 }
+			        ],
+			multiple: true 	,
+			value: currentCodes
+		}"></table>
+	</div>
 <div>
 `;
 
@@ -37,49 +47,117 @@ interface Params {
 
 }
 
+const KMP001A_API = {
+	GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
+	GET_STATUS_SETTING: 'screen/pointCardNumber/getStatusEmployeeSettingStampCard',
+	GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber'
+};
+
 @component({
 	name: 'view-a',
 	template
 })
 class ViewA extends ko.ViewModel {
-	public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 
+	listComponentOption: IModel;
+	selectedCode: KnockoutObservable<string>;
+	multiSelectedCode: KnockoutObservableArray<string>;
+	isShowAlreadySet: KnockoutObservable<boolean>;
+	isDialog: KnockoutObservable<boolean>;
+	isShowNoSelectRow: KnockoutObservable<boolean>;
+	isMultiSelect: KnockoutObservable<boolean>;
+	isShowWorkPlaceName: KnockoutObservable<boolean>;
+	isShowSelectAllButton: KnockoutObservable<boolean>;
+	disableSelection: KnockoutObservable<boolean>;
+
+	public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 	public model: Model = new Model();
+	public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
+	public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
+	public baseDate: KnockoutObservable<string> = ko.observable('');
+	public itemsStamCard: KnockoutObservableArray<IStampCard> = ko.observableArray([]);
+	public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+	public constraints: KnockoutObservable<string> = ko.observable('10');
 
 	created() {
 		const vm = this;
-
+		
 		vm.model.code
 			.subscribe((c: string) => {
 				const employees: IModel[] = ko.toJS(vm.employees);
-
 				const current = _.find(employees, e => e.code === c);
-
+				
 				if (current) {
-					vm.model.updateWithoutCode(current);
+					vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
+					.then((data: IModel[]) => {
+						vm.model.update(ko.toJS(data));
+						console.log(data);
+						vm.itemsStamCard(ko.toJS(data.stampCardDto));
+						console.log(ko.toJS(vm.itemsStamCard));
+					});
 				} else {
 					// reset data ve mode them moi
 				}
 			});
+
+		vm.employees
+			.subscribe(() => {
+				vm.$blockui("invisible")
+				vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
+					.then((data: IEmployeeId[]) => {
+						const employees: IModel[] = ko.toJS(vm.employees);
+						const modelSetting = new Setting();
+						for (var i = 0; i < data.length; i++) {
+							 const setting = _.find(employees, e => e.employeeId === data[i].employee);
+							
+							if (setting){
+								modelSetting.code(setting.code);
+								modelSetting.isAlreadySetting(true);
+								vm.settings.push(ko.toJS(modelSetting));
+							}
+						}
+					}).then(() => {
+						vm.$blockui("clear");
+					});
+			})
 	}
 
 	mounted() {
 		const vm = this;
 		const dataFormate = 'YYYY/MM/DD';
 
+		$('#list-employee').ntsListComponent(
+			{
+				isShowAlreadySet: true, //設定済表示
+				isMultiSelect: false,
+				listType: 4,
+				employeeInputList: vm.employees,
+				selectType: 1,
+				selectedCode: vm.model.code,
+				isShowNoSelectRow: false, //未選択表示
+				alreadySettingList: vm.settings,
+				isShowWorkPlaceName: true,  //職場表示
+				isShowSelectAllButton: false,  //全選択表示
+				isSelectAllAfterReload: true,
+				disableSelection: false,
+				maxRows: 20,
+				maxWidth: 450
+			}
+		);
+
 		$('#com-ccg001')
 			.ntsGroupComponent({
 				/** Common properties */
-				systemType: 2,
+				systemType: 2, //システム区分	
 				showEmployeeSelection: true,
-				showQuickSearchTab: true,
+				showQuickSearchTab: true, //クイック検索
 				showAdvancedSearchTab: true,
-				showBaseDate: true,
-				showClosure: false,
-				showAllClosure: false,
-				showPeriod: false,
-				periodFormatYM: true,
-				maxPeriodRange: 'oneMonth',
+				showBaseDate: true, //基準日利用
+				showClosure: false, //就業締め日利用
+				showAllClosure: false, //全締め表示
+				showPeriod: false, //対象期間利用
+				periodFormatYM: true, //対象期間精度
+				maxPeriodRange: 'oneMonth', //最長期間
 
 				/** Required parameter */
 				baseDate: ko.observable(moment().format(dataFormate)),
@@ -91,62 +169,41 @@ class ViewA extends ko.ViewModel {
 				retirement: true,
 
 				/** Quick search tab options */
-				showAllReferableEmployee: true,
-				showOnlyMe: true,
+				showAllReferableEmployee: true, //参照可能な社員すべて
+				showOnlyMe: true, //自分だけ
 				showSameDepartment: true,
 				showSameDepartmentAndChild: true,
-				showSameWorkplace: true,
-				showSameWorkplaceAndChild: true,
+				showSameWorkplace: true, //同じ職場の社員
+				showSameWorkplaceAndChild: true, //同じ職場とその配下の社員
 
 				/** Advanced search properties */
-				showEmployment: true,
+				showEmployment: true, //雇用条件
 				showDepartment: true,
-				showWorkplace: true,
-				showClassification: true,
-				showJobTitle: true,
-				showWorktype: false,
-				isMutipleCheck: true,
+				showWorkplace: true, //職場条件
+				showClassification: true, //分類条件
+				showJobTitle: true, //職位条件
+				showWorktype: false, //勤種条件
+				isMutipleCheck: true, //選択モード
 
 				/**
 				* Self-defined function: Return data from CCG001
 				* @param: data: the data return from CCG001
-				*/			
+				*/
 				returnDataFromCcg001: function(data: any) {
+					vm.baseDate(moment.utc(data.baseDate, "YYYY/MM/DD").format("YYYY-MM-DD"));
+
+					for (var i = 0; i < data.listEmployee.length; i++) {
+						vm.employeeIds.push(data.listEmployee[i].employeeId);
+					}
+					
 					const employees = data.listEmployee
 						.map(m => ({
+							affiliationId: m.affiliationId,
 							code: m.employeeCode,
 							name: m.employeeName,
-							joinDate: null,
-							entireDate: null,
-							cardNos: [{
-								checked: false,
-								no: '000001'
-							}, {
-								checked: false,
-								no: '000002'
-							}, {
-								checked: false,
-								no: '000003'
-							}, {
-								checked: false,
-								no: '000004'
-							}, {
-								checked: false,
-								no: '000005'
-							}, {
-								checked: false,
-								no: '000006'
-							}, {
-								checked: false,
-								no: '000007'
-							}],
-							config: '○'
+							employeeId: m.employeeId
 						}));
-
-					// xu ly lay casc thong tin lien quan toi code o day
-					
-					// debugger;
-
+				
 					vm.employees(employees);
 				}
 			});
@@ -169,10 +226,10 @@ const editorTemplate = `
 		<tbody>
 			<tr>
 				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $i18n('KMP001_8')"></div>
+					<div id="td-bottom" data-bind="text: $i18n('KMP001_16')"></div>
 				</td>
 				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.code"></div>
+					<div id="td-bottom" data-bind="text: model.workplaceName"></div>
 				</td>
 			</tr>
 			<tr>
@@ -180,7 +237,7 @@ const editorTemplate = `
 					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
 				</td>
 				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.name"></div>
+					<div id="td-bottom" data-bind="text: model.businessName"></div>
 				</td>
 			</tr>
 			<tr>
@@ -188,7 +245,7 @@ const editorTemplate = `
 					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_20')"></div>
 				</td>
 				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.joinDate"></div>
+					<div id="td-bottom" data-bind="text: model.entryDate"></div>
 				</td>
 			</tr>
 			<tr>
@@ -196,45 +253,19 @@ const editorTemplate = `
 					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_21')"></div>
 				</td>
 				<td class="label-column-a-right">
-					<div id="td-bottom" data-bind="text: model.retireDate"></div>
+					<div id="td-bottom" data-bind="text: model.retiredDate"></div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
-<div style="margin-top: 127px">
-	<table class="layout-grid">
-	<!-- ko if: !ko.toJS(model.cardNos).length -->
-	<tbody>
-		<tr>
-			<td>
-				<div data-bind="ntsFormLabel: { constraint: 'Chung', required: true, text: $i18n('KMP001_22') }"></div>
-			</td>
-			<td>
-				<input data-bind="ntsTextEditor: { value: ko.observable(''), enabled: false }" />
-			<td>
-		</tr>
-	</tbody>
-	<!-- /ko -->
-	<!-- ko if: !!ko.toJS(model.cardNos).length -->
-	<tbody data-bind="foreach: model.cardNos">
-		<!-- ko if: $index() === $component.model.selectedCardNo() -->
-		<tr>
-			<td>
-				<div data-bind="ntsFormLabel: {constraint: 'Chung', required: true, text: $i18n('KMP001_22') }"></div>
-			</td>
-			<td>
-				<input data-bind="ntsTextEditor: { value: no }" />
-			<td>
-		</tr>
-		<!-- /ko -->
-	</tbody>
-	<!-- /ko -->
-	</table>
+<!--
+<div>
 	<div style="margin-left: 70px; margin-top: 30px">
-		<div data-bind="component: { name: 'card-list', params: model }"></div>
+		<div data-bind="component: { name: 'card-list', params: { model: model } }"></div>
 	</div>
-</div>`
+</div>
+-->`
 
 @component({
 	name: 'editor-area',
@@ -243,10 +274,17 @@ const editorTemplate = `
 class RightPanelComponent extends ko.ViewModel {
 	model!: Model;
 
+	constraints: KnockoutObservable<String> = ko.observable('');
+
 	created(params: any) {
 		const vm = this;
 
 		vm.model = params.model;
+
+		vm.$ajax(KMP001A_API.GET_STAMPCARDDIGIT)
+			.then((data: string) => {
+				vm.constraints(data);
+			});
 	}
 
 	mounted() {
@@ -256,117 +294,159 @@ class RightPanelComponent extends ko.ViewModel {
 	}
 }
 
-@component({
+/*@component({
 	name: 'card-list',
 	template: '<div></div>'
 })
 class CardListComponent extends ko.ViewModel {
-	cardNos!: KnockoutObservableArray<CardNo>;
-	selectedCardNo!: KnockoutObservable<number>;
+	model!: Model;
+	stampCard!: KnockoutObservableArray<StampCard>;
 
-	created(params: Model) {
-		this.cardNos = params.cardNos;
-		this.selectedCardNo = params.selectedCardNo;
+	created(params: any) {
+		const vm = this;
+		
+		vm.model = params.model;
 	}
 
 	mounted() {
 		const vm = this;
 		const row = 4;
+		
+		console.log(vm.model);
 
 		const $grid = $(vm.$el)
 			.igGrid({
 				columns: [
-					{ headerText: vm.$i18n('KMP001_31'), key: "checked", dataType: "boolean", width: 50, template: `<input type="checkbox" value="" />` },
-					{ headerText: vm.$i18n('KMP001_32'), key: "no", dataType: "string", width: 200 }
+					{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 50, template: `<input type="checkbox" value="" />` },
+					{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200 }
 				],
 				height: `${24 + (23 * row)}px`,
 				dataSource: [],
 				cellClick: function(evt, ui) {
-					vm.selectedCardNo(ui.rowIndex);
+					//vm.selectedCardNo(ui.rowIndex);
 				}
 			});
 
 		ko.computed(() => {
-			const cardNos = ko.unwrap(vm.cardNos);
+			const stampCard = ko.unwrap(vm.stampCard);
 
-			$grid.igGrid('option', 'dataSource', ko.toJS(cardNos));
+			$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
 		});
 	}
-}
+}*/
 
 
-interface ICardNo {
-	checked: boolean;
-	no: string;
+interface IStampCard {
+	stampCardId: string;
+	stampNumber: string;
 }
 
 interface IModel {
 	code: string;
-	name: string;
-	joinDate: Date;
-	retireDate: Date;
-	cardNos: ICardNo[];
-	config: string;
+	affiliationId: string;
+	birthDay: Date;
+	businessName: string;
+	employeeCode: string;
+	employeeId: string;
+	entryDate: Date;
+	gender: number;
+	pid: string;
+	retiredDate: Date;
+	stampCard: IStampCard;
+	workplaceId: string;
+	workplaceName: string;
 }
 
-class CardNo {
-	checked: KnockoutObservable<boolean> = ko.observable(false);
-	no: KnockoutObservable<string> = ko.observable('');
+class StampCard {
+	stampCardId: KnockoutObservable<string> = ko.observable('');
+	stampNumber: KnockoutObservable<string> = ko.observable('');
 
-	constructor(params?: ICardNo) {
+	constructor(params?: IStampCard) {
 		const model = this;
 
 		model.update(params);
 	}
 
-	public update(params?: ICardNo) {
+	public update(params?: IStampCard) {
 		const model = this;
 
 		if (params) {
-			model.checked(!!params.checked);
-			model.no(`${params.no}`);
+			model.stampCardId(params.stampCardId);
+			model.stampNumber(params.stampNumber);
 		}
 	}
 }
 
 class Model {
 	code: KnockoutObservable<string> = ko.observable('');
-	name: KnockoutObservable<string> = ko.observable('');
-	joinDate: KnockoutObservable<Date | null> = ko.observable(null);
-	retireDate: KnockoutObservable<Date | null> = ko.observable(null);
+	affiliationId:  KnockoutObservable<string> = ko.observable('');
+	birthDay: KnockoutObservable<Date | null> = ko.observable(null);
+	businessName: KnockoutObservable<string> = ko.observable('');
+	employeeCode: KnockoutObservable<string> = ko.observable('');
+	employeeId: KnockoutObservable<string> = ko.observable('');
+	entryDate: KnockoutObservable<Date | null> = ko.observable(null);
+	gender: KnockoutObservable<number> = ko.observable(0);
+	pid: KnockoutObservable<string> = ko.observable('');
+	retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
+	stampCard: KnockoutObservableArray<StampCard> = ko.observableArray([]);
+	workplaceId: KnockoutObservable<string> = ko.observable('');
+	workplaceName: KnockoutObservable<string> = ko.observable('');
 
-	cardNos: KnockoutObservableArray<CardNo> = ko.observableArray([]);
+	public update(params?: IModel) {
+		const self = this;
 
-	selectedCardNo: KnockoutObservable<number> = ko.observable(0);
+		if (params) {
+			self.employeeId(params.employeeId);
 
-	config: KnockoutObservable<string> = ko.observable('○');
-
-	constructor() {
-		const model = this;
+			self.update(params);
+		}
 	}
 
 	public update(params?: IModel) {
 		const self = this;
 
 		if (params) {
-			self.code(params.code);
+			self.birthDay(params.birthDay);
+			self.businessName(params.businessName);
+			self.employeeCode(params.employeeCode);
+			self.entryDate(params.entryDate);
+			self.gender(params.gender);
+			self.pid(params.pid);
+			self.retiredDate(params.retiredDate);
+			self.workplaceId(params.workplaceId);
+			self.workplaceName(params.workplaceName);
 
-			self.updateWithoutCode(params);
-		}
-	}
-
-	public updateWithoutCode(params?: IModel) {
-		const self = this;
-
-		if (params) {
-			self.name(params.name);
-
-			self.joinDate(params.joinDate);
-			self.retireDate(params.retireDate);
-
-			self.cardNos(params.cardNos.map(m => new CardNo(m)));
-
-			self.config(params.config);
+			self.stampCard(params.stampCard);
 		}
 	}
 }
+
+interface ISetting {
+	code: string;
+	isAlreadySetting: boolean;
+}
+
+class Setting {
+	code: KnockoutObservable<string> = ko.observable('');
+	isAlreadySetting: KnockoutObservable<boolean> = ko.observable(true);
+	
+	constructor(params?: ISetting) {
+		const seft = this;
+
+		if (params) {
+			seft.code(params.code);
+			seft.update(params);
+		}
+	}
+
+	update(params: ISetting) {
+		const seft = this;
+
+		seft.isAlreadySetting(params.isAlreadySetting);
+	}
+}
+
+interface IEmployeeId {
+	employee: string;
+}
+

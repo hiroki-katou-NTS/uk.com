@@ -15,14 +15,26 @@ const template = `
 							<div data-bind="ntsFormLabel: { text: $i18n('KMP001_14'), required: true }"></div>
 						</td>
 						<td>
-							<div style="margin-left: 20px" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
-								enable: enable, 
-								showNextPrevious: true,
-								value: dateValue, 
-								maxRange: 'oneMonth'}"/>		
+							<div 
+								tabindex="1"
+								id="daterangepicker"
+								style="margin-left: 20px"
+								data-bind="
+									ntsDateRangePicker: { 
+										require: true,
+										showNextPrevious: true,
+										value: dateRange, 
+										maxRange: 'oneMonth'
+									}"/>		
 						</td>
 						<td>
-							<button style="margin-left: 20px" class="caret-bottom" data-bind= "text: $i18n('KMP001_15')"'></button>
+							<button 
+								style="margin-left: 20px" 
+								class="caret-bottom" 
+								data-bind= "
+									text: $i18n('KMP001_15'), 
+									click: getAllData">
+							</button>
 						</td>
 					<tr>
 				</tbody>
@@ -33,12 +45,12 @@ const template = `
 				data-bind="ntsSearchBox: {
 					label: $i18n('KMP001_22'),
 					searchMode: 'filter',
-					targetKey: 'code',
+					targetKey: 'stampNumber',
 					comId: 'card-list', 
 					items: items,
-					selected: currentCode,
-					selectedKey: 'code',
-					fields: ['name', 'code','code1'],
+					selected: stampNumber,
+					selectedKey: 'stampNumber',
+					fields: ['stampNumber', 'stampAtr'],
 					mode: 'igGrid'
 					}"></div>
 			<div>
@@ -46,28 +58,28 @@ const template = `
 					data-bind="ntsGridList: {
 						height: 300,
 						options: items,
-						optionsValue: 'code',
+						optionsValue: 'stampNumber',
 						columns: [
-				            { headerText: $i18n('KMP001_22'), prop: 'code', width: 180 },
-				            { headerText: $i18n('KMP001_27'), prop: 'code1', width: 140 },
-				            { headerText: $i18n('KMP001_28'), prop: 'name', width: 65 },
-	 						{ headerText: $i18n('KMP001_29'), prop: 'startDate', width: 145 }
+				            { headerText: $i18n('KMP001_22'), prop: 'stampNumber', width: 180 },
+				            { headerText: $i18n('KMP001_27'), prop: 'infoLocation', width: 160 },
+				            { headerText: $i18n('KMP001_28'), prop: 'stampAtr', width: 80 },
+	 						{ headerText: $i18n('KMP001_29'), prop: 'stampDatetime', width: 145 }
 				        ],
 						multiple: false,
 						enable: true,
-						value: currentCode
+						value: stampNumber
 					}">
 				</table>
 			</div>
 		</div>
 	</div>
 	<div class="model-component float-left ">
-		<table>
+		<table class="table_content">
 			<tbody>
 				<tr>
 					<td class="label-column-left">
 						<div id="td-bottom">
-							<div style="border: 0; font-size: 18px" data-bind="ntsFormLabel: { text: $i18n('KMP001_22') }"></div>
+							<div style="border: 0; font-size: 18px" data-bind="ntsFormLabel: { text: $i18n('KMP001_22')}"></div>
 						</div>
 					</td>
 					<td class="data">
@@ -107,59 +119,92 @@ const template = `
 `;
 
 interface Params {
-	
+
 }
+
+interface DateRange {
+	startDate?: string;
+	endDate?: string;
+}
+
+const API = {
+	GET_STAMPCARD: 'screen/pointCardNumber/getAllCardUnregister/'
+};
 
 @component({
 	name: 'view-c',
 	template
 })
+
 class ViewCComponent extends ko.ViewModel {
+
 	public params!: Params;
 
-	public items: KnockoutObservableArray<any> = ko.observableArray([
-		{ code: '00000000000000000001', code1: '現在レビューをいただ',  name: 'Nittsu', startDate: '2000/01/01 17:30', endDate: '2000/01/01'},
-		{ code: '002', code1: '現在レビューをいただ',  name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30'},
-		{ code: '003', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '004', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただ', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' },
-		{ code: '005', code1: '現在レビューをいただい', name: '場合には', startDate: '2000/01/01 17:30', endDate: '2000/01/01 17:30' }
-	]);
-	public currentCode: KnockoutObservable<string> = ko.observable('');
-	
-		enable: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        dateValue: KnockoutObservable<any>;
-        startDateString: KnockoutObservable<string>;
-        endDateString: KnockoutObservable<string>;
+	public items: KnockoutObservableArray<IStampCard> = ko.observableArray();
+	public stampNumber: KnockoutObservable<string> = ko.observable('');
+
+	dateRange: KnockoutObservable<DateRange> = ko.observable({});
 
 	created(params: Params) {
-		this.params = params;
+		const vm = this;
+
+		vm.params = params;
+
+		vm.dateRange
+			.subscribe((dr: DateRange) => {
+			});
+	}
+
+	public getAllData() {
+		const vm = this;
+		const { startDate, endDate } = ko.toJS(vm.dateRange);
+
+		/*vm.$ajax(API.GET_STAMPCARD + startDate + endDate)
+			.then((data: any[]) => {
+				console.log(data);
+			});
+			*/
+			
+		const start = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
+		const end = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
 		
-		var self = this;
-            self.enable = ko.observable(true);
-            self.required = ko.observable(true);
-            
-            self.startDateString = ko.observable("");
-            self.endDateString = ko.observable("");
-            self.dateValue = ko.observable({});
-            
-            self.startDateString.subscribe(function(value){
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();        
-            });
-            
-            self.endDateString.subscribe(function(value){
-                self.dateValue().endDate = value;   
-                self.dateValue.valueHasMutated();      
-            });
+		vm.$ajax(API.GET_STAMPCARD + start + "/" + end)
+		.then((data: IStampCardC[]) => {
+				console.log(data);
+			});
+	}
+}
+
+interface IStampCardC {
+	stampNumber: string;
+	infoLocation: string;
+	stampAtr: string;
+	stampDatetime: Date;
+}
+
+class StampCardC {
+	stampNumber = ko.observable('');
+	infoLocation = ko.observable('');
+	stampAtr = ko.observable('');
+	stampDatetime = ko.observable(null);
+
+	constructer(params?: IModel) {
+		const self = this;
+
+		if (params) {
+			if (params.stampNumber) {
+				self.stampNumber(params.stampNumber);
+			}
+			self.update(params);
+		}
+	}
+
+	update(params: IModel) {
+		const self = this;
+	}
+
+	clear() {
+		const self = this;
+		self.stampNumber('');
 	}
 }
