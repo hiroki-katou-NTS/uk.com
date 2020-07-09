@@ -50,7 +50,7 @@
           <span class="badge badge-secondary ">{{model.workTime.code}}</span>
           <span>{{model.workTime.name}}</span>
           <!-- A4_3_2 -->
-          <span class="d-block mt-1">{{worktime.time}}</span>
+          <span class="d-block mt-1">{{model.workTime.time}}</span>
         </button>
       </div>
     </div>
@@ -62,34 +62,34 @@
         <span class="badge badge-warning">必須</span>
       </div>
       <div class="card-body">
-        <nts-switchbox v-model="switchbox1" v-bind:value="1">{{'KAFS07_11' | i18n}}</nts-switchbox>
-        <nts-switchbox v-model="switchbox1" v-bind:value="2">{{'KAFS07_12' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="model.straight" v-bind:value="1">{{'KAFS07_11' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="model.straight" v-bind:value="2">{{'KAFS07_12' | i18n}}</nts-switchbox>
       </div>
       <div class="card-body">
-        <nts-switchbox v-model="switchbox2" v-bind:value="1">{{'KAFS07_13' | i18n}}</nts-switchbox>
-        <nts-switchbox v-model="switchbox2" v-bind:value="2">{{'KAFS07_14' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="model.bounce" v-bind:value="1">{{'KAFS07_13' | i18n}}</nts-switchbox>
+        <nts-switchbox v-model="model.bounce" v-bind:value="2">{{'KAFS07_14' | i18n}}</nts-switchbox>
       </div>
     </div>
 
     <div class="card card-label">
       <!-- A6_1 -->
-      <div v-if="isDisplay3()" class="card-header uk-bg-accordion">
+      <div v-if="isCondition3" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_6' | i18n}}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div v-if="isDisplay3()" v-bind:enable="isCondition1" class="card-body">
+      <div v-if="isCondition3" v-bind:enable="isCondition1" class="card-body">
         <nts-time-range-input v-model="valueWorkHours1" />
       </div>
     </div>
 
     <div class="card card-label">
       <!-- A7_1 -->
-      <div v-if="isDisplay2()" class="card-header uk-bg-accordion">
+      <div v-if="isCondition2" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_7' | i18n}}</span>
         <span class="badge badge-info">必須</span>
       </div>
       <!-- A7_2 -->
-      <div v-if="isDisplay2()" v-bind:enable="isDisplay3()" class="card-body">
+      <div v-if="isCondition2" v-bind:enable="isCondition3" class="card-body">
         <nts-time-range-input v-model="valueWorkHours2" />
       </div>
     </div>
@@ -105,7 +105,7 @@
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
     <button
-      v-if="mode == 'create'"
+      v-if="mode"
       type="button"
       class="btn btn-primary btn-block"
       v-on:click="register()"

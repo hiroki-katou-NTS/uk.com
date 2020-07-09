@@ -269,17 +269,27 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public AppWorkChangeDispInfo_Old changeAppDate(String companyID, List<GeneralDate> dateLst,
-			AppWorkChangeDispInfo_Old appWorkChangeDispInfo) {
+	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst,
+			AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		// 共通インタラクション「申請日を変更する」を実行する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
-				companyID, 
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = algorithmMobile.getAppSetInfoRelatedBaseDate(
+				true, 
+				companyID,
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 				dateLst,
-				ApplicationType.WORK_CHANGE_APPLICATION, 
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
-		// 「勤務変更申請の表示情報」を更新する
+				ApplicationType.WORK_CHANGE_APPLICATION,
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting(),
+				Optional.ofNullable(null));
 		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+//		commonAlgorithm.getAppSetInfoRelatedBaseDate
+//		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+//				companyID, 
+//				dateLst,
+//				ApplicationType.WORK_CHANGE_APPLICATION, 
+//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
+//		// 「勤務変更申請の表示情報」を更新する
+//		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		return appWorkChangeDispInfo;
 	}
 

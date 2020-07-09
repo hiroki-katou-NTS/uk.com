@@ -98,12 +98,13 @@ public class AppWorkChangeFinder {
 	}
 
 	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {
-		String companyID = AppContexts.user().companyId();
-		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
-				.collect(Collectors.toList());
-		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
-				param.appWorkChangeDispInfoCmd.toDomain());
-		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
+//		String companyID = AppContexts.user().companyId();
+//		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
+//				.collect(Collectors.toList());
+//		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
+//				param.appWorkChangeDispInfoCmd.toDomain());
+//		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
+		return null;
 	}
 
 	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParam_Old param) {
@@ -308,6 +309,24 @@ public class AppWorkChangeFinder {
 				appWorkChangeService.getAppWorkChangeOutput(mode, companyId, Optional.ofNullable(employeeId),
 						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfo),
 						Optional.ofNullable(appWorkChange)));
+	}
+	
+	public AppWorkChangeDispInfoDto getUpdateKAFS07(UpdateWorkChangeParam updateWorkChangeParam) {
+		
+		List<GeneralDate> dates = null;
+
+		if (updateWorkChangeParam.getListDates() != null) {
+			dates = updateWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
+					.collect(Collectors.toList());
+		}
+		AppWorkChangeDispInfo appWorkChangeDispInfo = null;
+		if (updateWorkChangeParam.getAppWorkChangeDispInfo() != null) {
+			appWorkChangeDispInfo = updateWorkChangeParam.getAppWorkChangeDispInfo().toDomain();
+		}
+
+		return AppWorkChangeDispInfoDto.fromDomain(
+				appWorkChangeService.changeAppDate(updateWorkChangeParam.getCompanyId(), dates, appWorkChangeDispInfo));
+
 	}
 
 	// 勤務変更申請の登録前チェック処理
