@@ -55,7 +55,7 @@ public class GetNewestStampNotRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				require.getStempRcNotResgistNumberStamp("DUMMY",new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampHelper.getListStampDefault();
 			}
 		};
