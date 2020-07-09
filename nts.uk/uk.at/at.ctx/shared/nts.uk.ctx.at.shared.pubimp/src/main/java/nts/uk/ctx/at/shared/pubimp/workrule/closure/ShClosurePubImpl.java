@@ -21,7 +21,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.app.workrule.ClosureCache;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -133,8 +133,10 @@ public class ShClosurePubImpl implements ShClosurePub {
 		private final CacheCarrier cacheCarrier;
 		@Override
 		public Optional<Closure> findById(int closureId) {
-			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
-			return cache.get(closureId);
+//			ClosureCache cache = cacheCarrier.get(ClosureCache.DOMAIN_NAME);
+//			return cache.get(closureId);
+			return closureRepo.findById(AppContexts.user().companyId(), closureId);
+			
 		}
 		
 	}

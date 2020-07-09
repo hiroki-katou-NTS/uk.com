@@ -1149,21 +1149,24 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		@Override
 		public Optional<EmployeeDataMngInfo> findByEmpId(String sId) {
-			EmployeeDataMngInfoCache cache = cacheCarrier.get(EmployeeDataMngInfoCache.DOMAIN_NAME); 
-			return cache.get(sId);
+//			EmployeeDataMngInfoCache cache = cacheCarrier.get(EmployeeDataMngInfoCache.DOMAIN_NAME); 
+//			return cache.get(sId);
+			return empDataMngRepo.findByEmpId(sId);
 		}
 
 		@Override
 		//他と被ってる　しかし、取り方違うから要見直し
 		public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
-			AffCompanyHistCache cache = cacheCarrier.get(AffCompanyHistCache.DOMAIN_NAME);
-			return cache.get(employeeId);
+//			AffCompanyHistCache cache = cacheCarrier.get(AffCompanyHistCache.DOMAIN_NAME);
+//			return cache.get(employeeId);
+			return affComHistRepo.getAffCompanyHistoryOfEmployee(employeeId);
 		}
 
 		@Override
 		public Optional<Person> getByPersonId(String personId) {
-			PersonCache cache = cacheCarrier.get(PersonCache.DOMAIN_NAME);
-			return cache.get(personId);
+//			PersonCache cache = cacheCarrier.get(PersonCache.DOMAIN_NAME);
+//			return cache.get(personId);
+			return personRepository.getByPersonId(personId);
 		}
 
 	}
