@@ -194,7 +194,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 						Collections.emptyList());
 			}
 			// ドメインモデル「申請定型理由」を取得する
-			AppReasonStandard appReasonStandard = appReasonStandardRepository.findByHolidayAppType(companyID, opHolidayAppType.get());
+			AppReasonStandard appReasonStandard = appReasonStandardRepository.findByHolidayAppType(companyID, opHolidayAppType.get()).get();
 			// OUTPUTを返す
 			return new AppReasonOutput(
 					opDisplayReason.get().getDisplayFixedReason(), 
@@ -221,7 +221,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					Collections.emptyList());
 		}
 		// ドメインモデル「申請定型理由」を取得する
-		AppReasonStandard appReasonStandard = appReasonStandardRepository.findByAppType(companyID, appType);
+		AppReasonStandard appReasonStandard = appReasonStandardRepository.findByAppType(companyID, appType).get();
 		// OUTPUTを返す
 		return new AppReasonOutput(
 				opDisplayReason.get().getDisplayFixedReason(), 
