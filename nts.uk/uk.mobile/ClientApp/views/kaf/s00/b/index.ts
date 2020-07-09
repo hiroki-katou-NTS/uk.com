@@ -12,25 +12,29 @@ import { component, Prop, Watch } from '@app/core/component';
 export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: { 
+        // KAFS00_B_起動情報
         input: {
+            // 画面モード
             mode: ScreenMode;
+            // 申請表示設定
             appDisplaySetting: any;
+            // 新規モード内容
             newModeContent?: NewModeContent;
+            // 詳細モード内容
             detailModeContent?: DetailModeContent;
         },
         output: {
+            // 事前事後区分
             prePostAtr: number;
+            // 申請開始日
             startDate: Date;
+            // 申請終了日
             endDate: Date;
         }
     };
     public datasource: Array<Object> = [];
     public datasource2: Array<Object> = [];
     public dateRange: any = {};
-    public displayPrePost: boolean = false;
-    public enablePrePost: boolean = false;
-    public displayMultiDaySwitch: boolean = false;
-    public valueMultiDaySwitch: boolean = false;
 
     public created() {
         const self = this;
@@ -52,22 +56,45 @@ export class KafS00BComponent extends Vue {
             start: self.params.output.startDate,
             end: self.params.output.endDate
         };
-        self.displayPrePost = self.params.input.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
-        self.enablePrePost = self.params.input.newModeContent.appTypeSetting.canClassificationChange;
         if (self.params.input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
             self.params.output.prePostAtr = self.params.input.newModeContent.appTypeSetting.displayInitialSegment;
         }
-        self.displayMultiDaySwitch = self.params.input.newModeContent.useMultiDaySwitch;
-        self.valueMultiDaySwitch = self.params.input.newModeContent.initSelectMultiDay;
     }
 
-    get dateText() {
+    get $input() {
         const self = this;
-        if (self.params.input.detailModeContent.startDate == self.params.input.detailModeContent.endDate) {    
-            return self.params.input.detailModeContent.startDate;
-        } else {
-            return self.params.input.detailModeContent.startDate + '~' + self.params.input.detailModeContent.endDate;
-        }
+
+        return self.params.input;
+    }
+
+    get $output() {
+        const self = this;
+
+        return self.params.output;
+    }
+
+    get displayPrePost() {
+        const self = this;
+
+        return self.$input.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
+    }
+
+    get enablePrePost() {
+        const self = this;
+
+        return self.$input.newModeContent.appTypeSetting.canClassificationChange;
+    }
+
+    get displayMultiDaySwitch() {
+        const self = this;
+
+        return self.$input.newModeContent.useMultiDaySwitch;
+    }
+
+    get valueMultiDaySwitch() {
+        const self = this;
+
+        return self.$input.newModeContent.initSelectMultiDay;
     }
 
     get ScreenMode() {
@@ -75,22 +102,36 @@ export class KafS00BComponent extends Vue {
     }
 }
 
+// 画面モード
 enum ScreenMode {
+    // 新規モード
     NEW = 0,
+    // 詳細モード
     DETAIL = 1
 }
 
+// 新規モード内容
 interface NewModeContent {
+    // 申請種類別設定
     appTypeSetting: any;
+    // 複数日切り替えを利用する
     useMultiDaySwitch: boolean;
+    // 複数日を初期選択する
     initSelectMultiDay: boolean;
+    // 申請日
     appDate?: Date;
+    // 申請日期間
     dateRange?: any;
 }
 
+// 詳細モード内容
 interface DetailModeContent {
+    // 事前事後区分
     prePostAtrName: string;
+    // 申請者名
     employeeName: string;
+    // 申請開始日
     startDate: string;
+    // 申請終了日
     endDate: string;       
 }
