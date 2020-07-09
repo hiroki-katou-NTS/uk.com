@@ -14,7 +14,8 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
-			vm.$ajax('at', API.SETTING)
+			vm.$blockui('show')
+				.then(() => vm.$ajax('at', API.SETTING))
 				.then((data: any) => {
 					if (data) {
 						if (data.stampSetting) {
@@ -25,7 +26,12 @@ module nts.uk.at.kdp003.a {
 							vm.stampToSuppress(data.stampToSuppress);
 						}
 					}
-				});
+				})
+				.fail((res) => {
+					vm.$dialog.error({ messageId: res.messageId })
+						.then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
+				})
+				.always(() => vm.$blockui('clear'));
 
 			_.extend(window, { vm });
 		}
