@@ -152,7 +152,7 @@ public class CreateDailyResults {
 				integrationOfDaily.getAffiliationInfor(), periodInMasterList));
 		if(!integrationOfDaily.getEditState().isEmpty()) {
 			//手修正項目取り戻す
-			restoreData(converter, integrationOfDaily, listItemValue);
+			integrationOfDaily = restoreData(converter, integrationOfDaily, listItemValue);
 		}
 		return listErrorMessageInfo;
 	}
@@ -162,10 +162,10 @@ public class CreateDailyResults {
 	 * @param integrationOfDaily
 	 * @param listItemValue
 	 */
-	public void restoreData(DailyRecordToAttendanceItemConverter converter,IntegrationOfDaily integrationOfDaily,List<ItemValue> listItemValue) {
+	public IntegrationOfDaily restoreData(DailyRecordToAttendanceItemConverter converter,IntegrationOfDaily integrationOfDaily,List<ItemValue> listItemValue) {
 		converter.setData(integrationOfDaily);
 		converter.merge(listItemValue);
-		converter.toDomain();
+		return converter.toDomain();
 	}
 
 }
