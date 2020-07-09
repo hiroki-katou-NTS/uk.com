@@ -17,52 +17,91 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00CComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { application: any, appDispInfoStartupOutput: any };
-
-    get $application() {
-        return this.params.application;
-    }
-
-    get $appDispInfoStartupOutput() {
-        return this.params.appDispInfoStartupOutput;
-    }
-
-    get $dropdownList() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) {
-            return self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.appReasonLst;
+    public params: { 
+        // KAFS00_C_起動情報
+        input: {
+            // 定型理由の表示
+            displayFixedReason: number,
+            // 申請理由の表示
+            displayAppReason: number,
+            // 定型理由一覧
+            reasonTypeItemLst: Array<ReasonTypeItemDto>,
+            // 申請制限設定
+            appLimitSetting: any,
+            // 選択中の定型理由
+            opAppStandardReasonCD?: number,
+            // 入力中の申請理由
+            opAppReason?: string 
+        },
+        output: {
+            // 定型理由
+            opAppStandardReasonCD: number,
+            // 申請理由
+            opAppReason: string
         }
+    };
+    public dropdownList: Array<any> = [];
 
-        return [];
+    public created() {
+        const self = this;
+        let dropdownList = [{
+            appStandardReasonCD: 0,
+            displayOrder: 0,
+            defaultValue: false,
+            opReasonForFixedForm: self.$i18n('KAFS00_23'),   
+        }];
+        self.dropdownList = _.concat(dropdownList, self.$input.reasonTypeItemLst);
+        if (self.$input.opAppStandardReasonCD) {
+            self.$output.opAppStandardReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => {
+                                                    return o.appStandardReasonCD == self.$input.opAppStandardReasonCD;
+                                                }).appStandardReasonCD;
+        } else {
+            let defaultReasonCD = _.find(dropdownList, (o: ReasonTypeItemDto) => o.defaultValue);
+            if (defaultReasonCD) {
+                self.$output.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;  
+            } else {
+                self.$output.opAppStandardReasonCD = _.head(self.dropdownList).appStandardReasonCD;
+            }
+        }
+        if (self.$input.opAppReason) {
+            self.$output.opAppReason = self.$input.opAppReason;
+        }
     }
 
-    get dispComboReason() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) { 
-            let listAppTypeSetting = self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-            let appTypeSetting = _.find(listAppTypeSetting, (item: any) => item.appType == self.$application.appType);    
-            
-            return appTypeSetting.displayFixedReason == 1;
-        }
+    get $input() {
+        const self = this;
 
-        return true;
+        return self.params.input;
     }
 
-    get dispTextReason() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) { 
-            let listAppTypeSetting = self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-            let appTypeSetting = _.find(listAppTypeSetting, (item: any) => item.appType == self.$application.appType);    
-            
-            return appTypeSetting.displayAppReason == 1;
-        }
+    get $output() {
+        const self = this;
 
-        return true;
+        return self.params.output;
+    }
+
+    get displayFixedReason() {
+        const self = this;
+
+        return self.params.input.displayFixedReason == 0 ? false : true;
+    }
+
+    get displayAppReason() {
+        const self = this;
+
+        return self.params.input.displayAppReason == 0 ? false : true;
     }
 
     get dispReason() {
-        let self = this;
+        const self = this;
 
-        return self.dispComboReason || self.dispTextReason;
+        return self.displayFixedReason || self.displayAppReason;
     }
+}
+
+interface ReasonTypeItemDto {
+    appStandardReasonCD: number;
+    displayOrder: number;
+    defaultValue: boolean;
+    opReasonForFixedForm?: string;     
 }
