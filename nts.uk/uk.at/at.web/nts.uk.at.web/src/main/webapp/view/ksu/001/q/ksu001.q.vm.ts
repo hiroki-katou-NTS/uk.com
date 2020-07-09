@@ -12,7 +12,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             { code: 2, name: getText("Com_Workplace") }
         ]);
         selectedpalletUnit: KnockoutObservable<number>;
-        overwrite: KnockoutObservable<boolean> = ko.observable(false);
+        overwrite: KnockoutObservable<boolean> = ko.observable(true);
 
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         dataSourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
@@ -21,7 +21,6 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         selectedButtonTableCompany: KnockoutObservable<any> = ko.observable({});
         selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
 
-        checked: KnockoutObservable<boolean> = ko.observable(false);
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
         selectedLinkButtonCom: KnockoutObservable<number> = ko.observable(0);
@@ -83,6 +82,14 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
                 self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row * 10;
+                if(value.row == -1 && value.column == -1){
+                    // truong hop unselect
+                    
+                    
+                }else{
+                    // truong hop select
+                
+                }
             });
 
             self.selectedButtonTableWorkplace.subscribe(function() {
@@ -274,26 +281,36 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
-                    $(a).removeClass('back-ground-link-btn');
+                    $(a).removeClass('background-linkbtn');
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
-                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('back-ground-link-btn');
+                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonCom]).addClass('background-linkbtn');
                 self.selectedLinkButtonCom(self.indexLinkButtonCom);
                 //set sourceCompany
                 self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
+                
             } else {
                 self.indexLinkButtonWkp = index;
                 // link button has color gray when clicked
                 _.each($('#group-link-button-ja a.hyperlink'), (a) => {
                     $(a).removeClass('color-gray');
-                    $(a).removeClass('back-ground-link-btn');
+                    $(a).removeClass('background-linkbtn');
                 });
                 $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
-                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('back-ground-link-btn');
+                $($('#group-link-button-ja a.hyperlink')[self.indexLinkButtonWkp]).addClass('background-linkbtn');
                 self.selectedLinkButtonWkp(self.indexLinkButtonWkp);
                 //set sourceWorkplace
                 self.sourceWorkplace(self.dataSourceWorkplace()[self.indexLinkButtonWkp] || source);
             }
+            
+            // set css table button
+            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                    $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                } else {
+                    $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                }
+            });
         }
 
         /**
