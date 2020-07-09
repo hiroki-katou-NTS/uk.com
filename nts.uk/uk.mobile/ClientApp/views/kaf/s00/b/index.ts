@@ -11,13 +11,29 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { application: any, appDispInfoStartupOutput: any };
-
+    public params: { 
+        input: {
+            mode: ScreenMode;
+            appDisplaySetting: any;
+            newModeContent?: NewModeContent;
+            detailModeContent?: DetailModeContent;
+        },
+        output: {
+            prePostAtr: number;
+            startDate: Date;
+            endDate: Date;
+        }
+    };
     public datasource: Array<Object> = [];
     public datasource2: Array<Object> = [];
+    public dateRange: any = {};
+    public displayPrePost: boolean = false;
+    public enablePrePost: boolean = false;
+    public displayMultiDaySwitch: boolean = false;
+    public valueMultiDaySwitch: boolean = false;
 
     public created() {
-        let self = this;
+        const self = this;
         self.datasource = [{
             code: 0,
             text: 'KAFS00_10'
@@ -32,83 +48,49 @@ export class KafS00BComponent extends Vue {
             code: true,
             text: 'KAFS00_13'
         }];
-    }
-
-    get $application() {
-        return this.params.application;
-    }
-
-    get $appDispInfoStartupOutput() {
-        return this.params.appDispInfoStartupOutput;
-    }
-
-    get prePostName() {
-        let self = this;
-
-        return _.find(self.datasource, (o: any) => o.code == self.$application.prePostAtr).text;
-    }
-
-    get displayPrePost() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) {
-            return self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1;
+        self.dateRange = {
+            start: self.params.output.startDate,
+            end: self.params.output.endDate
+        };
+        self.displayPrePost = self.params.input.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
+        self.enablePrePost = self.params.input.newModeContent.appTypeSetting.canClassificationChange;
+        if (self.params.input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
+            self.params.output.prePostAtr = self.params.input.newModeContent.appTypeSetting.displayInitialSegment;
         }
-
-        return true;
-    }
-
-    get enablePrePost() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) { 
-            let listAppTypeSetting = self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-            let appTypeSetting = _.find(listAppTypeSetting, (item: any) => item.appType == self.$application.appType);    
-            
-            return appTypeSetting.canClassificationChange;
-        }
-
-        return true;
+        self.displayMultiDaySwitch = self.params.input.newModeContent.useMultiDaySwitch;
+        self.valueMultiDaySwitch = self.params.input.newModeContent.initSelectMultiDay;
     }
 
     get dateText() {
-        let self = this;
-        if (self.$application.isRangeDate) {    
-            return '';
+        const self = this;
+        if (self.params.input.detailModeContent.startDate == self.params.input.detailModeContent.endDate) {    
+            return self.params.input.detailModeContent.startDate;
         } else {
-            return moment(self.$application.appDate).format('yyyy/MM/dd');
+            return self.params.input.detailModeContent.startDate + '~' + self.params.input.detailModeContent.endDate;
         }
     }
 
-    @Watch('$application.appDate')
-    public dateWatcher(value) {
-        let self = this;
-        if (value.getDate() % 2 == 0) {
-            self.$application.prePostAtr = 0;
-        } else {
-            self.$application.prePostAtr = 1;
-        }
-    }
-
-    @Watch('$application.dateRange')
-    public dateRangeWatcher(value) {
-        let self = this;
-        // if (value.getDate() % 2 == 0) {
-        //     self.$application.prePostAtr = 0;
-        // } else {
-        //     self.$application.prePostAtr = 1;
-        // }
-    }
-
-    @Watch('$appDispInfoStartupOutput')
-    public appDispInfoStartupWatcher(value) {
-        let self = this;
-        if (value.appDispInfoWithDateOutput) {
-            self.$application.prePostAtr = value.appDispInfoWithDateOutput.prePostAtr;
-        }
+    get ScreenMode() {
+        return ScreenMode;
     }
 }
 
-export interface AppDispInfoStartupDto {
-    appDispInfoNoDateOutput: any;
-    appDispInfoWithDateOutput: any;
-    appDetailScreenInfo: any;
+enum ScreenMode {
+    NEW = 0,
+    DETAIL = 1
+}
+
+interface NewModeContent {
+    appTypeSetting: any;
+    useMultiDaySwitch: boolean;
+    initSelectMultiDay: boolean;
+    appDate?: Date;
+    dateRange?: any;
+}
+
+interface DetailModeContent {
+    prePostAtrName: string;
+    employeeName: string;
+    startDate: string;
+    endDate: string;       
 }

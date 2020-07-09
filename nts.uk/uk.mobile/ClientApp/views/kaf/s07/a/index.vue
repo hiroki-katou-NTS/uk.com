@@ -14,13 +14,10 @@
       <div class="contentError">{{'KAFS07_1'| i18n}}</div>
     </div>
     <div>
-      <!-- <kafs00-b
+      <kafs00-b
         v-if="true"
-        v-bind:params="{
-            application: application, 
-            appDispInfoStartupOutput: appDispInfoStartupOutput
-        }"
-      /> -->
+        v-bind:params="kaf000_B_Params"
+      />
     </div>
 
     <div class="card card-label">

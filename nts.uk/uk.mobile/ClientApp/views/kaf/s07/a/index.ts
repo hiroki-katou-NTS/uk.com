@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Watch } from '@app/core/component';
 import { KDL002Component } from '../../../kdl/002';
 import {
     KafS00AComponent,
@@ -66,7 +66,8 @@ export class KafS07AComponent extends Vue {
     // data is fetched service
     public data: any = 'data';
 
-    public application: any = {};
+    public kaf000_B_Params: any = {};
+
     //   {
     //     employeeName: 'employee',
     //     appDate: new Date(),
@@ -85,11 +86,45 @@ export class KafS07AComponent extends Vue {
     public appDispInfoStartupOutput: any = {};
 
     public created() {
+        const self = this;
         console.log('created');
         // this.worktype.code = 'dd';
         // this.worktype.name = 'worktype';
         // this.worktime.code = 'dd';
         // this.worktime.name = 'worktime';
+        self.kaf000_B_Params = {
+            input: {
+                mode: 0,
+                appDisplaySetting: {
+                    prePostDisplayAtr: 1,
+                    manualSendMailAtr: 0
+                },
+                newModeContent: {
+                    appTypeSetting: {
+                        appType: 2,
+                        sendMailWhenRegister: false,
+                        sendMailWhenApproval: false,
+                        displayInitialSegment: 1,
+                        canClassificationChange: true
+                    },
+                    useMultiDaySwitch: true,
+                    initSelectMultiDay: true
+                }
+            },
+            output: {
+                prePostAtr: 0,
+                startDate: new Date(),
+                endDate: new Date()
+            }
+        };
+    }
+
+    get application() {
+        const self = this;
+
+        return {
+            prePostAtr: self.kaf000_B_Params.output.prePostAtr
+        };
     }
 
     public mounted() {
