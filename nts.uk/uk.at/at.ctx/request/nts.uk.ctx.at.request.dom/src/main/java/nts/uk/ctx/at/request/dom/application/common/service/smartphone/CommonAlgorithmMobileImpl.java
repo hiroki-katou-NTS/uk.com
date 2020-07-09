@@ -274,7 +274,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
 				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
-				opOvertimeAppAtr.get());
+				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
 		Optional<List<AchievementOutput>> opAchievementOutputLst = Optional.empty();
 		Optional<List<AppDetailContent>> opAppDetailContentLst = Optional.empty();
@@ -334,7 +334,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 
 	@Override
 	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
-			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr) {
+			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// INPUT．事前事後区分表示をチェックする(check INPUT. hiển thị phân loại xin trước xin sau)
 		if(prePostDisplayAtr == DisplayAtr.DISPLAY) {
 			// OUTPUT．「事前事後区分」=INPUT．事前事後区分の初期表示 (OUTPUT. [phan loại xin trước xin sau]= INPUT. hiển thị khởi tạo của phân loại xin trước xin sau)
@@ -349,7 +349,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		PrePostAtr_Old prePostAtr_Old = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
 				opAppDate.get(), 
-				overtimeAppAtr.value);
+				opOvertimeAppAtr.get().value);
 		return EnumAdaptor.valueOf(prePostAtr_Old.value, PrePostInitAtr.class);
 	}
 

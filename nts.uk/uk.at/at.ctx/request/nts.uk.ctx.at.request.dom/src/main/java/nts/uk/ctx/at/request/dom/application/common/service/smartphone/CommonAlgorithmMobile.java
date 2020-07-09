@@ -96,7 +96,7 @@ public interface CommonAlgorithmMobile {
 	 * @return
 	 */
 	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
-			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr);
+			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.KAFS00_A_申請メッセージ.アルゴリズム.起動する.起動する
