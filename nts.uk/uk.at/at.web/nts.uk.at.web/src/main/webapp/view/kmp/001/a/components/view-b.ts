@@ -95,6 +95,7 @@ interface Params {
 const KMP001B_API = {
 	GET_STAMPCARD: 'screen/pointCardNumber/getEmployeeFromCardNo/',
 	GET_ALL_STAMPCARD: 'screen/pointCardNumber/getAllEmployeeFromCardNo/'
+	GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getAllEmployeeFromCardNo/'
 };
 
 @component({
@@ -112,6 +113,23 @@ class ViewBComponent extends ko.ViewModel {
 		const vm = this;
 		this.params = params;
 		
+		vm.model.stampNumber
+			.subscribe((c: string) => {
+				const stampCards: IStampCard[] = ko.toJS(vm.items);
+				const current = _.find(stampCards, e => e.stampNumber === c);
+				
+				if (current) {
+					vm.$ajax(KMP001A_API.GET_INFOMAITON_EMPLOYEE + "/" + ko.toJS(current.employeeId) + "/" + ko.toJS(current.affiliationId) + "/" + ko.toJS(vm.baseDate))
+					.then((data: IModel[]) => {
+						vm.model.update(ko.toJS(data));
+						console.log(data);
+						vm.itemsStamCard(ko.toJS(data.stampCardDto));
+						console.log(ko.toJS(vm.itemsStamCard));
+					});
+				} else {
+					// reset data ve mode them moi
+				}
+			});
 	}
 
 	public getStampCard() {

@@ -21,8 +21,8 @@ import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNo;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNoDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregistered;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregisteredDto;
-import nts.uk.screen.at.app.query.kmp.kmp001.common.InformationEmployee;
-import nts.uk.screen.at.app.query.kmp.kmp001.common.InformationEmployeeDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployee;
+import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeDto;
 
 @Path("screen/pointCardNumber")
 @Produces("application/json")
@@ -60,7 +60,7 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getEmployeeFromCardNo/{cardNumber}")
-	public List<EmployeeInformationFromCardNoDto> getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
+	public EmployeeInformationFromCardNoDto getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
 		return this.getEmployeeInformationFromCardNo.getEmployee(cardnumber);
 	}
 	

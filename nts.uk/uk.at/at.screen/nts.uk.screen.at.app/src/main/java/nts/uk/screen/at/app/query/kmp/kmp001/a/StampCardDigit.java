@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.query.kmp.kmp001.a;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,13 +21,9 @@ public class StampCardDigit {
 	public StampCardDigitDto get() {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<StampCardEditing> cardEditing = stampCardEditingRepo.get(companyId);
+		StampCardEditing cardEditing = stampCardEditingRepo.get(companyId);
 		
-		if (!cardEditing.isPresent()) {
-			throw new RuntimeException("Not found");
-		}
-		
-		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.get().getDigitsNumber().v());
+		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v());
 		
 		return cardDigitNumberDto;
 	}

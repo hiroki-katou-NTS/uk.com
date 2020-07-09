@@ -31,7 +31,7 @@ public class EmployeeInformationFromCardNo {
 	@Inject
 	private EmployeeInformationRepository employeeInformation;
 	
-	public List<EmployeeInformationFromCardNoDto> getEmployee(String cardNumber) {
+	public EmployeeInformationFromCardNoDto getEmployee(String cardNumber) {
 		String contractCd = AppContexts.user().contractCode();
 		List<StampCard> stampCards = new ArrayList<>();	
 		GeneralDate generalDate = GeneralDate.today();
@@ -65,13 +65,11 @@ public class EmployeeInformationFromCardNo {
 //				empInfoList.get(0).getBusinessName() == null ? "" : empInfoList.get(0).getBusinessName(),
 //				empInfoList.get(0).getEmployeeId() == null ? "" : empInfoList.get(0).getEmployeeId());
 		
-		List<EmployeeInformationFromCardNoDto> employees = new ArrayList<>();
-		
-		employees.add(new EmployeeInformationFromCardNoDto(
+		EmployeeInformationFromCardNoDto employees = new EmployeeInformationFromCardNoDto(
 				stampCards.get(0).getStampNumber() == null ? "" : stampCards.get(0).getStampNumber().v(),
 				empInfoList.get(0).getEmployeeCode() == null ? "" : empInfoList.get(0).getEmployeeCode(),
 				empInfoList.get(0).getBusinessName() == null ? "" : empInfoList.get(0).getBusinessName(),
-				empInfoList.get(0).getEmployeeId() == null ? "" : empInfoList.get(0).getEmployeeId()));
+				empInfoList.get(0).getEmployeeId() == null ? "" : empInfoList.get(0).getEmployeeId());
 		
 		return employees;
 	}
