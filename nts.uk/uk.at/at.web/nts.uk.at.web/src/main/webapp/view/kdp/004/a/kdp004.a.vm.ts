@@ -270,10 +270,10 @@ module nts.uk.at.view.kdp004.a {
 										}
 
 										if (res.result) {
-											return { isSuccess: true, authType: res.em ? 2 : 0 };
+											return { isSuccess: true, authType: res.em ?  0 : 2 };
 										}
 									} else {
-										return { isSuccess: false, authType: 0 };
+										return { isSuccess: false, authType: 2 };
 									}
 								});
 						});
@@ -303,7 +303,7 @@ module nts.uk.at.view.kdp004.a {
 							if (!self.isUsed()) {
 								self.errorMessage(getMessage(res.messageId));
 							}
-							dfd.resolve({ isSuccess: self.isUsed(), authType: 0 });
+							dfd.resolve({ isSuccess: self.isUsed(), authType: 2 });
 						});
 
 					} else {
