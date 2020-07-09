@@ -6433,7 +6433,7 @@ module nts.uk.ui.exTable {
             let self = this;
             switch(name) {
                 case "setHeight":
-                    resize.setHeight(self, params[0]); 
+                    resize.setHeight(self[0], params[0]); 
                     break;
                 case "gridHeightMode":
                     changeGridHeightMode(self, params[0]);
