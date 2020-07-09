@@ -376,17 +376,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toLeft() {
             let self = this;
             if(self.indexBtnToLeft % 2 == 0){
-                //$("#extable").exTable("hideMiddle");
+                $("#extable").exTable("hideMiddle");
                 $(".toLeft").css("background", "url(../image/toright.png) no-repeat center");
                 $(".toLeft").css("margin-left", "190px");
                 
             }else{
-                //$("#extable").exTable("showMiddle");
+                $("#extable").exTable("showMiddle");
                 $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
                 $(".toLeft").css("margin-left", "310px");
                 
             }
-            self.indexBtnToLeft = self.indexBtnToLeft + 1; 
+            self.indexBtnToLeft = self.indexBtnToLeft + 1;
+             
         }
         
         

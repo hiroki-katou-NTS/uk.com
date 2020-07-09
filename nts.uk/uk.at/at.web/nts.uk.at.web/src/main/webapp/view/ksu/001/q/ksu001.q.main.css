@@ -60,7 +60,6 @@
 }
 
 .listLink {
-    width: 563px;
     white-space: nowrap;
 }
 
@@ -112,7 +111,7 @@
 	color: gray !important
 }
 
-.back-ground-link-btn {
+.background-linkbtn {
 	background: rgb(237,250,194);	
 }
 
@@ -130,8 +129,7 @@
 }
 
 .overwrite {
-	margin-top: 5px;
-	margin-left: 5px;
+	margin-top: 7px;
 }
 
 .openDialogJA {
@@ -144,4 +142,20 @@
 
 .inline {
 	display: inline-block;
+}
+
+.ntsTable .ntsButtonCellSelected {
+    background-color: #007fff;
+    color: white !important;
+    top: 2px;
+}
+
+.withContent {
+	border: 1px solid grey !important;
+    color: black !important;
+}
+
+.nowithContent {
+	border: 1px solid LightGrey !important;
+    color: LightGrey !important;
 }

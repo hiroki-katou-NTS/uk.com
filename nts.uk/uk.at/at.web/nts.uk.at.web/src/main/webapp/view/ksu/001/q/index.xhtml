@@ -13,14 +13,15 @@
 					<a class="hyperlink" data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name"></a>
 				</div>
 			</div>
-			<div  class="inline listLink" style="width: 500px; white-space: nowrap;" data-bind="ifnot : modeCompany">
-				<div class="inline cf" data-bind="foreach: textButtonArrWkpPattern ">
+			<div  class="inline listLink" data-bind="ifnot : modeCompany">
+				<div class="inline cf" style="width: 500px; white-space: nowrap;"  data-bind="foreach: textButtonArrWkpPattern ">
 					<a class="hyperlink" data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name"></a>
 				</div>
 			</div>
-			<div class="overwrite inline"
-				data-bind="ntsCheckBox: { checked: overwrite , enable: true, text: '#{i18n.getText('KSU001_1601')}' }">#{i18n.getText('KSU001_92')}</div>
-			<button class="openDialogJA inline" data-bind="click: openDialogJB1 "></button>
+			<div class="inline" style="margin-left: 205px;margin-bottom: 9px;">
+				<div class="overwrite inline" data-bind="ntsCheckBox: { checked: overwrite , enable: true, text: '#{i18n.getText('KSU001_1601')}' }">#{i18n.getText('KSU001_92')}</div>
+				<button class="openDialogJA inline" data-bind="click: openDialogJB1 "></button>
+			</div>
 		</div>
 		<div data-bind="if : modeCompany">
 			<div id="tableButton"
