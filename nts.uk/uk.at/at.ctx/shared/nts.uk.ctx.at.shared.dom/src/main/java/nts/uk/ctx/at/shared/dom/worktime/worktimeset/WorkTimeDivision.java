@@ -62,8 +62,8 @@ public class WorkTimeDivision extends WorkTimeDomainObject implements Cloneable{
 		
 		switch(this.getWorkTimeMethodSet()) {
 			case FIXED_WORK:		return WorkTimeForm.FIXED;
-			case DIFFTIME_WORK:	return WorkTimeForm.TIMEDIFFERENCE;
-			case FLOW_WORK:		return WorkTimeForm.FLOW;
+			case DIFFTIME_WORK:		return WorkTimeForm.TIMEDIFFERENCE;
+			case FLOW_WORK:			return WorkTimeForm.FLOW;
 			default:				throw new RuntimeException("Non-conformity No WorkTimeForm");
 		}
 	}

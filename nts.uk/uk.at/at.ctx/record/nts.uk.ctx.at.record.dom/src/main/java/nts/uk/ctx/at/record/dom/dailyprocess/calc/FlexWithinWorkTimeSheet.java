@@ -107,10 +107,10 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param flexLimitSetting 時間外の上限設定
 	 * @param preAppTime 事前フレ
-	 * @param dailyUnit 法定労働じあｊ
+	 * @param dailyUnit 法定労働時間
 	 * @param commonSetting 就業時間帯の共通設定
 	 * @param conditionItem 法定内区分
-	 * @param predetermineTimeSetByPersonInfo 計算用所定時間まち
+	 * @param predetermineTimeSetByPersonInfo 計算用所定時間（個人）
 	 * @param coreTimeSetting
 	 * @return フレックス時間
 	 */

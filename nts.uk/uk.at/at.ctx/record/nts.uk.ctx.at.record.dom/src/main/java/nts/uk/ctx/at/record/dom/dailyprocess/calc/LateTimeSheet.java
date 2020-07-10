@@ -590,7 +590,7 @@ public class LateTimeSheet{
 			WorkTimezoneCommonSet commonSetting) {
 		
 		//所定時間帯の開始時刻
-		TimeWithDayAttr start = predetermineTimeSet.getTimeSheets().get(timeLeavingWork.getWorkNo().v()).getStart();
+		TimeWithDayAttr start = predetermineTimeSet.getTimeSheets().get(timeLeavingWork.getWorkNo().v()-1).getStart();
 		
 		//出勤時刻
 		TimeWithDayAttr end = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();

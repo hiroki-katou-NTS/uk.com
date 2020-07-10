@@ -113,9 +113,7 @@ public class HolidayCalcMethodSet extends DomainObject{
 				new PremiumHolidayCalcMethod(
 						this.workTimeCalcMethodOfHoliday.getCalculateActualOperation(),
 						this.premiumCalcMethodOfHoliday.getAdvanceSet()),
-				//this.workTimeCalcMethodOfHoliday.createCalculationByActualTime());
 				this.workTimeCalcMethodOfHoliday);
-				
 	}
 }
 

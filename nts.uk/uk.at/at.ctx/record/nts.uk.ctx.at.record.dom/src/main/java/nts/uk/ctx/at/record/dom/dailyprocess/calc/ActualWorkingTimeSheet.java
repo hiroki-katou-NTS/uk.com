@@ -65,7 +65,7 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	}
 	
 	public AttendanceTime calcTotalTime() {
-		return super.calcTotalTime().addMinutes(timeVacationOverflowTime.orElse(AttendanceTime.ZERO).valueAsMinutes());
+		return super.calcTotalTime().addMinutes(this.timeVacationOverflowTime.orElse(AttendanceTime.ZERO).valueAsMinutes());
 	}
 	
 	/**

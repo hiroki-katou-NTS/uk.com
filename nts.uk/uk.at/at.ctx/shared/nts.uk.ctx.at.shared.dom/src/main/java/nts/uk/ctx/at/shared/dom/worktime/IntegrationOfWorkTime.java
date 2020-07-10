@@ -207,7 +207,7 @@ public class IntegrationOfWorkTime {
 	public Optional<CoreTimeSetting> getCoreTimeSetting() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				return Optional.empty();
-			case FLEX:				Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
+			case FLEX:				return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
 			case FLOW:				return Optional.empty();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
