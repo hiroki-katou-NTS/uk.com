@@ -23,8 +23,10 @@ import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -50,6 +52,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.S
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
@@ -231,12 +234,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 
 	@Override
-	public PrePostAtr_Old preliminaryJudgmentProcessing(ApplicationType_Old appType, GeneralDate appDate,int overTimeAtr) {
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr) {
 		GeneralDate systemDate = GeneralDate.today();
 		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
 				+ GeneralDateTime.now().localDateTime().getMinute();
 		String companyID = AppContexts.user().companyId();
-		PrePostAtr_Old prePostAtr = null;
+		PrePostAtr prePostAtr = null;
 		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		Optional<RequestSetting> requestSetting = this.requestSettingRepository.findByCompany(companyID);
 		List<ReceptionRestrictionSetting> receptionRestrictionSetting = new ArrayList<>();
@@ -261,35 +264,35 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 //					}
 //				}
 //			}
-			if(appType.equals(ApplicationType_Old.OVER_TIME_APPLICATION)){
+			if(appType == ApplicationType.OVER_TIME_APPLICATION){
 				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-					prePostAtr = PrePostAtr_Old.POSTERIOR;
+					prePostAtr = PrePostAtr.POSTERIOR;
 				}else{
 					int resultCompare = 0;
-					if(overTimeAtr == 0 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
+					if(overtimeAppAtr == OvertimeAppAtr.EARLY_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime() != null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getPreOtTime().v());
-					}else if(overTimeAtr == 1 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
+					}else if(overtimeAppAtr == OvertimeAppAtr.NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime() !=  null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getNormalOtTime().v());
-					}else if(overTimeAtr == 2 && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
+					}else if(overtimeAppAtr == OvertimeAppAtr.EARLY_NORMAL_OVERTIME && receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction() !=  null){
 						resultCompare = systemTime.compareTo(receptionRestrictionSetting.get(0).getBeforehandRestriction().getTimeBeforehandRestriction().v());
 					}
 					if(resultCompare == 1) {
-						prePostAtr = PrePostAtr_Old.POSTERIOR;
+						prePostAtr = PrePostAtr.POSTERIOR;
 					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
-						prePostAtr = PrePostAtr_Old.PREDICT;
+						prePostAtr = PrePostAtr.PREDICT;
 					}
 				}
 			}else{
-				prePostAtr = PrePostAtr_Old.POSTERIOR;
+				prePostAtr = PrePostAtr.POSTERIOR;
 			}
 			
 		} else if(appDate.after(systemDate) ) {
 			//xin truoc 事前事後区分= 事前
-			prePostAtr = PrePostAtr_Old.PREDICT;
+			prePostAtr = PrePostAtr.PREDICT;
 			
 		} else if(appDate.before(systemDate)) { // if appDate < systemDate
 			//xin sau 事前事後区分= 事後
-			prePostAtr = PrePostAtr_Old.POSTERIOR;
+			prePostAtr = PrePostAtr.POSTERIOR;
 		}
 		
 			

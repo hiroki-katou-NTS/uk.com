@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -362,11 +362,11 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			return PrePostInitAtr.PREDICT;
 		}
 		// 3.事前事後の判断処理(事前事後非表示する場合)
-		PrePostAtr_Old prePostAtr_Old = otherCommonAlgorithm.preliminaryJudgmentProcessing(
-				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
+		PrePostAtr prePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(
+				appType,
 				opAppDate.get(), 
-				opOvertimeAppAtr.get().value);
-		return EnumAdaptor.valueOf(prePostAtr_Old.value, PrePostInitAtr.class);
+				opOvertimeAppAtr.get());
+		return EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class);
 	}
 
 	@Override

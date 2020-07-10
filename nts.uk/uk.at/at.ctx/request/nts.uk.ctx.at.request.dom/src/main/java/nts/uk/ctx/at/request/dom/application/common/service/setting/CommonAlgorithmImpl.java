@@ -216,9 +216,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				// OUTPUT．「事前事後区分」=事前
 				output.setPrePostAtr(PrePostAtr_Old.PREDICT);
 			} else  {
+				// error EA refactor 4
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
-				output.setPrePostAtr(prePostAtrJudgment);
+				/*PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
+				output.setPrePostAtr(prePostAtrJudgment);*/
 			}
 		} else {
 			// 申請表示情報(基準日関係あり)．事前事後区分=INPUT．事前事後区分の初期表示

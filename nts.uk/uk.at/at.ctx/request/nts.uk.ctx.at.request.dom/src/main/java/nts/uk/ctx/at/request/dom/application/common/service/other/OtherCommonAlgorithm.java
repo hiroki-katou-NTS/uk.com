@@ -1,24 +1,21 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
-/**
- * 
- * 16.その他
- *
- */
-
 
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -27,6 +24,12 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
+/**
+ * refactor 4
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other)
+ * @author Doan Duy Hung
+ *
+ */
 public interface OtherCommonAlgorithm {
 	/**
 	 * 1.職場別就業時間帯を取得
@@ -36,12 +39,12 @@ public interface OtherCommonAlgorithm {
 	 */
 	public List<WorkTimeSetting> getWorkingHoursByWorkplace(String companyID,String employeeID,GeneralDate referenceDate);
 	/**
-	 * 3.事前事後の判断処理(事前事後非表示する場合)
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).3.事前事後の判断処理(事前事後非表示する場合).3.事前事後の判断処理(事前事後非表示する場合)
 	 * @param appType
 	 * @param appDate
 	 * @return enum PrePostAtr
 	 */
-	public PrePostAtr_Old preliminaryJudgmentProcessing(ApplicationType_Old appType,GeneralDate appDate,int overTimeAtr);
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate, OvertimeAppAtr overtimeAppAtr);
 	/**
 	 * 4.社員の当月の期間を算出する
 	 * @param companyId 会社ID
