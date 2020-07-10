@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.service.smartphone.output.RequestMsgInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.RequestMsgInfoOutput;
@@ -43,7 +43,7 @@ public class ApplicationMobileWebService {
 	
 	@POST
 	@Path("getDetailMob")
-	public DetailMobDto getDetailMob(String appID) {
+	public AppDispInfoStartupDto getDetailMob(String appID) {
 		return null;
 	}
 	

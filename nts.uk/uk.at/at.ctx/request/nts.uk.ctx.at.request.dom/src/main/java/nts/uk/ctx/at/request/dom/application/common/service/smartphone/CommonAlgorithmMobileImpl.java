@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.smartphone;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +11,9 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -24,6 +27,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSe
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenAppData;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -53,7 +63,6 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
@@ -61,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRep
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -102,9 +112,6 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private EmployeeRequestAdapter employeeAdaptor;
 	
 	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
-	
-	@Inject
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	
 	@Inject
@@ -118,6 +125,15 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private AppEmploymentSetRepository appEmploymentSetRepository;
+	
+	@Inject
+	private DetailScreenBefore detailScreenBefore;
+	
+	@Inject
+	private BeforePreBootMode beforePreBootMode;
+	
+	@Inject
+	private InitMode initMode;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -372,6 +388,61 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				deadlineLimitCurrentMonth, 
 				preAppAcceptLimit, 
 				postAppAcceptLimit);
+	}
+
+	@Override
+	public AppDispInfoStartupOutput getDetailMob(String companyID, String appID) {
+		// 15.詳細画面申請データを取得する
+		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
+		// 申請共通起動処理
+		List<GeneralDate> dateLst = new ArrayList<>();
+		Application application = detailScreenAppData.getApplication();
+		if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+			DatePeriod datePeriod = new DatePeriod(
+					application.getOpAppStartDate().get().getApplicationDate(), 
+					application.getOpAppEndDate().get().getApplicationDate());
+			dateLst = datePeriod.datesBetween();
+		} else {
+			dateLst.add(application.getAppDate().getApplicationDate());
+		}
+		AppDispInfoStartupOutput appDispInfoStartupOutput = this.appCommonStartProcess(
+				false, 
+				companyID, 
+				application.getEmployeeID(), 
+				application.getAppType(), 
+				Optional.empty(), 
+				dateLst, 
+				Optional.empty());
+		// 入力者の社員情報を取得する
+		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
+				application.getEmployeeID(), 
+				application.getEnteredPerson());
+		// 14-2.詳細画面起動前モードの判断
+		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
+				companyID, 
+				AppContexts.user().employeeId(), 
+				application, 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+		// 14-3.詳細画面の初期モード
+		OutputMode outputMode = initMode.getDetailScreenInitMode(
+				detailedScreenPreBootModeOutput.getUser(),  
+				detailedScreenPreBootModeOutput.getReflectPlanState().value);
+		
+		// 取得した「申請表示情報」を更新する(Update [thông tin hiển thị đơn xin]đã lấy)
+		AppDetailScreenInfo appDetailScreenInfo = new AppDetailScreenInfo(
+				application, 
+				detailScreenAppData.getDetailScreenApprovalData().getApprovalLst(), 
+				detailScreenAppData.getDetailScreenApprovalData().getAuthorComment(), 
+				detailedScreenPreBootModeOutput.getUser(), 
+				detailedScreenPreBootModeOutput.getReflectPlanState(), 
+				outputMode);
+		appDetailScreenInfo.setAuthorizableFlags(Optional.of(detailedScreenPreBootModeOutput.isAuthorizableFlags()));
+		appDetailScreenInfo.setApprovalATR(Optional.of(detailedScreenPreBootModeOutput.getApprovalATR()));
+		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));
+		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().setOpEmployeeInfo(opEmployeeInfoImport);
+		appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo));
+		// 更新した「申請表示情報」を返す(Trả về [thông tin hiển thị đơn xin] đã update)
+		return appDispInfoStartupOutput;
 	}
 
 }
