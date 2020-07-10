@@ -170,6 +170,7 @@ public class CalculationRangeOfOneDay {
 										new WithinWorkTimeFrame(
 												new EmTimeFrameNo(5),
 												new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
+												new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
 												new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 												Collections.emptyList(),
 												Collections.emptyList(),
@@ -322,6 +323,7 @@ public class CalculationRangeOfOneDay {
 		if(!this.withinWorkingTimeSheet.isPresent()) {
 			this.withinWorkingTimeSheet = Finally.of(new WithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
 																									new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
+																									new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
 																									new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN), 
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
@@ -410,6 +412,7 @@ public class CalculationRangeOfOneDay {
 				//就業時間枠時間帯を作り直す
 				for(TimeSpanForDailyCalc newTimeSpan : newTimeSpanList) {
 					renewWithinFrame.add(new WithinWorkTimeFrame(timeSheet.getWorkingHoursTimeNo(),
+							newTimeSpan,
 							newTimeSpan,
 							timeSheet.getRounding(),
 							timeSheet.duplicateNewTimeSpan(newTimeSpan),
@@ -1220,8 +1223,9 @@ public class CalculationRangeOfOneDay {
 		
 		//就業時間内時間枠作成
 		return new WithinWorkTimeFrame(
-				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()), 
-				calcRange, 
+				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()),
+				calcRange,
+				calcRange,
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				new ArrayList<>(),
 				new ArrayList<>(),

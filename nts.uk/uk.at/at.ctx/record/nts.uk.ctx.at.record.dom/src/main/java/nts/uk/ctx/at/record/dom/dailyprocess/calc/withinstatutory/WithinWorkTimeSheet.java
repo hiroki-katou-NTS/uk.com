@@ -285,7 +285,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//出退勤時刻と就業時間帯の勤務時間帯との重複部分を取得
 		CommonFixedWorkTimezoneSet workTimeZone = new CommonFixedWorkTimezoneSet();
 		workTimeZone = workTimeZone.forWorkTime(integrationOfWorkTime);
-		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(timeLeavingWork,workTimeZone,todayWorkType);
+		List<WithinWorkTimeFrame> withinWorkTimeFrame = duplicatedByStamp(timeLeavingWork,workTimeZone,todayWorkType,lateDesClock,leaveEarlyDesClock);
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		for(WithinWorkTimeFrame duplicateTimeSheet :withinWorkTimeFrame) {
@@ -520,7 +520,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return　時間枠の時間帯と出退勤の重複時間
 	 */
 	private static List<WithinWorkTimeFrame> duplicatedByStamp(
-			TimeLeavingWork timeLeavingWork,CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,WorkType workType) {
+			TimeLeavingWork timeLeavingWork,
+			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
+			WorkType workType,
+			Optional<LateDecisionClock> lateDesClock,
+			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock) {
 		List<WithinWorkTimeFrame> returnList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicatedRange = Optional.empty(); 
 		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
@@ -529,30 +533,60 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		for(EmTimeZoneSet timeZone:emTimeZoneSet) {
 			duplicatedRange = timeZone.getTimezone().getDuplicatedWith(timeLeavingWork.getTimespan());
 			if(duplicatedRange.isPresent()) {
-				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
-														new TimeSpanForDailyCalc(duplicatedRange.get()),
-														timeZone.getTimezone().getRounding(),
-														new ArrayList<>(),
-														new ArrayList<>(),
-														new ArrayList<>(),
-														Optional.empty(),
-														new ArrayList<>(),
-														Optional.empty(),
-														Optional.empty()));
+				returnList.add(new WithinWorkTimeFrame(
+						timeZone.getEmploymentTimeFrameNo(),
+						new TimeSpanForDailyCalc(duplicatedRange.get()),
+						getBeforeLateEarlyTimeSheet(lateDesClock, leaveEarlyDesClock, new TimeSpanForDailyCalc(duplicatedRange.get())),
+						timeZone.getTimezone().getRounding(),
+						new ArrayList<>(),
+						new ArrayList<>(),
+						new ArrayList<>(),
+						Optional.empty(),
+						new ArrayList<>(),
+						Optional.empty(),
+						Optional.empty()));
 			}else {
 				returnList.add(new WithinWorkTimeFrame(timeZone.getEmploymentTimeFrameNo(),
-													   new TimeSpanForDailyCalc(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart()),
-													   timeZone.getTimezone().getRounding(),
-													   new ArrayList<>(),
-													   new ArrayList<>(),
-													   new ArrayList<>(),
-													   Optional.empty(),
-													   new ArrayList<>(),
-													   Optional.empty(),
-													   Optional.empty()));
+						new TimeSpanForDailyCalc(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart()),
+						new TimeSpanForDailyCalc(timeZone.getTimezone().getStart(),timeZone.getTimezone().getStart()),
+						timeZone.getTimezone().getRounding(),
+						new ArrayList<>(),
+						new ArrayList<>(),
+						new ArrayList<>(),
+						Optional.empty(),
+						new ArrayList<>(),
+						Optional.empty(),
+						Optional.empty()));
 			}
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 遅刻早退控除前時間帯を取得する
+	 * @param lateDesClock 遅刻判断時刻
+	 * @param leaveEarlyDesClock 早退判断時刻
+	 * @param timeSpan 就業時間内時間枠．時間帯
+	 * @return 遅刻早退控除前時間帯
+	 */
+	private static TimeSpanForDailyCalc getBeforeLateEarlyTimeSheet(
+			Optional<LateDecisionClock> lateDesClock,
+			Optional<LeaveEarlyDecisionClock> leaveEarlyDesClock,
+			TimeSpanForDailyCalc timeSpan) {
+		TimeSpanForDailyCalc beforeDeductTime= new TimeSpanForDailyCalc(timeSpan.getTimeSpan());
+		
+		if(!lateDesClock.isPresent() && !leaveEarlyDesClock.isPresent()) {
+			//遅刻判断時刻が存在しない場合は時間帯をそのまま返す（フレックス勤務コア無しの場合もここに入るので注意）
+			return beforeDeductTime;
+		}
+		//遅刻早退判断時刻の範囲に広げる
+		if(timeSpan.getStart().greaterThan(lateDesClock.get().getLateDecisionClock())) {
+			beforeDeductTime = timeSpan.shiftOnlyStart(lateDesClock.get().getLateDecisionClock());
+		}
+		if(timeSpan.getEnd().lessThan(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock())) {
+			beforeDeductTime = timeSpan.shiftOnlyStart(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock());
+		}
+		return beforeDeductTime;
 	}
 
 	/**
@@ -817,19 +851,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							premiumAtr,commonSetting,
 																							lateEarlyMinusAtr
 																							).v());
-			if(decisionDeductChild) {
-				//遅刻早退時間帯から短時間勤務を取得。短時間勤務の時間を加算
-				//遅刻が持つ育児or介護時間
-				if(copyItem.getLateTimeSheet().isPresent()&&copyItem.getLateTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
-					workTime = workTime.addMinutes(copyItem.getLateTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child).valueAsMinutes());
-					workTime = workTime.addMinutes(copyItem.getLateTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
-				}
-				//早退が持つ育児or介護時間
-				if(copyItem.getLeaveEarlyTimeSheet().isPresent()&&copyItem.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
-					workTime = workTime.addMinutes(copyItem.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child).valueAsMinutes());
-					workTime = workTime.addMinutes(copyItem.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
-				}
-			}
 		}
 		return workTime;
 	}
@@ -1109,6 +1130,17 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 DeductLeaveEarly deductLeaveEarly,
 											 NotUseAtr lateEarlyMinusAtr
 			   								 ) {
+		
+		//遅刻、早退の控除設定を「控除する」に変更する
+		HolidayCalcMethodSet changeHolidayCalcMethodSet = new HolidayCalcMethodSet(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday(),holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().changeDeduct());
+		//就業時間帯の遅刻早退を控除するかを見る場合、就業時間帯の遅刻、早退の控除設定を「控除する」に変更する
+		Optional<WorkTimezoneCommonSet> changeCommonSetting = commonSetting;
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&
+		   holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&
+		   commonSetting.isPresent()) {
+			 changeCommonSetting = Optional.of(commonSetting.get().changeWorkTimezoneLateEarlySet());
+		}
+		
 		//就業時間（法定内用）の計算
 		AttendanceTime result = calcWorkTime(premiumAtr,
 											 vacationClass,
@@ -1119,9 +1151,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 autoCalcOfLeaveEarlySetting,
 											 addSetting,
 											 holidayAddtionSet,
-											 holidayCalcMethodSet,
+											 changeHolidayCalcMethodSet,
 											 dailyUnit,
-											 commonSetting,
+											 changeCommonSetting,
 											 conditionItem,
 											 predetermineTimeSetByPersonInfo,
 											 coreTimeSetting
@@ -1803,6 +1835,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				companyCommonSetting.getMidNightTimeSheet(),
 				Optional.of(integrationOfWorkTime.getCommonSetting()));
 		
+		//遅刻早退控除前時間帯を作成
+		creatingWithinWorkTimeSheet.createBeforeLateEarlyTimeSheet(
+				creatingWithinWorkTimeSheet.getLateDecisionClock(),
+				creatingWithinWorkTimeSheet.getLeaveEarlyDecisionClock());
+		
 		return creatingWithinWorkTimeSheet;
 	}
 	
@@ -2199,5 +2236,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				.filter(tc -> tc.getPremiumTimeSheetInPredetermined().isPresent())
 				.map(tc -> tc.getPremiumTimeSheetInPredetermined().get().calcTotalTime().valueAsMinutes())
 				.collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	/**
+	 * 遅刻早退控除前時間帯を作成する
+	 * @param lateDecisionClocks 遅刻判断時刻(List)
+	 * @param leaveEarlyDecisionClocks 早退判断時刻(List)
+	 */
+	public void createBeforeLateEarlyTimeSheet(
+			List<LateDecisionClock> LateDecisionClocks,
+			List<LeaveEarlyDecisionClock> LeaveEarlyDecisionClocks) {
+		for(int i=0; i<this.withinWorkTimeFrame.size(); i++) {
+			this.withinWorkTimeFrame.get(i).createBeforeLateEarlyTimeSheet(LateDecisionClocks.get(i), LeaveEarlyDecisionClocks.get(i));
+		}
 	}
 }

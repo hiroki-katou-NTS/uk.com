@@ -43,7 +43,7 @@ public class DeductLeaveEarly extends DomainObject{
 	 */
 	public DeductLeaveEarly changeDeduct() {
 		int test = this.enableSetPerWorkHour?1:0;
-		return new DeductLeaveEarly(1,test);
+		return new DeductLeaveEarly(0,test);
 	}
 }
 

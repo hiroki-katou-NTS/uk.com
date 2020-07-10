@@ -76,6 +76,9 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	//就業時間枠No
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
+	/** 遅刻早退控除前時間帯　※時間帯作成では使用しない */
+	private TimeSpanForDailyCalc beforeLateEarlyTimeSheet;
+	
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
 	private Optional<LateTimeSheet> lateTimeSheet;
 	//早退時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
@@ -99,6 +102,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	public WithinWorkTimeFrame(
 			EmTimeFrameNo workingHoursTimeNo,
 			TimeSpanForDailyCalc timeSheet,
+			TimeSpanForDailyCalc beforeLateEarlyTimeSheet,
 			TimeRoundingSetting rounding,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
@@ -110,13 +114,13 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		
 		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
+		this.beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet;
 		this.lateTimeSheet = lateTimeSheet;
 		this.leaveEarlyTimeSheet = leaveEarlyTimeSheet;
 		this.premiumTimeSheetInPredetermined = Optional.empty();
 		this.lateVacationUseTime = Optional.empty();
 		this.leaveEarlyVacationUseTime = Optional.empty();
 	}
-	
 
 	
 	public TimeSpanForDailyCalc getTimeSheet() {
@@ -315,7 +319,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			
 			//遅刻時間帯と自身が重複している時間
 			Optional<TimeSpanForDailyCalc> lateDupulicateTime
-					= this.lateTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.timeSheet);
+					= this.lateTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.beforeLateEarlyTimeSheet);
 			
 			if(lateDupulicateTime.isPresent()) {
 				//就業時間内時間枠の時間帯と重複している遅刻時間帯のみを控除する
@@ -360,15 +364,12 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 //		TimeZoneRounding a = ((CalculationTimeSheet)this).getTimeSheet();
 //		TimeSpanForDailyCalc b = a.timeSpan();
 //		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();/*.getTimeSheet().timeSpan().lengthAsMinutes());*/		
-//		//開始～終了の間の時間を計算する
-//		AttendanceTime result = new AttendanceTime(this.timeSheet.getTimeSpan().lengthAsMinutes());
-//		//控除時間を控除する
-//		result =  result.minusMinutes(calcDeductionTime(holidayCalcMethodSet,premiumAtr).valueAsMinutes());
-//		//丸め設定の取得
-//		TimeRoundingSetting rounding = this.timeSheet.getRounding();
-//		//丸め処理
-//		result = new AttendanceTime(rounding.round(result.valueAsMinutes()));
-		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();
+		//開始～終了の間の時間を計算する
+		AttendanceTime result = new AttendanceTime(this.beforeLateEarlyTimeSheet.getTimeSpan().lengthAsMinutes());
+		//控除時間を控除する
+		result =  result.minusMinutes(this.calcDeductionTime(holidayCalcMethodSet, premiumAtr).valueAsMinutes());
+		//丸め処理
+		result = new AttendanceTime(this.rounding.round(result.valueAsMinutes()));
 		//溢れ時間を加算する
 		result.addMinutes(this.timeVacationOverflowTime.orElse(AttendanceTime.ZERO).valueAsMinutes());
 		return result;
@@ -661,7 +662,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		
 		//控除時間帯
 		List<TimeSheetOfDeductionItem> dedTimeSheet = Collections.emptyList();
-		dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), DeductionAtr.Deduction);
+		dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(duplicateTimeSheet.getBeforeLateEarlyTimeSheet(), DeductionAtr.Deduction);
 		dedTimeSheet.forEach(tc ->{
 			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction, Optional.of(integrationOfWorkTime.getCommonSetting()));
 		});
@@ -673,7 +674,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		recordTimeSheet.forEach(tc ->{
 			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Appropriate, Optional.of(integrationOfWorkTime.getCommonSetting()));
 		});
-
+		
 		/*
 		 * 就業時間内時間帯に持たせる休憩時間帯を作成
 		 * 加給、深夜に休憩時刻を持たせたい。
@@ -691,9 +692,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,integrationOfDaily.getSpecDateAttr());
 		/*深夜*/
 		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
+		
 		return new WithinWorkTimeFrame(
 				duplicateTimeSheet.getWorkingHoursTimeNo(),
 				new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()),
+				duplicateTimeSheet.getBeforeLateEarlyTimeSheet(),
 				duplicateTimeSheet.getRounding(),
 				recordTimeSheet,
 				dedTimeSheet,
@@ -914,9 +917,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		if(premiumAtr.isRegularWork() && workTimeDeductLateLeaveEarly.equals(NotUseAtr.USE)) {
 			return true;
 		} 
-		if(premiumAtr.isPremium()
-				 && workTimeDeductLateLeaveEarly.equals(NotUseAtr.USE)
-				 && premiumDeductLateLeaveEarly.equals(NotUseAtr.NOT_USE)){
+		if(premiumAtr.isPremium() && premiumDeductLateLeaveEarly.equals(NotUseAtr.USE)){
 			return true;
 		}
 		return false;
@@ -1080,5 +1081,22 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			return Optional.of(creatingLeaveEarlyTimeSheet);
 		}
 		return Optional.empty();
+	}
+	
+	/**
+	 * 遅刻早退控除前時間帯を作成する
+	 * @param lateDecisionClocks 遅刻判断時刻
+	 * @param leaveEarlyDecisionClocks 早退判断時刻
+	 */
+	public void createBeforeLateEarlyTimeSheet(
+			LateDecisionClock lateDecisionClocks,
+			LeaveEarlyDecisionClock leaveEarlyDecisionClocks) {
+		this.beforeLateEarlyTimeSheet = this.timeSheet;
+		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
+		}
+		if(this.timeSheet.getEnd().lessThan(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock());
+		}
 	}
 }
