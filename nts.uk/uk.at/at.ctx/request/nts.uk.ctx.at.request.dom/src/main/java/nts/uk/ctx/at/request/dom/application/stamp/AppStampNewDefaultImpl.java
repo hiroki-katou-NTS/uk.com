@@ -83,6 +83,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 		/*registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(
 				appStamp.getApplication_New().getEmployeeID(), 
 				appStamp.getApplication_New());*/
-		return newAfterRegister.processAfterRegister(appStamp.getApplication_New());
+		/*return newAfterRegister.processAfterRegister(appStamp.getApplication_New());*/
+		return null;
 	}
 }

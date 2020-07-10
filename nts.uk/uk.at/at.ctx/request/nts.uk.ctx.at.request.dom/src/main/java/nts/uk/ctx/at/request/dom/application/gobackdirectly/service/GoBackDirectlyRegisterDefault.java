@@ -145,8 +145,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				Arrays.asList(application.getAppDate()));
 		
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		return newAfterRegister.processAfterRegister(application);
-		
+		/*return newAfterRegister.processAfterRegister(application);*/
+		return null;
 	}
 
 	

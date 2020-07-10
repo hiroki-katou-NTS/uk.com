@@ -147,8 +147,9 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 					listDate);	
 		}
 		
+		// // error EA refactor 4
 		// 2-3.新規画面登録後の処理を実行
-		return newAfterRegister.processAfterRegister(appRoot);
-
+		/*return newAfterRegister.processAfterRegister(appRoot);*/
+		return null;
 	}
 }

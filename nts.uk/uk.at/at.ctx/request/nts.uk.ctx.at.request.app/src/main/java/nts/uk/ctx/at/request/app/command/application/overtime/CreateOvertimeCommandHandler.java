@@ -127,7 +127,7 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		/*registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);*/
 
 		// 2-3.新規画面登録後の処理を実行
-		return newAfterRegister.processAfterRegister(appRoot);
-
+		/*return newAfterRegister.processAfterRegister(appRoot);*/
+		return null;
 	}
 }
