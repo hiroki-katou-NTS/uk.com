@@ -3,7 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
 /**
@@ -12,7 +13,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class AppDispInfoStartupDto {
 	/**
 	 * 申請設定（基準日関係なし）

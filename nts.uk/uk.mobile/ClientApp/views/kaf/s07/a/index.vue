@@ -1,7 +1,7 @@
 <template>
   <div class="kafs07a">
     <!-- <div>
-      <kafs00-a v-if="true" v-bind:params="{application: application}" />
+      <kafs00-a v-if="true" v-bind:params="kaf000_A_Params" />
     </div> -->
 
     <div v-if="!$valid" class="alert error">

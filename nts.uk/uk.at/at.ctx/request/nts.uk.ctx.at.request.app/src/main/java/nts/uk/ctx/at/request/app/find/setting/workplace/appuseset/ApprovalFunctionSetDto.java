@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 
 /**
@@ -13,7 +14,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
+@NoArgsConstructor
 public class ApprovalFunctionSetDto {
 	
 	/**

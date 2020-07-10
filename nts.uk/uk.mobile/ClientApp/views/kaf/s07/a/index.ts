@@ -57,6 +57,8 @@ export class KafS07AComponent extends Vue {
 
     public kaf000_B_Params: any = {};
 
+    public kaf000_A_Params: any = {};
+
     public user: any;
     public application: any = {
         version: 1,
@@ -126,6 +128,16 @@ export class KafS07AComponent extends Vue {
                 endDate: new Date()
             }
         };
+
+        self.kaf000_A_Params = {
+            companyID: '', 
+            employeeID: '',
+            employmentCD: '',
+            applicationUseSetting: '',
+            receptionRestrictionSetting: '',
+            opOvertimeAppAtr: '',
+        };
+
     }
 
     get application1() {
@@ -161,29 +173,34 @@ export class KafS07AComponent extends Vue {
                     return;
                 }
                 this.data = res.data;
-                let appWorkChangeDispInfo = res.data.appWorkChangeDispInfo;
+                let appWorkChangeDispInfo = this.data.appWorkChangeDispInfo;
                 this.bindVisibleView(appWorkChangeDispInfo);
                 this.bindCommon(appWorkChangeDispInfo);
                 this.bindValueWorkHours(appWorkChangeDispInfo);
-
+                this.bindWork(appWorkChangeDispInfo);
                 let appWorkChange = res.data.appWorkChange;
-                this.model.workType.code = appWorkChangeDispInfo.workTypeCD;
-                this.model.workType.name = _.find(appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == appWorkChangeDispInfo.workTypeCD).abbreviationName;
 
-                this.model.workTime.code = appWorkChangeDispInfo.workTimeCD;
-
-                this.model.workTime.name = _.find(appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == appWorkChangeDispInfo.workTimeCD).workTimeDisplayName.workTimeName;
-                if (this.isCondition4) {
-                    this.model.workTime.time = '';
-                } else {
-                    let startTime = _.find(appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
-                    let endTime = _.find(appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-                    this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
-                }
                 this.$mask('hide');
             }).catch((err: any) => {
                 this.$mask('hide');
             });
+    }
+    public bindWork(params: any) {
+        this.model.workType.code = params.workTypeCD;
+        this.model.workType.name = _.find(params.workTypeLst, (item: any) => item.workTypeCode == params.workTypeCD).abbreviationName || this.$i18n('KAFS07_10');
+
+        this.model.workTime.code = params.workTimeCD;
+        this.model.workTime.name = _.find(params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == params.workTimeCD).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
+        this.bindWorkTimeWithCondition4(params);
+    }
+    public bindWorkTimeWithCondition4(params: any) {
+        if (this.isCondition4) {
+            this.model.workTime.time = '';
+        } else {
+            let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
+            let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
+            this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
+        }
     }
     public bindValueWorkHours(params: any) {
         // *4
@@ -245,7 +262,7 @@ export class KafS07AComponent extends Vue {
         let params = {
             companyId: this.user.companyId,
             listDates: ['2020/01/01'],
-            appWorkChangeOutputDto: this.data.appWorkChangeDispInfo
+            appWorkChangeDispInfo: this.data.appWorkChangeDispInfo
         };
         this.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
@@ -378,7 +395,9 @@ export class KafS07AComponent extends Vue {
                 this.model.workType.name = f.selectedWorkType.name;
                 this.model.workTime.code = f.selectedWorkTime.code;
                 this.model.workTime.name = f.selectedWorkTime.name;
-                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                if (!this.isCondition4) {
+                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                }
             }
         }).catch((res: any) => {
             this.$modal.error({ messageId: res.messageId });

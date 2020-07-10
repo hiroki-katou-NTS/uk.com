@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.predset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -17,6 +19,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class PredetemineTimeSettingDto.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemento {

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class AppDetailScreenInfoDto {
 	
 	/**

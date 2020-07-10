@@ -5,22 +5,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.BreakDownTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetermineTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class AppWorkChangeDispInfoDto {
 	/**
 	 * 申請表示情報
@@ -84,9 +89,13 @@ public class AppWorkChangeDispInfoDto {
 	}
 	public AppWorkChangeDispInfo toDomain() {
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
-		PredetermineTime predetermineTime = new PredetermineTime();
-		predetermineTime.saveToMemento(predetemineTimeSetting.getPredTime());
+		PredetermineTimeDto predetermineTimeDto = predetemineTimeSetting.getPredTime();
+		BreakDownTimeDayDto addTime = predetermineTimeDto.addTime;
+		BreakDownTimeDayDto predTime = predetermineTimeDto.predTime;
+		PredetermineTime predetermineTime = new PredetermineTime(new BreakDownTimeDay(addTime.getOneDay(), addTime.morning, addTime.afternoon), new BreakDownTimeDay(predTime.getOneDay(), predTime.morning, predTime.afternoon));
 		
+//		predetemineTimeSetting.getPredTime().getAddTime();
+//		predetermineTime.saveToMemento();
 		PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting();
 		prescribedTimezoneSetting.saveToMemento(predetemineTimeSetting.prescribedTimezoneSetting);
 		PredetemineTimeSetting prescribedTimeSetting = new PredetemineTimeSetting(
