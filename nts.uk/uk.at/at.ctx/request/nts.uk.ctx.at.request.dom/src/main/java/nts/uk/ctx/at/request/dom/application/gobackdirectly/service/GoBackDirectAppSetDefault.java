@@ -59,7 +59,8 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 
 	@Override
 	public GoBackDirectAppSet getGoBackDirectAppSet(String appID) {
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		GoBackDirectAppSet data = new GoBackDirectAppSet();
 		Optional<Application_New> applicationOpt = appRepo.findByID(companyID, appID);
 		if (!applicationOpt.isPresent()) {
@@ -105,6 +106,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//Get 14-3
 		DetailScreenInitModeOutput outMode = initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value);
 		data.detailScreenInitModeOutput = outMode;
-		return data;
+		return data;*/
+		return null;
 	}
 }
