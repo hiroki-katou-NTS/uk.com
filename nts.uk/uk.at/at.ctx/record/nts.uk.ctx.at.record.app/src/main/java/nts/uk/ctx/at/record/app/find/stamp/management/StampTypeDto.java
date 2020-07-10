@@ -30,7 +30,7 @@ public class StampTypeDto {
 
 	public static StampTypeDto fromDomain(StampType stampType) {
 
-		return new StampTypeDto(stampType.getChangeHalfDay(),
+		return new StampTypeDto(stampType.isChangeHalfDay(),
 				stampType.getGoOutArt().isPresent() ? stampType.getGoOutArt().get().value : null,
 				stampType.getSetPreClockArt().value, stampType.getChangeClockArt().value,
 				stampType.getChangeCalArt().value);

@@ -328,19 +328,34 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modal(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modal(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modal(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 
@@ -354,19 +369,33 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 
 			if (nowapp) {
 				$storage(path).then(() => {
-					windows.sub.modeless(webapp).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			} else {
 				$storage(params).then(() => {
-					windows.sub.modeless(webapp, path).onClosed(() => {
-						$storage().then(($data: any) => {
-							jdf.resolve($data);
+					windows.sub.modeless(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
 						});
-					});
 				});
 			}
 
