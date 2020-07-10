@@ -84,9 +84,11 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 
-		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStampRecord.class)
+		List<StampRecord> list = this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStampRecord.class)
 				.setParameter("contractCd", contractCode)
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
+		
+		return list;
 	}
 
 	// [6] 取得する
