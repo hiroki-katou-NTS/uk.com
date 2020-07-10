@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -294,6 +295,23 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		wkTypes.sort(Comparator.comparing(x -> x.getWorkTypeCode().v()));
 		// マスタ未登録←false(master Unregistered ←false)
 		return new ApplyWorkTypeOutput(wkTypes, false);
+	}
+
+	@Override
+	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID) {
+		List<EmployeeInfoImport> employeeInfoLst = new ArrayList<>();
+		// INPUT．申請者とINPUT．入力者をチェックする (Check INPUT. Applicant and INPUT.người input/nhập)
+		if(employeeID.equals(enterPersonID)) {
+			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(employeeID));
+		} else {
+			// 社員ID（List）から社員コードと表示名を取得 (Lấy tên hiển thị và employee code từ Employee ID (List))
+			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(enterPersonID));
+		}
+		// 取得した社員情報を返す (Returns employee information đã lấy )
+		if(CollectionUtil.isEmpty(employeeInfoLst)) {
+			return Optional.empty();
+		}
+		return employeeInfoLst.stream().findFirst();
 	}
 
 }
