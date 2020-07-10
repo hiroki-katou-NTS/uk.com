@@ -38,7 +38,7 @@ class Kdp003SViewModel extends ko.ViewModel {
 							id: randomId(),
 							time: `${item.stampHow} ${item.stampTime}`,
 							date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-							name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.changeClockArtName}</div>`
+							name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArt}</div>`
 						};
 
 						switch (engraving) {
