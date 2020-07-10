@@ -46,6 +46,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	private static final String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a"
 			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
 	
+	private static final String GET_BY_CARD_NO_AND_CONTRACT_CODE_AND_EMPLOYEE_ID = "SELECT a FROM KwkdtStampCard a"
+			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd and a.sid = :sid";
+	
 	public static final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
 			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY c.cardNo DESC";
@@ -396,6 +399,17 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber) {
 		Optional<StampCard> domain = this.queryProxy().query(GET_BY_SID_AND_CARD_NO, KwkdtStampCard.class)
 				.setParameter("sid", employeeId).setParameter("cardNo", CardNumber).getSingle(x -> toDomain(x));
+		if (domain.isPresent())
+			return domain;
+		else
+			return Optional.empty();
+	}
+
+	@Override
+	public Optional<StampCard> getStampCardByContractCdEmployeeCardNumber(String contractCd, String employeeId,
+			String CardNumber) {
+		Optional<StampCard> domain = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE_AND_EMPLOYEE_ID, KwkdtStampCard.class)
+				.setParameter("cardNo", CardNumber).setParameter("contractCd", contractCd).setParameter("sid", employeeId).getSingle(x -> toDomain(x));
 		if (domain.isPresent())
 			return domain;
 		else
