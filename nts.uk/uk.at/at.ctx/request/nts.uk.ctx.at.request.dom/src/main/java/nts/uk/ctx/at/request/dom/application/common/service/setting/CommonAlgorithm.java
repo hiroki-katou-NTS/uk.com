@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -116,4 +117,13 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public ApplyWorkTypeOutput appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.入力者の社員情報を取得する.入力者の社員情報を取得する
+	 * @param employeeID
+	 * @param enterPersonID
+	 * @return
+	 */
+	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID);
 }

@@ -672,11 +672,11 @@ public class AppAbsenceFinder {
 				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == param.getAppAbsenceCommand().getHolidayAppType())
 				.findAny().orElse(null);
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(
+		OutputMode outputMode = initMode.getDetailScreenInitMode(
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getUser(), 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getReflectPlanState().value);
 		String appReason = opAppAbsence.get().getApplication().getAppReason().v();
-		if(output.getOutputMode()==OutputMode.EDITMODE){
+		if(outputMode==OutputMode.EDITMODE){
 			if(displayReasonSet!=null){
 				boolean displayFixedReason = displayReasonSet.getDisplayFixedReason() == 1 ? true : false;
 				boolean displayAppReason = displayReasonSet.getDisplayAppReason() == 1 ? true : false;
