@@ -156,7 +156,7 @@ private static final long serialVersionUID = 1L;
 	
 	public ButtonSettings toDomain(){
 		StampType stampType = null;
-		if(!(changeHalfDay == null && goOutArt == null && setPreClockArt == null && changeClockArt == null && changeCalArt == null)) {
+		if(changeHalfDay != null && setPreClockArt != null && changeClockArt != null && changeCalArt != null) {
 			stampType = StampType.getStampType(
 					this.changeHalfDay == null ? null : this.changeHalfDay == 0 ? false : true  , 
 					this.goOutArt == null ? null : EnumAdaptor.valueOf(this.goOutArt, GoingOutReason.class), 
@@ -219,9 +219,7 @@ private static final long serialVersionUID = 1L;
 				setPreClockArt = settings.getButtonType().getStampType().get().getSetPreClockArt().value;
 			}
 
-			if (settings.getButtonType().getStampType().get().getChangeHalfDay() != null) {
-				changeHalfDay = settings.getButtonType().getStampType().get().getChangeHalfDay() ? 1 : 0;
-			}
+			changeHalfDay = settings.getButtonType().getStampType().get().isChangeHalfDay() ? 1 : 0;
 
 			if (settings.getButtonType().getStampType().get().getGoOutArt().isPresent()) {
 				goOutArt = settings.getButtonType().getStampType().get().getGoOutArt().get().value;

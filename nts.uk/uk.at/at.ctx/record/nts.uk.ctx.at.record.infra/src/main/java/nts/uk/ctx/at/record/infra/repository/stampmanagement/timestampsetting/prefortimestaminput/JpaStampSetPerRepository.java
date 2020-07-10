@@ -137,8 +137,6 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 			newData.lstButtonSet.stream().forEach(x -> {
 				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
 						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
-				Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
-						.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
 
 				if(optional.isPresent()) {
 					optional.get().useArt = x.useArt;
@@ -153,35 +151,25 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 					optional.get().backGroundColor = x.backGroundColor;
 					optional.get().aidioType = x.aidioType;
 				} else {
+					
+					Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
+							.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+					
 					StampType stampType = null;
 					
 					Optional<StampType> stamptypeOpt = optional2.get().getButtonType().getStampType();
-					if(		stamptypeOpt.isPresent() 
-							&& !(stamptypeOpt.get().getChangeHalfDay() == null 
-							&& (!stamptypeOpt.get().getGoOutArt().isPresent() && stamptypeOpt.get().getGoOutArt().get() == null)
-							&& stamptypeOpt.get().getSetPreClockArt() == null
-							&& stamptypeOpt.get().getChangeClockArt() == null
-							&& stamptypeOpt.get().getChangeCalArt() == null)) {
+					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
+					if(stamptypeOpt.isPresent()){
 						
 						stampType = StampType.getStampType(
-								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeHalfDay() : null, 
-								stamptypeOpt.isPresent() && stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
-								stamptypeOpt.isPresent() ? stamptypeOpt.get().getSetPreClockArt() : null, 
-								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeClockArt() : null, 
-								stamptypeOpt.isPresent() ? stamptypeOpt.get().getChangeCalArt() : null);
+								stamptypeOpt.get().isChangeHalfDay(), 
+								stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
+								stamptypeOpt.get().getSetPreClockArt(), 
+								stamptypeOpt.get().getChangeClockArt(), 
+								stamptypeOpt.get().getChangeCalArt());
 					}
 					
-					Optional<StampType> stamptypeOpt2 = optional2.get().getButtonType().getStampType();
-					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
-					
-					StampType stampType2 = new StampType(
-							null, 
-							stamptypeOpt2.isPresent() && stamptypeOpt2.get().getGoOutArt().isPresent()? stamptypeOpt2.get().getGoOutArt().get(): null,
-							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getSetPreClockArt(): null,
-							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeClockArt(): null,
-							stamptypeOpt2.isPresent()? stamptypeOpt2.get().getChangeCalArt(): null);
-					
-					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType2));
+					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType));
 					
 					ButtonSettings settings = new ButtonSettings(
 							optional2.get().getButtonPositionNo()
