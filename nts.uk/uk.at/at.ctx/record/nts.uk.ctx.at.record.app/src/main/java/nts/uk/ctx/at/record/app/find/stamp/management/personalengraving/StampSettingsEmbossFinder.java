@@ -73,17 +73,17 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-	
+
 	@Inject
 	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
 
 	@Inject
 	private PortalStampSettingsRepository portalStampSettingsrepo;
-	
+
 	@Inject
 	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
 
-	// 
+	//
 	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
@@ -93,7 +93,7 @@ public class StampSettingsEmbossFinder {
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
-		
+
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
@@ -109,7 +109,7 @@ public class StampSettingsEmbossFinder {
 
 		return new KDP002AStartPageOutput(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
 	}
-	
+
 	public List<EmployeeStampInfo> getEmployeeStampDatas(DatePeriod period, String employeeId) {
 		List<EmployeeStampInfo> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
@@ -124,18 +124,18 @@ public class StampSettingsEmbossFinder {
 				employeeStampDatas.add(employeeStampData.get());
 			}
 		}
-		
+
 		return employeeStampDatas;
 	}
-	
+
 	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
 				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, workingConditionService, predetemineTimeSettingRepo,
 				settingsSmartphoneStampRepo, portalStampSettingsrepo);
-		
+
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
-	} 
-	
+	}
+
 	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
 		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
 		return GetTimeCardService.getTimeCard(required, employeeId, date.yearMonth());
@@ -194,7 +194,7 @@ public class StampSettingsEmbossFinder {
 
 		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-		
+
 		@Inject
 		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
 
@@ -240,9 +240,6 @@ public class StampSettingsEmbossFinder {
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
 		}
-
-
-
 	}
 
 }

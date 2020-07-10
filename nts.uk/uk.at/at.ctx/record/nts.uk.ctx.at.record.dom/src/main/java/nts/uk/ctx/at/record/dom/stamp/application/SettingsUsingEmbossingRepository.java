@@ -21,12 +21,12 @@ public interface SettingsUsingEmbossingRepository {
 	public void insert(SettingsUsingEmbossing domain);
 
 	/**
-	 * [2] update(打刻機能の利用設定)
+	 * [2] save(打刻機能の利用設定)
 	 * 
 	 * @param 打刻機能の利用設定
 	 *            domain
 	 */
-	public void update(SettingsUsingEmbossing domain);
+	public void save(SettingsUsingEmbossing domain);
 
 	/**
 	 * [3] get

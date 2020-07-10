@@ -116,8 +116,9 @@ module nts.uk.at.view.kdp010.b.viewmodel {
          * Open G dialog to set condition list.
          */
         openGDialog() {
-            nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
             let self = this;
+            nts.uk.ui.windows.setShared('STAMP_MEANS', 1);
+            nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
                 self.getStamp();   
             });
         }

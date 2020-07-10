@@ -21,7 +21,7 @@
 					<td>
 						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_151')}</div>
 						<div class="inline-display row-data">
-							<input tabindex="3" class="nts-input" data-bind="ntsNumberEditor: {name: '#[KDP010_152]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
+							<input tabindex="3" class="nts-input" id="a-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_152]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
 						</div>
 					</td>
 				</tr>
@@ -86,11 +86,11 @@
 				<tr>
 					<td>
 						<div class="row-label">
-							<button tabindex="9" data-bind="" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
-							<com:ko-if bind = "lstStampPageLayout() == true">
+							<button tabindex="9" data-bind="click:openGDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+							<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length > 0">
 								<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
-							<com:ko-if bind = "lstStampPageLayout() == false">
+							<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length == 0">
 								<label style="color: #ff0000; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
 						</div>

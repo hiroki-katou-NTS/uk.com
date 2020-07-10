@@ -2,6 +2,7 @@ module nts.uk.at.view.kdp010.a {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     import viewModelscreenB = nts.uk.at.view.kdp010.b.viewmodel;
     import viewModelscreenC = nts.uk.at.view.kdp010.c.viewmodel;
     import viewModelscreenD = nts.uk.at.view.kdp010.d.viewmodel;
@@ -141,8 +142,7 @@ module nts.uk.at.view.kdp010.a {
             ]);
             employeeAuthcUseArtOption: KnockoutObservable<any> = ko.observable({ id: 1, name: getText("KDP010_170") });
             employeeAuthcUseArtOption2: KnockoutObservable<any> = ko.observable({ id: 0, name: getText("KDP010_172") });
-            stampSetCommunal: any = new StampSetCommunal();
-            lstStampPageLayout: KnockoutObservable<boolean> = ko.observable(false);
+            stampSetCommunal = new StampSetCommunal();
             constructor(){
                 let self = this;
             }
@@ -153,33 +153,31 @@ module nts.uk.at.view.kdp010.a {
                 service.getData().done(function(data) {
                     if (data) {
                         self.stampSetCommunal.update(data);
-                        self.lstStampPageLayout(data.lstStampPageLayout.length > 0);
                     }
                     dfd.resolve();
-                    $('#correc-input').focus();
+                    $(document).ready(function() {
+                        $('#a-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
                 return dfd.promise();
             }
             
-            checkSetStampPageLayout(): JQueryPromise<any> {
+            checkSetStampPageLayout(){
                 let self = this;
-                let dfd = $.Deferred();
                 block.grayout();
                 service.getData().done(function(data) {
-                    if (data) {
-                        self.lstStampPageLayout(data.lstStampPageLayout.length > 0);
+                    if(data){
+                        self.stampSetCommunal.lstStampPageLayout(data.lstStampPageLayout || []);
                     }
-                    dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
-                return dfd.promise();
             }
             
             save(){
@@ -188,9 +186,17 @@ module nts.uk.at.view.kdp010.a {
                 service.save(ko.toJS(self.stampSetCommunal)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
+                });
+            }
+            
+            openGDialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared('STAMP_MEANS', 0);
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();   
                 });
             }
         }
@@ -211,7 +217,7 @@ module nts.uk.at.view.kdp010.a {
         class DisplaySettingsStampScreen {
             serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
             resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
-            settingDateTimeColor: any = new SettingDateTimeClorOfStampScreen();
+            settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
             constructor(){}
             update(data?:any){
                 let self = this;
@@ -224,12 +230,13 @@ module nts.uk.at.view.kdp010.a {
         }
         
         class StampSetCommunal {
-            displaySetStampScreen: any = new DisplaySettingsStampScreen();
+            displaySetStampScreen = new DisplaySettingsStampScreen();
             nameSelectArt: KnockoutObservable<number> = ko.observable(0);
             passwordRequiredArt: KnockoutObservable<number> = ko.observable(1);
             employeeAuthcUseArt: KnockoutObservable<number> = ko.observable(0);
             authcFailCnt: KnockoutObservable<number> = ko.observable(1);
             required: KnockoutObservable<boolean> = ko.observable(false);
+            lstStampPageLayout = ko.observableArray([]);
             constructor(){
                 let self = this;
                 self.employeeAuthcUseArt.subscribe((newValue) => {
@@ -249,6 +256,7 @@ module nts.uk.at.view.kdp010.a {
                     self.passwordRequiredArt(data.passwordRequiredArt);
                     self.employeeAuthcUseArt(data.employeeAuthcUseArt);
                     self.authcFailCnt(data.authcFailCnt);
+                    self.lstStampPageLayout(data.lstStampPageLayout || []);
                 }
             }
         }

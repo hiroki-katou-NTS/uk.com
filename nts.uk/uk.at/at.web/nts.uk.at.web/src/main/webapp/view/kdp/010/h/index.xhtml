@@ -101,7 +101,7 @@
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_118')}</div>
 							<!-- H5_2 -->
 							<div tabindex="5" id="first-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_118]', enable: selectedHighlight() == 1 }" />
+								data-bind="ntsColorPicker: {value: letterColors, width: 50, name:'#[KDP010_118]', enable: selectedHighlight() == 1 }" />
 
 						</td>
 					</tr>
@@ -112,31 +112,31 @@
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_119')}</div>
 							<!-- H6_2 -->
 							<div tabindex="6" id="second-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
+								data-bind="ntsColorPicker: {value: backgroundColors, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<!-- H7_1 -->
-							<div id="correc-label1"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
-						</td>
-						<!-- H7_2 -->
-						<td>
-							<div tabindex="7" id="combobox1" class="cbx-days"
-								data-bind="ntsComboBox: {
-											options: optionAudio,
-											optionsValue: 'value',
-											value: selectedAudio,
-											optionsText: 'name',
-											visibleItemsCount: 15,
-											enable: true,
-											columns: [
-												{ prop: 'name' },
-											]}"></div>
-						</td>
-
-					</tr>
+					<com:ko-if bind = "showSelectedAudio">
+						<tr>
+							<td>
+								<!-- H7_1 -->
+								<div id="correc-label1"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
+							</td>
+							<!-- H7_2 -->
+							<td>
+								<div tabindex="7" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
+										options: optionAudio,
+										optionsValue: 'value',
+										value: selectedAudio,
+										optionsText: 'name',
+										visibleItemsCount: 15,
+										enable: selectedHighlight() == 1,
+										columns: [
+											{ prop: 'name' },
+										]}"></div>
+							</td>
+						</tr>
+					</com:ko-if>
 				</table>
 			</div>
 			<div id="functions-area-bottom">

@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.shortworktime;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.calendar.period.DatePeriod;
+
 /**
  * The Interface SWorkTimeHistItemRepository.
  */
@@ -61,4 +63,13 @@ public interface SWorkTimeHistItemRepository {
 	List<ShortWorkTimeHistoryItem> findByHistIds(List<String> histIds);
 
 	List<Object[]> findByHistIdsCPS013(List<String> histIds);
+	
+	/**
+	 * 社員の短時間勤務履歴を期間で取得する
+	 * 
+	 * @param employeeIds
+	 * @param period
+	 * @return
+	 */
+	List<ShortWorkTimeHistoryItem> findWithSidDatePeriod(String companyId, List<String> employeeIds, DatePeriod period);
 }

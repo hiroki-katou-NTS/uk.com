@@ -103,6 +103,7 @@ public class ConfirmUseOfStampInputCommandHandler
 
 	@AllArgsConstructor
 	private class StampFunctionAvailableServiceRequireImpl implements StampFunctionAvailableService.Require {
+		
 		@Inject
 		private SettingsUsingEmbossingRepository stampUsageRepo;
 

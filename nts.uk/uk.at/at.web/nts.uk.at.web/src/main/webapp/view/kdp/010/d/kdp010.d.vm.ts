@@ -2,6 +2,7 @@ module nts.uk.at.view.kdp010.d {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     export module viewmodel {
         export class ScreenModel {
             suppressStampBtnOption: KnockoutObservableArray<any> = ko.observableArray([
@@ -33,8 +34,11 @@ module nts.uk.at.view.kdp010.d {
                         self.portalStampSettings.update(data);
                     }
                     dfd.resolve();
+                    $(document).ready(function() {
+                        $('#d-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
@@ -47,7 +51,7 @@ module nts.uk.at.view.kdp010.d {
                 service.save(ko.toJS(self.portalStampSettings)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });

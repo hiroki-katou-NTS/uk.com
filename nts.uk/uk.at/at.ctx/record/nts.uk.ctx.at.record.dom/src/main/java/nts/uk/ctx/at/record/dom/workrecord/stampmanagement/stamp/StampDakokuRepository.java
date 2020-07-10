@@ -51,7 +51,7 @@ public interface StampDakokuRepository {
 	 * @param period
 	 * @return
 	 */
-	public List<Stamp> getStempRcNotResgistNumber(String contractCode, DatePeriod period);
+	public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period);
 	
 	public List<Stamp> getByListCard(List<String> stampNumbers);
 	

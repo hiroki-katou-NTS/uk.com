@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -28,6 +29,7 @@ public class StampSetCommunal implements DomainAggregate {
 	private DisplaySettingsStampScreen displaySetStampScreen;
 	
 	// ページレイアウト設定 
+	@Setter
 	private List<StampPageLayout> lstStampPageLayout;
 	
 	// 氏名選択利用する

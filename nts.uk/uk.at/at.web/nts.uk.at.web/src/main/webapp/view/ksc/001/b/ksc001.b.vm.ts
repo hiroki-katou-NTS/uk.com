@@ -303,17 +303,17 @@ module nts.uk.at.view.ksc001.b {
 
                 // update kc005
                 self.lstPersonComponentOption = {
-                    isShowAlreadySet: false,
+                    isShowAlreadySet: false, //設定済表示
                     isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedEmployeeCode,
                     isDialog: true,
-                    isShowNoSelectRow: false,
+                    isShowNoSelectRow: false, //未選択表示
                     alreadySettingList: self.alreadySettingPersonal,
-                    isShowWorkPlaceName: true,
-                    isShowSelectAllButton: false,
+                    isShowWorkPlaceName: true, //職場表示
+                    isShowSelectAllButton: false, //全選択表示
                     isSelectAllAfterReload: true,
                     maxWidth: 550,
                     maxRows: 10,

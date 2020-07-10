@@ -2,9 +2,10 @@ module nts.uk.at.view.kdp010.c {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     export module viewmodel {
         export class ScreenModel {
-            settingsSmartphoneStamp: any = new SettingsSmartphoneStamp();
+            settingsSmartphoneStamp = new SettingsSmartphoneStamp();
             buttonEmphasisArtOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: getText("KDP010_241") },
                 { id: 0, name: getText("KDP010_242") }
@@ -26,29 +27,29 @@ module nts.uk.at.view.kdp010.c {
                         self.settingsSmartphoneStamp.update(data);
                     }
                     dfd.resolve();
+                    $(document).ready(function() {
+                        $('#c-serverCorrectionInterval').focus();
+                    });
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
                 return dfd.promise();
             }
             
-            checkSetStampPageLayout(): JQueryPromise<any> {
+            checkSetStampPageLayout(){
                 let self = this;
-                let dfd = $.Deferred();
                 block.grayout();
                 service.getData().done(function(data) {
                     if (data) {
-                        self.pageLayoutSettings(data.pageLayoutSettings.length > 0);
+                        self.settingsSmartphoneStamp.pageLayoutSettings(data.pageLayoutSettings || []);
                     }
-                    dfd.resolve();
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
-                return dfd.promise();
             }
             
             save(){
@@ -57,14 +58,16 @@ module nts.uk.at.view.kdp010.c {
                 service.save(ko.toJS(self.settingsSmartphoneStamp)).done(function(data) {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res) {
-                    info({ messageId: res.messageId });
+                    error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
             }
             
             openIDialog() {
+                let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/i/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();
                 });
             }
         }
@@ -84,7 +87,7 @@ module nts.uk.at.view.kdp010.c {
         class DisplaySettingsStampScreen {
             serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
             resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
-            settingDateTimeColor: any = new SettingDateTimeClorOfStampScreen();
+            settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
             constructor(){}
             update(data?:any){
                 let self = this;
@@ -97,7 +100,7 @@ module nts.uk.at.view.kdp010.c {
         }
         
         class SettingsSmartphoneStamp {
-            displaySettingsStampScreen: any = new DisplaySettingsStampScreen();
+            displaySettingsStampScreen = new DisplaySettingsStampScreen();
             pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
             buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
             googleMap: KnockoutObservable<number> = ko.observable(0);
@@ -108,8 +111,10 @@ module nts.uk.at.view.kdp010.c {
                 let self = this;
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
-                    self.pageLayoutSettings(data.pageLayoutSettings);
-                    self.buttonEmphasisArt(data.buttonEmphasisArt);
+                    self.pageLayoutSettings(data.pageLayoutSettings || []);
+                    if(data.buttonEmphasisArt){
+                        self.buttonEmphasisArt(data.buttonEmphasisArt);    
+                    }
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }

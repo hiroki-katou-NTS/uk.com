@@ -106,7 +106,7 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 	@Column(name = "AUTHC_FAIL_CNT")
 	public Integer authcFailCnt;
 	
-	@OneToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY, mappedBy = "krcmtStampCommunal")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampCommunal",  orphanRemoval = true)
 	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 	
 	@Override

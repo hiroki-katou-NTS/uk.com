@@ -455,8 +455,9 @@ public class OutputScreenListOfStampFinder {
 		}
 
 		@Override
-		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period) {	
-			return stampDakokuRepo.getStempRcNotResgistNumber(AppContexts.user().contractCode(),period);
+		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
+			// TODO Auto-generated method stub
+			return stampDakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
 		}	
 	}
 

@@ -27,6 +27,6 @@ public interface StampSetCommunalRepository {
 	 * @param comppanyID
 	 * @return
 	 */
-	public Optional<StampSetCommunal> gets(String comppanyID);
+	public Optional<StampSetCommunal> gets(String companyID);
 
 }

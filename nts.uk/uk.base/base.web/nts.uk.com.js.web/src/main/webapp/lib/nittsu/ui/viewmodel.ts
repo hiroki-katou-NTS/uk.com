@@ -4,7 +4,7 @@ const prefix = 'nts.uk.storage'
 	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
-	, $storeSession = function(name: string, params?: any) {
+	, $storeSession = function (name: string, params?: any) {
 		if (arguments.length === 2) {
 			// setter method
 			const $value = JSON.stringify({ $value: params })
@@ -33,7 +33,7 @@ const prefix = 'nts.uk.storage'
 				});
 		}
 	}
-	, $storage = function($data?: any) {
+	, $storage = function ($data?: any) {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
@@ -49,7 +49,7 @@ const prefix = 'nts.uk.storage'
 
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
 				const $viewModel = new ctor($params)
@@ -78,7 +78,7 @@ function bean(): any {
 }
 
 function component(options: { name: string; template: string; }): any {
-	return function(ctor: any): any {
+	return function (ctor: any): any {
 		return $.Deferred().resolve(options.template.match(/\.html$/))
 			.then((url: boolean) => {
 				return url ? $.get(options.template) : options.template;
@@ -127,7 +127,8 @@ function component(options: { name: string; template: string; }): any {
 }
 
 function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
-	return function(constructor: { new(): KnockoutBindingHandler; }) {
+
+	return function (constructor: { new(): KnockoutBindingHandler; }) {
 		ko.bindingHandlers[params.bindingName] = new constructor();
 		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
 
@@ -277,7 +278,8 @@ Object.defineProperties($jump, {
 	}
 });
 
-const $size = function(height: string | number, width: string | number) {
+
+const $size = function (height: string | number, width: string | number) {
 	const wd = nts.uk.ui.windows.getSelf();
 
 	if (wd) {
@@ -287,7 +289,7 @@ const $size = function(height: string | number, width: string | number) {
 
 Object.defineProperties($size, {
 	width: {
-		value: function(width: string | number) {
+		value: function (width: string | number) {
 			const wd = nts.uk.ui.windows.getSelf();
 
 			if (wd) {
@@ -296,7 +298,7 @@ Object.defineProperties($size, {
 		}
 	},
 	height: {
-		value: function(height: string | number) {
+		value: function (height: string | number) {
 			const wd = nts.uk.ui.windows.getSelf();
 
 			if (wd) {

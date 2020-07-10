@@ -6,9 +6,11 @@ package nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
@@ -23,7 +25,7 @@ public class StampSetCommunalCommand {
 	
 	private DisplaySettingsStampScreenCommand displaySetStampScreen;
 	
-	private List<StampPageLayoutDto> lstStampPageLayout;
+	private List<StampPageLayoutCommand> lstStampPageLayout;
 	
 	private Integer nameSelectArt;
 	
@@ -37,7 +39,7 @@ public class StampSetCommunalCommand {
 		return new StampSetCommunal(
 				AppContexts.user().companyId(), 
 				this.displaySetStampScreen.toDomain(), 
-				new ArrayList<StampPageLayout>(), 
+				this.lstStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				this.nameSelectArt == 1, 
 				this.passwordRequiredArt == 1, 
 				this.employeeAuthcUseArt == 1, 
