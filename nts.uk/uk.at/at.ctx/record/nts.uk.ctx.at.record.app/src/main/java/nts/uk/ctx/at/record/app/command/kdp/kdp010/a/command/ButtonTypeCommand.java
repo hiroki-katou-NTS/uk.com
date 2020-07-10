@@ -16,6 +16,7 @@ public class ButtonTypeCommand {
 	private StampTypeCommand stampType;
 
 	public ButtonType toDomain() {
-		return new ButtonType(ReservationArt.valueOf(this.reservationArt), this.stampType == null? Optional.empty():Optional.of(this.stampType.toDomain()));
+		return new ButtonType(ReservationArt.valueOf(this.reservationArt),
+				this.reservationArt == 0 ? Optional.of(this.stampType.toDomain()) : Optional.empty());
 	}
 }

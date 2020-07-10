@@ -91,37 +91,72 @@ module nts.uk.kdp003.f {
 		created() {
 			const vm = this;
 			const { data } = vm;
-			const { model } = data;
+			const { model, params } = data;
 
-			model.companyId
-				.subscribe((id: string) => {
-					const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+			if (params.companyDesignation) {
+				model.companyCode
+					.subscribe((code: string) => {
+						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
 
-					if (dataSources.length) {
-						const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
+						if (dataSources.length) {
+							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyCode === code);
 
-						if (exist) {
-							// update companyCode by subscribe companyId
-							model.companyCode(exist.companyCode);
-							model.companyName(exist.companyName);
+							if (exist) {
+								// update companyId by subscribe companyCode
+								model.companyId(exist.companyId);
+								model.companyName(exist.companyName);
+							}
 						}
-					}
-				});
+
+					});
+			} else {
+				model.companyId
+					.subscribe((id: string) => {
+						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+
+						if (dataSources.length) {
+							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
+
+							if (exist) {
+								// update companyCode by subscribe companyId
+								model.companyCode(exist.companyCode);
+								model.companyName(exist.companyName);
+							}
+						}
+					});
+			}
 
 			vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
 				.done((data: Kdp003FCompanyItem[]) => {
-					const exist: Kdp003FCompanyItem = _.find(data);
+					if (params.companyDesignation) {
+						const companyId = ko.toJS(model.companyId);
+						const exist: Kdp003FCompanyItem = _.find(data, (c) => c.companyId === companyId);
 
-					if (exist) {
 						vm.listCompany(data);
 						
-						if (!ko.unwrap(model.companyId)) {
-							model.companyId(exist.companyId);
+						if (exist) {
+							if (!ko.unwrap(model.companyCode)) {
+								model.companyCode(exist.companyCode);
+							}
+						} else {
+							vm.$dialog
+								.error({ messageId: 'Msg_1527' })
+								.then(() => vm.$window.close());
 						}
 					} else {
-						vm.$dialog
-							.error({ messageId: 'Msg_1527' })
-							.then(() => vm.$window.close());
+						const exist: Kdp003FCompanyItem = _.first(data);
+
+						if (exist) {
+							vm.listCompany(data);
+
+							if (!ko.unwrap(model.companyId)) {
+								model.companyId(exist.companyId);
+							}
+						} else {
+							vm.$dialog
+								.error({ messageId: 'Msg_1527' })
+								.then(() => vm.$window.close());
+						}
 					}
 				});
 		}

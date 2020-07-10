@@ -84,7 +84,7 @@ public class StampRecordDto {
 
 			StampType type = stamp.getType();
 			this.stampArtName = type.createStampTypeDisplay();
-			this.changeHalfDay = type.getChangeHalfDay();
+			this.changeHalfDay = type.isChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
@@ -138,7 +138,7 @@ public class StampRecordDto {
 			
 
 			StampType type = stamp.getType();
-			this.changeHalfDay = type.getChangeHalfDay();
+			this.changeHalfDay = type.isChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
