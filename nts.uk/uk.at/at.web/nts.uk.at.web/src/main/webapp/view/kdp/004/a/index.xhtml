@@ -31,9 +31,9 @@
 				<!-- A1 -->
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
-					
-					<div
-						data-bind="component: {
+						<com:ko-if bind="isUsed()">
+						<div
+							data-bind="component: {
 						name: 'stamp-clock',
 						params: {
 							setting: {
@@ -46,7 +46,22 @@
 							}
 						}
 					}"></div>
-						
+						</com:ko-if>
+						<com:ko-if bind="!isUsed()">
+						<div
+							data-bind="component: {
+						name: 'stamp-clock',
+						params: {
+							setting: {
+								textColor: stampSetting().textColor,
+								backGroundColor:  stampSetting().backGroundColor
+							},
+							events: {
+								setting: function(data, event) { settingUser($vm)}
+								}
+						}
+					}"></div>
+						</com:ko-if>
 						<div data-bind="if:isUsed" class="panel"
 							style="padding: 0 10px 10px 10px">
 							<div id="stamp-desc"

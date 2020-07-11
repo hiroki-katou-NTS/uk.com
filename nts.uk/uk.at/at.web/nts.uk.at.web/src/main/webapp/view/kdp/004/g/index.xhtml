@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
@@ -24,7 +24,7 @@
 				<div class="error-content" data-bind="text:errorMessage"></div>
 				<div class='div_line flex btn-panel'>
 					<button class="retry-btn proceed x-large"
-						data-bind="click:function(){closeDialog('retry')}">#{i18n.getText('KDP004_3')}</button>
+						data-bind=" click:function(){closeDialog('retry')},  hasFocus: hasFocus">#{i18n.getText('KDP004_3')}</button>
 					<com:ko-if bind="displayLoginBtn ">
 						<button class="password-login-btn proceed x-large"
 							data-bind="click:function(){closeDialog('loginPass')}">#{i18n.getText('KDP004_4')}</button>

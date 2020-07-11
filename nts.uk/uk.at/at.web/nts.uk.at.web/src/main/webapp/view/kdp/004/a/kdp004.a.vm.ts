@@ -239,7 +239,7 @@ module nts.uk.at.view.kdp004.a {
 					errorMessage = 'Msg_301';
 
 				const process = () => {
-					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt, errorMessage })
+					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt && self.stampSetting().employeeAuthcUseArt, errorMessage })
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
@@ -270,7 +270,7 @@ module nts.uk.at.view.kdp004.a {
 										}
 
 										if (res.result) {
-											return { isSuccess: true, authType: res.em ?  0 : 2 };
+											return { isSuccess: true, authType: res.em ? 0 : 2 };
 										}
 									} else {
 										return { isSuccess: false, authType: 2 };
@@ -359,8 +359,11 @@ module nts.uk.at.view.kdp004.a {
 							if (result) {
 								self.loginInfo.selectedWP = result;
 							}
-							nts.uk.characteristics.save("loginKDP004", self.loginInfo);
-							jump("at", "/view/kdp/004/a/index.xhtml");
+							nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+								location.reload();
+
+							});
+
 						});
 					}
 
