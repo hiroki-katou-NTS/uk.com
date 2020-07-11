@@ -6,14 +6,14 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface GoBackDirectService {
 	/**
-	 * アルゴリズム「直行直帰画面初期（新規）」を実行する
+	 * アルゴリズム「直行直帰画面初期（新規）」を実行する Refactor4
 	 * @param companyId
 	 * @param sids
 	 * @param dates
@@ -32,10 +32,10 @@ public interface GoBackDirectService {
 	 * @param lstWts
 	 * @return
 	 */
-	public InforGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
+	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
 			AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts);
 	/**
-	 * 起動時勤務種類リストを取得する
+	 * 起動時勤務種類リストを取得する Refactor4
 	 * @param companyId
 	 * @param appEmploymentSet
 	 * @return

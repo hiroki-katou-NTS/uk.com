@@ -9,9 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
@@ -44,6 +46,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	
 	@Inject
 	private GoBackReflectRepository goBackDirectServiceImp;
+	
+	@Inject
+	private GoBackDirectlyRepository goBackDirectlyRepository;
 
 	@Override
 	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<String>> sids,
@@ -72,20 +77,30 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		if (appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()) {
 			lstWts = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
 		}
-		this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts);
+		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts);
+		
 //		ドメインモデル「直行直帰申請の反映」より取得する 
 		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
 		if (goBackReflectOp.isPresent()) {
 			output.setGoBackReflect(goBackReflectOp.get());
 		}
+		output.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
+		output.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
+		output.setLstWorkType(inforWorkGoBackDirectOutput.getLstWorkType());
+		if (appDispInfoStartup.getAppDetailScreenInfo().isPresent()) {
+			if (appDispInfoStartup.getAppDetailScreenInfo().get().getOutputMode() == OutputMode.EDITMODE) {
+				//新規モード：ドメイン「直行直帰申請」がない。
+				output.setGoBackDirectly(Optional.ofNullable(null));
+			}
+		}
 		
-		return null;
+		return output;
 	}
 
 	@Override
-	public InforGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate,
+	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate,
 			GeneralDate baseDate, AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts) {
-		InforGoBackDirectOutput output = new InforGoBackDirectOutput();
+		InforWorkGoBackDirectOutput output = new InforWorkGoBackDirectOutput();
 		// 起動時勤務種類リストを取得する
 		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appEmployment);
 

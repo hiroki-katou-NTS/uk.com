@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @Data
-public class InforGoBackDirectOutput {
+public class InforWorkGoBackDirectOutput {
 //	勤務種類初期選択
 	private InforWorkType workType;
 //	就業時間帯初期選択
