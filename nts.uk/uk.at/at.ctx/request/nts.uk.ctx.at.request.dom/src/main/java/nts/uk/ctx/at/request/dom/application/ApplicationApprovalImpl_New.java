@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
@@ -48,7 +48,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	private OvertimeRepository overtimeRepository;
 
 	@Inject
-	private GoBackDirectlyRepository goBackDirectlyRepository;
+	private GoBackDirectlyRepository_Old goBackDirectlyRepository;
 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;

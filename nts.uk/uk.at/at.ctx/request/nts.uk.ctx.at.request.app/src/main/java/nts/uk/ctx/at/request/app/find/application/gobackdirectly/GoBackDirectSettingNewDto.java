@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
@@ -21,5 +21,5 @@ public class GoBackDirectSettingNewDto {
 //	勤務種類リスト
 	private List<AppEmployWorkType> appSetting;
 //	直行直帰申請
-	private GoBackDirectly goBackDirect;
+	private GoBackDirectly_Old goBackDirect;
 }

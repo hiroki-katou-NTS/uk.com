@@ -24,8 +24,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
@@ -69,7 +69,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class AppDetailInfoImpl implements AppDetailInfoRepository {
 
 	@Inject
-	private GoBackDirectlyRepository repoGoBack;
+	private GoBackDirectlyRepository_Old repoGoBack;
 	@Inject
 	private OvertimeRepository repoOverTime;
 	@Inject
@@ -194,8 +194,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	 */
 	@Override
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId) {
-		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
-		GoBackDirectly appGoBack = appGoBackOp.get();
+		Optional<GoBackDirectly_Old> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
+		GoBackDirectly_Old appGoBack = appGoBackOp.get();
 		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
 				this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 				appGoBack.getBackHomeAtr1().value,
@@ -715,8 +715,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public List<AppGoBackInfoFull> getListAppGoBackInfo(String companyID, List<String> lstAppId) {
 		List<AppGoBackInfoFull> lstAppFull = new ArrayList<>();
-		List<GoBackDirectly> lstAppGoBack = repoGoBack.getListAppGoBack(companyID, lstAppId);
-		for (GoBackDirectly appGoBack : lstAppGoBack) {
+		List<GoBackDirectly_Old> lstAppGoBack = repoGoBack.getListAppGoBack(companyID, lstAppId);
+		for (GoBackDirectly_Old appGoBack : lstAppGoBack) {
 			lstAppFull.add(new AppGoBackInfoFull(appGoBack.getAppID(), appGoBack.getGoWorkAtr1().value,
 					this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 					appGoBack.getBackHomeAtr1().value,

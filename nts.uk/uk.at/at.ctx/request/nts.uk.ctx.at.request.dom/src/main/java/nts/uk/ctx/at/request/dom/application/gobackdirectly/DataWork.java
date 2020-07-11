@@ -4,10 +4,12 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 //勤務情報
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DataWork {
 //	勤務種類コード
 	private InforWorkType workType;

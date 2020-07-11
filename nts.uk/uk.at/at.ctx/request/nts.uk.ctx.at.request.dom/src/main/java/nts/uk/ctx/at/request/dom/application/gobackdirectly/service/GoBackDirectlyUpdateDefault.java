@@ -18,8 +18,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 //import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 //import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
@@ -39,7 +39,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	private DetailBeforeUpdate detailBeforeUpdate;
 
 	@Inject
-	private GoBackDirectlyRepository goBackDirectlyRepo;
+	private GoBackDirectlyRepository_Old goBackDirectlyRepo;
 	
 	@Inject 
 	private ApplicationRepository_New appRepo;
@@ -72,7 +72,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
 	@Override
-	public void checkErrorBeforeUpdate(GoBackDirectly goBackDirectly, String companyID, String appID, Long version) {
+	public void checkErrorBeforeUpdate(GoBackDirectly_Old goBackDirectly, String companyID, String appID, Long version) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 		Application_New application_New = appRepo.findByID(companyID, appID).get();
 		// error EA refactor 4
@@ -106,7 +106,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新」を実行する
 	 */
 	@Override
-	public ProcessResult updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version) {
+	public ProcessResult updateGoBackDirectly(GoBackDirectly_Old goBackDirectly, Application_New application, Long version) {
 		String workTimeCD = "";
 		String workTypeCD = "";
 		// ドメインモデル「直行直帰申請共通設定」．勤務の変更をチェックする

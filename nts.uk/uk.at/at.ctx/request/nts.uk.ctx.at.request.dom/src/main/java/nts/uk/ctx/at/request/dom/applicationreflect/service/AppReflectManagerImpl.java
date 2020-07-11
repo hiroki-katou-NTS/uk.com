@@ -34,8 +34,8 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
@@ -77,7 +77,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private ApplicationRepository_New appRepo;
 	@Inject
-	private GoBackDirectlyRepository gobackRepo;
+	private GoBackDirectlyRepository_Old gobackRepo;
 	@Inject
 	private AppAbsenceRepository absenceRepo;
 	@Inject
@@ -172,11 +172,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
-			Optional<GoBackDirectly> optGobackInfo = gobackRepo.findByApplicationID(appInfor.getCompanyID(), appInfor.getAppID());
+			Optional<GoBackDirectly_Old> optGobackInfo = gobackRepo.findByApplicationID(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optGobackInfo.isPresent()) {
 				return;
 			}
-			GoBackDirectly gobackInfo = optGobackInfo.get();
+			GoBackDirectly_Old gobackInfo = optGobackInfo.get();
 			appGobackTmp = this.getGobackReflectPara(appInfor, gobackInfo, reflectSetting, excLogId);
 			if(appGobackTmp == null) {
 				return;
@@ -423,7 +423,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	}
 	
 	
-	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly gobackInfo,
+	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly_Old gobackInfo,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		GobackReflectPara appGobackTmp = null;		
 		GobackAppRequestPara gobackReques = new GobackAppRequestPara(

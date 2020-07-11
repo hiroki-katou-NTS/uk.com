@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -26,7 +26,7 @@ public class CheckUpdateGoBackCommandHandler extends CommandHandler<InsertApplic
 		//get new Application Item
 		String appID = command.getAppCommand().getApplicationID();
 		// get new GoBack Direct Item
-		GoBackDirectly newGoBack = new GoBackDirectly(
+		GoBackDirectly_Old newGoBack = new GoBackDirectly_Old(
 				companyId, 
 				appID,
 				command.goBackCommand.workTypeCD, 

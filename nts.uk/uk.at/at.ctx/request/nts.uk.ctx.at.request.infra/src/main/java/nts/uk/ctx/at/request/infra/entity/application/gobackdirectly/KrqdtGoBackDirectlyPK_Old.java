@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqdtGoBackDirectlyPK {
+public class KrqdtGoBackDirectlyPK_Old {
 	@Column(name = "CID")
 	public String companyID;
 
 	@Column(name = "APP_ID")
 	public String appID;
+
 }

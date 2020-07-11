@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -87,7 +87,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 				command.appCommand.getPrePostAtr(), appReason,appReason,
 				ApplicationType_Old.GO_RETURN_DIRECTLY_APPLICATION, command.appCommand.getApplicationDate(), command.appCommand.getApplicationDate(), command.appCommand.getApplicantSID());
 		// get new GoBack Direct Item
-		GoBackDirectly newGoBack = new GoBackDirectly(
+		GoBackDirectly_Old newGoBack = new GoBackDirectly_Old(
 				companyId, 
 				appID,
 				command.goBackCommand.workTypeCD, 

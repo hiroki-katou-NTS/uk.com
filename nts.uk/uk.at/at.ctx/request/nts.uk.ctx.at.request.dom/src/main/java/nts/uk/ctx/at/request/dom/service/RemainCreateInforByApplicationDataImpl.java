@@ -18,8 +18,8 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 //import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
@@ -48,7 +48,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private IAppWorkChangeRepository workChangeService;
 	@Inject
-	private GoBackDirectlyRepository goBackRepo;
+	private GoBackDirectlyRepository_Old goBackRepo;
 	@Inject
 	private AppAbsenceRepository absenceRepo;
 	@Inject
@@ -117,7 +117,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				});
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				Optional<GoBackDirectly> goBack = goBackRepo.findByApplicationID(cid, appData.getAppID());
+				Optional<GoBackDirectly_Old> goBack = goBackRepo.findByApplicationID(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
 					outData.setWorkTimeCode(x.getSiftCD().isPresent() ? Optional.of(x.getSiftCD().get().v()) : Optional.empty());
 					outData.setWorkTypeCode(x.getWorkTypeCD().isPresent() ? Optional.of(x.getWorkTypeCD().get().v()) : Optional.empty());

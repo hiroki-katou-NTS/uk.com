@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -22,8 +23,10 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
  * @author Doan Duy Hung
  *
  */
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class ApplicationDto {
 	
 	@Setter

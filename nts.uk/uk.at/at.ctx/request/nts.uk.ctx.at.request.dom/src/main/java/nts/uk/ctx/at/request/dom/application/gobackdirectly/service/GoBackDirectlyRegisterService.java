@@ -7,7 +7,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 public interface GoBackDirectlyRegisterService {
@@ -18,7 +18,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param application
 	 * @param goBackDirectly
 	 */
-	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application);
+	public ProcessResult register(GoBackDirectly_Old goBackDirectly, Application_New application);
 	
 	/**
 	 * 
@@ -27,7 +27,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param appApprovalPhases
 	 * @return 
 	 */
-	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application, boolean checkOver1Year);
+	public List<ConfirmMsgOutput> checkBeforRegister(GoBackDirectly_Old goBackDirectly, Application_New application, boolean checkOver1Year);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する
@@ -35,7 +35,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @param goBackAtr
 	 */
-	public GoBackDirectAtr goBackDirectCheck(GoBackDirectly goBackDirectly);
+	public GoBackDirectAtr goBackDirectCheck(GoBackDirectly_Old goBackDirectly);
 
 	/**
 	 * 直行直帰遅刻早退のチェック
@@ -43,13 +43,13 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @return
 	 */
-	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly goBackDirectly, Application_New application);
+	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly_Old goBackDirectly, Application_New application);
 
 	/**
 	 * Check Validity
 	 * 
 	 */
-	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
+	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly_Old goBackDirectly,
 			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport scBasicScheduleImport);
 	
 	public void createThrowMsg(String msgConfirm, List<String> msgLst);
@@ -72,7 +72,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param mode
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode);
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput, boolean mode);
 	/**
 	 * 「直行直帰登録」処理を実行する
 	 * @param companyId 会社ID
@@ -81,5 +81,5 @@ public interface GoBackDirectlyRegisterService {
 	 * @param inforGoBackCommonDirectOutput 直行直帰申請起動時の表示情報
 	 * @return メール送信の結果
 	 */
-	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
+	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput);
 }

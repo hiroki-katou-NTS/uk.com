@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -32,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
-	private GoBackDirectlyRepository goBackRepo;
+	private GoBackDirectlyRepository_Old goBackRepo;
 
 	@Inject
 	private WorkLocationAdapter workLocationAdapter;
@@ -77,7 +77,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		data.appReason = application.getAppReason().v();
 		data.appDate = application.getAppDate().toString(DATE_FORMAT);
 		//アルゴリズム「直行直帰基本データ」を実行する
-		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
+		GoBackDirectly_Old goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
 		data.goBackDirectly.setVersion(application.getVersion());
 		if(goBackDirect.getWorkLocationCD1().isPresent()) {

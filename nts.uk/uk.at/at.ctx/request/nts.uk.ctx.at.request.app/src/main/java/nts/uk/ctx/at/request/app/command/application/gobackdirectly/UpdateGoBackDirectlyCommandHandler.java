@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -109,7 +109,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandlerWithResult
 								GeneralDateTime.legacyDateTime(command.appCommand.getReflectPerTime().date()))).build());
 		
 		// get new Go Back Item
-		GoBackDirectly updateGoBack = new GoBackDirectly(companyId, 
+		GoBackDirectly_Old updateGoBack = new GoBackDirectly_Old(companyId, 
 				command.goBackCommand.getAppID(),
 				command.goBackCommand.getWorkTypeCD(),
 				command.goBackCommand.getSiftCD(), 

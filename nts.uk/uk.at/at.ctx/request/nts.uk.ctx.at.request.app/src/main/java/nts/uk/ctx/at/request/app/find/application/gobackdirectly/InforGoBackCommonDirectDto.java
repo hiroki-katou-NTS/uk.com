@@ -34,7 +34,7 @@ public class InforGoBackCommonDirectDto {
 				value.getWorkType(),
 				value.getWorkTime(),
 				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartup()),
-				GoBackReflectDto.convertDto(value.getGoBackReflect()),
+				GoBackReflectDto.fromDomain(value.getGoBackReflect()),
 				value.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()),
 				value.getGoBackApplication().isPresent() ? GoBackAplicationDto.convertDto(value.getGoBackApplication().get()) : null);
 	}

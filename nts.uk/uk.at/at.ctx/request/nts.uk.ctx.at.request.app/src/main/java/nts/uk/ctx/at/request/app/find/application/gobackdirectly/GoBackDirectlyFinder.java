@@ -23,8 +23,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackApplicationDomainService;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
@@ -41,7 +41,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class GoBackDirectlyFinder {
 	@Inject
-	private GoBackDirectlyRepository goBackDirectRepo;
+	private GoBackDirectlyRepository_Old goBackDirectRepo;
 	@Inject
 	private GoBackDirectCommonService goBackCommon;
 	@Inject

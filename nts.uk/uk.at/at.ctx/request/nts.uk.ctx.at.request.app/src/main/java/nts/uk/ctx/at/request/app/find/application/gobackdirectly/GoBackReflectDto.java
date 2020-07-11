@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,11 +12,14 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackRefl
 //直行直帰申請の反映
 public class GoBackReflectDto {
 //	会社ID
-	private String companyId;
+	public String companyId;
 //	勤務情報を反映する
-	private int reflectApplication;
+	public int reflectApplication;
 	
-	public static GoBackReflectDto convertDto(GoBackReflect value) {
+	public static GoBackReflectDto fromDomain(GoBackReflect value) {
 		return new GoBackReflectDto(value.getCompanyId(), value.getReflectApplication().value);
+	}
+	public GoBackReflect toDomain() {
+		return new GoBackReflect(companyId, EnumAdaptor.valueOf(reflectApplication, ApplicationStatus.class));
 	}
 }

@@ -10,7 +10,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackDirectly;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackReflect;
+import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqstAppGoBackDirectlyPK;
 @Stateless
 public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackReflectRepository {
 	// KRQST_APP_GOBACK_DIRECTLY
@@ -25,11 +26,37 @@ public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackR
 
 	}
 	
-	public KrqstAppGoBackDirectly toEntity(GoBackReflect goBackReflect) {
-		KrqstAppGoBackDirectly entity = new KrqstAppGoBackDirectly();
+	public KrqstAppGoBackReflect toEntity(GoBackReflect goBackReflect) {
+		KrqstAppGoBackReflect entity = new KrqstAppGoBackReflect();
 		entity.getAppGoBackDirectlyPK().setCompanyID(goBackReflect.getCompanyId());
 		entity.setReflectApp(goBackReflect.getReflectApplication().value);
 		return entity;
 	}
+
+	@Override
+	public void add(GoBackReflect domain) {
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+
+	@Override
+	public void update(GoBackReflect domain) {
+		KrqstAppGoBackReflect krqstAppGoBackDirectly = toEntity(domain);
+		Optional<KrqstAppGoBackReflect> update = this.queryProxy().find(
+				krqstAppGoBackDirectly.getAppGoBackDirectlyPK(), 
+				KrqstAppGoBackReflect.class);
+		if (!update.isPresent()) return;
+		update.get().setReflectApp(domain.getReflectApplication().value);
+		this.commandProxy().update(update.get());
+	}
+
+	@Override
+	public void remove(GoBackReflect domain) {
+		this.commandProxy().remove(
+				KrqstAppGoBackReflect.class, 
+				new KrqstAppGoBackDirectlyPK(domain.getCompanyId()));;
+		
+	}
+
 
 }

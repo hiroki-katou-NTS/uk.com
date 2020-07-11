@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
@@ -16,9 +18,18 @@ public class DataWorkDto {
 //	就業時間帯コード
 	private InforWorkTime workTime;
 	
-	public static DataWorkDto convertDto(DataWork value) {
+	public static DataWorkDto fromDomain(DataWork value) {
 		return new DataWorkDto(
 				value.getWorkType(),
 				value.getWorkTime().isPresent() ? value.getWorkTime().get(): null);
+	}
+	public DataWork toDomain() {
+		Optional<InforWorkTime> optionalWorkTime = Optional.ofNullable(null);
+		if (workTime != null) {
+			optionalWorkTime = Optional.of(new InforWorkTime(workTime.getWorkTime(), workTime.getNameWorkTime()));
+		}
+		return new DataWork(
+				new InforWorkType(workType.getWorkType(), workType.getNameWorkType()),
+				optionalWorkTime);
 	}
 }
