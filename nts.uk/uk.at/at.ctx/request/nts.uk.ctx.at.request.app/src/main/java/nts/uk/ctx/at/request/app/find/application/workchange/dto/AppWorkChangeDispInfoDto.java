@@ -22,7 +22,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -96,8 +99,18 @@ public class AppWorkChangeDispInfoDto {
 		
 //		predetemineTimeSetting.getPredTime().getAddTime();
 //		predetermineTime.saveToMemento();
-		PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting();
+		PrescribedTimezoneSetting prescribedTimezoneSetting = new PrescribedTimezoneSetting(
+				new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.morningEndTime),
+				new TimeWithDayAttr(predetemineTimeSetting.prescribedTimezoneSetting.afternoonStartTime),
+				predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone.stream().map(item -> new TimezoneUse(
+						new TimeWithDayAttr(item.start),
+						new TimeWithDayAttr(item.end),
+						EnumAdaptor.valueOf(item.useAtr ? 1 : 0, UseSetting.class),
+						item.workNo)).collect(Collectors.toList())
+				);
+		
 		prescribedTimezoneSetting.saveToMemento(predetemineTimeSetting.prescribedTimezoneSetting);
+		
 		PredetemineTimeSetting prescribedTimeSetting = new PredetemineTimeSetting(
 				predetemineTimeSetting.companyId,
 				new AttendanceTime(predetemineTimeSetting.rangeTimeDay),

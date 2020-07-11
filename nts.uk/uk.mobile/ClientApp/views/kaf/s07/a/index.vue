@@ -39,7 +39,7 @@
         <span class="textSize uk-text-dark-gray">{{'KAFS07_4' | i18n}}</span>
         <button
           type="button"
-          v-bind:enable="isCondition1"
+          v-bind:enable="isCondition3"
           class="btn btn-selection mt-2 mb-2"
           v-on:click="openKDL002()"
         >
@@ -70,12 +70,14 @@
 
     <div class="card card-label">
       <!-- A6_1 -->
-      <div v-if="isCondition3" class="card-header uk-bg-accordion">
+      <div v-if="isCondition1" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_6' | i18n}}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div v-if="isCondition3" v-bind:enable="isCondition1" class="card-body">
-        <nts-time-range-input v-model="valueWorkHours1" />
+      <div v-if="isCondition1" class="card-body">
+
+        <nts-time-range-input v-if="isCondition3" v-model="valueWorkHours1" />
+        <nts-time-range-input v-else disabled v-model="valueWorkHours1" />
       </div>
     </div>
 
@@ -86,8 +88,9 @@
         <span class="badge badge-info">必須</span>
       </div>
       <!-- A7_2 -->
-      <div v-if="isCondition2" v-bind:enable="isCondition3" class="card-body">
-        <nts-time-range-input v-model="valueWorkHours2" />
+      <div v-if="isCondition2" class="card-body">
+        <nts-time-range-input v-if="isCondition3" v-model="valueWorkHours2" />
+        <nts-time-range-input v-else disabled v-model="valueWorkHours2" />
       </div>
     </div>
     <div>

@@ -50,7 +50,7 @@ public class AppDeadlineSettingDto {
 		return new AppDeadlineSetting(
 				EnumAdaptor.valueOf(useAtr, UseDivision.class), 
 				closureId, 
-				EnumAdaptor.valueOf(deadline, Deadline.class), 
+				new Deadline(deadline), 
 				EnumAdaptor.valueOf(deadlineCriteria, DeadlineCriteria.class));
 	}
 }

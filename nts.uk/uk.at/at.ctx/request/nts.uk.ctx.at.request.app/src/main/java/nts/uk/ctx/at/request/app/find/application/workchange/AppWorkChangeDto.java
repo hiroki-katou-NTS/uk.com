@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.workchange;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +12,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.ReflectionStatusDto;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
@@ -62,7 +66,7 @@ public class AppWorkChangeDto extends ApplicationDto{
 				NotUseAtr.valueOf(this.straightBack),
 				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
 				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
-				timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				null);
 	}
 	public AppWorkChangeDto(int version, String appID, int prePostAtr, String employeeID, int appType, String appDate,

@@ -153,7 +153,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType) {
 		List<EmployeeInfoImport> employeeInfoLst = Collections.emptyList();
 		// INPUT．「起動モード」をチェックする
-		if(!mode) {
+		if(mode) {
 			// 申請者情報を取得する
 			employeeInfoLst = commonAlgorithm.getEmployeeInfoLst(Arrays.asList(employeeID));
 		}
