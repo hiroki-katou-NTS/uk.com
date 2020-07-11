@@ -4,10 +4,12 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class WorkTypeDto {
 
 	/* 会社ID */

@@ -103,7 +103,8 @@ public class HolidayShipmentScreenBFinder {
 	 * @param applicationID
 	 */
 	public HolidayShipmentDto findByID(String applicationID) {
-		HolidayShipmentDto screenInfo = new HolidayShipmentDto();
+		// error EA refactor 4
+		/*HolidayShipmentDto screenInfo = new HolidayShipmentDto();
 		String companyID = AppContexts.user().companyId();
 		String enteredEmployeeID = AppContexts.user().employeeId();
 		boolean isRecAppID = isRecAppID(applicationID, screenInfo);
@@ -183,8 +184,8 @@ public class HolidayShipmentScreenBFinder {
 			}
 		}
 
-		return screenInfo;
-
+		return screenInfo;*/
+		return null;
 	}
 
 	private void setEmployeeDisplayText(Application_New appOutput, HolidayShipmentDto screenInfo) {

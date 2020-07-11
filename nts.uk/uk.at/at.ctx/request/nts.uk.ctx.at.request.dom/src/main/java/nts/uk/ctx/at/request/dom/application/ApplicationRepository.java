@@ -15,4 +15,6 @@ public interface ApplicationRepository {
 	
 	public void update(Application application);
 	
+	public void remove(String appID);
+	
 }

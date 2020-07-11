@@ -37,7 +37,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Override
 	public ProcessResult updateWorkChange(String companyId, Application application, AppWorkChange workChange) {
 		// ドメインモデル「勤務変更申請」の更新をする
-//		 appRepository.updateWithVersion(application);
+		 appRepository.update(application);
 
 		 workChangeRepository.update(workChange);
 

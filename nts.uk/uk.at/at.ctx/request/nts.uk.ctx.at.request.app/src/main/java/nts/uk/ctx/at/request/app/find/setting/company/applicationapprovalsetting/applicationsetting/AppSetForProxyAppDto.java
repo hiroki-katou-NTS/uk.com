@@ -5,7 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -18,7 +19,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
+@NoArgsConstructor
 public class AppSetForProxyAppDto {
 	/**
 	 * 申請種類

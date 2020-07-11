@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
@@ -29,13 +30,14 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	public ProcessResult processAfterRegister(Application_New application){
+	public ProcessResult processAfterRegister(Application application){
+		String companyID = AppContexts.user().companyId();
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getAppType().value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getAppType().value);
 		}
@@ -46,19 +48,20 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
 		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-				application.getCompanyID(), 
+				companyID, 
 				application.getAppID(), 
 				1, 
 				true, 
 				application.getEmployeeID(), 
 				application.getAppType().value, 
-				application.getAppDate());
+				application.getAppDate().getApplicationDate());
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
+			// error EA refactor 4
+			/*MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			autoSuccessMail = mailResult.getSuccessList();
-			autoFailMail = mailResult.getFailList();
+			autoFailMail = mailResult.getFailList();*/
 		}
 		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
 	}

@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DetailScreenBeforeImpl implements DetailScreenBefore {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
@@ -34,11 +34,11 @@ public class DetailScreenBeforeImpl implements DetailScreenBefore {
 	public DetailScreenAppData getDetailScreenAppData(String appID) {
 		String companyID = AppContexts.user().companyId();
 		// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する
-		Optional<Application_New> opApp = applicationRepository.findByID(companyID, appID);
+		Optional<Application> opApp = applicationRepository.findByID(companyID, appID);
 		if(!opApp.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
-		Application_New application = opApp.get();
+		Application application = opApp.get();
 		// 15-1.詳細画面の承認コメントを取得する
 		DetailScreenApprovalData detailScreenApprovalData = getApprovalDetail(appID);
 		

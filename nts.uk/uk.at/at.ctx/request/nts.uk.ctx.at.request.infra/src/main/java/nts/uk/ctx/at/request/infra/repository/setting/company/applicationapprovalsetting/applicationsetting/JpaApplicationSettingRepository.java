@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -94,13 +96,13 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		map.put("bPRE_OT_AFT_WORK_TIME", rec.getInt("bPRE_OT_AFT_WORK_TIME"));
 		map.put("bPRE_OT_BEF_AFT_WORK_TIME", rec.getInt("bPRE_OT_BEF_AFT_WORK_TIME"));
 		// KRQST_APP_MCLOSE
-		map.put("cCID", rec.getInt("cCID"));
+		map.put("cCID", rec.getString("cCID"));
 		map.put("cCLOSURE_ID", rec.getInt("cCLOSURE_ID"));
 		map.put("cMCLOSE_CRITERIA_ATR", rec.getInt("cMCLOSE_CRITERIA_ATR"));
 		map.put("cMCLOSE_DAYS", rec.getInt("cMCLOSE_DAYS"));
 		map.put("cUSE_ATR", rec.getInt("cUSE_ATR"));
 		// KRQST_REPRESENT_APP
-		map.put("dCID", rec.getInt("dCID"));
+		map.put("dCID", rec.getString("dCID"));
 		map.put("dAPP_TYPE", rec.getInt("dAPP_TYPE"));
 		map.put("dOPTION_ATR", rec.getInt("dOPTION_ATR"));
 		return map;
@@ -122,18 +124,18 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				ApplicationSetting applicationSetting = new ApplicationSetting(
 						(String) x.getValue().get(0).get("aCID"), 
 						new AppLimitSetting(
-								(boolean) x.getValue().get(0).get("aMON_ATD_CONFIRM_ATR"), 
-								(boolean) x.getValue().get(0).get("aATD_LOCK_ATR"), 
-								(boolean) x.getValue().get(0).get("aATD_CONFIRM_ATR"), 
-								(boolean) x.getValue().get(0).get("aREASON_REQUIRE_ATR"), 
-								(boolean) x.getValue().get(0).get("aFIXED_REASON_REQUIRE_ATR"), 
-								(boolean) x.getValue().get(0).get("aDAY_ATD_CONFIRM_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aMON_ATD_CONFIRM_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_LOCK_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aATD_CONFIRM_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aREASON_REQUIRE_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aFIXED_REASON_REQUIRE_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("aDAY_ATD_CONFIRM_ATR"))), 
 						AppTypeSetting.createNew(
 								(int) x.getValue().get(0).get("bAPP_TYPE"), 
-								(boolean) x.getValue().get(0).get("bAPP_SEND_MAIL_ATR"), 
-								(boolean) x.getValue().get(0).get("bAPV_SEND_MAIL_ATR"), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPP_SEND_MAIL_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPV_SEND_MAIL_ATR")), 
 								(int) x.getValue().get(0).get("bPRE_POST_INIT_ATR"), 
-								(boolean) x.getValue().get(0).get("bPRE_POST_CHANGE_ATR")), 
+								BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPRE_POST_CHANGE_ATR"))), 
 						new AppSetForProxyApp(
 								Arrays.asList(dAppType), 
 								dAppType == ApplicationType.OVER_TIME_APPLICATION 
@@ -150,14 +152,14 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 								OTAppBeforeAccepRestric.createNew(
 										(int) x.getValue().get(0).get("bPRE_OT_CHECK_SET"), 
 										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"), 
-										(boolean) x.getValue().get(0).get("bUSE_ATR"), 
+										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR")), 
 										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_WORK_TIME"), 
 										(Integer) x.getValue().get(0).get("bPRE_OT_AFT_WORK_TIME"), 
 										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_AFT_WORK_TIME")), 
-								new AfterhandRestriction((boolean) x.getValue().get(0).get("bPOST_FUTURE_ALLOW_ATR")), 
+								new AfterhandRestriction(BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPOST_FUTURE_ALLOW_ATR"))), 
 								BeforehandRestriction.createNew(
 										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"), 
-										(boolean) x.getValue().get(0).get("bUSE_ATR")), 
+										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR"))), 
 								EnumAdaptor.valueOf((int) x.getValue().get(0).get("bAPP_TYPE"), ApplicationType.class)), 
 						EnumAdaptor.valueOf((int) x.getValue().get(0).get("aBASE_DATE_SET"), RecordDate.class));
 				return applicationSetting;

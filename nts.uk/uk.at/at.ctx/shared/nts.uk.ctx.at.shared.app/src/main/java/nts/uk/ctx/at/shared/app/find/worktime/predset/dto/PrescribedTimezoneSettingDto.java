@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
@@ -21,6 +23,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingSetMemento{
 	
 	/** The morning end time. */

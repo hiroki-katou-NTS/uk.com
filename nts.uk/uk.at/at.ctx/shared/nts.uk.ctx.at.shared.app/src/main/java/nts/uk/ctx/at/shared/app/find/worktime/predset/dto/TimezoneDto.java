@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneSetMemento;
@@ -14,6 +16,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class TimezoneDto.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class TimezoneDto implements TimezoneSetMemento{

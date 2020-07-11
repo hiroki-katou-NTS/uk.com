@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -69,7 +70,7 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public ApprovalRootContentImport_New getApprovalRoot(String companyID, String employeeID, 
-			EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate);
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 	
 	/**
 	 * 申請表示情報(申請対象日関係あり)を取得する
@@ -116,4 +117,13 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public ApplyWorkTypeOutput appliedWorkType(String companyID, List<WorkType> wkTypes, String wkTypeCD);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.入力者の社員情報を取得する.入力者の社員情報を取得する
+	 * @param employeeID
+	 * @param enterPersonID
+	 * @return
+	 */
+	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID);
 }

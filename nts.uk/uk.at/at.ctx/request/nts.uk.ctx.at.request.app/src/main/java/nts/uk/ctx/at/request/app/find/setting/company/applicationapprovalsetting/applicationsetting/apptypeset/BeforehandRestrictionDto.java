@@ -1,7 +1,8 @@
-package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
+package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.apptypeset;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.BeforehandRestriction;
@@ -12,7 +13,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
+@NoArgsConstructor
 public class BeforehandRestrictionDto {
 	/**
 	 * 日数
