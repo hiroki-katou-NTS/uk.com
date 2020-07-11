@@ -72,12 +72,20 @@ module nts.uk.kdp003.f {
 							});
 						}
 
+						if (data.companyName) {
+							vm.model.companyName(data.companyName);
+						}
+
 						if (data.employeeId) {
 							vm.model.employeeId(data.employeeId);
 						}
 
 						if (data.employeeCode) {
 							vm.model.employeeCode(data.employeeCode);
+						}
+
+						if (data.employeeName) {
+							vm.model.employeeName(data.employeeName);
 						}
 					}
 				})
@@ -133,42 +141,50 @@ module nts.uk.kdp003.f {
 				_.omit(model, ['password']);
 			}
 
-			vm.$blockui('show')
-				.then(() => vm.$ajax(api, model))
-				.then((response: Kdp003FTimeStampLoginData) => {
-					const { successMsg } = response;
-
-					if (!!successMsg) {
-						return vm.$dialog
-							.info({ messageId: successMsg })
-							.then(() => response);
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
 					}
 
-					return response;
-				})
-				.then((response: Kdp003FTimeStampLoginData) => {
-					vm.$window
-						.storage(KDP003F_LOGINDATA, _.chain(model).clone().omit(['password']).value());
+					vm.$blockui('show')
+						.then(() => vm.$ajax(api, model))
+						.then((response: Kdp003FTimeStampLoginData) => {
+							const { successMsg } = response;
 
-					return response;
-				})
-				.then((response: Kdp003FTimeStampLoginData) => {
-					_.extend(response.em, {
-						password
-					});
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => response);
+							}
 
-					vm.$window.close(response);
-				})
-				.fail((response: any) => {
-					const { message, messageId } = response;
+							return response;
+						})
+						.then((response: Kdp003FTimeStampLoginData) => {
+							vm.$window
+								.storage(KDP003F_LOGINDATA, _.chain(model).clone().omit(['password']).value());
 
-					if (!messageId) {
-						vm.$dialog.error(message);
-					} else {
-						vm.$dialog.error({ messageId });
-					}
-				})
-				.always(() => vm.$blockui('clear'));
+							return response;
+						})
+						.then((response: Kdp003FTimeStampLoginData) => {
+							_.extend(response.em, {
+								password
+							});
+
+							vm.$window.close(response);
+						})
+						.fail((response: any) => {
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.always(() => vm.$blockui('clear'));
+
+				});
 		}
 
 		cancelLogin() {
@@ -208,8 +224,10 @@ module nts.uk.kdp003.f {
 	export interface Kdp003FModelData {
 		companyId: string;
 		companyCode: string;
+		companyName?: string;
 		employeeId: string;
 		employeeCode: string;
+		employeeName?: string;
 		password: string;
 	}
 

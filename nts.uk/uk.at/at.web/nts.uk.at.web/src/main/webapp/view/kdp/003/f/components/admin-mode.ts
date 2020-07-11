@@ -30,6 +30,7 @@ module nts.uk.kdp003.f {
 						optionsValue: 'companyId',
 						optionsText: 'companyName',
 						editable: false,
+						required: true,
 						columns: [
 							{ prop: 'companyCode', length: 5 },
 							{ prop: 'companyName', length: 11 },
@@ -48,6 +49,7 @@ module nts.uk.kdp003.f {
 			<input tabindex="2" id="employee-code-inp-2"
 				data-bind="ntsTextEditor: {
 					name: $component.$i18n('KDP003_4'),
+					required: true,
 					constraint: 'EmployeeCode',
 					value: model.employeeCode,
 					option: {
@@ -63,6 +65,7 @@ module nts.uk.kdp003.f {
 			<input tabindex="3" id="password-input"
 				data-bind="ntsTextEditor: {
 					name: $vm.$i18n('KDP003_5'),
+					required: true,
 					value: model.password,
 					option: {										
 						width: '330px',
