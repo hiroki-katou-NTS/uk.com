@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.infra.entity.application.gobackdirectly;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
+	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
 	
 	

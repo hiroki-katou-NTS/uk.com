@@ -21,7 +21,10 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -38,10 +41,14 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private GoBackReflectRepository goBackDirectServiceImp;
 
 	@Override
 	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<String>> sids,
 			Optional<List<GeneralDate>> dates, AppDispInfoStartupOutput appDispInfoStartup) {
+		InforGoBackCommonDirectOutput output =  new InforGoBackCommonDirectOutput();
 		String sid = null;
 		if (sids.isPresent()) {
 			if (!sids.get().isEmpty()) {
@@ -66,6 +73,12 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 			lstWts = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
 		}
 		this.getInfoWorkGoBackDirect(companyId, sid, date, baseDate, appEmployment, lstWts);
+//		ドメインモデル「直行直帰申請の反映」より取得する 
+		Optional<GoBackReflect> goBackReflectOp = goBackDirectServiceImp.findByCompany(companyId);
+		if (goBackReflectOp.isPresent()) {
+			output.setGoBackReflect(goBackReflectOp.get());
+		}
+		
 		return null;
 	}
 
@@ -74,9 +87,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 			GeneralDate baseDate, AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts) {
 		InforGoBackDirectOutput output = new InforGoBackDirectOutput();
 		// 起動時勤務種類リストを取得する
-//		 this handle is not coded
-		
-//		List<WorkType> lstWorkType = holidayServiceDomain.getWorkTypeLstStart(companyId, appEmployment);
+		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appEmployment);
 
 		// 09_勤務種類就業時間帯の初期選択をセットする
 		// WorkTypeAndSiftType workTypeAndWorktimeSelect =
@@ -86,15 +97,15 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		// appDate,
 		// lstWorkType,
 		// siftTypes);
-			// siftTypes is differed with lstWts
-		// set output
-			//		output.setLstWorkType(lstWorkType);
+			// siftTypes is differed with lstWts		
 		// WorkType wType = workTypeAndWorktimeSelect.getWorkType();
 		// output.setWorkType(new InforWorkType(wType.getWorkTypeCode().v(),
 		// wType.getName().v()));
 		// WorkTimeSetting wTime = workTypeAndWorktimeSelect.getWorkTime();
 		// output.setWorkTime(new InforWorkTime(wTime.getWorktimeCode().v(),
 		// wTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+		
+		output.setLstWorkType(lstWorkType);
 		return output;
 
 	}
@@ -102,13 +113,19 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	@Override
 	public List<WorkType> getWorkTypes(String companyId, AppEmploymentSet appEmploymentSet) {
 		// TODO Auto-generated method stub
-//		INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
-		if(CollectionUtil.isEmpty(appEmploymentSet.getTargetWorkTypeByAppLst())) {
-			return workTypeRepository.findNotDeprecated(companyId);
-		} 
+		List<WorkType> result = workTypeRepository.findNotDeprecated(companyId);
+		// sort 
+		result = result.stream().sorted().collect(Collectors.toList());
+		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
+		if (CollectionUtil.isEmpty(appEmploymentSet.getTargetWorkTypeByAppLst())) {
+			return result;
+		}
+		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
 		List<String> workTypeLst = appEmploymentSet.getTargetWorkTypeByAppLst().get(0).getWorkTypeLst();
-		
-		return null;
+		// ドメインモデル「勤務種類」を取得
+		// filter
+		return result.stream().filter(x -> x.getDeprecate() == DeprecateClassification.NotDeprecated
+				&& workTypeLst.contains(x.getWorkTypeCode().v())).collect(Collectors.toList());
 	}
 
 }
