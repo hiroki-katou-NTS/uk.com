@@ -48152,7 +48152,7 @@ BaseViewModel.prototype.$errors = function $errors() {
     ;
 };
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act) {
+var $validate = function $validate(act) {
     var args = Array.prototype.slice.apply(arguments);
     if (args.length === 0) {
         return $.Deferred().resolve()
@@ -48184,6 +48184,23 @@ BaseViewModel.prototype.$validate = function $validate(act) {
             .then(function () { return !$(selectors_2).ntsError('hasError'); });
     }
 };
+Object.defineProperty($validate, "constraint", {
+    value: function $constraint(name, value) {
+        if (arguments.length === 0) {
+            return $.Deferred().resolve()
+                .then(function () { return __viewContext.primitiveValueConstraints; });
+        }
+        else if (arguments.length === 1) {
+            return $.Deferred().resolve()
+                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+        }
+        else {
+            return $.Deferred().resolve()
+                .then(function () { return ui.validation.writeConstraint(name, value); });
+        }
+    }
+});
+BaseViewModel.prototype.$validate = $validate;
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 var I18nBindingHandler = /** @class */ (function () {
     function I18nBindingHandler() {
