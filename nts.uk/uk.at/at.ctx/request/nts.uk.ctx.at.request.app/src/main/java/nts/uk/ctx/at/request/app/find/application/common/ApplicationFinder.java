@@ -100,7 +100,8 @@ public class ApplicationFinder {
 	
 	public DetailMobDto getDetailMob(String appID){
 		DetailMobDto getDetailMob = new DetailMobDto();
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		String loginEmpID = AppContexts.user().employeeId();
 		Application_New application = null;
 		// 14-1.詳細画面起動前申請共通設定を取得する
@@ -131,7 +132,7 @@ public class ApplicationFinder {
 
 		default:
 			break;
-		}
+		}*/
 		return getDetailMob;
 	}
 }

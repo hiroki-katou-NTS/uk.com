@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import nts.arc.enums.EnumAdaptor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
@@ -59,7 +61,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AppWorkChangeServiceImpl implements AppWorkChangeService {
@@ -268,17 +270,27 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public AppWorkChangeDispInfo_Old changeAppDate(String companyID, List<GeneralDate> dateLst,
-			AppWorkChangeDispInfo_Old appWorkChangeDispInfo) {
+	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst,
+			AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		// 共通インタラクション「申請日を変更する」を実行する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
-				companyID, 
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = algorithmMobile.getAppSetInfoRelatedBaseDate(
+				true, 
+				companyID,
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 				dateLst,
-				ApplicationType.WORK_CHANGE_APPLICATION, 
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
-		// 「勤務変更申請の表示情報」を更新する
+				ApplicationType.WORK_CHANGE_APPLICATION,
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting(),
+				Optional.ofNullable(null));
 		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+//		commonAlgorithm.getAppSetInfoRelatedBaseDate
+//		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+//				companyID, 
+//				dateLst,
+//				ApplicationType.WORK_CHANGE_APPLICATION, 
+//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
+//		// 「勤務変更申請の表示情報」を更新する
+//		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		return appWorkChangeDispInfo;
 	}
 
@@ -470,10 +482,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					mode, 
 					companyId, 
 					employeeId.isPresent() ? employeeId.get() : null, 
-							ApplicationType.WORK_CHANGE_APPLICATION, 
-					null, 
+					ApplicationType.WORK_CHANGE_APPLICATION, 
+					Optional.ofNullable(null), 
 					dates.isPresent() ? dates.get(): null, 
-					null);
+					Optional.ofNullable(null));
 //			勤務変更申請画面初期（新規）
 			AppWorkChangeDispInfo appWorkChangeDisp = this.getAppWorkChangeDisInfo(
 					companyId, 
@@ -481,7 +493,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 					dates.isPresent() ? dates.get() : null,
 					appDispInfoStartupOutput);
 			appWorkChangeOutput.setAppWorkChangeDispInfo(appWorkChangeDisp);
-			
+			appWorkChangeOutput.setAppWorkChange(Optional.ofNullable(null));
 			
 		}else {
 				appWorkChangeOutput.setAppWorkChange(appWorkChange);
@@ -508,7 +520,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		WorkTypeWorkTimeSelect woSelect = this.initWorkTypeWorkTime(
 				companyId,
 				employeeId,
-				dates.get(0), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
 				workTypes,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null);
 		
@@ -546,6 +558,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 //		ドメインモデル「勤務変更申請の反映」を取得する
 		// table is not existed
 		ReflectWorkChangeApp appWorkChangeReflect = new ReflectWorkChangeApp();
+		appWorkChangeReflect.setCompanyID(companyId);
+		appWorkChangeReflect.setWhetherReflectAttendance(NotUseAtr.valueOf(1));
+		
 		appWorkChangeReflect.setCompanyID(companyId);
 //		appWorkChangeReflect.setWhetherReflectAttendance(EnumAdaptor.valueOf(constantValue, enumClass));
 		appWorkChangeSettingOutput.setAppWorkChangeSet(appWorkChangeSet.isPresent() ? appWorkChangeSet.get() : null);

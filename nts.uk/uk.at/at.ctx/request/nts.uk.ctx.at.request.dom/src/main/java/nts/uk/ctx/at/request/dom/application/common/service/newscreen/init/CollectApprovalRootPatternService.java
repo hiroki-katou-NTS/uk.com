@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.init;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
@@ -25,6 +26,6 @@ public interface CollectApprovalRootPatternService {
 	 * @param appDate 基準日
 	 * @return
 	 */
-	public ApprovalRootContentImport_New getgetApprovalRootPatternNew(String companyID, String employeeID, 
-			EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate);
+	public ApprovalRootContentImport_New getApprovalRootPatternNew(String companyID, String employeeID, 
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 }

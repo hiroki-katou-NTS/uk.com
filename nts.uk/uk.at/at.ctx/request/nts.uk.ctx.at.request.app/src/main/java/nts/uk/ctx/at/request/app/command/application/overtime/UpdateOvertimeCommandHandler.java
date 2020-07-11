@@ -75,10 +75,10 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		if(!opAppOverTime.isPresent()){
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
+		OutputMode outputMode = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
 		String appReason = opAppOverTime.get().getApplication().getAppReason().v();
 		String divergenceReason = opAppOverTime.get().getDivergenceReason(); 
-		if(output.getOutputMode()==OutputMode.EDITMODE){
+		if(outputMode==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = overtimeSettingData.appCommonSettingOutput.appTypeDiscreteSettings
 					.stream().filter(x -> x.getAppType()==ApplicationType_Old.OVER_TIME_APPLICATION).findAny().get();
 			String typicalReason = Strings.EMPTY;

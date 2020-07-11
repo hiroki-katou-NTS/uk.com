@@ -17,29 +17,29 @@ public class DailyAttendanceUpdateStatus {
 	/**
 	 * 実績反映日時
 	 */
-	private Optional<GeneralDateTime> actualResultDateTime;
+	private Optional<GeneralDateTime> opActualReflectDateTime;
 	
 	/**
 	 * 予定反映日時
 	 */
-	private Optional<GeneralDateTime> scheduleReflectionDateTime;
+	private Optional<GeneralDateTime> opScheReflectDateTime;
 	
 	/**
 	 * 実績反映不可理由
 	 */
-	private Optional<ReasonNotReflectDaily> opReasonResultsCantReflected;
+	private Optional<ReasonNotReflectDaily> opReasonActualCantReflect;
 	
 	/**
 	 * 予定反映不可理由
 	 */
-	private Optional<ReasonNotReflect> opReasonScheduleCantReflected;
+	private Optional<ReasonNotReflect> opReasonScheCantReflect;
 	
-	public DailyAttendanceUpdateStatus(Optional<GeneralDateTime> actualResultDateTime, Optional<GeneralDateTime> scheduleReflectionDateTime,
-			Optional<ReasonNotReflectDaily> opReasonResultsCantReflected, Optional<ReasonNotReflect> opReasonScheduleCantReflected) {
-		this.actualResultDateTime = actualResultDateTime;
-		this.scheduleReflectionDateTime = scheduleReflectionDateTime;
-		this.opReasonResultsCantReflected = opReasonResultsCantReflected;
-		this.opReasonScheduleCantReflected = opReasonScheduleCantReflected;
+	public DailyAttendanceUpdateStatus(Optional<GeneralDateTime> opActualReflectDateTime, Optional<GeneralDateTime> opScheReflectDateTime,
+			Optional<ReasonNotReflectDaily> opReasonActualCantReflect, Optional<ReasonNotReflect> opReasonScheCantReflect) {
+		this.opActualReflectDateTime = opActualReflectDateTime;
+		this.opScheReflectDateTime = opScheReflectDateTime;
+		this.opReasonActualCantReflect = opReasonActualCantReflect;
+		this.opReasonScheCantReflect = opReasonScheCantReflect;
 	}
 	
 }

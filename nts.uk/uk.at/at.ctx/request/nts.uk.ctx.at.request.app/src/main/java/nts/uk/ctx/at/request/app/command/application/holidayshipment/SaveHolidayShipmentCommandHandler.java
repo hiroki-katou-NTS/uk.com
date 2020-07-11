@@ -315,8 +315,8 @@ public class SaveHolidayShipmentCommandHandler
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		return this.newAfterReg.processAfterRegister(absCommonApp);
-
+		/*return this.newAfterReg.processAfterRegister(absCommonApp);*/
+		return null;
 	}
 
 	private void updateDigestionTarget(SaveHolidayShipmentCommand command) {
@@ -341,7 +341,8 @@ public class SaveHolidayShipmentCommandHandler
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		return this.newAfterReg.processAfterRegister(recCommonApp);
+		/*return this.newAfterReg.processAfterRegister(recCommonApp);*/
+		return null;
 	}
 
 	private void updateOccurrenceData(String companyID, String sID, String wkTypeCD, GeneralDate recDate) {
@@ -387,18 +388,21 @@ public class SaveHolidayShipmentCommandHandler
 		RegisterDigestionData(command, recDate, companyID, sID);
 
 		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
-
+		
+		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		newAfterReg.processAfterRegister(recCommonApp);
+		/*newAfterReg.processAfterRegister(recCommonApp);*/
 
 		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
-
+		
+		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);
+		/*ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);*/
 		// ドメイン「振休振出同時申請管理」を1件登録する
 		createNewComLeaveSilMng(recAppCmd.getAppID(), absAppCmd.getAppID());
 
-		return result;
+		/*return result;*/
+		return null;
 	}
 
 	private void createNewComLeaveSilMng(String recAppID, String absAppID) {

@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.predset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTimeGetMemento;
@@ -12,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTimeGetMemento;
 /**
  * The Class PredetermineTimeDto.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class PredetermineTimeDto implements PredetermineTimeGetMemento{

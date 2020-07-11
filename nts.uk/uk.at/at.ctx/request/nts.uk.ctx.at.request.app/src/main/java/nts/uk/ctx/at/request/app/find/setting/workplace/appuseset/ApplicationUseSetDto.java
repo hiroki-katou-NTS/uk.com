@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.app.find.setting.workplace.appuseset;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetti
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class ApplicationUseSetDto {
 	
 	/**

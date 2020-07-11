@@ -70,7 +70,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChangeDispInfo 勤務変更申請の表示情報
 	 * @return
 	 */
-	public AppWorkChangeDispInfo_Old changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo_Old appWorkChangeDispInfo);
+	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst, AppWorkChangeDispInfo appWorkChangeDispInfo);
 	
 	/**
 	 * 登録前のエラーチェック処理

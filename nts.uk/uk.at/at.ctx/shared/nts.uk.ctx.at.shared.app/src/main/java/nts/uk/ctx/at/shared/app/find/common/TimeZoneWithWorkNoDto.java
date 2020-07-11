@@ -1,7 +1,8 @@
-package nts.uk.ctx.at.shared.app.find.worktime.predset.dto;
+package nts.uk.ctx.at.shared.app.find.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeZone;

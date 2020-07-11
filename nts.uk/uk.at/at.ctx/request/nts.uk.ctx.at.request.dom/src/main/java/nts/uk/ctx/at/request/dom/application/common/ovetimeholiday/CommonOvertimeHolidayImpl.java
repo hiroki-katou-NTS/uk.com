@@ -324,9 +324,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		} else {
 			// 事前事後区分表示を非表示
 			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// error EA refactor 4
 			// アルゴリズム「事前事後の判断処理(事前事後非表示する場合)」を実行する
-			result.setPrePostAtr(
-					this.otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, appDate, overtimeAtr.value).value);
+			/*result.setPrePostAtr(
+					this.otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, appDate, overtimeAtr.value).value);*/
 		}
 		return result;
 	}

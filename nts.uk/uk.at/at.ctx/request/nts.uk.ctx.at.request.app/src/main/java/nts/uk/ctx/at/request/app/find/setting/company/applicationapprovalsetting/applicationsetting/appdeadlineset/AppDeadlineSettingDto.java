@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class AppDeadlineSettingDto {
 	/**
 	 * 利用区分
@@ -48,7 +50,7 @@ public class AppDeadlineSettingDto {
 		return new AppDeadlineSetting(
 				EnumAdaptor.valueOf(useAtr, UseDivision.class), 
 				closureId, 
-				EnumAdaptor.valueOf(deadline, Deadline.class), 
+				new Deadline(deadline), 
 				EnumAdaptor.valueOf(deadlineCriteria, DeadlineCriteria.class));
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +32,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
@@ -201,9 +200,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 
 	@Override
 	public ApprovalRootContentImport_New getApprovalRoot(String companyID, String employeeID, EmploymentRootAtr rootAtr,
-			ApplicationType_Old appType, GeneralDate appDate) {
+			ApplicationType appType, GeneralDate appDate) {
 		// 1-4.新規画面起動時の承認ルート取得パターン
-		return collectApprovalRootPatternService.getgetApprovalRootPatternNew(companyID, employeeID, rootAtr, appType, appDate);
+		return collectApprovalRootPatternService.getApprovalRootPatternNew(companyID, employeeID, rootAtr, appType, appDate);
 	}
 
 	@Override
@@ -217,9 +216,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				// OUTPUT．「事前事後区分」=事前
 				output.setPrePostAtr(PrePostAtr_Old.PREDICT);
 			} else  {
+				// error EA refactor 4
 				// 3.事前事後の判断処理(事前事後非表示する場合)
-				PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
-				output.setPrePostAtr(prePostAtrJudgment);
+				/*PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(appType, dateLst.get(0), 0);
+				output.setPrePostAtr(prePostAtrJudgment);*/
 			}
 		} else {
 			// 申請表示情報(基準日関係あり)．事前事後区分=INPUT．事前事後区分の初期表示
@@ -296,6 +296,23 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		wkTypes.sort(Comparator.comparing(x -> x.getWorkTypeCode().v()));
 		// マスタ未登録←false(master Unregistered ←false)
 		return new ApplyWorkTypeOutput(wkTypes, false);
+	}
+
+	@Override
+	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID) {
+		List<EmployeeInfoImport> employeeInfoLst = new ArrayList<>();
+		// INPUT．申請者とINPUT．入力者をチェックする (Check INPUT. Applicant and INPUT.người input/nhập)
+		if(employeeID.equals(enterPersonID)) {
+			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(employeeID));
+		} else {
+			// 社員ID（List）から社員コードと表示名を取得 (Lấy tên hiển thị và employee code từ Employee ID (List))
+			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(enterPersonID));
+		}
+		// 取得した社員情報を返す (Returns employee information đã lấy )
+		if(CollectionUtil.isEmpty(employeeInfoLst)) {
+			return Optional.empty();
+		}
+		return employeeInfoLst.stream().findFirst();
 	}
 
 }

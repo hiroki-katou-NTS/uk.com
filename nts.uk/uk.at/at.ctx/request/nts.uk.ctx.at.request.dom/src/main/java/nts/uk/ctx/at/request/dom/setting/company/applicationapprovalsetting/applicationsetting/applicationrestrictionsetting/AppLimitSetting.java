@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * refactor 4
@@ -8,6 +11,9 @@ import lombok.Getter;
  * @author Doan Duy Hung
  *
  */
+
+@NoArgsConstructor
+@Setter
 @Getter
 public class AppLimitSetting {
 	

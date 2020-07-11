@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
+package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.apptypeset;
 
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppAcceptLimitDay;
@@ -16,7 +17,8 @@ import nts.uk.shr.com.time.AttendanceClock;
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
+@NoArgsConstructor
 public class OTAppBeforeAccepRestricDto {
 	/**
 	 * チェック方法

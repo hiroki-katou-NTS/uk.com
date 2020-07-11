@@ -3,7 +3,8 @@ package nts.uk.ctx.at.request.app.find.setting.company.appreasonstandard;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeIte
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
+@NoArgsConstructor
 public class ReasonTypeItemDto {
 	/**
 	 * 理由コード
