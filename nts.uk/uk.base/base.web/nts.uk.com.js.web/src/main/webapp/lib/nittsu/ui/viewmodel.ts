@@ -474,7 +474,7 @@ BaseViewModel.prototype.$errors = function $errors() {
 };
 
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act: string[]) {
+const $validate = function $validate(act: string[]) {
 	const args: string[] = Array.prototype.slice.apply(arguments);
 
 	if (args.length === 0) {
@@ -507,6 +507,23 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 			.then(() => !$(selectors).ntsError('hasError'));
 	}
 };
+
+Object.defineProperty($validate, "constraint", {
+	value: function $constraint(name: string, value: any) {
+		if(arguments.length === 0) {
+			return $.Deferred().resolve()
+			.then(() => __viewContext.primitiveValueConstraints);
+		} else if (arguments.length === 1) {
+			return $.Deferred().resolve()
+				.then(() => _.get(__viewContext.primitiveValueConstraints, name));
+		} else {
+			return $.Deferred().resolve()
+				.then(() => (ui.validation as any).writeConstraint(name, value));
+		}
+	}
+});
+
+BaseViewModel.prototype.$validate = $validate;
 
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 
