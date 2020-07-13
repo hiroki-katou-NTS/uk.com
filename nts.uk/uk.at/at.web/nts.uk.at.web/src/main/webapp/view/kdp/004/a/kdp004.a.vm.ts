@@ -372,20 +372,22 @@ module nts.uk.at.view.kdp004.a {
 					mode: 'admin'
 				}).done((loginResult) => {
 					if (loginResult) {
-						loginResult.em.selectedWP = self.loginInfo.selectedWP;
+						loginResult.em.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
 						self.openDialogK().done((result) => {
 							if (result) {
 								self.loginInfo.selectedWP = result;
-							}
-							nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+									location.reload();
+								});
+							} else {
 								location.reload();
+								}
+							
 
-							});
 
 						});
 					}
-
 				});
 			}
 
@@ -497,5 +499,9 @@ module nts.uk.at.view.kdp004.a {
 		NoShow = 1,
 		ShowHistory = 2,
 		ShowAll = 3
+	}
+	enum Mode {
+		Personal = 1, // 個人
+		Shared = 2  // 共有 
 	}
 }
