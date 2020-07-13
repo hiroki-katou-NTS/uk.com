@@ -14,19 +14,16 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
  * @author masaaki_jinno
  *
  */
-@Stateless
 @Getter
 public class RepositoriesRequiredByRemNum {
 
 	/**
 	 * 労働条件
 	 */
-	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	/**
 	 * 年休設定
 	 */
-	@Inject
 	private AnnualPaidLeaveSetting annualPaidLeaveSet;
 }

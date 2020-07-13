@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +15,13 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -41,6 +45,9 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
  */
 @Stateless
 public class CalcAnnLeaAttendanceRateRequireM3 {
+	
+	/** バイナリファイル出力先 */
+	static public Path destionationFile = Paths.get("C:\\jinno\\binaryFile.csv");
 
 	/** 社員 */
 	@Inject
@@ -94,10 +101,9 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		// 社員IDリスト
 		ArrayList<String> employeeIds = new ArrayList<String>();
 		
-		
-		
 		// 参照不可。保留
-		// EmpEmployeeAdapterImpl　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
+//		EmpEmployeeAdapter　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
+		val employeeImportList = empEmployeeAdapter.findByEmpId(employeeIds);
 		
 		// 年休設定
 		val annualPaidLeaveSettingList = new ArrayList<AnnualPaidLeaveSetting>();
@@ -182,17 +188,16 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		}
 		toBinaryMap.put(OperationStartSetDailyPerform.class.toString(), operationStartSetDailyPerformList);
 		
-		
-		
-		
-		
-		
+		// ファイルに書き込み
+		ObjectBinaryFile.write(toBinaryMap, destionationFile);
+				
 	}
 	
+	
 	public void testService(){
-		
 		System.out.println("CalcAnnLeaAttendanceRateRequireM3::testService() ");
 		
 	}
+	
 	
 }
