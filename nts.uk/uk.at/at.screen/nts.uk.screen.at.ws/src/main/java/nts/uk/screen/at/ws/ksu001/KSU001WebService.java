@@ -18,7 +18,7 @@ public class KSU001WebService extends WebService{
 
 	@POST
 	public DataInitScreenDto init() {
-		return this.bScheduleScreenProces.getDataInit();
+		return null;
 	}
 	
 }
