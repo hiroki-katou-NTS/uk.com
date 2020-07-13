@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -31,9 +33,10 @@ public class CommonSettingsStampInput implements DomainAggregate{
 	/**
 	 * 	GoogleMap利用するか
 	 */
+	@Setter
 	@Getter
 	private boolean googlemap;
 	
 	@Getter
-	private MapAddress mapAddres; 
+	private Optional<MapAddress> mapAddres; 
 }

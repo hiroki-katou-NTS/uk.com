@@ -88,9 +88,9 @@ public class StampSettingsEmbossFinder {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-
+		
 		this.confirmHandler.handle(new ConfirmUseOfStampEmbossCommand());
-
+		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
 
@@ -240,9 +240,6 @@ public class StampSettingsEmbossFinder {
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
 		}
-
-
-
 	}
 
 }

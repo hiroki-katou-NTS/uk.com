@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 300, height: 410 };</script>
+			<com:stylefile path="./kmp001.d.main.css" />
+			<com:scriptfile path="./kmp001.d.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div class="view-dialog">
+				<div style="padding: 10px">
+					<div class="box">
+						<table>
+							<tbody>
+								<tr>
+									<td class="label-column">
+										<div data-bind="text: $i18n('KMP001_40')"></div>
+									</td>
+									<td class="label-column">
+										<div id="combo-box" data-bind="ntsComboBox: {
+											options: ko.observableArray([{
+												code: '1',
+												name: 'Option 1'
+											},{
+												code: '2',
+												name: 'Option 1'
+											},{
+												code: '3',
+												name: 'Option 1'
+											},{
+												code: '4',
+												name: 'Option 1'
+											},{
+												code: '5',
+												name: 'Option 1'
+											},{
+												code: '6',
+												name: 'Option 1'
+											},{
+												code: '7',
+												name: 'Option 1'
+											},{
+												code: '8',
+												name: 'Option 1'
+											},{
+												code: '9',
+												name: 'Option 1'
+											}]),
+											optionsValue: 'code',
+											visibleItemsCount: 6,
+											width: 60,
+											value: selectedCode,
+											optionsText: 'name',
+											columns: [
+												{ prop: 'code', length: 2 }
+											]}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div data-bind="text: $i18n('KMP001_41')" style="margin-top:40px"></div>
+										<hr></hr>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-column-select">
+										<input type="radio" name="number"/>
+										<label for="number">前ゼロ</label>
+									</td>
+									<td class="label-column-select">
+										<input type="radio" name="number"/>
+										<label for="number">#{i18n.getText('KMP001_44')}</label>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-column-select">
+										<input type="radio"  name="number"/>
+										<label for="number">#{i18n.getText('KMP001_43')}</label>
+									</td>
+									<td class="label-column-select">
+										<input type="radio" checked="checked" name="number"/>
+										<label for="number">#{i18n.getText('KMP001_45')}</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<hr></hr>
+				<div class="view-button">
+					<div>
+						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46')"></button>
+						<button data-bind="text: $i18n('KMP001_47')"></button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

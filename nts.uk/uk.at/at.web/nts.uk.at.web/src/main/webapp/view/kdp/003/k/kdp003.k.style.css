@@ -1,0 +1,18 @@
+#contents-area {
+	height: auto !important;
+}
+
+#combo-box-tree-component{
+	display: none;
+}
+
+#hierarchy > div.form-label{
+	display: none;
+}
+
+.caret-background.caret-right:after {
+    top: 0px;
+    left: 0;
+    border-width: 0px 0px;
+}
+

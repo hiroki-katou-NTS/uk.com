@@ -13,7 +13,7 @@ module kcp005.a.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        showOptionalColumn: KnockoutObservable<boolean>;
+        showOptionalColumn: KnockoutObservable<boolean>; //任意列表示
         disableSelection : KnockoutObservable<boolean>;
 
         multiSelectedCode: KnockoutObservableArray<string>;
