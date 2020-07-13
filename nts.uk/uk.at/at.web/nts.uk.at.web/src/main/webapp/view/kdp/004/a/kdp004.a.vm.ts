@@ -29,6 +29,8 @@ module nts.uk.at.view.kdp004.a {
 			loginInfo: any = null;
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
+
+			listCompany = [];
 			constructor() {
 				let self = this;
 
@@ -37,7 +39,6 @@ module nts.uk.at.view.kdp004.a {
 			public startPage(): JQueryPromise<void> {
 				let self = this;
 				let dfd = $.Deferred<void>();
-				//nts.uk.characteristics.remove("loginKDP004");
 				nts.uk.characteristics.restore("loginKDP004").done(function(loginInfo: ILoginInfo) {
 					if (!loginInfo) {
 						self.setLoginInfo().done((loginResult) => {
@@ -57,8 +58,28 @@ module nts.uk.at.view.kdp004.a {
 							dfd.resolve();
 						});
 					}
+				}).always(() => {
+					service.getLogginSetting().done((res) => {
+
+						self.listCompany = res;
+					});
+
 				});
 				return dfd.promise();
+			}
+
+			showButton() {
+				let self = this;
+				if (!self.isUsed()) {
+					if (self.listCompany.length > 0) {
+						return ButtonDisplayMode.ShowHistory;
+					} else {
+						return ButtonDisplayMode.NoShow;
+					}
+
+				}
+
+				return ButtonDisplayMode.ShowAll;
 			}
 
 			getErrorNotUsed(errorType) {
@@ -474,8 +495,9 @@ module nts.uk.at.view.kdp004.a {
 		}
 
 	}
-	enum Mode {
-		Personal = 1, // 個人
-		Shared = 2  // 共有 
+	enum ButtonDisplayMode {
+		NoShow = 1,
+		ShowHistory = 2,
+		ShowAll = 3
 	}
 }
