@@ -181,7 +181,7 @@ table th, table td {
 }
 
 #popup-area6 {
-	width: 390px
+	width: 350px
 }
 
 #popup6-radioBox {
@@ -469,7 +469,7 @@ html {
 	background: url(../image/toleft.png) no-repeat center;
 	width: 27px;
 	height: 15px;
-	margin-left: 310px;  /* 190 */ 
+	margin-left: 305px;  /* 190 */ 
 	float: left;
 }
 
