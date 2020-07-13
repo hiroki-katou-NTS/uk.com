@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -96,7 +96,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
-	private ApplicationApprovalService_New appRepository;
+	private ApplicationApprovalService appRepository;
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
 	@Inject

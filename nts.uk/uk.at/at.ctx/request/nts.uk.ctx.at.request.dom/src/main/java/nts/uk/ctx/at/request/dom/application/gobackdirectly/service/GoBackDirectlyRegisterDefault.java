@@ -16,7 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -67,7 +67,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	GoBackDirectlyRepository_Old goBackDirectRepo;
 	@Inject
-	ApplicationApprovalService_New appRepo;
+	ApplicationApprovalService appRepo;
 	@Inject
 	NewBeforeRegister_New processBeforeRegister;
 	@Inject

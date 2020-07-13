@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -141,6 +143,17 @@ public class Application implements DomainAggregate {
 			Optional<ReasonForReversion> opReversionReason, Optional<ApplicationDate> opAppStartDate,
 			Optional<ApplicationDate> opAppEndDate, Optional<AppReason> opAppReason,
 			Optional<AppStandardReasonCode> opAppStandardReasonCD) {
+		List<ReflectionStatusOfDay> listReflectionStatusOfDay = new ArrayList<>();
+		if(opAppStartDate.isPresent() && opAppEndDate.isPresent()) {
+			GeneralDate startDate = opAppStartDate.get().getApplicationDate();
+			GeneralDate endDate = opAppEndDate.get().getApplicationDate();
+			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)) {
+				listReflectionStatusOfDay.add(ReflectionStatusOfDay.createNew(ReflectedState.NOTREFLECTED, ReflectedState.NOTREFLECTED, loopDate));
+			}
+		} else {
+			listReflectionStatusOfDay.add(ReflectionStatusOfDay.createNew(ReflectedState.NOTREFLECTED, ReflectedState.NOTREFLECTED, appDate.getApplicationDate()));
+		}
+		
 		Application application = new Application(
 				IdentifierUtil.randomUniqueId(), 
 				prePostAtr, 
@@ -149,7 +162,7 @@ public class Application implements DomainAggregate {
 				appDate, 
 				enteredPerson, 
 				GeneralDateTime.now(), 
-				new ReflectionStatus(new ArrayList<>()));
+				new ReflectionStatus(listReflectionStatusOfDay));
 		application.setVersion(0);
 		application.setOpStampRequestMode(opStampRequestMode);
 		application.setOpReversionReason(opReversionReason);

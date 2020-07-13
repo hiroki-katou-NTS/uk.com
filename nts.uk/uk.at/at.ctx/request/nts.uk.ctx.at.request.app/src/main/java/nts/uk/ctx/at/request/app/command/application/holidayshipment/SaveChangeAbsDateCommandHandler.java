@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -49,7 +49,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private CancelHolidayShipmentCommandHandler cancelHanler;
 	@Inject
-	private ApplicationApprovalService_New appImp;
+	private ApplicationApprovalService appImp;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject

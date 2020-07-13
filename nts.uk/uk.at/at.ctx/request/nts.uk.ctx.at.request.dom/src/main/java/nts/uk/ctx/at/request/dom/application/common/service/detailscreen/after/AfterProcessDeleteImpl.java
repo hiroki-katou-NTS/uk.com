@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -41,7 +41,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationApprovalService_New applicationApprovalService;
+	private ApplicationApprovalService applicationApprovalService;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;

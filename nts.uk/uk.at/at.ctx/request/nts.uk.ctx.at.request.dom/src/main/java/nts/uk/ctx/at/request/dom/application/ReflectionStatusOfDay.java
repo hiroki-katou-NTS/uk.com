@@ -48,4 +48,8 @@ public class ReflectionStatusOfDay {
 		this.opUpdateStatusAppCancel = opUpdateStatusAppCancel;
 	} 
 	
+	public static ReflectionStatusOfDay createNew(ReflectedState actualReflectStatus, ReflectedState scheReflectStatus, GeneralDate targetDate) {
+		return new ReflectionStatusOfDay(actualReflectStatus, scheReflectStatus, targetDate, Optional.empty(), Optional.empty());
+	}
+	
 }

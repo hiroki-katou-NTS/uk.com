@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class ApplicationApprovalImpl_New implements ApplicationApprovalService_New {
+public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 
 	@Inject
 	private ApplicationRepository_New applicationRepository_Old;

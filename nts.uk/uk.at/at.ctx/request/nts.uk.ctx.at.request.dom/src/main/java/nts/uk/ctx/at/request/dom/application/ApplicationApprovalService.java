@@ -5,7 +5,7 @@ package nts.uk.ctx.at.request.dom.application;
  * @author Doan Duy Hung
  *
  */
-public interface ApplicationApprovalService_New {
+public interface ApplicationApprovalService {
 	
 	public void insert(Application application);
 	
