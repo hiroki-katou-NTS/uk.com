@@ -20,6 +20,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkSt
 
 public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository implements EmpMedicalWorkStyleHistoryRepository  {
 				
+	
+	//private static fianl String GET_EMP_MEDIA_WORK = "SELECT i. "
 	@Override
 	public Optional<EmpMedicalWorkFormHisItem> get(String empID, GeneralDate referenceDate) {
 		// TODO Auto-generated method stub

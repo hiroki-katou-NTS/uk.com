@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
@@ -49,30 +47,46 @@ public class SortEmpService {
 	private static List<String> rearranges(Require require, GeneralDate ymd, List<String> lstEmpId,
 			SortSetting sortSetting) {
 		/*
-		 * $リストのリスト = List: 社員IDリスト
-		 * $並び順 in $並び替え設定.並び替え優先順:
+		 * $リストのリスト = List: 社員IDリスト $並び順 in $並び替え設定.並び替え優先順:
 		 */
-		List<List<String>> listEmpID = new ArrayList<List<String>>();
-		listEmpID.set(0, lstEmpId);
+		List<List<String>> listEmpIDs = new ArrayList<List<String>>();
+		listEmpIDs.add(lstEmpId);
 		int sortOrder = sortSetting.getOrderedList().getSortOrder().value;
-		 switch (sortOrder) {
-		 case 0: {
-			 listEmpID = sortEmpByScheduleTeam(require, lstEmpId, listEmpID);
-		 }
-		 case 1: {
-			 return null;
-		 }
-		 case 2: {
-			 return null;
-		 }
-		 case 3: {
-			 return null;
-		 }
-		 case 4: {
-			 return null;
-		 }
-		 }
-		return null;
+		switch (sortOrder) {
+		case 0: {
+			/*
+			 * case スケジュールチーム: [prv-2] スケジュールチームで社員を並び替える(require, 社員IDリスト,
+			 * $リストのリスト)
+			 */
+			listEmpIDs = sortEmpByScheduleTeam(require, lstEmpId, listEmpIDs);
+		}
+		case 1: {
+			/*
+			 * case ランク: [prv-3] ランクで社員を並び替える(require, 社員IDリスト, $リストのリスト)
+			 */
+			listEmpIDs = sortEmpByRank(require, lstEmpId, listEmpIDs);
+		}
+		case 2: {
+			/*
+			 * case 免許区分: [prv-4] 免許区分で社員を並び替える(require, 基準日, 社員IDリスト, $リストのリスト)
+			 */
+			listEmpIDs = sortEmpByLicenseClassification(require, ymd, lstEmpId, listEmpIDs);
+		}
+		case 3: {
+			/*
+			 * case 職位: [prv-5] 職位で社員を並び替える(require, 基準日, 社員IDリスト, $リストのリスト)
+			 */
+			listEmpIDs = sortEmpByPosition(require, ymd, lstEmpId, listEmpIDs);
+
+		}
+		case 4: {
+			/*
+			 * case 分類: [prv-6] 分類で社員を並び替える(require, 基準日, 社員IDリスト, $リストのリスト)
+			 */
+			listEmpIDs = sortEmpByClassification(require, ymd, lstEmpId, listEmpIDs);
+		}
+		}
+		return listEmpIDs.stream().flatMap(mapper -> mapper.stream()).collect(Collectors.toList());
 
 	}
 
@@ -86,6 +100,7 @@ public class SortEmpService {
 	 */
 	private static List<List<String>> sortEmpByScheduleTeam(Require require, List<String> empIDs,
 			List<List<String>> listEmpID) {
+		//Chờ QA http://192.168.50.4:3000/issues/110617
 		return null;
 	}
 
@@ -98,7 +113,15 @@ public class SortEmpService {
 	 * @return
 	 */
 	private static List<List<String>> sortEmpByRank(Require require, List<String> empIDs,
-			List<List<String>> listEmpID) {
+			List<List<String>> listEmpIDs) {
+		//$ランクの優先順 = require.ランクの優先順を取得する()	
+		List<Rank>  listRank = require.getListRank();
+		/*if $ランクの優先順.empty																				
+		return リストのリスト	*/
+		if(listRank.isEmpty()){
+			return listEmpIDs;
+		}
+		
 		return null;
 	}
 
@@ -112,7 +135,7 @@ public class SortEmpService {
 	 * @return
 	 */
 	private static List<List<String>> sortEmpByLicenseClassification(Require require, GeneralDate ymd,
-			List<String> empIDs, List<List<String>> listEmpID) {
+			List<String> empIDs, List<List<String>> listEmpIDs) {
 		return null;
 	}
 
@@ -126,7 +149,7 @@ public class SortEmpService {
 	 * @return
 	 */
 	private static List<List<String>> sortEmpByPosition(Require require, GeneralDate ymd, List<String> empIDs,
-			List<List<String>> listEmpID) {
+			List<List<String>> listEmpIDs) {
 		return null;
 	}
 
@@ -140,7 +163,7 @@ public class SortEmpService {
 	 * @return
 	 */
 	private static List<List<String>> sortEmpByClassification(Require require, GeneralDate ymd, List<String> empIDs,
-			List<List<String>> listEmpID) {
+			List<List<String>> listEmpIDs) {
 		return null;
 	}
 
@@ -161,7 +184,7 @@ public class SortEmpService {
 		 * @param empIDs
 		 * @return
 		 */
-		Optional<BelongScheduleTeam> get(String companyID, List<String> empIDs);
+		Optional<BelongScheduleTeam> get( List<String> empIDs);
 
 		/**
 		 * [R-3] 社員ランクを取得する //Lấy "Employee Rank" 社員ランクRepository.*get
@@ -178,7 +201,7 @@ public class SortEmpService {
 		 * @param companyId
 		 * @return
 		 */
-		List<Rank> getListRank(String companyId);
+		List<Rank> getListRank();
 
 		/**
 		 * [R-5] 社員の職位を取得する //Lấy "job title" của employee

@@ -26,6 +26,8 @@ public class EmpRankInfor {
 		this.empId = empId;
 		this.rankCode = null;
 		this.rankName = null;
+		
+		
 	}
 
 

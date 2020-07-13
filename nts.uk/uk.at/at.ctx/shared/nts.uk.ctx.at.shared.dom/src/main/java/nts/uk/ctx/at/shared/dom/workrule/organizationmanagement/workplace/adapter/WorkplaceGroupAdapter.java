@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
+ //職場グループAdapter
 
 public interface WorkplaceGroupAdapter {
 	
@@ -35,5 +36,6 @@ public interface WorkplaceGroupAdapter {
 	
 	public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId( List<String> workplacegroupId);
  	
+	public List<EmployeeOrganizationImport> get(GeneralDate referenceDate , List<String> listEmpId);
 
 }
