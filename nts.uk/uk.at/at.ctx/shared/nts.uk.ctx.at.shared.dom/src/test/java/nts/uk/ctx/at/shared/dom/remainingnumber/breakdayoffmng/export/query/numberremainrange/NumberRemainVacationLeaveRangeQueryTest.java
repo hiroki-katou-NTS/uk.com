@@ -672,7 +672,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
 
 				require.findComLeavEmpSet(CID, "02");
-				result = createComLeav(ManageDistinct.YES, "02");
+				result = createComLeav(ManageDistinct.YES, ManageDistinct.YES, "02");
 			}
 
 		};
@@ -855,7 +855,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 		});
 	}
 
-	public static CompensatoryLeaveEmSetting createComLeav(ManageDistinct manageDistinct, String empCode) {
+	public static CompensatoryLeaveEmSetting createComLeav(ManageDistinct manageDistinct, ManageDistinct manageTime, String empCode) {
 		return new CompensatoryLeaveEmSetting(new CompensatoryLeaveEmSettingGetMemento() {
 
 			@Override
@@ -874,7 +874,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 
 					@Override
 					public ManageDistinct getIsManageByTime() {
-						return manageDistinct;
+						return manageTime;
 					}
 
 					@Override
@@ -895,12 +895,12 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 
 					@Override
 					public ExpirationTime getExpirationTime() {
-						return ExpirationTime.FIVE_MONTH;
+						return ExpirationTime.THREE_MONTH;
 					}
 
 					@Override
 					public DeadlCheckMonth getDeadlCheckMonth() {
-						return DeadlCheckMonth.FIVE_MONTH;
+						return DeadlCheckMonth.THREE_MONTH;
 					}
 				});
 			}

@@ -206,7 +206,7 @@ public class TotalRemainUndigestNumberTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findComLeavEmpSet(anyString, anyString);
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, anyString);
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES, anyString);
 			}
 
 		};
@@ -293,7 +293,7 @@ public class TotalRemainUndigestNumberTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findComLeavEmpSet(anyString, anyString);
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.NO, anyString);
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.NO, ManageDistinct.NO, anyString);
 			}
 
 		};
@@ -380,7 +380,7 @@ public class TotalRemainUndigestNumberTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				require.findComLeavEmpSet(anyString, anyString);
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.NO, anyString);
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.NO, ManageDistinct.NO, anyString);
 			}
 
 		};

@@ -396,9 +396,7 @@ public class OffsetChronologicalOrderTest {
 						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
 								GeneralDate.ymd(2019, 04, 10), TargetSelectionAtr.AUTOMATIC),
 						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-								GeneralDate.ymd(2019, 04, 10), TargetSelectionAtr.AUTOMATIC),
-						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-								GeneralDate.ymd(2019, 11, 4), TargetSelectionAtr.AUTOMATIC));
+								GeneralDate.ymd(2019, 04, 10), TargetSelectionAtr.AUTOMATIC));
 	}
 	
 	// 相殺判定の返すパラメータ
