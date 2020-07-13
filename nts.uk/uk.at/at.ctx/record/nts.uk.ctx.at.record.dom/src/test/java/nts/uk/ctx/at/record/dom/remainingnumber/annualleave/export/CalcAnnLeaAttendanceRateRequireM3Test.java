@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -11,25 +9,16 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.test.CalcAnnLeaAttendanceRateRequireM3;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * テストコード　Require
@@ -47,27 +36,27 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements CalcAnnLeaAttendan
 	/** バイナリデータ */
 	HashMap<String, Object> binaryData;
 	
-	protected EmpEmployeeAdapter empEmployeeAdapter;
-	protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
-	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-	protected YearHolidayRepository yearHolidayRepo;
-	private LengthServiceRepository lengthServiceRepository;
-	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
-	private WorkInformationRepository workInformationRepo;
-	protected WorkTypeRepository workTypeRepo;
-	private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
+//	protected EmpEmployeeAdapter empEmployeeAdapter;
+//	protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+//	protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+//	protected YearHolidayRepository yearHolidayRepo;
+//	private LengthServiceRepository lengthServiceRepository;
+//	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+//	private WorkInformationRepository workInformationRepo;
+//	protected WorkTypeRepository workTypeRepo;
+//	private OperationStartSetDailyPerformRepository operationStartSetDailyPerformRepo;
 	
 	/** 社員 */
 	@Override
 	public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
 		//return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
 		List<EmployeeImport> list = (List<EmployeeImport>) binaryData.get(EmployeeImport.class.toString());
-		List<EmployeeImport> listFilter
-			= list.stream().filter(c -> c.getEmployeeId().equals(empId)).collect(Collectors.toList());
-		if ( listFilter == null || listFilter.size() == 0 ){
-			return null;
-		}
-		return listFilter.get(0);
+//		List<EmployeeImport> listFilter
+//			= list.stream().filter(c -> c.getEmployeeId().equals(empId)).collect(Collectors.toList());
+//		if ( listFilter == null || listFilter.size() == 0 ){
+//			return null;
+//		}
+		return list.stream().filter(c -> c.getEmployeeId().equals(empId)).findFirst().orElse(null);
 	}
 
 	/** 年休設定 */
@@ -149,7 +138,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements CalcAnnLeaAttendan
 				.filter(c -> c.getClosurePeriod().start().afterOrEquals(closurePeriod.start())) // ooooo
 				.filter(c -> c.getClosurePeriod().end().beforeOrEquals(closurePeriod.end())) // ooooo
 				.filter(c -> c.getClosureStatus().equals(1))
-//				.sorted()) // ooooo
+				.sorted((a1, a2) -> a1.getClosurePeriod().start().compareTo(a2.getClosurePeriod().start()))
 				.collect(Collectors.toList());
 
 		return listFilter;

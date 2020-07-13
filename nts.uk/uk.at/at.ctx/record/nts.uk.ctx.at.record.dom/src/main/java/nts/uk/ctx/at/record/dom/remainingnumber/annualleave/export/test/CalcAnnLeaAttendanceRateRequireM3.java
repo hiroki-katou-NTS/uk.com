@@ -12,9 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
@@ -25,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.test.LengthServiceTest;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
@@ -32,10 +31,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartS
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
-
 
 /**
  * テスト用バイナリファイル作成クラス
@@ -67,7 +64,7 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 	
 	/** 勤続年数テーブル */
 	@Inject
-	private LengthServiceRepository lengthServiceRepository;
+	private LengthServiceTest lengthServiceRepository;
 	
 	/** 年休月別残数データ */
 	@Inject
@@ -101,10 +98,16 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		// 社員IDリスト
 		ArrayList<String> employeeIds = new ArrayList<String>();
 		
-		// 参照不可。保留
-//		EmpEmployeeAdapter　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
-		val employeeImportList = empEmployeeAdapter.findByEmpId(employeeIds);
 		
+		
+		
+		
+		
+		// 社員
+//		EmpEmployeeAdapter　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
+		List<EmployeeImport> employeeImportList = empEmployeeAdapter.findByEmpId(employeeIds);
+		toBinaryMap.put(EmployeeImport.class.toString(), employeeImportList);
+
 		// 年休設定
 		val annualPaidLeaveSettingList = new ArrayList<AnnualPaidLeaveSetting>();
 		for(String companyId: companyIds){
@@ -141,11 +144,11 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		List<LengthServiceTbl> lengthServiceTblList = new ArrayList<LengthServiceTbl>();
 		for(String companyId: companyIds){
 			List<LengthServiceTbl> lengthServiceTblListTmp
-				= lengthServiceRepository.findByCode(companyId, yearHolidayCodes); // ooooo　要実装追加
+				= lengthServiceRepository.findByCompanyId(companyId); // ooooo　要実装追加
 			
 			lengthServiceTblList.addAll(lengthServiceTblListTmp);
 		}
-		toBinaryMap.put(GrantHdTblSet.class.toString(), grantHdTblSetList);
+		toBinaryMap.put(LengthServiceTbl.class.toString(), lengthServiceTblList);
 		
 		// 年休月別残数データ
 		List<YearMonth> yearMonths = new ArrayList<YearMonth>(); // ooooo 要実装追加
