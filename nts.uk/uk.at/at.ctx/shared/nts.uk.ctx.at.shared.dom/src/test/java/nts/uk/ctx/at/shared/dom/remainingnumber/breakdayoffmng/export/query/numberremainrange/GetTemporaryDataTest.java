@@ -135,7 +135,7 @@ public class GetTemporaryDataTest {
 								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
 
 				require.findComLeavEmpSet(CID, anyString);
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, "02");
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES, "02");
 
 			}
 
@@ -168,11 +168,11 @@ public class GetTemporaryDataTest {
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 05)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
-								GeneralDate.ymd(2020, 11, 06)),
+								GeneralDate.ymd(2020, 9, 06)),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
-								GeneralDate.ymd(2019, 11, 06)));
+								GeneralDate.ymd(2019, 9, 06)));
 
 	}
 

@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @RunWith(JMockit.class)
 public class NumberRemainVacationLeaveRangeQueryCaseTest {
@@ -76,11 +77,11 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
-				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0.0),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				Collections.emptyList(), Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
@@ -115,7 +116,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(-4.0),
 				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
@@ -154,10 +155,10 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						CreateAtr.RECORD, RemainType.BREAK, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), Collections.emptyList(),
 				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
@@ -199,7 +200,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(4.0),
 				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
@@ -259,10 +260,10 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), Collections.emptyList(),
 				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
@@ -304,7 +305,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0.0),
 				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
@@ -312,15 +313,15 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 	}
 
 	// 4 暫定代休、休出を取得 但し代休が半日
-	// 休出日 11/2/2019 11/3/2019 (日数 = 0.5)
-	// 代休 2019,11, 4 2019, 11, 5 (日数 = 1)
+	// 休出日 11/2/2019 11/3/2019 (日数 = 1)
+	// 代休 2019,11, 4 2019, 11, 5 (日数 = 0.5)
 	@Test
 	public void testCase4() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(0.5),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)),
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(0.5),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)));
 
 		List<InterimBreakMng> breakMng = Arrays.asList(
@@ -344,10 +345,10 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), Collections.emptyList(),
 				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
@@ -387,9 +388,9 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 //						lstSeqVacation);
 		SubstituteHolidayAggrResult resultExpected = new SubstituteHolidayAggrResult(
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1.0),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(2.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
@@ -403,19 +404,19 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 	public void testCase5() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(1.0),
 						new UnOffsetTime(0), new UnOffsetDay(1.0)),
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(1.0),
 						new UnOffsetTime(0), new UnOffsetDay(1.0)));
 
 		List<InterimBreakMng> breakMng = Arrays.asList(
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(480),
-						GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.5)),
+				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new AttendanceTime(0),
+						GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(0.5),
+						new AttendanceTime(0), new UnUsedTime(0), new UnUsedDay(0.5)),
 
-				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(480),
-						GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(1.0),
-						new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(0.5)));
+				new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", new AttendanceTime(0),
+						GeneralDate.max().addDays(-1), new OccurrenceTime(0), new OccurrenceDay(0.5),
+						new AttendanceTime(0), new UnUsedTime(0), new UnUsedDay(0.5)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 2),
@@ -429,10 +430,10 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0d), new RemainingMinutes(0), Collections.emptyList(),
 				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
@@ -472,9 +473,9 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 //							lstSeqVacation);
 		SubstituteHolidayAggrResult resultExpected = new SubstituteHolidayAggrResult(
 				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(-1.0),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(2.0), new RemainingMinutes(0),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(2.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
@@ -482,28 +483,28 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 	}
 
 	// 6 暫定半日代休取得、確定休出1日残っているが2019/11/14に期限切れになる
-	// 代休取得日 2019/11/4 2019/11/5 (日数 0.5)
-	// 確定休出 2019/8/14, 期限日2019/11/14(日数 0.5)
+	// 代休取得日 2019/11/14 2019/11/15 (日数 = 0.5)
+	// 確定休出 2019/8/14, 期限日2019/11/14(日数 = 1)
 	@Test
 	public void testCase6() {
 
 		List<InterimDayOffMng> dayOffMng = Arrays.asList(
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredTime(0), new RequiredDay(1.0),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)),
-				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(0.0),
+				new InterimDayOffMng("hdda6a46-2cbe-48c8-85f8-c04ca554e333", new RequiredTime(0), new RequiredDay(1.0),
 						new UnOffsetTime(0), new UnOffsetDay(0.5)));
 
 		List<InterimBreakMng> breakMng = Arrays.asList(new InterimBreakMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
-				new AttendanceTime(480), GeneralDate.ymd(2019, 11, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
+				new AttendanceTime(480), GeneralDate.ymd(2019, 8, 14), new OccurrenceTime(0), new OccurrenceDay(1.0),
 				new AttendanceTime(240), new UnUsedTime(0), new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 8, 14),
 						CreateAtr.SCHEDULE, RemainType.BREAK, RemainAtr.SINGLE),
 
-				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
+				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 14),
 						CreateAtr.SCHEDULE, RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
-				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 5),
+				new InterimRemain("hdda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 15),
 						CreateAtr.RECORD, RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
 
 		Optional<SubstituteHolidayAggrResult> holidayAggrResult = Optional.of(new SubstituteHolidayAggrResult(
@@ -511,7 +512,7 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0d),
 				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(1d), new RemainingMinutes(0), Collections.emptyList(),
-				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList()));
+				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList()));
 
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
@@ -522,21 +523,21 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 			{
 
 				require.findByEmployeeIdOrderByStartDate(anyString);
-				result = Arrays.asList(
-						new EmploymentHistShareImport(SID, "02",
-								new DatePeriod(GeneralDate.ymd(2019, 05, 02), GeneralDate.ymd(2019, 11, 02))),
-						new EmploymentHistShareImport(SID, "00",
-								new DatePeriod(GeneralDate.ymd(2019, 11, 03), GeneralDate.ymd(9999, 12, 31))));
+				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
+						new DatePeriod(GeneralDate.ymd(2010, 11, 03), GeneralDate.ymd(9999, 12, 31))));
 
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
+				require.findComLeavEmpSet(CID, "00");
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.NO, "00");
+				
+//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+//
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
 
 			}
 
@@ -545,12 +546,15 @@ public class NumberRemainVacationLeaveRangeQueryCaseTest {
 		SubstituteHolidayAggrResult resultActual = NumberRemainVacationLeaveRangeQuery
 				.getBreakDayOffMngInPeriod(require, inputParam);
 
+//		new SubstituteHolidayAggrResult(vacationDetails, remainDay, remainTime, dayUse, timeUse, occurrenceDay,
+//		occurrenceTime, carryoverDay, carryoverTime, unusedDay, unusedTime, dayOffErrors, nextDay,
+//		lstSeqVacation);
 		SubstituteHolidayAggrResult resultExpected = new SubstituteHolidayAggrResult(
-				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(0.0),
-				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
+				new VacationDetails(new ArrayList<>()), new ReserveLeaveRemainingDayNumber(-0.5),
+				new RemainingMinutes(0), new ReserveLeaveRemainingDayNumber(2.0), new RemainingMinutes(0),
 				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),
-				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0), Arrays.asList(),
+				new ReserveLeaveRemainingDayNumber(0.0), new RemainingMinutes(0),
+				new ReserveLeaveRemainingDayNumber(0.5), new RemainingMinutes(240), Arrays.asList(DayOffError.DAYERROR),
 				Finally.of(GeneralDate.ymd(2020, 11, 01)), new ArrayList<>());
 		NumberRemainVacationLeaveRangeQueryTest.assertData(resultActual, resultExpected);
 
