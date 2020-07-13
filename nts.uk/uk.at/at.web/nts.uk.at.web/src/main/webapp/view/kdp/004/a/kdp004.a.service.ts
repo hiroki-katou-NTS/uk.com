@@ -11,7 +11,8 @@ module nts.uk.at.view.kdp004.a {
 			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
 			fingerAuth: '',
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
-			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
+			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
+			getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -33,8 +34,8 @@ module nts.uk.at.view.kdp004.a {
 		export function fingerAuth(result) {
 			let dfd = $.Deferred<any>();
 			//dfd.resolve({ result: Math.floor(Math.random() * 2) === 1 ? true : false });
-			
-			dfd.resolve({ result: result});
+
+			dfd.resolve({ result: result });
 			//return ajax("at", url.fingerAuth);
 			return dfd.promise();
 		}
@@ -45,6 +46,10 @@ module nts.uk.at.view.kdp004.a {
 
 		export function getStampToSuppress(): JQueryPromise<any> {
 			return ajax("at", url.getStampToSuppress);
+		}
+		
+		export function getLogginSetting(): JQueryPromise<any> {
+			return ajax("at", url.getLogginSetting);
 		}
 	}
 
