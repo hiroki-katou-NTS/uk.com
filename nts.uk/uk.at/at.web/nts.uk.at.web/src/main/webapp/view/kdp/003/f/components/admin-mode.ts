@@ -111,8 +111,6 @@ module nts.uk.kdp003.f {
 							} else {
 								model.companyId('');
 								model.companyName('');
-
-								vm.$dialog.error({ messageId: 'Mgs_301' });
 							}
 						}
 

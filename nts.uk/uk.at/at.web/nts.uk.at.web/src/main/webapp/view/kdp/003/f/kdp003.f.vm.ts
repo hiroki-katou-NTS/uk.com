@@ -133,12 +133,17 @@ module nts.uk.kdp003.f {
 
 		loginAdmin(api: string) {
 			const vm = this;
+			const { mode } = vm.params as Kdp003FAdminModeParam;
 			const { passwordRequired } = vm.params as Kdp003FEmployeeModeParam;
 			const model: Kdp003FModelData = ko.toJS(vm.model);
 			const { password } = model;
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
+			}
+
+			if (mode === 'admin' && !model.companyId && !model.companyName) {
+				return vm.$dialog.error({ messageId: 'Msg_301' });
 			}
 
 			vm.$validate()
