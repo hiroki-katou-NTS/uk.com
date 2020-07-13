@@ -27,6 +27,7 @@ public class DailyResultAccordScheduleStatus {
 	 */
 	public static Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> get(Require require, String employeeID , DatePeriod datePeriod ){
 		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map = new HashMap<>();
+	
 		return map;
 	}
 

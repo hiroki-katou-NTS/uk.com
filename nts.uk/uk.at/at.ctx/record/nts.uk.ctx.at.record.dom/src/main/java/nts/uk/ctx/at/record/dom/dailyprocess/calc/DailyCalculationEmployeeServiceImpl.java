@@ -378,7 +378,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(checkNextEmp) {
 				continue;
 			}
-			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(), listEmploymentHis);
+			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getYmd(), listEmploymentHis);
 			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
 			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
 				checkNextEmp = true;
@@ -394,7 +394,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
 				//実績ロックされているか判定する
 				lockStatus = lockStatusService.getDetermineActualLocked(cid, 
-						stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(), closureEmploymentOptional.get().getClosureId(), PerformanceType.DAILY);
+						stateInfo.getIntegrationOfDaily().getYmd(), closureEmploymentOptional.get().getClosureId(), PerformanceType.DAILY);
 			}
 			if(lockStatus == LockStatus.LOCK) {
 				continue;
@@ -415,7 +415,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					// create error message
 					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 							new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class),
-							stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(),
+							stateInfo.getIntegrationOfDaily().getYmd(),
 							new ErrMessageContent(TextResource.localize("Msg_1541")));
 					// regist error message
 					this.errMessageInfoRepository.add(employmentErrMes);
@@ -509,7 +509,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(checkNextEmp) {
 				continue;
 			}
-			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(), listEmploymentHis);
+			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getYmd(), listEmploymentHis);
 			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
 			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
 				checkNextEmp = true;
@@ -517,11 +517,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			}
 						LockStatus lockStatus = LockStatus.UNLOCK;
 						if(isCalWhenLock ==null || isCalWhenLock == false) {
-							Closure closureData = closureService.getClosureDataByEmployee(employeeId, stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd());
+							Closure closureData = closureService.getClosureDataByEmployee(employeeId, stateInfo.getIntegrationOfDaily().getYmd());
 							//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
 							//実績ロックされているか判定する
 							lockStatus = lockStatusService.getDetermineActualLocked(cid, 
-									stateInfo.getIntegrationOfDaily().getAffiliationInfor().getYmd(),  closureData.getClosureId().value, PerformanceType.DAILY);
+									stateInfo.getIntegrationOfDaily().getYmd(),  closureData.getClosureId().value, PerformanceType.DAILY);
 						}
 						if(lockStatus == LockStatus.LOCK) {
 							continue;

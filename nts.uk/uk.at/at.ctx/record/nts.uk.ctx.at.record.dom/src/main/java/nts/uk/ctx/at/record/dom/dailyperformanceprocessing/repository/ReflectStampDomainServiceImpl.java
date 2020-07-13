@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOn
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
@@ -62,6 +63,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
@@ -959,5 +961,16 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		newReflectStampOutput.setReflectStampOutput(reflectStamp);
 
 		return newReflectStampOutput;
+	}
+
+
+	@Override
+	public List<ErrorMessageInfo> acquireReflectEmbossingNew(String companyID, String employeeID,
+			GeneralDate processingDate, ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+			String empCalAndSumExecLogID, Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance,
+			Optional<CalAttrOfDailyPerformance> calcOfDaily, Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
+			Optional<WorkTypeOfDailyPerformance> workTypeOfDaily) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

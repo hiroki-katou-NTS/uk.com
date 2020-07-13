@@ -32,17 +32,13 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	// 計算状態
 	private CalculationState calculationState;
-	@Setter
 	// 直行区分
 	private NotUseAttribute goStraightAtr;
-	@Setter
 	// 直帰区分
 	private NotUseAttribute backStraightAtr;
-	@Setter
 	// 曜日
 	private DayOfWeek dayOfWeek;
 	// 勤務予定時間帯
-	@Setter
 	private List<ScheduleTimeSheet> scheduleTimeSheets;
 	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
@@ -73,6 +69,22 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
 		return this.scheduleTimeSheets.stream()
 				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();	
+	}
+
+	public void setGoStraightAtr(NotUseAttribute goStraightAtr) {
+		this.goStraightAtr = goStraightAtr;
+	}
+
+	public void setBackStraightAtr(NotUseAttribute backStraightAtr) {
+		this.backStraightAtr = backStraightAtr;
+	}
+
+	public void setScheduleTimeSheets(List<ScheduleTimeSheet> scheduleTimeSheets) {
+		this.scheduleTimeSheets = scheduleTimeSheets;
+	}
+
+	public void setDayOfWeek(DayOfWeek dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
 	}
 	
 }

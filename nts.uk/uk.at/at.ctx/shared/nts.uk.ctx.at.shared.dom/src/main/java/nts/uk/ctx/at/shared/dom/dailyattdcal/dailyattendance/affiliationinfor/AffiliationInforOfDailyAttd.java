@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  *
  */
 @Getter
+@Setter
 public class AffiliationInforOfDailyAttd implements DomainObject  {
 	//雇用コード
 		private EmploymentCode employmentCode;

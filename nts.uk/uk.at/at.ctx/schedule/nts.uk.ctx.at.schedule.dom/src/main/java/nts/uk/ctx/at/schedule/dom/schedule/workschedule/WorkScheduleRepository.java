@@ -34,7 +34,5 @@ public interface WorkScheduleRepository {
 	
 	void update(WorkSchedule workSchedule);
 	
-
-
 }
 
