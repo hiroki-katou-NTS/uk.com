@@ -3,8 +3,11 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,19 +16,28 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.divergencetime.service.DivTimeSysFixedCheckService;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 日別計算用のエラーチェック
@@ -48,6 +60,18 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	@Inject
 	/*日別作成側に実装されていたエラーアラーム処理*/
 	private DailyRecordCreateErrorAlermService dailyRecordCreateErrorAlermService;
+	
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySettingForCalc;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	
+	@Inject
+	private CalculationErrorCheckService calculationErrorCheckService;
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
@@ -248,5 +272,118 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			default:
 				return Collections.emptyList();
 		}
+	}
+
+
+	@Override
+	public IntegrationOfDaily errorCheck(String companyId, String employeeID, GeneralDate ymd,
+			IntegrationOfDaily integrationOfDaily, boolean sysfixecategory) {
+		// 会社共通の設定を
+		val companyCommonSetting = commonCompanySettingForCalc.getCompanySetting();
+
+		// 社員毎の期間取得
+		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(Arrays.asList(integrationOfDaily));
+
+		// 労働制マスタ取得
+		val masterData = workingConditionItemRepository
+				.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId, ymd, ymd);
+
+		// nowIntegrationの労働制取得
+		Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData
+				.getItemAtDateAndEmpId(integrationOfDaily.getYmd(), integrationOfDaily.getEmployeeId());
+		if (nowWorkingItem.isPresent()) {
+			DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId,
+					integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString(),
+					integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+					nowWorkingItem.get().getValue().getLaborSystem());
+			if (dailyUnit == null || dailyUnit.getDailyTime() == null)
+				dailyUnit = new DailyUnit(new TimeOfDay(0));
+			else {
+				integrationOfDaily = errorCheckNew(integrationOfDaily,
+						new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
+						companyCommonSetting, sysfixecategory);
+			}
+		}
+		return integrationOfDaily;
+	}
+
+	public IntegrationOfDaily errorCheckNew(IntegrationOfDaily integrationOfDaily,
+			ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master, boolean sysfixecategory) {
+		String companyID = AppContexts.user().companyId();
+		List<EmployeeDailyPerError> addItemList = integrationOfDaily.getEmployeeError() == null
+				? integrationOfDaily.getEmployeeError()
+				: new ArrayList<>();
+		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
+		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.converterFactory.createDailyConverter()
+				.setData(integrationOfDaily);
+		// 勤務実績のエラーアラーム数分ループ
+		for (ErrorAlarmWorkRecord errorItem : master.getErrorAlarm()) {
+			// 使用しない
+			if (!errorItem.getUseAtr())
+				continue;
+			// 乖離系のシステムエラーかどうかチェック
+			if (includeDivergence(errorItem)) {
+				divergenceError.add(errorItem);
+				continue;
+			}
+			// システム固定
+			List<EmployeeDailyPerError> addItems = new ArrayList<>();
+			if (sysfixecategory) {
+				addItems = systemErrorCheck(integrationOfDaily, errorItem, attendanceItemConverter, master);
+			}
+
+			// ユーザ設定
+			else {
+				addItems = erAlCheckService.checkErrorFor(companyID, integrationOfDaily.getEmployeeId(),
+						integrationOfDaily.getYmd(), errorItem, integrationOfDaily);
+			}
+			addItemList.addAll(addItems);
+		}
+
+		// 乖離系のエラーはここでまとめてチェック(レスポンス対応のため)
+		addItemList.addAll(divergenceErrorCheck(integrationOfDaily, master, divergenceError));
+		addItemList = addItemList.stream().filter(tc -> tc != null).collect(Collectors.toList());
+		integrationOfDaily.setEmployeeError(addItemList);
+		return integrationOfDaily;
+	}
+
+	/**
+	 * 日別実績(WORK)Listから社員毎の計算したい期間を取得する
+	 * 
+	 * @param integrationOfDaily
+	 * @return <社員、計算したい期間
+	 */
+	private Map<String, DatePeriod> getIntegrationOfDailyByEmpId(List<IntegrationOfDaily> integrationOfDaily) {
+		Map<String, DatePeriod> returnMap = new HashMap<>();
+		// しゃいんID 一覧取得
+		List<String> idList = getAllEmpId(integrationOfDaily);
+		idList.forEach(id -> {
+			// 特定の社員IDに一致しているintegrationに絞る
+			val integrationOfDailys = integrationOfDaily.stream().filter(tc -> tc.getEmployeeId().equals(id))
+					.collect(Collectors.toList());
+			// 特定社員の開始～終了を取得する
+			val createdDatePriod = getDateSpan(integrationOfDailys);
+			// Map<特定の社員ID、開始～終了>に追加する
+			returnMap.put(id, createdDatePriod);
+		});
+		return returnMap;
+	}
+
+	/*
+	 * 社員の一覧取得
+	 */
+	private List<String> getAllEmpId(List<IntegrationOfDaily> integrationOfDailys) {
+		return integrationOfDailys.stream().distinct().map(integrationOfDaily -> integrationOfDaily.getEmployeeId())
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 開始～終了の作成
+	 * @param integrationOfDaily 日別実績(WORK)LIST
+	 * @return 開始～終了
+	 */
+	private DatePeriod getDateSpan(List<IntegrationOfDaily> integrationOfDailys) {
+		val sortedIntegration = integrationOfDailys.stream().sorted((first,second) -> first.getYmd().compareTo(second.getYmd())).collect(Collectors.toList());
+		return new DatePeriod(sortedIntegration.get(0).getYmd(), sortedIntegration.get(sortedIntegration.size() - 1).getYmd());
 	}
 }

@@ -94,7 +94,7 @@ import nts.uk.shr.com.system.config.InstallationType;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * The Class LoginBaseCommandHandler.
+ * The Class TimeStampLoginCommonHandler.
  *
  * @param <T>
  *            the generic type

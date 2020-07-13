@@ -32,4 +32,6 @@ public interface UserPublisher {
 	Optional<UserInforEx> getByEmpID(String empID);
 	
 	Optional<UserExport> getByUserIDandDate(String userId , GeneralDate systemDate);
+	
+	Optional<String> getUserIDByEmpID(String employeeID);
 }

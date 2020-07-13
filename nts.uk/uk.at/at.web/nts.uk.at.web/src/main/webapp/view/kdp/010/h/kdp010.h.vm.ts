@@ -22,10 +22,10 @@ module nts.uk.at.view.kdp010.h {
 			simpleValue: KnockoutObservable<string> = ko.observable("");
 
 			// H5_2
-			letterColors: KnockoutObservable<string> = ko.observable('#0033cc');
+			letterColors: KnockoutObservable<string> = ko.observable('#000000');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#ccccff');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
@@ -37,7 +37,6 @@ module nts.uk.at.view.kdp010.h {
 			dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
 			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
 
-
 			lstChangeClock: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeClockArt);
 			lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
 			lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
@@ -46,6 +45,8 @@ module nts.uk.at.view.kdp010.h {
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
 			isChange: KnockoutObservable<number> = ko.observable(0);
 			checkGoOut :  KnockoutObservable<number> = ko.observable(0);
+            
+            showSelectedAudio = ko.observable(false);
 			constructor() {
 				let self = this;
 				self.selectedDay.subscribe((newValue) => {
@@ -93,6 +94,7 @@ module nts.uk.at.view.kdp010.h {
 
 				let self = this;
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
+                self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
 					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
@@ -101,7 +103,7 @@ module nts.uk.at.view.kdp010.h {
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
 						self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
 						self.backgroundColors(data.buttonDisSet.backGroundColor);
-						self.selectedStamping(data.buttonType.stampType.goOutArt == null ? 0 : data.buttonType.stampType.goOutArt);
+						self.selectedStamping((data.buttonType.stampType == undefined || data.buttonType.stampType.goOutArt == null) ? 0 : data.buttonType.stampType.goOutArt);
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
@@ -174,10 +176,10 @@ module nts.uk.at.view.kdp010.h {
 			}
 			public getTypeButton(data): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType.changeHalfDay,
+					changeClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeClockArt,
+					changeCalArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeCalArt,
+					setPreClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.setPreClockArt,
+					changeHalfDay = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeHalfDay,
 					reservationArt = data.buttonType.reservationArt;
 				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
 				self.selectedDay(typeNumber);

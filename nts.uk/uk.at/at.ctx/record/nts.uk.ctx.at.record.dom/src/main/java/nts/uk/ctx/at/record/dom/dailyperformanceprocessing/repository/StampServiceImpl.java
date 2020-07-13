@@ -10,14 +10,18 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -35,6 +39,9 @@ public class StampServiceImpl implements StampDomainService {
 	
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
+	
+	@Inject
+	private StampCardRepository stampCardRepository;
 
 	//打刻を取得する
     public List<Stamp> handleData(StampReflectRangeOutput s,
@@ -61,17 +68,6 @@ public class StampServiceImpl implements StampDomainService {
 			}
 		}
 
-		// if (stampNumber == null || stampNumber.isEmpty()) {
-		// ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId,
-		// empCalAndSumExecLogID,
-		// new ErrMessageResource("008"), EnumAdaptor.valueOf(0,
-		// ExecutionContent.class), date,
-		// new ErrMessageContent(TextResource.localize("Msg_433")));
-		// errRepo.add(employmentErrMes);
-		// return null;
-		// }
-
-//		List<StampItem> lstStampItemOutput = new ArrayList<StampItem>();
 		List<Stamp> lstStampOutput = new ArrayList<>();
 
 		if (stampNumber != null && !stampNumber.isEmpty()) {
@@ -122,5 +118,32 @@ public class StampServiceImpl implements StampDomainService {
 				}).collect(Collectors.toList());
 		
 		return lstStampResult;
+	}
+
+	@Override
+	public List<Stamp> handleDataNew(StampReflectRangeOutput s, String empCalAndSumExecLogID, GeneralDate date,
+			String employeeId, String companyId, EmbossingExecutionFlag flag) {
+		List<Stamp> listStamp = new ArrayList<>();
+		// ドメインモデル「打刻カード」を取得する
+		List<StampCard> lstStampCard = stampCardRepository.getListStampCard(employeeId);
+		if(lstStampCard.isEmpty()) {
+			return new ArrayList<>();
+		}
+		int timeStart = s.getStampRange().getStart().v();
+		int timeEnd = s.getStampRange().getEnd().v();
+		GeneralDateTime start = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
+				.addMinutes(timeStart);
+
+		GeneralDateTime end = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 23, 59, 59)
+				.addMinutes(timeEnd);
+		// ドメインモデル「打刻」を取得する (Lấy dữ liệu)
+		if (flag == EmbossingExecutionFlag.ALL) {
+			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end);
+		} else {
+			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end).stream()
+					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
+		}
+		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());
+		return listStamp;
 	}
 }

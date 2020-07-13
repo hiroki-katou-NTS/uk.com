@@ -27,4 +27,8 @@ public class EditStateOfDailyAttd implements DomainObject {
 		this.editStateSetting = editStateSetting;
 	}
 	
+	public boolean isHandCorrect() {
+		return this.editStateSetting == EditStateSetting.HAND_CORRECTION_MYSELF
+				|| this.editStateSetting == EditStateSetting.HAND_CORRECTION_OTHER;
+	}
 }

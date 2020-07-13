@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
  *
  */
 
+@Getter
 @AllArgsConstructor
 public class SettingsUsingEmbossing implements DomainAggregate {
 
@@ -49,29 +51,23 @@ public class SettingsUsingEmbossing implements DomainAggregate {
 	 */
 	private boolean smart_phone;
 	
+	//"[1] 打刻利用できるか	"
 	public boolean canUsedStamping (StampMeans stampMeans) {
-		
-		if (stampMeans.NAME_SELECTION != null) {
-			return this.name_selection;
-		}
-		
-		if (stampMeans.FINGER_AUTHC != null) {
+		switch (stampMeans) {
+		case FINGER_AUTHC:
 			return this.finger_authc;
-		}
-		
-		if (stampMeans.IC_CARD != null ) {
+		case IC_CARD:
 			return this.ic_card;
-		}
-		
-		if (stampMeans.INDIVITION != null) {
+		case INDIVITION:
 			return this.indivition;
-		}
-		
-		if (stampMeans.PORTAL != null) {
+		case NAME_SELECTION:
+			return this.name_selection;
+		case PORTAL:
 			return this.portal;
+		case SMART_PHONE:
+			return this.smart_phone;
+		default:
+			return true;
 		}
-		return this.smart_phone;
 	}
-	
 }
- 

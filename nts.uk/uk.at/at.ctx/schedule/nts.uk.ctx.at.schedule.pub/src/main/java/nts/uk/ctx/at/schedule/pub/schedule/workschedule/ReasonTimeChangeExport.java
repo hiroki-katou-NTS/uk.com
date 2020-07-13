@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.pub.schedule.workschedule;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,17 +15,17 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 @NoArgsConstructor
 public class ReasonTimeChangeExport implements DomainObject {
 	
-	//時刻変更手段
+	//時刻変更手段 enum TimeChangeMeans
 	@Setter
-	private TimeChangeMeans timeChangeMeans;
+	private int timeChangeMeans;
 	
-	//打刻方法
-	private Optional<EngravingMethod> engravingMethod;
+	//打刻方法 enum EngravingMethod
+	private Integer engravingMethod;
 
-	public ReasonTimeChangeExport(TimeChangeMeans timeChangeMeans, EngravingMethod engravingMethod) {
+	public ReasonTimeChangeExport(int timeChangeMeans, Integer engravingMethod) {
 		super();
 		this.timeChangeMeans = timeChangeMeans;
-		this.engravingMethod = Optional.ofNullable(engravingMethod);
+		this.engravingMethod = engravingMethod;
 	}
 	
 	
