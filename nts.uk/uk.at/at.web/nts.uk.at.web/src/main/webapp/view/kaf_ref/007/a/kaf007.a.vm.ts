@@ -20,12 +20,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
         mounted() {
             const vm = this;
             vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
-            vm.$ajax(API.startNew, {
-                empLst: [],
-                dateLst: []    
-            }).done((successData: any) => {
-                vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
-            });
+//            vm.$ajax(API.startNew, {
+//                empLst: [],
+//                dateLst: []    
+//            }).done((successData: any) => {
+//                vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
+//            });
         }
         
         register() {
