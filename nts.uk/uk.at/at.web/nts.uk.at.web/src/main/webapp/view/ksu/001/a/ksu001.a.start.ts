@@ -7,13 +7,31 @@ module nts.uk.at.view.ksu001.a {
             viewQ: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
-        let settingHeightBodyGrid = nts.uk.localStorage.getItem('HEIGHT_BODY_GIRD');
+        let key = "USER_INFOR";
+        let item = uk.localStorage.getItem(key);
+        if (!item.isPresent()){
+            let userInfor: any = {};
+            userInfor.startDate = '';
+            userInfor.endDate = '';
+            userInfor.standardOrganization = 'standardOrganization';
+            userInfor.listShiftMaster = [{a : '5', b : '6'},{a : '5', b : '6'}];
+            userInfor.disPlayFormat = '';  
+            userInfor.backgroundColor = ''; // 背景色
+            userInfor.gridHeightSelection = '';
+            userInfor.heightGridSetting = '';
+            userInfor.shiftPalletUnit  = 1;
+            userInfor.shiftPalletPositionNumber = 0;
+            
+            uk.localStorage.setItemAsJson(key, userInfor);
+        } 
+        
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001(settingHeightBodyGrid).done(() => {
+        __viewContext.viewModel.viewA.startKSU001().done(() => {
             __viewContext.bind(__viewContext.viewModel);
+            __viewContext.viewModel.viewA.getSettingDisplayWhenStart();
             
             $(window).resize(function() {
-                __viewContext.viewModel.viewA.setPositionButonDown();
+                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
             });
 
             nts.uk.ui.block.clear();

@@ -59,6 +59,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
             { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
         ]);
+        
+        KEY : string = 'USER_INFOR';
 
         constructor() {
             let self = this;
@@ -72,6 +74,12 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             self.selectedpalletUnit = ko.observable(1);
             self.selectedpalletUnit.subscribe((newValue) => {
                 if (newValue) {
+                    uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                        let userInfor = JSON.parse(data);
+                        userInfor.shiftPalletUnit = newValue;
+                        uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                    });
+
                     self.initScreenQ();
                 }
             });
@@ -82,14 +90,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
                 self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row * 10;
-                if(value.row == -1 && value.column == -1){
-                    // truong hop unselect
-                    
-                    
-                }else{
-                    // truong hop select
                 
-                }
             });
 
             self.selectedButtonTableWorkplace.subscribe(function() {
@@ -110,6 +111,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             });
             
         }
+
+    
 
         /**
          * get content of link button
@@ -162,8 +165,6 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                     let text = pattItem.patternName;
                     let arrPairShortName = [], arrPairObject = [];
                     _.forEach(pattItem.workPairSet, (wPSet) => {
-                        //                        self.selectedTab() === 'company' ? arrPairShortName.push('[' + wPSet.shiftCode + ']')
-                        //                            : arrPairSt.workTypeCode + ']');
 
                         let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
@@ -276,6 +277,12 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
                 index: number = param();
             
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor = JSON.parse(data);
+                userInfor.shiftPalletPositionNumber = index;
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+
             if (self.selectedpalletUnit() === 1) {
                 self.indexLinkButtonCom = index;
                 // link button has color gray when clicked
@@ -379,7 +386,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                     });
                 } else {
                     self.modeCompany(false);
-                    __viewContext.viewModel.viewA.getDataWkpPattern().done(() => {
+                    __viewContext.viewModel.viewA.getDataWkpPattern(selectedLinkButton).done(() => {
                         console.log("get data workplace done");
                     });
                 }

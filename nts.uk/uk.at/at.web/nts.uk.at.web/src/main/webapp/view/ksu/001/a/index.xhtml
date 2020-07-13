@@ -111,7 +111,8 @@
 						</div>
 					</div>
 				</div>
-
+				
+				<!-- popup khi click btn A4 -->
 				<div id="popup-area6" class="popup-area popup-panel A4_1">
 					<div style="margin-left: 0px">
 						<div style="">
@@ -121,10 +122,12 @@
 							</div>
 							<div class="cf area6-right"
 								data-bind="ntsSwitchButton: {
- 									options: formatSelection , 
+ 									options: [{id: 'Ac', name: '#{i18n.getText('KSU001_43')}'}, 
+		 									 {id: 'Ab', name: '#{i18n.getText('KSU001_44')}'}, 
+		 									 {id: 'Aa', name: '#{i18n.getText('KSU001_45')}'}] , 
 									optionsValue: 'id', 
  									optionsText: 'name', 
- 									value: selectedFormat , 
+ 									value: selectedModeDisplayInBody , 
  									enable: true }"></div> 
 						</div>
 						<div style="">
@@ -134,10 +137,10 @@
 							</div>
 							<div class="cf area6-right"
 								data-bind="ntsSwitchButton: {
-									options: displaySelection , 
+									options: [{id: 1, name: '#{i18n.getText('KSU001_135')}'}, {id: 2, name: '#{i18n.getText('KSU001_136')}'}] , 
  									optionsValue: 'id', 
  									optionsText: 'name', 
- 									value: selectedDisplay , 
+ 									value: achievementDisplaySelected , 
  									enable: true }"></div> 
 						</div>
 					</div>
@@ -151,8 +154,8 @@
 							</div>
 							<div id="combo-box10" class="area6-right" 
 								data-bind="ntsComboBox: {
-									options: backgroundColorSelList,
-									optionsValue: 'code',
+									options: [{id: 0, name: '#{i18n.getText('KSU001_143')}'}, {id: 1, name: '#{i18n.getText('KSU001_144')}'}]  ,
+									optionsValue: 'id',
 									value: backgroundColorSelected ,
 									optionsText: 'name',
 									enable: true,
@@ -163,7 +166,8 @@
 						
 					</div>
 				</div>
-
+				
+				<!-- POPUP KHI CLICK BTN A16  -->
 				<div id="popup-setting-grid" class="popup-area popup-panel A16">
 					<table style="border: 0px solid #ccc;">
 						<tr>
@@ -181,7 +185,7 @@
 							</td>
 							<td>		
 								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 10px;"
-									data-bind="ntsNumberEditor: {value: heightGridSetting, 
+									data-bind="ntsNumberEditor: {value: heightGridSetting , 
 											constraint: 'ItemGridHeight', 
 											enable: isEnableInputHeight, 
 											required: isEnableInputHeight, 
@@ -194,7 +198,8 @@
 						<button style="width: 90px" class="proceed" data-bind = "click : saveHeightGridToLocal">#{i18n.getText('KSU001_93')}</button>
 					</div>
 				</div>
-
+				
+				<!-- POPUP KHI CLICK BTN A5-->
 				<div id="popup-area9" class="popup-area popup-panel">
 					<span>#{i18n.getText('KSU001_306')}</span>
 					<hr />
@@ -302,8 +307,8 @@
 
 									<div tabindex="-1" class="cf" style="margin-left: 5px"
 										data-bind="ntsSwitchButton: {
-										options: modeDisplay ,
-										optionsValue: 'code',
+										options: [{id: 1, name: '#{i18n.getText('KSU001_39')}'}, {id: 2, name: '#{i18n.getText('KSU001_40')}'}, {id: 3, name: '#{i18n.getText('KSU001_41')}'}] ,
+										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedModeDisplay}">
 									</div>
