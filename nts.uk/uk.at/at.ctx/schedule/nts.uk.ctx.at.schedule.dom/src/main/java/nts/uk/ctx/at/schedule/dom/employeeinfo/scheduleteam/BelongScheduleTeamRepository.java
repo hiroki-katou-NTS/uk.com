@@ -56,7 +56,7 @@ public interface BelongScheduleTeamRepository {
 	 * @param empID
 	 * @return
 	 */
-	public Optional<BelongScheduleTeam> get(String companyID , List<String> empID);
+	public Optional<BelongScheduleTeam> get(String companyID , List<String> empIDs);
 	/**
 	 * [4-3] exists ( 会社ID, 社員ID )
 	 * @param companyID

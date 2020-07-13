@@ -18,10 +18,10 @@ public interface EmpMedicalWorkStyleHistoryRepository {
 	List<EmpMedicalWorkFormHisItem> get(List<String> listEmp , GeneralDate referenceDate);
 	
 	/** [3] insert(社員の医療勤務形態履歴, 社員の医療勤務形態履歴項目) **/
-	void insert(EmpMedicalWorkStyleHistory empMedicalWorkStyleHistory , EmpMedicalWorkFormHisItem empMedicalWorkFormHisItem );
+	void insert(EmpMedicalWorkStyleHistoryTest empMedicalWorkStyleHistory , EmpMedicalWorkFormHisItem empMedicalWorkFormHisItem );
 	
 	/** [4] update(社員の医療勤務形態履歴)**/
-	void update(EmpMedicalWorkStyleHistory empMedicalWorkStyleHistory);
+	void update(EmpMedicalWorkStyleHistoryTest empMedicalWorkStyleHistory);
 	/** [5] update(社員の医療勤務形態履歴項目)**/
 	void update(EmpMedicalWorkFormHisItem empMedicalWorkFormHisItem);
 	/**[6] delete(社員ID, 履歴ID)**/

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -15,29 +16,31 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 
-
+@AllArgsConstructor
 public class SortSetting implements DomainAggregate{
 	@Getter   
 	/** 会社ID **/
 	private final String companyID;
 	@Getter
 	/** 並び替え優先順 **/
-	private List<OrderedList> lstOrderedList;
+	private OrderedList orderedList;
 	
-	public SortSetting(String companyID, List<OrderedList> lstOrderedList) {
+	// http://192.168.50.4:3000/issues/110596
+	/*public SortSetting(String companyID, OrderedList orderedList) {
 		super();
-		Set<OrderedList> uniqueElements = new HashSet<OrderedList>(lstOrderedList);
+		Set<OrderedList> uniqueElements = new HashSet<OrderedList>(orderedList);
 		//inv-1	@並び替え優先順.種類は重複しないこと
-		if(uniqueElements.size() < lstOrderedList.size()){
+		if(uniqueElements.size() < orderedList.size()){
 			throw new BusinessException("Msg_1612");
 		}
 		//inv-2	1 <= @並び替え優先順.Size <= 3			
-		if((lstOrderedList.size() == 0) || (lstOrderedList.size()>4 )){
+		if((orderedList.size() == 0) || (orderedList.size()>4 )){
 			throw new BusinessException("Msg_1613");
 		}
 		this.companyID = companyID;
-		this.lstOrderedList = lstOrderedList;
-	}
+		this.orderedList = orderedList;
+	}*/
+	
 	
 }
 

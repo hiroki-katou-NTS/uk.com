@@ -17,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -24,11 +25,13 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryTerm;
+import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -89,12 +92,34 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	
 	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist " 
 														+ " WHERE a.companyId = :companyId"
-														+ " AND a.sid = empId ";
+														+ " AND a.sid = :empId ";
 	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist " 
 			+ " WHERE a.companyId = :companyId "
-			+ " AND a.sid IN :empId ";
+			+ " AND a.sid IN :empIds ";
+	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem "
+											+ " WHERE a.hisId =:  histId "; 
 	
-			
+	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem "
+			+ " WHERE a.hisId IN :listHistId "; 
+	
+	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId " ;
+	
+	private static final String SPECIFY_EMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId "
+			+ " AND h.sid =: empId  ";
+	
+	private static final String SPECIFY_LISTEMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId "
+			+ " AND h.sid IN : listEmpId";
+
+	
 	/** 
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
 	 * 
@@ -751,52 +776,90 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
-	public Optional<EmploymentHistory> getByCidAndListEmpID(String companyId, List<String> empIds) {
-		// TODO Auto-generated method stub GET_BY_CID_AND_EMPIDS
-		
+	public List<EmploymentHistory> getByCidAndListEmpID(String companyId, List<String> empIds) {
+		List<EmploymentHistory> lstEmpHis = new ArrayList<>();
 		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPIDS,BsymtEmploymentHist.class)
 				.setParameter("companyId", companyId)
 				.setParameter("empId", empIds).getList();
-		
-		return null;
-		
+		for(String empId : empIds){
+			List<DateHistoryItem> listDateHistory = listEntity.stream().filter(x-> x.sid.equals(empId)).map( c -> new DateHistoryItem(c.hisId, new DatePeriod(c.strDate, c.endDate))).collect(Collectors.toList());
+			EmploymentHistory history = new EmploymentHistory(companyId, empId, listDateHistory);
+			lstEmpHis.add(history);
+		}
+		return lstEmpHis;
 	}
 
 	@Override
 	public Optional<EmploymentHistoryItem> getEmploymentHistoryItem(String histId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<BsymtEmploymentHistItem> entity = this.queryProxy().query(GET_BY_KEY, BsymtEmploymentHistItem.class)
+				.setParameter("hisId", histId).getSingle();
+		EmploymentHistoryItem result = new EmploymentHistoryItem(entity.get().hisId, entity.get().sid,
+				EnumAdaptor.valueOf(entity.get().salarySegment, SalarySegment.class),
+				new EmploymentCode(entity.get().empCode));
+		return Optional.of(result);
 	}
 
 	@Override
 	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
+				.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,
+						EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+
 	}
 
 	@Override
 	public List<EmploymentHistoryItem> getEmploymentHistoryItemByDate(String companyId, GeneralDate ymd) {
-		// TODO Auto-generated method stub
-		return null;
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(GET_BY_DATE,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.getList();
+		return listEmploymentHistoryItem.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());	
 	}
 
 	@Override
 	public Optional<EmploymentHistoryItem> getByEmpIdAndDate(String companyId, GeneralDate ymd, String empId) {
-		// TODO Auto-generated method stub
-		return null;
+		EmploymentHistoryItem result = null;
+		Optional<BsymtEmploymentHistItem> employmentHistoryItem = this.queryProxy().query(SPECIFY_EMP_HISTORY,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.setParameter("empId", empId)
+				.getSingle();
+		if(employmentHistoryItem.isPresent()){
+		 result = new EmploymentHistoryItem(employmentHistoryItem.get().hisId, employmentHistoryItem.get().sid,  EnumAdaptor.valueOf(employmentHistoryItem.get().salarySegment, SalarySegment.class),
+					new EmploymentCode(employmentHistoryItem.get().empCode));
+				}
+		return 	Optional.ofNullable(result);
 	}
 
 	@Override
 	public List<EmploymentHistoryItem> getByListEmpIdAndDate(String companyId, GeneralDate ymd,
 			List<String> listEmpId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(SPECIFY_LISTEMP_HISTORY,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.setParameter("listEmpId", listEmpId)
+				.getList();
+		return listEmploymentHistoryItem.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());	
 	}
 
 	@Override
-	public Optional<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
-			GeneralDate ymd) {
-		// TODO Auto-generated method stub
+	public List<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
+			DatePeriod datePeriod) {
+		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
+		List<EmploymentHistory> lstEmpHist = getByCidAndListEmpID(companyId, lstEmpId);
+		List<DateHistoryItem> lstHistoryItems = lstEmpHist.stream()
+				.flatMap(mapper -> mapper.getHistoryItems().stream()
+						.filter(x -> datePeriod.contains(x.start()) || datePeriod.contains(x.end())
+								|| x.contains(datePeriod.start()) || x.contains(datePeriod.end())))
+				.collect(Collectors.toList());
+		//$履歴IDリスト = $汎用履歴項目リスト: map $.履歴ID															
+		List<String> lstHistId =  lstHistoryItems.stream().map(c ->c.identifier()).collect(Collectors.toList());
+		//$履歴項目リスト = [4-2] *履歴IDを指定して履歴項目を取得する ( $履歴IDリスト )
+		List<EmploymentHistoryItem> listHistItem = getAllEmploymentHistoryItem(lstHistId);
+		
 		return null;
 	}
 
