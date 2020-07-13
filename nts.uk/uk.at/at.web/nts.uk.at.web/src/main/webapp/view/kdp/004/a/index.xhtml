@@ -26,6 +26,24 @@
 			<div id="functions-area">
 				<div data-bind="ntsCheckBox: { checked: fingerAuthCkb }">FingerAuth
 					Success</div>
+
+				<div id="combo-box"
+					data-bind="ntsComboBox: {
+									name: 'Msg_List',
+									options: ko.observableArray([
+									{ msg:'Msg_301'}
+									,{msg:'Msg_302'}
+									,{msg:'Msg_316'}]),
+									optionsValue: 'msg',
+									visibleItemsCount: 5,
+									value: selectedMsg ,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									required: true,
+									columns: [
+										{ prop: 'msg', length: 4 }
+									]}"></div>
 			</div>
 
 			<div id="contents-area" class="cf">

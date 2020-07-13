@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp004.a {
 			loginInfo: any = null;
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
-
+			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
 			listCompany = [];
 			constructor() {
 				let self = this;
@@ -195,7 +195,7 @@ module nts.uk.at.view.kdp004.a {
 			public fingerAuth(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>();
 
-				service.fingerAuth(this.fingerAuthCkb()).done((res) => {
+				service.fingerAuth({ fingerAuthCkb: this.fingerAuthCkb(), selectedMsg: this.selectedMsg() }).done((res) => {
 					dfd.resolve(res);
 				});
 
@@ -253,11 +253,10 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public openScreenG(): JQueryPromise<any> {
+			public openScreenG(errorMessage): JQueryPromise<any> {
 				let self = this;
 				const vm = new ko.ViewModel();
-				let retry = 0,
-					errorMessage = 'Msg_301';
+				let retry = 0;
 
 				const process = () => {
 					return vm.$window.storage('ModelGParam', { displayLoginBtn: retry >= self.stampSetting().authcFailCnt && self.stampSetting().employeeAuthcUseArt, errorMessage })
@@ -328,9 +327,8 @@ module nts.uk.at.view.kdp004.a {
 						});
 
 					} else {
-						self.errorMessage(getMessage("Msg_302"));
 
-						self.openScreenG().done((res) => {
+						self.openScreenG(res.messageId).done((res) => {
 							dfd.resolve(res);
 						});
 					}
