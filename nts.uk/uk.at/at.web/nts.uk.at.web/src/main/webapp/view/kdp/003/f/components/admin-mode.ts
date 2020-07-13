@@ -108,6 +108,11 @@ module nts.uk.kdp003.f {
 								// update companyId by subscribe companyCode
 								model.companyId(exist.companyId);
 								model.companyName(exist.companyName);
+							} else {
+								model.companyId('');
+								model.companyName('');
+
+								vm.$dialog.error({ messageId: 'Mgs_301' });
 							}
 						}
 
@@ -136,7 +141,7 @@ module nts.uk.kdp003.f {
 						const exist: Kdp003FCompanyItem = _.find(data, (c) => c.companyId === companyId);
 
 						vm.listCompany(data);
-						
+
 						if (exist) {
 							if (!ko.unwrap(model.companyCode)) {
 								model.companyCode(exist.companyCode);
