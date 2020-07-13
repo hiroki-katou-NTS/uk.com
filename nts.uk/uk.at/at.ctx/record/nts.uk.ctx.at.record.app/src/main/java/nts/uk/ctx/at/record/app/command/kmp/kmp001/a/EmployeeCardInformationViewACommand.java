@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterEmployeeCardInformationCommand {
+public class EmployeeCardInformationViewACommand {
 
 	private String employeeId;
 	private String cardNumber;
