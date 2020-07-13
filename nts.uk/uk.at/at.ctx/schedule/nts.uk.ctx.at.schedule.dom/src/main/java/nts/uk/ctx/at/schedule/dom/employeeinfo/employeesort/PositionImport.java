@@ -18,14 +18,17 @@ public class PositionImport {
 	private String jobCd;
 	/**職位名称 **/
 	private String jobName;
-	/**序列 **/ 
-	private int rank;
-	public PositionImport(String jobId, String jobCd, String jobName, int rank) {
+	/**序列コード **/
+	private String sequenceCode;
+	/**並び順 **/
+	private int dispOrder;
+	public PositionImport(String jobId, String jobCd, String jobName,String sequenceCode, int dispOrder) {
 		super();
 		this.jobId = jobId;
 		this.jobCd = jobCd;
 		this.jobName = jobName;
-		this.rank = rank;
+		this.sequenceCode = sequenceCode;
+		this.dispOrder = dispOrder;
 	}
 	
 }

@@ -3,13 +3,11 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.assertj.core.util.Arrays;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 
 /**
@@ -20,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
  */
 public class SortEmpService {
 
+	// [1] 並び順に基づいて社員を並び替える
 	public static List<String> sortEmpTheirOrder(Require require, GeneralDate ymd, List<String> lstEmpId) {
 		// $並び替え設定 = require.並び替え設定を取得する()
 		Optional<SortSetting> sortSetting = require.get();
@@ -31,6 +30,7 @@ public class SortEmpService {
 		return rearranges(require, ymd, lstEmpId, sortSetting.get());
 	}
 
+	// [2] 並び順を指定して社員を並び替える
 	public static List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId,
 			SortSetting sortSetting) {
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
@@ -178,7 +178,7 @@ public class SortEmpService {
 		 * @param companyId
 		 * @return
 		 */
-		List<Rank> getListRank(String companyId);
+		Optional<RankPriority> getRankPriority(String companyId);
 
 		/**
 		 * [R-5] 社員の職位を取得する //Lấy "job title" của employee
@@ -188,7 +188,7 @@ public class SortEmpService {
 		 * @param lstEmp
 		 * @return
 		 */
-		List<PositionImport> getPositionEmp(GeneralDate ymd, List<String> lstEmp);
+		List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp);
 
 		/**
 		 * [R-6] 会社の職位を取得する //Lấy "job title" của company

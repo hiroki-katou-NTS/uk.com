@@ -23,7 +23,7 @@ public class SortSetting implements DomainAggregate{
 	private final String companyID;
 	@Getter
 	/** 並び替え優先順 **/
-	private OrderedList orderedList;
+	private List<OrderedList> orderedList;
 	
 	// http://192.168.50.4:3000/issues/110596
 	/*public SortSetting(String companyID, OrderedList orderedList) {
