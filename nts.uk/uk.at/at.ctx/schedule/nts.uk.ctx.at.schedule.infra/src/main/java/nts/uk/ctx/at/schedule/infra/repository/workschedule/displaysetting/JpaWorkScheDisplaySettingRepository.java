@@ -35,7 +35,7 @@ public class JpaWorkScheDisplaySettingRepository extends JpaRepository implement
 
 	@Override
 	public void update(WorkScheDisplaySetting workScheDisplaySetting) {
-		// TODO Auto-generated method stub
+		this.commandProxy().update(KscmtDispSetting.toEntity(workScheDisplaySetting));
 	}
 
 }

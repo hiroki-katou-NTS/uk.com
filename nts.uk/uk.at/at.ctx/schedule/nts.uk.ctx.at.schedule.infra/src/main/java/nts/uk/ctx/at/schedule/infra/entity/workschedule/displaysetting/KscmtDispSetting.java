@@ -50,8 +50,8 @@ public class KscmtDispSetting extends ContractUkJpaEntity{
 	}
 
 	public static KscmtDispSetting toEntity( WorkScheDisplaySetting workScheDisplaySetting) {
-		/*String CID = AppContexts.user().companyId();
-		return new KscmtDispSetting(
+		String CID = AppContexts.user().companyId();
+		/*return new KscmtDispSetting(
 				new KscmtDispSettingPK(CID),
 				workScheDisplaySetting.getInitDispMonth().value,
 				workScheDisplaySetting.getEndDay().;*/

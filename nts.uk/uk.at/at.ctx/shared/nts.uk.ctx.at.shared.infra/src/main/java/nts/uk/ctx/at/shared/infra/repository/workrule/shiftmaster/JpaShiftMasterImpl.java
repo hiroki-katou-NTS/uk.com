@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMater;
 import nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster.KshmtShiftMaterPK;
@@ -172,7 +173,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	}
 
 	@Override
-	public List<ShiftMaster> getbyCidAndWorkInfo(String cid, List<WorkInformation> workInfos) {
+	public Optional<ShiftMaster> get(String companyID, List<WorkInformation> lstWorkInformation) {
 		// TODO Auto-generated method stub
 		return null;
 	}

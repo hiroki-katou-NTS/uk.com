@@ -33,7 +33,7 @@ public enum ScheManaStatus {
 
 	public final String name;
 
-	/** The Constant values. */
+	/* The Constant values. /
 	private final static ScheManaStatus[] values = ScheManaStatus.values();
 
 	public static ScheManaStatus valueOf(Integer value) {

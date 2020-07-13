@@ -56,6 +56,7 @@ public class IntegrationOfDaily {
 //	日別実績の所属情報 (old)
 //	private AffiliationInforOfDailyPerfor affiliationInfor;
 	//所属情報: 日別勤怠の所属情報
+	@Setter
 	private AffiliationInforOfDailyAttd  affiliationInfor;
 	
 	//日別実績の計算区分 (old)
@@ -107,6 +108,7 @@ public class IntegrationOfDaily {
 	@Setter
 	private Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance;
 	
+	@Setter
 	//日別実績の特定日区分 (old)
 //	private Optional<SpecificDateAttrOfDailyPerfor> specDateAttr;
 	//特定日区分: 日別勤怠の特定日区分

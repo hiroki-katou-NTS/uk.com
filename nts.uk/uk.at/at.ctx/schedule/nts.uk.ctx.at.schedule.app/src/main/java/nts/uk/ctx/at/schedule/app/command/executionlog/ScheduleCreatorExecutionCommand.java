@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethodClassification;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 
@@ -30,6 +31,9 @@ public class ScheduleCreatorExecutionCommand {
 	
 	/** The content. */
 	private ScheduleCreateContent content;
+	
+	/** 作成方法区分 - đang để tạm*/
+	private CreationMethodClassification classification;
 	
 	/** The is confirm. */
 	private Boolean confirm; 
@@ -81,6 +85,16 @@ public class ScheduleCreatorExecutionCommand {
 
 
 
+	public CreationMethodClassification getClassification() {
+		return classification;
+	}
+
+
+
+	public void setClassification(CreationMethodClassification classification) {
+		this.classification = classification;
+	}
+	
 	public String getCompanyId() {
 		return companyId;
 	}

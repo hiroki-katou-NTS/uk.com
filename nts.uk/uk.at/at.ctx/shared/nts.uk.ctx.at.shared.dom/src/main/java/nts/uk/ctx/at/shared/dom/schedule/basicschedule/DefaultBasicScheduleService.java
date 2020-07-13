@@ -201,33 +201,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		if (!workTypeOpt.isPresent()) {
 			return null;
 		}
-
-		WorkType workType = workTypeOpt.get();
-		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
-
-		// All day
-		if (workType.isOneDay()) {
-			if (dailyWork.IsLeaveForADay()) {
-				return WorkStyle.ONE_DAY_REST;
-			}
-
-			return WorkStyle.ONE_DAY_WORK;
-		}
-
-		// Half day
-		if (dailyWork.IsLeaveForMorning()) {
-			if (dailyWork.IsLeaveForAfternoon()) {
-				return WorkStyle.ONE_DAY_REST;
-			}
-
-			return WorkStyle.AFTERNOON_WORK;
-		}
-
-		if (dailyWork.IsLeaveForAfternoon()) {
-			return WorkStyle.MORNING_WORK;
-		}
-
-		return WorkStyle.ONE_DAY_WORK;
+		return workTypeOpt.get().checkWorkDay();
 	}
 	
 	@Override

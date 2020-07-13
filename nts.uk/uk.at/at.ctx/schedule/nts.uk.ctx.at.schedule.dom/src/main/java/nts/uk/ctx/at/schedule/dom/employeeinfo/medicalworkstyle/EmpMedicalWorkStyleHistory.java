@@ -1,0 +1,41 @@
+package nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
+
+import nts.uk.shr.com.history.DateHistoryItem;
+/**
+ * 社員の医療勤務形態履歴
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
+ * @author HieuLt
+ *
+ */
+@AllArgsConstructor
+@Getter
+
+public class EmpMedicalWorkStyleHistory implements DomainAggregate {
+	/**社員ID **/
+	private final String empID;
+	
+	/**List<年月日期間の汎用履歴項目> 履歴 **/
+	
+	List<DateHistoryItem> listDateHistoryItem;
+	
+	/**
+	 * 	[C-1] 社員の医療勤務形態履歴						
+	 * @param empID
+	 * @param listDateHistoryItem
+	 * @return
+	 */
+	public static EmpMedicalWorkStyleHistory get(String empID , List<DateHistoryItem> listDateHistoryItem){
+		//inv-1		履歴.size () > 0			
+		if(!(listDateHistoryItem.size() >0)){
+			throw new BusinessException("Msg_ChuacomaMsg");
+		}
+		return new EmpMedicalWorkStyleHistory(empID, listDateHistoryItem);
+	}
+}

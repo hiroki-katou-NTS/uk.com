@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * 日次の外部予算実績
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.予算管理.外部予算実績
  * @author HieuLt
- * @param <T>
+ *
  *
  */
 

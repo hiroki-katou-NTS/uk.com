@@ -5,6 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 
 /**
  * ドメインサービス：日別実績計算処理

@@ -33,6 +33,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
@@ -675,6 +677,81 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		if(!deleteLst.isEmpty()) {
 			this.commandProxy().removeAll(deleteLst);
 		}
+	}
+
+	@Override
+	public void insert(WorkingCondition workingCondition, WorkingConditionItem workingConditionItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(WorkingCondition workingCondition, WorkingConditionItem workingConditionItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyID, String empID, String histID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyID, String empID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<WorkingCondition> getWorkingCondition(String companyID, String empID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkingCondition> getWorkingConditionByListEmpID(String companyID, List<String> lstEmpID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> getWorkingConditionItem(String histID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkingConditionItem> getWorkingConditionItemByListHistID(List<String> listHistID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkingConditionItem> getWorkingConditionItemByCompanyIDAndDate(String companyID, GeneralDate ymd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<WorkingConditionItem> getWorkingConditionItemByEmpIDAndDate(String companyID, GeneralDate ymd,
+			String empID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkingConditionItem> getWorkingConditionItemByLstEmpIDAndDate(String companyID, GeneralDate ymd,
+			List<String> empID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkingConditionItemWithPeriod> getWorkingConditionItemWithPeriod(String companyID,
+			List<String> lstEmpID, DatePeriod datePeriod) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

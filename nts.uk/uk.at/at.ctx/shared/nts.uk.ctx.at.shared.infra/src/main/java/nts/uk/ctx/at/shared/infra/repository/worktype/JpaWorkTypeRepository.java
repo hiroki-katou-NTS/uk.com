@@ -65,6 +65,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
+	
+	private static final String SELECT_BY_ID_CLASSIFICATION = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.deprecateAtr = :deprecateAtr"
+			+ " AND a.worktypeAtr = :worktypeAtr"
+			+ " AND a.oneDayAtr = :oneDayAtr";
 
 	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR = "SELECT a FROM KshmtWorkTypeSet a LEFT JOIN KshmtWorkType c"
 			+ " ON a.kshmtWorkTypeSetPK.companyId = c.kshmtWorkTypePK.companyId AND a.kshmtWorkTypeSetPK.workTypeCode = c.kshmtWorkTypePK.workTypeCode"
