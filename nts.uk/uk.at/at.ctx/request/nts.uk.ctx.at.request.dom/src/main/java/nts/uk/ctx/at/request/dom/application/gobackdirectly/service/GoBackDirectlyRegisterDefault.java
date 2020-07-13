@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -110,6 +111,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject
 	private RegisterAtApproveReflectionInfoService_New registerAtApprove;
+	
+	@Inject
+	private DetailAfterUpdate detailAfterUpdate;
 	/**
 	 * 
 	 */
@@ -596,6 +600,41 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
 			return newAfterRegister.processAfterRegister(application);
 		}
+		return null;
+
+	}
+	@Override
+	public ProcessResult update(String companyId, Application application, GoBackDirectly goBackDirectly,
+			InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+		// INPUT.「直行直帰申請起動時の表示情報.直行直帰申請の反映」．勤務情報を反映するをチェックする
+		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
+
+		if (goBackReflect.getReflectApplication() == ApplicationStatus.DO_REFLECT) {
+			// // 画面上選択している勤務種類コード、就業時間帯コードを取得する
+			// workType = goBackDirectly.getDataWork().get().getWorkType().getWorkType();
+			// workTime =
+			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
+			// } else {
+			Optional<List<AchievementOutput>> opAchievementOutputLst = inforGoBackCommonDirectOutput
+					.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpAchievementOutputLst();
+
+			// AchievementOutput is old
+
+			// セット：
+			// ・直行直帰申請.勤務情報.勤務種類コード ＝ 実績データ.1勤務種類コード
+			// ・直行直帰申請.勤務情報.就業時間帯コード ＝ 実績データ.3就業時間帯コード
+
+		}
+		// ドメインモデル「直行直帰申請」の更新する
+		// params is appId or application
+		goBackDirectlyRepository.update(goBackDirectly);
+		List<GeneralDate> listDates = new ArrayList<>();
+		listDates.add(application.getAppDate().getApplicationDate());
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+				application.getEmployeeID(), listDates);
+//		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
+//		detailAfterUpdate.processAfterDetailScreenRegistration(application);
 		return null;
 
 	}

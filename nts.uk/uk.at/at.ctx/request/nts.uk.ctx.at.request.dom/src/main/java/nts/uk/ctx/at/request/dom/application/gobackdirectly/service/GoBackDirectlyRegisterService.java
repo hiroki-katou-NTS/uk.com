@@ -94,13 +94,16 @@ public interface GoBackDirectlyRegisterService {
 	 */
 	public GoBackDirectAtr goBackDirectCheckNew(GoBackDirectly goBackDirectly);
 	
-	/**
+	/**refactor4 
 	 * 直行直帰登録
 	 * @param goBackDirectly
 	 * @param application
 	 * @return
 	 */
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application application, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
+	
+	
+	public ProcessResult update(String companyId, Application application, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
 	
 	
 }

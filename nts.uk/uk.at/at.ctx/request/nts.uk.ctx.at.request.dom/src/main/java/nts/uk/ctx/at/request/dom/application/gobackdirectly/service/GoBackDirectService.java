@@ -30,7 +30,7 @@ public interface GoBackDirectService {
 	 * @param baseDate
 	 * @param appEmployment
 	 * @param lstWts
-	 * @return
+	 * @return //直行直帰申請起動時の表示情報
 	 */
 	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
 			AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts);
@@ -47,7 +47,20 @@ public interface GoBackDirectService {
 	 * @param dates
 	 * @param sids
 	 * @param appDispInfoStartup
-	 * @return
+	 * @return //直行直帰申請起動時の表示情報
 	 */
 	public InforGoBackCommonDirectOutput getDateChangeAlgorithm(String companyId, List<GeneralDate> dates, List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
+	/**
+	 * 直行直帰画面初期（更新） Refactor4 get data Detail
+	 * @param companyId
+	 * @param appId
+	 * @return //直行直帰申請起動時の表示情報
+	 */
+	public InforGoBackCommonDirectOutput getDataDetailAlgorithm(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	
+	
+	
 }
+
+

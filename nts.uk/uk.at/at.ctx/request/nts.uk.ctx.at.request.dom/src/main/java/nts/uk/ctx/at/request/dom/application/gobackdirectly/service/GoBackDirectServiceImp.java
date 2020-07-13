@@ -11,12 +11,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
@@ -37,6 +43,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private GoBackDirectlyRepository goBackDirectlyRepository;
 	
 	@Override
 	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates ,
@@ -168,6 +177,41 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 			}
 		}
 		return inforGoBackCommonDirectOutput;
+	}
+
+	@Override
+	public InforGoBackCommonDirectOutput getDataDetailAlgorithm(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		InforGoBackCommonDirectOutput output = new InforGoBackCommonDirectOutput();
+		// AppDispInfoStartupOutput appDispInfoStartupOutput = null;
+		// appCommonSetService.getCommonSetBeforeDetail(companyId, appId);
+		// appDispInfoStartupOutput
+		// ドメインモデル「直行直帰申請の反映」より取得する
+		Optional<GoBackReflect> goBackReflect = goBackDirectServiceImp.findByCompany(companyId);
+		if (goBackReflect.isPresent()) {
+			output.setGoBackReflect(goBackReflect.get());
+		}
+		
+//		ドメインモデル「直行直帰申請」を取得する
+		Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(appId);
+		output.setGoBackDirectly(goBackDirectly);
+//		起動時勤務種類リストを取得する
+		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get() : null);
+		output.setLstWorkType(lstWorkType);
+		
+		if (goBackDirectly.isPresent()) {
+			Optional<DataWork> dataWork = goBackDirectly.get().getDataWork();
+			if (dataWork.isPresent()) {
+//				直行直帰申請起動時の表示情報．勤務種類初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．勤務種類 
+				output.setWorkType(new InforWorkType(dataWork.get().getWorkType().getWorkType(), dataWork.get().getWorkType().getNameWorkType()));
+//				直行直帰申請起動時の表示情報．就業時間帯初期選択=取得したドメインモデル「直行直帰申請」．勤務情報．就業時間帯
+				if (dataWork.get().getWorkTime().isPresent()) {
+					InforWorkTime inforWorkTime = dataWork.get().getWorkTime().get();
+					output.setWorkTime(new InforWorkTime(inforWorkTime.getWorkTime(), inforWorkTime.getNameWorkTime()));
+				}
+			}
+		}
+		
+		return output;
 	}
 
 }

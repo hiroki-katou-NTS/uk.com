@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeD
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
@@ -59,6 +60,9 @@ public class GoBackDirectlyFinder {
 
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
+	
+	@Inject
+	private DetailAppCommonSetService appCommonSetService;
 	/**
 	 * Get GoBackDirectlyDto
 	 * 
@@ -258,6 +262,8 @@ public class GoBackDirectlyFinder {
 		return null;
 	}
 	
+	//Refactor4
+	
 	public InforGoBackCommonDirectDto getStartKAF009(ParamStart paramStart) {
 		String companyId = AppContexts.user().companyId();
 		Optional<String> employeeId = Optional.ofNullable(null);
@@ -266,7 +272,6 @@ public class GoBackDirectlyFinder {
 		}
 		
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), null, true);
-//		goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput);
 		
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
 	}
@@ -277,10 +282,6 @@ public class GoBackDirectlyFinder {
 	 */
 	public InforGoBackCommonDirectDto getChangeDateKAF009(ParamChangeDate paramStart) {
 		String companyId = AppContexts.user().companyId();
-		
-		
-//		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), null, true);
-//		goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput);
 		
 		return InforGoBackCommonDirectDto.fromDomain(
 				goBackDirectService.getDateChangeAlgorithm(
@@ -299,6 +300,14 @@ public class GoBackDirectlyFinder {
 				param.getGoBackDirectlyDto().toDomain(),
 				param.getInforGoBackCommonDirectDto().toDomain(),
 				param.isMode());
+	}
+	
+	public InforGoBackCommonDirectDto getDetailKAF009(ParamUpdate param) {
+//		14-1.詳細画面起動前申請共通設定を取得する
+		 AppDispInfoStartupOutput appDispInfoStartupOutput = null;
+				// appCommonSetService.getCommonSetBeforeDetail(companyId, appId);
+//		アルゴリズム「直行直帰画面初期（更新）」を実行する
+		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
 	}
 	
 	

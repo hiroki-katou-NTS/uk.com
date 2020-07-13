@@ -16,7 +16,9 @@ import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBack
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler_Old;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateApplicationGoBackDirectlyCommand;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler_Old;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto_Old;
@@ -50,7 +52,10 @@ public class GoBackDirectlyService extends WebService {
 	private CheckUpdateGoBackCommandHandler checkUpdateGoBackHandler;
 
 	@Inject 
-	private UpdateGoBackDirectlyCommandHandler updateGoBackHandler;
+	private UpdateGoBackDirectlyCommandHandler_Old updateGoBackHandler;
+	
+	@Inject
+	private UpdateGoBackDirectlyCommandHandler updateGoBackHandlerNew;
 	
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
@@ -149,10 +154,17 @@ public class GoBackDirectlyService extends WebService {
 	}
 	
 	@POST
-	@Path("registerNew")
+	@Path("registerNewKAF009")
 	public ProcessResult registerNew(InsertGoBackDirectlyCommand param) {
 		return this.insertGoBackHandlerNew.handle(param);
 	}
+	
+	@POST
+	@Path("updateNewKAF009")
+	public ProcessResult updateNewKAF009(UpdateGoBackDirectlyCommand param) {
+		return this.updateGoBackHandlerNew.handle(param);
+	}
+	
 		
 }
 
