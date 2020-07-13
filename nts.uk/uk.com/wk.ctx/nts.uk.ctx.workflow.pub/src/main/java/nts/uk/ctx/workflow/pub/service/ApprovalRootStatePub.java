@@ -299,4 +299,10 @@ public interface ApprovalRootStatePub {
      * @return
      */
     public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, String targetType, GeneralDate date, Optional<Boolean> lowerApprove);
+    
+    /**
+     * refactor 4
+     * @param listApprovalPhaseState
+     */
+    public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState);
 }

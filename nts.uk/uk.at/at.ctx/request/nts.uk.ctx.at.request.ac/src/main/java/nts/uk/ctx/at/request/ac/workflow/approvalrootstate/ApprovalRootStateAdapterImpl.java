@@ -358,4 +358,31 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
+		List<ApprovalPhaseStateExport> approvalPhaseStateExportLst = listApprovalPhaseState.stream()
+				.map(x -> new ApprovalPhaseStateExport(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrameExport(
+								y.getFrameOrder(), 
+								y.getListApprover().stream().map(z -> new ApproverStateExport(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+										z.getAgentID(), 
+										z.getApproverName(), 
+										z.getRepresenterID(), 
+										z.getRepresenterName(), 
+										z.getApprovalDate(), 
+										z.getApprovalReason(), 
+										z.getApproverInListOrder())
+								).collect(Collectors.toList()), 
+								y.getConfirmAtr(), 
+								y.getAppDate()))
+						.collect(Collectors.toList())
+				)).collect(Collectors.toList());
+		approvalRootStatePub.insertApp(appID, appDate, employeeID, approvalPhaseStateExportLst);
+	}
+
 }

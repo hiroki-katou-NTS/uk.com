@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
@@ -129,6 +131,16 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 		applicationRepository_Old.delete(companyID, appID);
 		approvalRootStateAdapter.deleteApprovalRootState(appID);
 
+	}
+
+	@Override
+	public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
+		applicationRepository.insert(application);
+		approvalRootStateAdapter.insertApp(
+				application.getAppID(), 
+				application.getAppDate().getApplicationDate(), 
+				application.getEmployeeID(), 
+				listApprovalPhaseState);
 	}
 
 }

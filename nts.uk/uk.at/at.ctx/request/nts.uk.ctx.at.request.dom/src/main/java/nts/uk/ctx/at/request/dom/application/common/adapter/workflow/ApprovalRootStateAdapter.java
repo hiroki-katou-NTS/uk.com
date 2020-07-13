@@ -155,4 +155,10 @@ public interface ApprovalRootStateAdapter {
     
     public List<ApprovalPhaseStateImport_New> getApprovalDetail(String appID);
     
+    /**
+     * refactor 4
+     * @param listApprovalPhaseState
+     */
+    public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
+    
 }

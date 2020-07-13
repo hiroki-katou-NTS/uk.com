@@ -31,6 +31,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingReposit
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
@@ -1118,5 +1119,33 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			}
 		}
 		return export;
+	}
+	@Override
+	public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState) {
+		ApprovalRootState approvalRootState = new ApprovalRootState(
+				appID, 
+				RootType.EMPLOYMENT_APPLICATION, 
+				appDate, 
+				employeeID, 
+				listApprovalPhaseState.stream().map(x -> new ApprovalPhaseState(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtr.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalForm.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrame(
+								y.getFrameOrder(), 
+								EnumAdaptor.valueOf(y.getConfirmAtr(), ConfirmPerson.class), 
+								y.getAppDate(), 
+								y.getListApprover().stream().map(z -> new ApproverInfor(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtr.class), 
+										null, 
+										null, 
+										null, 
+										z.getApproverInListOrder()
+								)).collect(Collectors.toList()))
+						).collect(Collectors.toList()))
+				).collect(Collectors.toList()));
+		approvalRootStateRepository.insertApp(approvalRootState);
+		
 	}
 }

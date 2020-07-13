@@ -327,7 +327,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			this.commandProxy().insert(WwfdtApprovalRootMonth.fromDomain(companyID, approvalRootState));
 			break;
 		default:
-			this.commandProxy().insert(WwfdtApprovalRootState.fromDomain(companyID, approvalRootState));
+			this.commandProxy().insert(WwfdtApprovalRootState.fromDomain(approvalRootState));
 		}
 		this.getEntityManager().flush();
 	}
@@ -798,5 +798,11 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 		return false;
 
+	}
+
+	@Override
+	public void insertApp(ApprovalRootState approvalRootState) {
+		this.commandProxy().insert(WwfdtApprovalRootState.fromDomain(approvalRootState));
+		this.getEntityManager().flush();
 	}
 }
