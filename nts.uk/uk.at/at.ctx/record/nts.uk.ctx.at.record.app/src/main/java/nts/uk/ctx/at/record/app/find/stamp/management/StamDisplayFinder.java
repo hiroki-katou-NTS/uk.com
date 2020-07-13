@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.common.DPCorrectStateParam;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,6 +24,9 @@ public class StamDisplayFinder {
 
 	@Inject
 	private StampSetPerRepository repo;
+	
+	@Inject
+	private StampSetCommunalRepository stampSetCommunalRepo;
 
 	/**
 	 * 打刻の前準備(個人)を表示する
@@ -42,14 +49,24 @@ public class StamDisplayFinder {
 	 * @param pageNo
 	 * @return
 	 */
-	public StampPageLayoutDto getStampPage(int pageNo) {
+	public StampPageLayoutDto getStampPage(int pageNo, int mode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<StampPageLayoutDto> stampPage = repo.getStampSetPage(companyId, pageNo)
-				.map(mapper -> StampPageLayoutDto.fromDomain(mapper));
-		if (!stampPage.isPresent())
-			return null;
-
-		return stampPage.get();
+		if(mode == 1) {/*ver20　：「個人」　指定の場合*/
+			Optional<StampPageLayoutDto> stampPage = repo.getStampSetPage(companyId, pageNo)
+					.map(mapper -> StampPageLayoutDto.fromDomain(mapper));
+			if (stampPage.isPresent()) {
+				return stampPage.get();
+			}
+		}else if(mode == 0){/*ver20　：「共有」　指定の場合*/
+			Optional<StampSetCommunal> domain = stampSetCommunalRepo.gets(companyId);
+			if(domain.isPresent()) {
+				Optional<StampPageLayout> result = domain.get().getLstStampPageLayout().stream().filter(c->c.getPageNo().v() == pageNo).findFirst();
+				if(result.isPresent()) {
+					return StampPageLayoutDto.fromDomain(result.get());
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

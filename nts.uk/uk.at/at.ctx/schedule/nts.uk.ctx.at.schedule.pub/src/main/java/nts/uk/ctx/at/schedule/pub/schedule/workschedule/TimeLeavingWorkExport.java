@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.pub.schedule.workschedule;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -19,9 +21,18 @@ public class TimeLeavingWorkExport extends DomainObject{
 	 */
 	private int workNo;
 	//出勤
-//	private Optional<TimeActualStamp> attendanceStamp;
+	private Optional<TimeActualStampExport> attendanceStamp;
 	//退勤
-//	private Optional<TimeActualStamp> leaveStamp;
+	private Optional<TimeActualStampExport> leaveStamp;
+	
+	public TimeLeavingWorkExport(int workNo, TimeActualStampExport attendanceStamp,
+			TimeActualStampExport leaveStamp) {
+		super();
+		this.workNo = workNo;
+		this.attendanceStamp = Optional.ofNullable(attendanceStamp);
+		this.leaveStamp = Optional.ofNullable(leaveStamp);
+	}
+	
 	
 	
 }

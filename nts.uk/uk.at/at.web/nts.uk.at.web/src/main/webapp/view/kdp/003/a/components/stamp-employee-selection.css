@@ -1,0 +1,59 @@
+#stamp-employee-selection {
+	padding: 10px;
+	min-width: 260px;
+	box-sizing: border-box;
+	background-color: #165660;
+}
+
+#stamp-employee-selection .ntsControl.nts-datepicker-wrapper,
+#stamp-employee-selection .ntsControl.nts-datepicker-wrapper .ntsDatepicker {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#stamp-employee-selection .ntsControl.nts-datepicker-wrapper .ntsDatepicker {
+	text-align: center;
+}
+
+#stamp-employee-selection .button-group-filter button {
+	width: 36px;
+	overflow: hidden;
+	font-weight: bold;
+    color: #fff;
+	background-color: #738088;
+	margin-top: 5px;
+}
+
+#stamp-employee-selection .button-group-filter button.extend {
+	width: 76px;
+}
+
+#stamp-employee-selection .button-group-filter button.selected {
+	background-color: rgb(48, 176, 213);
+}
+
+#stamp-employee-selection .list-group {
+	margin-top: 10px;
+	background-color: #fff;
+}
+
+#stamp-employee-selection .list-group .list-title {
+	padding: 15px 0;
+	text-align: center;
+}
+
+#stamp-employee-selection .list-group .list-employee {
+	border-top: 1px solid #ccc;
+}
+
+#stamp-employee-selection .list-group .ui-iggrid table tr {
+	height: 65px;
+}
+
+#stamp-employee-selection .list-group .ui-iggrid table tr td {
+	border: 1px solid transparent;
+}
+
+#stamp-employee-selection .list-group .ui-iggrid table tr:not(:first-child) td {
+	border-top: 1px solid #ccc;
+}

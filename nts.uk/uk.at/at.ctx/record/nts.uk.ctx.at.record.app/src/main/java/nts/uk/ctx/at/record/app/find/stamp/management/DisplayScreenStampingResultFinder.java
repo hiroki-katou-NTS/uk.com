@@ -46,8 +46,7 @@ public class DisplayScreenStampingResultFinder {
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
 
-	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod) {
-		String employeeId = AppContexts.user().employeeId();
+	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod, String employeeId) {
 		List<String> listWorkLocationCode = new ArrayList<>();
 		List<EmployeeStampInfo> listStampDataOfEmployees = new ArrayList<>();
 		List<DisplayScreenStampingResultDto> res = new ArrayList<>();
@@ -64,9 +63,11 @@ public class DisplayScreenStampingResultFinder {
 				//// Get distinct WorkLocationCD
 				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
-					if(item.getStamp().isPresent()) {
-						val workLocationCD = item.getStamp().get().getRefActualResults().getWorkLocationCD();
-						listWorkLocationCode.add(workLocationCD.get().v());						
+					if (!item.getStamp().isEmpty()) {
+						val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkLocationCD();
+						if (workLocationCD.isPresent()) {
+							listWorkLocationCode.add(workLocationCD.get().v());
+						}
 					}
 				}
 
@@ -84,14 +85,17 @@ public class DisplayScreenStampingResultFinder {
 			if(!stampDataOfEmployees.getListStampInfoDisp().isEmpty()){
 				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp()
 						.get(0);
-				if(info.getStamp().isPresent()) {
-					val workLocationCode = info
-							.getStamp()
-							.get().getRefActualResults().getWorkLocationCD()
-							.get();
-					val optWorkLocation = listWorkLocation.stream()
-							.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-					workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+				if(!info.getStamp().isEmpty()) {
+					val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkLocationCD();
+					if(workLocationCD.isPresent()) {
+						val workLocationCode = workLocationCD.get();
+
+						val optWorkLocation = listWorkLocation.stream()
+								.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+						workLocationName = (optWorkLocation.isPresent())
+								? optWorkLocation.get().getWorkLocationName().v()
+								: "";
+					}
 				}
 			}
 			
@@ -118,12 +122,12 @@ public class DisplayScreenStampingResultFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepository.get(stampNumbers, date);
+			return stampRecordRepository.get( stampNumbers, date);
 		}
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampDakokuRepository.get(stampNumbers, date);
+			return stampDakokuRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 	}

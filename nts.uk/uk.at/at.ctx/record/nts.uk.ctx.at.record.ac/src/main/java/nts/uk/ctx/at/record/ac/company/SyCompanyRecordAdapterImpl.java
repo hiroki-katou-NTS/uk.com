@@ -8,13 +8,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -22,6 +22,10 @@ public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 
 	@Inject
 	private SyCompanyPub syCompanyPub;
+	
+	//private ICompanyPub companyPub;
+	
+	
 
 	@Override
 	public List<AffCompanyHistImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
@@ -43,5 +47,16 @@ public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 				.map(x -> new StatusOfEmployeeExport(x.getEmployeeId(), x.getListPeriod()))
 				.collect(Collectors.toList());
 	}
+
+//	@Override
+//	public List<CompanyImportForKDP003> get(String contractCd, Optional<String> cid,Boolean isAbolition) {
+//		List<CompanyImportForKDP003> result = new ArrayList<>();
+//		List<CompanyExportForKDP003> importCom = companyPub.get(contractCd, cid, isAbolition);
+//		if (importCom.isEmpty()) {
+//			return result;
+//		}
+//		return importCom.stream().map(item -> new CompanyImportForKDP003(item.getCompanyCode(),item.getCompanyName(), item.getCompanyId(), item.getContractCd()))
+//				.collect(Collectors.toList());
+//	}
 
 }

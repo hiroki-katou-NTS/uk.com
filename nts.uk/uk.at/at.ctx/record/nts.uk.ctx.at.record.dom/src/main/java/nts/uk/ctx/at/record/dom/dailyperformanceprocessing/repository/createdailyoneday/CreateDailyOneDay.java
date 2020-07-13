@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -35,6 +36,9 @@ public class CreateDailyOneDay {
 	
 	@Inject
 	private ReflectStampDomainService reflectStampDomainServiceImpl;
+	
+	@Inject
+	private CreateDailyResults createDailyResults;
 	/**
 	 * 
 	 * @param companyId 会社ID
@@ -60,9 +64,10 @@ public class CreateDailyOneDay {
         //「勤務種類」と「実行タイプ」をチェックする
         //日別実績が既に存在しない場合OR「作成する」の場合	
         if(optDaily.isPresent() || executionType == ExecutionTypeDaily.CREATE) {
-        	//TODO:日別実績を作成する (TKT)
-        	
-        	List<ErrorMessageInfo> optError = new ArrayList<>();
+        	//日別実績を作成する 
+			List<ErrorMessageInfo> optError = createDailyResults.createDailyResult(companyId, employeeId, ymd,
+					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
+					employeeGeneralInfoImport, periodInMasterList, empCalAndSumExecLogID);
         	if(optError.isEmpty()) {
         		return optError;
         	}

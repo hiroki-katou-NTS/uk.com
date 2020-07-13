@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.ButtonSet;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Type;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
@@ -42,17 +44,34 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class StampSettingPersonHelper {
 	
+	public static StampSettingPerson DUMMY_LIST_NULL = new StampSettingPerson(
+			"000000000000-0001", 
+			true, 
+			StampScreen.DUMMY, 
+			new ArrayList<>(), null);
+	
 	public static StampSettingPerson DUMMY = new StampSettingPerson(
 			"000000000000-0001", 
 			true, 
 			StampScreen.DUMMY, 
-			Arrays.asList(Layout.DUMMY));
+			Arrays.asList(Layout.DUMMY), null);
 	
 	public static StampSettingPerson DUMMY_buttonEmphasisArt_false = new StampSettingPerson(
 			"000000000000-0001", 
 			false, 
 			StampScreen.DUMMY, 
-			Arrays.asList(Layout.DUMMY));
+			Arrays.asList(Layout.DUMMY), null);
+	
+	public static List<StampCard> getListStampCard() {
+		List<StampCard> stampCards = new ArrayList<>();
+		
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		stampCards.add(new StampCard("000000000000-0001", "DUMMY", "000000000000-0001"));
+		
+		return stampCards;
+	}
 	
 	public static class StampScreen {
 		
@@ -102,7 +121,7 @@ public class StampSettingPersonHelper {
 		public static class Type {
 			public static ButtonType DUMMY = new ButtonType(
 					EnumAdaptor.valueOf(0, ReservationArt.class), 
-					Stamp.DUMMY);
+					Optional.of(Stamp.DUMMY));
 		}
 		
 		public static class Stamp {
@@ -158,8 +177,42 @@ public class StampSettingPersonHelper {
 				"000000000000-0001", 
 				true, 
 				StampScreen.DUMMY,
-				lstStampPage);
+				lstStampPage, null);
 		return settingPerson;
+	}
+	
+	public static StampSettingPerson settingPersonNull() {
+		return new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				new ArrayList<StampPageLayout>(), null);
+	}
+	
+	public static StampSettingPerson settingPerson1() {
+		
+		List<StampPageLayout> lst = new ArrayList<>();
+		
+		List<ButtonSettings> lstButtonSet = new ArrayList<>();
+		
+		lstButtonSet.add(new ButtonSettings(
+				new ButtonPositionNo(1), 
+				ButtonSet.DUMMY, 
+				Type.DUMMY,
+				EnumAdaptor.valueOf(0, NotUseAtr.class), 
+				EnumAdaptor.valueOf(0, AudioType.class)));
+		
+		lst.add(new StampPageLayout(new PageNo(1),
+				new StampPageName("DUMMY"),
+				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")),
+				ButtonLayoutType.SMALL_8,
+				lstButtonSet));
+		
+		return new StampSettingPerson(
+				"000000000000-0001", 
+				true, 
+				StampScreen.DUMMY,
+				lst, null);
 	}
 	
 	public static StampPageLayout crePageLayout(int buttonPositionNo,int pageNo){
@@ -179,6 +232,24 @@ public class StampSettingPersonHelper {
 				EnumAdaptor.valueOf(0, ButtonLayoutType.class), 
 				lstButtonSetAdd);
 		return pageLayout;
+	}
+	
+	public static List<ButtonSettings> getButtonSettings() {
+		List<ButtonSettings> lstBS = new ArrayList<>();
+		
+		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
+				new ButtonType(ReservationArt.RESERVATION, null),
+				NotUseAtr.USE,
+				AudioType.GOOD_MORNING));
+		
+		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
+				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
+				new ButtonType(ReservationArt.RESERVATION, null),
+				NotUseAtr.USE,
+				AudioType.GOOD_MORNING));
+		
+		return lstBS;
 	}
  
 

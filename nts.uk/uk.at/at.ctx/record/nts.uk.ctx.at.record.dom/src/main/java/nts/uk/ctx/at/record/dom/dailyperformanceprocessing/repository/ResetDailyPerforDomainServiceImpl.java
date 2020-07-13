@@ -25,7 +25,6 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.StampBeforeReflection;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -52,7 +51,9 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ReflectShortWorkingTimeDomainService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -239,11 +240,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 
 							ReflectShortWorkingOutPut outPut = reflectShortWorkingTimeDomainService.reflect(
 									empCalAndSumExecLogID, companyID, processingDate, employeeID,
-									workInfoOfDailyPerformanceUpdate, null);
+									workInfoOfDailyPerformanceUpdate.getWorkInformation(), null);
 
 							if (outPut.getErrMesInfos() == null
 									|| (outPut.getErrMesInfos() != null && outPut.getErrMesInfos().isEmpty())) {
-								shortTimeOfDailyPerformance = outPut.getShortTimeOfDailyPerformance();
+								shortTimeOfDailyPerformance = new ShortTimeOfDailyPerformance(employeeID, processingDate, outPut.getShortTimeOfDailyPerformance());
 								ReflectStampOutput output2 = new ReflectStampOutput();
 								output2.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
 								stampOutput.setReflectStampOutput(output2);

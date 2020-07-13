@@ -19,8 +19,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class TimeActualStamp {
-	
+	//実打刻
 	private Optional<WorkStamp> actualStamp;
+	//打刻
 	@Setter
 	private Optional<WorkStamp> stamp = Optional.empty();
 	

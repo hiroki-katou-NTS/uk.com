@@ -12,14 +12,14 @@ const prefix = 'nts.uk.storage'
 
 			return $.Deferred().resolve()
 				.then(() => {
-					nts.uk.sessionStorage.setItem(name, $saveValue);
+					nts.uk.localStorage.setItem(`${prefix}.${name}`, $saveValue);
 				})
 				.then(() => $storeSession(name));
 		} else if (arguments.length === 1) {
 			// getter method
 			return $.Deferred().resolve()
 				.then(() => {
-					const $result = nts.uk.sessionStorage.getItem(name);
+					const $result = nts.uk.localStorage.getItem(`${prefix}.${name}`);
 
 					if ($result.isPresent()) {
 						const $string = atob($result.value)
@@ -40,7 +40,7 @@ const prefix = 'nts.uk.storage'
 			return $.Deferred().resolve()
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
-					nts.uk.sessionStorage.removeItem(OPENWD);
+					nts.uk.localStorage.removeItem(OPENWD);
 
 					return value;
 				});
@@ -108,6 +108,15 @@ function component(options: { name: string; template: string; }): any {
 									}
 								});
 
+								Object.defineProperty($viewModel, 'dispose', {
+									value: function dispose() {
+
+										if (typeof $viewModel.destroyed === 'function') {
+											$viewModel.destroyed.apply($viewModel, []);
+										}
+									}
+								});
+
 								return $viewModel;
 							}
 						}
@@ -118,6 +127,7 @@ function component(options: { name: string; template: string; }): any {
 }
 
 function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
+
 	return function (constructor: { new(): KnockoutBindingHandler; }) {
 		ko.bindingHandlers[params.bindingName] = new constructor();
 		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
@@ -137,7 +147,7 @@ function $i18n(text: string, params?: string[]) {
 }
 
 function $jump() {
-	const args: Array<any> = [].slice.apply(arguments, [])
+	const args: any[] = Array.prototype.slice.apply(arguments)
 		, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 			(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -202,8 +212,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	info: {
 		value: function $info() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.info.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.info.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -211,8 +222,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	alert: {
 		value: function $alert() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.alert.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.alert.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -220,8 +232,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	error: {
 		value: function $error() {
 			const dfd = $.Deferred<void>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			dialog.error.apply(null, [...(arguments as any)]).then(() => dfd.resolve());
+			dialog.error.apply(null, args).then(() => dfd.resolve());
 
 			return dfd.promise();
 		}
@@ -229,8 +242,9 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
 	confirm: {
 		value: function $confirm() {
 			const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
+			const args: any[] = Array.prototype.slice.apply(arguments);
 
-			const $cf = dialog.confirm.apply(null, [...(arguments as any)]);
+			const $cf = dialog.confirm.apply(null, args);
 
 			$cf.ifYes(() => {
 				dfd.resolve('yes');
@@ -254,12 +268,12 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
 	self: {
 		value: function $to() {
-			$jump.apply(null, [...[].slice.apply(arguments, [])]);
+			$jump.apply(null, [...Array.prototype.slice.apply(arguments, [])]);
 		}
 	},
 	blank: {
 		value: function $other() {
-			const args: Array<any> = [].slice.apply(arguments, [])
+			const args: Array<any> = Array.prototype.slice.apply(arguments, [])
 				, params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
 					(args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
 
@@ -268,7 +282,40 @@ Object.defineProperties($jump, {
 	}
 });
 
+
+const $size = function (height: string | number, width: string | number) {
+	const wd = nts.uk.ui.windows.getSelf();
+
+	if (wd) {
+		wd.setSize(height, width);
+	}
+};
+
+Object.defineProperties($size, {
+	width: {
+		value: function (width: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setWidth(width);
+			}
+		}
+	},
+	height: {
+		value: function (height: string | number) {
+			const wd = nts.uk.ui.windows.getSelf();
+
+			if (wd) {
+				wd.setHeight(height);
+			}
+		}
+	}
+});
+
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+	size: {
+		value: $size
+	},
 	close: {
 		value: function $close(result?: any) {
 			if (window.top !== window) {
@@ -281,14 +328,40 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 	modal: {
 		value: function $modal(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
+			const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
-			$storage(params).then(() => {
-				windows.sub.modal(webapp, path).onClosed(() => {
-					$storage().then(($data: any) => {
-						jdf.resolve($data);
-					});
+			if (nowapp) {
+				$storage(path).then(() => {
+					windows.sub.modal(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
+						});
 				});
-			});
+			} else {
+				$storage(params).then(() => {
+					windows.sub.modal(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
+						});
+				});
+			}
 
 			return jdf.promise();
 		}
@@ -296,14 +369,39 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 	modeless: {
 		value: function $modeless(webapp: string, path: string, params?: any) {
 			const jdf = $.Deferred<any>();
+			const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
-			$storage(params).then(() => {
-				windows.sub.modeless(webapp, path).onClosed(() => {
-					$storage().then(($data: any) => {
-						jdf.resolve($data);
-					});
+			if (nowapp) {
+				$storage(path).then(() => {
+					windows.sub.modeless(webapp)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
+						});
 				});
-			});
+			} else {
+				$storage(params).then(() => {
+					windows.sub.modeless(webapp, path)
+						.onClosed(() => {
+							const { localShared } = windows.container;
+
+							_.each(localShared, (value: any, key: string) => {
+								windows.setShared(key, value);
+							});
+
+							$storage().then(($data: any) => {
+								jdf.resolve($data);
+							});
+						});
+				});
+			}
 
 			return jdf.promise();
 		}
@@ -313,9 +411,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 			if (arguments.length == 1) {
 				return $storeSession(name);
 			} else {
-				$storeSession(name, params);
-				// for old page
-				windows.setShared(name, params);
+				return $.Deferred().resolve()
+					.then(() => {
+						$storeSession(name, params);
+						// for old page
+						windows.setShared(name, params);
+					});
 			}
 		}
 	}
@@ -406,7 +507,7 @@ BaseViewModel.prototype.$errors = function $errors() {
 };
 
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act: string[]) {
+const $validate = function $validate(act: string[]) {
 	const args: string[] = Array.prototype.slice.apply(arguments);
 
 	if (args.length === 0) {
@@ -440,4 +541,72 @@ BaseViewModel.prototype.$validate = function $validate(act: string[]) {
 	}
 };
 
+Object.defineProperty($validate, "constraint", {
+	value: function $constraint(name: string, value: any) {
+		if(arguments.length === 0) {
+			return $.Deferred().resolve()
+			.then(() => __viewContext.primitiveValueConstraints);
+		} else if (arguments.length === 1) {
+			return $.Deferred().resolve()
+				.then(() => _.get(__viewContext.primitiveValueConstraints, name));
+		} else {
+			return $.Deferred().resolve()
+				.then(() => (ui.validation as any).writeConstraint(name, value));
+		}
+	}
+});
+
+BaseViewModel.prototype.$validate = $validate;
+
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+
+@handler({
+	bindingName: 'i18n',
+	validatable: true,
+	virtual: false
+})
+class I18nBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
+		const msg = ko.unwrap(valueAccessor());
+		const params = ko.unwrap(allBindingsAccessor.get('params'));
+
+		$(element).text(nts.uk.resource.getText(msg, params));
+	}
+}
+
+@handler({
+	bindingName: 'icon',
+	validatable: true,
+	virtual: false
+})
+class IconBindingHandler implements KnockoutBindingHandler {
+	update(el: HTMLElement, value: () => KnockoutObservable<number> | number) {
+		ko.computed(() => {
+			const numb: number = ko.toJS(value());
+			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
+
+			$.get(url)
+				.then(() => {
+					$(el).css({
+						'background-image': `url('${url}')`,
+						'background-repeat': 'no-repeat',
+						'background-position': 'center'
+					});
+				});
+		});
+	}
+}
+
+@handler({
+	bindingName: 'date',
+	validatable: true,
+	virtual: false
+})
+class DateBindingHandler implements KnockoutBindingHandler {
+	update(element: HTMLElement, valueAccessor: () => KnockoutObservable<Date> | Date, allBindingsAccessor?: KnockoutAllBindingsAccessor) {
+		const date = ko.unwrap(valueAccessor());
+		const format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+
+		$(element).text(moment(date).format(format));
+	}
+}

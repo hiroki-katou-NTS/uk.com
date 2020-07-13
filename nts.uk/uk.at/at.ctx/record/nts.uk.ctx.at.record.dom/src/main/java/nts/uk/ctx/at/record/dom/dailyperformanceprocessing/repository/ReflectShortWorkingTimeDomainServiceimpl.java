@@ -9,11 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ConfirmReflectWorkingTimeOuput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -25,6 +22,9 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ConfirmReflectWorkingTimeOuput;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.ReflectShortWorkingTimeDomainService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
@@ -60,9 +60,9 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	private SWorkTimeHistItemRepository SWorkTimeHistItemRepo;
 
 	@Override
-	public ReflectShortWorkingOutPut reflect(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+	public ReflectShortWorkingOutPut reflect(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyAttendance attendance, TimeLeavingOfDailyAttd dailyAttd) {
 		ReflectShortWorkingOutPut workingOutPut = new ReflectShortWorkingOutPut();
-		ConfirmReflectWorkingTimeOuput confirmReflectWorkingTime = confirmReflectWorkingTime(empCalAndSumExecLogID,companyId, date, employeeId, WorkInfo, timeLeavingOfDailyPerformance);
+		ConfirmReflectWorkingTimeOuput confirmReflectWorkingTime = confirmReflectWorkingTime(empCalAndSumExecLogID,companyId, date, employeeId, attendance, dailyAttd);
 		
 		if (confirmReflectWorkingTime.getErrMesInfos() != null && !confirmReflectWorkingTime.getErrMesInfos().isEmpty()) {
 			workingOutPut.getErrMesInfos().addAll(confirmReflectWorkingTime.getErrMesInfos());
@@ -83,7 +83,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 						lstShortWorkingTimeSheet.add(shortWorkingTimeSheet);
 					}
 					ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = new ShortTimeOfDailyPerformance(employeeId, lstShortWorkingTimeSheet, date);
-					workingOutPut.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance);
+					workingOutPut.setShortTimeOfDailyPerformance(shortTimeOfDailyPerformance.getTimeZone());
 				}
 				return workingOutPut;
 			}
@@ -93,8 +93,9 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 	}
 
 	// 短時間勤務時間帯を反映するか確認する
+	@Override
 	public ConfirmReflectWorkingTimeOuput confirmReflectWorkingTime(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId,
-			WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+			WorkInfoOfDailyAttendance WorkInfo, TimeLeavingOfDailyAttd timeLeavingOfDailyPerformance) {
 		ConfirmReflectWorkingTimeOuput checkReflectWorkInfoOfDailyPerformance = null;
 		
 		Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformanceOptional = this.shortTimeOfDailyPerformanceRepo
@@ -107,9 +108,9 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 			return checkReflectWorkInfoOfDailyPerformance;
 		}
 		List<TimeLeavingWork> timeLeavingWorks = null;
-		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks() != null
-				&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
-			timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 		}else{
 			Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformanceOptional = this.timeRepo
 					.findByKey(employeeId, date);
@@ -168,14 +169,14 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		return false;
 	}
 
-	public ConfirmReflectWorkingTimeOuput reflectWorkInfoOfDailyPerformance(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyPerformance WorkInfo) {
+	public ConfirmReflectWorkingTimeOuput reflectWorkInfoOfDailyPerformance(String empCalAndSumExecLogID, String companyId, GeneralDate date, String employeeId, WorkInfoOfDailyAttendance WorkInfo) {
 		
 		ConfirmReflectWorkingTimeOuput outPut = new ConfirmReflectWorkingTimeOuput();
 		
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 		
 		// ドメインモデル「勤務種類」を取得する
-		Optional<WorkType> workTypeOpt = this.workTypeRepo.findByDeprecated(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		Optional<WorkType> workTypeOpt = this.workTypeRepo.findByDeprecated(companyId, WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		
 		if (!workTypeOpt.isPresent()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
@@ -186,7 +187,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 			return outPut;
 		}
 		
-		WorkInformation scheduleWorkInformation = WorkInfo.getWorkInformation().getRecordInfo();
+		WorkInformation scheduleWorkInformation = WorkInfo.getRecordInfo();
 		WorkTypeCode workTypeCode = scheduleWorkInformation.getWorkTypeCode();
 		boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId, workTypeCode.v());
 		if (checkHolidayOrNot) {
@@ -196,7 +197,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		}
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
-				.checkWorkDay(WorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			outPut.setReflect(false);

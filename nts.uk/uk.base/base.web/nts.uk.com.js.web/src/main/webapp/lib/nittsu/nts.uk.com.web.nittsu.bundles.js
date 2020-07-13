@@ -11,6 +11,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __spreadArrays = (this && this.__spreadArrays) || function () {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
@@ -47725,7 +47731,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
         return $.Deferred().resolve()
             .then(function () {
-            nts.uk.sessionStorage.setItem(name, $saveValue_1);
+            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
         })
             .then(function () { return $storeSession(name); });
     }
@@ -47733,7 +47739,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         // getter method
         return $.Deferred().resolve()
             .then(function () {
-            var $result = nts.uk.sessionStorage.getItem(name);
+            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
             if ($result.isPresent()) {
                 var $string = atob($result.value)
                     .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
@@ -47751,7 +47757,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.sessionStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(OPENWD);
             return value;
         });
     }
@@ -47804,6 +47810,13 @@ function component(options) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            Object.defineProperty($viewModel, 'dispose', {
+                                value: function dispose() {
+                                    if (typeof $viewModel.destroyed === 'function') {
+                                        $viewModel.destroyed.apply($viewModel, []);
+                                    }
+                                }
+                            });
                             return $viewModel;
                         }
                     }
@@ -47829,7 +47842,7 @@ function $i18n(text, params) {
     return resource.getText(text, params);
 }
 function $jump() {
-    var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
         (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
     if (window.top === window.self) {
         $storage(params).then(function () { return request.jump.apply(null, args); });
@@ -47886,28 +47899,32 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
     info: {
         value: function $info() {
             var dfd = $.Deferred();
-            dialog.info.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     alert: {
         value: function $alert() {
             var dfd = $.Deferred();
-            dialog.alert.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     error: {
         value: function $error() {
             var dfd = $.Deferred();
-            dialog.error.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     confirm: {
         value: function $confirm() {
             var dfd = $.Deferred();
-            var $cf = dialog.confirm.apply(null, __spreadArrays(arguments));
+            var args = Array.prototype.slice.apply(arguments);
+            var $cf = dialog.confirm.apply(null, args);
             $cf.ifYes(function () {
                 dfd.resolve('yes');
             });
@@ -47925,18 +47942,45 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
     self: {
         value: function $to() {
-            $jump.apply(null, __spreadArrays([].slice.apply(arguments, [])));
+            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
         }
     },
     blank: {
         value: function $other() {
-            var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
                 (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
             $storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
         }
     }
 });
+var $size = function (height, width) {
+    var wd = nts.uk.ui.windows.getSelf();
+    if (wd) {
+        wd.setSize(height, width);
+    }
+};
+Object.defineProperties($size, {
+    width: {
+        value: function (width) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setWidth(width);
+            }
+        }
+    },
+    height: {
+        value: function (height) {
+            var wd = nts.uk.ui.windows.getSelf();
+            if (wd) {
+                wd.setHeight(height);
+            }
+        }
+    }
+});
 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+    size: {
+        value: $size
+    },
     close: {
         value: function $close(result) {
             if (window.top !== window) {
@@ -47949,26 +47993,70 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
     modal: {
         value: function $modal(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modal(webapp, path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modal(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modal(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
     modeless: {
         value: function $modeless(webapp, path, params) {
             var jdf = $.Deferred();
-            $storage(params).then(function () {
-                windows.sub.modeless(webapp, path).onClosed(function () {
-                    $storage().then(function ($data) {
-                        jdf.resolve($data);
+            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+            if (nowapp) {
+                $storage(path).then(function () {
+                    windows.sub.modeless(webapp)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
                     });
                 });
-            });
+            }
+            else {
+                $storage(params).then(function () {
+                    windows.sub.modeless(webapp, path)
+                        .onClosed(function () {
+                        var localShared = windows.container.localShared;
+                        _.each(localShared, function (value, key) {
+                            windows.setShared(key, value);
+                        });
+                        $storage().then(function ($data) {
+                            jdf.resolve($data);
+                        });
+                    });
+                });
+            }
             return jdf.promise();
         }
     },
@@ -47978,9 +48066,12 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
                 return $storeSession(name);
             }
             else {
-                $storeSession(name, params);
-                // for old page
-                windows.setShared(name, params);
+                return $.Deferred().resolve()
+                    .then(function () {
+                    $storeSession(name, params);
+                    // for old page
+                    windows.setShared(name, params);
+                });
             }
         }
     }
@@ -48065,7 +48156,7 @@ BaseViewModel.prototype.$errors = function $errors() {
     ;
 };
 // Hàm validate được wrapper lại để có thể thực hiện promisse
-BaseViewModel.prototype.$validate = function $validate(act) {
+var $validate = function $validate(act) {
     var args = Array.prototype.slice.apply(arguments);
     if (args.length === 0) {
         return $.Deferred().resolve()
@@ -48097,5 +48188,82 @@ BaseViewModel.prototype.$validate = function $validate(act) {
             .then(function () { return !$(selectors_2).ntsError('hasError'); });
     }
 };
+Object.defineProperty($validate, "constraint", {
+    value: function $constraint(name, value) {
+        if (arguments.length === 0) {
+            return $.Deferred().resolve()
+                .then(function () { return __viewContext.primitiveValueConstraints; });
+        }
+        else if (arguments.length === 1) {
+            return $.Deferred().resolve()
+                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+        }
+        else {
+            return $.Deferred().resolve()
+                .then(function () { return ui.validation.writeConstraint(name, value); });
+        }
+    }
+});
+BaseViewModel.prototype.$validate = $validate;
 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+var I18nBindingHandler = /** @class */ (function () {
+    function I18nBindingHandler() {
+    }
+    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var msg = ko.unwrap(valueAccessor());
+        var params = ko.unwrap(allBindingsAccessor.get('params'));
+        $(element).text(nts.uk.resource.getText(msg, params));
+    };
+    I18nBindingHandler = __decorate([
+        handler({
+            bindingName: 'i18n',
+            validatable: true,
+            virtual: false
+        })
+    ], I18nBindingHandler);
+    return I18nBindingHandler;
+}());
+var IconBindingHandler = /** @class */ (function () {
+    function IconBindingHandler() {
+    }
+    IconBindingHandler.prototype.update = function (el, value) {
+        ko.computed(function () {
+            var numb = ko.toJS(value());
+            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+            $.get(url)
+                .then(function () {
+                $(el).css({
+                    'background-image': "url('" + url + "')",
+                    'background-repeat': 'no-repeat',
+                    'background-position': 'center'
+                });
+            });
+        });
+    };
+    IconBindingHandler = __decorate([
+        handler({
+            bindingName: 'icon',
+            validatable: true,
+            virtual: false
+        })
+    ], IconBindingHandler);
+    return IconBindingHandler;
+}());
+var DateBindingHandler = /** @class */ (function () {
+    function DateBindingHandler() {
+    }
+    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+        var date = ko.unwrap(valueAccessor());
+        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+        $(element).text(moment(date).format(format));
+    };
+    DateBindingHandler = __decorate([
+        handler({
+            bindingName: 'date',
+            validatable: true,
+            virtual: false
+        })
+    ], DateBindingHandler);
+    return DateBindingHandler;
+}());
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
