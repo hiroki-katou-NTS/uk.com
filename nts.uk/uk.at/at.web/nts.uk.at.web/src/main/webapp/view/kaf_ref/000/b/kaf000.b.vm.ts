@@ -31,11 +31,11 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         created(params: any) {
             const vm = this;
             vm.listAppSub = ko.observableArray([
-                new ApplicationSub("app1", 0),
+                new ApplicationSub("app1", 2),
                 new ApplicationSub("app2", 1),
-                new ApplicationSub("app3", 2),
+                new ApplicationSub("app3", 0),
             ]);
-            vm.currentAppSub = ko.observable(new ApplicationSub("app1", 0));
+            vm.currentAppSub = ko.observable(new ApplicationSub("app1", 2));
             vm.kaf007ViewModel = {
                 application: ko.observable(new Application("", 0, 2, "")),
                 appWorkChange: ko.observable(new AppWorkChange(0, 0))        

@@ -8,6 +8,21 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kaf_ref/000/b/component1/kaf000.b.component1.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component2/kaf000.b.component2.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component3/kaf000.b.component3.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component4/kaf000.b.component4.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component5/kaf000.b.component5.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component6/kaf000.b.component6.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/component7/kaf000.b.component7.css" />
+			<com:stylefile path="/view/kaf_ref/000/b/kaf000.b.css" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component1/kaf000.b.component1.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component2/kaf000.b.component2.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component3/kaf000.b.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component4/kaf000.b.component4.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component5/kaf000.b.component5.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component6/kaf000.b.component6.js" />
+			<com:scriptfile path="/view/kaf_ref/000/b/component7/kaf000.b.component7.js" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/b/kaf007.b.vm.js" />
@@ -18,16 +33,18 @@
 				<div style="display: inline-block;">
 					<a class="goback link-button">#{i18n.getText('KAF000_14')}</a>
 				</div>
-				<!-- B1_2 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: back, enable: true">
-					<i class="icon icon-button-arrow-left"></i>
-				</button>
-				<!-- B1_3 -->
-				<button class="kaf000-function-btn"
-					data-bind="click: next, enable: true">
-					<i class="icon icon-button-arrow-right"></i>
-				</button>
+				<div style="display: inline-block; margin-left: 10px; margin-right: 10px;">
+					<!-- B1_2 -->
+					<button class="kaf000-function-btn"
+						data-bind="click: back, enable: true">
+						<i class="icon icon-button-arrow-left"></i>
+					</button>
+					<!-- B1_3 -->
+					<button class="kaf000-function-btn"
+						data-bind="click: next, enable: true">
+						<i class="icon icon-button-arrow-right"></i>
+					</button>
+				</div>
 				<div style="display: inline-block;">
 					<!-- B1_4 -->
 					<div class="controlButtonCell_kaf000"
