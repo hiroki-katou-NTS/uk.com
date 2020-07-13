@@ -47842,7 +47842,7 @@ function $i18n(text, params) {
     return resource.getText(text, params);
 }
 function $jump() {
-    var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
         (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
     if (window.top === window.self) {
         $storage(params).then(function () { return request.jump.apply(null, args); });
@@ -47899,28 +47899,32 @@ BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
     info: {
         value: function $info() {
             var dfd = $.Deferred();
-            dialog.info.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     alert: {
         value: function $alert() {
             var dfd = $.Deferred();
-            dialog.alert.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     error: {
         value: function $error() {
             var dfd = $.Deferred();
-            dialog.error.apply(null, __spreadArrays(arguments)).then(function () { return dfd.resolve(); });
+            var args = Array.prototype.slice.apply(arguments);
+            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
             return dfd.promise();
         }
     },
     confirm: {
         value: function $confirm() {
             var dfd = $.Deferred();
-            var $cf = dialog.confirm.apply(null, __spreadArrays(arguments));
+            var args = Array.prototype.slice.apply(arguments);
+            var $cf = dialog.confirm.apply(null, args);
             $cf.ifYes(function () {
                 dfd.resolve('yes');
             });
@@ -47938,12 +47942,12 @@ BaseViewModel.prototype.$jump = $jump;
 Object.defineProperties($jump, {
     self: {
         value: function $to() {
-            $jump.apply(null, __spreadArrays([].slice.apply(arguments, [])));
+            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
         }
     },
     blank: {
         value: function $other() {
-            var args = [].slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
                 (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
             $storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
         }
