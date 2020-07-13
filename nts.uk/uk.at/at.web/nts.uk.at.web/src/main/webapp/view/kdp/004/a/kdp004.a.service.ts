@@ -31,11 +31,11 @@ module nts.uk.at.view.kdp004.a {
 			return ajax("at", isAdmin ? url.loginAdminMode : url.loginEmployeeMode, data);
 		}
 
-		export function fingerAuth(result) {
+		export function fingerAuth(param) {
 			let dfd = $.Deferred<any>();
 			//dfd.resolve({ result: Math.floor(Math.random() * 2) === 1 ? true : false });
 
-			dfd.resolve({ result: result });
+			dfd.resolve({ result: param.fingerAuthCkb, messageId: param.selectedMsg });
 			//return ajax("at", url.fingerAuth);
 			return dfd.promise();
 		}
@@ -47,7 +47,6 @@ module nts.uk.at.view.kdp004.a {
 		export function getStampToSuppress(): JQueryPromise<any> {
 			return ajax("at", url.getStampToSuppress);
 		}
-		
 		export function getLogginSetting(): JQueryPromise<any> {
 			return ajax("at", url.getLogginSetting);
 		}
