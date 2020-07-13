@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.infra.repository.application.gobackdirectly;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
  * @author hoangnd
  *
  */
+@Stateless
 public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBackDirectlyRepository {
 	public static final String FIND_BY_ID = "SELECT * FROM KRQST_APP_GOBACK_DIRECTLY WHERE APP_ID = @appId";
 
