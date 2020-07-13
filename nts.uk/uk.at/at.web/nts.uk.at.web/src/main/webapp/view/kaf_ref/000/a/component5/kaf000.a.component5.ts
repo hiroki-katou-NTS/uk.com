@@ -5,17 +5,22 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/a/component5/index.html'
     })
     class Kaf000AComponent2ViewModel extends ko.ViewModel {
-        prePostAtr: KnockoutObservable<number>;
         appType: number;
-        appDate: KnockoutObservable<any>;
-        commonSetting: any;
+        appDispInfoStartupOutput: any;
+        opAppStandardReasonCD: KnockoutObservable<number> = ko.observable(1);
+        opAppReason: KnockoutObservable<string> = ko.observable("");
+        reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
         created(params: any) {
             const vm = this;
-            vm.prePostAtr = params.application().prePostAtr;
-            vm.appDate = params.application().appDate;
-            vm.commonSetting = params.commonSetting;
-            vm.commonSetting.subscribe(value => {
-                vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
+            vm.reasonTypeItemLst([
+                {
+                    appStandardReasonCD: 1,
+                    opReasonForFixedForm: "1"    
+                }
+            ]);
+            vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+            vm.appDispInfoStartupOutput.subscribe(value => {
+                
             });
         }
     

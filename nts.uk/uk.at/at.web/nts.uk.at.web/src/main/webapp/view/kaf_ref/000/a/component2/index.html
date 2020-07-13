@@ -1,29 +1,10 @@
-<div>
+<div id="kaf000-component2">
 	<div class="table">
-		<div class="cell" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_49')"></div>
-		<div class="cell">
-			<div data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
-											required:true, 
-											value: appDate, 
-											dateFormat: 'YYYY/MM/DD'}, 
-											acceptJapaneseCalendar: true">
-			</div>
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 		</div>
-	</div>
-	<div class="table">
-		<div class="cell" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_46')"></div>
-		<div class="cell">
-			<div data-bind="ntsSwitchButton: {
-						options: ko.observableArray([
-                                { prePostCode: 0, prePostName: function() { return $i18n('KAF000_47'); } },
-                                { prePostCode: 1, prePostName: function() { return $i18n('KAF000_48'); } }
-                                ]),
-						optionsValue: 'prePostCode',
-						optionsText: 'prePostName',
-						value: prePostAtr,
-						enable: true,
-						required: true }">
-			</div>
+		<div class="cell valign-center">
+			employeeName
 		</div>
 	</div>
 <div/>

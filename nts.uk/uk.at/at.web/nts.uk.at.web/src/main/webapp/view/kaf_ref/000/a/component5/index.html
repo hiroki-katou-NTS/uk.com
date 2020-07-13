@@ -1,0 +1,32 @@
+<div id="kaf000-component5">
+	<div class="table" style="margin-bottom: 5px;">
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF000_51')"></div>
+		</div>
+		<div class="cell valign-center">
+			<div id="combo-box" style="width: 390px"
+				data-bind="ntsComboBox: {
+								options: reasonTypeItemLst,
+								optionsValue: 'appStandardReasonCD',
+								optionsText: 'opReasonForFixedForm',
+								value: opAppStandardReasonCD,
+								columns: [{ prop: 'opReasonForFixedForm', length: 20 }]}">
+			</div>
+		</div>
+	</div>
+	<div class="table" style="margin-top: 5px;">
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: $i18n('KAF000_52')"></div>
+		</div>
+		<div class="cell valign-center">
+			<textarea style="height: 80px;" id="inpReasonTextarea"
+				data-bind="ntsMultilineEditor: {
+							value: opAppReason, 
+							option: {
+								resizeable: false,
+		                    	width: '450',
+		                    	textalign: 'left'
+		                   	},
+             				required : false }" />
+		</div>
+<div/>
