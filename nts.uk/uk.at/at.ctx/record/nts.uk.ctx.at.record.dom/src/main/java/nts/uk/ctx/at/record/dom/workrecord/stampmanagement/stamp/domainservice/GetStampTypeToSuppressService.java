@@ -5,113 +5,103 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.ClockHourMinute;
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 抑制する打刻種類を取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.抑制する打刻種類を取得する
- * 
+ *
  * @author tutk
  *
  */
+@Stateless
 public class GetStampTypeToSuppressService {
 
 	/**
 	 * [1] 取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeId
 	 * @param stampMeans
 	 * @return
 	 */
 	public static StampToSuppress get(Require require, String employeeId, StampMeans stampMeans) {
+		// if not [prv-1] 打刻ボタンを抑制するか(require, 打刻手段)
 		if (!checkOffStampButton(require, stampMeans)) {
+			// return 抑制する打刻#[C-1] 全ての打刻を強調しない()
 			return StampToSuppress.allStampFalse();
 		}
-		DateAndTimePeriod dateAndTimePeriod = calOneDayRange(require, employeeId);
-
+		// $日時期間 = 日時期間#1日範囲を求める(require, 社員ID)
+		DateAndTimePeriod dateAndTimePeriod = DateAndTimePeriod.calOneDayRange(require, employeeId);
+		// $打刻リスト = [prv-2] 打刻データを取得する(require, 社員ID, 日時期間)
 		List<Stamp> listStamp = getDataStamp(require, employeeId, dateAndTimePeriod);
-
+		// return [prv-3] 抑制する打刻を判断する($打刻リスト)
 		return judgmentStampToSuppress(listStamp);
 	}
 
 	/**
 	 * [prv-1] 打刻ボタンを抑制するか
-	 * 
+	 *
 	 * @param require
 	 * @param stampMeans
 	 * @return
 	 */
 	private static boolean checkOffStampButton(Require require, StampMeans stampMeans) {
+		// if not 打刻手段.打刻ボタンを抑制する必要か()
 		if (!stampMeans.checkIndivition()) {
 			return false;
 		}
-		Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet();
-		if (!optStampSettingPerson.isPresent()) {
-			return false;
+		// if 打刻手段 = 個人打刻
+		if (stampMeans.equals(StampMeans.INDIVITION)) {
+			// $個人利用の打刻設定 = require.個人利用の打刻設定()
+			Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet(AppContexts.user().companyId());
+			// if $個人利用の打刻設定.isEmpty
+			if (!optStampSettingPerson.isPresent()) {
+				return false;
+			}
+			// return $個人利用の打刻設定.打刻ボタンを抑制する
+			return optStampSettingPerson.get().isButtonEmphasisArt();
+		}
+		// if 打刻手段 = スマホ打刻
+		if (stampMeans.equals(StampMeans.SMART_PHONE)) {
+			// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定()
+			Optional<SettingsSmartphoneStamp> optSettingsSmartphoneStamp = require
+					.getSettingsSmartphone(AppContexts.user().companyId());
+			// if $スマホ打刻の打刻設定.isEmpty
+
+			if (!optSettingsSmartphoneStamp.isPresent()) {
+				return false;
+			}
+			// return $スマホ打刻の打刻設定.打刻ボタンを抑制する
+			return optSettingsSmartphoneStamp.get().isButtonEmphasisArt();
+		}
+		// if 打刻手段 = ポータル打刻
+		if (stampMeans.equals(StampMeans.PORTAL)) {
+			// $ポータルの打刻設定 = require.ポータルの打刻設定()
+			Optional<PortalStampSettings> optPotalSetting = require.getPotalSettings(AppContexts.user().companyId());
+			// if $ポータルの打刻設定.isEmpty
+			if (!optPotalSetting.isPresent()) {
+				return false;
+			}
+			// return $個人利用の打刻設定.打刻ボタンを抑制する
+			return optPotalSetting.get().isButtonEmphasisArt();
 		}
 
-		return optStampSettingPerson.get().isButtonEmphasisArt();
+		return false;
 	}
 
 	/**
-	 * [prv-2] 1日範囲を求める
-	 * 
-	 * @param require
-	 * @param employeeId
-	 * @return
-	 */
-	private static DateAndTimePeriod calOneDayRange(Require require, String employeeId) {
-		Optional<WorkingConditionItem> optWorkingConditionItem = require.findWorkConditionByEmployee(employeeId,
-				GeneralDate.today());
-		if (!optWorkingConditionItem.isPresent()) {
-			throw new BusinessException("Msg_430");
-		}
-
-		Optional<WorkTimeCode> workTimeCode = optWorkingConditionItem.get().getWorkCategory().getWeekdayTime()
-				.getWorkTimeCode();
-		if (!workTimeCode.isPresent()) {
-			throw new BusinessException("Msg_1142");
-		}
-
-		Optional<PredetemineTimeSetting> optPredetemineTimeSetting = require.findByWorkTimeCode(workTimeCode.get().v());
-		if (!optPredetemineTimeSetting.isPresent()) {
-			throw new BusinessException("Msg_1142");
-		}
-
-		TimeWithDayAttr startDateClock = optPredetemineTimeSetting.get().getStartDateClock();
-		GeneralDate baseDate = GeneralDate.today();
-		ClockHourMinute clockHourMinute = GeneralDateTime.now().clockHourMinute();
-		if (clockHourMinute.v() < startDateClock.v()) {
-			GeneralDateTime dateTime = GeneralDateTime.now().addDays(-1);
-			GeneralDateTime statDateTime = GeneralDateTime
-					.ymdhms(dateTime.year(), dateTime.month(), dateTime.day(), 0, 0, 0).addMinutes(startDateClock.v());
-			GeneralDateTime endDateTime = GeneralDateTime.ymdhms(GeneralDateTime.now().year(),
-					GeneralDateTime.now().month(), GeneralDateTime.now().day(), 0, 0, 0).addMinutes(startDateClock.v());
-			return new DateAndTimePeriod(statDateTime, endDateTime);
-		}
-		GeneralDate date = baseDate.addDays(1);
-		GeneralDateTime statDateTime = GeneralDateTime
-				.ymdhms(baseDate.year(), baseDate.month(), baseDate.day(), 0, 0, 0).addMinutes(startDateClock.v());
-		GeneralDateTime endDateTime = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
-				.addMinutes(startDateClock.v());
-		return new DateAndTimePeriod(statDateTime, endDateTime);
-	}
-
-	/**
-	 * [prv-3] 打刻データを取得する
-	 * 
+	 * [prv-2] 打刻データを取得する
+	 *
 	 * @param require
 	 * @param employeeId
 	 * @param dateAndTimePeriod
@@ -140,9 +130,9 @@ public class GetStampTypeToSuppressService {
 		}
 		return listStamp;
 	}
-	
+
 	/**
-	 * [prv-4] 抑制する打刻を判断する
+	 * [prv-3] 抑制する打刻を判断する
 	 * 
 	 * @param listStamp
 	 * @return
@@ -156,17 +146,17 @@ public class GetStampTypeToSuppressService {
 						|| c.getType().getChangeClockArt() == ChangeClockArt.WORKING_OUT)
 				.sorted((x, y) -> y.getStampDateTime().compareTo(x.getStampDateTime()))
 				.findFirst();
-		
+
 		if(!oStamp.isPresent()) {
 			return StampToSuppress.highlightAttendance();
 		}
-		
+
 		Stamp stamp = oStamp.get();
-		
+
 		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK || stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN) {
 			return new StampToSuppress(true, false, false, true);
 		}
-		
+
 		if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT) {
 			return new StampToSuppress(true, true, true, false);
 		}
@@ -174,33 +164,38 @@ public class GetStampTypeToSuppressService {
 		return new StampToSuppress(true, true, true, true);
 	}
 
-	public static interface Require extends GetEmpStampDataService.Require {
+	public static interface Require extends DateAndTimePeriod.Require {
 
 		/**
-		 * [R-1] 個人利用の打刻設定 StampSetPerRepository
-		 * 
+		 * [R-1] 個人利用の打刻設定
+		 *
+		 * 個人利用の打刻設定Repository.取得する(会社ID)
+		 *
 		 * @param companyId
 		 * @return
 		 */
-		Optional<StampSettingPerson> getStampSet();
+		Optional<StampSettingPerson> getStampSet(String companyId);
 
 		/**
-		 * [R-2] 労働条件を取得する WorkingConditionService
-		 * 
-		 * @param employeeId
-		 * @param baseDate
-		 * @return
-		 */
-		Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate);
-
-		/**
-		 * [R-3] 所定時間設定を取得する PredetemineTimeSettingRepository
-		 * 
+		 * [R-2] スマホ打刻の打刻設定
+		 *
+		 * スマホ打刻の打刻設定Repository.取得する(会社ID)
+		 *
 		 * @param companyId
-		 * @param workTimeCode
 		 * @return
 		 */
-		Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode);
+		Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId);
+
+		/**
+		 * [R-3] ポータルの打刻設定
+		 *
+		 * ポータルの打刻設定Repository.取得する(会社ID)
+		 *
+		 * @param companyId
+		 * @param criteriaDate
+		 * @return
+		 */
+		Optional<PortalStampSettings> getPotalSettings(String comppanyID);
 	}
 
 }

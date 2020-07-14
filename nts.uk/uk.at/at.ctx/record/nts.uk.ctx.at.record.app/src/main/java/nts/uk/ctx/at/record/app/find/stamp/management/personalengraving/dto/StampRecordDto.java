@@ -72,7 +72,7 @@ public class StampRecordDto {
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = "";
 		
-		this.revervationAtr = stampRecord.getRevervationAtr().value;
+		//this.revervationAtr = stampRecord.getRevervationAtr().value;
 		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
 				: null;
 
@@ -84,7 +84,7 @@ public class StampRecordDto {
 
 			StampType type = stamp.getType();
 			this.stampArtName = type.createStampTypeDisplay();
-			this.changeHalfDay = type.getChangeHalfDay();
+			this.changeHalfDay = type.isChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;
@@ -125,7 +125,7 @@ public class StampRecordDto {
 		this.stampDate = info.getStampDatetime().toString("yyyy/MM/dd");
 		this.stampTime = info.getStampDatetime().toString("HH:mm");
 		this.stampTimeWithSec = stampDate.toString();
-		Stamp stamp = info.getStamp().isPresent() ? info.getStamp().get() : null;
+		Stamp stamp = !info.getStamp().isEmpty() ? info.getStamp().get(0) : null;
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = info.getStampAtr();
 		this.stampArtName = info.getStampAtr();
@@ -138,7 +138,7 @@ public class StampRecordDto {
 			
 
 			StampType type = stamp.getType();
-			this.changeHalfDay = type.getChangeHalfDay();
+			this.changeHalfDay = type.isChangeHalfDay();
 			this.goOutArt = type.getGoOutArt().isPresent() ? type.getGoOutArt().get().value : null;
 			this.setPreClockArt = type.getSetPreClockArt().value;
 			this.changeClockArt = type.getChangeClockArt().value;

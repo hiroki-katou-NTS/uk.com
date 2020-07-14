@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.stamp.application;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,6 @@ public class StampRecordDisCommand {
 	public static StampRecordDis toDomain(StampRecordDisCommand x){
 		
 		PromptingMessage promptingMessage = new PromptingMessage(new MessageContent(x.promptingMssage.getMessageContent()), new ColorCode(x.promptingMssage.getMessageColor()));
-		return new StampRecordDis(EnumAdaptor.valueOf(x.useArt, NotUseAtr.class), EnumAdaptor.valueOf(x.checkErrorType, CheckErrorType.class), promptingMessage);
+		return new StampRecordDis(EnumAdaptor.valueOf(x.useArt, NotUseAtr.class), EnumAdaptor.valueOf(x.checkErrorType, CheckErrorType.class), Optional.of(promptingMessage));
 	}
 }

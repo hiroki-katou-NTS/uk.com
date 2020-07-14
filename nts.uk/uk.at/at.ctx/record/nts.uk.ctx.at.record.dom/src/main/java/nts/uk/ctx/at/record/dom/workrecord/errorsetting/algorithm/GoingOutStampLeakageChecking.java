@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.CorrectionResult;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.calculationsetting.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;

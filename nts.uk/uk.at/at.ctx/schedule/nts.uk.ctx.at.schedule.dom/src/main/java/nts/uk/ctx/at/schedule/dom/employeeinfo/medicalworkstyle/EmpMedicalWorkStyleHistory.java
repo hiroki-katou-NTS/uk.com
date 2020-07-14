@@ -23,7 +23,7 @@ public class EmpMedicalWorkStyleHistory implements DomainAggregate {
 	
 	/**List<年月日期間の汎用履歴項目> 履歴 **/
 	
-	List<DateHistoryItem> listDateHistoryItem;
+	private List<DateHistoryItem> listDateHistoryItem;
 	
 	/**
 	 * 	[C-1] 社員の医療勤務形態履歴						

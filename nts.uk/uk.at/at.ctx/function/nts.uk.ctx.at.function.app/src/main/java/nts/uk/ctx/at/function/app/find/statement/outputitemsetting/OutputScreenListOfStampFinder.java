@@ -16,9 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
-import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
-import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -131,8 +129,8 @@ public class OutputScreenListOfStampFinder {
 					val listStempInfoDisp = employeeStampInfo.getListStampInfoDisp();
 					for (val stampInfoDisp : listStempInfoDisp) {
 						val optStamp = stampInfoDisp.getStamp();
-						if (optStamp.isPresent()) {
-							val workLocationCD = optStamp.get().getRefActualResults().getWorkLocationCD();
+						if (!optStamp.isEmpty()) {
+							val workLocationCD = optStamp.get(0).getRefActualResults().getWorkLocationCD();
 							if (workLocationCD.isPresent())
 								listWorkLocationCode.add(workLocationCD.get().v());
 						}
@@ -156,7 +154,7 @@ public class OutputScreenListOfStampFinder {
 		// 4 get* List<社員の打刻情報>.就業時間帯コード : List< 就業時間帯>
 		List<RefectActualResult> listRefectActualResult = listEmployeeStampInfo.stream().flatMap(c -> {
 			List<RefectActualResult> stampInfos = c.getListStampInfoDisp().stream().map(t -> t.getStamp())
-					.filter(s -> s.isPresent()).map(r -> r.get().getRefActualResults()).collect(Collectors.toList());
+					.filter(s -> !s.isEmpty()).map(r -> r.get(0).getRefActualResults()).collect(Collectors.toList());
 			return stampInfos.stream();
 		}).collect(Collectors.toList());
 		List<WorkTimeCode> listWorkTime = listRefectActualResult.stream().map(c -> c.getWorkTimeCode())
@@ -172,7 +170,7 @@ public class OutputScreenListOfStampFinder {
 			// StampInfoDisp
 			for (val stampInfoDisp : item.getListStampInfoDisp()) {
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
-				if(!stampInfoDisp.getStamp().isPresent()){
+				if(stampInfoDisp.getStamp().isEmpty()){
 					employeEngravingInfor
 					.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
 			employeEngravingInfor
@@ -190,9 +188,9 @@ public class OutputScreenListOfStampFinder {
 			employeEngravingInfor.setWorkTimeDisplayName("");
 			result.add(employeEngravingInfor);
 				}
-				if (!stampInfoDisp.getStamp().isPresent())
+				if (stampInfoDisp.getStamp().isEmpty())
 					continue;
-				val stamp = stampInfoDisp.getStamp().get();
+				val stamp = stampInfoDisp.getStamp().get(0);
 
 				String local = "";
 				String optSupportCard = "";
@@ -294,7 +292,7 @@ public class OutputScreenListOfStampFinder {
 				stampDakokuRepository);
 		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
 		List<RefectActualResult> listRefectActual = listStampInfoDisp.stream().map(c -> c.getStamp())
-				.filter(t -> t.isPresent()).distinct().map(g -> g.get().getRefActualResults())
+				.filter(t -> !t.isEmpty()).distinct().map(g -> g.get(0).getRefActualResults())
 				.collect(Collectors.toList());
 		// 勤務場所コードリスト = 打刻情報リスト:map $.打刻場所distinct
 		List<String> listWorkLocationCd = listRefectActual.stream().map(c -> c.getWorkLocationCD())
@@ -332,12 +330,12 @@ public class OutputScreenListOfStampFinder {
 			// String latitude = "";
 			// longitude = "";
 
-			if (stampInfoDisp.getStamp().isPresent()) {
+			if (!stampInfoDisp.getStamp().isEmpty()) {
 
-				stampMeans = stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name;
-				authcMethod = stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name;
+				stampMeans = stampInfoDisp.getStamp().get(0).getRelieve().getStampMeans().name;
+				authcMethod = stampInfoDisp.getStamp().get(0).getRelieve().getAuthcMethod().name;
 
-				val refActualResults = stampInfoDisp.getStamp().get().getRefActualResults();
+				val refActualResults = stampInfoDisp.getStamp().get(0).getRefActualResults();
 				val workLocationCD = refActualResults.getWorkLocationCD();
 
 				if (workLocationCD.isPresent()) {
@@ -353,7 +351,7 @@ public class OutputScreenListOfStampFinder {
 
 				}
 
-				val locationInfo = stampInfoDisp.getStamp().get().getLocationInfor();
+				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
 				if (locationInfo.isPresent()) {
 					val positionInfo = locationInfo.get().getPositionInfor();
 					if (positionInfo == null) {
@@ -436,7 +434,7 @@ public class OutputScreenListOfStampFinder {
 
 		@Override
 		public List<Stamp> getStamp(List<StampNumber> stampNumbers, GeneralDate stampDateTime) {
-			return stampDakokuRepository.get(stampNumbers, stampDateTime);
+			return stampDakokuRepository.get(AppContexts.user().contractCode(),stampNumbers, stampDateTime);
 		}
 
 	}
@@ -457,9 +455,10 @@ public class OutputScreenListOfStampFinder {
 		}
 
 		@Override
-		public List<Stamp> getStempRcNotResgistNumberStamp(DatePeriod period) {
-			return stampDakokuRepo.getStempRcNotResgistNumber(period);
-		}
+		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
+			// TODO Auto-generated method stub
+			return stampDakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
+		}	
 	}
 
 }

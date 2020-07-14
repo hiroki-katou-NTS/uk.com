@@ -7,5 +7,7 @@ public interface EmployeeRecordAdapter {
 	EmployeeRecordImport getPersonInfor(String employeeId);
 	
 	List<EmployeeRecordImport> getPersonInfor(List<String> listEmployeeId);
+	
+	List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids);
 
 }

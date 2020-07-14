@@ -5,8 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.stamp.application.CheckErrorType;
-import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * 
@@ -16,23 +15,21 @@ import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
  *
  */
 @AllArgsConstructor
+@Getter
 public class ErrorInformationApplication {
 
 	/**
 	 * エラー種類
 	 */
-	@Getter
 	private final CheckErrorType checkErrorType;
 
 	/**
 	 * エラーコードリスト
 	 */
-	@Getter
-	private final List<String> errorAlarmCode;
+	private final List<ErrorAlarmWorkRecordCode> errorAlarmCode;
 	/**
 	 * 促すメッセージ
 	 */
-	@Getter
-	private final PromptingMessage promptingMessage;
+	private final Optional<PromptingMessage> promptingMessage;
 
 }

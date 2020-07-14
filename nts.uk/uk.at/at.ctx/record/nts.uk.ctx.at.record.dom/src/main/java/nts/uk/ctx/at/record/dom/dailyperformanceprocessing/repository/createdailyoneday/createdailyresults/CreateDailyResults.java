@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionT
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainServiceImpl;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -54,12 +55,13 @@ public class CreateDailyResults {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 
-	@Inject
 	private ReflectWorkInforDomainServiceImpl reflectWorkInforDomainServiceImpl;
 	
 	@Inject
 	private CopyWorkTypeWorkTime copyWorkTypeWorkTime;
 
+	@Inject
+	private WorkScheduleReflected workScheduleReflected;
 	/**
 	 * @param companyId
 	 *            会社ID
@@ -124,7 +126,9 @@ public class CreateDailyResults {
 			return listErrorMessageInfo;
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
-			//TODO: 勤務予定反映
+			//勤務予定反映
+			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(companyId, employeeId, ymd,
+					integrationOfDaily.getWorkInformation(), integrationOfDaily.getBreakTime()));
 		} else {
 			// 個人情報から勤務種類と就業時間帯を写す
 			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(companyId, employeeId, ymd,
@@ -147,7 +151,7 @@ public class CreateDailyResults {
 				integrationOfDaily.getAffiliationInfor(), periodInMasterList));
 		if(!integrationOfDaily.getEditState().isEmpty()) {
 			//手修正項目取り戻す
-			restoreData(converter, integrationOfDaily, listItemValue);
+			integrationOfDaily = restoreData(converter, integrationOfDaily, listItemValue);
 		}
 		return listErrorMessageInfo;
 	}
@@ -157,10 +161,10 @@ public class CreateDailyResults {
 	 * @param integrationOfDaily
 	 * @param listItemValue
 	 */
-	public void restoreData(DailyRecordToAttendanceItemConverter converter,IntegrationOfDaily integrationOfDaily,List<ItemValue> listItemValue) {
+	public IntegrationOfDaily restoreData(DailyRecordToAttendanceItemConverter converter,IntegrationOfDaily integrationOfDaily,List<ItemValue> listItemValue) {
 		converter.setData(integrationOfDaily);
 		converter.merge(listItemValue);
-		converter.toDomain();
+		return converter.toDomain();
 	}
 
 }

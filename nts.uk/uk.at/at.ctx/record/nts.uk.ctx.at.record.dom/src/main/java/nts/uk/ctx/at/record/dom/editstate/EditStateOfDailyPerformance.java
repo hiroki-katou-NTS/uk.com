@@ -9,14 +9,13 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditState
 
 /**
  * 
- * @author nampt
- * 日別実績の編集状態 - root
+ * @author nampt 日別実績の編集状態 - root
  *
  */
 @Getter
 @NoArgsConstructor
 public class EditStateOfDailyPerformance extends AggregateRoot {
-	
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 	
@@ -39,7 +38,10 @@ public class EditStateOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		this.editState = editState;
 	}
-	
 
-	
+
+	public boolean isHandCorrect() {
+		return this.editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF
+				|| this.editState.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER;
+	}
 }

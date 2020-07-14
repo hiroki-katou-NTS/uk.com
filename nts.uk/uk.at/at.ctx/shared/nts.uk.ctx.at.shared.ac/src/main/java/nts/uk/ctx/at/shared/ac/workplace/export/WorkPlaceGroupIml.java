@@ -8,7 +8,12 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmployeeOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
-
+//	職場グループIM
+/**
+ * 
+ * @author kingo
+ *
+ */
 @Stateless
 public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 
@@ -36,5 +41,13 @@ public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<EmployeeOrganizationImport> get(GeneralDate referenceDate, List<String> listEmpId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 }

@@ -215,19 +215,6 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		return new OutputCreateDailyResult(ProcessState.INTERRUPTION, listErrorMessageInfo);
 	}
 
-	@Override
-	public OutputCreateDailyResult createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, GeneralDate executedDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
-			boolean reCreateRestTime, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
-			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext,

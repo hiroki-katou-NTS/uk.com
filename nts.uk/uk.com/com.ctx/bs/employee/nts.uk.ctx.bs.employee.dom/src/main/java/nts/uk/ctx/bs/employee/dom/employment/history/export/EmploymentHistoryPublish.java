@@ -21,7 +21,7 @@ public interface EmploymentHistoryPublish {
 	List<EmploymentPeriodExported> get(List<String> lstEmpID , DatePeriod datePeriod);
 
 	
-	public static interface Require{
+	public static interface Require {
 		/**
 		 * EmploymentHistoryRepository
 		 * [R-1] 期間付き履歴項目を取得する

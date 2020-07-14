@@ -89,6 +89,11 @@ interface KnockoutStatic {
                 (url: string, data: any): JQueryDeferred<any>;
             };
             readonly $window: {
+				readonly size: {
+					(height: string | number, width: string | number): void;
+					readonly width: (width: string) => void;
+					readonly height: (height: string) => void;
+				};
                 readonly close: {
                     (): void;
                     (result: any): void;
@@ -134,6 +139,11 @@ interface KnockoutStatic {
                 (selector: string): JQueryDeferred<boolean>;
                 (selectors: string[]): JQueryDeferred<boolean>;
                 (...selectors: string[]): JQueryDeferred<boolean>;
+                readonly constraint: {
+                    (): JQueryDeferred<{ [name: string]: any }>;
+                    (name: string): JQueryDeferred<any>;
+                    (name: string, value: any): JQueryDeferred<void>;
+                };
             };
             readonly $errors: {
                 (): JQueryDeferred<boolean>;

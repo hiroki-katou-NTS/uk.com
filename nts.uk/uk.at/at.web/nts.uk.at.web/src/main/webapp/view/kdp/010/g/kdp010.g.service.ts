@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdp010.g.service {
     let paths: any = {
         saveStampPage: "at/record/stamp/management/saveStampPage",
-        getStampSetting: "at/record/stamp/management/getStampSetting",
+        saveStampPageCommunal: "at/record/stamp/timestampinputsetting/stampsetcommunal/stamppagelayout/save",
         getStampPage: "at/record/stamp/management/getStampPage",
         deleteStampPage: "at/record/stamp/management/delete"
     }
@@ -9,16 +9,16 @@ module nts.uk.at.view.kdp010.g.service {
     export function saveStampPage(data: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.saveStampPage, data);
     }
-
-    export function getStampSetting(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampSetting);
+    
+    export function saveStampPageCommunal(data: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.saveStampPageCommunal, data);
     }
     
     export function deleteStampPage(command: any) {
         return nts.uk.request.ajax("at", paths.deleteStampPage, command);
     }
 
-    export function getStampPage(pageNo : number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
+    export function getStampPage(param : any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getStampPage, param);
     }
 }

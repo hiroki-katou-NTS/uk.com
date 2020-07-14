@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -30,7 +31,6 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmpEmployeeAdapterImpl.

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp002.a;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -67,7 +69,7 @@ public class RegisterStampIndividualSampleCommand {
 		StampType stampType = new StampType(changeHalfDay, GoingOutReason.valueOf(goOutArt),
 				SetPreClockArt.valueOf(setPreClockArt), ChangeClockArt.valueOf(changeClockArt),
 				ChangeCalArt.valueOf(changeCalArt));
-		return new ButtonType(ReservationArt.valueOf(reservationArt), stampType);
+		return new ButtonType(ReservationArt.valueOf(reservationArt), Optional.of(stampType));
 	}
 
 }
