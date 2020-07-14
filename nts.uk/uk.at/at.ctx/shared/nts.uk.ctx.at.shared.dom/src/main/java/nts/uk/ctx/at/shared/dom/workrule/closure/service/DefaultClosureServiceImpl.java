@@ -517,4 +517,17 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		}
 		return false;
 	}
+
+	@Override
+	public int getClosureIDByEmploymentCD(String employmentCD) {
+		String companyID = AppContexts.user().companyId();
+		// ○ドメインモデル「雇用に紐づく就業締め」を取得する（lấy dữ liệu domain 「雇用に紐づく就業締め」）
+		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		if(closureEmpOtp.isPresent()) {
+			// ○取得した「雇用に紐づく就業締め」．締めIDを返す。
+			return closureEmpOtp.get().getClosureId();
+		}
+		// 締めID=1を返す(trả về closeID=1)
+		return 1;
+	}
 }

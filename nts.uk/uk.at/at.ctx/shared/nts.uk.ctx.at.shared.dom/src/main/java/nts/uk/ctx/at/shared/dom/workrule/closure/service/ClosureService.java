@@ -90,4 +90,12 @@ public interface ClosureService {
 	 * @return True: 含まれている　を返す, False: 含まれていない　を返す
 	 */
 	boolean includeDate(GeneralDate baseDate, Closure closure);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.就業締め日.アルゴリズム.Query.雇用に紐づく締めを取得する.雇用に紐づく締めを取得する
+	 * @param employmentCD
+	 * @return
+	 */
+	int getClosureIDByEmploymentCD(String employmentCD);
 }
