@@ -80,11 +80,7 @@ module nts.uk.at.view.kdl014.a {
                 _.orderBy(data, ['name','stampDateTime'], ['asc','asc']);
                 console.log(data);
                 self.dataServer = data.listEmps;
-                let tg = [];
-                _.forEach(data.listEmps, function(item) {
-                    tg.push(new EmpInfomation(item));
-                });
-                self.empInfomationList(tg);
+                self.selectedItem(self.employeeInputList()[0].id);
                 dfd.resolve();
             }).fail(function (res) {
                 error({ messageId: res.messageId });
