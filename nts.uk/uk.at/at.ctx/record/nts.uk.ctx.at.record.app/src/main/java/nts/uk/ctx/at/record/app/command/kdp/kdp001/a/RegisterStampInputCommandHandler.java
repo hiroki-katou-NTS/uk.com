@@ -201,7 +201,7 @@ public class RegisterStampInputCommandHandler
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
-			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
 		}
 
 		@Override

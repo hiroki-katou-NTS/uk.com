@@ -99,17 +99,17 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 																						, cmd.getStampButton()
 																						, cmd.getRefActualResult().toDomainValue());
 		//2: not empty
-		if(inputResult!=null && inputResult.at.isPresent()) {
-			
+		if (inputResult != null && inputResult.at.isPresent()) {
+
 			transaction.execute(() -> {
 				inputResult.at.get().run();
 			});
 		}
-		
+
 		StampDataReflectResult stampRefResult = inputResult.getStampDataReflectResult();
-	
-		if(stampRefResult!=null && stampRefResult.getAtomTask()!=null) {
-			
+
+		if (stampRefResult != null && stampRefResult.getAtomTask() != null) {
+
 			transaction.execute(() -> {
 				stampRefResult.getAtomTask().run();
 			});
@@ -146,7 +146,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
-			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
 		}
 
 		@Override
