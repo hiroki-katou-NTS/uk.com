@@ -13,33 +13,10 @@ const template = `
 	<div class="list-component float-left viewa">
 		<div id="list-employee"></div>
 	</div>
-	<div class="float-left model-component" data-bind="component: { name: 'editor-area', params: { model: model } }"></div>
-	<div class="float-left model-component">
-		<div>
-			<table>
-				<tbody>
-					<tr>
-						<td>
-							<div data-bind="ntsFormLabel: {constraint: constraints, required: true, text: $i18n('KMP001_22') }"></div>
-						</td>
-						<td>
-							
-						<td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<table id="stamp-card-list" data-bind="ntsGridList: {								
-			height: 116,
-			dataSource: itemsStamCard,
-			primaryKey: 'stampNumber',
-			columns: [
-			            { headerText: $i18n('KMP001_32'), prop: 'stampNumber', width: 200 }
-			        ],
-			multiple: true 	,
-			value: currentCodes
-		}"></table>
-	</div>
+	<div class="float-left model-component" 
+		data-bind="component: { 
+			name: 'editor-area', 
+			params: { model: model } }"></div>
 <div>
 `;
 
@@ -59,17 +36,6 @@ const KMP001A_API = {
 })
 class ViewA extends ko.ViewModel {
 
-	listComponentOption: IModel;
-	selectedCode: KnockoutObservable<string>;
-	multiSelectedCode: KnockoutObservableArray<string>;
-	isShowAlreadySet: KnockoutObservable<boolean>;
-	isDialog: KnockoutObservable<boolean>;
-	isShowNoSelectRow: KnockoutObservable<boolean>;
-	isMultiSelect: KnockoutObservable<boolean>;
-	isShowWorkPlaceName: KnockoutObservable<boolean>;
-	isShowSelectAllButton: KnockoutObservable<boolean>;
-	disableSelection: KnockoutObservable<boolean>;
-
 	public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 	public model: Model = new Model();
 	public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
@@ -77,7 +43,6 @@ class ViewA extends ko.ViewModel {
 	public baseDate: KnockoutObservable<string> = ko.observable('');
 	public itemsStamCard: KnockoutObservableArray<IStampCard> = ko.observableArray([]);
 	public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
-	public constraints: KnockoutObservable<string> = ko.observable('10');
 
 	created() {
 		const vm = this;
@@ -259,13 +224,13 @@ const editorTemplate = `
 		</tbody>
 	</table>
 </div>
-<!--
 <div>
-	<div style="margin-left: 70px; margin-top: 30px">
-		<div data-bind="component: { name: 'card-list', params: { model: model } }"></div>
+	<div>
+		<div class="list-card" 
+			data-bind="component: { name: 'card-list-component', params: { model: model } }"></div>
 	</div>
 </div>
--->`
+`
 
 @component({
 	name: 'editor-area',
@@ -274,8 +239,6 @@ const editorTemplate = `
 class RightPanelComponent extends ko.ViewModel {
 	model!: Model;
 
-	constraints: KnockoutObservable<String> = ko.observable('');
-
 	created(params: any) {
 		const vm = this;
 
@@ -283,7 +246,7 @@ class RightPanelComponent extends ko.ViewModel {
 
 		vm.$ajax(KMP001A_API.GET_STAMPCARDDIGIT)
 			.then((data: string) => {
-				vm.constraints(data);
+				// Đây là maxleght 
 			});
 	}
 
@@ -294,46 +257,7 @@ class RightPanelComponent extends ko.ViewModel {
 	}
 }
 
-/*@component({
-	name: 'card-list',
-	template: '<div></div>'
-})
-class CardListComponent extends ko.ViewModel {
-	model!: Model;
-	stampCard!: KnockoutObservableArray<StampCard>;
 
-	created(params: any) {
-		const vm = this;
-		
-		vm.model = params.model;
-	}
-
-	mounted() {
-		const vm = this;
-		const row = 4;
-		
-		console.log(vm.model);
-
-		const $grid = $(vm.$el)
-			.igGrid({
-				columns: [
-					{ headerText: vm.$i18n('KMP001_31'), key: "stampCardId", dataType: "string", width: 50, template: `<input type="checkbox" value="" />` },
-					{ headerText: vm.$i18n('KMP001_22'), key: "stampNumber", dataType: "string", width: 200 }
-				],
-				height: `${24 + (23 * row)}px`,
-				dataSource: [],
-				cellClick: function(evt, ui) {
-					//vm.selectedCardNo(ui.rowIndex);
-				}
-			});
-
-		ko.computed(() => {
-			const stampCard = ko.unwrap(vm.stampCard);
-
-			$grid.igGrid('option', 'dataSource', ko.toJS(stampCard));
-		});
-	}
-}*/
 
 
 interface IStampCard {
@@ -352,7 +276,7 @@ interface IModel {
 	gender: number;
 	pid: string;
 	retiredDate: Date;
-	stampCard: IStampCard;
+	stampCardDto: IStampCard[];
 	workplaceId: string;
 	workplaceName: string;
 }
@@ -392,7 +316,7 @@ class Model {
 	workplaceId: KnockoutObservable<string> = ko.observable('');
 	workplaceName: KnockoutObservable<string> = ko.observable('');
 
-	public update(params?: IModel) {
+	public create(params?: IModel) {
 		const self = this;
 
 		if (params) {
@@ -416,7 +340,7 @@ class Model {
 			self.workplaceId(params.workplaceId);
 			self.workplaceName(params.workplaceName);
 
-			self.stampCard(params.stampCard);
+			self.stampCard(params.stampCardDto.map(m => new StampCard(m)));
 		}
 	}
 }
