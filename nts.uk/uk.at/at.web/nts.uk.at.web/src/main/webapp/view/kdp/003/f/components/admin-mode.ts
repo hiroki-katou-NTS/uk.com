@@ -95,21 +95,56 @@ module nts.uk.at.kdp003.f {
 			if (params.companyDesignation) {
 				model.companyCode
 					.subscribe((code: string) => {
-						const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+						const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
 
-						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: CompanyItem) => item.companyCode === code);
+						if (SCREEN.length) {
+							const name: 'KDP003' | 'KDP004' | 'KDP005' = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
 
-							if (exist) {
-								// update companyId by subscribe companyCode
-								model.companyId(exist.companyId);
-								model.companyName(exist.companyName);
-							} else {
-								model.companyId('');
-								model.companyName('');
+							const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+
+							if (dataSources.length) {
+								const exist = _.find(dataSources, (item: CompanyItem) => item.companyCode === code);
+								const clear = () => {
+									model.companyId('');
+									model.companyName('');
+								};
+
+								if (exist) {
+									const update = () => {
+										model.companyId(exist.companyId);
+										model.companyName(exist.companyName);
+									};
+
+									// update companyId by subscribe companyCode
+									switch (name) {
+										default:
+										case 'KDP003':
+											if (exist.selectUseOfName === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+										case 'KDP004':
+											if (exist.fingerAuthStamp === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+										case 'KDP005':
+											if (exist.icCardStamp === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+									}
+								} else {
+									clear();
+								}
 							}
 						}
-
 					});
 			} else {
 				model.companyId
