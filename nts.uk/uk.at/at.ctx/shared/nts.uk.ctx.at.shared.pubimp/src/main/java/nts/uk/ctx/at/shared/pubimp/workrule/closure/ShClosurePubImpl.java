@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -43,10 +43,6 @@ public class ShClosurePubImpl implements ShClosurePub {
 	/** The work time hist repo. */
 	@Inject
 	private ClosureRepository closureRepo;
-
-	/** The Closure service. */
-	@Inject
-	private ClosureService closureService;
 
 	/*
 	 * (non-Javadoc)
@@ -71,7 +67,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		// Get Processing Ym 処理年月
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
 		
 		ClosureDate closureDate = closure.getHistoryByYearMonth(processingYm).get().getClosureDate();
 
@@ -80,7 +76,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 				.processingYm(processingYm)
 				.closureStartDate(closurePeriod.start())
 				.closureEndDate(closurePeriod.end())
-				.closureDate(ClosureDateExport.from(closureDate))
+				.closureDate(new ClosureDateExport(closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth()))
 				.build());
 	}
 	
@@ -131,7 +127,7 @@ public class ShClosurePubImpl implements ShClosurePub {
 		optClosures.forEach(closure -> {
 			// Get Processing Ym 処理年月
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = closureService.getClosurePeriod(closure, processingYm);
+			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closure, processingYm);
 			resultExport.put(closure.getClosureId().value, closurePeriod);
 		});
 
