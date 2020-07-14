@@ -973,7 +973,8 @@ public class TotalWorkingTime {
 					recordClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					recordClass.getCoreTimeSetting());
+					recordClass.getCoreTimeSetting(),
+					NotUseAtr.NOT_USE);
 			dailyvacationAddTime = flexTime.getVacationAddTime().valueAsMinutes();
 		}else {
 			//フレックス以外の場合

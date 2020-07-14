@@ -42,5 +42,34 @@ public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject{
 		this.deformationExceedsPredeterminedValue = Optional.ofNullable(CalculationMethodForNormalWorkAndDeformedLaborOverTime.valueOf(deformationExceedsPredeterminedValue));
 		this.predeterminedExcessTimeOfFlex = Optional.ofNullable(CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime.valueOf(predeterminedExcessTimeOfFlex));
 	}
+	
+	/**
+	 * constructor
+	 * @param addition
+	 * @param deformationExceedsPredeterminedValue
+	 * @param predeterminedExcessTimeOfFlex
+	 */
+	public IncludeHolidaysPremiumCalcDetailSet(
+			NotUseAtr addition,
+			Optional<CalculationMethodForNormalWorkAndDeformedLaborOverTime> deformationExceedsPredeterminedValue,
+			Optional<CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime> predeterminedExcessTimeOfFlex) {
+		super();
+		this.addition = addition;
+		this.deformationExceedsPredeterminedValue = deformationExceedsPredeterminedValue;
+		this.predeterminedExcessTimeOfFlex = predeterminedExcessTimeOfFlex;
+	}
+	
+	/**
+	 * 「休暇分を含める就業計算詳細設定」を「休暇分を含める割増計算詳細設定」に変換する
+	 * ※「フレックス勤務の所定時間超過時の計算方法」は自身の値を使う為、注意
+	 * @param employmentCalcDetailedSet 休暇分を含める就業計算詳細設定
+	 * @return 休暇分を含める割増計算詳細設定
+	 */
+	public IncludeHolidaysPremiumCalcDetailSet of(EmploymentCalcDetailedSetIncludeVacationAmount employmentCalcDetailedSet) {
+		return new IncludeHolidaysPremiumCalcDetailSet(
+				employmentCalcDetailedSet.getAddition(),
+				employmentCalcDetailedSet.getDeformationExceedsPredeterminedValue(),
+				this.predeterminedExcessTimeOfFlex);
+	}
 }
 

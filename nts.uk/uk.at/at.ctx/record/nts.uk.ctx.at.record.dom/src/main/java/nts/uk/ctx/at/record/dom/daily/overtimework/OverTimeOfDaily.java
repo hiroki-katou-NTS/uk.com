@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -282,7 +283,8 @@ public class OverTimeOfDaily {
 					recordReGet.getWorkTimezoneCommonSet(),
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					coreTimeSetting);
+					coreTimeSetting,
+					NotUseAtr.NOT_USE);
 		}
 
 		val overTimeWork = new AttendanceTime(0);

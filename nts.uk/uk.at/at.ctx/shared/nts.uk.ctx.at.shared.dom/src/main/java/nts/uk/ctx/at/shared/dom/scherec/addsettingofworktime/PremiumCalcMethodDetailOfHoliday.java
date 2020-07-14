@@ -71,5 +71,21 @@ public class PremiumCalcMethodDetailOfHoliday extends DomainObject{
 			}
 		}
 	}
+	
+	/**
+	 * 「休暇の就業時間計算方法詳細」を「休暇の割増計算方法詳細」に変換する
+	 * @param workTimeCalcMethod 休暇の就業時間計算方法詳細
+	 * @return 休暇の割増計算方法詳細
+	 */
+	public Optional<PremiumCalcMethodDetailOfHoliday> of(Optional<WorkTimeCalcMethodDetailOfHoliday> workTimeCalcMethod) {
+		if(!workTimeCalcMethod.isPresent())
+			return Optional.empty();
+		
+		return Optional.of(new PremiumCalcMethodDetailOfHoliday(
+				this.includeVacationSet.of(workTimeCalcMethod.get().getIncludeVacationSet()),
+				workTimeCalcMethod.get().getCalculateIncludCareTime().value,
+				workTimeCalcMethod.get().getNotDeductLateLeaveEarly(),
+				workTimeCalcMethod.get().getCalculateIncludIntervalExemptionTime().value));
+	}
 }
 

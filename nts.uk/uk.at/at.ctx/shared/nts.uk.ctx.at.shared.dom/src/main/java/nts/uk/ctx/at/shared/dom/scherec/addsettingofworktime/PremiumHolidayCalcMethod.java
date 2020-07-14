@@ -57,5 +57,18 @@ public class PremiumHolidayCalcMethod extends DomainObject{
 	public PremiumHolidayCalcMethod createCalculationByActualTime() {
 		return new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advanceSet);
 	}
+	
+	/**
+	 * 「休暇の就業時間計算方法」を「休暇の割増計算方法」に変換する
+	 * @param workTimeHolidayCalcMethod 休暇の就業時間計算方法
+	 * @return 休暇の割増計算方法
+	 */
+	public PremiumHolidayCalcMethod of(WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod) {
+		return new PremiumHolidayCalcMethod(
+				workTimeHolidayCalcMethod.getCalculateActualOperation(),
+				this.advanceSet.isPresent()
+					?this.advanceSet.get().of(workTimeHolidayCalcMethod.getAdvancedSet())
+					:Optional.empty());
+	}
 }
 

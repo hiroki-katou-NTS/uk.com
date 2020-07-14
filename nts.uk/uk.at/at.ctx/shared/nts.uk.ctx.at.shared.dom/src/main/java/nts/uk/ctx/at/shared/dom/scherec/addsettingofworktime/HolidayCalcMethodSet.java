@@ -106,13 +106,11 @@ public class HolidayCalcMethodSet extends DomainObject{
 	 * 		②フレックス時間を計算する（2h）←年休分が加算されている
 	 * 		③就業時間を計算する 179h - 2h = 177h ← OK
 	 * 
-	 * @return 「休暇の割増計算方法」の「実働のみで計算する」を「休暇の就業時間計算方法」の「実働のみで計算する」で上書きした設定
+	 * @return 「休暇の割増計算方法」を「休暇の就業時間計算方法」で上書きした設定
 	 */
 	public HolidayCalcMethodSet getWorkTimeDeductFlexTime() {
 		return new HolidayCalcMethodSet(
-				new PremiumHolidayCalcMethod(
-						this.workTimeCalcMethodOfHoliday.getCalculateActualOperation(),
-						this.premiumCalcMethodOfHoliday.getAdvanceSet()),
+				this.premiumCalcMethodOfHoliday.of(this.workTimeCalcMethodOfHoliday),
 				this.workTimeCalcMethodOfHoliday);
 	}
 }
