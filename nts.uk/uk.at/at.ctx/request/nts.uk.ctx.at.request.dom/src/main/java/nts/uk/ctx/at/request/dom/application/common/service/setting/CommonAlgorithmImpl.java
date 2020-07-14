@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.setting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,12 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
@@ -32,14 +36,23 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class CommonAlgorithmImpl implements CommonAlgorithm {
@@ -67,26 +80,51 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private RequestByWorkplaceRepository requestByWorkplaceRepository;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private CommonAlgorithmMobile commonAlgorithmMobile; 
+	
+	@Inject
+	private EnvAdapter envAdapter;
+	
+	@Inject
+	private WorkManagementMultipleRepository workManagementMultipleRepository;
 
 	@Override
-	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType) {
-		// error EA refactor 4
-		/*// 申請者情報を取得する
+	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
+			Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		// 申請者情報を取得する(Lấy thông tin người làm đơn/Applicant)
 		List<EmployeeInfoImport> employeeInfoLst = this.getEmployeeInfoLst(applicantLst);
-		// 申請承認設定を取得する
-		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
-		// 01-05_申請定型理由を取得
-		AppTypeSetting appTypeSetting = requestSetting.getApplicationSetting()
-				.getListAppTypeSetting().stream().filter(x -> x.getAppType()==appType).findAny().get();
-		List<ApplicationReason> appReasonLst = otherCommonAlgorithm.getApplicationReasonType(
-				companyID, 
-				appTypeSetting.getDisplayFixedReason(), 
-				appType);
-		// OUTPUT「申請表示情報(基準日関係なし)」にセットする
-		AppDispInfoNoDateOutput_Old output = new AppDispInfoNoDateOutput_Old(employeeInfoLst, requestSetting, appReasonLst);
-		// 「申請表示情報(基準日関係なし)」を返す
-		return output;*/
-		return null;
+		// 申請別の申請設定を取得する
+		ApplicationSetting applicationSetting = applicationSettingRepository.findByAppType(companyID, appType);
+		// 申請理由表示区分を取得する
+		AppReasonOutput appReasonOutput = commonAlgorithmMobile.getAppReasonDisplay(companyID, appType, opHolidayAppType);
+		// メールサーバを設定したかチェックする
+		MailServerSetImport mailServerSetImport = envAdapter.checkMailServerSet(companyID);
+		// 複数回勤務を取得
+		Optional<WorkManagementMultiple> opWorkManagementMultiple = workManagementMultipleRepository.findByCode(companyID);
+		// 事前申請がいつから受付可能か確認する
+		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSetting().checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
+		// OUTPUT「申請表示情報(基準日関係なし)」にセットする(Set vào  OUTPUT "application display information (kg liên quan base date)")
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = new AppDispInfoNoDateOutput(
+				mailServerSetImport.isMailServerSet(), 
+				preAppAcceptLimit.isUseReceptionRestriction() ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
+				employeeInfoLst, 
+				applicationSetting, 
+				Collections.emptyList(), 
+				appReasonOutput.getDisplayAppReason(), 
+				appReasonOutput.getDisplayStandardReason(), 
+				appReasonOutput.getReasonTypeItemLst(), 
+				opWorkManagementMultiple.isPresent());
+		if(preAppAcceptLimit.isUseReceptionRestriction()) {
+			appDispInfoNoDateOutput.setOpAdvanceReceptionDate(preAppAcceptLimit.getOpAcceptableDate());
+			appDispInfoNoDateOutput.setOpAdvanceReceptionHours(preAppAcceptLimit.getOpAvailableTime());
+		}
+		// 「申請表示情報(基準日関係なし)」を返す (Trả về 「Thông tin hiển thị application(kg liên quan base date)」)
+		return appDispInfoNoDateOutput;
 	}
 
 	@Override
