@@ -15,7 +15,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -300,14 +299,14 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAchievementOutputLst = Optional.of(achievementOutputLst);
 			// 事前内容の取得
 			List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAppDetailContentLst = Optional.of(appDetailContentLst);
 		}
 		// 取得した内容を返す
