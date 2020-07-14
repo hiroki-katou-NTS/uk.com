@@ -57,7 +57,7 @@ public class CreateDailyResults {
 
 	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainServiceImpl;
-	
+
 	@Inject
 	private CopyWorkTypeWorkTime copyWorkTypeWorkTime;
 

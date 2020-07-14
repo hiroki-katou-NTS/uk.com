@@ -139,6 +139,11 @@ interface KnockoutStatic {
                 (selector: string): JQueryDeferred<boolean>;
                 (selectors: string[]): JQueryDeferred<boolean>;
                 (...selectors: string[]): JQueryDeferred<boolean>;
+                readonly constraint: {
+                    (): JQueryDeferred<{ [name: string]: any }>;
+                    (name: string): JQueryDeferred<any>;
+                    (name: string, value: any): JQueryDeferred<void>;
+                };
             };
             readonly $errors: {
                 (): JQueryDeferred<boolean>;

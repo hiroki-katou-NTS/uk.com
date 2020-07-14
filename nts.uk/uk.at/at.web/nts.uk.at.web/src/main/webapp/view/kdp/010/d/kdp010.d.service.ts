@@ -1,24 +1,14 @@
 module nts.uk.at.view.kdp010.d.service {
     let paths: any = {
-        saveStampSetting: "at/record/stamp/management/saveStampSetting",
-        updateStampSetting: "at/record/stamp/management/updateStampSetting",
-        getStampSetting: "at/record/stamp/management/getStampSetting",
-        getStampPage: "at/record/stamp/management/getStampPageByCid"
+        getData: "at/record/stamp/timestampinputsetting/portalstampsettings/get",
+        save: "at/record/stamp/timestampinputsetting/portalstampsettings/save"
     }
 
-    export function saveStampSetting(stampSettingPerson: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.saveStampSetting, stampSettingPerson);
+    export function save(param: any): void {
+        return nts.uk.request.ajax("at", paths.save, param);
     }
 
-    export function updateStampSetting(stampSettingPerson: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.updateStampSetting, stampSettingPerson);
-    }
-
-    export function getStampSetting(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampSetting);
-    }
-
-    export function getStampPage(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getStampPage);
+    export function getData(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getData);
     }
 }

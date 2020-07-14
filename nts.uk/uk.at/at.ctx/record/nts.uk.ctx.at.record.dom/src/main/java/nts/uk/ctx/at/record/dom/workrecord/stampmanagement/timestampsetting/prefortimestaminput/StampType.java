@@ -21,7 +21,7 @@ public class StampType implements DomainValue {
 	/** 勤務種類を半休に変更する */
 	//勤務種類を半休に変更する 1 old
 	@Getter
-	private final Boolean changeHalfDay;
+	private final boolean changeHalfDay;
 
 	/** 外出区分 */
 	//外出理由 old
@@ -51,7 +51,7 @@ public class StampType implements DomainValue {
 	 * @param changeClockArt
 	 * @param changeCalArt
 	 */
-	public StampType(Boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
+	public StampType(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		super();
 		this.changeHalfDay = changeHalfDay;
@@ -69,7 +69,7 @@ public class StampType implements DomainValue {
 	 * @param changeClockArt
 	 * @param changeCalArt
 	 */
-	public static StampType getStampType(Boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
+	public static StampType getStampType(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
 			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
 		if(changeClockArt != null && changeClockArt.value == ChangeClockArt.GO_OUT.value && goOutArt == null) {
 			throw new BusinessException("Msg_1704"); 

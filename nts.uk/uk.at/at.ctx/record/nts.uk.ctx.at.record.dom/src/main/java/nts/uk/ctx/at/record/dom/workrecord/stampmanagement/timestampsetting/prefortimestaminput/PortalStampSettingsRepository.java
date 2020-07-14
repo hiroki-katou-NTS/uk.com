@@ -17,12 +17,12 @@ public interface PortalStampSettingsRepository {
 	public void insert(PortalStampSettings domain);
 
 	/**
-	 *  update(ポータルの打刻設定)
+	 *  save(ポータルの打刻設定)
 	 * 
 	 * @param ポータルの打刻設定
 	 *            domain
 	 */
-	public void update(PortalStampSettings domain);
+	public void save(PortalStampSettings domain);
 
 	/**
 	 * [3] get
