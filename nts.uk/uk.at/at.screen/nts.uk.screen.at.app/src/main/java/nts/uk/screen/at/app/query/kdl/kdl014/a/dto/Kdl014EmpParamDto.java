@@ -14,7 +14,7 @@ public class Kdl014EmpParamDto {
 	
 	private GeneralDate end;
 	
-	//0: mode individual
+	//0: mode person
 	//1: mode date
 	private Integer mode;
 	

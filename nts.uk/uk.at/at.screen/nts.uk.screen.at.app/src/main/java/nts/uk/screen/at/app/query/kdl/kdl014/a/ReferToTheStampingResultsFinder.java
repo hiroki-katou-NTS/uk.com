@@ -1,9 +1,11 @@
 package nts.uk.screen.at.app.query.kdl.kdl014.a;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,7 +20,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -36,7 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**UKDesign.UniversalK.就業.KDL_ダイアログ.KDL014_打刻参照ダイアログ.メニュー別OCD.打刻実績を参照する.打刻実績の取得処理*/
 @Stateless
-public class ReferToTheStampingResults {
+public class ReferToTheStampingResultsFinder {
 
 	@Inject
 	private StampCardRepository stampCardRepository;
@@ -86,23 +90,31 @@ public class ReferToTheStampingResults {
 				.toGetEmploymentCls(false)
 				.toGetPosition(false)
 				.toGetWorkplace(false).build();
-
 		List<EmployeeInformation> listEmpInfo = empInfoRepo.find(infoQuery);
 
+
 		// 3.get*(List<社員の打刻情報．勤務場所コード＞) -> List<勤務場所>
-		List<String> listWorkLocationCode = new ArrayList<>();
-			
-		for (EmployeeStampInfo r : listEmployeeStampInfo) {
-			for (StampInfoDisp d : r.getListStampInfoDisp()) {
-				for (Stamp stamp: d.getStamp()) {
-					if(stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
-						listWorkLocationCode.add(stamp.getRefActualResults().getWorkLocationCD().get().v());
-					}
-				}
-			}
-		}
+//		List<String> listWorkLocationCode = new ArrayList<>();
+//			
+//		for (EmployeeStampInfo r : listEmployeeStampInfo) {
+//			for (StampInfoDisp d : r.getListStampInfoDisp()) {
+//				for (Stamp stamp: d.getStamp()) {
+//					if(stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
+//						listWorkLocationCode.add(stamp.getRefActualResults().getWorkLocationCD().get().v());
+//					}
+//				}
+//			}
+//		}
+//		listWorkLocationCode = listWorkLocationCode.stream().distinct().collect(Collectors.toList());
 		
-		listWorkLocationCode = listWorkLocationCode.stream().distinct().collect(Collectors.toList());
+		//flatmap
+		List<StampInfoDisp> listStampInfoDisp = listEmployeeStampInfo.stream().flatMap(m->m.getListStampInfoDisp().stream()).collect(Collectors.toList());
+		
+		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
+		
+		List<WorkLocationCD> listWorkLocation = listStamp.stream().filter(m->m.getRefActualResults().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkLocationCD().get()).collect(Collectors.toList());
+
+		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
 		
 		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
 		
@@ -118,6 +130,7 @@ public class ReferToTheStampingResults {
 				result.setAddress(input.getMapAddres().get().v());
 			}
 		}
+		
 		List<EmpInfomationDto> listEmps = new ArrayList<>();
 		
 		for (EmployeeInformation empInfo : listEmpInfo) {
@@ -130,6 +143,7 @@ public class ReferToTheStampingResults {
 							wl = workLocationList.stream().filter(c->c.getWorkLocationCD().v().equals(st.getRefActualResults().getWorkLocationCD().get().v())).findFirst();
 						}
 						EmpInfomationDto em = new EmpInfomationDto(
+								empInfo.getEmployeeId(),
 								empInfo.getEmployeeCode(),
 								empInfo.getBusinessName(),
 								st.getStampDateTime(),

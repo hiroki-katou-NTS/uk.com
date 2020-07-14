@@ -1,33 +1,8 @@
-#employeeName{
-    margin-left: 27px;
+#emp-component table#employ_view {
+	margin: 0 auto !important;
 }
 
-.FormLabel {
-	width: 80px;
-}
 
-table td {
-	padding: 5px;
-}
-
-#TblHeader {
-	margin-left: 40px;
-	margin-top: 15px;
-	margin-bottom: 15px;
-}
-
-.Content {
-	margin-left: 25px;
-}
-
-td #link{
-	width: 10px;
-}
-
-.ui-widget-header {
-	font-weight: normal !important;
-}
-
-.ui-iggrid .ui-iggrid-tablebody td{
-	height: 44px !important;
+#single-list_container {
+	margin: 10px auto !important
 }
