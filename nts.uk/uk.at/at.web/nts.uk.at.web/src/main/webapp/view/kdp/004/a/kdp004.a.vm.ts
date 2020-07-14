@@ -71,7 +71,7 @@ module nts.uk.at.view.kdp004.a {
 			showButton() {
 				let self = this;
 				if (!self.isUsed()) {
-					if (self.listCompany.length > 0) {
+					if (self.listCompany().length > 0) {
 						return ButtonDisplayMode.ShowHistory;
 					} else {
 						return ButtonDisplayMode.NoShow;
