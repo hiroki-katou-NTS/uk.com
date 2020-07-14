@@ -137,7 +137,7 @@ module nts.uk.ui {
 
                             // catch press tab key in close button of dialog.
                             $dialogDocument.on("keydown", ":tabbable", function(evt) {
-                                var code = evt.which || evt.keyCode;
+                                var code = evt.which || evt.keyCode || -1;
                                 if (code.toString() === "9") {
                                     var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
                                     if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
@@ -151,7 +151,7 @@ module nts.uk.ui {
                             });
                             // catch press tab key for component in dialog.
                             $dialogContentDoc.on("keydown", ":tabbable", function(evt) {
-                                var code = evt.which || evt.keyCode;
+                                var code = evt.which || evt.keyCode || -1;
                                 if (code.toString() === "9") {
                                     var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
                                     if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
