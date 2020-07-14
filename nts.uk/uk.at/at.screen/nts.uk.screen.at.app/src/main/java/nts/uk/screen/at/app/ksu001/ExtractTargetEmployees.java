@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
@@ -18,23 +17,23 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.PositionImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
 
 /**
  * @author laitv
@@ -83,7 +82,7 @@ public class ExtractTargetEmployees {
 		
 		private final RankRepository rankRepo;
 		
-		private final SyJobTitlePub syJobTitlePub;
+		private final SyJobTitleAdapter syJobTitleAdapter;
 
 
 		@Override
@@ -108,25 +107,19 @@ public class ExtractTargetEmployees {
 
 		@Override
 		public List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp) {
-			List<EmployeeJobHistExport> listdata =  syJobTitlePub.findSJobHistByListSIdV2(lstEmp, ymd);
-			if (listdata.isEmpty()) {
-				return new ArrayList<EmployeePosition>();
-			}
-			return listdata.stream().map(m -> {
-				
-				return new EmployeePosition(m.getEmployeeId(), m.getJobTitleID());
-			}).collect(Collectors.toList());
+			List<EmployeePosition> data = syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
+			return data;
 		}
 
 		@Override
 		public List<PositionImport> getCompanyPosition(GeneralDate ymd) {
-			// TODO Auto-generated method stub
-			return null;
+			List<PositionImport> data = syJobTitleAdapter.findAll(AppContexts.user().companyId(), ymd);
+			return data;
 		}
 
 		@Override
 		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
-			// TODO Auto-generated method stub
+			
 			return null;
 		}
 		

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 /**
  * «Imported» 社員分類
+ * path:UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.組織管理.社員情報.所属分類履歴.Imported.社員分類
  * @author HieuLt
  *
  */
