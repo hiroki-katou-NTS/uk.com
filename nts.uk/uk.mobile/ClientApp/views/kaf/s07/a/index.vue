@@ -1,8 +1,8 @@
 <template>
   <div class="kafs07a">
-    <!-- <div>
-      <kafs00-a v-if="true" v-bind:params="kaf000_A_Params" />
-    </div> -->
+    <div>
+      <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
+    </div>
 
     <div v-if="!$valid" class="alert error">
       <img
@@ -14,10 +14,7 @@
       <div class="contentError">{{'KAFS07_1'| i18n}}</div>
     </div>
     <div>
-      <kafs00-b
-        v-if="true"
-        v-bind:params="kaf000_B_Params"
-      />
+      <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
     </div>
 
     <div class="card card-label">
@@ -31,7 +28,7 @@
         <span class="textSize uk-text-dark-gray">{{'KAFS07_3' | i18n}}</span>
         <button type="button" class="btn btn-selection mt-2 mb-2" v-on:click="openKDL002()">
           <!-- A4_2_1 -->
-          <span class="badge badge-secondary ">{{model.workType.code}}</span>
+          <span class="badge badge-secondary">{{model.workType.code}}</span>
           <span>{{model.workType.name}}</span>
         </button>
 
@@ -44,7 +41,7 @@
           v-on:click="openKDL002()"
         >
           <!-- A4_3_1 -->
-          <span class="badge badge-secondary ">{{model.workTime.code}}</span>
+          <span class="badge badge-secondary">{{model.workTime.code}}</span>
           <span>{{model.workTime.name}}</span>
           <!-- A4_3_2 -->
           <span class="d-block mt-1">{{model.workTime.time}}</span>
@@ -75,7 +72,6 @@
         <span class="badge badge-warning">必須</span>
       </div>
       <div v-if="isCondition1" class="card-body">
-
         <nts-time-range-input v-if="isCondition3" v-model="valueWorkHours1" />
         <nts-time-range-input v-else disabled v-model="valueWorkHours1" />
       </div>
@@ -94,28 +90,24 @@
       </div>
     </div>
     <div>
-      <!-- <kafs00-c
-        v-if="true"
-        v-bind:params="{
-            application: application,
-            appDispInfoStartupOutput: appDispInfoStartupOutput
-        }"
-      /> -->
+      <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />
     </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
-    <button
-      v-if="mode"
-      type="button"
-      class="btn btn-primary btn-block"
-      v-on:click="register()"
-    >{{'KAFS07_8' | i18n}}</button>
-    <!-- 画面モード = 編集モード -->
-    <button
-      v-else
-      type="button"
-      class="btn btn-primary btn-block"
-      v-on:click="register()"
-    >{{'KAFS07_16' | i18n}}</button>
+    <div class="btnRegister">
+      <button
+        v-if="mode"
+        type="button"
+        class="btn btn-primary btn-block"
+        v-on:click="register()"
+      >{{'KAFS07_8' | i18n}}</button>
+      <!-- 画面モード = 編集モード -->
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary btn-block"
+        v-on:click="register()"
+      >{{'KAFS07_16' | i18n}}</button>
+    </div>
   </div>
 </template>
