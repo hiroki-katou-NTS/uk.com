@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 
 /**
@@ -24,23 +24,23 @@ public interface CollectAchievement {
 	public AchievementOutput getAchievement(String companyID, String applicantID, GeneralDate appDate);
 	
 	/**
-	 * 実績内容の取得
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.実績内容の取得.実績内容の取得
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param dateLst 申請対象日リスト<Optional>
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<AchievementOutput> getAchievementContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType_Old appType);
+	public List<AchievementOutput> getAchievementContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
 	
 	/**
-	 * 事前内容の取得
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.01-09_事前申請を取得.事前内容の取得.事前内容の取得
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param dateLst 申請対象日リスト<Optional>
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType_Old appType);
+	public List<AppDetailContent> getPreAppContents(String companyID, String employeeID, List<GeneralDate> dateLst, ApplicationType appType);
 	
 }
