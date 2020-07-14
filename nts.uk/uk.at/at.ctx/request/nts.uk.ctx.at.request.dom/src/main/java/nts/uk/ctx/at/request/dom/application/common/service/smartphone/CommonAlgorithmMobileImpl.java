@@ -57,7 +57,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpostappaccept.PostAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
@@ -101,9 +100,6 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
-	
-	@Inject
-	private BaseDateGet baseDateGet;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -345,7 +341,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			refDate = CollectionUtil.isEmpty(appDateLst) ? Optional.empty() : Optional.of(appDateLst.get(0));
 		}
 		// 基準日として扱う日の取得
-		return baseDateGet.getBaseDate(refDate, applicationSetting.getRecordDate());
+		return applicationSetting.getBaseDate(refDate);
 	}
 
 	@Override
