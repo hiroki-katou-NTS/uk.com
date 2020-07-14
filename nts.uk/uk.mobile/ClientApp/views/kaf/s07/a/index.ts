@@ -187,7 +187,19 @@ export class KafS07AComponent extends Vue {
 
     // bind params to components
     public createParamA() {
-
+        let appDispInfoWithDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        this.kaf000_B_Params = {
+            companyID: '',
+            employeeID: '',
+            // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
+            employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
+            // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
+            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst,
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            opOvertimeAppAtr: null
+        };
     }
     public createParamB() {
         this.kaf000_B_Params = {
@@ -215,23 +227,45 @@ export class KafS07AComponent extends Vue {
                 endDate: new Date()
             }
         };
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        // 新規モード
+        // this.mode
+
+        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定
+        // appDispInfoNoDateOutput.applicationSetting.appDisplaySetting
+
+        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請種類別設定
+        // appDispInfoNoDateOutput.applicationSetting.appTypeSetting
+
+        // true
+
+        // false
+
+
     }
     public createParamC() {
         // KAFS00_C_起動情報
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         this.kaf000_C_Params = {
             input: {
                 // 定型理由の表示
-                displayFixedReason: 1,
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
                 // 申請理由の表示
-                displayAppReason: 1,
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
                 // 定型理由一覧
-                reasonTypeItemLst: null,
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
                 // 申請制限設定
-                appLimitSetting: null,
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
-                opAppStandardReasonCD : 1,
+                // empty
+                opAppStandardReasonCD: null,
                 // 入力中の申請理由
-                opAppReason : 'string'
+                //empty
+                opAppReason: null
             },
             output: {
                 // 定型理由
