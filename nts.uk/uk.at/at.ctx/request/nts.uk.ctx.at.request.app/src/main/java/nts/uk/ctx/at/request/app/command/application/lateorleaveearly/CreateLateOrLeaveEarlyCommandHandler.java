@@ -84,8 +84,8 @@ public class CreateLateOrLeaveEarlyCommandHandler
 		/*registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplication().getEmployeeID(),
 				domainLateOrLeaveEarly.getApplication());*/
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		return newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());
-
+		/*return newAfterRegister.processAfterRegister(domainLateOrLeaveEarly.getApplication());*/
+		return null;
 	}
 
 	public String genReason(String fixedReason, String reasonText, String companyID) {

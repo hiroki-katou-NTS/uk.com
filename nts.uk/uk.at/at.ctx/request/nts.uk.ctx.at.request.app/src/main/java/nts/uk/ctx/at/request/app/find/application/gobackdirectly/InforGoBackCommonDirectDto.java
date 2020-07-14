@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -27,16 +28,31 @@ public class InforGoBackCommonDirectDto {
 //	勤務種類リスト
 	private List<WorkTypeDto> lstWorkType;
 //	直行直帰申請
-	private GoBackAplicationDto goBackApplication;
+	private GoBackDirectlyDto goBackApplication;
 	
-	public static InforGoBackCommonDirectDto convertDto(InforGoBackCommonDirectOutput value) {
+	public static InforGoBackCommonDirectDto fromDomain(InforGoBackCommonDirectOutput value) {
 		return new InforGoBackCommonDirectDto(
 				value.getWorkType(),
 				value.getWorkTime(),
 				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartup()),
-				GoBackReflectDto.convertDto(value.getGoBackReflect()),
+				GoBackReflectDto.fromDomain(value.getGoBackReflect()),
 				value.getLstWorkType().stream().map(item -> WorkTypeDto.fromDomain(item)).collect(Collectors.toList()),
-				value.getGoBackApplication().isPresent() ? GoBackAplicationDto.convertDto(value.getGoBackApplication().get()) : null);
+				value.getGoBackDirectly().isPresent() ? GoBackDirectlyDto.convertDto(value.getGoBackDirectly().get()) : null);
+	}
+	
+	public InforGoBackCommonDirectOutput toDomain() {
+		InforGoBackCommonDirectOutput info = new InforGoBackCommonDirectOutput();
+		info.setWorkType(new InforWorkType(workType.getWorkType(), workType.getNameWorkType()));
+		info.setWorkTime(new InforWorkTime(workTime.getWorkTime(), workTime.getNameWorkTime()));
+		info.setAppDispInfoStartup(appDispInfoStartup.toDomain());
+		info.setGoBackReflect(goBackReflect.toDomain());
+		info.setLstWorkType(lstWorkType.stream().map(item -> item.toDomain()).collect(Collectors.toList()));
+		if(goBackApplication != null) {
+			info.setGoBackDirectly(Optional.of(goBackApplication.toDomain()));
+		}else {
+			info.setGoBackDirectly(Optional.ofNullable(null));
+		}
+		return info;
 	}
 	
 }

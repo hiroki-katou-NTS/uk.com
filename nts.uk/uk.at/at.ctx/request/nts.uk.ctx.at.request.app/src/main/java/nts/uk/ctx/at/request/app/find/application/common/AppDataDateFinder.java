@@ -74,7 +74,7 @@ public class AppDataDateFinder {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID, int overtimeAtr){
-		String companyID = AppContexts.user().companyId();
+		/*String companyID = AppContexts.user().companyId();
 		if(Strings.isEmpty(employeeID)){
 			 employeeID = AppContexts.user().employeeId();
 		}
@@ -160,7 +160,8 @@ public class AppDataDateFinder {
 				applicationDto,
 				approvalRootContentImport == null ? null : approvalRootContentImport.getErrorFlag().value,
 				defaultPrePostAtr.value,
-				authorCmt);
+				authorCmt);*/
+		return null;
 	}
 	
 }

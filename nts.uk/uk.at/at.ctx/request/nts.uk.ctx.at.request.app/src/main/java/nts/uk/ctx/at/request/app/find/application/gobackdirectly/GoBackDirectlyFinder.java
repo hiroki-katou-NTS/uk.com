@@ -11,27 +11,24 @@ import javax.transaction.Transactional;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
-
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackApplicationDomainService;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectService;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -41,32 +38,38 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class GoBackDirectlyFinder {
 	@Inject
-	private GoBackDirectlyRepository goBackDirectRepo;
+	private GoBackDirectlyRepository_Old goBackDirectRepo;
 	@Inject
 	private GoBackDirectCommonService goBackCommon;
 	@Inject
 	private GoBackDirectAppSetService goBackAppSet;
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
-	@Inject
-	private GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
+
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	@Inject
 	private HolidayService holidayServiceDomain;
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
+
 	@Inject
-	private GoBackApplicationDomainService goBackApplicationDomainService;
+	private GoBackDirectService goBackDirectService;
+
+	@Inject
+	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
+	
+	@Inject
+	private DetailAppCommonSetService appCommonSetService;
 	/**
 	 * Get GoBackDirectlyDto
 	 * 
 	 * @param appID
 	 * @return
 	 */
-	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
+	public GoBackDirectlyDto_Old getGoBackDirectlyByAppID(String appID) {
 		String companyID = AppContexts.user().companyId();
-		return goBackDirectRepo.findByApplicationID(companyID, appID).map(c -> GoBackDirectlyDto.convertToDto(c))
+		return goBackDirectRepo.findByApplicationID(companyID, appID).map(c -> GoBackDirectlyDto_Old.convertToDto(c))
 				.orElse(null);
 	}
 	
@@ -152,7 +155,7 @@ public class GoBackDirectlyFinder {
 					.collect(Collectors.toList()));
 		}
 		AppDispInfoStartupOutput appDispInfoStartupOutputTemp = commonAlgorithm.getAppDispInfoStart(companyId, at, sIDs,
-				lstDate, mode);
+				lstDate, mode, Optional.empty(), Optional.empty());
 		return appDispInfoStartupOutputTemp;
 	}
 
@@ -251,10 +254,61 @@ public class GoBackDirectlyFinder {
 				appDates, 
 				newMode
 				);
-		nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput output = goBackApplicationDomainService.getInfoOutput(companyID, sIds, appDates, appDispInfoStartupOutput);
+//		InforGoBackCommonDirectOutput output = goBackApplicationDomainService.getInfoOutput(companyID, sIds, appDates, appDispInfoStartupOutput);
 		
 //		return InforGoBackCommonDirectDto.convertDto(output);
 		return null;
 	}
+	
+	//Refactor4
+	
+	public InforGoBackCommonDirectDto getStartKAF009(ParamStart paramStart) {
+		String companyId = AppContexts.user().companyId();
+		Optional<String> employeeId = Optional.ofNullable(null);
+		if (paramStart.getApplicantEmployeeID() != null) {
+			employeeId = Optional.of(paramStart.getApplicantEmployeeID());
+		}
+		
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), 
+				null, true, Optional.empty(), Optional.empty());
+		
+		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
+	}
+	/**
+	 * Refactor 4 info when changing date by kaf009
+	 * @param paramStart
+	 * @return
+	 */
+	public InforGoBackCommonDirectDto getChangeDateKAF009(ParamChangeDate paramStart) {
+		String companyId = AppContexts.user().companyId();
+		
+		return InforGoBackCommonDirectDto.fromDomain(
+				goBackDirectService.getDateChangeAlgorithm(
+						companyId,
+						paramStart.getAppDates().stream().map(item -> GeneralDate.fromString("yyyy/MM/dd", item)).collect(Collectors.toList()),
+						paramStart.getEmployeeIds(),
+						paramStart.getInforGoBackCommonDirectDto().toDomain())
+				);
+	}
+	
+	public List<ConfirmMsgOutput> checkBeforeRegister(ParamBeforeRegister param) {
+		return goBackDirectlyRegisterService.checkBeforRegisterNew(
+				param.getCompanyId(),
+				param.isAgentAtr(),
+				param.getApplicationDto().toDomain(),
+				param.getGoBackDirectlyDto().toDomain(),
+				param.getInforGoBackCommonDirectDto().toDomain(),
+				param.isMode());
+	}
+	
+	public InforGoBackCommonDirectDto getDetailKAF009(ParamUpdate param) {
+//		14-1.詳細画面起動前申請共通設定を取得する
+		 AppDispInfoStartupOutput appDispInfoStartupOutput = null;
+				// appCommonSetService.getCommonSetBeforeDetail(companyId, appId);
+//		アルゴリズム「直行直帰画面初期（更新）」を実行する
+		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput));		
+	}
+	
+	
 
 }

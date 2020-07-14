@@ -20,12 +20,12 @@ public class ReflectionStatusOfDayDto {
 	/**
 	 * 実績反映状態
 	 */
-	private int resultsReflectedStatus;
+	private int actualReflectStatus;
 	
 	/**
 	 * 予定反映状態
 	 */
-	private int scheduleReflectionStatus;
+	private int scheReflectStatus;
 	
 	/**
 	 * 対象日
@@ -35,28 +35,28 @@ public class ReflectionStatusOfDayDto {
 	/**
 	 * 申請反映の更新状態
 	 */
-	private DailyAttendanceUpdateSttDto opUpdateStatusAppReflection;
+	private DailyAttendanceUpdateSttDto opUpdateStatusAppReflect;
 	
 	/**
 	 * 申請取消の更新状態
 	 */
-	private DailyAttendanceUpdateSttDto opUpdateStatusAppCancellation;
+	private DailyAttendanceUpdateSttDto opUpdateStatusAppCancel;
 	
 	public static ReflectionStatusOfDayDto fromDomain(ReflectionStatusOfDay reflectionStatusOfDay) {
 		return new ReflectionStatusOfDayDto(
-				reflectionStatusOfDay.getResultsReflectedStatus().value, 
-				reflectionStatusOfDay.getScheduleReflectionStatus().value, 
+				reflectionStatusOfDay.getActualReflectStatus().value, 
+				reflectionStatusOfDay.getScheReflectStatus().value, 
 				reflectionStatusOfDay.getTargetDate().toString(), 
-				reflectionStatusOfDay.getOpUpdateStatusAppReflection().map(x -> DailyAttendanceUpdateSttDto.fromDomain(x)).orElse(null), 
-				reflectionStatusOfDay.getOpUpdateStatusAppCancellation().map(x -> DailyAttendanceUpdateSttDto.fromDomain(x)).orElse(null));
+				reflectionStatusOfDay.getOpUpdateStatusAppReflect().map(x -> DailyAttendanceUpdateSttDto.fromDomain(x)).orElse(null), 
+				reflectionStatusOfDay.getOpUpdateStatusAppCancel().map(x -> DailyAttendanceUpdateSttDto.fromDomain(x)).orElse(null));
 	}
 	
 	public ReflectionStatusOfDay toDomain() {
 		return new ReflectionStatusOfDay(
-				EnumAdaptor.valueOf(resultsReflectedStatus, ReflectedState.class), 
-				EnumAdaptor.valueOf(scheduleReflectionStatus, ReflectedState.class), 
+				EnumAdaptor.valueOf(actualReflectStatus, ReflectedState.class), 
+				EnumAdaptor.valueOf(scheReflectStatus, ReflectedState.class), 
 				GeneralDate.fromString(targetDate, "yyyy/MM/dd"), 
-				opUpdateStatusAppReflection == null ? Optional.empty() : Optional.of(opUpdateStatusAppReflection.toDomain()), 
-				opUpdateStatusAppCancellation == null ? Optional.empty() : Optional.of(opUpdateStatusAppCancellation.toDomain()));
+				opUpdateStatusAppReflect == null ? Optional.empty() : Optional.of(opUpdateStatusAppReflect.toDomain()), 
+				opUpdateStatusAppCancel == null ? Optional.empty() : Optional.of(opUpdateStatusAppCancel.toDomain()));
 	}
 }

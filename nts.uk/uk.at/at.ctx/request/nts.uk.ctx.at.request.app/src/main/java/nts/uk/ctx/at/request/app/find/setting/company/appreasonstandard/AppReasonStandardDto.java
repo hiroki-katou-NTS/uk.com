@@ -5,7 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -17,7 +18,8 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class AppReasonStandardDto {
 	/**
 	 * 会社ID

@@ -58,11 +58,11 @@ public class ApproveHolidayShipmentCommandHandler
 		Long version = command.getAppVersion();
 		String memo = context.getCommand().getMemo();
 		
-		DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(command.getUser(), User.class), command.getReflectPerState());
+		OutputMode outputMode = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(command.getUser(), User.class), command.getReflectPerState());
 		
 		String appReason = Strings.EMPTY;
 		boolean isUpdateReason = false;
-		if(output.getOutputMode()==OutputMode.EDITMODE){
+		if(outputMode==OutputMode.EDITMODE){
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 					companyID, 
 					ApplicationType_Old.COMPLEMENT_LEAVE_APPLICATION.value).get();

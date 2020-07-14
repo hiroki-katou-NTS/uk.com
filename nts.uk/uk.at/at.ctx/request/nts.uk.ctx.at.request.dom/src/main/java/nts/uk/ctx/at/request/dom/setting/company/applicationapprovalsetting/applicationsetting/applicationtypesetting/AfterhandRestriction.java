@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * refactor 4
@@ -8,6 +10,8 @@ import lombok.Getter;
  * @author Doan Duy Hung
  *
  */
+@Setter
+@NoArgsConstructor
 @Getter
 public class AfterhandRestriction {
 	

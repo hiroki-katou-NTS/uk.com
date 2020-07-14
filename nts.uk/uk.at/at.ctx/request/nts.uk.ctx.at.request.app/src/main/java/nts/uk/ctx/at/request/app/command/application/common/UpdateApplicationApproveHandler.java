@@ -79,9 +79,9 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 					.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
 	        //14-3.詳細画面の初期モード
-			DetailScreenInitModeOutput output = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
+			OutputMode outputMode = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
 			appReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
-			if(output.getOutputMode()==OutputMode.EDITMODE){
+			if(outputMode==OutputMode.EDITMODE){
 				boolean displayFixedReason = false;
 				boolean displayAppReason = false;
 				Integer appType = command.getApplicationType();

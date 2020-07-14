@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.predset.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,6 +14,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class BreakDownTimeDayDto {
 	/** The one day. */
 	public Integer oneDay;

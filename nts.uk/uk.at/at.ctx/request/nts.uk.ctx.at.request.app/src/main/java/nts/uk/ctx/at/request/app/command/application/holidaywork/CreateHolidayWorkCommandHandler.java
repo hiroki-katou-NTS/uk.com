@@ -120,9 +120,11 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 				AppContexts.user().companyId(), 
 				command.getApplicantSID(), 
 				Arrays.asList(command.getApplicationDate()));
-
+		
+		// error EA refactor 4
 		// 2-3.新規画面登録後の処理を実行
-		return newAfterRegister.processAfterRegister(appRoot);
+		/*return newAfterRegister.processAfterRegister(appRoot);*/
+		return null;
 	}
 
 }

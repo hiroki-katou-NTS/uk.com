@@ -77,7 +77,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
-		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
+		// error EA refactor 4
+		/*WorkChangeDetail workChangeDetail = new WorkChangeDetail();
 		//15.詳細画面申請データを取得する
 		Optional<Application_New> applicationOpt = appRepository.findByID(cid, appId);		
 		if (!applicationOpt.isPresent()) {
@@ -148,7 +149,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 //		SetupType setupType = this.bacsicService
 //				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());
 		workChangeDetail.setDataWork(dataWork);
-		return workChangeDetail;
+		return workChangeDetail;*/
+		return null;
 	}
 
 }

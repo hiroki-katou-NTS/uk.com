@@ -88,9 +88,9 @@ public class GoBackApplicationDomainService {
 		
 		return null;
 	}
-	public InforGoBackDirectOutput getInforGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
+	public InforWorkGoBackDirectOutput getInforGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
 			AppEmploymentSetting appEmployment, List<WorkTimeSetting> lstWts) {
-		InforGoBackDirectOutput output = new InforGoBackDirectOutput();
+		InforWorkGoBackDirectOutput output = new InforWorkGoBackDirectOutput();
 		// 起動時勤務種類リストを取得する
 		List<WorkType> lstWorkType = holidayService.getWorkTypeLstStart(companyId, appEmployment);
 

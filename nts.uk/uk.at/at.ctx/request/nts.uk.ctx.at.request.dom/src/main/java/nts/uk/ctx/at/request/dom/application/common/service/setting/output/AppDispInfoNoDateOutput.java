@@ -59,7 +59,7 @@ public class AppDispInfoNoDateOutput {
 	private DisplayAtr displayStandardReason;
 	
 	/**
-	 * 定型理由項目<List> 
+	 * 定型理由項目一覧
 	 */
 	private List<ReasonTypeItem> reasonTypeItemLst;
 	

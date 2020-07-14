@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.appdispset;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdispset.AppDisplaySetting;
@@ -13,7 +14,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class AppDisplaySettingDto {
 	/**
 	 * 事前事後区分表示

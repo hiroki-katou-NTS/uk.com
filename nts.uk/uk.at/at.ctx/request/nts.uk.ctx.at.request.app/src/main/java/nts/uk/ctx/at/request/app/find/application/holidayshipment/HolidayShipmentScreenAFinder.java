@@ -439,13 +439,14 @@ public class HolidayShipmentScreenAFinder {
 				absWkTimeCode, appCommonSet, output);
 		// アルゴリズム「事前事後区分の最新化」を実行する
 		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
+			// error EA refactor 4
 			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
+			/*PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
 					EnumAdaptor.valueOf(ApplicationType_Old.BREAK_TIME_APPLICATION.value, ApplicationType_Old.class),
 					appDate,0);
 			if(prePostAtrJudgment != null){
 				output.setPreOrPostType(prePostAtrJudgment.value);
-			}
+			}*/
 		}
 
 		output.setRefDate(inputDate);

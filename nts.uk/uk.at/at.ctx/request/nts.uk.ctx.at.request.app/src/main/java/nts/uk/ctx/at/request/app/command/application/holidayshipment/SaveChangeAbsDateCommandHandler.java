@@ -132,8 +132,8 @@ public class SaveChangeAbsDateCommandHandler
 		this.registerDateChange.registerDateChange(companyID, sID,
 				Arrays.asList(oldApp.getAppDate(), command.getAbsCmd().getAppDate()));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		return newAfterReg.processAfterRegister(commonApp);
-
+		/*return newAfterReg.processAfterRegister(commonApp);*/
+		return null;
 	}
 	
 	private List<AppRemainCreateInfor> getAppData(SaveHolidayShipmentCommand command, String sID,

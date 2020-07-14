@@ -95,8 +95,8 @@ public interface CommonAlgorithmMobile {
 	 * @param overtimeAppAtr 残業区分<Optional>
 	 * @return
 	 */
-	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
-			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr);
+	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
+			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.KAFS00_A_申請メッセージ.アルゴリズム.起動する.起動する
@@ -111,4 +111,12 @@ public interface CommonAlgorithmMobile {
 	public RequestMsgInfoOutput getRequestMsgInfoOutputMobile(String companyID, String employeeID, String employmentCD, 
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS00_申請部品（スマホ）.スマホ申請共通アルゴリズム.申請共通起動処理（詳細）.申請共通起動処理（詳細）
+	 * @param companyID 会社ID
+	 * @param appID 申請ID
+	 * @return
+	 */
+	public AppDispInfoStartupOutput getDetailMob(String companyID, String appID);
 }

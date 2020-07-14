@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @AllArgsConstructor
 @NoArgsConstructor
 //直行直帰申請起動時の表示情報
+// Refactor 4
 public class InforGoBackCommonDirectOutput {
 //	勤務種類初期選択
 	private InforWorkType workType;
@@ -27,5 +28,5 @@ public class InforGoBackCommonDirectOutput {
 //	勤務種類リスト
 	private List<WorkType> lstWorkType;
 //	直行直帰申請
-	private Optional<GoBackAplication> goBackApplication;
+	private Optional<GoBackDirectly> goBackDirectly;
 }

@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -32,8 +33,8 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 	}
 
 	@Override
-	public ApprovalRootContentImport_New getgetApprovalRootPatternNew(String companyID, String employeeID,
-			EmploymentRootAtr rootAtr, ApplicationType_Old appType, GeneralDate appDate) {
+	public ApprovalRootContentImport_New getApprovalRootPatternNew(String companyID, String employeeID,
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate) {
 		// 1.社員の対象申請の承認ルートを取得する
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, "", true);
 		return approvalRootContentImport;

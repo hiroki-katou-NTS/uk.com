@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.smartphone;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,11 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -24,6 +26,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSe
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenAppData;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -47,20 +56,18 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpostappaccept.PostAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -93,16 +100,10 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private HolidayShipmentService holidayShipmentService;
 	
 	@Inject
-	private BaseDateGet baseDateGet;
-	
-	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
-	
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
 	
 	@Inject
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
@@ -111,13 +112,22 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private CollectAchievement collectAchievement;
 	
 	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
 	
 	@Inject
 	private AppEmploymentSetRepository appEmploymentSetRepository;
+	
+	@Inject
+	private DetailScreenBefore detailScreenBefore;
+	
+	@Inject
+	private BeforePreBootMode beforePreBootMode;
+	
+	@Inject
+	private InitMode initMode;
+	
+	@Inject
+	private ClosureService closureService;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -137,7 +147,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationType appType, Optional<HolidayAppType> opHolidayAppType) {
 		List<EmployeeInfoImport> employeeInfoLst = Collections.emptyList();
 		// INPUT．「起動モード」をチェックする
-		if(!mode) {
+		if(mode) {
 			// 申請者情報を取得する
 			employeeInfoLst = commonAlgorithm.getEmployeeInfoLst(Arrays.asList(employeeID));
 		}
@@ -194,7 +204,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 						Collections.emptyList());
 			}
 			// ドメインモデル「申請定型理由」を取得する
-			AppReasonStandard appReasonStandard = appReasonStandardRepository.findByHolidayAppType(companyID, opHolidayAppType.get());
+			AppReasonStandard appReasonStandard = appReasonStandardRepository.findByHolidayAppType(companyID, opHolidayAppType.get()).get();
 			// OUTPUTを返す
 			return new AppReasonOutput(
 					opDisplayReason.get().getDisplayFixedReason(), 
@@ -221,7 +231,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					Collections.emptyList());
 		}
 		// ドメインモデル「申請定型理由」を取得する
-		AppReasonStandard appReasonStandard = appReasonStandardRepository.findByAppType(companyID, appType);
+		AppReasonStandard appReasonStandard = appReasonStandardRepository.findByAppType(companyID, appType).get();
 		// OUTPUTを返す
 		return new AppReasonOutput(
 				opDisplayReason.get().getDisplayFixedReason(), 
@@ -259,22 +269,22 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		Optional<ErrorFlagImport> opErrorFlag = Optional.empty();
 		if(mode) {
 			// 1-4.新規画面起動時の承認ルート取得パターン
-			ApprovalRootContentImport_New approvalRootContentImport_New = collectApprovalRootPatternService.getgetApprovalRootPatternNew(
+			ApprovalRootContentImport_New approvalRootContentImport_New = collectApprovalRootPatternService.getApprovalRootPatternNew(
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class), 
+					appType, 
 					baseDate);
 			opListApprovalPhaseState = Optional.of(approvalRootContentImport_New.getApprovalRootState().getListApprovalPhaseState());
 			opErrorFlag = Optional.of(approvalRootContentImport_New.getErrorFlag());
 		}
 		// 事前事後の初期選択状態を取得する
 		PrePostInitAtr prePostInitAtr = this.getPrePostInitAtr(
-				appDateLst.get(0), 
+				appDateLst.stream().findFirst(), 
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
 				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
-				opOvertimeAppAtr.get());
+				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
 		Optional<List<AchievementOutput>> opAchievementOutputLst = Optional.empty();
 		Optional<List<AppDetailContent>> opAppDetailContentLst = Optional.empty();
@@ -288,14 +298,14 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAchievementOutputLst = Optional.of(achievementOutputLst);
 			// 事前内容の取得
 			List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAppDetailContentLst = Optional.of(appDetailContentLst);
 		}
 		// 取得した内容を返す
@@ -329,28 +339,28 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			refDate = CollectionUtil.isEmpty(appDateLst) ? Optional.empty() : Optional.of(appDateLst.get(0));
 		}
 		// 基準日として扱う日の取得
-		return baseDateGet.getBaseDate(refDate, applicationSetting.getRecordDate());
+		return applicationSetting.getBaseDate(refDate);
 	}
 
 	@Override
-	public PrePostInitAtr getPrePostInitAtr(GeneralDate appDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
-			PrePostInitAtr displayInitialSegment, OvertimeAppAtr overtimeAppAtr) {
+	public PrePostInitAtr getPrePostInitAtr(Optional<GeneralDate> opAppDate, ApplicationType appType, DisplayAtr prePostDisplayAtr,
+			PrePostInitAtr displayInitialSegment, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// INPUT．事前事後区分表示をチェックする(check INPUT. hiển thị phân loại xin trước xin sau)
 		if(prePostDisplayAtr == DisplayAtr.DISPLAY) {
 			// OUTPUT．「事前事後区分」=INPUT．事前事後区分の初期表示 (OUTPUT. [phan loại xin trước xin sau]= INPUT. hiển thị khởi tạo của phân loại xin trước xin sau)
 			return displayInitialSegment;
 		}
 		// INPUT．申請対象日リストをチェックする(Check INPUT. ApplicationTargerDateList)
-		if(appDate==null) {
+		if(!opAppDate.isPresent()) {
 			// OUTPUT．「事前事後区分」=事前(OUTPUT. [phân loại xin trước xin sau]= xin trước)
 			return PrePostInitAtr.PREDICT;
 		}
 		// 3.事前事後の判断処理(事前事後非表示する場合)
-		PrePostAtr_Old prePostAtr_Old = otherCommonAlgorithm.preliminaryJudgmentProcessing(
-				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
-				appDate, 
-				overtimeAppAtr.value);
-		return EnumAdaptor.valueOf(prePostAtr_Old.value, PrePostInitAtr.class);
+		PrePostAtr prePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(
+				appType,
+				opAppDate.get(), 
+				opOvertimeAppAtr.get());
+		return EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class);
 	}
 
 	@Override
@@ -358,10 +368,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 雇用に紐づく締めを取得する
-		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepository.findByEmploymentCD(companyID,
-				employmentCD);
+		int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
 		// 申請締切設定を取得する
-		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureEmpOtp.get().getClosureId());
+		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 事前申請がいつから受付可能か確認する
 		PreAppAcceptLimit preAppAcceptLimit = receptionRestrictionSetting.checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
 		// 事後申請がいつから受付可能か確認する
@@ -372,6 +381,61 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				deadlineLimitCurrentMonth, 
 				preAppAcceptLimit, 
 				postAppAcceptLimit);
+	}
+
+	@Override
+	public AppDispInfoStartupOutput getDetailMob(String companyID, String appID) {
+		// 15.詳細画面申請データを取得する
+		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
+		// 申請共通起動処理
+		List<GeneralDate> dateLst = new ArrayList<>();
+		Application application = detailScreenAppData.getApplication();
+		if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+			DatePeriod datePeriod = new DatePeriod(
+					application.getOpAppStartDate().get().getApplicationDate(), 
+					application.getOpAppEndDate().get().getApplicationDate());
+			dateLst = datePeriod.datesBetween();
+		} else {
+			dateLst.add(application.getAppDate().getApplicationDate());
+		}
+		AppDispInfoStartupOutput appDispInfoStartupOutput = this.appCommonStartProcess(
+				false, 
+				companyID, 
+				application.getEmployeeID(), 
+				application.getAppType(), 
+				Optional.empty(), 
+				dateLst, 
+				Optional.empty());
+		// 入力者の社員情報を取得する
+		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
+				application.getEmployeeID(), 
+				application.getEnteredPerson());
+		// 14-2.詳細画面起動前モードの判断
+		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
+				companyID, 
+				AppContexts.user().employeeId(), 
+				application, 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+		// 14-3.詳細画面の初期モード
+		OutputMode outputMode = initMode.getDetailScreenInitMode(
+				detailedScreenPreBootModeOutput.getUser(),  
+				detailedScreenPreBootModeOutput.getReflectPlanState().value);
+		
+		// 取得した「申請表示情報」を更新する(Update [thông tin hiển thị đơn xin]đã lấy)
+		AppDetailScreenInfo appDetailScreenInfo = new AppDetailScreenInfo(
+				application, 
+				detailScreenAppData.getDetailScreenApprovalData().getApprovalLst(), 
+				detailScreenAppData.getDetailScreenApprovalData().getAuthorComment(), 
+				detailedScreenPreBootModeOutput.getUser(), 
+				detailedScreenPreBootModeOutput.getReflectPlanState(), 
+				outputMode);
+		appDetailScreenInfo.setAuthorizableFlags(Optional.of(detailedScreenPreBootModeOutput.isAuthorizableFlags()));
+		appDetailScreenInfo.setApprovalATR(Optional.of(detailedScreenPreBootModeOutput.getApprovalATR()));
+		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));
+		appDispInfoStartupOutput.getAppDispInfoNoDateOutput().setOpEmployeeInfo(opEmployeeInfoImport);
+		appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo));
+		// 更新した「申請表示情報」を返す(Trả về [thông tin hiển thị đơn xin] đã update)
+		return appDispInfoStartupOutput;
 	}
 
 }

@@ -11,13 +11,33 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { application: any, appDispInfoStartupOutput: any };
-
+    public params: { 
+        // KAFS00_B_起動情報
+        input: {
+            // 画面モード
+            mode: ScreenMode;
+            // 申請表示設定
+            appDisplaySetting: any;
+            // 新規モード内容
+            newModeContent?: NewModeContent;
+            // 詳細モード内容
+            detailModeContent?: DetailModeContent;
+        },
+        output: {
+            // 事前事後区分
+            prePostAtr: number;
+            // 申請開始日
+            startDate: Date;
+            // 申請終了日
+            endDate: Date;
+        }
+    };
     public datasource: Array<Object> = [];
     public datasource2: Array<Object> = [];
+    public dateRange: any = {};
 
     public created() {
-        let self = this;
+        const self = this;
         self.datasource = [{
             code: 0,
             text: 'KAFS00_10'
@@ -32,83 +52,86 @@ export class KafS00BComponent extends Vue {
             code: true,
             text: 'KAFS00_13'
         }];
+        self.dateRange = {
+            start: self.params.output.startDate,
+            end: self.params.output.endDate
+        };
+        if (self.params.input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
+            self.params.output.prePostAtr = self.params.input.newModeContent.appTypeSetting.displayInitialSegment;
+        }
     }
 
-    get $application() {
-        return this.params.application;
+    get $input() {
+        const self = this;
+
+        return self.params.input;
     }
 
-    get $appDispInfoStartupOutput() {
-        return this.params.appDispInfoStartupOutput;
-    }
+    get $output() {
+        const self = this;
 
-    get prePostName() {
-        let self = this;
-
-        return _.find(self.datasource, (o: any) => o.code == self.$application.prePostAtr).text;
+        return self.params.output;
     }
 
     get displayPrePost() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) {
-            return self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1;
-        }
+        const self = this;
 
-        return true;
+        return self.$input.appDisplaySetting.prePostDisplayAtr == 0 ? false : true;
     }
 
     get enablePrePost() {
-        let self = this;
-        if (self.$appDispInfoStartupOutput.appDispInfoNoDateOutput) { 
-            let listAppTypeSetting = self.$appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-            let appTypeSetting = _.find(listAppTypeSetting, (item: any) => item.appType == self.$application.appType);    
-            
-            return appTypeSetting.canClassificationChange;
-        }
+        const self = this;
 
-        return true;
+        return self.$input.newModeContent.appTypeSetting.canClassificationChange;
     }
 
-    get dateText() {
-        let self = this;
-        if (self.$application.isRangeDate) {    
-            return '';
-        } else {
-            return moment(self.$application.appDate).format('yyyy/MM/dd');
-        }
+    get displayMultiDaySwitch() {
+        const self = this;
+
+        return self.$input.newModeContent.useMultiDaySwitch;
     }
 
-    @Watch('$application.appDate')
-    public dateWatcher(value) {
-        let self = this;
-        if (value.getDate() % 2 == 0) {
-            self.$application.prePostAtr = 0;
-        } else {
-            self.$application.prePostAtr = 1;
-        }
+    get valueMultiDaySwitch() {
+        const self = this;
+
+        return self.$input.newModeContent.initSelectMultiDay;
     }
 
-    @Watch('$application.dateRange')
-    public dateRangeWatcher(value) {
-        let self = this;
-        // if (value.getDate() % 2 == 0) {
-        //     self.$application.prePostAtr = 0;
-        // } else {
-        //     self.$application.prePostAtr = 1;
-        // }
-    }
-
-    @Watch('$appDispInfoStartupOutput')
-    public appDispInfoStartupWatcher(value) {
-        let self = this;
-        if (value.appDispInfoWithDateOutput) {
-            self.$application.prePostAtr = value.appDispInfoWithDateOutput.prePostAtr;
-        }
+    get ScreenMode() {
+        return ScreenMode;
     }
 }
 
-export interface AppDispInfoStartupDto {
-    appDispInfoNoDateOutput: any;
-    appDispInfoWithDateOutput: any;
-    appDetailScreenInfo: any;
+// 画面モード
+export enum ScreenMode {
+    // 新規モード
+    NEW = 0,
+    // 詳細モード
+    DETAIL = 1
+}
+
+// 新規モード内容
+interface NewModeContent {
+    // 申請種類別設定
+    appTypeSetting: any;
+    // 複数日切り替えを利用する
+    useMultiDaySwitch: boolean;
+    // 複数日を初期選択する
+    initSelectMultiDay: boolean;
+    // 申請日
+    appDate?: Date;
+    // 申請日期間
+    dateRange?: any;
+}
+
+// 詳細モード内容
+interface DetailModeContent {
+    // 事前事後区分
+    prePostAtrName: string;
+    // 申請者名
+    employeeName: string;
+    // 申請開始日
+    startDate: string;
+    // 申請終了日
+    endDate: string;       
 }

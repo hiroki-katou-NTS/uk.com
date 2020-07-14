@@ -1,34 +1,38 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 import java.util.List;
+import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-
-
-/**
- * refactor 4
- * @author anhnm
- * 
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.遅刻早退取消申請.遅刻早退取消申請
- *
- */
-
-//遅刻早退取消申請
-@Getter
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 @Setter
-public class ArrivedLateLeaveEarly extends Application {
-
-	//	遅刻早退取消先
+@Getter
+//遅刻早退取消申請
+public class ArrivedLateLeaveEarly extends Application{
+//	取消
 	private List<LateCancelation> lateCancelation;
+//	時刻報告
+	private List<TimeReport> lateOrLeaveEarlies;
 	
-	//	遅刻早退時刻報告
-	private List<TimeReport> timeReport;
-	
-	public ArrivedLateLeaveEarly(List<LateCancelation> lateCancelation, List<TimeReport> timeReport, Application application) {
+	public ArrivedLateLeaveEarly(Application application) {
 		super(application);
-		this.timeReport = timeReport;
-		this.lateCancelation = lateCancelation;
 	}
+	/*
+	 * 申請内容
+	 * */
+	public String contentApplication() {
+		return null;
+	}
+
 }

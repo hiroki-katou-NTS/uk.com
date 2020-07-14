@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 //                this.dataFetch().goBackApplication().dataWork.workTime.workTime = this.model.workTimeCode();
 //                this.dataFetch().goBackApplication().dataWork.workTime.nameWorkTime = this.model.workTimeName();
                 
-            }
+            //}
             
             
         }

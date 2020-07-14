@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyClassification;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +17,12 @@ public class LateCancelationDto {
 //	区分
 	private int lateOrEarlyClassification;
 	
-	public static LateCancelationDto convertDto(LateCancelation value) {
+	public static LateCancelationDto fromDomain(LateCancelation value) {
 		return new LateCancelationDto(value.getWorkNo(), value.getLateOrEarlyClassification().value);
+	}
+	public LateCancelation toDomain() {
+		return new LateCancelation(
+				workNo,
+				EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyClassification.class));
 	}
 }

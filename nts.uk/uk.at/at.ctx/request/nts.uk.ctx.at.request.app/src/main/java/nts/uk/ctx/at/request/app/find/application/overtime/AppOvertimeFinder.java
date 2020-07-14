@@ -889,12 +889,13 @@ public class AppOvertimeFinder {
 		result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
 		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
 			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// error EA refactor 4
 			// 3.事前事後の判断処理(事前事後非表示する場合)
-			PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType_Old.OVER_TIME_APPLICATION.value, ApplicationType_Old.class), GeneralDate.fromString(appDate, DATE_FORMAT),overtimeAtr);
+			/*PrePostAtr_Old prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType_Old.OVER_TIME_APPLICATION.value, ApplicationType_Old.class), GeneralDate.fromString(appDate, DATE_FORMAT),overtimeAtr);
 			if(prePostAtrJudgment != null){
 				prePostAtr = prePostAtrJudgment.value;
 				applicationDto.setPrePostAtr(prePostAtr);
-			}
+			}*/
 		}
 		
 		// 14_表示データを取得
