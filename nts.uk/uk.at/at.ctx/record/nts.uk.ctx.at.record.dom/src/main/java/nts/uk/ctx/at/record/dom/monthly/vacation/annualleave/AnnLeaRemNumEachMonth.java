@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -10,14 +13,20 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 年休月別残数データ
  * @author shuichu_ishida
  */
 @Getter
-public class AnnLeaRemNumEachMonth extends AggregateRoot {
+public class AnnLeaRemNumEachMonth extends AggregateRoot implements SerializableWithOptional{
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 社員ID */
 	private final String employeeId;
 	/** 年月 */
@@ -140,4 +149,12 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }

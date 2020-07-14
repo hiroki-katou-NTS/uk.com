@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
 @Getter
-public class AnnualLeaveUsedTime implements Cloneable {
+public class AnnualLeaveUsedTime implements Cloneable, Serializable {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 使用時間 */
 	private UsedMinutes usedTime;
 	

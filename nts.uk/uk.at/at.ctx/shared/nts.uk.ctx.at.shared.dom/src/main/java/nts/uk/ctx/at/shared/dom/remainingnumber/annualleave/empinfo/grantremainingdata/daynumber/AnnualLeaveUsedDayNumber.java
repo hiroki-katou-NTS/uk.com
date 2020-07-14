@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.constraint.HalfIntegerRange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 
@@ -9,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  *
  */
 @HalfIntegerRange(min = 0, max = 999.5)
-public class AnnualLeaveUsedDayNumber extends LeaveUsedDayNumber {
+public class AnnualLeaveUsedDayNumber extends LeaveUsedDayNumber implements Serializable {
 
 	private static final long serialVersionUID = -8576217329914710255L;
 

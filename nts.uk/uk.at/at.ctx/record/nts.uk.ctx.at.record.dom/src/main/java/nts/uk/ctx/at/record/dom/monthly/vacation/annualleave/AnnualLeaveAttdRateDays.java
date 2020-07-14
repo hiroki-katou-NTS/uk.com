@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
@@ -10,8 +12,13 @@ import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
  */
 @Getter
 @Setter
-public class AnnualLeaveAttdRateDays {
+public class AnnualLeaveAttdRateDays implements Serializable{
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 労働日数 */
 	private MonthlyDays workingDays;
 	/** 所定日数 */

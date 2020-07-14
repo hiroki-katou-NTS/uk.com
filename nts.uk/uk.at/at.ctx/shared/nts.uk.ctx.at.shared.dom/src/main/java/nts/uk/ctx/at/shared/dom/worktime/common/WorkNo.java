@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
@@ -12,7 +14,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  */
 // 勤務NO
 @IntegerRange(min = 1, max = 3)
-public class WorkNo extends IntegerPrimitiveValue<WorkNo> {
+public class WorkNo extends IntegerPrimitiveValue<WorkNo> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

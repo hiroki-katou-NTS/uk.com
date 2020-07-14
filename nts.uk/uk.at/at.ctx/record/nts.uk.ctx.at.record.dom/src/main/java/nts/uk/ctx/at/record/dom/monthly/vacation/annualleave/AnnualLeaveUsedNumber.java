@@ -1,16 +1,24 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 年休使用数
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveUsedNumber implements Cloneable {
+public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptional {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 使用日数 */
 	private AnnualLeaveUsedDays usedDays;
 	/** 使用時間 */
@@ -66,6 +74,14 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 					usedNumber.getUsedTime().get().getUsedTime().v());
 		}
 	}
+	
+	private void writeObject(ObjectOutputStream stream){		
+		writeObjectWithOptional(stream);	
+	}		
+	private void readObject(ObjectInputStream stream){		
+		readObjectWithOptional(stream);	
+	}		
+
 	
 }
 

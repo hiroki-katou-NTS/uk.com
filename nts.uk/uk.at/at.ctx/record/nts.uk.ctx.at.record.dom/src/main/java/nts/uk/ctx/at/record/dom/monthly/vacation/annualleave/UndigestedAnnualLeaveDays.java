@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
@@ -8,8 +10,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
  * @author shuichu_ishida
  */
 @Getter
-public class UndigestedAnnualLeaveDays implements Cloneable {
+public class UndigestedAnnualLeaveDays implements Cloneable, Serializable {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 未消化日数 */
 	private AnnualLeaveUsedDayNumber undigestedDays;
 	

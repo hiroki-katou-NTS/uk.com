@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.PerServiceLengthTableCD;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -15,8 +18,13 @@ import nts.uk.shr.com.context.AppContexts;
 // domain name: 年休社員基本情報
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
+public class AnnualLeaveEmpBasicInfo extends AggregateRoot implements SerializableWithOptional {
 	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 社員ID
 	 */
@@ -64,5 +72,12 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	private static Integer toInteger(BigDecimal bigNumber) {
 		return bigNumber != null ? bigNumber.intValue() : null;
 	}
+
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
 
 }

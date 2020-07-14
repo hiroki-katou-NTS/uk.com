@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +26,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ken_takasu
  *
  */
-public class WorkInformation {
+public class WorkInformation implements Serializable{
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private WorkTypeCode workTypeCode;
 	private WorkTimeCode workTimeCode;
 

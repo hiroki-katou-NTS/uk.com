@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 
 /**
@@ -10,7 +12,7 @@ import lombok.Getter;
  */
 
 @Getter
-public class GrantCondition {
+public class GrantCondition implements Serializable{
 	/* 会社ID */
 	private String companyId;
 	

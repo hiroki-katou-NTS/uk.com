@@ -1,17 +1,25 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 年休未消化数
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveUndigestedNumber implements Cloneable {
+public class AnnualLeaveUndigestedNumber implements Cloneable, SerializableWithOptional{
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 未消化日数 */
 	private UndigestedAnnualLeaveDays undigestedDays;
 	/** 未消化時間 */
@@ -57,4 +65,12 @@ public class AnnualLeaveUndigestedNumber implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }

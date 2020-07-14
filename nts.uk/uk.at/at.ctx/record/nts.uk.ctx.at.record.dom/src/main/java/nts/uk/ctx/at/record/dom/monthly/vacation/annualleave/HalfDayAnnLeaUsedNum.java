@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
@@ -10,8 +13,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  * @author shuichu_ishida
  */
 @Getter
-public class HalfDayAnnLeaUsedNum implements Cloneable {
+public class HalfDayAnnLeaUsedNum implements Cloneable, SerializableWithOptional {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 回数 */
 	private UsedTimes times;
 	/** 回数付与前 */
@@ -61,4 +69,12 @@ public class HalfDayAnnLeaUsedNum implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }

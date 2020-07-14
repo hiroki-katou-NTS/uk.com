@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 
 /**
@@ -11,9 +13,14 @@ import lombok.Builder;
  */
 // 取得設定
 @Builder
-public class AcquisitionSetting {
+public class AcquisitionSetting implements Serializable{
     
-    /** The annual priority. */
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/** The annual priority. */
     // 年休消化優先
     public AnnualPriority annualPriority;
 }

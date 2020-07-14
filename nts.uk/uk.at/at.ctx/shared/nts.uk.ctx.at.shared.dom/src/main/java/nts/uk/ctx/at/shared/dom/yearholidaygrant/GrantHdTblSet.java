@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,13 @@ import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
 @AllArgsConstructor
-public class GrantHdTblSet extends AggregateRoot {
+public class GrantHdTblSet extends AggregateRoot implements Serializable{
+	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* 会社ID */
 	private String companyId;
 

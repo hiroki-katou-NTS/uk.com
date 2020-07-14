@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
@@ -15,7 +19,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  */
 @Getter
 @AllArgsConstructor
-public class AnnualLeaveUsedInfo implements Cloneable {
+public class AnnualLeaveUsedInfo implements Cloneable, SerializableWithOptional {
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** 合計 */
 	private AnnualLeaveUsedNumber usedNumber;
@@ -140,4 +149,12 @@ public class AnnualLeaveUsedInfo implements Cloneable {
 		// 合計残数を付与後に退避する
 		usedNumberAfterGrantOpt = Optional.of(usedNumber.clone());
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }

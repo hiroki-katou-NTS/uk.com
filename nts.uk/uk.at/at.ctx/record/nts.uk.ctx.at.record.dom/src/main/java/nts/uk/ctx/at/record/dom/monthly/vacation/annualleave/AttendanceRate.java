@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
@@ -10,7 +11,7 @@ import nts.arc.primitive.constraint.DecimalRange;
  * @author sonnlb
  */
 @DecimalRange(min = "0", max = "100")
-public class AttendanceRate extends DecimalPrimitiveValue<AttendanceRate> {
+public class AttendanceRate extends DecimalPrimitiveValue<AttendanceRate> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

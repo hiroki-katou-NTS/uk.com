@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 
 /**
@@ -12,8 +16,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
  */
 @Getter
 @Setter
-public class AnnualLeaveMaxRemainingTime implements Cloneable {
+public class AnnualLeaveMaxRemainingTime implements Cloneable, SerializableWithOptional {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 時間 */
 	private RemainingMinutes time;
 	/** 時間付与前 */
@@ -65,4 +74,12 @@ public class AnnualLeaveMaxRemainingTime implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }

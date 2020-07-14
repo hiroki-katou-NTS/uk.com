@@ -98,11 +98,7 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		// 社員IDリスト
 		ArrayList<String> employeeIds = new ArrayList<String>();
 		
-		
-		
-		
-		
-		
+			
 		// 社員
 //		EmpEmployeeAdapter　EmpEmployeeAdapterImpl1 = new EmpEmployeeAdapterImpl();
 		List<EmployeeImport> employeeImportList = empEmployeeAdapter.findByEmpId(employeeIds);
@@ -156,9 +152,6 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 				= annLeaRemNumEachMonthRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
 		toBinaryMap.put(AnnLeaRemNumEachMonth.class.toString(), annLeaRemNumEachMonthList);
 		
-		// ??
-		// ooooo 要確認
-		// DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(1900, 1, 1), GeneralDate.ymd(9999, 1, 1));
 		val workInfoOfDailyPerformanceList
 			= new ArrayList<WorkInfoOfDailyPerformance>();
 		
