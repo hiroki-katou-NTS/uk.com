@@ -57,14 +57,16 @@ public class DateInformation {
 	 * @return
 	 */
 	public static DateInformation create(Require require, GeneralDate ymd, TargetOrgIdenInfor targetOrgIdenInfor) {
+		boolean isSpecificDay = false;
+		EventName workplaceEventName = null;
+		EventName optCompanyEventName = null;
+		List<SpecificName> lstSpecDayNameWorkplace = new ArrayList<>();
+		List<SpecificName> lstSpecDayNameCom = new ArrayList<>();
 
-	//	List<SpecificDateItem> lst = new ArrayList();
 		// if 対象組織.単位 == 職場
 		if (targetOrgIdenInfor.getUnit().value == TargetOrganizationUnit.WORKPLACE.value) {
-			if (!targetOrgIdenInfor.getWorkplaceId().isPresent()) {
-				throw new BusinessException("Msg_xxx");
-			}
-			Optional<WorkplaceEvent> workplaceEvent = require.findByPK(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
+		
+		Optional<WorkplaceEvent> workplaceEvent = require.findByPK(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
 			if (workplaceEvent.isPresent()) {
 				/*
 				 * if $職場行事.isPresent
@@ -72,7 +74,7 @@ public class DateInformation {
 				 * 	$職場特定日設定 = require.職場の特定日設定を取得する(対象組織.職場ID, 年月日)																	
 				 */
 				
-				EventName workplaceEventName = workplaceEvent.get().getEventName();
+				 workplaceEventName = workplaceEvent.get().getEventName();
 				List<WorkplaceSpecificDateItem> listWorkplaceSpecificDateItem = require
 						.getWorkplaceSpecByDate(targetOrgIdenInfor.getWorkplaceId().get(), ymd);
 				
@@ -81,18 +83,40 @@ public class DateInformation {
 							@職場の特定日名称リスト = require.特定日項目リストを取得する(												
 							$職場特定日設定.特定日項目リスト)										
 							: map $.名称		*/	
-					//isSpecificDay = true;
+					//@特定日であるか QA http://192.168.50.4:3000/issues/110662 - code 
+					isSpecificDay = true;
 					List<SpecificDateItemNo> listSpecificDateItemNo =  listWorkplaceSpecificDateItem.stream().map(c ->c.getSpecificDateItemNo()).collect(Collectors.toList());
 					List<SpecificDateItem>	zlistSpecDayNameWorkplace = require.getSpecifiDateByListCode(listSpecificDateItemNo);
-					List<SpecificName> zListSpecificName = zlistSpecDayNameWorkplace.stream().map(c ->c.getSpecificName()).collect(Collectors.toList());
+					 lstSpecDayNameWorkplace = zlistSpecDayNameWorkplace.stream().map(c ->c.getSpecificName()).collect(Collectors.toList());
 				}
 				
 			}
 		}
+		
 		Optional<CompanyEvent> optCompanyEvent  =require.findCompanyEventByPK(ymd);
 		if(optCompanyEvent.isPresent()){
-		//---------------------------Chờ QA http://192.168.50.4:3000/issues/110662
+			/*if $会社行事.isPresent																								
+			@行事名称 = $会社行事.行事名称	*/																			
+			 optCompanyEventName = optCompanyEvent.get().getEventName();		
 		}
+		List<CompanySpecificDateItem> listCompanySpecificDateItem  = require.getComSpecByDate(ymd);
+		if(!listCompanySpecificDateItem.isEmpty()){
+			isSpecificDay = true;
+			List<SpecificDateItemNo> lstSpecificDateItemNo = listCompanySpecificDateItem.stream().map(c ->c.getSpecificDateItemNo()).collect(Collectors.toList());
+			List<SpecificDateItem> listSpecDayNameCompany= require.getSpecifiDateByListCode(lstSpecificDateItemNo);
+			lstSpecDayNameCom = listSpecDayNameCompany.stream().map(c->c.getSpecificName()).collect(Collectors.toList());
+	
+		}	
+		boolean existPublicHoliday = require.getHolidaysByDate(ymd);
+		/*return new DateInformation(ymd,
+				ymd.dayOfWeekEnum(),
+				existPublicHoliday,
+				isSpecificDay, 
+				Optional.ofNullable(new EventName(workplaceEventName.v())),
+				Optional.ofNullable(new EventName(optCompanyEventName.v())),
+				lstSpecDayNameWorkplace,
+				lstSpecDayNameCom);*/
+		//-QAhttp://192.168.50.4:3000/issues/110662#note-3
 		return null;
 	}
 
@@ -135,12 +159,12 @@ public class DateInformation {
 
 		/**
 		 * [R-5] 祝日が存在するか PublicHolidayRepository
-		 * 
+		 * 	祝日Repository.exists(会社ID, 年月日)	
 		 * @param companyID
 		 * @param date
 		 * @return
 		 */
-		Optional<PublicHoliday> getHolidaysByDate(GeneralDate date);
+		boolean getHolidaysByDate(GeneralDate date);
 
 		/**
 		 * [R-6] 特定日項目リストを取得する SpecificDateItemRepository
@@ -149,7 +173,7 @@ public class DateInformation {
 		 * @param lstSpecificDateItem
 		 * @return
 		 */
-		List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItem);
+		List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo);
 
 	}
 

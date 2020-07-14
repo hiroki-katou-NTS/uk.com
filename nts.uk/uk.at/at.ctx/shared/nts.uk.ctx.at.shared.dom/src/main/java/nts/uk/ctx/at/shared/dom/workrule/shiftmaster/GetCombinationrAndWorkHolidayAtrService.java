@@ -39,6 +39,7 @@ public class GetCombinationrAndWorkHolidayAtrService {
 		Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<>();
 		//listShiftMaster.stream().map(mapper->mapper.)
 		//------------------------QA http://192.168.50.4:3000/issues/110620
+		
 		return null;
 		
 	} 

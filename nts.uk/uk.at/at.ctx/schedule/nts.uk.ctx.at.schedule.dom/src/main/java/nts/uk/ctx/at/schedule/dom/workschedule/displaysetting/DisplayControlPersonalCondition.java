@@ -1,37 +1,48 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
-
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseClassificationService;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmpRankInfor;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.GetEmRankInforService;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
 
 /**
- * 個人条件の表示制御
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
+ * 個人条件の表示制御 UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
+ * 
  * @author HieuLT
- *
+ * 
  */
 @AllArgsConstructor
 public class DisplayControlPersonalCondition implements DomainAggregate {
 
 	@Getter
-	/** 会社ID **/ 
+	/** 会社ID **/
 	private final String companyID;
 	@Getter
-	/** List<条件表示制御> --- 条件表示制御リスト**/ 
+	/** List<条件表示制御> --- 条件表示制御リスト **/
 	private List<PersonInforDisplayControl> listConditionDisplayControl;
-	
+
 	@Getter
-	/** Optional<勤務予定の資格設定> 資格設定**/
-	private Optional <WorkscheQualifi> otpWorkscheQualifi;
+	/** Optional<勤務予定の資格設定> 資格設定 **/
+	private Optional<WorkscheQualifi> otpWorkscheQualifi;
 
 	/**
 	 * [C-1] 個人条件の表示制御
+	 * 
 	 * @param companyID
 	 * @param listConditionDisplayControl
 	 * @param otpWorkscheQualifi
@@ -39,16 +50,61 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	 */
 	public static DisplayControlPersonalCondition get(String companyID,
 			List<PersonInforDisplayControl> listConditionDisplayControl, Optional<WorkscheQualifi> otpWorkscheQualifi) {
-		if((listConditionDisplayControl.stream().anyMatch(c-> c.getConditionATR()== ConditionATRWorkSchedule.QUALIFICATION)) && (!otpWorkscheQualifi.isPresent())){
+		if ((listConditionDisplayControl.stream()
+				.anyMatch(c -> c.getConditionATR() == ConditionATRWorkSchedule.QUALIFICATION))
+				&& (otpWorkscheQualifi.isPresent())) {
 			throw new BusinessException("Msg_1682");
 		}
 		return new DisplayControlPersonalCondition(companyID, listConditionDisplayControl, otpWorkscheQualifi);
 	}
-	//																													
-	//[1] 個人条件の表示制御に対して必要な個人情報を取得する
-	public <T> List<PersonalCondition> acquireInforDisplayControlPersonalCondition(	T require , GeneralDate referenceDate , List<String> st){
-		// Chờ QA http://192.168.50.4:3000/issues/110657
-		return null;
+
+	//
+	// [1] 個人条件の表示制御に対して必要な個人情報を取得する
+	public List<PersonalCondition> acquireInforDisplayControlPersonalCondition(Require require,
+			GeneralDate referenceDate, List<String> lstEmpId) {
+		List<PersonalCondition> result = new ArrayList<PersonalCondition>();
+		/*
+		 * $社員チームリスト = DS_所属スケジュールチーム情報を取得する.取得する(require, 社員リスト) :map key
+		 * $.社員ID value $
+		 */
+		Map<String, EmpTeamInfor> mapEmpTeamLst = GetScheduleTeamInfoService.get(require, lstEmpId).stream()
+				.collect(Collectors.toMap(EmpTeamInfor::getEmployeeID, x -> x));
+
+		/*
+		 * $社員ランクリスト = DS_社員ランク情報を取得する.取得する(require, 社員リスト) :map key $.社員ID
+		 * value $
+		 */
+		Map<String, EmpRankInfor> mapEmpRankInfor = GetEmRankInforService.get(require, lstEmpId).stream()
+				.collect(Collectors.toMap(EmpRankInfor::getEmpId, x -> x));
+		/*
+		 * $社員免許区分リスト = DS_社員の免許区分を取得する.取得する(require, 基準日, 社員リスト) :map key
+		 * $.社員ID value $
+		 */
+		Map<String, EmpLicenseClassification> mapEmpLicenseClassification = GetEmpLicenseClassificationService
+				.get(require, referenceDate, lstEmpId).stream()
+				.collect(Collectors.toMap(EmpLicenseClassification::getEmpID, x -> x));
+		for (String empId : lstEmpId) {
+
+			/*
+			 * $社員チーム = $社員チームリスト.get($).チーム名称 $社員ランク = $社員ランクリスト.get($).ランク記号
+			 * $社員免許区分 = $社員免許区分リスト.get($).免許区分 return 個人条件( $, $社員チーム, $社員ランク,
+			 * $社員免許区分)
+			 */
+			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId).getOptScheduleTeamName();
+			String empRank = mapEmpRankInfor.get(empId).getRankSymbol();
+			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
+					.getOptLicenseClassification();
+
+			PersonalCondition data = new PersonalCondition(empId, Optional.ofNullable(teamName.get().v()),
+					Optional.ofNullable(empRank), mapEmpLicense);
+			result.add(data);
+		}
+		return result;
 	}
-	
+
+	public static interface Require extends GetScheduleTeamInfoService.Require, GetEmRankInforService.Require,
+			GetEmpLicenseClassificationService.Require {
+
+	}
+
 }

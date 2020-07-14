@@ -19,13 +19,13 @@ public class EmpRankInfor {
 	private final String rankCode;
 	
 	/**ランク記号 **/
-	private final String rankName;
+	private final String rankSymbol;
 
 	public EmpRankInfor(String empId) {
 		super();
 		this.empId = empId;
 		this.rankCode = null;
-		this.rankName = null;
+		this.rankSymbol = null;
 		
 		
 	}
@@ -44,8 +44,8 @@ public class EmpRankInfor {
 	 * @param rankName
 	 * @return
 	 */
-	public static EmpRankInfor create(String empId, String rankCode , String rankName){
-		return new EmpRankInfor(empId, rankCode, rankName);
+	public static EmpRankInfor create(String empId, String rankCode , String rankSymbol){
+		return new EmpRankInfor(empId, rankCode, rankSymbol);
 	}
 	
 	

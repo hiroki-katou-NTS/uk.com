@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 
 /**
@@ -20,7 +21,7 @@ public class DisplayInfoOrganization {
 
 	/** 名称 **/
 	private final String name;
-	/** 呼称 **/
+	/** 表示名 **/
 	private final String displayName;
 	/** 呼称 **/
 	private final String genericTerm;
@@ -30,7 +31,10 @@ public class DisplayInfoOrganization {
 	 * @return
 	 */
 	public DisplayInfoOrganization createDisplayInforWorkplaceGroup(WorkplaceGroupImport workplaceGroupImport){
-		//http://192.168.50.4:3000/issues/110650 chờ QA  
-		return null;
+		return new DisplayInfoOrganization(I18NText.getText("#Com_Workplace"),
+				workplaceGroupImport.getWorkplaceGroupCode(),
+				workplaceGroupImport.getWorkplaceGroupName(),
+				workplaceGroupImport.getWorkplaceGroupName(),
+				workplaceGroupImport.getWorkplaceGroupName());
 	} 
 }
