@@ -214,11 +214,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // and startDate-endDate of screen A
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 
-                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                    let userInfor = JSON.parse(data);
-                    
-                });   
-                    
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
                 self.getDataWkpPattern();
@@ -245,9 +240,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
-        
-        
         
         /**
          * laays setting ban dau
@@ -284,6 +276,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // get setting height grid
                 if (userInfor.gridHeightSelection == 1) {
                     self.selectedTypeHeightExTable(1);
+                    self.isEnableInputHeight(false);
                 } else {
                     self.heightGridSetting(userInfor.heightGridSetting);
                     self.selectedTypeHeightExTable(2);
@@ -300,7 +293,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
         * Create exTable
         */
-        initExTable(heightGridSetting): void {
+        initExTable(): void {
             let self = this,
                 timeRanges = [],
                 //Get dates in time period

@@ -35,36 +35,52 @@
 		<ui:define name="content">
 			<div data-bind="with: viewA">
 				<div id="functions-area">
-					<button tabindex="1"  class="proceed"  data-bind="enable: true">#{i18n.getText('KSU001_1')}</button>
-					<button tabindex="2"  class="proceed marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_2')}</button>
-					<button tabindex="3"  class="create  marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_3')}</button>
-					<button tabindex="4"  class="check   marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_4')}</button>
-					<button tabindex="5" class="confirm marginleft15px"  data-bind="enable: true , click: openDialogD ">#{i18n.getText('KSU001_5')}</button>
-					<button tabindex="6" class="release marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_6')}</button>
+					<button tabindex="1" id="A1_1"  class="proceed"  data-bind="enable: true">#{i18n.getText('KSU001_1')}1</button>
+					<button tabindex="2" id="A1_2"  class="proceed marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_2')}2</button>
+					<button tabindex="3" id="A1_3"  class="create  marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_3')}3</button>
+					<button tabindex="4" id="A1_4"  class="check   marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_4')}4</button>
+					<button tabindex="5" id="A1_5"  class="confirm marginleft15px"  data-bind="enable: true,click: openDialogD ">#{i18n.getText('KSU001_5')}5</button>
+					<button tabindex="6" id="A1_6"  class="release marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_6')}6</button>
 					
-					<button tabindex="7" class="output   " data-bind="enable: true ">#{i18n.getText('KSU001_7')}</button>
-					<button tabindex="8" class="hope     marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_8')}</button>
-					<button tabindex="9" class="vacation marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_9')}</button>
-					<button tabindex="10" class="revision marginleft15px" data-bind="enable: true ">#{i18n.getText('KSU001_10')}</button>
+					<button tabindex="7" id="A1_7"  class="output"                   data-bind="enable: true">#{i18n.getText('KSU001_7')}7</button>
+					<button tabindex="8" id="A1_8"  class="hope     marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_8')}8</button>
+					<button tabindex="9" id="A1_9"  class="vacation marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_9')}9</button>
+					<button tabindex="10" id="A1_10"  class="revision marginleft15px" data-bind="enable: true">#{i18n.getText('KSU001_10')}10</button>
 					
-					<button tabindex="11" class="setting  "  data-bind="enable: true ">#{i18n.getText('KSU001_11')}</button>
-					<button tabindex="12" class="setmenu  marginleft15px"  data-bind="enable: true ">#{i18n.getText('KSU001_12')}</button>
+					<button tabindex="11" id="A1_11" class="setting"                 data-bind="enable: true">#{i18n.getText('KSU001_11')}11</button>
+					<button tabindex="12" id="A1_12"  class="setmenu marginleft15px"  data-bind="enable: true">#{i18n.getText('KSU001_12')}12</button>
 				</div>
-
-				<div id="popup-area4" class="popup-area popup-panel">
+				
+				<!-- event when click btn KSU001_10 -->
+				<div id="popup-area4" class="popup-area popup-panel btn10">
 					<div id="button-top">
-						<button tabindex="15" class="compensation">#{i18n.getText('Com_CompensationHoliday')}</button>
-						<button tabindex="16" class="paid">#{i18n.getText('Com_PaidHoliday')}</button>
-						<button tabindex="17" class="exsess">#{i18n.getText('Com_ExsessHoliday')}</button>
+						<button tabindex="15" id="A1_10_2" class="compensation">#{i18n.getText('Com_CompensationHoliday')}</button>
+						<button tabindex="16" id="A1_10_4" class="paid">#{i18n.getText('Com_PaidHoliday')}</button>
+						<button tabindex="17" id="A1_10_6" class="exsess">#{i18n.getText('Com_ExsessHoliday')}</button>
 					</div>
 					<div id="button-bot">
-						<button tabindex="18" class="substitute">#{i18n.getText('Com_SubstituteHoliday')}</button>
-						<button tabindex="19" class="fundedPaid">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-						<button tabindex="20" class="supportsetting">#{i18n.getText('KSU001_29')}</button>
+						<button tabindex="18" id="A1_10_3" class="substitute">#{i18n.getText('Com_SubstituteHoliday')}</button>
+						<button tabindex="19" id="A1_10_5" class="fundedPaid">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+						<button tabindex="20" id="A1_10_7" class="supportsetting">#{i18n.getText('KSU001_29')}</button>
 					</div>
 				</div>
+				
+				<!-- event when click btn KSU001_7 -->
+				<div id="popup-area7" class="popup-area popup-panel btn10">
+					<table>
+						<tr style="height: 50px">
+							<td style="width: 20%"><button tabindex="15" id="A1_7_2" class="compensation">#{i18n.getText('KSU001_13')}</button></td>
+							<td style="width: 80%"><span class="label" id="A1_7_3" style="">#{i18n.getText('KSU001_14')}</span></td>
+						</tr>
+						<tr style="height: 50px">
+							<td style="width: 20%"><button tabindex="18" id="A1_7_4" class="substitute">#{i18n.getText('KSU001_15')}</button></td>
+							<td style="width: 80%"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16')}</span></td>
+						</tr>
+					</table>
+				</div>
 
-				<div id="popup-area5" class="popup-area popup-panel">
+				<!-- event when click btn KSU001_12 -->
+				<div id="popup-area5" class="popup-area popup-panel btn12">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_23')}</div>
 					<hr></hr>
 					<div id="work-setting">
@@ -112,8 +128,8 @@
 					</div>
 				</div>
 				
-				<!-- popup khi click btn A4 -->
-				<div id="popup-area6" class="popup-area popup-panel A4_1">
+				<!-- popup khi click btn A4 Screen-display-settings -->
+				<div id="popup-area6" class="popup-area popup-panel">
 					<div style="margin-left: 0px">
 						<div style="">
 							<div class="area6-left">
@@ -199,7 +215,7 @@
 					</div>
 				</div>
 				
-				<!-- POPUP KHI CLICK BTN A5-->
+				<!-- POPUP KHI CLICK BTN A5 color-button-->
 				<div id="popup-area9" class="popup-area popup-panel">
 					<span>#{i18n.getText('KSU001_306')}</span>
 					<hr />
@@ -315,7 +331,7 @@
 								</div>
 							</div>
 							<div id="functon-area-row2-right">
-								<button id="A4" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
+								<button id="Screen-display-settings" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
 								<button id="A5" tabindex="-1" class="color-button ml-2 size-image-button1"></button>
 							</div>
 						</div>

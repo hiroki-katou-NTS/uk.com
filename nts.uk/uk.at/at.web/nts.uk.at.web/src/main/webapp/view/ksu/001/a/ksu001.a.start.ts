@@ -17,7 +17,7 @@ module nts.uk.at.view.ksu001.a {
             userInfor.listShiftMaster = [{a : '5', b : '6'},{a : '5', b : '6'}];
             userInfor.disPlayFormat = '';  
             userInfor.backgroundColor = ''; // 背景色
-            userInfor.gridHeightSelection = '';
+            userInfor.gridHeightSelection = 1;
             userInfor.heightGridSetting = '';
             userInfor.shiftPalletUnit  = 1;
             userInfor.shiftPalletPositionNumber = 0;
@@ -46,7 +46,7 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //popup 3
+        //popup-area4 click btn10
         $('#popup-area4').ntsPopup({
             position: {
                 my: 'left top',
@@ -58,8 +58,22 @@ module nts.uk.at.view.ksu001.a {
         $('.revision').click(function() {
             $('#popup-area4').ntsPopup("toggle");
         });
+        
+        //popup-area7 click btn7
+        $('#popup-area7').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom+3',
+                of: $('.output')
+            }
+        });
 
-        //popup 4
+        $('.output').click(function() {
+            $('#popup-area7').ntsPopup("toggle");
+        });
+        
+
+        // popup-area5 click btn12
         $('#popup-area5').ntsPopup({
             position: {
                 my: 'right top',
@@ -72,21 +86,21 @@ module nts.uk.at.view.ksu001.a {
             $('#popup-area5').ntsPopup("toggle");
         });
 
-        //popup A3-20 popup-setting-grid
+        //popup-area6 click btnA4
         $('#popup-area6').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('#A4')
+                of: $('#Screen-display-settings')
             }
         });
         
 
-        $('#A4').click(function() {
+        $('#Screen-display-settings').click(function() {
             $('#popup-area6').ntsPopup("toggle");
         });
         
-        //popup A3-24
+        //popup-area9
         $('#popup-area9').ntsPopup({
             position: {
                 my: 'left top',

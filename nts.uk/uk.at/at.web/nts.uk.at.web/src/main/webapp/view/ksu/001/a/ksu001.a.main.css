@@ -27,7 +27,6 @@
 
 table th, table td {
 	padding: 5px 5px;
-	border: 1px solid #ccc;
 }
 
 #functions-area>button {
@@ -152,6 +151,11 @@ table th, table td {
 	height: 85px;
 }
 
+#popup-area7 {
+	width: 440px !important;
+	height: 100px;
+}
+
 #popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
 	#popup-area7, #popup-area8, #popup-area9, #popup-setting-grid {
 	border: solid 6px #fff !important;
@@ -190,14 +194,6 @@ table th, table td {
 
 #popup6-radioBox>.ntsRadioBox, .div-popup {
 	margin-bottom: 10px
-}
-
-#popup-area7>div {
-	margin-top: 15px
-}
-
-#popup-area7>div>button {
-	margin-left: 70px
 }
 
 #popup-area9 {
