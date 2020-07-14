@@ -26,39 +26,48 @@
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area" class="kdp-003-a">
-				<div class="time-sheet">
-					<div data-bind="component: {
-							name: 'stamp-employee-selection',
-							params: {
-							}
-						}">
+				<com:ko-if bind="ko.toJS(state) === 'LOGIN_FAIL'">
+					<div data-bind="i18n: 'KDP002_2'"></div>
+				</com:ko-if>
+				<div class="control-panel" data-bind="
+							if: ko.toJS(state) === 'LOGIN_SUCCESS',
+							css: {
+								'has-time-sheet': true
+							}">
+					<div class="time-sheet">
+						<div data-bind="component: {
+								name: 'stamp-employee-selection',
+								params: {
+								}
+							}">
+						</div>
 					</div>
-				</div>
-				<div id="stamp-input" class="time-stamp">
-					<div
-						data-bind="component: {
-						name: 'stamp-clock',
-						params: {
-							setting: {
-								textColor: 'rgb(255, 255, 255)',
-								backGroundColor: 'rgb(0, 51, 204)'
-							},
-							events: {
-								setting: function() { $vm.setting.apply($vm, []); },
-								company: function() { $vm.company.apply($vm, []); }
-							}
-						}
-					}"></div>
-					<div tabindex="2" data-bind="component: {
-							name: 'kdp-tab-button-panel',
-							params: { 
-								tabs: tabs,
-								stampToSuppress: stampToSuppress,
-								click: function(btn) { stampButtonClick.apply($vm, [btn]); }
+					<div id="stamp-input" class="time-stamp">
+						<div
+							data-bind="component: {
+							name: 'stamp-clock',
+							params: {
+								setting: {
+									textColor: 'rgb(255, 255, 255)',
+									backGroundColor: 'rgb(0, 51, 204)'
+								},
+								events: {
+									setting: function() { $vm.setting.apply($vm, []); },
+									company: function() { $vm.company.apply($vm, []); }
+								}
 							}
 						}"></div>
+						<div tabindex="2" data-bind="component: {
+								name: 'kdp-tab-button-panel',
+								params: { 
+									tabs: tabs,
+									stampToSuppress: stampToSuppress,
+									click: function(btn) { stampButtonClick.apply($vm, [btn]); }
+								}
+							}"></div>
+					</div>
+					<div class="cf"></div>
 				</div>
-				<div class="cf"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
