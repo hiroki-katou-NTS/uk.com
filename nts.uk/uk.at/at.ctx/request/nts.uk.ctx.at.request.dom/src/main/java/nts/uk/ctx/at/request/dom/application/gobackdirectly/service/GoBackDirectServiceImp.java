@@ -192,7 +192,7 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		}
 		
 //		ドメインモデル「直行直帰申請」を取得する
-		Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(appId);
+		Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(companyId, appId);
 		output.setGoBackDirectly(goBackDirectly);
 //		起動時勤務種類リストを取得する
 		List<WorkType> lstWorkType = this.getWorkTypes(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get() : null);

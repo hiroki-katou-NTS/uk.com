@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackComm
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamChangeDate;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamStart;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamGetAppGoBack;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -164,7 +165,11 @@ public class GoBackDirectlyService extends WebService {
 	public ProcessResult updateNewKAF009(UpdateGoBackDirectlyCommand param) {
 		return this.updateGoBackHandlerNew.handle(param);
 	}
-	
+	@POST
+	@Path("getDetail")
+	public InforGoBackCommonDirectDto getDetailKAF009(ParamUpdate paramUpdate) {
+		return this.goBackDirectlyFinder.getDetailKAF009(paramUpdate);
+	}
 		
 }
 
