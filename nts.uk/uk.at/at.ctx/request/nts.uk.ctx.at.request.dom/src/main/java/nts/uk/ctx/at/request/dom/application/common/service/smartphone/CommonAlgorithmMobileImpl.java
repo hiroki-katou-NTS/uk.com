@@ -65,8 +65,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetti
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -113,9 +112,6 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private CollectAchievement collectAchievement;
 	
 	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
-	
-	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
 	
 	@Inject
@@ -129,6 +125,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private InitMode initMode;
+	
+	@Inject
+	private ClosureService closureService;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -369,10 +368,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 雇用に紐づく締めを取得する
-		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepository.findByEmploymentCD(companyID,
-				employmentCD);
+		int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
 		// 申請締切設定を取得する
-		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureEmpOtp.get().getClosureId());
+		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 事前申請がいつから受付可能か確認する
 		PreAppAcceptLimit preAppAcceptLimit = receptionRestrictionSetting.checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
 		// 事後申請がいつから受付可能か確認する
