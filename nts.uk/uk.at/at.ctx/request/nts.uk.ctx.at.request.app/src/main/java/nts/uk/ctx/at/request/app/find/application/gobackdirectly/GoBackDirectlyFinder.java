@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
-
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackApplicationDomainService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectService;
@@ -157,7 +155,7 @@ public class GoBackDirectlyFinder {
 					.collect(Collectors.toList()));
 		}
 		AppDispInfoStartupOutput appDispInfoStartupOutputTemp = commonAlgorithm.getAppDispInfoStart(companyId, at, sIDs,
-				lstDate, mode);
+				lstDate, mode, Optional.empty(), Optional.empty());
 		return appDispInfoStartupOutputTemp;
 	}
 
@@ -271,7 +269,8 @@ public class GoBackDirectlyFinder {
 			employeeId = Optional.of(paramStart.getApplicantEmployeeID());
 		}
 		
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), null, true);
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, paramStart.getApplicantList(), 
+				null, true, Optional.empty(), Optional.empty());
 		
 		return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
 	}
