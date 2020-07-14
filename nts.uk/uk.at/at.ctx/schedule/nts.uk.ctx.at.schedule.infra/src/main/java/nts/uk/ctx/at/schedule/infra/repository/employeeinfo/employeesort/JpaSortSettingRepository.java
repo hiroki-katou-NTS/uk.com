@@ -45,14 +45,14 @@ public class JpaSortSettingRepository extends JpaRepository implements SortSetti
 	}
 
 	private static List<KscmtSyaOrderPriority> toEntity(SortSetting domain){
-		KscmtSyaOrderPriorityPk pk = new KscmtSyaOrderPriorityPk(domain.getCompanyID(), domain.getLstOrderedList().size());
+	/*	KscmtSyaOrderPriorityPk pk = new KscmtSyaOrderPriorityPk(domain.getCompanyID(), domain.getLstOrderedList().size());
 		
 		// Đang để tạm PRIORITY là 1 vì ko biết lấy ở đâu
 		List<KscmtSyaOrderPriority> entity = domain.getLstOrderedList().stream().map(mapper-> new KscmtSyaOrderPriority(
 				new KscmtSyaOrderPriorityPk(domain.getCompanyID(), 1)
 				, mapper.getSortOrder().value, mapper.getType().value)).collect(Collectors.toList());
-		
-		return entity;
+		*/
+		return null;
 		
 	}
 	

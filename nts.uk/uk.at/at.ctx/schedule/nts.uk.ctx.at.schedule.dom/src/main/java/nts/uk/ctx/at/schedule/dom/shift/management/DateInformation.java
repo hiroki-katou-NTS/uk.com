@@ -38,15 +38,15 @@ public class DateInformation {
 	/** 祝日であるか **/
 	private final boolean isHoliday;
 	/** 特定日であるか **/
-	private final boolean isSpecificDay;
+	private final boolean isSpecificDay  = false ;
 	/** 職場行事名称 **/
 	private final Optional<EventName> optWorkplaceEventName;
 	/** 会社行事名称 **/
 	private final Optional<EventName> optCompanyEventName;
 	/** 職場の特定日名称リスト **/
-	private final List<SpecificName> listSpecDayNameWorkplace;
+	private final List<SpecificName> listSpecDayNameWorkplace = new ArrayList<>();
 	/** 会社の特定日名称リスト **/
-	private final List<SpecificName> listSpecDayNameCompany;
+	private final List<SpecificName> listSpecDayNameCompany = new ArrayList<>();
 
 	/**
 	 * [C-1] 作成する
@@ -57,8 +57,7 @@ public class DateInformation {
 	 * @return
 	 */
 	public static DateInformation create(Require require, GeneralDate ymd, TargetOrgIdenInfor targetOrgIdenInfor) {
-		boolean isSpecificDay = false;
-		List<SpecificName> listSpecificName = new ArrayList<>();
+
 	//	List<SpecificDateItem> lst = new ArrayList();
 		// if 対象組織.単位 == 職場
 		if (targetOrgIdenInfor.getUnit().value == TargetOrganizationUnit.WORKPLACE.value) {
@@ -82,7 +81,7 @@ public class DateInformation {
 							@職場の特定日名称リスト = require.特定日項目リストを取得する(												
 							$職場特定日設定.特定日項目リスト)										
 							: map $.名称		*/	
-					isSpecificDay = true;
+					//isSpecificDay = true;
 					List<SpecificDateItemNo> listSpecificDateItemNo =  listWorkplaceSpecificDateItem.stream().map(c ->c.getSpecificDateItemNo()).collect(Collectors.toList());
 					List<SpecificDateItem>	zlistSpecDayNameWorkplace = require.getSpecifiDateByListCode(listSpecificDateItemNo);
 					List<SpecificName> zListSpecificName = zlistSpecDayNameWorkplace.stream().map(c ->c.getSpecificName()).collect(Collectors.toList());
@@ -92,7 +91,7 @@ public class DateInformation {
 		}
 		Optional<CompanyEvent> optCompanyEvent  =require.findCompanyEventByPK(ymd);
 		if(optCompanyEvent.isPresent()){
-		
+		//---------------------------Chờ QA http://192.168.50.4:3000/issues/110662
 		}
 		return null;
 	}

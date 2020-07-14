@@ -29,7 +29,26 @@ public class EmpRankInfor {
 		
 		
 	}
-
+	/**
+	 * [C-1] ランクなしで作る
+	 * @param empId
+	 * @return
+	 */
+	public static EmpRankInfor makeWithoutRank(String empId){
+		return new EmpRankInfor(empId, null, null);
+	}
+	/**
+	 * [C-2] 作る
+	 * @param empId
+	 * @param rankCode
+	 * @param rankName
+	 * @return
+	 */
+	public static EmpRankInfor create(String empId, String rankCode , String rankName){
+		return new EmpRankInfor(empId, rankCode, rankName);
+	}
+	
+	
 
 	
 	

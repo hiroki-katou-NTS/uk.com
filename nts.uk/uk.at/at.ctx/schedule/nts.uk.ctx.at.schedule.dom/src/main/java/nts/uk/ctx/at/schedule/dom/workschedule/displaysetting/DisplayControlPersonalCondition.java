@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDate;
+
 
 /**
  * 個人条件の表示制御
@@ -28,7 +30,13 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	/** Optional<勤務予定の資格設定> 資格設定**/
 	private Optional <WorkscheQualifi> otpWorkscheQualifi;
 
-
+	/**
+	 * [C-1] 個人条件の表示制御
+	 * @param companyID
+	 * @param listConditionDisplayControl
+	 * @param otpWorkscheQualifi
+	 * @return
+	 */
 	public static DisplayControlPersonalCondition get(String companyID,
 			List<PersonInforDisplayControl> listConditionDisplayControl, Optional<WorkscheQualifi> otpWorkscheQualifi) {
 		if((listConditionDisplayControl.stream().anyMatch(c-> c.getConditionATR()== ConditionATRWorkSchedule.QUALIFICATION)) && (!otpWorkscheQualifi.isPresent())){
@@ -36,7 +44,11 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 		}
 		return new DisplayControlPersonalCondition(companyID, listConditionDisplayControl, otpWorkscheQualifi);
 	}
-	
-
+	//																													
+	//[1] 個人条件の表示制御に対して必要な個人情報を取得する
+	public <T> List<PersonalCondition> acquireInforDisplayControlPersonalCondition(	T require , GeneralDate referenceDate , List<String> st){
+		// Chờ QA http://192.168.50.4:3000/issues/110657
+		return null;
+	}
 	
 }

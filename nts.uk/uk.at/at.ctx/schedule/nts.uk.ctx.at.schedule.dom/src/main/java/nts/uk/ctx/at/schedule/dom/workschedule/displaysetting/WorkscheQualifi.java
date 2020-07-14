@@ -32,7 +32,7 @@ public class WorkscheQualifi implements DomainValue {
 	 */
 	public static  WorkscheQualifi workScheduleQualification(PersonSymbolQualify qualificationMark, List<QualificationCD> listQualificationCD) {
 		//	inv-1	1 <= 使用資格リスト.size <=5		
-		if(listQualificationCD.size() >= 5){
+		if(listQualificationCD.size() > 5 ||listQualificationCD.size() == 0 ){
 			throw new BusinessException("Msg_X");
 		}
 		return new WorkscheQualifi(qualificationMark, listQualificationCD) ;

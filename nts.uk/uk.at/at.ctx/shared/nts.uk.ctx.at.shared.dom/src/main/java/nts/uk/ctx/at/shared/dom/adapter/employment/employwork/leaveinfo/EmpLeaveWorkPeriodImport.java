@@ -2,9 +2,7 @@ package nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo;
 
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.calendar.period.DatePeriod;
 /**
@@ -12,8 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author HieuLt
  * 
  */
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Setter
 @Getter
 public class EmpLeaveWorkPeriodImport {
