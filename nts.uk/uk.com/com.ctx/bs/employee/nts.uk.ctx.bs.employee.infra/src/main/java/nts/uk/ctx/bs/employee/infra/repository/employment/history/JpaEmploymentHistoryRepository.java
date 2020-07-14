@@ -27,6 +27,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryTerm;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -658,6 +659,80 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
         }
         return result;
     }
+
+	@Override
+	public void insert(EmploymentHistory employmentHistory, EmploymentHistoryItem employmentHistoryItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(EmploymentHistory employmentHistory, EmploymentHistoryItem employmentHistoryItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyId, String empId, String histId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String companyId, String empId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<EmploymentHistory> getByCidAndEmpID(String companyId, String empId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<EmploymentHistory> getByCidAndListEmpID(String companyId, List<String> empId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<EmploymentHistoryItem> getEmploymentHistoryItem(String histId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentHistoryItemByDate(String companyId, GeneralDate ymd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<EmploymentHistoryItem> getByEmpIdAndDate(String companyId, GeneralDate ymd, String empId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getByListEmpIdAndDate(String companyId, GeneralDate ymd,
+			List<String> listEmpId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
+			GeneralDate ymd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

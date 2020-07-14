@@ -7,6 +7,8 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		selectedShiftMaster: KnockoutObservable<any>;
 		searchValue: KnockoutObservable<String>;
 		registrationForm: KnockoutObservable<RegistrationForm>;
+		workStyle: KnockoutObservable<WorkStyle>;
+		
 
 		constructor() {
 			var self = this;
@@ -15,7 +17,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.selectedShiftMaster = ko.observable({});
 			self.searchValue = ko.observable("");
 			self.registrationForm = ko.observable(new RegistrationForm());
+			self.workStyle = ko.observable(new WorkStyle());
 			self.selectedShiftMaster.subscribe((value) => {
+			self.workStyle().color('');
+			self.workStyle().backGroundColor('');
+			self.workStyle().workTimeSetDisplay('');
+			self.workStyle().borderColor('');
 				if (!value) {
 					self.createNew();
 				} else {
@@ -34,6 +41,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
+					
 				} else {
 					self.createNew();
 				}
@@ -45,6 +53,47 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			});
 
 			return dfd.promise();
+		}
+		
+		public getWorkStyle() {
+			let self = this;
+			let dfd = $.Deferred();
+			nts.uk.ui.block.grayout();
+			if(self.selectedShiftMaster() == ""){
+				return;
+			}
+			let dataByCode = _.filter(self.shiftMasters(), (val) => { return val.shiftMasterCode == self.selectedShiftMaster() }),
+			dto = {
+				shiftMasterCode : dataByCode[0].shiftMasterCode,
+				shiftMasterName : dataByCode[0].shiftMasterName,
+				workTypeCode : dataByCode[0].workTypeCd,
+				workTimeCode : dataByCode[0].workTimeCd,
+				color : dataByCode[0].color,
+				remarks : dataByCode[0].remark
+			};
+			
+			service.getWorkStyle(dto).done((workStyle) => {
+			
+			if(workStyle == 0)
+			self.workStyle().color('#0000ff');
+			
+			if(workStyle == 1)
+			self.workStyle().color('#FF7F27');
+			
+			if(workStyle == 2)
+			self.workStyle().color('#FF7F27');
+			
+			if(workStyle == 3)
+			self.workStyle().color('#ff0000');
+			self.workStyle().borderColor('solid');
+			self.workStyle().backGroundColor(self.registrationForm().color());
+			self.workStyle().workTimeSetDisplay(dataByCode[0].shiftMasterName);
+			
+			}).fail(function (error) {
+				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+			}).always(function () {
+				nts.uk.ui.block.clear();
+			});
 		}
 
 		public createNew() {
