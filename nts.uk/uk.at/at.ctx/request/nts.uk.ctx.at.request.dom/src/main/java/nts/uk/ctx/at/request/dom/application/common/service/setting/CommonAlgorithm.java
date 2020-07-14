@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public interface CommonAlgorithm {
 	
 	/**
-	 * 申請表示情報(基準日関係なし)を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請表示情報(基準日関係なし)を取得する.申請表示情報(基準日関係なし)を取得する
 	 * @param companyID 会社ID
 	 * @param applicantLst 申請者リスト<Optional>
 	 * @param appType 申請種類
@@ -35,14 +35,14 @@ public interface CommonAlgorithm {
 			Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
-	 * 10_申請者を作成
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.10_申請者を作成.10_申請者を作成
 	 * @param applicantLst 申請者リスト
 	 * @return
 	 */
 	public List<EmployeeInfoImport> getEmployeeInfoLst(List<String> applicantLst);
 	
 	/**
-	 * 申請表示情報(基準日関係あり)を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請表示情報(基準日関係あり)を取得する.申請表示情報(基準日関係あり)を取得する
 	 * @param companyID 会社ID
 	 * @param appType 申請種類
 	 * @param dateLst 申請対象日リスト
@@ -54,7 +54,7 @@ public interface CommonAlgorithm {
 			AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
-	 * 社員IDから申請承認設定情報の取得
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.7.就業の申請承認設定を取得.2.社員IDから申請承認設定情報の取得.社員IDから申請承認設定情報の取得
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param date 基準日
@@ -64,7 +64,7 @@ public interface CommonAlgorithm {
 	public ApprovalFunctionSet getApprovalFunctionSet(String companyID, String employeeID, GeneralDate date, ApplicationType targetApp);
 	
 	/**
-	 * 12_承認ルートを取得
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請表示情報(基準日関係あり)を取得する.12_承認ルートを取得.12_承認ルートを取得
 	 * @param companyID 会社ID
 	 * @param employeeID 申請者ID
 	 * @param rootAtr 就業ルート区分
@@ -76,7 +76,7 @@ public interface CommonAlgorithm {
 			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 	
 	/**
-	 * 申請表示情報(申請対象日関係あり)を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請表示情報(申請対象日関係あり)を取得する.申請表示情報(申請対象日関係あり)を取得する
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param dateLst 申請対象日リスト<Optional>
@@ -89,16 +89,18 @@ public interface CommonAlgorithm {
 			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
-	 * 起動時の申請表示情報を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.起動時の申請表示情報を取得する.起動時の申請表示情報を取得する
 	 * @param companyID 会社ID
 	 * @param appType 申請種類
 	 * @param applicantLst 申請者リスト
 	 * @param dateLst 申請対象日リスト
 	 * @param mode 新規詳細モード(新規モード/詳細モード) 新規モード: true/詳細モード: false
+	 * @param opHolidayAppType 休暇申請の種類<Optional>
+	 * @param opOvertimeAppAtr Optional＜残業申請区分＞
 	 * @return
 	 */
 	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType, List<String> applicantLst, 
-			List<GeneralDate> dateLst, boolean mode);
+			List<GeneralDate> dateLst, boolean mode, Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr);
 	
 	/**
 	 * 申請日を変更する処理

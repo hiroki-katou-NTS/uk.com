@@ -298,18 +298,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType,
-			List<String> applicantLst, List<GeneralDate> dateLst, boolean mode) {
-		// error EA refactor 4
-		/*// 申請表示情報(基準日関係なし)を取得する
-		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType);
+	public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType, List<String> applicantLst, 
+			List<GeneralDate> dateLst, boolean mode, Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		// 申請表示情報(基準日関係なし)を取得する
+		AppDispInfoNoDateOutput appDispInfoNoDateOutput = this.getAppDispInfo(companyID, applicantLst, appType, opHolidayAppType, opOvertimeAppAtr);
 		// 申請表示情報(基準日関係あり)を取得する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode);
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = this.getAppDispInfoWithDate(companyID, appType, dateLst, appDispInfoNoDateOutput, mode, opOvertimeAppAtr);
 		// OUTPUT「申請表示情報」にセットする
 		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput(appDispInfoNoDateOutput, appDispInfoWithDateOutput);
 		// OUTPUT「申請表示情報」を返す
-		return output;*/
-		return null;
+		return output;
 	}
 
 	@Override
