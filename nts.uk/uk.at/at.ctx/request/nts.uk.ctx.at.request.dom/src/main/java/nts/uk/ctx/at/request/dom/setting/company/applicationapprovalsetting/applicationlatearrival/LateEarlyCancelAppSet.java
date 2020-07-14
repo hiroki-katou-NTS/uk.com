@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@AllArgsConstructor
 public class LateEarlyCancelAppSet {
 	
 	/**

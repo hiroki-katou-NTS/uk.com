@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarly_Old;
 
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
@@ -24,10 +24,10 @@ public class ArrivedLateLeaveEarlyDto extends ApplicationDto_New{
 		ApplicationDto_New x = ApplicationDto_New.fromDomain(app);
 		ArrivedLateLeaveEarlyDto y = (ArrivedLateLeaveEarlyDto)x;
 		y.setLateCancelation(
-				((ArrivedLateLeaveEarly)app).getLateCancelation().stream().map(item -> LateCancelationDto.convertDto(item)).collect(Collectors.toList())
+				((ArrivedLateLeaveEarly_Old)app).getLateCancelation().stream().map(item -> LateCancelationDto.convertDto(item)).collect(Collectors.toList())
 				);
 		y.setLateOrLeaveEarlies(
-				((ArrivedLateLeaveEarly)app).getLateOrLeaveEarlies().stream().map(item -> TimeReportDto.convertDto(item)).collect(Collectors.toList())
+				((ArrivedLateLeaveEarly_Old)app).getLateOrLeaveEarlies().stream().map(item -> TimeReportDto.convertDto(item)).collect(Collectors.toList())
 
 				);
 		return y;		
