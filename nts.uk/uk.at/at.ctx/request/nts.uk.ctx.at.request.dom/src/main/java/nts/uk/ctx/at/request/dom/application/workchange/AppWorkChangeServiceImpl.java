@@ -427,7 +427,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
 		
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
-		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(appID).get();
+		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(companyID, appID).get();
 		
 //		// ドメインモデル「勤務変更申請設定」より取得する 
 //		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyID).get();

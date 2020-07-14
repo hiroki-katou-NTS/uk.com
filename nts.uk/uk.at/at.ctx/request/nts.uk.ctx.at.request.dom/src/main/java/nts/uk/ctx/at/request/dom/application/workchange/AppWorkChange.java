@@ -60,5 +60,8 @@ public class AppWorkChange extends Application {
 		this.opWorkTimeCD = opWorkTimeCD;
 		this.timeZoneWithWorkNoLst = timeZoneWithWorkNoLst;
 	}
+	public AppWorkChange(Application application) {
+		super(application);
+	}
 	
 }

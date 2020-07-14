@@ -1,23 +1,37 @@
 package nts.uk.ctx.at.request.infra.repository.application.workchange;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.primitive.UpperCaseAlphaNumericPrimitiveValue;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk_Old;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange_Old;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * refactor 4
@@ -28,12 +42,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAppWorkChangeRepository extends JpaRepository implements AppWorkChangeRepository {
 
-	public static final String FIND_BY_ID = "SELECT *  FROM KRQDT_APP_WORK_CHANGE WHERE APP_ID = @appID";
+	public static final String FIND_BY_ID = "SELECT *  "
+			+ "FROM KRQDT_APP_WORK_CHANGE as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
+			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
 
 	@Override
-	public Optional<AppWorkChange> findbyID(String appID) {
-		return new NtsStatement(FIND_BY_ID, this.jdbcProxy()).paramString("appID", appID)
-				.getSingle(res -> KrqdtAppWorkChange.MAPPER.toEntity(res).toDomain());
+	public Optional<AppWorkChange> findbyID(String companyId, String appID) {
+		return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
+				.paramString("appID", appID)
+				.paramString("companyId", companyId)
+				.getSingle(res -> toDomain(res));
 	}
 
 	@Override
@@ -88,6 +106,76 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				timeZoneWithWorkNo1.getTimeZone().getEndTime().v(),
 				timeZoneWithWorkNo2.getTimeZone().getStartTime().v(),
 				timeZoneWithWorkNo2.getTimeZone().getEndTime().v());
+	}
+	public AppWorkChange toDomain(NtsResultRecord res) {
+		Application application = new Application();
+		String pattern = "yyyy/MM/dd HH:mm:ss";
+		String pattern2 = "yyyy/MM/dd";
+		DateFormat df = new SimpleDateFormat(pattern);
+		DateFormat df2 = new SimpleDateFormat(pattern2);
+		application.setAppID(res.getString("APP_ID"));
+		application.setVersion(res.getInt("EXCLUS_VER"));
+		application.setPrePostAtr(EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class));
+		application.setInputDate(GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern));
+		application.setEnteredPerson(res.getString("ENTERED_PERSON_SID"));
+		if (res.getString("REASON_REVERSION") == null) {
+			application.setOpReversionReason(Optional.ofNullable(null));
+		}else {
+			application.setOpReversionReason(Optional.ofNullable(new ReasonForReversion(res.getString("REASON_REVERSION"))));			
+		}
+		application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
+		if (res.getInt("FIXED_REASON") == null) {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(new AppStandardReasonCode(res.getInt("FIXED_REASON"))));			
+		}
+		if (res.getString("APP_REASON") == null) {
+			application.setOpAppReason(Optional.ofNullable(null));
+		}else {
+			application.setOpAppReason(Optional.ofNullable(new AppReason(res.getString("APP_REASON"))));			
+		}
+		application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
+		application.setEmployeeID(res.getString("APPLICANTS_SID"));
+		if (res.getDate("APP_START_DATE") == null) {
+			application.setOpAppStartDate(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStartDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_START_DATE")), pattern2))));
+		}
+		if (res.getDate("APP_END_DATE") == null) {
+			application.setOpAppEndDate(Optional.ofNullable(null));
+		} else {
+			application.setOpAppEndDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_END_DATE")), pattern2))));
+		}
+		
+		if (res.getInt("STAMP_OPTION_ATR") == null) {
+			application.setOpStampRequestMode(Optional.ofNullable(null));
+		}else {
+			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(res.getInt("STAMP_OPTION_ATR"), StampRequestMode.class)));
+		}
+		AppWorkChange appWorkChange = new AppWorkChange(application);
+		appWorkChange.setStraightGo(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), NotUseAtr.class));
+		appWorkChange.setStraightBack(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), NotUseAtr.class));
+		if (res.getString("WORK_TYPE_CD") == null) {
+			appWorkChange.setOpWorkTypeCD(Optional.ofNullable(null));
+		}else {
+			appWorkChange.setOpWorkTypeCD(Optional.of(new WorkTypeCode(res.getString("WORK_TYPE_CD"))));
+		}
+		
+		if (res.getString("WORK_TIME_CD") == null) {
+			appWorkChange.setOpWorkTimeCD(Optional.ofNullable(null));
+		}else {
+			appWorkChange.setOpWorkTimeCD(Optional.of(new WorkTimeCode(res.getString("WORK_TIME_CD"))));
+		}
+		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = new ArrayList<TimeZoneWithWorkNo>();
+		TimeZoneWithWorkNo timeZoneWithWorkNo1 = new TimeZoneWithWorkNo(1, res.getInt("WORK_TIME_START1"), res.getInt("WORK_TIME_END1"));
+		TimeZoneWithWorkNo timeZoneWithWorkNo2 = new TimeZoneWithWorkNo(2, res.getInt("WORK_TIME_START2"), res.getInt("WORK_TIME_END2"));
+		timeZoneWithWorkNoLst.add(timeZoneWithWorkNo1);
+		timeZoneWithWorkNoLst.add(timeZoneWithWorkNo2);
+		
+		appWorkChange.setTimeZoneWithWorkNoLst(timeZoneWithWorkNoLst);
+		
+		
+		return appWorkChange;
 	}
 
 }

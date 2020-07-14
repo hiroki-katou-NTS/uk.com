@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public interface AppWorkChangeRepository {
 	
-	public Optional<AppWorkChange> findbyID(String appID);
+	public Optional<AppWorkChange> findbyID(String companyId, String appID);
 	
 	public void add(AppWorkChange appWorkChange);
 	
