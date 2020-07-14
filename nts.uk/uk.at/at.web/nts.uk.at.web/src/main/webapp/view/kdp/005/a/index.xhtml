@@ -41,13 +41,13 @@
 					</div>
 					
 					<!-- stamp -->						
-					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 10px 10px">
+					<div data-bind="if:isUsed, visible: isUsed" class="panel" style="padding: 0 10px 0px 10px">
 						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
 							<pre data-bind="text: stampTab().stampPageComment"></pre>
 						</div>
 						<ui:include src="stamp-tab.xhtml" />
 					</div>
-					<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">
+					<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed, visible: !isUsed">
 						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
 					</div>
 					</div>
