@@ -1,6 +1,6 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
+module nts.uk.at.kdp003.f {
 	const fingerVeinModeTemplate = `
 <!-- ko with: data -->
 <tr>
@@ -52,17 +52,9 @@ module nts.uk.kdp003.f {
 		name: 'kdp-003-f-finger-vein-mode',
 		template: fingerVeinModeTemplate
 	})
-	export class Kdp003FLoginWithFingerVeinModeCoponent extends ko.ViewModel {
-		constructor(public data: { model: Kdp003FModel; params: Kdp003FEmployeeModeParam | Kdp003FFingerVeinModeParam; }) {
+	export class LoginWithFingerVeinModeCoponent extends ko.ViewModel {
+		constructor(public data: { model: Model; params: EmployeeModeParam | FingerVeinModeParam; }) {
 			super();
-		}
-
-		created() {
-			const vm = this;
-		}
-
-		mounted() {
-			const vm = this;
 		}
 	}
 }
