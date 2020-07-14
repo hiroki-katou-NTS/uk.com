@@ -185,7 +185,7 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 		this.changeClockArt = stamp.getType().getChangeClockArt().value;
 		this.changeCalArt = stamp.getType().getChangeCalArt().value;
 		this.preClockArt = stamp.getType().getSetPreClockArt().value;
-		this.changeHalfDay = stamp.getType().getChangeHalfDay();
+		this.changeHalfDay = stamp.getType().isChangeHalfDay();
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
 		this.reflectedAtr = stamp.isReflectedCategory();
 		this.suportCard = stamp.getRefActualResults().getCardNumberSupport().isPresent()

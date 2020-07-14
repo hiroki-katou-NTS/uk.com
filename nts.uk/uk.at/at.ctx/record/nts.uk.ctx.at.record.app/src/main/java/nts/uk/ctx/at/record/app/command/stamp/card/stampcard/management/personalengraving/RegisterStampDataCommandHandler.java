@@ -140,8 +140,8 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		}
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return stampCardRepository.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepository.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
 		}
 
 		@Override

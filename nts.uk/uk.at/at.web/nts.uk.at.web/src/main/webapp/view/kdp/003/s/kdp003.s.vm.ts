@@ -29,7 +29,7 @@ class Kdp003SViewModel extends ko.ViewModel {
 				const engraving: KDP003S_ENGRAVING = ko.unwrap(vm.filter.engraving);
 
 				_.chain(allStamps)
-					.orderBy(['stampDate', 'stampTime'], ['desc', 'desc'])
+					.orderBy(['stampDate', 'stampTime'], ['asc', 'asc'])
 					.each((item: Kdp003sStampData) => {
 						const d = moment(item.stampDate, 'YYYY/MM/DD');
 						const day = d.clone().locale('en').format('dddd');
@@ -38,7 +38,7 @@ class Kdp003SViewModel extends ko.ViewModel {
 							id: randomId(),
 							time: `${item.stampHow} ${item.stampTime}`,
 							date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-							name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.changeClockArtName}</div>`
+							name: `<div style="text-align: ${item.changeClockArt === 0 ? 'left' : item.changeClockArt === 1 ? 'right' : 'center'};">${item.stampArt}</div>`
 						};
 
 						switch (engraving) {

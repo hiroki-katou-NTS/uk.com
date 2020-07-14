@@ -7,6 +7,7 @@ interface StampSetting {
 	resultDisplayTime: number;
 	pageLayouts: Array<PageLayout>;
 	authcFailCnt:number;
+	employeeAuthcUseArt:boolean;
 }
 
 interface PageLayout {

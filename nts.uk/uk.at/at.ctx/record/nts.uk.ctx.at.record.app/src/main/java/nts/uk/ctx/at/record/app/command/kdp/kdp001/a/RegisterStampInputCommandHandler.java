@@ -200,8 +200,8 @@ public class RegisterStampInputCommandHandler
 		private StampCardEditingRepo stampCardEditRepo;
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
 		}
 
 		@Override

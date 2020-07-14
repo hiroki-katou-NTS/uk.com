@@ -60,9 +60,13 @@ class Kdp003kViewModel extends ko.ViewModel {
 
 	pushData() {
 		const vm = this;
-		const selectedId = ko.toJS(vm.selectedId);
+		const selectedId: string | string[] = ko.toJS(vm.selectedId);
 
-		vm.$window.close({ selectedId });
+		if (!selectedId || !selectedId.length) {
+			vm.$dialog.error({ messageId: 'Msg_643' });
+		} else {
+			vm.$window.close({ selectedId });
+		}
 	}
 
 	closeDialog() {

@@ -135,8 +135,8 @@ public class RegisterStampIndividualSampleCommandHandler extends CommandHandlerW
 		}
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepository.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepository.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
 		}
 
 		@Override
