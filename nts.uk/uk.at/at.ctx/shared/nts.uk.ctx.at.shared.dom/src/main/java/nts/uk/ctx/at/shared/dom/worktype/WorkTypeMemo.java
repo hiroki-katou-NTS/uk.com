@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
