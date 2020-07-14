@@ -10,10 +10,9 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 /**
  * The Interface ClosureService.

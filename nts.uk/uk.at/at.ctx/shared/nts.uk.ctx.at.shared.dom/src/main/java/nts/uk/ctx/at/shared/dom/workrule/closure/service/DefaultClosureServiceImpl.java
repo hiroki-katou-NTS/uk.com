@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -30,14 +31,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.Day;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class DefaultClosureServiceImpl.
