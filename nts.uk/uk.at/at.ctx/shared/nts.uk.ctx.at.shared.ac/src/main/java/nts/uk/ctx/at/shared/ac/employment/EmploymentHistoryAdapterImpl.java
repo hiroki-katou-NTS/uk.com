@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 /**
  * 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
  *
  */
 @Stateless
-public class EmploymentHisAdapterImpl implements EmploymentHisAdapter {
+public class EmploymentHistoryAdapterImpl implements EmploymentHistoryAdapter {
 
 	@Override
 	public List<EmploymentPeriodImported> getEmploymentPeriod(List<String> listEmpId, DatePeriod datePeriod) {
