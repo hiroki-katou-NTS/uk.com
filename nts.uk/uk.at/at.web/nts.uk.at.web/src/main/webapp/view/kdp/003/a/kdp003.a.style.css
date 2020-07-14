@@ -1,17 +1,26 @@
-.kdp-003-a {
-	min-width: 990px;
-}
-
 .kdp-003-a .time-sheet,
 .kdp-003-a .time-stamp {
 	float:left;
 }
 
 .kdp-003-a .time-sheet {
-	width: 250px;
-	margin-right: 20px;
+	width: 260px;
+	margin-right: 10px;
 }
 
 .kdp-003-a #stamp-input.time-stamp {
-	min-width: 530px;
+	min-width: calc(100% - 270px);
+}
+
+.kdp-003-a .control-panel {
+	margin: 0 auto;
+	width: 720px;
+}
+
+.kdp-003-a .control-panel.has-time-sheet {
+	width: 990px;
+}
+
+.kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
+	display: none;
 }

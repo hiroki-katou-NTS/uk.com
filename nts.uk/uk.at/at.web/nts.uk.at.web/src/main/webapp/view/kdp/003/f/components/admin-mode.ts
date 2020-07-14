@@ -1,6 +1,6 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
+module nts.uk.at.kdp003.f {
 	const adminModeTemplate = `
 	<!-- ko with: data -->
 	<tr>
@@ -76,18 +76,14 @@ module nts.uk.kdp003.f {
 	</tr>
 	<!-- /ko -->`;
 
-	const KDP003F_AMIN_MODE_API = {
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
-	};
-
 	@component({
 		name: 'kdp-003-f-admin-mode',
 		template: adminModeTemplate
 	})
-	export class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
-		listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
+	export class LoginWithAdminModeCoponent extends ko.ViewModel {
+		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
-		constructor(public data: { model: Kdp003FModel; params: Kdp003FAdminModeParam; }) {
+		constructor(public data: { model: Model; params: AdminModeParam; }) {
 			super();
 		}
 
@@ -99,10 +95,10 @@ module nts.uk.kdp003.f {
 			if (params.companyDesignation) {
 				model.companyCode
 					.subscribe((code: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+						const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
 
 						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyCode === code);
+							const exist = _.find(dataSources, (item: CompanyItem) => item.companyCode === code);
 
 							if (exist) {
 								// update companyId by subscribe companyCode
@@ -118,10 +114,10 @@ module nts.uk.kdp003.f {
 			} else {
 				model.companyId
 					.subscribe((id: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+						const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
 
 						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
+							const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 
 							if (exist) {
 								// update companyCode by subscribe companyId
@@ -132,11 +128,11 @@ module nts.uk.kdp003.f {
 					});
 			}
 
-			vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
-				.done((data: Kdp003FCompanyItem[]) => {
+			vm.$ajax(API.COMPANIES)
+				.done((data: CompanyItem[]) => {
 					if (params.companyDesignation) {
 						const companyId = ko.toJS(model.companyId);
-						const exist: Kdp003FCompanyItem = _.find(data, (c) => c.companyId === companyId);
+						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
 
 						vm.listCompany(data);
 
@@ -150,7 +146,7 @@ module nts.uk.kdp003.f {
 								.then(() => vm.$window.close());
 						}
 					} else {
-						const exist: Kdp003FCompanyItem = _.first(data);
+						const exist: CompanyItem = _.first(data);
 
 						if (exist) {
 							vm.listCompany(data);

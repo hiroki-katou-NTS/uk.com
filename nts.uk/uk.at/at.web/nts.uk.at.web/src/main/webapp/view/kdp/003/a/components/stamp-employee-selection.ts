@@ -11,7 +11,12 @@ module nts.uk.at.kdp003.a {
 				"></button>
 		</div>
 		<div class="list-group">
-			<div class="list-title" data-bind="i18n: '一覧にない社員で打刻する'"></div>
+			<button class="check-out-of-list" data-bind="
+					i18n: '一覧にない社員で打刻する',
+					click: loginEmployeeNotInList,
+					css: { 
+						'active': ko.unwrap(mode) === 'OUT_LIST'
+					}"></button>
 			<div class="list-employee">
 				<table id="grid-employee"></table>
 			</div>
@@ -23,7 +28,11 @@ module nts.uk.at.kdp003.a {
 		template: stampEmployeeSelectionTemplate
 	})
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
+		$grid!: JQuery;
+		
+		mode: KnockoutObservable<MODE> = ko.observable('IN_LIST');
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+		
 		button: KnockoutObservable<string> = ko.observable('KDP003_111');
 
 		buttons: KnockoutObservableArray<Button> = ko.observableArray([]);
@@ -64,17 +73,16 @@ module nts.uk.at.kdp003.a {
 
 			ko.computed({
 				read: () => {
+					const $grid = vm.$grid;
 					const type = ko.unwrap(vm.button);
 					const dataSource = ko.unwrap(vm.employees);
-
-					const $grid = $(vm.$el).find('#grid-employee');
 
 					const filtereds = [];
 					const doFilter = (codes: string[]) => {
 						return _.filter(dataSource, (record: Employee) => codes.indexOf(record.name[0]) > -1);
 					};
 
-					if ($grid.data('igGrid')) {
+					if ($grid && $grid.data('igGrid')) {
 						switch (vm.$i18n(type)) {
 							default:
 							case '全員':
@@ -111,7 +119,7 @@ module nts.uk.at.kdp003.a {
 								filtereds.push(...doFilter(['ワ', 'ヲ', 'ン', 'ヮ']));
 								break;
 						}
-						
+
 						$grid.igGridSelection('clearSelection');
 
 						$grid.igGrid('option', 'dataSource', _.orderBy(filtereds, ['name', 'code'], ['asc', 'asc']));
@@ -119,6 +127,7 @@ module nts.uk.at.kdp003.a {
 				}
 			});
 
+			// initial list button filter 
 			_.each([
 				'KDP003_100',
 				'KDP003_101',
@@ -139,7 +148,7 @@ module nts.uk.at.kdp003.a {
 
 		mounted() {
 			const vm = this;
-			const $grid = $(vm.$el).find('#grid-employee');
+			const $grid = vm.$grid = $(vm.$el).find('#grid-employee');
 
 			$(vm.$el).attr('id', 'stamp-employee-selection');
 
@@ -159,6 +168,7 @@ module nts.uk.at.kdp003.a {
 								const dataSources = ko.toJS(vm.employees);
 
 								if (dataSources[index]) {
+									vm.mode('IN_LIST');
 									console.log(dataSources[index]);
 								}
 							}
@@ -172,8 +182,36 @@ module nts.uk.at.kdp003.a {
 			_.extend(window, { vmm: vm, $grid });
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+			$(window)
+				.on('resize', () => {
+					const grid = $grid.get(0);
+
+					if (grid) {
+						const top = grid.getBoundingClientRect().top;
+						const minHeight = 65 * 3;
+						const maxHeight = Math.floor((window.innerHeight - top - 20) / 65) * 65;
+
+						$grid.igGrid('option', 'height', `${Math.max(minHeight, maxHeight)}px`);
+					}
+				})
+				.trigger('resize');
+		}
+
+		loginEmployeeNotInList() {
+			const vm = this;
+			const $grid = vm.$grid;
+			
+			vm.mode('OUT_LIST');
+
+			if ($grid && $grid.data('igGrid')) {
+				$grid.igGridSelection('clearSelection');
+			}
 		}
 	}
+	
+	
+	type MODE = 'IN_LIST' | 'OUT_LIST';
 
 	interface Button {
 		text: string;
