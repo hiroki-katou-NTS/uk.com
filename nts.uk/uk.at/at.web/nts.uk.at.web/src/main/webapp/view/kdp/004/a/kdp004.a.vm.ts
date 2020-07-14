@@ -30,7 +30,7 @@ module nts.uk.at.view.kdp004.a {
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
 			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
-			listCompany = [];
+			listCompany:  KnockoutObservableArray<any> = ko.observableArray([]); 
 			constructor() {
 				let self = this;
 
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdp004.a {
 				}).always(() => {
 					service.getLogginSetting().done((res) => {
 
-						self.listCompany = res;
+						self.listCompany(res);
 					});
 
 				});
@@ -382,8 +382,8 @@ module nts.uk.at.view.kdp004.a {
 								});
 							} else {
 								location.reload();
-								}
-							
+							}
+
 
 
 						});
