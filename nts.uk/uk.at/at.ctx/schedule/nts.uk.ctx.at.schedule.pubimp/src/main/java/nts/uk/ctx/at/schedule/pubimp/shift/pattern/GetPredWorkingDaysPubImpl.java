@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.export.GetPredWorkingDays;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.export.GetPredWorkingDaysImpl;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.schedule.pub.shift.pattern.GetPredWorkindDaysPub;
 import nts.uk.ctx.at.shared.app.cache.worktype.WorkTypeCache;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：所定労働日数を取得する
@@ -57,7 +57,7 @@ public class GetPredWorkingDaysPubImpl implements GetPredWorkindDaysPub {
 	}
 	
 	@RequiredArgsConstructor
-	class RequireImpl implements GetPredWorkingDaysImpl.RequireByPeriodRequire{
+	class RequireImpl implements GetPredWorkingDaysImpl.Require {
 		
 		private final CacheCarrier cacheCarrier;
 
