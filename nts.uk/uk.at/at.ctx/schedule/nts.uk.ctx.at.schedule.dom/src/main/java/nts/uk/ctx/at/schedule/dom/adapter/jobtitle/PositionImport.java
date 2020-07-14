@@ -1,10 +1,11 @@
-package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
+package nts.uk.ctx.at.schedule.dom.adapter.jobtitle;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 職位 Imported
+ * path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.組織管理.職位.職位
  * @author HieuLt
  *
  */
@@ -20,15 +21,13 @@ public class PositionImport {
 	private String jobName;
 	/**序列コード **/
 	private String sequenceCode;
-	/**並び順 **/
-	private int dispOrder;
-	public PositionImport(String jobId, String jobCd, String jobName,String sequenceCode, int dispOrder) {
+
+	public PositionImport(String jobId, String jobCd, String jobName,String sequenceCode) {
 		super();
 		this.jobId = jobId;
 		this.jobCd = jobCd;
 		this.jobName = jobName;
 		this.sequenceCode = sequenceCode;
-		this.dispOrder = dispOrder;
 	}
 	
 }
