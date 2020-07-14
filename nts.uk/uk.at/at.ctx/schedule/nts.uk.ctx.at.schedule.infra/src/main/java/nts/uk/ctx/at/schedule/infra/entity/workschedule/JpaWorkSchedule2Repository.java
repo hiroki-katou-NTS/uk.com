@@ -14,7 +14,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
  *
  */
 @Stateless
-public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
+public class JpaWorkSchedule2Repository extends JpaRepository implements WorkScheduleRepository {
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {

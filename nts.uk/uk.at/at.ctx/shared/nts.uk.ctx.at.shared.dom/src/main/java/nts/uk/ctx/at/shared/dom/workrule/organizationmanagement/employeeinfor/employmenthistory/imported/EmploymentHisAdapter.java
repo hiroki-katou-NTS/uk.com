@@ -9,7 +9,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author HieuLt
  *
  */
-public interface EmploymentHistoryAdapter {
+public interface EmploymentHisAdapter {
 	/**
 	 * [1] 期間を指定して雇用期間を取得する
 	 * @param listEmpId
