@@ -42,7 +42,7 @@
 					
 					<!-- stamp -->						
 					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 10px 10px">
-						<div data-bind="style: {'color': stampTab().stampPageCommentColor }">
+						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
 							<pre data-bind="text: stampTab().stampPageComment"></pre>
 						</div>
 						<ui:include src="stamp-tab.xhtml" />

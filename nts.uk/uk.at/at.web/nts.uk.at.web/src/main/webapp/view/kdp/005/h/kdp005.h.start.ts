@@ -3,5 +3,8 @@ module nts.uk.at.view.kdp005.h {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
+        setTimeout(function() {
+            $('#iCCard').focus();
+        }, 100);
     });
 }
