@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -51,7 +50,7 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtStampPk pk;
 
-	public static final JpaEntityMapper<KrcdtStamp> MAPPER = new JpaEntityMapper<>(KrcdtStamp.class);
+//	public static final JpaEntityMapper<KrcdtStamp> MAPPER = new JpaEntityMapper<>(KrcdtStamp.class);
 	
 	/**
 	 * 会社ID

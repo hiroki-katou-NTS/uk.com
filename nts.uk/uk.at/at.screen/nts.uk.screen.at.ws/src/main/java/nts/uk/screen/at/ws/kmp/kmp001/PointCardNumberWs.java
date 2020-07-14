@@ -72,7 +72,7 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getEmployeeFromCardNo/{cardNumber}")
-	public List<EmployeeInformationFromCardNoDto> getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
+	public EmployeeInformationFromCardNoDto getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
 		return this.getEmployeeInformationFromCardNo.getEmployee(cardnumber);
 	}
 	
