@@ -17,4 +17,11 @@ public interface ApplicationRepository {
 	
 	public void remove(String appID);
 	
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.アルゴリズム.申請IDを使用して申請一覧を取得する.申請IDを使用して申請一覧を取得する
+	 * @param appID
+	 * @return
+	 */
+	public Optional<Application> findByID(String appID);
+	
 }

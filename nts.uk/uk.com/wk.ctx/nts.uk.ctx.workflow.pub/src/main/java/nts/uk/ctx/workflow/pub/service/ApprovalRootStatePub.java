@@ -114,13 +114,11 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
-			Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
 	/**
 	 * 承認する

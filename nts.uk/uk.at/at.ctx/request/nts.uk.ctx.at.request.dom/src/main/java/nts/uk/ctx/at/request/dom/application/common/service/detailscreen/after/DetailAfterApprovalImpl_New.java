@@ -109,13 +109,8 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 			boolean phaseComplete = approvalRootStateAdapter.isApproveApprovalPhaseStateComplete(companyID, appID, phaseNumber);
 			if(phaseComplete){
 				List<String> destination = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-						companyID, 
 						application.getAppID(), 
-						phaseNumber + 1, 
-						false, 
-						employeeID, 
-						application.getAppType().value, 
-						application.getAppDate());
+						phaseNumber + 1);
 				MailResult applicantResult = otherCommonAlgorithm.sendMailApproverApprove(destination, application);
 				autoSuccessMail.addAll(applicantResult.getSuccessList());
 				autoFailMail.addAll(applicantResult.getFailList());

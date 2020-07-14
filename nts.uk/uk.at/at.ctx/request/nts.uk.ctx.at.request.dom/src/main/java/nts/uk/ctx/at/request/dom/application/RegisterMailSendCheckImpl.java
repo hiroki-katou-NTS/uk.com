@@ -51,13 +51,8 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
 		destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-				application.getCompanyID(), 
 				application.getAppID(), 
-				1, 
-				true, 
-				application.getEmployeeID(), 
-				application.getAppType().value, 
-				application.getAppDate());
+				1);
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){

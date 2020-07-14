@@ -134,12 +134,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
-			GeneralDate appDate) {
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber) {
 
-		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, 
-				approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate, 0);
+		return approvalRootStatePub.getNextApprovalPhaseStateMailList(rootStateID, approvalPhaseStateNumber);
 
 	}
 

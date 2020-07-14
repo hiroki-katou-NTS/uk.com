@@ -11,7 +11,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
@@ -48,13 +47,8 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
 		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-				companyID, 
 				application.getAppID(), 
-				1, 
-				true, 
-				application.getEmployeeID(), 
-				application.getAppType().value, 
-				application.getAppDate().getApplicationDate());
+				1);
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){

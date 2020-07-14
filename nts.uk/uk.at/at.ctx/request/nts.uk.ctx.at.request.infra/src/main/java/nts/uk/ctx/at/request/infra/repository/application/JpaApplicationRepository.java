@@ -21,8 +21,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	public Optional<Application> findByID(String companyID, String appID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.findByID(appID);
 	}
 
 	@Override
@@ -43,6 +42,12 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		String companyID = AppContexts.user().companyId();
 		this.commandProxy().remove(KrqdtApplication.class, new KrqdpApplication(companyID, appID));
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public Optional<Application> findByID(String appID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

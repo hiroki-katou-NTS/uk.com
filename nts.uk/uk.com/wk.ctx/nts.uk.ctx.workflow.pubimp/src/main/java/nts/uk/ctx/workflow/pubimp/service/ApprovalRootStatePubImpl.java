@@ -323,18 +323,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
-			GeneralDate appDate, Integer rootType) {
-		return approveService.getNextApprovalPhaseStateMailList(
-				companyID, 
-				rootStateID, 
-				approvalPhaseStateNumber, 
-				isCreate, 
-				employeeID, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber) {
+		return approveService.getNextApprovalPhaseStateMailList(rootStateID, approvalPhaseStateNumber);
 	}
 
 	@Override
