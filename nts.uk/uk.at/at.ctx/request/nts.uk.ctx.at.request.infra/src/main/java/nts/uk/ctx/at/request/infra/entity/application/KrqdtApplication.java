@@ -65,12 +65,6 @@ public class KrqdtApplication extends UkJpaEntity {
 	@Column(name="APPLICANTS_SID")
 	private String employeeID;
 	
-	@Column(name="REFLECT_PLAN_ENFORCE_ATR")
-	private int REFLECT_PLAN_ENFORCE_ATR;
-	
-	@Column(name="REFLECT_PER_ENFORCE_ATR")
-	private int REFLECT_PER_ENFORCE_ATR;
-	
 	@Column(name="APP_START_DATE")
 	private GeneralDate opAppStartDate;
 	
@@ -102,9 +96,7 @@ public class KrqdtApplication extends UkJpaEntity {
 				application.getOpAppStandardReasonCD().map(x -> x.v()).orElse(null), 
 				application.getOpAppReason().map(x -> x.v()).orElse(null), 
 				application.getAppType().value, 
-				application.getEmployeeID(), 
-				0, 
-				0, 
+				application.getEmployeeID(),
 				application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(null), 
 				application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(null), 
 				application.getOpStampRequestMode().map(x -> x.value).orElse(null), 
