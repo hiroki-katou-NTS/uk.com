@@ -160,4 +160,8 @@ public class Application implements DomainAggregate {
 		return application;
 	}
 	
+	public boolean isAbsenceApp() {
+		return appType == ApplicationType.ABSENCE_APPLICATION;
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -134,14 +135,16 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
+	
 	/**
-	 * 申請理由出力_共通
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請理由出力_共通.申請理由出力_共通
 	 * @author hoatt
 	 * @param 申請 application
 	 * @param 休暇種類(Optional) holidayType
 	 * @return 結果(使用/未使用)
 	 */
-	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType);
+	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType);
 	
 	/**
 	 * 01-05_申請定型理由を取得

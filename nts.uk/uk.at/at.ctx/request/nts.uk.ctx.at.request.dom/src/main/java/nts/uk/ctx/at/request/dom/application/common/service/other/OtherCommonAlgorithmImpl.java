@@ -22,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
@@ -580,9 +581,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 * @return 結果(使用/未使用)
 	 */
 	@Override
-	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType) {
-		String companyId = application.getCompanyID();
-		if(application.isAppAbsence()){
+	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType) {
+		String companyId = AppContexts.user().companyId();
+		if(application.isAbsenceApp()){
 			if(!holidayType.isPresent()){
 				//ドメインモデル「休暇申請」を取得する
 				Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, application.getAppID());
