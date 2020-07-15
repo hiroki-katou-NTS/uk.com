@@ -103,13 +103,14 @@ public interface OtherCommonAlgorithm {
 	public MailResult sendMailApplicantDeny(Application_New application);
 	
 	/**
-	 * 承認者へ送る
-	 * @param listDestination
-	 * @param application
-	 * @param text
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.承認者へ送る.アルゴリズム.承認者へ送る
+	 * @param listDestination 承認者社員ID（List）
+	 * @param application 申請
+	 * @param text 本文
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
 	
 	/**
 	 * 申請者へ送る
