@@ -75,6 +75,9 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -311,6 +314,14 @@ public class AggregateMonthlyRecordServiceProc {
 			if (excepAggregation.optional().isPresent()) {
 				throw excepAggregation.get();
 			}
+		}
+		
+		if (this.aggregateResult.getAttendanceTime().isPresent()) {
+
+			/** 応援作業の集計 */
+			this.aggregateResult.getAttendanceTime().get().aggregateOuen(
+					createAttendanceTimeOfMonthlyRequire(require, dailyWorksOpt), 
+					employeeId, loadPeriod);	
 		}
 
 		// 月別実績の編集状態 取得
@@ -1712,7 +1723,7 @@ public class AggregateMonthlyRecordServiceProc {
 	
 	public static interface RequireM15 extends MonthlyCalculatingDailys.RequireM4, RequireM13,
 		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10, RequireM9,
-		MonthlyCalculation.RequireM2, RequireM11, RequireM12 {
+		MonthlyCalculation.RequireM2, AttendanceTimeOfMonthly.RequireM2, RequireM11, RequireM12 {
 
 		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
 
@@ -1720,5 +1731,46 @@ public class AggregateMonthlyRecordServiceProc {
 				ClosureDate closureDate);
 		
 		ManagedExecutorService getExecutorService();
+	}
+	
+	private AttendanceTimeOfMonthly.RequireM2 createAttendanceTimeOfMonthlyRequire(
+			RequireM15 require, Optional<List<IntegrationOfDaily>> dailyWorksOpt) {
+		
+		return new AttendanceTimeOfMonthly.RequireM2() {
+			
+			private Optional<IntegrationOfDaily> findDaily(String empId, GeneralDate ymd) {
+				
+				return dailyWorksOpt.flatMap(dws -> {
+					return dws.stream().filter(dw -> empId.equals(dw.getWorkInformation().getEmployeeId())
+							&& ymd.equals(dw.getWorkInformation().getYmd())).findFirst();
+				});
+			}
+			
+			@Override
+			public boolean isUseWorkLayer(String companyId) {
+				return require.isUseWorkLayer(companyId);
+			}
+			
+			@Override
+			public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId, GeneralDate ymd) {
+				val daily = findDaily(empId, ymd);
+				
+				return daily.map(dw -> dw.getOuenTimeSheet())
+						.orElseGet(() -> require.ouenWorkTimeSheetOfDailyAttendance(empId, ymd));
+			}
+			
+			@Override
+			public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
+				val daily = findDaily(empId, ymd);
+				
+				return daily.map(dw -> dw.getOuenTime())
+						.orElseGet(() -> require.ouenWorkTimeOfDailyAttendance(empId, ymd));
+			}
+			
+			@Override
+			public Optional<OuenAggregateFrameSetOfMonthly> ouenAggregateFrameSetOfMonthly(String companyId) {
+				return require.ouenAggregateFrameSetOfMonthly(companyId);
+			}
+		};
 	}
 }
