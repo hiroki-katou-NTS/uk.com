@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -40,6 +41,15 @@ public class DailyAttendanceUpdateStatus {
 		this.opScheReflectDateTime = opScheReflectDateTime;
 		this.opReasonActualCantReflect = opReasonActualCantReflect;
 		this.opReasonScheCantReflect = opReasonScheCantReflect;
+	}
+	
+	public static DailyAttendanceUpdateStatus createNew(GeneralDateTime opActualReflectDateTime, GeneralDateTime opScheReflectDateTime,
+			Integer opReasonActualCantReflect, Integer opReasonScheCantReflect) {
+		return new DailyAttendanceUpdateStatus(
+				opActualReflectDateTime == null ? Optional.empty() : Optional.of(opActualReflectDateTime), 
+				opScheReflectDateTime == null ? Optional.empty() : Optional.of(opScheReflectDateTime), 
+				opReasonActualCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonActualCantReflect, ReasonNotReflectDaily.class)), 
+				opReasonScheCantReflect == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opReasonScheCantReflect, ReasonNotReflect.class)));
 	}
 	
 }
