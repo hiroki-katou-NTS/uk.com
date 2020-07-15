@@ -5,14 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 @Embeddable
+@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
 public class KrcmtInsentivePricePK implements Serializable {
@@ -22,7 +23,6 @@ public class KrcmtInsentivePricePK implements Serializable {
 	
 
 	/** インセンティブ単価ID */
-	@Id
 	@Column(name = "INSENTIVE_PRICE_ID")
 	public String id;
 	

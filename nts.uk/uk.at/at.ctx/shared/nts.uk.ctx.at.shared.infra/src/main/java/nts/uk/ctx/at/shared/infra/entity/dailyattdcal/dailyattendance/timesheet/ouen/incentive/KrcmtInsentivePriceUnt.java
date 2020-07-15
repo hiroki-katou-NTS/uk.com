@@ -8,11 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceUsageSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /** インセンティブ単価使用設定 */
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KRCMT_INSENTIVE_PRICE_UNT")
 public class KrcmtInsentivePriceUnt extends UkJpaEntity implements Serializable {

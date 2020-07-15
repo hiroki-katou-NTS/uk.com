@@ -8,10 +8,12 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 @Embeddable
+@NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
 public class KrcdtDayOuenTimePK implements Serializable{

@@ -7,8 +7,10 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Embeddable
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 public class KrcmtMonOuenFramePK implements Serializable {

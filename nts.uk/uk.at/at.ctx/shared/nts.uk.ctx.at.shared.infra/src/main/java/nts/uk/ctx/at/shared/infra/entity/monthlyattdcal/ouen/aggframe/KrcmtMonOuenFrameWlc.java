@@ -8,12 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameName;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameTargetWorkLocation;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "KRCMT_MON_OUEN_FRAME_WLC")
 @AllArgsConstructor
 public class KrcmtMonOuenFrameWlc extends UkJpaEntity implements Serializable {

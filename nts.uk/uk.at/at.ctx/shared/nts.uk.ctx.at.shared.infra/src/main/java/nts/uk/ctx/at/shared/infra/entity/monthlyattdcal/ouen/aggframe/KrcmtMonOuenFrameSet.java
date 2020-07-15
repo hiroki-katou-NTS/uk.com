@@ -8,9 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "KRCMT_MON_OUEN_FRAME_SET")
 @AllArgsConstructor
 public class KrcmtMonOuenFrameSet extends UkJpaEntity implements Serializable {

@@ -8,10 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /** インセンティブ単価使用設定 */
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KRCMT_INSENTIVE_PRICE")
 public class KrcmtInsentivePrice extends UkJpaEntity implements Serializable {

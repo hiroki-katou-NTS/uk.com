@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "KRCDT_DAY_TIME_SUP")
 public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 
