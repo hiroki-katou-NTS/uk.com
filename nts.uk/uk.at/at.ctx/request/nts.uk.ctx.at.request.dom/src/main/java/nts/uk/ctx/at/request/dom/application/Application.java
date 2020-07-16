@@ -160,8 +160,28 @@ public class Application implements DomainAggregate {
 		return application;
 	}
 	
+	public boolean isPreApp() {
+		return prePostAtr == PrePostAtr.PREDICT;
+	}
+	
+	public boolean isOverTimeApp() {
+		return appType == ApplicationType.OVER_TIME_APPLICATION;
+	} 
+	
 	public boolean isAbsenceApp() {
 		return appType == ApplicationType.ABSENCE_APPLICATION;
 	}
+	
+	public boolean isWorkChangeApp() {
+		return appType == ApplicationType.WORK_CHANGE_APPLICATION;
+	} 
+	
+	public boolean isGoReturnDirectlyApp() {
+		return appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION;
+	} 
+	
+	public boolean isLeaveTimeApp() {
+		return appType == ApplicationType.LEAVE_TIME_APPLICATION;
+	} 
 	
 }

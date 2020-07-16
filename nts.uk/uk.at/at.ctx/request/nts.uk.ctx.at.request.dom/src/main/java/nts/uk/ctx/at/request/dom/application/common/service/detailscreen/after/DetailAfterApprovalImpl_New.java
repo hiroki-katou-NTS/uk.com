@@ -7,20 +7,13 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-//import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-//import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-//import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.NewRegisterMailSendCheck;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -33,89 +26,65 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
-	@Inject
-	private AppTypeDiscreteSettingRepository discreteRepo;
+	/*@Inject
+	private AppReflectManager appReflectManager;*/
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
-	
-//	@Inject
-//	private AppReflectManager appReflectManager;
+	private ApprovalMailSendCheck approvalMailSendCheck;
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
+	private NewRegisterMailSendCheck newRegisterMailSendCheck;
 	
 	@Override
-	public ProcessResult doApproval(String companyID, String appID, String employeeID, String memo, String appReason, boolean isUpdateAppReason) {
+	public ProcessResult doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		if(isUpdateAppReason){
-			application.setAppReason(new AppReason(appReason));
-		}
-		Integer phaseNumber = approvalRootStateAdapter.doApprove(
-				companyID, 
-				appID, 
-				employeeID, 
-				false, 
-				application.getAppType().value, 
-				application.getAppDate(), 
-				memo);
-		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(
-				companyID, 
-				appID, 
-				employeeID, 
-				false, 
-				application.getAppType().value, 
-				application.getAppDate());
-		applicationRepository.updateWithVersion(application);
+		String loginEmployeeID = AppContexts.user().employeeId();
+		// 2.承認する(ApproveService)
+		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID);
+		// アルゴリズム「承認全体が完了したか」を実行する ( Thực hiện thuật toán ''Đã hoàn thành toàn bộ approve hay chưa"
+		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(appID);
 		String reflectAppId = "";
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
+			//application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			//予定反映状態 = 反映状態．反映待ち
-			application.getReflectionInformation().setStateReflection(ReflectedState_New.WAITREFLECTION);
-			applicationRepository.update(application);
+			//application.getReflectionInformation().setStateReflection(ReflectedState_New.WAITREFLECTION);
+			// applicationRepository.update(application);
 			reflectAppId = application.getAppID();
-//			if((application.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
-//					(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
-//					|| application.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION)))
-//				|| application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
-//				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
-//				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
-//				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
-//				appReflectManager.reflectEmployeeOfApp(application);
-//			}
+			// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
+			if((application.isPreApp() && (application.isOverTimeApp() || application.isLeaveTimeApp()))
+				|| application.isWorkChangeApp()
+				|| application.isGoReturnDirectlyApp()){
+				// 社員の申請を反映(phản ánh employee application)
+				//appReflectManager.reflectEmployeeOfApp(application);
+			}
 		} else {
 			// ドメインモデル「申請」と紐付き「反映情報」．実績反映状態 = 反映状態．未反映
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-			applicationRepository.update(application);
-		}
-		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
-		// 承認処理時に自動でメールを送信するが trueの場合
-		if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
-			isAutoSendMail = true;
-			if(allApprovalFlg.equals(Boolean.TRUE)){
-				MailResult applicantResult = otherCommonAlgorithm.sendMailApplicantApprove(application);
-				autoSuccessMail.addAll(applicantResult.getSuccessList());
-				autoFailMail.addAll(applicantResult.getFailList());
+			//application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+			// applicationRepository.update(application);
+			// INPUT．申請表示情報．申請表示情報(基準日関係なし)．メールサーバ設定済区分をチェックする
+			if(!appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet()) {
+				return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, reflectAppId);
 			}
 		}
-		
-		if (discreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-			isAutoSendMail = true;
-			boolean phaseComplete = approvalRootStateAdapter.isApproveApprovalPhaseStateComplete(companyID, appID, phaseNumber);
-			if(phaseComplete){
-				List<String> destination = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-						application.getAppID(), 
-						phaseNumber + 1);
-				MailResult applicantResult = otherCommonAlgorithm.sendMailApproverApprove(destination, application);
-				autoSuccessMail.addAll(applicantResult.getSuccessList());
-				autoFailMail.addAll(applicantResult.getFailList());
-			}
-		}
+		isAutoSendMail = true;
+		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」 
+		ProcessResult processResult1 = approvalMailSendCheck.sendMail(
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(), 
+				application, 
+				allApprovalFlg);
+		autoSuccessMail.addAll(processResult1.getAutoSuccessMail());
+		autoFailMail.addAll(processResult1.getAutoFailMail());
+		// アルゴリズム「新規登録時のメール送信判定」を実行する ( Thực hiện thuật toán 「 Xác định gửi mail khi đăng ký mới」
+		ProcessResult processResult2 = newRegisterMailSendCheck.sendMail(
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(), 
+				application, 
+				phaseNumber);
+		autoSuccessMail.addAll(processResult2.getAutoSuccessMail());
+		autoFailMail.addAll(processResult2.getAutoFailMail());
 		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, reflectAppId);
 	}
 

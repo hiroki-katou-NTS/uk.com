@@ -141,19 +141,17 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate, String memo) {
+	public Integer doApprove(String rootStateID, String employeeID) {
 
-		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo, 0);
+		return approvalRootStatePub.doApprove(rootStateID, employeeID);
 
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate) {
+	public Boolean isApproveAllComplete(String rootStateID) {
 		// TODO Auto-generated method stub
 
-		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, 0);
+		return approvalRootStatePub.isApproveAllComplete(rootStateID);
 
 	}
 
