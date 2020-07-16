@@ -13,7 +13,12 @@ public interface ApplicationApprovalService {
 	
 	public void insert(Application application);
 	
-	public void delete(String companyID, String appID, Long version, ApplicationType_Old appType);
+	/**
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.アルゴリズム.申請を削除する.申請を削除する
+	 * @param appID
+	 */
+	public void delete(String appID);
 	
 	/**
 	 * refactor 4

@@ -159,7 +159,8 @@ public interface ApprovalRootStatePub {
 	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover);
 	
 	/**
-	 * 削除時のメール通知者を取得する
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.削除時のメール通知者を取得する(CollectMailNotifierService).削除時のメール通知者を取得する
 	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @return

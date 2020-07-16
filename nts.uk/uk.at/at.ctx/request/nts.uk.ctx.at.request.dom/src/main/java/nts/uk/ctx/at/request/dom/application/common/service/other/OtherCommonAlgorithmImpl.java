@@ -64,7 +64,6 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -367,8 +366,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
+		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
 		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}

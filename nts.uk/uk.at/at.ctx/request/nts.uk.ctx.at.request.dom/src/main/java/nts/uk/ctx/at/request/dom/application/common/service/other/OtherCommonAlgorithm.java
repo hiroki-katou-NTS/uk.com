@@ -82,12 +82,13 @@ public interface OtherCommonAlgorithm {
 	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application);
 	
 	/**
-	 * 承認者へ送る（削除）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.承認者へ送る.承認者へ送る（削除）
 	 * @param employeeIDList
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
 	
 	/**
 	 * refactor 4

@@ -87,8 +87,10 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 	}
 
 	@Override
-	public void delete(String companyID, String appID, int version, ApplicationType_Old appType) {
-		switch (appType) {
+	public void delete(String appID) {
+		String companyID = AppContexts.user().companyId();
+		Application application = applicationRepository.findByID(appID).get();
+		switch (application.getAppType()) {
 		case STAMP_APPLICATION:
 			appStampRepository.delete(companyID, appID);
 			break;
@@ -104,7 +106,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
-		case BREAK_TIME_APPLICATION:
+		case LEAVE_TIME_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){
@@ -128,7 +130,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 		default:
 			break;
 		}
-		applicationRepository_Old.delete(companyID, appID);
+		applicationRepository.remove(appID);
 		approvalRootStateAdapter.deleteApprovalRootState(appID);
 
 	}
