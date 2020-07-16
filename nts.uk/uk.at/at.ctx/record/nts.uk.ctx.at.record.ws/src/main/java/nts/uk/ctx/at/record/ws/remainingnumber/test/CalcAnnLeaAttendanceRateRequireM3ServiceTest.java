@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.ws.remainingnumber.test;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,15 +11,17 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.test.CalcAnnL
 
 @Path("create/binary")
 @Produces("application/json")
+@Stateless
 public class CalcAnnLeaAttendanceRateRequireM3ServiceTest extends WebService {
 	
+	@Inject
 	private CalcAnnLeaAttendanceRateRequireM3 calcAnnLeaAttendanceRateRequireM3;
 	
 	@POST
 	@Path("calcrem")
 	public void startup() {
-		calcAnnLeaAttendanceRateRequireM3 = new CalcAnnLeaAttendanceRateRequireM3();
-		calcAnnLeaAttendanceRateRequireM3.testService();
+//		calcAnnLeaAttendanceRateRequireM3 = new CalcAnnLeaAttendanceRateRequireM3();
+		calcAnnLeaAttendanceRateRequireM3.createBinaryFile();
 	}
 	
 }

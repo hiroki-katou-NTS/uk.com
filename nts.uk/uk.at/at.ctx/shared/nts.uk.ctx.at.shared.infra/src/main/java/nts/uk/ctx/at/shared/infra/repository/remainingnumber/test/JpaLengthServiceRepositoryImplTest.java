@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.test;
 
 import java.util.List;
+
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.test.LengthServiceTest;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTbl;
 
-
+@Stateless
 public class JpaLengthServiceRepositoryImplTest extends JpaRepository implements LengthServiceTest{
 	
 	private static final String FIND_BY_COMPANY_ID = "SELECT c FROM KshstLengthServiceTbl c "
@@ -40,9 +43,10 @@ public class JpaLengthServiceRepositoryImplTest extends JpaRepository implements
 	/**
 	* find by companyId 
 	*/
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
 	public List<LengthServiceTbl> findByCompanyId(String companyId) {
-	return this.queryProxy().query(FIND_BY_COMPANY_ID, KshstLengthServiceTbl.class)
+		return this.queryProxy().query(FIND_BY_COMPANY_ID, KshstLengthServiceTbl.class)
 								.setParameter("companyId", companyId)
 								.getList(c -> convertToDomain(c));
 	}
