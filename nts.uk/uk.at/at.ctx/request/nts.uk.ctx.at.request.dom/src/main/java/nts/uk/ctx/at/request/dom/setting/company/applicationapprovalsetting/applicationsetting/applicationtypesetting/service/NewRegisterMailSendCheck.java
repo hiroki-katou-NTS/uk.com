@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
  * refactor 4
@@ -14,15 +14,10 @@ public interface NewRegisterMailSendCheck {
 	
 	/**
 	 * 新規登録時のメール送信判定
-	 * @param discreteSetting
+	 * @param appTypeSetting
 	 * @param application
-	 * @param companyID
-	 * @param appID
-	 * @param reflectAppId
-	 * @param employeeID
 	 * @param phaseNumber
 	 * @return
 	 */
-	public ProcessResult sendMail(AppTypeDiscreteSetting discreteSetting, Application application, String companyID, String appID, 
-			String reflectAppId, String employeeID, Integer phaseNumber);
+	public ProcessResult sendMail(AppTypeSetting appTypeSetting, Application application, Integer phaseNumber);
 }
