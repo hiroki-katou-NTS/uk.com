@@ -46,7 +46,8 @@ public interface ApproveService {
 	public List<String> getUnapproveApproverFromPhase(ApprovalPhaseState approvalPhaseState); 
 	
 	/**
-	 * 4.次の承認の番の承認者を取得する(メール通知用)
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.OLD＿承認する(ApproveService).4.次の承認の番の承認者を取得する(メール通知用)(getNextApprovalPhaseStateMailList).4.次の承認の番の承認者を取得する(メール通知用)
 	 * @param rootStateID インスタンスID
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
