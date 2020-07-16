@@ -125,8 +125,9 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 			}
         }
 		
+        // refactor 4 error
 		//8-2.詳細画面承認後の処理
-		ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getAppID(), employeeID, memo, appReason, isUpdateReason);
+		/*ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getAppID(), employeeID, memo, appReason, isUpdateReason);
 		
 		return new ApproveProcessResult(
 				processResult.isProcessDone(), 
@@ -135,7 +136,8 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 				processResult.getAutoFailMail(), 
 				processResult.getAppID(), 
 				processResult.getReflectAppId(), 
-				appReason);
+				appReason);*/
+        return null;
 	}
 
 }

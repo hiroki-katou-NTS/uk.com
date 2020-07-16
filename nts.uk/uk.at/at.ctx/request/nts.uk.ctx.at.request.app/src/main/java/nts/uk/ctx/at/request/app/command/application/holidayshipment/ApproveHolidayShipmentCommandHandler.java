@@ -147,7 +147,9 @@ public class ApproveHolidayShipmentCommandHandler
 		// xử lý đồng thời
 		// アルゴリズム「申請個別の更新」を実行する
 		// アルゴリズム「詳細画面承認後の処理」を実行する
-		return detailAfAppv.doApproval(companyID, appID, employeeID, memo, appReason, isUpdateReason);
+        // refactor 4 error
+		//return detailAfAppv.doApproval(companyID, appID, employeeID, memo, appReason, isUpdateReason);
+        return null;
 
 	}
 
