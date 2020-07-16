@@ -122,13 +122,11 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 承認する
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType);
+	public Integer doApprove(String rootStateID, String employeeID);
 	
 	/**
 	 * 2.承認全体が完了したか

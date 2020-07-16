@@ -15,14 +15,12 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 public interface ApproveService {
 	
 	/**
-	 * 承認する
-	 * @param companyID 会社ID
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.2.承認する(ApproveService).承認する
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, 
-			Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo, Integer rootType);
+	public Integer doApprove(String rootStateID, String employeeID);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか

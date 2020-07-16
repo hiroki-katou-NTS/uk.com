@@ -328,17 +328,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType) {
-		return approveService.doApprove(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate, 
-				memo,
-				rootType);
+	public Integer doApprove(String rootStateID, String employeeID) {
+		return approveService.doApprove(rootStateID, employeeID);
 	}
 
 	@Override
@@ -750,7 +741,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
 		if(!CollectionUtil.isEmpty(approvalRootSates)){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				 this.doApprove(companyID, approvalRootState.getRootStateID(), approverID, false, 0, null, null, rootType);
+				 this.doApprove(approvalRootState.getRootStateID(), approverID);
 			}
 		}
 	}

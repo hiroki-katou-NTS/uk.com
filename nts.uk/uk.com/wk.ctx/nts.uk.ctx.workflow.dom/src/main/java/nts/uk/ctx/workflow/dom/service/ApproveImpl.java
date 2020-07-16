@@ -58,28 +58,15 @@ public class ApproveImpl implements ApproveService {
 	
 	//承認する
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			ApplicationType appType, GeneralDate appDate, String memo, Integer rootType) {
+	public Integer doApprove(String rootStateID, String employeeID) {
+		String companyID = AppContexts.user().companyId();
 		Integer approvalPhaseNumber = 0;
-		ApprovalRootState approvalRootState = null;
-		if(isCreate.equals(Boolean.TRUE)){
-			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
-					companyID, 
-					employeeID, 
-					EmploymentRootAtr.APPLICATION, 
-					appType.value.toString(), 
-					appDate,
-					SystemAtr.WORK,
-					Optional.empty());
-			approvalRootState = approvalRootContentOutput.getApprovalRootState();
-		} else {
-			//ドメインモデル「承認ルートインスタンス」を取得する
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
-			if(!opApprovalRootState.isPresent()){//0件
-				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-			}
-			approvalRootState = opApprovalRootState.get();
+		//ドメインモデル「承認ルートインスタンス」を取得する
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
+		if(!opApprovalRootState.isPresent()){//0件
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		//hoatt 2018.12.14
 		//EA修正履歴 No.3013
 		//ドメインモデル「承認設定」を取得する
@@ -110,7 +97,7 @@ public class ApproveImpl implements ApproveService {
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 								approverInfor.setAgentID(employeeID);
 								approverInfor.setApprovalDate(GeneralDate.today());
-								approverInfor.setApprovalReason(memo);
+								// approverInfor.setApprovalReason(memo);
 								breakLoop = true;
 							} else {
 								continue;
@@ -121,7 +108,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							approverInfor.setApprovalReason(memo);
+							// approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 					} else {
@@ -135,7 +122,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setAgentID(employeeID);
 							approverInfor.setApprovalDate(GeneralDate.today());
-							approverInfor.setApprovalReason(memo);
+							// approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 						if(approverInfor.getApproverID().equals(employeeID)) {
@@ -143,7 +130,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDate.today());
-							approverInfor.setApprovalReason(memo);
+							// approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
 					}
@@ -169,7 +156,7 @@ public class ApproveImpl implements ApproveService {
 			approvalPhaseNumber = approvalPhaseState.getPhaseOrder();
 		}
 		// ドメインモデル「承認ルートインスタンス」の承認状態をUpdateする(update trạng thái chứng nhận của domain model 「」)
-		approvalRootStateRepository.update(approvalRootState, rootType);
+		approvalRootStateRepository.update(approvalRootState, 0);
 		return approvalPhaseNumber;
 	}
 	
