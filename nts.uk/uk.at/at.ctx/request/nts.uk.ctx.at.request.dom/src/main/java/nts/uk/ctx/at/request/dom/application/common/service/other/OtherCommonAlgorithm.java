@@ -90,11 +90,12 @@ public interface OtherCommonAlgorithm {
 	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application);
 	
 	/**
-	 * 申請者へ送る（承認）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.申請者へ送る（承認）
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantApprove(Application_New application);
+	public MailResult sendMailApplicantApprove(Application application);
 	
 	/**
 	 * 申請者へ送る（否認）
@@ -114,12 +115,13 @@ public interface OtherCommonAlgorithm {
 	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
 	
 	/**
-	 * 申請者へ送る
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.アルゴリズム.申請者へ送る
 	 * @param application
 	 * @param text
 	 * @return
 	 */
-	public MailResult sendMailApplicant(Application_New application, String text);
+	public MailResult sendMailApplicant(Application application, String text);
 	/**
 	 * 申請期間から休日の申請日を取得する
 	 * @param cid

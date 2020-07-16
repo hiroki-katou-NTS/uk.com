@@ -373,7 +373,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application_New application) {
+	public MailResult sendMailApplicantApprove(Application application) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
 		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
@@ -465,7 +465,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application_New application, String text) {
+	public MailResult sendMailApplicant(Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
@@ -473,6 +473,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String employeeID = application.getEmployeeID();
 		String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 		List<String> listDestination = new ArrayList<>(Arrays.asList(sIDlogin, employeeID));
+		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
 				.map(x -> { 
@@ -482,7 +483,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
 				}).orElse("");
+		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
+		// 社員名を取得する
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 				.map(x -> { 
@@ -493,13 +496,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					} 
 				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
+			// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
 			failList.add(employeeName);
 			return new MailResult(successList, failList);
 		}
 		String URL = "";
-		// ドメインモデル「メール内容のURL埋込設定」を取得する
-		Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-		if(opUrlEmbedded.isPresent()){
+		// ドメインモデル「申請メール設定」を取得する
+		AppEmailSet appEmailSet = appEmailSetRepository.findByCID(companyID);
+		if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 			URL = registerEmbededURL.registerEmbeddedForApp(
 					application.getAppID(), 
 					application.getAppType().value, 
@@ -512,20 +516,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			throw new RuntimeException("no setting AppDispName 申請表示名");
 		}
 		AppDispName appDispName = opAppDispName.get();
-		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
+		// 申請を差し戻すメール本文の編集
 		String appContent = applicationContentService.getApplicationContent(application);
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
 				newText,
-				application.getAppDate().toLocalDate().toString(), 
+				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
 				appDispName.getDispName().toString(),
 				applicantName, 
-				application.getAppDate().toLocalDate().toString(),
+				application.getAppDate().getApplicationDate().toLocalDate().toString(),
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 		String mailBody = mailContentToSend;
 		try {
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));

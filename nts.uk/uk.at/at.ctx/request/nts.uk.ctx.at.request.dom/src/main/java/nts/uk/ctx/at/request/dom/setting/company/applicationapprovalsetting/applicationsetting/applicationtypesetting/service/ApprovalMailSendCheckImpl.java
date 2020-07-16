@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -24,7 +24,7 @@ public class ApprovalMailSendCheckImpl implements ApprovalMailSendCheck {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
 	@Override
-	public ProcessResult sendMail(String appID, String reflectAppId, AppTypeDiscreteSetting discreteSetting, Application_New application, Boolean allApprovalFlg) {
+	public ProcessResult sendMail(String appID, String reflectAppId, AppTypeDiscreteSetting discreteSetting, Application application, Boolean allApprovalFlg) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();

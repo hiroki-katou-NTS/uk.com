@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -28,7 +28,7 @@ public class NewRegisterMailSendCheckImpl implements NewRegisterMailSendCheck {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
 	@Override
-	public ProcessResult sendMail(AppTypeDiscreteSetting discreteSetting, Application_New application, String companyID, String appID, String reflectAppId, String employeeID, Integer phaseNumber) {
+	public ProcessResult sendMail(AppTypeDiscreteSetting discreteSetting, Application application, String companyID, String appID, String reflectAppId, String employeeID, Integer phaseNumber) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
