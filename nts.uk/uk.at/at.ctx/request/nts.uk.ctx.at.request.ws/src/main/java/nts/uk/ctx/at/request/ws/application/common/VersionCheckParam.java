@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class VersionCheckParam {
 	String appID;
-	Long version;
+	int version;
 }

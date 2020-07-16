@@ -214,7 +214,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				EmploymentRootAtr.APPLICATION.value,
 				application.getAppID(),
 				application.getPrePostAtr(),
-				Long.valueOf(application.getVersion()),
+				application.getVersion(),
 				goBackDirectly.getDataWork().get().getWorkType().getWorkType(),
 				goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime());
 	}

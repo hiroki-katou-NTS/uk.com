@@ -82,7 +82,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		if (appLicationOpt.isPresent()) {
 			Application_New application = appLicationOpt.get();
 			application.setAppReason(new AppReason(appReason));
-			application.setVersion(command.getAppCmd().getAppVersion());
+			// application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<AbsenceLeaveApp> absAppOpt = this.absRepo.findByID(appCmd.getAppID());
 			if (absAppOpt.isPresent()) {
@@ -118,7 +118,7 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 		if (absAppLicationOpt.isPresent()) {
 			Application_New application = absAppLicationOpt.get();
 			application.setAppReason(new AppReason(appReason));
-			application.setVersion(command.getAppCmd().getAppVersion());
+			// application.setVersion(command.getAppCmd().getAppVersion());
 			this.appRepo.updateWithVersion(application);
 			Optional<RecruitmentApp> recAppOpt = this.recRepo.findByID(appCmd.getAppID());
 			if (recAppOpt.isPresent()) {
@@ -146,14 +146,14 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 	}
 
 	private void preRegisComonProcessing(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType_Old appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType_Old appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
 		processBeforeRegOfDetailedScreen(companyID, employeeID, appDate, rootAtr, appType, prePostAtr, appID, appVer,
 				wkTypeCD, wkTimeCD);
 
 	}
 
 	private void processBeforeRegOfDetailedScreen(String companyID, String employeeID, GeneralDate appDate, int rootAtr,
-			ApplicationType_Old appType, int prePostAtr, String appID, Long appVer, String wkTypeCD, String wkTimeCD) {
+			ApplicationType_Old appType, int prePostAtr, String appID, int appVer, String wkTypeCD, String wkTimeCD) {
 		// error EA refactor 4
 		/*beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, employeeID, appDate,
 				EmploymentRootAtr.APPLICATION.value, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr_Old.class),

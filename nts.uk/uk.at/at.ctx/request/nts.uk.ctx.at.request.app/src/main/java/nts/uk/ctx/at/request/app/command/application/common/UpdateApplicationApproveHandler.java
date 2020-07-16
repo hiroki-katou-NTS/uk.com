@@ -14,7 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputApproveData;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
@@ -67,10 +66,10 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		String companyID = AppContexts.user().companyId();
 		String memo = context.getCommand().getMemo();
 		String employeeID = AppContexts.user().employeeId();
-		ApplicationDto_New command = context.getCommand().getApplicationDto();
+		ApplicationDto command = context.getCommand().getApplicationDto();
 		
         //アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
-        beforeRegisterRepo.exclusiveCheck(companyID, command.getApplicationID(), command.getVersion());
+        beforeRegisterRepo.exclusiveCheck(companyID, command.getAppID(), command.getVersion());
         String appReason = Strings.EMPTY;
         boolean isUpdateReason = false;
         boolean isMobileCall =  context.getCommand().getMobileCall() == null ? false : context.getCommand().getMobileCall().booleanValue();
@@ -80,11 +79,11 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
 	        //14-3.詳細画面の初期モード
 			OutputMode outputMode = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(context.getCommand().getUser(), User.class), context.getCommand().getReflectPerState());
-			appReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
+			appReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
 			if(outputMode==OutputMode.EDITMODE){
 				boolean displayFixedReason = false;
 				boolean displayAppReason = false;
-				Integer appType = command.getApplicationType();
+				Integer appType = command.getAppType();
 				if(appType==ApplicationType_Old.ABSENCE_APPLICATION.value){
 					List<DisplayReasonDto> displayReasonDtoLst = 
 							displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
@@ -111,7 +110,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 					displayReason += context.getCommand().getTextAreaReason();
 				} else {
 					if(Strings.isBlank(typicalReason)){
-						displayReason = applicationRepository.findByID(companyID, command.getApplicationID()).get().getAppReason().v();
+						displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
 					}
 				}
 				
@@ -127,7 +126,7 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
         }
 		
 		//8-2.詳細画面承認後の処理
-		ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getApplicationID(), employeeID, memo, appReason, isUpdateReason);
+		ProcessResult processResult = detailAfterApproval_New.doApproval(companyID, command.getAppID(), employeeID, memo, appReason, isUpdateReason);
 		
 		return new ApproveProcessResult(
 				processResult.isProcessDone(), 

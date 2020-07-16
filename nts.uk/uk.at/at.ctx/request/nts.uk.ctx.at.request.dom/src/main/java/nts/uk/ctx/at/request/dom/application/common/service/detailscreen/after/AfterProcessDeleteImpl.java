@@ -50,7 +50,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Override
-	public ProcessDeleteResult screenAfterDelete(String companyID,String appID, Long version) {
+	public ProcessDeleteResult screenAfterDelete(String companyID,String appID, int version) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
