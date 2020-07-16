@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
  * refactor 4
@@ -15,11 +15,10 @@ public interface ApprovalMailSendCheck {
 	/**
 	 * 承認処理後にメールを自動送信するか判定
 	 * @param appID
-	 * @param reflectAppId
-	 * @param discreteSetting
+	 * @param appTypeSetting
 	 * @param application
 	 * @param allApprovalFlg
 	 * @return
 	 */
-	public ProcessResult sendMail(String appID, String reflectAppId, AppTypeDiscreteSetting discreteSetting, Application application, Boolean allApprovalFlg);
+	public ProcessResult sendMail(String appID, AppTypeSetting appTypeSetting, Application application, Boolean allApprovalFlg);
 }
