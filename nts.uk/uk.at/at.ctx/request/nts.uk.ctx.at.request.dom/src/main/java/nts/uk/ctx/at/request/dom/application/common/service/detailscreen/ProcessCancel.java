@@ -5,5 +5,5 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
  *
  */
 public interface ProcessCancel {
-	public void detailScreenCancelProcess(String companyID,String appID, Long version);
+	public void detailScreenCancelProcess(String companyID,String appID, int version);
 }

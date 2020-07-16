@@ -324,45 +324,18 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
-			GeneralDate appDate, Integer rootType) {
-		return approveService.getNextApprovalPhaseStateMailList(
-				companyID, 
-				rootStateID, 
-				approvalPhaseStateNumber, 
-				isCreate, 
-				employeeID, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber) {
+		return approveService.getNextApprovalPhaseStateMailList(rootStateID, approvalPhaseStateNumber);
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType) {
-		return approveService.doApprove(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate, 
-				memo,
-				rootType);
+	public Integer doApprove(String rootStateID, String employeeID) {
+		return approveService.doApprove(rootStateID, employeeID);
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate, Integer rootType) {
-		return approveService.isApproveAllComplete(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public Boolean isApproveAllComplete(String rootStateID) {
+		return approveService.isApproveAllComplete(rootStateID);
 	}
 
 	@Override
@@ -761,7 +734,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
 		if(!CollectionUtil.isEmpty(approvalRootSates)){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				 this.doApprove(companyID, approvalRootState.getRootStateID(), approverID, false, 0, null, null, rootType);
+				 this.doApprove(approvalRootState.getRootStateID(), approverID);
 			}
 		}
 	}

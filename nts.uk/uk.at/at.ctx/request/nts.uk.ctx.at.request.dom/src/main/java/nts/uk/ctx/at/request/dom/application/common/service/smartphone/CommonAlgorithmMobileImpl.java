@@ -15,7 +15,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -57,7 +56,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpostappaccept.PostAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.service.BaseDateGet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
@@ -67,8 +65,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetti
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -103,9 +100,6 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private HolidayShipmentService holidayShipmentService;
 	
 	@Inject
-	private BaseDateGet baseDateGet;
-	
-	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
@@ -116,9 +110,6 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
-	
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
@@ -134,6 +125,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	
 	@Inject
 	private InitMode initMode;
+	
+	@Inject
+	private ClosureService closureService;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -304,14 +298,14 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAchievementOutputLst = Optional.of(achievementOutputLst);
 			// 事前内容の取得
 			List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
-					EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class));
+					appType);
 			opAppDetailContentLst = Optional.of(appDetailContentLst);
 		}
 		// 取得した内容を返す
@@ -345,7 +339,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			refDate = CollectionUtil.isEmpty(appDateLst) ? Optional.empty() : Optional.of(appDateLst.get(0));
 		}
 		// 基準日として扱う日の取得
-		return baseDateGet.getBaseDate(refDate, applicationSetting.getRecordDate());
+		return applicationSetting.getBaseDate(refDate);
 	}
 
 	@Override
@@ -374,10 +368,9 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 雇用に紐づく締めを取得する
-		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepository.findByEmploymentCD(companyID,
-				employmentCD);
+		int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
 		// 申請締切設定を取得する
-		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureEmpOtp.get().getClosureId());
+		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 事前申請がいつから受付可能か確認する
 		PreAppAcceptLimit preAppAcceptLimit = receptionRestrictionSetting.checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
 		// 事後申請がいつから受付可能か確認する

@@ -1,12 +1,17 @@
-#listApproverRootState #table-phase, #table-phase td, #table-phase th {
+#kaf000-a-component6 {
+	margin-top: 5px;
+	margin-bottom: 5px;	
+}
+
+#kaf000-a-component6 #listApproverRootState #table-phase, #table-phase td, #table-phase th {
 	border: 1px solid black;
 	text-align: center;
 	height: 25px;
 }
-#listApproverRootState #table-phase td {
+#kaf000-a-component6 #listApproverRootState #table-phase td {
 	height: 25px;
 }
-#listApproverRootState #label-1 {
+#kaf000-a-component6 #listApproverRootState #label-1 {
 	width: 150px;
 	vertical-align: top;
 }

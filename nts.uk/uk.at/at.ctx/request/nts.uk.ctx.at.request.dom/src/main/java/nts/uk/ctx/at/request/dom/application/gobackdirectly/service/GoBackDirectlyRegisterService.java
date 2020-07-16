@@ -3,11 +3,14 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 public interface GoBackDirectlyRegisterService {
@@ -72,7 +75,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param mode
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application_New application,  GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput, boolean mode);
+	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application application,  GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode);
 	/**
 	 * 「直行直帰登録」処理を実行する
 	 * @param companyId 会社ID
@@ -82,4 +85,25 @@ public interface GoBackDirectlyRegisterService {
 	 * @return メール送信の結果
 	 */
 	public ProcessResult registerNew(String companyId, Application_New application_New, GoBackDirectly_Old goBackDirectly, InforGoBackCommonDirectOutput_Old inforGoBackCommonDirectOutput);
+	/**
+	 * Refactor4 
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF009_直行直帰の申請.A:直行直帰の申請（新規）.アルゴリズム.直行直帰するチェック
+	 * 直行直帰するチェック
+	 * @param goBackDirectly
+	 * @return
+	 */
+	public GoBackDirectAtr goBackDirectCheckNew(GoBackDirectly goBackDirectly);
+	
+	/**refactor4 
+	 * 直行直帰登録
+	 * @param goBackDirectly
+	 * @param application
+	 * @return
+	 */
+	public ProcessResult register(GoBackDirectly goBackDirectly, Application application, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
+	
+	
+	public ProcessResult update(String companyId, Application application, GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput); 
+	
+	
 }

@@ -188,7 +188,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     type MODE = 'before' | 'after';
 
     const API = {
-        startNew: "at/request/application/workchange/startNew"
+        startNew: "at/request/application/workchange/startNew",
+        initPage: "at/request/application/lateorleaveearly/initPage"
     };
 
     export class IdItem {

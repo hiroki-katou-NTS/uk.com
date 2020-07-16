@@ -22,12 +22,12 @@ public class ReleaseHolidayShipmentCommandHandler
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<HolidayShipmentCommand> context) {
 		HolidayShipmentCommand command = context.getCommand();
-		Long version = command.getAppVersion();
+		int version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の承認解除」を実行する
 		return cancellationApproval(command, version);
 	}
 
-	private ProcessResult cancellationApproval(HolidayShipmentCommand command, Long version) {
+	private ProcessResult cancellationApproval(HolidayShipmentCommand command, int version) {
 		String companyID = AppContexts.user().companyId();
 		boolean isReleaseRec = command.getRecAppID() != null;
 		boolean isReleaseAbs = command.getAbsAppID() != null;
@@ -45,7 +45,7 @@ public class ReleaseHolidayShipmentCommandHandler
 
 	}
 
-	private ProcessResult releaseProcessing(String companyID, String appID, Long version) {
+	private ProcessResult releaseProcessing(String companyID, String appID, int version) {
 		String employeeID = AppContexts.user().employeeId();
 		// アルゴリズム「詳細画面解除前の処理」を実行する
 		this.beforeReleaseProc.detailScreenProcessBeforeReleasing(companyID, appID, version);

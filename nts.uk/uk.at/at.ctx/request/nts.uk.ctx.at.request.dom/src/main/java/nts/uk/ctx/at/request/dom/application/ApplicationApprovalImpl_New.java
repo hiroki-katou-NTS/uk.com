@@ -87,7 +87,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 	}
 
 	@Override
-	public void delete(String companyID, String appID, Long version, ApplicationType_Old appType) {
+	public void delete(String companyID, String appID, int version, ApplicationType_Old appType) {
 		switch (appType) {
 		case STAMP_APPLICATION:
 			appStampRepository.delete(companyID, appID);

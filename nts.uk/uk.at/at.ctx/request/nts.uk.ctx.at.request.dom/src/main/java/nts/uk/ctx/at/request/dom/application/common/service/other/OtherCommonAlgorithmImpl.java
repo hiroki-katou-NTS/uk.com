@@ -22,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
@@ -60,8 +61,9 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -90,6 +92,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
@@ -124,9 +127,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private MailSender mailsender;
-	
-	@Inject
-	private ApprovalTempRepository approvalTempRepository;
 	
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
@@ -179,6 +179,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
+	
+	@Inject
+	private AppEmailSetRepository appEmailSetRepository;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -356,13 +359,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
-		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
-		String content = "";
-		if(opApprovalTemp.isPresent() && (opApprovalTemp.get().getContent() != null)){
-			content = opApprovalTemp.get().getContent().v();
-		}
-		MailResult mailResult = sendMailApprover(employeeIDList, application, content);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
+		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
+		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
+		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
@@ -372,7 +373,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application_New application) {
+	public MailResult sendMailApplicantApprove(Application application) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
 		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
@@ -384,7 +385,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
@@ -392,6 +393,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		List<String> paramIDList = new ArrayList<>();
 		paramIDList.addAll(listDestination);
 		paramIDList.add(sIDlogin);
+		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, paramIDList, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
 				.map(x -> { 
@@ -401,10 +403,13 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
 				}).orElse("");
+		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
+		// 申請者の社員名を取得する
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		for(String employeeID : listDestination){
 			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
+			// 対象者のメールアドレスを取得する
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 					.map(x -> { 
 						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
@@ -414,13 +419,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						} 
 					}).orElse("");
 			if(Strings.isBlank(approverMail)){
+				// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
 				failList.add(employeeName);
 				continue;
 			}
 			String URL = "";
-			// ドメインモデル「メール内容のURL埋込設定」を取得する
-			Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-			if(opUrlEmbedded.isPresent()){
+			// ドメインモデル「申請メール設定」を取得する
+			AppEmailSet appEmailSet = appEmailSetRepository.findByCID(companyID);
+			if(appEmailSet.getUrlReason() == NotUseAtr.USE){
+				// 埋込URL情報登録申請(application đăng ký info URL nén)
 				URL = registerEmbededURL.registerEmbeddedForApp(
 						application.getAppID(), 
 						application.getAppType().value, 
@@ -439,14 +446,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
 					newText,
-					application.getAppDate().toLocalDate().toString(), 
+					application.getAppDate().getApplicationDate().toLocalDate().toString(), 
 					appDispName.getDispName().toString(),
 					applicantName, 
-					application.getAppDate().toLocalDate().toString(),
+					application.getAppDate().getApplicationDate().toLocalDate().toString(),
 					appContent, 
 					loginName, 
 					loginMail);
-			String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+			String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 			String mailBody = mailContentToSend;
 			try {
 				mailsender.sendFromAdmin(approverMail, new MailContents(mailTitle, mailBody));
@@ -458,7 +465,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application_New application, String text) {
+	public MailResult sendMailApplicant(Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
@@ -466,6 +473,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String employeeID = application.getEmployeeID();
 		String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 		List<String> listDestination = new ArrayList<>(Arrays.asList(sIDlogin, employeeID));
+		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
 				.map(x -> { 
@@ -475,7 +483,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						return x.getOutGoingMails().get(0).getEmailAddress(); 
 					} 
 				}).orElse("");
+		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
+		// 社員名を取得する
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
 				.map(x -> { 
@@ -486,13 +496,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					} 
 				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
+			// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
 			failList.add(employeeName);
 			return new MailResult(successList, failList);
 		}
 		String URL = "";
-		// ドメインモデル「メール内容のURL埋込設定」を取得する
-		Optional<UrlEmbedded> opUrlEmbedded = urlEmbeddedRepository.getUrlEmbeddedById(companyID);
-		if(opUrlEmbedded.isPresent()){
+		// ドメインモデル「申請メール設定」を取得する
+		AppEmailSet appEmailSet = appEmailSetRepository.findByCID(companyID);
+		if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 			URL = registerEmbededURL.registerEmbeddedForApp(
 					application.getAppID(), 
 					application.getAppType().value, 
@@ -505,20 +516,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			throw new RuntimeException("no setting AppDispName 申請表示名");
 		}
 		AppDispName appDispName = opAppDispName.get();
-		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
+		// 申請を差し戻すメール本文の編集
 		String appContent = applicationContentService.getApplicationContent(application);
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
 				newText,
-				application.getAppDate().toLocalDate().toString(), 
+				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
 				appDispName.getDispName().toString(),
 				applicantName, 
-				application.getAppDate().toLocalDate().toString(),
+				application.getAppDate().getApplicationDate().toLocalDate().toString(),
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
 		String mailBody = mailContentToSend;
 		try {
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
@@ -580,9 +591,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 * @return 結果(使用/未使用)
 	 */
 	@Override
-	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType) {
-		String companyId = application.getCompanyID();
-		if(application.isAppAbsence()){
+	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType) {
+		String companyId = AppContexts.user().companyId();
+		if(application.isAbsenceApp()){
 			if(!holidayType.isPresent()){
 				//ドメインモデル「休暇申請」を取得する
 				Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, application.getAppID());

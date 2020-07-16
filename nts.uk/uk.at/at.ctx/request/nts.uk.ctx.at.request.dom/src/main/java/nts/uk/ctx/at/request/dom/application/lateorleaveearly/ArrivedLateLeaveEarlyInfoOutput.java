@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.ArrivedLateLeaveEralySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,10 +20,10 @@ public class ArrivedLateLeaveEarlyInfoOutput {
 //	申請表示情報
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 //	遅刻早退取消申請設定
-	private ArrivedLateLeaveEralySetting arrivedLateLeaveEralySetting;
+	private LateEarlyCancelAppSet lateEarlyCancelAppSet;
 //	エアー情報
-	private Optional<Character> info;
+	private Optional<String> info;
 //	遅刻早退取消申請
-	private Optional<ArrivedLateLeaveEarly> arrivedLateLeaveEarly;
+	private Optional<ArrivedLateLeaveEarly_Old> arrivedLateLeaveEarly;
 	
 }

@@ -20,7 +20,7 @@ public interface GoBackDirectService {
 	 * @param appDispInfoStartup
 	 * @return
 	 */
-	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<String>> sids, Optional<List<GeneralDate>> dates, AppDispInfoStartupOutput appDispInfoStartup);
+	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates, Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup);
 	
 	/**
 	 * 直行直帰申請起動時初期データを取得する Refactor4
@@ -30,7 +30,7 @@ public interface GoBackDirectService {
 	 * @param baseDate
 	 * @param appEmployment
 	 * @param lstWts
-	 * @return
+	 * @return //直行直帰申請起動時の表示情報
 	 */
 	public InforWorkGoBackDirectOutput getInfoWorkGoBackDirect(String companyId, String employeeId, GeneralDate appDate, GeneralDate baseDate,
 			AppEmploymentSet appEmployment, List<WorkTimeSetting> lstWts);
@@ -41,4 +41,26 @@ public interface GoBackDirectService {
 	 * @return
 	 */
 	public List<WorkType> getWorkTypes(String companyId, AppEmploymentSet appEmploymentSet);
+	/**
+	 * Refactor 4
+	 * @param companyId
+	 * @param dates
+	 * @param sids
+	 * @param appDispInfoStartup
+	 * @return //直行直帰申請起動時の表示情報
+	 */
+	public InforGoBackCommonDirectOutput getDateChangeAlgorithm(String companyId, List<GeneralDate> dates, List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
+	/**
+	 * 直行直帰画面初期（更新） Refactor4 get data Detail
+	 * @param companyId
+	 * @param appId
+	 * @return //直行直帰申請起動時の表示情報
+	 */
+	public InforGoBackCommonDirectOutput getDataDetailAlgorithm(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	
+	
+	
 }
+
+

@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
@@ -55,7 +54,7 @@ public class ApproveHolidayShipmentCommandHandler
 		HolidayShipmentCommand command = context.getCommand();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		Long version = command.getAppVersion();
+		int version = command.getAppVersion();
 		String memo = context.getCommand().getMemo();
 		
 		OutputMode outputMode = initMode.getDetailScreenInitMode(EnumAdaptor.valueOf(command.getUser(), User.class), command.getReflectPerState());
@@ -120,7 +119,7 @@ public class ApproveHolidayShipmentCommandHandler
 	}
 
 	private ProcessResult approvalApplication(HolidayShipmentCommand command, String companyID, String employeeeID,
-			Long version, String memo, String appReason, boolean isUpdateReason) {
+			int version, String memo, String appReason, boolean isUpdateReason) {
 		boolean isApprovalRec = command.getRecAppID() != null;
 		boolean isApprovalAbs = command.getAbsAppID() != null;
 		ProcessResult result = null;
@@ -137,7 +136,7 @@ public class ApproveHolidayShipmentCommandHandler
 	}
 	
     //KAF011 承認処理
-	private ProcessResult approvalProcessing(String companyID, String appID, String employeeID, Long version,
+	private ProcessResult approvalProcessing(String companyID, String appID, String employeeID, int version,
 			String memo, String appReason, boolean isUpdateReason) {
         //EA修正履歴 No.3258
         //hoatt 2019.04.25
@@ -148,7 +147,9 @@ public class ApproveHolidayShipmentCommandHandler
 		// xử lý đồng thời
 		// アルゴリズム「申請個別の更新」を実行する
 		// アルゴリズム「詳細画面承認後の処理」を実行する
-		return detailAfAppv.doApproval(companyID, appID, employeeID, memo, appReason, isUpdateReason);
+        // refactor 4 error
+		//return detailAfAppv.doApproval(companyID, appID, employeeID, memo, appReason, isUpdateReason);
+        return null;
 
 	}
 

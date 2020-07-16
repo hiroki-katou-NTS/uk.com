@@ -114,32 +114,26 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
-			Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
 	/**
 	 * 承認する
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType);
+	public Integer doApprove(String rootStateID, String employeeID);
 	
 	/**
 	 * 2.承認全体が完了したか
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	/**
 	 * 一括解除する 

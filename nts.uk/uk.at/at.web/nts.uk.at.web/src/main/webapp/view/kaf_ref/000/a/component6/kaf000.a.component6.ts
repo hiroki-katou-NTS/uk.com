@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         name: 'kaf000-a-component6',
         template: '/nts.uk.at.web/view/kaf_ref/000/a/component6/index.html'
     })
-    class Kaf000AComponent4ViewModel extends ko.ViewModel {
+    class Kaf000AComponent6ViewModel extends ko.ViewModel {
         approvalRootState: KnockoutObservableArray<any>;
         appDispInfoStartupOutput: any;
 		display: KnockoutObservableArray<boolean>;

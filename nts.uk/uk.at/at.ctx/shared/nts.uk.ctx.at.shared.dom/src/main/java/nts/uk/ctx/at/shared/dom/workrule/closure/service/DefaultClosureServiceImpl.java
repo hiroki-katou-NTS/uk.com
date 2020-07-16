@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -30,14 +31,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.Day;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class DefaultClosureServiceImpl.
@@ -516,5 +515,18 @@ public class DefaultClosureServiceImpl implements ClosureService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getClosureIDByEmploymentCD(String employmentCD) {
+		String companyID = AppContexts.user().companyId();
+		// ○ドメインモデル「雇用に紐づく就業締め」を取得する（lấy dữ liệu domain 「雇用に紐づく就業締め」）
+		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		if(closureEmpOtp.isPresent()) {
+			// ○取得した「雇用に紐づく就業締め」．締めIDを返す。
+			return closureEmpOtp.get().getClosureId();
+		}
+		// 締めID=1を返す(trả về closeID=1)
+		return 1;
 	}
 }

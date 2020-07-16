@@ -1,16 +1,30 @@
 package nts.uk.ctx.at.request.infra.repository.application.gobackdirectly;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.DataWork;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkType;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,12 +35,16 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkTime;
  * @author hoangnd
  *
  */
+@Stateless
 public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBackDirectlyRepository {
-	public static final String FIND_BY_ID = "SELECT * FROM KRQST_APP_GOBACK_DIRECTLY WHERE APP_ID = @appId";
+	public static final String FIND_BY_ID = "SELECT *\r\n" + 
+			"  FROM KRQDT_APP_GOBACK_DIRECTLY as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID WHERE a.APP_ID = @appId and a.CID = @companyId";
 
 	@Override
-	public Optional<GoBackDirectly> find(String appId) {
-		return new NtsStatement(FIND_BY_ID, this.jdbcProxy()).paramString("appId", appId)
+	public Optional<GoBackDirectly> find(String companyId, String appId) {
+		return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
+				.paramString("appId", appId)
+				.paramString("companyId", companyId)
 				.getSingle(res -> toDomain(res));
 	}
 
@@ -58,12 +76,59 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	}
 
 	public GoBackDirectly toDomain(NtsResultRecord res) {
-		GoBackDirectly goBackDirectly = new GoBackDirectly(null);
-		goBackDirectly.setStraightDistinction(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), EnumConstant.class));
-		goBackDirectly.setStraightLine(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), EnumConstant.class));
+		// parse application domain
+		Application application = new Application();
+		String pattern = "yyyy/MM/dd HH:mm:ss";
+		String pattern2 = "yyyy/MM/dd";
+		DateFormat df = new SimpleDateFormat(pattern);
+		DateFormat df2 = new SimpleDateFormat(pattern2);
+		application.setAppID(res.getString("APP_ID"));
+		application.setVersion(res.getInt("EXCLUS_VER"));
+		application.setPrePostAtr(EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class));
+		application.setInputDate(GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern));
+		application.setEnteredPerson(res.getString("ENTERED_PERSON_SID"));
+		if (res.getString("REASON_REVERSION") == null) {
+			application.setOpReversionReason(Optional.ofNullable(null));
+		}else {
+			application.setOpReversionReason(Optional.ofNullable(new ReasonForReversion(res.getString("REASON_REVERSION"))));			
+		}
+		application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
+		if (res.getInt("FIXED_REASON") == null) {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(new AppStandardReasonCode(res.getInt("FIXED_REASON"))));			
+		}
+		if (res.getString("APP_REASON") == null) {
+			application.setOpAppReason(Optional.ofNullable(null));
+		}else {
+			application.setOpAppReason(Optional.ofNullable(new AppReason(res.getString("APP_REASON"))));			
+		}
+		application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
+		application.setEmployeeID(res.getString("APPLICANTS_SID"));
+		if (res.getDate("APP_START_DATE") == null) {
+			application.setOpAppStartDate(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStartDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_START_DATE")), pattern2))));
+		}
+		if (res.getDate("APP_END_DATE") == null) {
+			application.setOpAppEndDate(Optional.ofNullable(null));
+		} else {
+			application.setOpAppEndDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_END_DATE")), pattern2))));
+		}
+		
+		if (res.getInt("STAMP_OPTION_ATR") == null) {
+			application.setOpStampRequestMode(Optional.ofNullable(null));
+		}else {
+			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(res.getInt("STAMP_OPTION_ATR"), StampRequestMode.class)));
+		}
+		
+		
+		GoBackDirectly goBackDirectly = new GoBackDirectly(application);
+		goBackDirectly.setStraightDistinction(new EnumConstant(res.getInt("GO_WORK_ATR"), "", ""));
+		goBackDirectly.setStraightLine(new EnumConstant(res.getInt("BACK_HOME_ATR"), "", ""));
 		if (Optional.ofNullable(res.getInt("WORK_CHANGE_ATR")).isPresent()) {
 			goBackDirectly.setIsChangedWork(
-					Optional.of(EnumAdaptor.valueOf(res.getInt("WORK_CHANGE_ATR"), EnumConstant.class)));
+					Optional.of(new EnumConstant(res.getInt("WORK_CHANGE_ATR"), "", "")));
 		}
 		if (Optional.ofNullable(res.getInt("WORK_TYPE_CD")).isPresent()
 				|| Optional.ofNullable(res.getInt("WORK_TIME_CD")).isPresent()) {

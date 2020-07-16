@@ -462,7 +462,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				EmploymentRootAtr.APPLICATION.value, 
 				application.getAppID(), 
 				application.getPrePostAtr(), 
-				Long.valueOf(application.getVersion()), 
+				application.getVersion(), 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
 				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
 		// 登録時チェック処理（勤務変更申請）
