@@ -2,8 +2,6 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 
@@ -15,7 +13,8 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 public interface ApproveService {
 	
 	/**
-	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.2.承認する(ApproveService).承認する
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.2.承認する(ApproveService).2.承認する(ApproveService)
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
@@ -32,13 +31,12 @@ public interface ApproveService {
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState);
 	
 	/**
-	 * 2.承認全体が完了したか
-	 * @param companyID 会社ID
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.OLD＿承認する(ApproveService).2.承認全体が完了したか(isApproveAllComplete).2.承認全体が完了したか.2.承認全体が完了したか
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, 
-			Boolean isCreate, ApplicationType appType, GeneralDate appDate, Integer rootType);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	/**
 	 * 3.指定する承認フェーズに未承認の承認者一覧を取得する

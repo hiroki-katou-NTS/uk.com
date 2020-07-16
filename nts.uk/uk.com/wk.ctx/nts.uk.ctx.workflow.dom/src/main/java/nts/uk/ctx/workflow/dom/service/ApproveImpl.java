@@ -16,11 +16,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -29,7 +26,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.RepresenterInforOutput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -49,9 +45,6 @@ public class ApproveImpl implements ApproveService {
 	
 	@Inject
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
-	
-	@Inject
-	private CollectApprovalRootService collectApprovalRootService;
 	
 	@Inject
 	private ApprovalSettingRepository repoApprSet;
@@ -214,27 +207,14 @@ public class ApproveImpl implements ApproveService {
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, 
-			Boolean isCreate, ApplicationType appType, GeneralDate appDate, Integer rootType) {
+	public Boolean isApproveAllComplete(String rootStateID) {
+		String companyID = AppContexts.user().companyId();
 		Boolean approveAllFlag = false;
-		ApprovalRootState approvalRootState = null;
-		if(isCreate.equals(Boolean.TRUE)){
-			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
-					companyID, 
-					employeeID, 
-					EmploymentRootAtr.APPLICATION, 
-					appType.value.toString(), 
-					appDate,
-					SystemAtr.WORK,
-					Optional.empty());
-			approvalRootState = approvalRootContentOutput.getApprovalRootState();
-		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
-			if(!opApprovalRootState.isPresent()){
-				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-			}
-			approvalRootState = opApprovalRootState.get();
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
+		if(!opApprovalRootState.isPresent()){
+			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
+		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){

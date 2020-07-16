@@ -333,16 +333,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate, Integer rootType) {
-		return approveService.isApproveAllComplete(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public Boolean isApproveAllComplete(String rootStateID) {
+		return approveService.isApproveAllComplete(rootStateID);
 	}
 
 	@Override

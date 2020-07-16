@@ -130,12 +130,10 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 2.承認全体が完了したか
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	/**
 	 * 一括解除する 
