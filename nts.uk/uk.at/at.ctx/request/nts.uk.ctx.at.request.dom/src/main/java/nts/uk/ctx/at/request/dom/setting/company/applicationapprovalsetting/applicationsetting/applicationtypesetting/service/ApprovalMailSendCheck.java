@@ -14,11 +14,10 @@ public interface ApprovalMailSendCheck {
 	
 	/**
 	 * 承認処理後にメールを自動送信するか判定
-	 * @param appID
 	 * @param appTypeSetting
 	 * @param application
 	 * @param allApprovalFlg
 	 * @return
 	 */
-	public ProcessResult sendMail(String appID, AppTypeSetting appTypeSetting, Application application, Boolean allApprovalFlg);
+	public ProcessResult sendMail(AppTypeSetting appTypeSetting, Application application, Boolean allApprovalFlg);
 }
