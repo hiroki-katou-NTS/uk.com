@@ -28,6 +28,16 @@ public interface SyEmploymentPub {
 	Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	Optional<SEmpHistExport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId,GeneralDate baseDate);
 
+    /**
+     * Find S job hist by sid.
+     *
+     * @param employeeId the employee id
+     * @param baseDate the base date
+     * @return the optional
+     */
+    //giống RQ 31 nhưng là truyền vào SID
+    List<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId);
+    
 	/**
 	 * Find all.
 	 *
