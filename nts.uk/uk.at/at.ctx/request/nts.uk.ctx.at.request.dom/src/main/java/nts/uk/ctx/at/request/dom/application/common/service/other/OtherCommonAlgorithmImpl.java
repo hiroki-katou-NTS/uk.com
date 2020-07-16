@@ -63,8 +63,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -128,9 +127,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private MailSender mailsender;
-	
-	@Inject
-	private ApprovalTempRepository approvalTempRepository;
 	
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
@@ -363,13 +359,11 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application) {
-		Optional<ApprovalTemp> opApprovalTemp = approvalTempRepository.getAppTem();
-		String content = "";
-		if(opApprovalTemp.isPresent() && (opApprovalTemp.get().getContent() != null)){
-			content = opApprovalTemp.get().getContent().v();
-		}
-		MailResult mailResult = sendMailApprover(employeeIDList, application, content);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
+		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
+		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
+		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
