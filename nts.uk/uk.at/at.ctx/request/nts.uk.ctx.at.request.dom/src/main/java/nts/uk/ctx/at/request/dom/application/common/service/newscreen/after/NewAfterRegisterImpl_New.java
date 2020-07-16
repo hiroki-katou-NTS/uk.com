@@ -2,61 +2,53 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.SendMailAtr;
+import nts.uk.ctx.at.request.dom.application.algorithm.ApplicationAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 @Stateless
 public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 	
 	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	private ApplicationAlgorithm applicationAlgorithm;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	public ProcessResult processAfterRegister(Application application){
-		String companyID = AppContexts.user().companyId();
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	public ProcessResult processAfterRegister(String appID, AppTypeSetting appTypeSetting, boolean mailServerSet){
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
-		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
-		if(!appTypeDiscreteSettingOp.isPresent()) {
-			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getAppType().value);
-		}
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
-		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)){
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),""); 
+		// アルゴリズム「登録処理時のメール自動送信するか判定」を実行するthực hiện thuật toán "kiểm tra xem ở xử lý đăng ký có gửi mail tự đọng"
+		SendMailAtr sendMailAtr = applicationAlgorithm.checkAutoSendMailRegister(appID, appTypeSetting, mailServerSet);
+		if(sendMailAtr == SendMailAtr.NOT_SEND) {
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, ""); 
 		}
 		isAutoSendMail = true;
-		// アルゴリズム「送信先リストの取得」を実行する
-		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-				application.getAppID(), 
-				1);
-		
-		// 送信先リストに項目がいるかチェックする 
-		if(!CollectionUtil.isEmpty(destinationList)){
-			// error EA refactor 4
-			/*MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
-			autoSuccessMail = mailResult.getSuccessList();
-			autoFailMail = mailResult.getFailList();*/
-		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, application.getAppID(),"");
+		// Imported(就業)「社員」を取得する(lấy thông tin Imported(就業)「社員」) 
+		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(appID, 1);
+		Application application = applicationRepository.findByID(appID).get();
+		// 承認者へ送る（新規登録、更新登録、承認）//Gửi đến người approve(đăng ký mới, đăng ký update, approve)
+		MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
+		autoSuccessMail = mailResult.getSuccessList();
+		autoFailMail = mailResult.getFailList();
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID, "");
 	}
 }
