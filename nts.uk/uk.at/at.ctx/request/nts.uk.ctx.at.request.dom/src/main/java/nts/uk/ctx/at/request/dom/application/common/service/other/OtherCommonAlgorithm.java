@@ -8,7 +8,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -99,11 +98,12 @@ public interface OtherCommonAlgorithm {
 	public MailResult sendMailApplicantApprove(Application application);
 	
 	/**
-	 * 申請者へ送る（否認）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.申請者へ送る（否認）
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantDeny(Application_New application);
+	public MailResult sendMailApplicantDeny(Application application);
 	
 	/**
 	 * refactor 4

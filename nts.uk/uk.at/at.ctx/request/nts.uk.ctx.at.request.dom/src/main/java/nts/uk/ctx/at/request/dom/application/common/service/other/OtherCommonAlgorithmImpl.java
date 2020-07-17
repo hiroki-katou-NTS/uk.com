@@ -64,7 +64,6 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
@@ -132,9 +131,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private EnvAdapter envAdapter;
-	
-	@Inject
-	private UrlEmbeddedRepository urlEmbeddedRepository;
 	
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
@@ -379,7 +375,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(Application_New application) {
+	public MailResult sendMailApplicantDeny(Application application) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
 		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList());
