@@ -1,0 +1,44 @@
+package nts.uk.ctx.at.request.dom.application.common.service.other.output;
+
+import java.util.Optional;
+
+import lombok.Getter;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
+/**
+ * refactor 4
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.実績内容の取得.時刻場所
+ * @author Doan Duy Hung
+ *
+ */
+@Getter
+public class TimePlaceOutput {
+	
+	/**
+	 * 場所コード
+	 */
+	private Optional<WorkLocationCD> opWorkLocationCD;
+	
+	/**
+	 * 外出区分
+	 */
+	private Optional<GoOutReasonAtr> opGoOutReasonAtr;
+	
+	/**
+	 * 打刻枠No
+	 */
+	private Integer frameNo;
+	
+	/**
+	 * 時刻終了
+	 */
+	private Optional<TimeWithDayAttr> opEndTime;
+	
+	/**
+	 * 時刻開始
+	 */
+	private Optional<TimeWithDayAttr> opStartTime;
+	
+}

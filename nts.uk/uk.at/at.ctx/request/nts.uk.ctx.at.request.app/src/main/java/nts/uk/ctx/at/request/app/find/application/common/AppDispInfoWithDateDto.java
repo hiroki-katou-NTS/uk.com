@@ -116,8 +116,9 @@ public class AppDispInfoWithDateDto {
 				appDispInfoWithDateOutput.getOpListApprovalPhaseState()
 					.map(x -> x.stream().map(y -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpErrorFlag().map(x -> x.value).orElse(null), 
-				appDispInfoWithDateOutput.getOpAchievementOutputLst()
-					.map(x -> x.stream().map(y -> AchievementDto.convertFromAchievementOutput(y)).collect(Collectors.toList())).orElse(null), 
+				/*appDispInfoWithDateOutput.getOpAchievementOutputLst()
+					.map(x -> x.stream().map(y -> AchievementDto.convertFromAchievementOutput(y)).collect(Collectors.toList())).orElse(null), */
+				null,
 				appDispInfoWithDateOutput.getOpAppDetailContentLst().orElse(null), 
 				appDispInfoWithDateOutput.getOpAppDeadline().map(x -> x.toString()).orElse(null), 
 				appDispInfoWithDateOutput.getOpWorkTimeLst().map(x -> x.stream()
@@ -161,7 +162,7 @@ public class AppDispInfoWithDateDto {
 			appDispInfoWithDateOutput.setOpErrorFlag(Optional.of(EnumAdaptor.valueOf(opErrorFlag, ErrorFlagImport.class)));
 		}
 		if(opAchievementOutputLst != null) {
-			appDispInfoWithDateOutput.setOpAchievementOutputLst(Optional.of(opAchievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+			// appDispInfoWithDateOutput.setOpAchievementOutputLst(Optional.of(opAchievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		}
 		if(opAppDetailContentLst != null) {
 			appDispInfoWithDateOutput.setOpAppDetailContentLst(Optional.of(opAppDetailContentLst));

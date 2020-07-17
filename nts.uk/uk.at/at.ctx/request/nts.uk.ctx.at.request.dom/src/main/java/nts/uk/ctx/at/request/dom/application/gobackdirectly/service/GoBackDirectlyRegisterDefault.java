@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -561,8 +562,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// workTime =
 			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
 			// } else {
-			Optional<List<AchievementOutput>> opAchievementOutputLst = inforGoBackCommonDirectOutput.getAppDispInfoStartup()
-					.getAppDispInfoWithDateOutput().getOpAchievementOutputLst();
+			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = inforGoBackCommonDirectOutput.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 			
 //			AchievementOutput is old
 			
@@ -617,8 +618,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// workTime =
 			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
 			// } else {
-			Optional<List<AchievementOutput>> opAchievementOutputLst = inforGoBackCommonDirectOutput
-					.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpAchievementOutputLst();
+			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = inforGoBackCommonDirectOutput
+					.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 
 			// AchievementOutput is old
 

@@ -37,7 +37,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -286,7 +286,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
 				opOvertimeAppAtr);
 		// INPUT．「申請種類」をチェックする
-		Optional<List<AchievementOutput>> opAchievementOutputLst = Optional.empty();
+		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<AppDetailContent>> opAppDetailContentLst = Optional.empty();
 		if(appType == ApplicationType.OVER_TIME_APPLICATION &&
 				appType == ApplicationType.LEAVE_TIME_APPLICATION &&
@@ -294,12 +294,12 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				appType == ApplicationType.STAMP_APPLICATION &&
 				appType == ApplicationType.ANNUAL_HOLIDAY_APPLICATION) {
 			// 実績内容の取得
-			List<AchievementOutput> achievementOutputLst = collectAchievement.getAchievementContents(
+			/*List<AchievementOutput> achievementOutputLst = collectAchievement.getAchievementContents(
 					companyID, 
 					employeeID, 
 					appDateLst, 
 					appType);
-			opAchievementOutputLst = Optional.of(achievementOutputLst);
+			opAchievementOutputLst = Optional.of(achievementOutputLst);*/
 			// 事前内容の取得
 			List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(
 					companyID, 
@@ -318,7 +318,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
 		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
-		appDispInfoWithDateOutput.setOpAchievementOutputLst(opAchievementOutputLst);
+		appDispInfoWithDateOutput.setOpActualContentDisplayLst(opActualContentDisplayLst);
 		appDispInfoWithDateOutput.setOpAppDetailContentLst(opAppDetailContentLst);
 		appDispInfoWithDateOutput.setOpWorkTimeLst(opWorkTimeSettingLst);
 		return appDispInfoWithDateOutput;

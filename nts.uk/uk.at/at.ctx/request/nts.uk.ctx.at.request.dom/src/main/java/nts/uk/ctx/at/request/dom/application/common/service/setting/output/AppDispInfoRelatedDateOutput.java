@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 
 /**
@@ -27,7 +27,7 @@ public class AppDispInfoRelatedDateOutput {
 	/**
 	 * 表示する実績内容
 	 */
-	private List<AchievementOutput> achievementOutputLst;
+	private List<ActualContentDisplay> actualContentDisplayLst;
 	
 	/**
 	 * 表示する事前申請内容
