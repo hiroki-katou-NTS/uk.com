@@ -179,14 +179,13 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 否認する
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 否認を実行したかフラグ(true, false)
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType);
+	public Boolean doDeny(String rootStateID, String employeeID);
 	
 	/**
 	 * 1.指定した社員が承認者であるかの判断
