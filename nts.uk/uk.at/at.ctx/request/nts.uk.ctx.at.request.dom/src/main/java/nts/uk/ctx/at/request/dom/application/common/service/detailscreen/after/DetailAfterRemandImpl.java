@@ -147,7 +147,8 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		String cid = AppContexts.user().companyId();
 		String sidLogin = AppContexts.user().employeeId();
 		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
-		String appContent = appContentService.getApplicationContent(application);	
+		String appContent = "";
+		// String appContent = appContentService.getApplicationContent(application);
 		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
 		if (!Objects.isNull(remandTemp)) {
 			mailTitle = remandTemp.getMailTitle().v();
