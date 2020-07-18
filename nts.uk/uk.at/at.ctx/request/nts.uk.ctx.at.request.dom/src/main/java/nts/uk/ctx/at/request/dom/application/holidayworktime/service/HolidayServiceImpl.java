@@ -903,7 +903,8 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	@Override
 	public HolidayWorkDetailOutput findDetailByID(String companyID, String appID) {
-		HolidayWorkDetailOutput result = new HolidayWorkDetailOutput();
+		// refactor 4 error
+		/*HolidayWorkDetailOutput result = new HolidayWorkDetailOutput();
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
 		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
 		// 詳細画面起動前申請共通設定を取得する
@@ -1045,7 +1046,8 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		result.setAppHdWorkDispInfoOutput(appHdWorkDispInfoOutput);
 		result.setAppHolidayWork(appHolidayWork);
-		return result;
+		return result;*/
+		return null;
 	}
 	
 	private int getErrorCode(int calcError, int preAppError, int actualError){

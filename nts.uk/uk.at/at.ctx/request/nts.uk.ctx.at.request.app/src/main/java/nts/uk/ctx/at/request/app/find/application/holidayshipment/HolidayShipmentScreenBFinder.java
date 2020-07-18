@@ -326,7 +326,8 @@ public class HolidayShipmentScreenBFinder {
 	
 	// 1.振休振出申請（詳細）起動処理
 	public DisplayInforWhenStarting startPageBRefactor(String applicationID) {
-		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
+		// refactor 4 error
+		/*DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		String companyID = AppContexts.user().companyId();
 		
 		//詳細画面起動前申請共通設定を取得する(Lấy setting chung của đơn xin trước khi khởi động màn hình chi tiết)
@@ -403,7 +404,8 @@ public class HolidayShipmentScreenBFinder {
 				result.setAppTypeSet(appTypeSetDtoOpt.get());
 			}
 		}
-		return result;
+		return result;*/
+		return null;
 	}
 
 	private Optional<AbsenceLeaveAppDto> getAbsAppRefactor(String applicationID, String companyID) {
