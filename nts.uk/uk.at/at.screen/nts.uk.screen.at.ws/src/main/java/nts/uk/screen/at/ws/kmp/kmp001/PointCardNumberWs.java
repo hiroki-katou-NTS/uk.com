@@ -78,7 +78,7 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getAllEmployeeFromCardNo")
-	public List<EmployeeInformationFromCardNoDto> getAllEmployeeInformationFromCardNo() {
+	public EmployeeInformationFromCardNoDto getAllEmployeeInformationFromCardNo() {
 		return this.getEmployeeInformationFromCardNo.getAll();
 	}
 	
