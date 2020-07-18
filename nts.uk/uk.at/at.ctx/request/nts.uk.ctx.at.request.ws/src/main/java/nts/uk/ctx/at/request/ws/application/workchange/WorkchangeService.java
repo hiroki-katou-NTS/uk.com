@@ -1,10 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 /*import nts.arc.layer.app.command.JavaTypeResult;*/
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,17 +8,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand_Old;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand_Old;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeModifyParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam_Old;
@@ -37,7 +29,6 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDi
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 
 @Path("at/request/application/workchange")
 @Produces("application/json")
@@ -60,17 +51,6 @@ public class WorkchangeService extends WebService {
 
 	@Inject
 	private AppWorkChangeFinder appWorkFinder;
-
-	/**
-	 * 起動する アルゴリズム「勤務変更申請画面初期（新規）」を実行する
-	 * 
-	 * @return
-	 */
-	@POST
-	@Path("getWorkChangeCommonSetting")
-	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting(WorkchangeSetParam workchangeSetParam) {
-		return commonFinder.getWorkChangeCommonSetting(workchangeSetParam.getSIDs(), workchangeSetParam.getAppDate());
-	}
 
 	/**
 	 * アルゴリズム「勤務変更申請登録」を実行する
@@ -122,7 +102,7 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("startNew")
-	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam_Old param) {
 		return appWorkFinder.getStartNew(param);
 	}
 
