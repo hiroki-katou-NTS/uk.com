@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeInformationFromCardNoDto {
+public class EmployeeInfoFromCardNoDto {
 	
 	private List<StampCardDto> stampCards;
 	private List<EmployeeInfoDto> employeeInfo;

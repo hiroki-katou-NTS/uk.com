@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class EmployeeInformationFromCardNo {
+public class EmployeeInfoFromCardNo {
 
 	@Inject
 	private StampCardRepository stampCardRepo;
@@ -35,13 +35,13 @@ public class EmployeeInformationFromCardNo {
 	@Inject
 	private EmployeeDataMngInfoRepository employeeData;
 
-	public EmployeeInformationFromCardNoDto getEmployee(String cardNumber) {
+	public EmployeeInfoFromCardNoDto getEmployee(String cardNumber) {
 
 		return null;
 	}
 
-	public EmployeeInformationFromCardNoDto getAll() {
-		EmployeeInformationFromCardNoDto result = new EmployeeInformationFromCardNoDto();
+	public EmployeeInfoFromCardNoDto getAll() {
+		EmployeeInfoFromCardNoDto result = new EmployeeInfoFromCardNoDto();
 		String companyId = AppContexts.user().companyId();
 		List<String> employeeIds = new ArrayList<>();
 		List<String> empIds = new ArrayList<>();
