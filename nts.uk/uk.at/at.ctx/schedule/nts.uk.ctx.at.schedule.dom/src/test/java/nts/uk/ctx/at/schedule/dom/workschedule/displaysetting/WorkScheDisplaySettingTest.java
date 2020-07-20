@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,43 +15,34 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 @RunWith(JMockit.class)
 public class WorkScheDisplaySettingTest {
-	@Test
-	public void getter(){
-		NtsAssert.invokeGetters(WorkScheDisplaySettingHelper.getWorkSche());
-	}
+	
 	
 	@Test
 	public void calcuInitDisplayPeriod_plusMonth() {
 		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
 				"companyID", // dummy
-				InitDispMonth.NEXT_MONTH, 
+				InitDispMonth.valueOf(InitDispMonth.NEXT_MONTH.value), 
 				new OneMonth(new DateInMonth(01, false))); // dummy
-		GeneralDate baseDate = GeneralDate.ymd(2020, 06, 01);
 		
-		displaySetting.calcuInitDisplayPeriod();
-		// if InitDispMonth is not NEXT_MONTH add 1 month
-		baseDate = baseDate.addMonths(1);
-
-		DatePeriod period = displaySetting.getEndDay().periodOf(baseDate);
-		
-		GeneralDate targetDate = GeneralDate.ymd(2020, 07, 01);
-		assertThat(period.end().equals(targetDate)).isTrue();
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		assertEquals(period.end().month(), GeneralDate.today().addMonths(1).month());
 	}
 	
+
 	@Test
 	public void calcuInitDisplayPeriod_nonPlusMonth() {
 		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
 				"companyID", // dummy
-				InitDispMonth.CURRENT_MONTH, 
-				new OneMonth(new DateInMonth(01, false))); // dummy
-		GeneralDate baseDate = GeneralDate.ymd(2020, 06, 01);
+				InitDispMonth.valueOf(InitDispMonth.CURRENT_MONTH.value), 
+				new OneMonth(new DateInMonth(10, true))); // dummy
 		
-		displaySetting.calcuInitDisplayPeriod();
-		
-		DatePeriod period = displaySetting.getEndDay().periodOf(baseDate);
-			
-		GeneralDate targetDate = GeneralDate.ymd(2020, 07, 01);
-		assertThat(period.end().equals(targetDate)).isFalse();
-		
+		DatePeriod period2 = displaySetting.calcuInitDisplayPeriod();
+		assertNotEquals(period2.end().month(), GeneralDate.today().addMonths(1).month());
 	}
+	
+	@Test
+	public void getter(){
+		NtsAssert.invokeGetters(WorkScheDisplaySettingHelper.getWorkSche());
+	}
+	
 }
