@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardInformationCommands;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.EmployeeCardInformationViewACommand;
-import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.RegisterEmployeeCardCommand;
+//import nts.uk.ctx.at.record.app.command.kmp.kmp001.b.RegisterEmployeeCardCommand;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommand;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -71,19 +71,19 @@ public class RegisterStampCardCommandHandler {
 		}
 	}
 
-	public void saveStarpCardViewB(RegisterEmployeeCardCommand command) {
-		String contractCd = AppContexts.user().contractCode();
-		StampCard card = new StampCard(contractCd, command.getCardNumber(), command.getEmployeeId());
-
-		Optional<StampCard> stampCard = stampCardRepo.getStampCardByEmployeeCardNumber(command.getEmployeeId(),
-				command.getCardNumber());
-
-		if (stampCard.isPresent()) {
-			stampCardRepo.update(card);
-		}
-
-		stampCardRepo.add(card);
-	}
+//	public void saveStarpCardViewB(RegisterEmployeeCardCommand command) {
+//		String contractCd = AppContexts.user().contractCode();
+//		StampCard card = new StampCard(contractCd, command.getCardNumber(), command.getEmployeeId());
+//
+//		Optional<StampCard> stampCard = stampCardRepo.getStampCardByEmployeeCardNumber(command.getEmployeeId(),
+//				command.getCardNumber());
+//
+//		if (stampCard.isPresent()) {
+//			stampCardRepo.update(card);
+//		}
+//
+//		stampCardRepo.add(card);
+//	}
 
 	public void saveStampCardViewC(RegisterStampCardViewCCommand command) {
 		String contractCd = AppContexts.user().contractCode();
