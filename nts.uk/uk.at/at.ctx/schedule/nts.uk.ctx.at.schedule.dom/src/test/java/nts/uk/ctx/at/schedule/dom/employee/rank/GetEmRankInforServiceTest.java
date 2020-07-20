@@ -96,7 +96,7 @@ public class GetEmRankInforServiceTest {
 			EmployeeRank employeeRank = mapEmployeeRank.get(mapper);
 			Rank rank = mapRankBycode.get(employeeRank.getEmplRankCode().v());
 			assertNotNull(rank);
-			return EmpRankInfor.create(mapper, rank.getRankCode().v(), rank.getRankSymbol().v());
+			return EmpRankInfor.create(mapper, new RankCode(rank.getRankCode().v()), new RankSymbol(rank.getRankSymbol().v()));
 		}).collect(Collectors.toList());
 		
 		GetEmRankInforService.get(require, listEmpId);

@@ -38,7 +38,7 @@ public class GetEmRankInforService {
 				return new EmpRankInfor(mapper);
 			}
 			//	return 社員ランク情報.作る($, ＄ランク.ランクコード, $ランク.ランク記号)
-			return EmpRankInfor.create(mapper, rank.getRankCode().v(), rank.getRankSymbol().v());
+			return EmpRankInfor.create(mapper, new RankCode(rank.getRankCode().v()), new RankSymbol(rank.getRankSymbol().v()));
 			
 		}).collect(Collectors.toList());
 		
