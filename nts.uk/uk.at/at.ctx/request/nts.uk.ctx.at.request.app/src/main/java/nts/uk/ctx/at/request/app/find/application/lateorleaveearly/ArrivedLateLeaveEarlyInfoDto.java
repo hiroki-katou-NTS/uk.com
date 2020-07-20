@@ -20,7 +20,7 @@ public class ArrivedLateLeaveEarlyInfoDto {
 //	遅刻早退取消申請設定
 	private LateEarlyCancelAppSet lateEarlyCancelAppSet;
 //	エアー情報
-	private Character info;
+	private String info;
 //	遅刻早退取消申請
 	private ArrivedLateLeaveEarlyDto arrivedLateLeaveEarly;
 	

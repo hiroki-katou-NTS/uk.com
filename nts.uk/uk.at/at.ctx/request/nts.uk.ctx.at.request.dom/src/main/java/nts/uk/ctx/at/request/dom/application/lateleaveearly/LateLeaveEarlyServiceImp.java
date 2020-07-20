@@ -81,7 +81,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		LateEarlyCancelAppSet listAppSet = this.cancelAppSetRepository.getByCId(companyId);
 
 		// 遅刻早退実績のチェック処理
-		if (!appDisplayInfo.getAppDispInfoWithDateOutput().getOpAchievementOutputLst().isPresent()
+		if (!appDisplayInfo.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()
 				|| !displayInfo.getInfo().isPresent()) {
 
 		} else {

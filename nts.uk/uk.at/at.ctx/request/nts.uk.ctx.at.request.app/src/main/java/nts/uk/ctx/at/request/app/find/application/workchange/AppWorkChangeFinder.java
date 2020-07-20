@@ -7,54 +7,27 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand_Old;
-import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeCommand;
-import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto_Old;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
-import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
-import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -88,13 +61,13 @@ public class AppWorkChangeFinder {
 		return workChangeRegisterService.isTimeRequired(workTypeCD);
 	}
 
-	public AppWorkChangeDispInfoDto_Old getStartNew(AppWorkChangeParam_Old param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam_Old param) {
 		String companyID = AppContexts.user().companyId();
 		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 				.collect(Collectors.toList());
-		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
+		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.getStartNew(companyID, param.empLst,
 				dateLst);
-		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
+		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 
 	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParam_Old param) {

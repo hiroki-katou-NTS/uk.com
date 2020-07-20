@@ -17,7 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -35,13 +35,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -75,7 +75,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	GoBackDirectlyRepository_Old goBackDirectRepo;
 	@Inject
-	ApplicationApprovalService_New appRepo;
+	ApplicationApprovalService appRepo;
 	@Inject
 	NewBeforeRegister_New processBeforeRegister;
 	@Inject
@@ -215,7 +215,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				EmploymentRootAtr.APPLICATION.value,
 				application.getAppID(),
 				application.getPrePostAtr(),
-				Long.valueOf(application.getVersion()),
+				application.getVersion(),
 				goBackDirectly.getDataWork().get().getWorkType().getWorkType(),
 				goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime());
 	}
@@ -562,8 +562,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// workTime =
 			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
 			// } else {
-			Optional<List<AchievementOutput>> opAchievementOutputLst = inforGoBackCommonDirectOutput.getAppDispInfoStartup()
-					.getAppDispInfoWithDateOutput().getOpAchievementOutputLst();
+			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = inforGoBackCommonDirectOutput.getAppDispInfoStartup()
+					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 			
 //			AchievementOutput is old
 			
@@ -598,7 +598,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		
 		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
 			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
-			return newAfterRegister.processAfterRegister(application);
+			return newAfterRegister.processAfterRegister(
+					application.getAppID(), 
+					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
 		}
 		return null;
 
@@ -615,8 +618,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// workTime =
 			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
 			// } else {
-			Optional<List<AchievementOutput>> opAchievementOutputLst = inforGoBackCommonDirectOutput
-					.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpAchievementOutputLst();
+			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = inforGoBackCommonDirectOutput
+					.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 
 			// AchievementOutput is old
 

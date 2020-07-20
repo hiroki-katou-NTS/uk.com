@@ -10,7 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -52,7 +52,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	private ApplicationRepository_New applicationRepository_New;
 	
 	@Inject
-	private ApplicationApprovalService_New appRepository;
+	private ApplicationApprovalService appRepository;
 	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeSetRepo;

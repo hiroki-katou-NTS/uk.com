@@ -23,7 +23,7 @@ public class DenyHolidayShipmentCommandHandler extends CommandHandlerWithResult<
 		HolidayShipmentCommand command = context.getCommand();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		Long version = command.getAppVersion();
+		int version = command.getAppVersion();
 		String memo = command.getMemo();
 		// アルゴリズム「振休振出申請の否認」を実行する
 		return denyApplication(command, companyID, employeeID, memo, version);
@@ -31,7 +31,7 @@ public class DenyHolidayShipmentCommandHandler extends CommandHandlerWithResult<
 	}
 
 	private ProcessResult denyApplication(HolidayShipmentCommand command, String companyID, String employeeID,
-			String memo, Long version) {
+			String memo, int version) {
 		boolean isDenyRec = command.getRecAppID() != null;
 		boolean isDenyAbs = command.getAbsAppID() != null;
 		ProcessResult result = null;
@@ -49,11 +49,13 @@ public class DenyHolidayShipmentCommandHandler extends CommandHandlerWithResult<
 
 	}
 
-	private ProcessResult denyProcess(String companyID, String appID, String employeeID, String memo, Long version) {
+	private ProcessResult denyProcess(String companyID, String appID, String employeeID, String memo, int version) {
 		// アルゴリズム「詳細画面否認前の処理」を実行する
 		beforeDenialProc.detailedScreenProcessBeforeDenial(companyID, appID, version);
 		// アルゴリズム「詳細画面否認後の処理」を実行する
-		return detailAfterDeny.doDeny(companyID, appID, employeeID, memo);
+		// refactor 4 error
+		// return detailAfterDeny.doDeny(companyID, appID, employeeID, memo);
+		return null;
 	}
 
 }

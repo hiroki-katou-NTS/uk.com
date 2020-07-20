@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 就業確定済みかのチェック
@@ -33,14 +34,15 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 
 	@Override
-	public ProcessResult sendMail(Application_New application) {
+	public ProcessResult sendMail(Application application) {
+		String companyID = AppContexts.user().companyId();
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
 		List<String> destinationList = new ArrayList<>();
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getAppType().value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException("Not found AppTypeDiscreteSetting in table KRQST_APP_TYPE_DISCRETE, appType =" + application.getAppType().value);
 		}
@@ -51,13 +53,8 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		isAutoSendMail = true;
 		// アルゴリズム「送信先リストの取得」を実行する
 		destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
-				application.getCompanyID(), 
 				application.getAppID(), 
-				1, 
-				true, 
-				application.getEmployeeID(), 
-				application.getAppType().value, 
-				application.getAppDate());
+				1);
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
@@ -45,7 +45,7 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	private AppStampCommonDomainService appStampCommonDomainService;
 	
 	@Inject
-	private ApplicationApprovalService_New applicationApprovalService;
+	private ApplicationApprovalService applicationApprovalService;
 	
 	@Inject
 	private StampRequestSettingRepository stampRequestSettingRepository;

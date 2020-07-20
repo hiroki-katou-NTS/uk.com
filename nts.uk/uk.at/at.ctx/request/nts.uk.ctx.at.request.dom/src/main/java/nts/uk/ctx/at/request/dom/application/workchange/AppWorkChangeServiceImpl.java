@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
-import nts.arc.enums.EnumAdaptor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,11 +27,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput_Old;
-import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.ChangeWkTypeTimeOutput;
@@ -44,7 +40,6 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -110,41 +105,32 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private AppWorkChangeSetRepository appWorkChangeSetRepoNew;
-	
-
 
 	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, ApplicationType_Old hdType) {
 		return x.getListWTOAH().stream().filter(y -> y.getAppType() == hdType).findFirst().get();
 	}
 	
 	@Override
-	public AppWorkChangeDispInfo_Old getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
-		// error EA refactor 4
-		/*AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
+	public AppWorkChangeDispInfo getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
+		AppWorkChangeDispInfo result = new AppWorkChangeDispInfo();
 		// 共通申請
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 				companyID, 
-				ApplicationType_Old.WORK_CHANGE_APPLICATION, 
+				ApplicationType.WORK_CHANGE_APPLICATION, 
 				employeeIDLst, 
 				dateLst, 
-				true);
+				true,
+				Optional.empty(),
+				Optional.empty());
 		// ドメインモデル「勤務変更申請設定」を取得する
-		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepository.findWorkChangeSetByID(companyID).get();
-		AppEmploymentSetting employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet();
-//		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
-//				.findFirst().orElse(null);
-//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-//			geWorkTypeObjAppHoliday(x,ApplicationType.WORK_CHANGE_APPLICATION).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION
-//				
-//				).findFirst();
-//		AppEmploymentSetting employmentSet = setting.get();
+		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyID).get();
+		AppEmploymentSet employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
 		// 勤務種類を取得
 		List<WorkType> workTypeLst = this.getWorkTypeLst(employmentSet);
 		// 勤務種類・就業時間帯の初期選択項目を取得する
 		String employeeID = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
 		GeneralDate date = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
-		List<WorkTimeSetting> workTimeLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst();
+		List<WorkTimeSetting> workTimeLst = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get();
 		WorkTypeWorkTimeSelect workTypeWorkTimeSelect = 
 				this.initWorkTypeWorkTime(companyID, employeeID, date, workTypeLst, workTimeLst);
 		// 勤務種類・就業時間帯を変更する時
@@ -156,12 +142,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		result.setAppWorkChangeSet(appWorkChangeSet);
 		result.setWorkTypeLst(workTypeLst);
-		result.setSetupType(changeWkTypeTimeOutput.getSetupType());
-		result.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().orElse(null));
-		result.setWorkTypeCD(workTypeCD);
-		result.setWorkTimeCD(workTimeCD);
-		return result;*/
-		return null;
+		result.setSetupType(Optional.of(changeWkTypeTimeOutput.getSetupType()));
+		result.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
+		result.setWorkTypeCD(Optional.of(workTypeCD));
+		result.setWorkTimeCD(Optional.of(workTimeCD));
+		return result;
 	}
 
 	@Override
@@ -427,7 +412,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeDispInfo appWorkChangeDispInfo = new AppWorkChangeDispInfo();
 		
 		// ドメインモデル「勤務変更申請」より取得する (Lấy từ domain 「勤務変更申請」)
-		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(appID).get();
+		AppWorkChange appWorkChange = appWorkChangeRepositoryNew.findbyID(companyID, appID).get();
 		
 //		// ドメインモデル「勤務変更申請設定」より取得する 
 //		AppWorkChangeSet appWorkChangeSet = appWorkChangeSetRepoNew.findByCompanyId(companyID).get();
@@ -462,7 +447,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				EmploymentRootAtr.APPLICATION.value, 
 				application.getAppID(), 
 				application.getPrePostAtr(), 
-				Long.valueOf(application.getVersion()), 
+				application.getVersion(), 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
 				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null );
 		// 登録時チェック処理（勤務変更申請）

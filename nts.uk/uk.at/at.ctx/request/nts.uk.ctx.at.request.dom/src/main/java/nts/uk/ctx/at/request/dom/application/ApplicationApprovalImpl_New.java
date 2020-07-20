@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
@@ -30,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class ApplicationApprovalImpl_New implements ApplicationApprovalService_New {
+public class ApplicationApprovalImpl_New implements ApplicationApprovalService {
 
 	@Inject
 	private ApplicationRepository_New applicationRepository_Old;
@@ -85,8 +87,10 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	}
 
 	@Override
-	public void delete(String companyID, String appID, Long version, ApplicationType_Old appType) {
-		switch (appType) {
+	public void delete(String appID) {
+		String companyID = AppContexts.user().companyId();
+		Application application = applicationRepository.findByID(appID).get();
+		switch (application.getAppType()) {
 		case STAMP_APPLICATION:
 			appStampRepository.delete(companyID, appID);
 			break;
@@ -102,7 +106,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
-		case BREAK_TIME_APPLICATION:
+		case LEAVE_TIME_APPLICATION:
 			appHolidayWorkRepository.delete(companyID, appID);
 			Optional<BrkOffSupChangeMng> brOptional = this.brkOffSupChangeMngRepository.findHolidayAppID(appID);
 			if(brOptional.isPresent()){
@@ -126,9 +130,19 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		default:
 			break;
 		}
-		applicationRepository_Old.delete(companyID, appID);
+		applicationRepository.remove(appID);
 		approvalRootStateAdapter.deleteApprovalRootState(appID);
 
+	}
+
+	@Override
+	public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
+		applicationRepository.insert(application);
+		approvalRootStateAdapter.insertApp(
+				application.getAppID(), 
+				application.getAppDate().getApplicationDate(), 
+				application.getEmployeeID(), 
+				listApprovalPhaseState);
 	}
 
 }

@@ -10,9 +10,11 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.service.smartphone.output.RequestMsgInfoDto;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.RequestMsgInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -44,7 +46,9 @@ public class ApplicationMobileWebService {
 	@POST
 	@Path("getDetailMob")
 	public AppDispInfoStartupDto getDetailMob(String appID) {
-		return null;
+		String companyID = AppContexts.user().companyId();
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithmMobile.getDetailMob(companyID, appID);
+		return AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
 	}
 	
 }

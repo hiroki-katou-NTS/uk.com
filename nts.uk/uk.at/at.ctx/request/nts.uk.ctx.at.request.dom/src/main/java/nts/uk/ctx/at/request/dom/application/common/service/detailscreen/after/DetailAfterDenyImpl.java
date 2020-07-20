@@ -7,16 +7,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 /**
@@ -31,10 +30,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
-	
-	@Inject
-	private AppTypeDiscreteSettingRepository discreteRepo;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -43,35 +39,43 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Override
-	public ProcessResult doDeny(String companyID, String appID, String employeeID, String memo) {
+	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		boolean isProcessDone = false;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID, employeeID, memo);
-		if(releaseFlg.equals(Boolean.TRUE)){
-			isProcessDone = true;
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.DENIAL);
-			applicationRepository.updateWithVersion(application);
-			
-			// 暫定データの登録
-			List<GeneralDate> dateLst = new ArrayList<>();
-			GeneralDate startDate = application.getStartDate().orElse(application.getAppDate());
-			GeneralDate endDate = application.getEndDate().orElse(application.getAppDate());
-			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-				dateLst.add(loopDate);
-			}
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
-			
-			AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
-			if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
-				isAutoSendMail = true;
-				MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application); 
-				autoSuccessMail = mailResult.getSuccessList();
-				autoFailMail = mailResult.getFailList();
-			}
+		// 3.否認する(DenyService)
+		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID);
+		if(!releaseFlg) {
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
 		}
+		isProcessDone = true;
+		// 「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
+		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
+			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.DENIAL);
+		}
+		// アルゴリズム「反映状態の更新」を実行する
+		applicationRepository.update(application);
+		
+		// 暫定データの登録
+		List<GeneralDate> dateLst = new ArrayList<>();
+		GeneralDate startDate = application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
+		GeneralDate endDate = application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			dateLst.add(loopDate);
+		}
+		interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
+		// ノートのIF文を参照
+		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() &&
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenApproval();
+		if(!condition) {
+			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
+		}
+		isAutoSendMail = true;
+		// 申請者本人にメール送信する(gửi mail cho người viết đơn)
+		MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application); 
+		autoSuccessMail = mailResult.getSuccessList();
+		autoFailMail = mailResult.getFailList();
 		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
 	}
 

@@ -124,4 +124,6 @@ public interface ApprovalRootStateRepository {
 
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID);
+	
+	public void insertApp(ApprovalRootState approvalRootState);
 }

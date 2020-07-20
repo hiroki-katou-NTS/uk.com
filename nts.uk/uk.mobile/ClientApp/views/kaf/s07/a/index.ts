@@ -38,9 +38,9 @@ export class KafS07AComponent extends Vue {
 
     public mode: Boolean = true;
 
-    public valueWorkHours1: { start: number, end: number };
+    public valueWorkHours1: { start: number, end: number } = null;
 
-    public valueWorkHours2: { start: number, end: number };
+    public valueWorkHours2: { start: number, end: number } = null;
 
     // handle visible of view
 
@@ -55,9 +55,11 @@ export class KafS07AComponent extends Vue {
     // data is fetched service
     public data: any = 'data';
 
-    public kaf000_B_Params: any = {};
+    public kaf000_A_Params: any = null;
 
-    public kaf000_A_Params: any = {};
+    public kaf000_B_Params: any = null;
+
+    public kaf000_C_Params: any = null;
 
     public user: any;
     public application: any = {
@@ -103,42 +105,44 @@ export class KafS07AComponent extends Vue {
 
     public created() {
         const self = this;
-        self.kaf000_B_Params = {
-            input: {
-                mode: 0,
-                appDisplaySetting: {
-                    prePostDisplayAtr: 1,
-                    manualSendMailAtr: 0
-                },
-                newModeContent: {
-                    appTypeSetting: {
-                        appType: 2,
-                        sendMailWhenRegister: false,
-                        sendMailWhenApproval: false,
-                        displayInitialSegment: 1,
-                        canClassificationChange: true
-                    },
-                    useMultiDaySwitch: true,
-                    initSelectMultiDay: true
-                }
-            },
-            output: {
-                prePostAtr: 0,
-                startDate: new Date(),
-                endDate: new Date()
-            }
-        };
+        // self.kaf000_B_Params = {
+        //     input: {
+        //         mode: 0,
+        //         appDisplaySetting: {
+        //             prePostDisplayAtr: 1,
+        //             manualSendMailAtr: 0
+        //         },
+        //         newModeContent: {
+        //             appTypeSetting: {
+        //                 appType: 2,
+        //                 sendMailWhenRegister: false,
+        //                 sendMailWhenApproval: false,
+        //                 displayInitialSegment: 1,
+        //                 canClassificationChange: true
+        //             },
+        //             useMultiDaySwitch: true,
+        //             initSelectMultiDay: true
+        //         }
+        //     },
+        //     output: {
+        //         prePostAtr: 0,
+        //         startDate: new Date(),
+        //         endDate: new Date()
+        //     }
+        // };
 
-        self.kaf000_A_Params = {
-            companyID: '',
-            employeeID: '',
-            employmentCD: '',
-            applicationUseSetting: '',
-            receptionRestrictionSetting: '',
-            opOvertimeAppAtr: '',
-        };
+        // self.kaf000_A_Params = {
+        //     companyID: '',
+        //     employeeID: '',
+        //     employmentCD: '',
+        //     applicationUseSetting: '',
+        //     receptionRestrictionSetting: '',
+        //     opOvertimeAppAtr: '',
+        // };
 
     }
+
+
 
     get application1() {
         const self = this;
@@ -165,8 +169,8 @@ export class KafS07AComponent extends Vue {
             companyId: this.user.companyId,
             employeeId: this.user.employeeId,
             listDates: ['2020/07/08'],
-            appWorkChangeOutputDto: null,
-            appWorkChangeDto: null
+            appWorkChangeOutputDto: this.mode ? null : this.data.appWorkChangeOutputDto,
+            appWorkChangeDto: this.mode ? null : this.data.appWorkChangeDto
         })
             .then((res: any) => {
                 if (!res) {
@@ -180,63 +184,181 @@ export class KafS07AComponent extends Vue {
                 this.$mask('hide');
             });
     }
+
+    // bind params to components
+    public createParamA() {
+        let appDispInfoWithDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        this.kaf000_B_Params = {
+            companyID: '',
+            employeeID: '',
+            // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
+            employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
+            // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
+            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst,
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            opOvertimeAppAtr: null
+        };
+    }
+    public createParamB() {
+        this.kaf000_B_Params = {
+            input: {
+                mode: 0,
+                appDisplaySetting: {
+                    prePostDisplayAtr: 1,
+                    manualSendMailAtr: 0
+                },
+                newModeContent: {
+                    appTypeSetting: {
+                        appType: 2,
+                        sendMailWhenRegister: false,
+                        sendMailWhenApproval: false,
+                        displayInitialSegment: 1,
+                        canClassificationChange: true
+                    },
+                    useMultiDaySwitch: true,
+                    initSelectMultiDay: true
+                }
+            },
+            output: {
+                prePostAtr: 0,
+                startDate: new Date(),
+                endDate: new Date()
+            }
+        };
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        // 新規モード
+        // this.mode
+
+        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定
+        // appDispInfoNoDateOutput.applicationSetting.appDisplaySetting
+
+        // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請種類別設定
+        // appDispInfoNoDateOutput.applicationSetting.appTypeSetting
+
+        // true
+
+        // false
+
+
+    }
+    public createParamC() {
+        // KAFS00_C_起動情報
+        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        this.kaf000_C_Params = {
+            input: {
+                // 定型理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+                // 申請理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+                // 定型理由一覧
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+                // 申請制限設定
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+                // 選択中の定型理由
+                // empty
+                opAppStandardReasonCD: null,
+                // 入力中の申請理由
+                //empty
+                opAppReason: null
+            },
+            output: {
+                // 定型理由
+                opAppStandardReasonCD: 1,
+                // 申請理由
+                opAppReason: 'hdajsdakj'
+            }
+        };
+    }
+
+
     public bindStart() {
         let appWorkChangeDispInfo = this.data.appWorkChangeDispInfo;
         this.bindVisibleView(appWorkChangeDispInfo);
         this.bindCommon(appWorkChangeDispInfo);
-        this.bindValueWorkHours(appWorkChangeDispInfo);
-        this.bindWork(appWorkChangeDispInfo);
-        this.$updateValidator('valueWorkHours1', {
-            timeRange: true,
-            required: this.isCondition3 && this.isCondition4
-        });
-        this.$updateValidator('valueWorkHours2', {
-            timeRange: true,
-            required: this.isCondition3 && this.isCondition4
-        });
-        // this.$validate('checked');
+        this.bindValueWorkHours(this.data);
+        this.bindWork(this.data);
+        this.bindDirectBounce(this.data);
+    }
 
+    public bindDirectBounce(params: any) {
+        if (!this.mode) {
+            this.model.straight = params.appWorkChange.straightGo == 1 ? 1 : 2;
+            this.model.bounce = params.appWorkChange.straightBack == 1 ? 1 : 2;
+        }
     }
     public bindWork(params: any) {
-        this.model.workType.code = params.workTypeCD;
-        this.model.workType.name = _.find(params.workTypeLst, (item: any) => item.workTypeCode == params.workTypeCD).abbreviationName || this.$i18n('KAFS07_10');
+        this.model.workType.code = this.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : '') : '');
+        this.model.workType.name = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == this.model.workType.code).abbreviationName || this.$i18n('KAFS07_10');
 
-        this.model.workTime.code = params.workTimeCD;
-        this.model.workTime.name = _.find(params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == params.workTimeCD).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
-        this.bindWorkTimeWithCondition4(params);
+        this.model.workTime.code = this.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : '') : '');
+        this.model.workTime.name = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == this.model.workTime.code).workTimeDisplayName.workTimeName || this.$i18n('KAFS07_10');
+        this.bindWorkTime(params.appWorkChangeDispInfo);
     }
-    public bindWorkTimeWithCondition4(params: any) {
-        if (this.isCondition4) {
-            this.model.workTime.time = '';
-        } else {
-            let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
-            let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
-        }
+    public bindWorkTime(params: any) {
+        let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
+        let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
+        this.model.workTime.time = this.$dt.timedr(startTime) + '~' + this.$dt.timedr(endTime);
     }
     public bindValueWorkHours(params: any) {
         // *4
+        // if (!this.isCondition4)
+        let time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
+        let time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
+        if (!this.mode) {
+            let appWorkChange = params.appWorkChange;
+            if (appWorkChange) {
+                time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
+                time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
+            }
+            this.bindWorkHours(time1, time2);
+
+            return;
+
+        }
         if (!this.isCondition4) {
-            let time1 = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
-            let time2 = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
-            if (this.valueWorkHours1 && this.isCondition1) {
-                this.valueWorkHours1.start = time1.start;
-                this.valueWorkHours1.end = time1.end;
-            } else {
+            this.bindWorkHours(time1, time2);
+        }
+
+
+    }
+    public bindWorkHours(time1: any, time2: any) {
+        if (this.isCondition1) {
+            if (!this.valueWorkHours1 && time1) {
                 this.valueWorkHours1 = {
-                    start: time1.start,
-                    end: time1.end
+                    start: 0,
+                    end: 0
                 };
             }
-            if (this.valueWorkHours2 && this.isCondition2) {
-                this.valueWorkHours2.start = time2.start;
-                this.valueWorkHours2.end = time2.end;
-            } else {
+            this.valueWorkHours1.start = time1.start;
+            this.valueWorkHours1.end = time1.end;
+
+        } else {
+            this.$updateValidator('valueWorkHours1', {
+                timeRange: false,
+                required: false
+            });
+        }
+        if (this.isCondition2) {
+            if (!this.valueWorkHours2 && time2) {
                 this.valueWorkHours2 = {
-                    start: time2.start,
-                    end: time2.end
+                    start: 0,
+                    end: 0
                 };
             }
+            this.valueWorkHours2.start = time2.start;
+            this.valueWorkHours2.end = time2.end;
+
+        } else {
+            this.$updateValidator('valueWorkHours2', {
+                timeRange: false,
+                required: false
+            });
         }
     }
 
@@ -253,24 +375,26 @@ export class KafS07AComponent extends Vue {
         this.appWorkChangeDto.opWorkTimeCD = this.model.workTime.code;
         if (this.isCondition3) {
             this.appWorkChangeDto.timeZoneWithWorkNoLst = [];
-            let a = {
-                workNo: 1,
-                timeZone: {
-                    startTime: this.valueWorkHours1.start,
-                    endTime: this.valueWorkHours1.end
-                }
-            };
-            let b = {
-                workNo: 2,
-                timeZone: {
-                    startTime: this.valueWorkHours2.start,
-                    endTime: this.valueWorkHours2.end
-                }
-            };
+            let a = null;
+            let b = null;
             if (this.isCondition1) {
+                a = {
+                    workNo: 1,
+                    timeZone: {
+                        startTime: this.valueWorkHours1.start,
+                        endTime: this.valueWorkHours1.end
+                    }
+                };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
             }
             if (this.isCondition2) {
+                b = {
+                    workNo: 2,
+                    timeZone: {
+                        startTime: this.valueWorkHours2.start,
+                        endTime: this.valueWorkHours2.end
+                    }
+                };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
             }
         }
@@ -359,26 +483,28 @@ export class KafS07AComponent extends Vue {
     // visible/ invisible
     // A2_1
 
-    // A4_3  「勤務変更申請の表示情報．就業時間帯の必須区分」が「必須」または「任意」
+
+    // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay1(params: any) {
-        return params.setupType == 1;
+        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
+
         // return true;
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
     public isDisplay2(params: any) {
-        return params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
         // return false;
 
     }
-    // A6_1 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
+    // A4_3  「勤務変更申請の表示情報．就業時間帯の必須区分」が「必須」または「任意」
     public isDisplay3(params: any) {
-        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
+        return params.setupType == 1 || params.setupType == 0;
     }
 
     // 「勤務変更申請の表示情報．勤務変更申請設定．勤務時間の初期表示」が「空白」 => clear data ,true
     // 「勤務変更申請の表示情報．勤務変更申請設定．勤務時間の初期表示」が「定時」=> transfer from data ,false
     public isDisplay4(params: any) {
-        // return false;
+        // return true;
         return params.appWorkChangeSet.initDisplayWorktimeAtr == 1;
 
     }

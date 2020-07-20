@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoRelatedDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -131,4 +132,16 @@ public interface CommonAlgorithm {
 	 * @return
 	 */
 	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請の矛盾チェック.申請の矛盾チェック
+	 * @param companyID 会社ID
+	 * @param employeeInfo 対象者の社員情報
+	 * @param dateLst 対象日リスト
+	 * @param workTypeLst 申請する勤務種類リスト
+	 * @param achievementOutputLst 表示する実績内容
+	 */
+	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
+			List<String> workTypeLst, List<AchievementOutput> achievementOutputLst);
 }

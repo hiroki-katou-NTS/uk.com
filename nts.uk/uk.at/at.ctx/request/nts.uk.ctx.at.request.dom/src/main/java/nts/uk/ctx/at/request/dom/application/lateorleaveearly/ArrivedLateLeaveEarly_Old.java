@@ -6,12 +6,15 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 @Setter
 @Getter
@@ -27,7 +30,10 @@ public class ArrivedLateLeaveEarly_Old extends Application_New{
 			GeneralDateTime inputDate, String enteredPersonID, AppReason reversionReason, GeneralDate appDate,
 			AppReason appReason, ApplicationType appType, String employeeID, Optional<GeneralDate> startDate,
 			Optional<GeneralDate> endDate, ReflectionInformation_New reflectionInformation) {
-		super(version, companyID, appID, prePostAtr, inputDate, enteredPersonID, reversionReason, appDate, appReason, appType,
+		super(version, companyID, appID, 
+				EnumAdaptor.valueOf(prePostAtr.value, PrePostAtr_Old.class), 
+				inputDate, enteredPersonID, reversionReason, appDate, appReason, 
+				EnumAdaptor.valueOf(appType.value, ApplicationType_Old.class),
 				employeeID, startDate, endDate, reflectionInformation);
 		
 	}

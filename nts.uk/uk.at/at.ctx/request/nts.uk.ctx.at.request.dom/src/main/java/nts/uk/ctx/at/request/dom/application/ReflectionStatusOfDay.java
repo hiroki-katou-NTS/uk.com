@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -17,6 +18,7 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 実績反映状態
 	 */
+	@Setter
 	private ReflectedState actualReflectStatus;
 	
 	/**
@@ -47,5 +49,9 @@ public class ReflectionStatusOfDay {
 		this.opUpdateStatusAppReflect = opUpdateStatusAppReflect;
 		this.opUpdateStatusAppCancel = opUpdateStatusAppCancel;
 	} 
+	
+	public static ReflectionStatusOfDay createNew(ReflectedState actualReflectStatus, ReflectedState scheReflectStatus, GeneralDate targetDate) {
+		return new ReflectionStatusOfDay(actualReflectStatus, scheReflectStatus, targetDate, Optional.empty(), Optional.empty());
+	}
 	
 }

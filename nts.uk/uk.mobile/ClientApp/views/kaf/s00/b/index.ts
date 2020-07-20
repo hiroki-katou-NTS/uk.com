@@ -53,11 +53,11 @@ export class KafS00BComponent extends Vue {
             text: 'KAFS00_13'
         }];
         self.dateRange = {
-            start: self.params.output.startDate,
-            end: self.params.output.endDate
+            start: new Date(),
+            end: new Date(),
         };
-        if (self.params.input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
-            self.params.output.prePostAtr = self.params.input.newModeContent.appTypeSetting.displayInitialSegment;
+        if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
+            self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
         }
     }
 
@@ -91,15 +91,16 @@ export class KafS00BComponent extends Vue {
         return self.$input.newModeContent.useMultiDaySwitch;
     }
 
-    get valueMultiDaySwitch() {
-        const self = this;
-
-        return self.$input.newModeContent.initSelectMultiDay;
-    }
-
     get ScreenMode() {
         return ScreenMode;
     }
+
+    @Watch('dateRange')
+    public dateRangeWatcher() {
+        const self = this;
+        self.$output.startDate = self.dateRange.start;
+        self.$output.endDate = self.dateRange.end;
+    } 
 }
 
 // 画面モード

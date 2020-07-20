@@ -7,7 +7,7 @@ import lombok.Getter;
 public class RemandCommand {
 	private List<String> appID;
 	
-	private Long version;
+	private int version;
 	//差し戻し先
 	private Integer order;
 	//差し戻しコメント

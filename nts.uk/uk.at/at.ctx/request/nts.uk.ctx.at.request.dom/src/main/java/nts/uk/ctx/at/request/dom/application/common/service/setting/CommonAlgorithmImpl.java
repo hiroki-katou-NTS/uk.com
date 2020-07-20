@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailConte
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoRelatedDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -236,7 +237,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
 		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
-		appDispInfoWithDateOutput.setOpAchievementOutputLst(Optional.of(appDispInfoRelatedDateOutput.getAchievementOutputLst()));
+		appDispInfoWithDateOutput.setOpActualContentDisplayLst(Optional.of(appDispInfoRelatedDateOutput.getActualContentDisplayLst()));
 		appDispInfoWithDateOutput.setOpAppDetailContentLst(Optional.of(appDispInfoRelatedDateOutput.getAppDetailContentLst()));
 		appDispInfoWithDateOutput.setOpAppDeadline(deadlineLimitCurrentMonth.getOpAppDeadline());
 		appDispInfoWithDateOutput.setOpWorkTimeLst(Optional.of(workTimeLst));
@@ -289,8 +290,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		dateLst = dateLst.stream().filter(x -> x != null).collect(Collectors.toList());
 		// 実績内容の取得
-		List<AchievementOutput> achievementOutputLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);
-		output.setAchievementOutputLst(achievementOutputLst);
+		/*List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);*/
+		List<ActualContentDisplay> actualContentDisplayLst = Collections.emptyList();
+		output.setActualContentDisplayLst(actualContentDisplayLst);
 		// 事前内容の取得
 		List<AppDetailContent> appDetailContentLst = collectAchievement.getPreAppContents(companyID, employeeID, dateLst, appType);
 		output.setAppDetailContentLst(appDetailContentLst);
@@ -373,6 +375,15 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return Optional.empty();
 		}
 		return employeeInfoLst.stream().findFirst();
+	}
+
+	@Override
+	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
+			List<String> workTypeLst, List<AchievementOutput> achievementOutputLst) {
+		for(GeneralDate loopDate : dateLst) {
+			
+		}
+		
 	}
 
 }

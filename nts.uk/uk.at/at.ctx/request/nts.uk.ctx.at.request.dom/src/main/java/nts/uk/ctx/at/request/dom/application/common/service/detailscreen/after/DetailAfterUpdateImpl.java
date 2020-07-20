@@ -10,11 +10,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
@@ -37,7 +37,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -53,13 +53,13 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		ApproverApprovedImport_New approverApprovedImport = approvalRootStateAdapter.getApproverApproved(application.getAppID());
 		
 		approvalRootStateAdapter.doReleaseAllAtOnce(companyID, application.getAppID());
-			
-		Application_New application_New = applicationRepository.findByID(companyID, application.getAppID()).get();
 		
 		// ドメインモデル「申請」と紐付き「承認フェーズ」「承認枠」「反映情報」をUpdateする
-		application_New.setReversionReason(new AppReason(""));
-		application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-		applicationRepository.update(application_New);
+		application.setOpReversionReason(Optional.of(new ReasonForReversion("")));
+		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
+			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
+		}
+		applicationRepository.update(application);
 		
 		// 承認を行った承認者一覧に項目があるかチェックする
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
@@ -96,7 +96,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// 送信先リストに項目がいるかチェックする ( Check if there is an item in the destination list )
 		if(!CollectionUtil.isEmpty(destinationList)){
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application_New);
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			autoSuccessMail = mailResult.getSuccessList();
 			autoFailMail = mailResult.getFailList();
 		}

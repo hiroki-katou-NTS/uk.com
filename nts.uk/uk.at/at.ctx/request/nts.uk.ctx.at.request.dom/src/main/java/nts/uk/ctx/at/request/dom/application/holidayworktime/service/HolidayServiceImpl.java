@@ -17,7 +17,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -110,7 +110,7 @@ public class HolidayServiceImpl implements HolidayService {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	@Inject
-	private ApplicationApprovalService_New appRepository;
+	private ApplicationApprovalService appRepository;
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	@Inject
@@ -903,7 +903,8 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 	@Override
 	public HolidayWorkDetailOutput findDetailByID(String companyID, String appID) {
-		HolidayWorkDetailOutput result = new HolidayWorkDetailOutput();
+		// refactor 4 error
+		/*HolidayWorkDetailOutput result = new HolidayWorkDetailOutput();
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
 		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
 		// 詳細画面起動前申請共通設定を取得する
@@ -1045,7 +1046,8 @@ public class HolidayServiceImpl implements HolidayService {
 		
 		result.setAppHdWorkDispInfoOutput(appHdWorkDispInfoOutput);
 		result.setAppHolidayWork(appHolidayWork);
-		return result;
+		return result;*/
+		return null;
 	}
 	
 	private int getErrorCode(int calcError, int preAppError, int actualError){

@@ -31,7 +31,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	private ApplicationRepository applicationRepository;
 	
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
-			int employeeRouteAtr, String appID, PrePostAtr postAtr, Long version, String wkTypeCode,
+			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, String wkTypeCode,
 			String wkTimeCode) {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		displayWorkingHourCheck(companyID, wkTypeCode, wkTimeCode);
@@ -83,10 +83,10 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	/**
 	 * 1.排他チェック
 	 */
-	public void exclusiveCheck(String companyID, String appID, Long version) {
+	public void exclusiveCheck(String companyID, String appID, int version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
 			Application application = applicationRepository.findByID(companyID, appID).get();
-			if (application.getVersion() != version.intValue()) {
+			if (application.getVersion() != version) {
 				throw new BusinessException("Msg_197");
 			}
 		} else {
@@ -101,7 +101,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	 */
 	@Override
 	public boolean processBefDetailScreenReg(String companyID, String employeeID, GeneralDate appDate,
-			int employeeRouteAtr, String appID, PrePostAtr_Old postAtr, Long version) {
+			int employeeRouteAtr, String appID, PrePostAtr_Old postAtr, int version) {
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();
 
@@ -123,10 +123,10 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	}
 
 	@Override
-	public boolean exclusiveCheckErr(String companyID, String appID, Long version) {
+	public boolean exclusiveCheckErr(String companyID, String appID, int version) {
 		if (applicationRepository.findByID(companyID, appID).isPresent()) {
 			Application_New application = applicationRepository_Old.findByID(companyID, appID).get();
-			if (!application.getVersion().equals(version)) {
+			if (application.getVersion() != version) {
 				return false;
 			}
 		} else {

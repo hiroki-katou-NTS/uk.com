@@ -26,7 +26,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -122,7 +122,7 @@ public class SaveHolidayShipmentCommandHandler
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
 	@Inject
-	private ApplicationApprovalService_New appImp;
+	private ApplicationApprovalService appImp;
 	@Inject
 	private IFactoryApplication IfacApp;
 	@Inject

@@ -31,6 +31,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingReposit
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
@@ -323,45 +324,18 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
-			GeneralDate appDate, Integer rootType) {
-		return approveService.getNextApprovalPhaseStateMailList(
-				companyID, 
-				rootStateID, 
-				approvalPhaseStateNumber, 
-				isCreate, 
-				employeeID, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber) {
+		return approveService.getNextApprovalPhaseStateMailList(rootStateID, approvalPhaseStateNumber);
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType) {
-		return approveService.doApprove(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate, 
-				memo,
-				rootType);
+	public Integer doApprove(String rootStateID, String employeeID) {
+		return approveService.doApprove(rootStateID, employeeID);
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate, Integer rootType) {
-		return approveService.isApproveAllComplete(
-				companyID, 
-				rootStateID, 
-				employeeID, 
-				isCreate, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appDate,
-				rootType);
+	public Boolean isApproveAllComplete(String rootStateID) {
+		return approveService.isApproveAllComplete(rootStateID);
 	}
 
 	@Override
@@ -405,8 +379,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType) {
-		return denyService.doDeny(companyID, rootStateID, employeeID, memo, rootType);
+	public Boolean doDeny(String rootStateID, String employeeID) {
+		return denyService.doDeny(rootStateID, employeeID);
 	}
 
 	@Override
@@ -760,7 +734,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByListEmployeeIDAndListRecordDate(approvalRecordDates, employeeIDs, rootType);
 		if(!CollectionUtil.isEmpty(approvalRootSates)){
 			for(ApprovalRootState approvalRootState : approvalRootSates){
-				 this.doApprove(companyID, approvalRootState.getRootStateID(), approverID, false, 0, null, null, rootType);
+				 this.doApprove(approvalRootState.getRootStateID(), approverID);
 			}
 		}
 	}
@@ -1118,5 +1092,33 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			}
 		}
 		return export;
+	}
+	@Override
+	public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState) {
+		ApprovalRootState approvalRootState = new ApprovalRootState(
+				appID, 
+				RootType.EMPLOYMENT_APPLICATION, 
+				appDate, 
+				employeeID, 
+				listApprovalPhaseState.stream().map(x -> new ApprovalPhaseState(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtr.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalForm.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrame(
+								y.getFrameOrder(), 
+								EnumAdaptor.valueOf(y.getConfirmAtr(), ConfirmPerson.class), 
+								y.getAppDate(), 
+								y.getListApprover().stream().map(z -> new ApproverInfor(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtr.class), 
+										null, 
+										null, 
+										null, 
+										z.getApproverInListOrder()
+								)).collect(Collectors.toList()))
+						).collect(Collectors.toList()))
+				).collect(Collectors.toList()));
+		approvalRootStateRepository.insertApp(approvalRootState);
+		
 	}
 }

@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -27,7 +27,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	private RegisterAtApproveReflectionInfoService_New registerService;
 
 	@Inject
-	ApplicationApprovalService_New appRepository;
+	ApplicationApprovalService appRepository;
 
 	@Inject
 	NewAfterRegister_New newAfterRegister;

@@ -134,29 +134,24 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
-			GeneralDate appDate) {
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber) {
 
-		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, 
-				approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate, 0);
+		return approvalRootStatePub.getNextApprovalPhaseStateMailList(rootStateID, approvalPhaseStateNumber);
 
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate, String memo) {
+	public Integer doApprove(String rootStateID, String employeeID) {
 
-		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo, 0);
+		return approvalRootStatePub.doApprove(rootStateID, employeeID);
 
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate) {
+	public Boolean isApproveAllComplete(String rootStateID) {
 		// TODO Auto-generated method stub
 
-		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, 0);
+		return approvalRootStatePub.isApproveAllComplete(rootStateID);
 
 	}
 
@@ -217,8 +212,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
-		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID, memo, 0);
+	public Boolean doDeny(String rootStateID, String employeeID) {
+		return approvalRootStatePub.doDeny(rootStateID, employeeID);
 	}
 
 	@Override
@@ -356,6 +351,33 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 								y.getAppDate());
 					}).collect(Collectors.toList()));
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
+		List<ApprovalPhaseStateExport> approvalPhaseStateExportLst = listApprovalPhaseState.stream()
+				.map(x -> new ApprovalPhaseStateExport(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrameExport(
+								y.getFrameOrder(), 
+								y.getListApprover().stream().map(z -> new ApproverStateExport(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+										z.getAgentID(), 
+										z.getApproverName(), 
+										z.getRepresenterID(), 
+										z.getRepresenterName(), 
+										z.getApprovalDate(), 
+										z.getApprovalReason(), 
+										z.getApproverInListOrder())
+								).collect(Collectors.toList()), 
+								y.getConfirmAtr(), 
+								y.getAppDate()))
+						.collect(Collectors.toList())
+				)).collect(Collectors.toList());
+		approvalRootStatePub.insertApp(appID, appDate, employeeID, approvalPhaseStateExportLst);
 	}
 
 }

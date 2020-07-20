@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -51,7 +51,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
-	ApplicationApprovalService_New appRepository;
+	ApplicationApprovalService appRepository;
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;

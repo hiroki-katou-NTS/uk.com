@@ -114,32 +114,26 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
-			Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
 	/**
 	 * 承認する
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, String memo, Integer rootType);
+	public Integer doApprove(String rootStateID, String employeeID);
 	
 	/**
 	 * 2.承認全体が完了したか
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
-			Integer appTypeValue, GeneralDate appDate, Integer rootType);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	/**
 	 * 一括解除する 
@@ -165,7 +159,8 @@ public interface ApprovalRootStatePub {
 	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover);
 	
 	/**
-	 * 削除時のメール通知者を取得する
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.削除時のメール通知者を取得する(CollectMailNotifierService).削除時のメール通知者を取得する
 	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @return
@@ -184,14 +179,13 @@ public interface ApprovalRootStatePub {
 	
 	/**
 	 * 否認する
-	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 * @return 否認を実行したかフラグ(true, false)
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType);
+	public Boolean doDeny(String rootStateID, String employeeID);
 	
 	/**
 	 * 1.指定した社員が承認者であるかの判断
@@ -299,4 +293,10 @@ public interface ApprovalRootStatePub {
      * @return
      */
     public ApprovalRootContentExport getApprovalRootHr(String companyID, String employeeID, String targetType, GeneralDate date, Optional<Boolean> lowerApprove);
+    
+    /**
+     * refactor 4
+     * @param listApprovalPhaseState
+     */
+    public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateExport> listApprovalPhaseState);
 }

@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr_Old;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -69,54 +69,60 @@ public interface OtherCommonAlgorithm {
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId);
 	
 	/**
-	 * 10.申請メール自動送信
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信
 	 */
 	/**
-	 * 承認者へ送る（新規登録、更新登録、承認）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.承認者へ送る.承認者へ送る（新規登録、更新登録、承認）
 	 * @param employeeIDList
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application);
 	
 	/**
-	 * 承認者へ送る（削除）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.承認者へ送る.承認者へ送る（削除）
 	 * @param employeeIDList
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
 	
 	/**
-	 * 申請者へ送る（承認）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.申請者へ送る（承認）
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantApprove(Application_New application);
+	public MailResult sendMailApplicantApprove(Application application);
 	
 	/**
-	 * 申請者へ送る（否認）
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.申請者へ送る（否認）
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantDeny(Application_New application);
+	public MailResult sendMailApplicantDeny(Application application);
 	
 	/**
-	 * 承認者へ送る
-	 * @param listDestination
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.承認者へ送る.アルゴリズム.承認者へ送る
+	 * @param listDestination 承認者社員ID（List）
+	 * @param application 申請
+	 * @param text 本文
+	 * @return
+	 */
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請者へ送る.アルゴリズム.申請者へ送る
 	 * @param application
 	 * @param text
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text);
-	
-	/**
-	 * 申請者へ送る
-	 * @param application
-	 * @param text
-	 * @return
-	 */
-	public MailResult sendMailApplicant(Application_New application, String text);
+	public MailResult sendMailApplicant(Application application, String text);
 	/**
 	 * 申請期間から休日の申請日を取得する
 	 * @param cid
@@ -134,14 +140,16 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
+	
 	/**
-	 * 申請理由出力_共通
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請理由出力_共通.申請理由出力_共通
 	 * @author hoatt
 	 * @param 申請 application
 	 * @param 休暇種類(Optional) holidayType
 	 * @return 結果(使用/未使用)
 	 */
-	public boolean appReasonOutFlg(Application_New application, Optional<Integer> holidayType);
+	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType);
 	
 	/**
 	 * 01-05_申請定型理由を取得

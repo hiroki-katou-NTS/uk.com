@@ -173,7 +173,8 @@ public class AppAbsenceFinder {
 	 * @return
 	 */
 	public AppAbsenceDetailDto getByAppID(String appID) {
-		String companyID = AppContexts.user().companyId();
+		// refactor 4 error
+		/*String companyID = AppContexts.user().companyId();
 		AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = new AppAbsenceStartInfoOutput();
 		// 詳細画面起動前申請共通設定を取得する
 		AppDispInfoStartupOutput_Old appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
@@ -215,7 +216,8 @@ public class AppAbsenceFinder {
 		AppAbsenceDetailDto result = new AppAbsenceDetailDto();
 		result.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
 		result.appAbsenceDto = AppAbsenceDto.fromDomain(appAbsence);
-		return result;
+		return result;*/
+		return null;
 	}
 
 	/**
