@@ -161,8 +161,8 @@ public class RegisterStampIndividualSampleCommandHandler extends CommandHandlerW
 		}
 		
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepository.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 	}
