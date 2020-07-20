@@ -1,6 +1,5 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-
 module nts.uk.at.view.kmp001.b {
 	const template = `
 		<div class="sidebar-content-header">
@@ -152,18 +151,38 @@ module nts.uk.at.view.kmp001.b {
 
 		public getAllStampCard() {
 			const vm = this;
-			vm.$blockui("invisible");
+			
+			vm.$blockui("invisible")
+				.then(() => vm.$ajax(KMP001B_API.GET_ALL_STAMPCARD))
+				.then((data: IDataResponse) => {
+					const { stampCards, employeeInfo } = data;
+					const stampCardList: IStampCard[] = [];
+					_.each(stampCards, (st: IStampCardResponse) => {
+						const { employeeId, stampNumber } = st;
+						const exist = _.find(employeeInfo, (emp: IEmployeeInfoResponse) => emp.employeeId === employeeId);
 
-			vm.$ajax(KMP001B_API.GET_ALL_STAMPCARD)
-				.then((data: IStampCard[]) => {
-					vm.items(_.chunk(data, 100)[0]);
-					const record = data[0];
+						if (exist) {
+							const { businessName, employeeCode } = exist;
+							const data: IStampCard = {
+								employeeId,
+								businessName,
+								employeeCode,
+								stampNumber
+							};
+
+							stampCardList.push(data);
+						}
+					});
+
+					vm.items(stampCardList);
+					const record = stampCardList[0];
 
 					if (record) {
 						vm.model.stampNumber(record.stampNumber);
 						vm.model.update(record);
 					}
-				}).then(() => {
+				})
+				.always(() => {
 					vm.$blockui("clear");
 				});
 		}
@@ -188,6 +207,22 @@ module nts.uk.at.view.kmp001.b {
 
 			// selectedIds
 		}
+	}
+
+	interface IDataResponse {
+		employeeInfo: IEmployeeInfoResponse[];
+		stampCards: IStampCardResponse[];
+	}
+
+	interface IEmployeeInfoResponse {
+		businessName: string;
+		employeeCode: string;
+		employeeId: string;
+	}
+
+	interface IStampCardResponse {
+		employeeId: string;
+		stampNumber: string;
 	}
 
 	interface IStampCard {
