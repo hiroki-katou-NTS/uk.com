@@ -9,6 +9,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.RegisterStampCardCommandHandler;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.CardInformationCommands;
 import nts.uk.ctx.at.record.app.command.kmp.kmp001.a.EmployeeCardInformationViewACommand;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommand;
+import nts.uk.ctx.at.record.app.command.kmp.kmp001.c.RegisterStampCardViewCCommandHandler;
 
 /**
  * 
@@ -22,6 +24,9 @@ public class RegisterStampCardWs extends WebService {
 
 	@Inject
 	private RegisterStampCardCommandHandler commandHandler;
+	
+	@Inject
+	private RegisterStampCardViewCCommandHandler registerSrampCard;
 	
 	/**新規モード時にIDカードNOの登録を行う */
 	@POST
@@ -44,4 +49,9 @@ public class RegisterStampCardWs extends WebService {
 		commandHandler.deleteCardInfomaiton(command);
 	}
 	
+	@POST
+	@Path("view-c/save")
+	public void registerStampCardViewC(RegisterStampCardViewCCommand command) {
+		this.registerSrampCard.handle(command);
+	}
 }
