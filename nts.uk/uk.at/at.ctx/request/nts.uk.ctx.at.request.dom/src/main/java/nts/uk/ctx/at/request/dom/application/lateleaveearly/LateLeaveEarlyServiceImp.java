@@ -43,8 +43,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		List<String>sIds = new ArrayList<String>();
 		sIds.add(AppContexts.user().employeeId());
 
-		List<GeneralDate> appDates = new ArrayList<GeneralDate>();
-		GeneralDate today = GeneralDate.fromString(GeneralDate.today().toString(), "yyyy/MM/dd");
+		List<Optional<GeneralDate>> appDates = new ArrayList<Optional<GeneralDate>>();
+		Optional<GeneralDate> today = Optional.of(GeneralDate.fromString(GeneralDate.today().toString(), "yyyy/MM/dd"));
 		appDates.add(today);
 
 		// 起動時の申請表示情報を取得する
@@ -71,10 +71,11 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	private ArrivedLateLeaveEarlyInfoOutput initCancelLateEarlyApp(
 			String companyId,
 			List<String> employmentLst,
-			List<GeneralDate> appDates,
+			List<Optional<GeneralDate>> appDates,
 			AppDispInfoStartupOutput appDisplayInfo
 			) {
 		ArrivedLateLeaveEarlyInfoOutput displayInfo = new ArrivedLateLeaveEarlyInfoOutput();
+		Optional<GeneralDate> appDate;
 
 		// ドメインモデル「遅刻早退取消申請設定」を取得する
 		LateEarlyCancelAppSet listAppSet = this.cancelAppSetRepository.getByCId(companyId);
@@ -87,8 +88,11 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		}
 
-		if (appDates.isEmpty()) {
 
+		if (appDates.isEmpty()) {
+			appDate = Optional.empty();
+		} else {
+			appDate = appDates.get(0);
 		}
 
 		return displayInfo;
