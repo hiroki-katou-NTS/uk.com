@@ -42,6 +42,7 @@ public interface StampCardRepository {
 	Optional<StampCard> getByCardNoAndContractCode(String cardNo , String contractCd);
 	
 	/**
+	 * [5] 取得する 社員IDから打刻カード情報を取得する
 	 * 
 	 * @param contractCd
 	 * @param sid

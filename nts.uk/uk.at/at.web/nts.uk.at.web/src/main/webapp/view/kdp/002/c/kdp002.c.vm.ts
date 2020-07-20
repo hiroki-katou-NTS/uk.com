@@ -82,8 +82,8 @@ module nts.uk.at.view.kdp002.c {
                             
                             self.timeName1(res.attendance ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.attendance)) + " ~ " : null);
                             self.timeName2(res.leave ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.leave)): null);
-                            self.workName1(res.workTypes.length > 0 ? record.name : '');
-                            self.workName2(res.workTimeTypes.length > 0 ? record.name : '');      
+                            self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
+                            self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');      
 							
                             if(res.itemValues) {
                                 // C4	実績の属性と表示書式について

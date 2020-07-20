@@ -1,6 +1,6 @@
 /// <reference path='../../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.kdp003.f {
+module nts.uk.at.kdp003.f {
 	const adminModeTemplate = `
 	<!-- ko with: data -->
 	<tr>
@@ -30,6 +30,7 @@ module nts.uk.kdp003.f {
 						optionsValue: 'companyId',
 						optionsText: 'companyName',
 						editable: false,
+						required: true,
 						columns: [
 							{ prop: 'companyCode', length: 5 },
 							{ prop: 'companyName', length: 11 },
@@ -48,6 +49,7 @@ module nts.uk.kdp003.f {
 			<input tabindex="2" id="employee-code-inp-2"
 				data-bind="ntsTextEditor: {
 					name: $component.$i18n('KDP003_4'),
+					required: true,
 					constraint: 'EmployeeCode',
 					value: model.employeeCode,
 					option: {
@@ -63,6 +65,7 @@ module nts.uk.kdp003.f {
 			<input tabindex="3" id="password-input"
 				data-bind="ntsTextEditor: {
 					name: $vm.$i18n('KDP003_5'),
+					required: true,
 					value: model.password,
 					option: {										
 						width: '330px',
@@ -73,18 +76,14 @@ module nts.uk.kdp003.f {
 	</tr>
 	<!-- /ko -->`;
 
-	const KDP003F_AMIN_MODE_API = {
-		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting'
-	};
-
 	@component({
 		name: 'kdp-003-f-admin-mode',
 		template: adminModeTemplate
 	})
-	export class Kdp003FLoginWithAdminModeCoponent extends ko.ViewModel {
-		listCompany: KnockoutObservableArray<Kdp003FCompanyItem> = ko.observableArray([]);
+	export class LoginWithAdminModeCoponent extends ko.ViewModel {
+		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
-		constructor(public data: { model: Kdp003FModel; params: Kdp003FAdminModeParam; }) {
+		constructor(public data: { model: Model; params: AdminModeParam; }) {
 			super();
 		}
 
@@ -96,26 +95,64 @@ module nts.uk.kdp003.f {
 			if (params.companyDesignation) {
 				model.companyCode
 					.subscribe((code: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+						const SCREEN: RegExpMatchArray = window.top.location.href.match(/kdp\/00\d/);
 
-						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyCode === code);
+						if (SCREEN.length) {
+							const name: 'KDP003' | 'KDP004' | 'KDP005' = SCREEN[0].replace(/\//g, '').toUpperCase() as any;
 
-							if (exist) {
-								// update companyId by subscribe companyCode
-								model.companyId(exist.companyId);
-								model.companyName(exist.companyName);
+							const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
+
+							if (dataSources.length) {
+								const exist = _.find(dataSources, (item: CompanyItem) => item.companyCode === code);
+								const clear = () => {
+									model.companyId('');
+									model.companyName('');
+								};
+
+								if (exist) {
+									const update = () => {
+										model.companyId(exist.companyId);
+										model.companyName(exist.companyName);
+									};
+
+									// update companyId by subscribe companyCode
+									switch (name) {
+										default:
+										case 'KDP003':
+											if (exist.selectUseOfName === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+										case 'KDP004':
+											if (exist.fingerAuthStamp === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+										case 'KDP005':
+											if (exist.icCardStamp === false) {
+												clear();
+											} else {
+												update();
+											}
+											break;
+									}
+								} else {
+									clear();
+								}
 							}
 						}
-
 					});
 			} else {
 				model.companyId
 					.subscribe((id: string) => {
-						const dataSources: Kdp003FCompanyItem[] = ko.toJS(vm.listCompany);
+						const dataSources: CompanyItem[] = ko.toJS(vm.listCompany);
 
 						if (dataSources.length) {
-							const exist = _.find(dataSources, (item: Kdp003FCompanyItem) => item.companyId === id);
+							const exist = _.find(dataSources, (item: CompanyItem) => item.companyId === id);
 
 							if (exist) {
 								// update companyCode by subscribe companyId
@@ -126,14 +163,14 @@ module nts.uk.kdp003.f {
 					});
 			}
 
-			vm.$ajax(KDP003F_AMIN_MODE_API.COMPANIES)
-				.done((data: Kdp003FCompanyItem[]) => {
+			vm.$ajax(API.COMPANIES)
+				.done((data: CompanyItem[]) => {
 					if (params.companyDesignation) {
 						const companyId = ko.toJS(model.companyId);
-						const exist: Kdp003FCompanyItem = _.find(data, (c) => c.companyId === companyId);
+						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
 
 						vm.listCompany(data);
-						
+
 						if (exist) {
 							if (!ko.unwrap(model.companyCode)) {
 								model.companyCode(exist.companyCode);
@@ -144,7 +181,7 @@ module nts.uk.kdp003.f {
 								.then(() => vm.$window.close());
 						}
 					} else {
-						const exist: Kdp003FCompanyItem = _.first(data);
+						const exist: CompanyItem = _.first(data);
 
 						if (exist) {
 							vm.listCompany(data);

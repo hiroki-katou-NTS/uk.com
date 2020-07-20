@@ -177,9 +177,8 @@ public class ConfirmUseOfStampInputCommandHandler
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 	}
