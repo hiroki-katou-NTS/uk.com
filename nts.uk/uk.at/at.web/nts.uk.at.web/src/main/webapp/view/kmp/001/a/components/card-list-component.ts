@@ -7,14 +7,14 @@ module nts.uk.at.view.kmp001.a {
 	<!-- ko if: ko.unwrap(model.stampCard).length === 0 -->
 			<div
 				data-bind="ntsFormLabel: {
-					constraint: '', 
+					constraint: '10', 
 					required: true, 
 					text: $i18n('KMP001_22') }">
 			</div>
 			<input 
 				data-bind="ntsTextEditor: {
 					value: ko.observable(''),
-					constraint: '',
+					constraint: '10',
 					enabled: true
 				}"/>		
 	<!-- /ko -->

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.kmp.kmp001;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author chungnt
  *
  */
+@Stateless
 public class RegisterStampCardCommandHandler {
 
 	@Inject

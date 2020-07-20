@@ -17,8 +17,8 @@ import nts.uk.screen.at.app.query.kmp.kmp001.a.ExtractedEmployeeCardSetting;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.ExtractedEmployeeCardSettingDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigit;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigitDto;
-import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNo;
-import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNoDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInfoFromCardNo;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInfoFromCardNoDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeDtoViewB;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeViewB;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregistered;
@@ -41,7 +41,7 @@ public class PointCardNumberWs extends WebService {
 	
 	
 	@Inject
-	private EmployeeInformationFromCardNo  getEmployeeInformationFromCardNo;
+	private EmployeeInfoFromCardNo  getEmployeeInformationFromCardNo;
 	
 	@Inject
 	private StampCardDigit stampCardDigit;
@@ -72,13 +72,13 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getEmployeeFromCardNo/{cardNumber}")
-	public List<EmployeeInformationFromCardNoDto> getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
+	public EmployeeInfoFromCardNoDto getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
 		return this.getEmployeeInformationFromCardNo.getEmployee(cardnumber);
 	}
 	
 	@POST
 	@Path("getAllEmployeeFromCardNo")
-	public List<EmployeeInformationFromCardNoDto> getAllEmployeeInformationFromCardNo() {
+	public EmployeeInfoFromCardNoDto getAllEmployeeInformationFromCardNo() {
 		return this.getEmployeeInformationFromCardNo.getAll();
 	}
 	
