@@ -16,33 +16,33 @@ public class GetEmRankInforService {
 	public static List<EmpRankInfor> get(Require require , List<String> listEmpId	){
 
 		//$社員ランクMap = require.社員ランクを取得する(社員リスト)	
-		Map<String, List<EmployeeRank>> mapEmployeeRank = require.getAll(listEmpId).stream().collect(Collectors.groupingBy(EmployeeRank :: getSID ));
+		List<EmployeeRank> lstEmpRank = require.getAll(listEmpId);
+		Map<String, EmployeeRank> mapEmployeeRank = lstEmpRank.stream().collect(Collectors.toMap(EmployeeRank::getSID, x->x));
 		
-		Map<String, List<Rank>> mapRankBycode = require.getListRank().stream().collect(Collectors.groupingBy(c -> c.getRankCode().toString()));
+		List<Rank> lstRank = require.getListRank();
+		Map<String, Rank> mapRankBycode = lstRank.stream().collect(Collectors.toMap(x-> x.getRankCode().v(), x-> x));
 	
 		List<EmpRankInfor> result =  listEmpId.stream().map(mapper -> {
 			// 	$社員ランク = $社員ランクMap.get($)
-			List<EmployeeRank> listEmployeeRank = mapEmployeeRank.get(mapper);
+			EmployeeRank employeeRank = mapEmployeeRank.get(mapper);
 			//if $社員ランク.empty				
-			if (listEmployeeRank.isEmpty()) {
+			if (employeeRank == null) {
 				//	return 社員ランク情報.ランクなしで作る($)	
 				return  EmpRankInfor.makeWithoutRank(mapper);
 			}
 			//$ランク = $ランクMap.get($社員ランク.ランクコード)												
-			List<String> lstRankCode = listEmployeeRank.stream().map(i -> i.getEmplRankCode().toString()).collect(Collectors.toList());
-			List<Rank> lstRank = mapRankBycode.get(lstRankCode);
+			Rank rank = mapRankBycode.get(employeeRank.getEmplRankCode().v());
 			
-			if (lstRank.isEmpty()) {
+			if (rank == null) {
 				//社員ランク情報.ランクなしで作る($)
 				return new EmpRankInfor(mapper);
 			}
 			//	return 社員ランク情報.作る($, ＄ランク.ランクコード, $ランク.ランク記号)
-			return EmpRankInfor.create(mapper, lstRank.get(0).getRankCode().toString(), lstRank.get(0).getRankSymbol().toString());
+			return EmpRankInfor.create(mapper, rank.getRankCode().v(), rank.getRankSymbol().v());
 			
 		}).collect(Collectors.toList());
 		
 		return result;
-	
 	}
 
 	
