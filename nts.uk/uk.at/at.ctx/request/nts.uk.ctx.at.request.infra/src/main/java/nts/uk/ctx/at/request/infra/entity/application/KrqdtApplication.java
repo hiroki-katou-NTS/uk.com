@@ -34,6 +34,9 @@ public class KrqdtApplication extends UkJpaEntity {
 	@EmbeddedId
 	private KrqdpApplication pk;
 	
+	@Column(name="CONTRACT_CD")
+	private String contractCD;
+	
 	@Version
 	@Column(name="EXCLUS_VER")
 	private int version;
@@ -84,9 +87,11 @@ public class KrqdtApplication extends UkJpaEntity {
 	}
 	
 	public static KrqdtApplication fromDomain(Application application) {
+		String contractCD = AppContexts.user().contractCode();
 		String companyID = AppContexts.user().companyId();
 		return new KrqdtApplication(
 				new KrqdpApplication(companyID, application.getAppID()), 
+				contractCD,
 				application.getVersion(), 
 				application.getPrePostAtr().value, 
 				application.getInputDate(), 
