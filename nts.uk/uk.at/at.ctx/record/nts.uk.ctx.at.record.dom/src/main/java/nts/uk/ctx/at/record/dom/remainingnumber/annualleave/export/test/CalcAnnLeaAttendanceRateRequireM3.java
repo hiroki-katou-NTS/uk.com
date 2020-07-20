@@ -92,11 +92,15 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		
 		// ※CSVファイルから変数を作成
 		
+		
 		// 会社IDリスト
 		ArrayList<String> companyIds = new ArrayList<String>();
+		companyIds.add("000000000000-0101");
 		
 		// 社員IDリスト
 		ArrayList<String> employeeIds = new ArrayList<String>();
+		employeeIds.add("ca294040-910f-4a42-8d90-2bd02772697c");
+		
 		
 			
 		// 社員
@@ -148,6 +152,13 @@ public class CalcAnnLeaAttendanceRateRequireM3 {
 		
 		// 年休月別残数データ
 		List<YearMonth> yearMonths = new ArrayList<YearMonth>(); // ooooo 要実装追加
+		yearMonths.add(YearMonth.of(2019,1));
+		yearMonths.add(YearMonth.of(2019,2));
+		yearMonths.add(YearMonth.of(2019,3));
+		yearMonths.add(YearMonth.of(2019,4));
+		yearMonths.add(YearMonth.of(2019,5));
+		yearMonths.add(YearMonth.of(2019,6));
+		
 		val annLeaRemNumEachMonthList
 				= annLeaRemNumEachMonthRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
 		toBinaryMap.put(AnnLeaRemNumEachMonth.class.toString(), annLeaRemNumEachMonthList);

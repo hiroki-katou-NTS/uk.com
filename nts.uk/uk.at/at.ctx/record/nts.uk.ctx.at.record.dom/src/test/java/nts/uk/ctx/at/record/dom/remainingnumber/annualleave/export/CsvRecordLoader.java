@@ -13,7 +13,7 @@ public class CsvRecordLoader {
 	//@SneakyThrows
 	public static <T> List<T> load(String filePath, Function<TestDataCsvRecord, T> builder, Class<T> cls){ 							
 		try(val is = cls.getClass().getResourceAsStream(filePath)){						
-			NtsCsvReader csvReader = NtsCsvReader.newReader().withChartSet(NtsCharset.SHIFT_JIS);
+			NtsCsvReader csvReader = NtsCsvReader.newReader().withChartSet(NtsCharset.UTF8);
 			val csvData = csvReader.parse(is);
 			List<T> list = new ArrayList<T>();
 			csvData.getRecords().stream().map(record -> TestDataCsvRecord.of(record)).forEach(record ->{					

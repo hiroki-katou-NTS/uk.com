@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumberInfo;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumb
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.repository.TestGetClosureStartForEmployee;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestDataForOverWriteList;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata.TestOutputAggrResultOfAnnualLeave;
@@ -33,6 +33,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLea
  */
 public class TestAnnualLeave {
 
+	// Requireクラス　（バイナリファイルからデータを読み込むテストクラス）
+	GetAnnLeaRemNumWithinPeriodProc.RequireM3 ｒequireM3;
+	
 	/** 上書き用の暫定年休管理データ */
 	private Map<String, List<TmpAnnualLeaveMngWork>> testDataForOverWriteListMap;
 //	private Map<int, inputObject2> inputList2;
@@ -49,12 +52,11 @@ public class TestAnnualLeave {
 	@Before
 	public void initialize(){
 
+		// Requireクラス　バイナリファイルからデータを読み込むテストクラス
+		ｒequireM3 = new CalcAnnLeaAttendanceRateRequireM3Test();
+		
 		// 上書き用の暫定年休管理データ 
 		this.testDataForOverWriteListMap = TestDataForOverWriteList.build();
-//		TestDataForOverWriteList t = new TestDataForOverWriteList();
-		
-//		this.inputList = inputObject2.build();
-//		this.expectedValueList = expectedVaue.build();
 		
 		// 期待値のリスト
 		testOutputAggrResultOfAnnualLeaveList = TestOutputAggrResultOfAnnualLeave.build();
@@ -78,32 +80,32 @@ public class TestAnnualLeave {
 				// テストケースＮｏ
 				String caseNo = annualleaveTestCase.getCaseNo();
 				
-				// Requireクラス
-				GetAnnLeaRemNumWithinPeriodRequire g_require
-					= TestGetAnnLeaRemNumWithinPeriodRequireFactory.create("1");
+//				// Requireクラス
+//				GetAnnLeaRemNumWithinPeriodRequire g_require
+//					= TestGetAnnLeaRemNumWithinPeriodRequireFactory.create("1");
 				
 				// テストしたい処理を実行	
-				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
-					g_require.getEmpEmployee(),
-					g_require.getAnnLeaEmpBasicInfoRepo(),
-					g_require.getYearHolidayRepo(),
-					g_require.getLengthServiceRepo(),
-					g_require.getAnnualPaidLeaveSet(),
-					g_require.getAnnLeaGrantRemDataRepo(),
-					g_require.getAnnLeaMaxDataRepo(),
-					g_require.getGetClosureStartForEmployee(),
-					g_require.getCalcNextAnnualLeaveGrantDate(),
-					g_require.getInterimRemOffMonth(),
-					g_require.getCreateInterimAnnual(),
-					g_require.getInterimRemainRepo(),
-					g_require.getTmpAnnualLeaveMng(),
-					g_require.getAttendanceTimeOfMonthlyRepo(),
-					g_require.getGetAnnLeaRemNumWithinPeriod(),
-					g_require.getClosureSttMngRepo(),
-					g_require.getCalcAnnLeaAttendanceRate(),
-					g_require.getGrantYearHolidayRepo(),
-					g_require.getOperationStartSetRepo(),
-					g_require.getAnnualLeaveRemainHistRepo());
+//				GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc();
+//					g_require.getEmpEmployee(),
+//					g_require.getAnnLeaEmpBasicInfoRepo(),
+//					g_require.getYearHolidayRepo(),
+//					g_require.getLengthServiceRepo(),
+//					g_require.getAnnualPaidLeaveSet(),
+//					g_require.getAnnLeaGrantRemDataRepo(),
+//					g_require.getAnnLeaMaxDataRepo(),
+//					g_require.getGetClosureStartForEmployee(),
+//					g_require.getCalcNextAnnualLeaveGrantDate(),
+//					g_require.getInterimRemOffMonth(),
+//					g_require.getCreateInterimAnnual(),
+//					g_require.getInterimRemainRepo(),
+//					g_require.getTmpAnnualLeaveMng(),
+//					g_require.getAttendanceTimeOfMonthlyRepo(),
+//					g_require.getGetAnnLeaRemNumWithinPeriod(),
+//					g_require.getClosureSttMngRepo(),
+//					g_require.getCalcAnnLeaAttendanceRate(),
+//					g_require.getGrantYearHolidayRepo(),
+//					g_require.getOperationStartSetRepo(),
+//					g_require.getAnnualLeaveRemainHistRepo());
 				
 				String companyId = "1";
 				
@@ -114,10 +116,11 @@ public class TestAnnualLeave {
 				String s_aggr_period = annualleaveTestCase.getAggrPeriod();
 				DatePeriod aggrPeriod = TestData.strToDatePeriod(s_aggr_period);
 				
-				// 期間の開始日を「社員に対応する締め開始日」として処理を行う。
-				val testGetClosureStartForEmployee = (TestGetClosureStartForEmployee)g_require.getGetClosureStartForEmployee();
-				testGetClosureStartForEmployee.startDate 
-					= GeneralDate.ymd(aggrPeriod.start().year(), aggrPeriod.start().month(), aggrPeriod.start().day());
+//				// 期間の開始日を「社員に対応する締め開始日」として処理を行う。
+//				val testGetClosureStartForEmployee 
+//					= (TestGetClosureStartForEmployee)g_require.getGetClosureStartForEmployee();
+//				testGetClosureStartForEmployee.startDate 
+//					= GeneralDate.ymd(aggrPeriod.start().year(), aggrPeriod.start().month(), aggrPeriod.start().day());
 				
 				// モード
 				InterimRemainMngMode mode;
@@ -167,15 +170,20 @@ public class TestAnnualLeave {
 				// 過去月集計モード
 				boolean aggrPastMonthMode = true; // ooooo
 				
+				// キャッシュ
+				CacheCarrier cacheCarrier = new CacheCarrier();
+				
 //				// 年月
 //				YearMonth yearMonth = YearMonth.of("202003"); // ooooo
 				
 				// 月別集計で必要な会社別設定
 				//companySets 
-				
+					
 //				// テストしたい処理を実行
 				Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeaveOpt
-					= proc.algorithm(
+					= GetAnnLeaRemNumWithinPeriodProc.algorithm(
+						ｒequireM3,
+						cacheCarrier,
 						companyId,
 						employeeId,
 						aggrPeriod,
@@ -201,7 +209,6 @@ public class TestAnnualLeave {
 							caseNo, 
 							aggrResultOfAnnualLeaveOpt.get(), 
 							testOutputAggrResultOfAnnualLeaveListMap);
-				
 				}
 				
 				String ss = "";
@@ -419,13 +426,6 @@ public class TestAnnualLeave {
 			assert_integer(testCase, "残数年休マイナスあり残数付与後合計残時間", result_remainingTimeAfterGrant, t_result);
 		}			
 			
-		
-		
-		
-		
-		
-		
-		
 			
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用日数");
 //		ss = t_result.getMapStringData().get("残数年休マイナスなし使用数付与前使用時間");

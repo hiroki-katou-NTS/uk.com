@@ -76,7 +76,7 @@ public class AnnualleaveTestCase {
 	private String companyConfig;
 	
 	//private static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
-	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/AnnualleaveTestCase.csv";
+	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/test/AnnualleaveTestCase.csv";
 
 //	public static Map<String, AnnualleaveTestCase> build(){
 //		

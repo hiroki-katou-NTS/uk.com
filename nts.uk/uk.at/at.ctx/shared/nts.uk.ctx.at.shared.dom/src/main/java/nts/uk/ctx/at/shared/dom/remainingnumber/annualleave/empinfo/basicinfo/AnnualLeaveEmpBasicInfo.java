@@ -38,12 +38,12 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot implements Serializab
 	/**
 	 * 年間所定労働日数
 	 */
-	private Optional<WorkingDayPerYear> workingDaysPerYear;
+	private transient Optional<WorkingDayPerYear> workingDaysPerYear;
 
 	/**
 	 * 導入前労働日数
 	 */
-	private Optional<WorkingDayBeforeIntro> workingDayBeforeIntroduction;
+	private transient Optional<WorkingDayBeforeIntro> workingDayBeforeIntroduction;
 
 	/**
 	 * 付与ルール

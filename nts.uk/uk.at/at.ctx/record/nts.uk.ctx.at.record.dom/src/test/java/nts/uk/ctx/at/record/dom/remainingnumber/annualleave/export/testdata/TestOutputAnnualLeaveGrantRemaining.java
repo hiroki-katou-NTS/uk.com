@@ -23,7 +23,7 @@ public class TestOutputAnnualLeaveGrantRemaining {
 	/** 年休の集計結果 期待値（文字列のまま） */
 	private Map<String, String> mapStringData;
 	
-	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/TestOutputAnnualLeaveGrantRemaining.csv";
+	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/test/TestOutputAnnualLeaveGrantRemaining.csv";
 	
 	public static List<TestOutputAnnualLeaveGrantRemaining> build(){
 		return CsvRecordLoader.load(fileName, builder, TestOutputAnnualLeaveGrantRemaining.class);

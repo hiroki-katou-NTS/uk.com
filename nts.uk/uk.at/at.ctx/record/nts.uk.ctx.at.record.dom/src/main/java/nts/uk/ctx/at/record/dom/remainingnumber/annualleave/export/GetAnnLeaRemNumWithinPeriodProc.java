@@ -58,7 +58,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 	/**
 	 * 期間中の年休残数を取得
-	 * @param companyId 会社ID
+	 * @param require
+	 * @param cacheCarrier
+	 * @param companyId
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間
 	 * @param mode モード

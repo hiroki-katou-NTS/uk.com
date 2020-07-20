@@ -10,14 +10,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
  */
 public class TestEmpEmployeeAdapterImplFactory {
 
-	static public EmpEmployeeAdapter create(String caseNo){
-		
-		switch ( caseNo ){
-			case "1": return new TestEmpEmployeeAdapterImpl_1();
-			
-			default:
-				return null;
-		}
-	}
+//	static public EmpEmployeeAdapter create(String caseNo){
+//		
+//		switch ( caseNo ){
+//			case "1": return new TestEmpEmployeeAdapterImpl_1();
+//			
+//			default:
+//				return null;
+//		}
+//	}
 
 }

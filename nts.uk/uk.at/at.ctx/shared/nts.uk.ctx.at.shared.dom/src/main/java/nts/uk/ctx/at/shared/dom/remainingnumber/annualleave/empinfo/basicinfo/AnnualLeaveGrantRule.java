@@ -38,7 +38,7 @@ public class AnnualLeaveGrantRule implements SerializableWithOptional{
 	
 	private Double nextGrantDay;
 	
-	private Optional<Integer> nextMaxTime;
+	private transient Optional<Integer> nextMaxTime;
 	
 	
 	public String nextTimeGrantDate() {
@@ -69,6 +69,7 @@ public class AnnualLeaveGrantRule implements SerializableWithOptional{
 		super();
 		this.grantTableCode = grantTableCode;
 		this.grantStandardDate = grantStandardDate;
+		this.nextMaxTime = Optional.empty();
 	}
 	
 	private void writeObject(ObjectOutputStream stream){	

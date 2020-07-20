@@ -34,7 +34,7 @@ public class OperationStartSetDailyPerform extends AggregateRoot implements Seri
 	
 	/** The operate start date daily perform. */
 	// 日別実績の運用開始日
-	private Optional<GeneralDate> operateStartDateDailyPerform;
+	private transient Optional<GeneralDate> operateStartDateDailyPerform;
 	
 	/**
 	 * Instantiates a new operation start set daily perform.

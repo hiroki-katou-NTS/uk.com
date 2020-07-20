@@ -28,7 +28,7 @@ public class TestAnnualLeaveGrantRemainingData {
 	//private Map<String, AnnualLeaveGrantRemainingData> mapStringData;
 	
 	//private static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
-	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/AnnualLeaveGrantRemainingData.csv";
+	private static String fileName = "/nts/uk/ctx/at/record/dom/remainingnumber/annualleave/export/test/AnnualLeaveGrantRemainingData.csv";
 
 //	public static Map<String, TestOutputAggrResultOfAnnualLeave> build(){
 //		
