@@ -304,19 +304,68 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 windowXOccupation = 65,
                 windowYOccupation = 328;
 
+            // phần leftMost
+            let leftmostDs = [];
+            let leftmostColumns = [];
+            let leftmostHeader = {};
+            let leftmostContent = {};
+            
+            leftmostColumns = [{
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
+            }];
+
+            leftmostHeader = {
+                columns: leftmostColumns,
+                rowHeight: "60px",
+                width: "160px"
+            };
+
+            leftmostContent = {
+                columns: leftmostColumns,
+                dataSource: leftmostDs,
+                primaryKey: "empId"
+            };
+            
+            // Phần middle
+            let middleDs = [];
+            let updateMiddleDs = [];
+            let middleColumns = [];
+            let middleContentDeco = [];
+            let middleHeader = {};
+            let middleContent = {};
+            
+            middleColumns = [
+                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
+                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
+            ];
+
+            middleHeader = {
+                columns: middleColumns,
+                width: "120px",
+                features: [{
+                    name: "HeaderRowHeight",
+                    rows: { 0: "60px" }
+                }]
+            };
+
+            middleContent = {
+                columns: middleColumns,
+                dataSource: middleDs,
+                primaryKey: "empId",
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: middleContentDeco
+                }]
+            };
+            
+            // Phần detail
             let detailHeaderDs = [];
             let detailContentDeco = [];
             let timeRanges = [];
-
-            let leftmostDs = [];
-            let middleDs = [];
-            let updateMiddleDs = [];
             let detailContentDs = [];
-            let horzSumContentDs = [];
-            let leftHorzContentDs = [];
-            let vertSumContentDs = [];
-            let newVertSumContentDs = [];
-
+            
             detailHeaderDs.push(new ksu001.common.modelgrid.ExItem(undefined, true));
             detailHeaderDs.push({
                 empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
@@ -325,9 +374,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "",
             });
 
-            let middleHeaderDeco = [new ksu001.common.modelgrid.CellColor("over1", undefined, "small-font-size"),
-                new ksu001.common.modelgrid.CellColor("over2", undefined, "small-font-size")];
-            let middleContentDeco = [];
             let detailHeaderDeco = [new ksu001.common.modelgrid.CellColor("empId", 1, "small-font-size")];
             for (let i = -6; i < 32; i++) {
                 if (i <= 0) {
@@ -356,18 +402,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 0));
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 1));
                 if (i < 1000) timeRanges.push(new ksu001.common.modelgrid.TimeRange("_2", i.toString(), "17:00", "7:00", 1));
-                vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
-                newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00" });
-            }
-
-            for (let i = 0; i < 10; i++) {
-                horzSumContentDs.push({
-                    itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3",
-                    _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
-                    _11: "0.5", _12: "1.0", _13: "0.5", _14: "1.0", _15: "1.0", _16: "0.5", _17: "1.0", _18: "1.0", _19: "1.0", _20: "1.0", _21: "1.0", _22: "1.0", _23: "1.0",
-                    _24: "0.5", _25: "0.5", _26: "1.0", _27: "1.0", _28: "1.0", _29: "0.5", _30: "1.0", _31: "1.0"
-                });
-                leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
 
             let detailColumns = [{
@@ -458,51 +492,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return false;
                 };
             });
-
-            // phần leftMost
-            let leftmostColumns = [{
-                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
-                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
-            }];
-
-            let leftmostHeader = {
-                columns: leftmostColumns,
-                rowHeight: "60px",
-                width: "160px"
-            };
-
-            let leftmostContent = {
-                columns: leftmostColumns,
-                dataSource: leftmostDs,
-                primaryKey: "empId"
-            };
-
-            // Phần middle
-            let middleColumns = [
-                { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
-                { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
-                { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
-            ];
-
-
-            let middleHeader = {
-                columns: middleColumns,
-                width: "120px",
-                features: [{
-                    name: "HeaderRowHeight",
-                    rows: { 0: "60px" }
-                }]
-            };
-
-            let middleContent = {
-                columns: middleColumns,
-                dataSource: middleDs,
-                primaryKey: "empId",
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: middleContentDeco
-                }]
-            };
 
             // phần Detail
             let detailHeader = {
