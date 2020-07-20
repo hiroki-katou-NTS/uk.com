@@ -100,10 +100,10 @@ public class GetEmRankInforServiceTest {
 		}).collect(Collectors.toList());
 		
 		GetEmRankInforService.get(require, listEmpId);
-		assertThat(result.get(0).getRankCode().equals("001")).isTrue();
-		assertThat(result.get(1).getRankCode().equals("002")).isTrue();
-		assertThat(result.get(0).getRankSymbol().equals("001")).isTrue();
-		assertThat(result.get(1).getRankSymbol().equals("002")).isTrue();
+		assertThat(result.get(0).getRankCode().v().equals("001")).isTrue();
+		assertThat(result.get(1).getRankCode().v().equals("002")).isTrue();
+		assertThat(result.get(0).getRankSymbol().v().equals("001")).isTrue();
+		assertThat(result.get(1).getRankSymbol().v().equals("002")).isTrue();
 	}
 	
 	@Test
