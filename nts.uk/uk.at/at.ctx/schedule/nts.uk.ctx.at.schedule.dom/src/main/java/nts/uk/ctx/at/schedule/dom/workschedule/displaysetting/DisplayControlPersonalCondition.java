@@ -21,7 +21,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTea
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
 
 /**
- * 個人条件の表示制御 UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
+ * 個人条件の表示制御 
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
  * 
  * @author HieuLT
  * 
