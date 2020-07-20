@@ -136,7 +136,7 @@ module nts.uk.at.view.kmp001.c {
 	}
 
 	const KMP001C_API = {
-		GET_STAMPCARD: 'screen/pointCardNumber/getAllCardUnregister/',
+		GET_STAMP_CARD: 'screen/pointCardNumber/getAllCardUnregister/',
 		GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInformationViewC/',
 		ADD_STAMP_CARD: 'at/record/register-stamp-card/view-c/save'
 	};
@@ -149,7 +149,7 @@ module nts.uk.at.view.kmp001.c {
 
 		public params!: Params;
 
-		public items: KnockoutObservableArray<IStampCard> = ko.observableArray();
+		public items: KnockoutObservableArray<IStampCardC> = ko.observableArray([]);
 		public stampNumber: KnockoutObservable<string> = ko.observable('');
 		public model: StampCardC = new StampCardC();
 		public employee: EmployeeVIewC = new EmployeeVIewC();
@@ -192,9 +192,9 @@ module nts.uk.at.view.kmp001.c {
 			const start = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
 			const end = moment.utc(endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
 
-			vm.$ajax(KMP001C_API.GET_STAMPCARD + start + "/" + end)
+			vm.$ajax(KMP001C_API.GET_STAMP_CARD + start + "/" + end)
 				.then((data: IStampCardC[]) => {
-					vm.items(ko.toJS(data));
+					vm.items(data);
 
 					if (selectedIndex >= 0) {
 						const record = data[selectedIndex || 0];
@@ -204,7 +204,7 @@ module nts.uk.at.view.kmp001.c {
 						}
 					}
 				})
-				.then(() => {
+				.always(() => {
 					vm.$blockui("clear");
 				});
 		}
@@ -225,7 +225,7 @@ module nts.uk.at.view.kmp001.c {
 		addStampCard() {
 			const vm = this,
 			command = {employeeId: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber)},
-			oldIndex = _.map(vm.items, m => m.stampNumber).indexOf(command.cardNumber),
+			oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
 			newIndex = oldIndex == vm.items.length - 1 ? oldIndex - 1 : oldIndex;
 				
 			console.log(oldIndex);
@@ -243,6 +243,17 @@ module nts.uk.at.view.kmp001.c {
 				.then(() => vm.$blockui("clear"));
 			}
 		}
+		
+		public validate(action: 'clear' | undefined = undefined) {
+        if (action === 'clear') {
+            return $.Deferred().resolve()
+                .then(() => $('.nts-input').ntsError('clear'));
+        } else {
+            return $.Deferred().resolve()
+                .then(() => $('.nts-input').trigger("validate"))
+                .then(() => !$('.nts-input').ntsError('hasError'));
+        }
+    }
 	}
 
 	export interface IStampCardC {
