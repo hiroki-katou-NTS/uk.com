@@ -153,7 +153,7 @@ module nts.uk.at.view.kmp001.c {
 		public stampNumber: KnockoutObservable<string> = ko.observable('');
 		public model: StampCardC = new StampCardC();
 		public employee: EmployeeVIewC = new EmployeeVIewC();
-		
+
 		dateRange: KnockoutObservable<DateRange> = ko.observable({});
 
 		created(params: Params) {
@@ -164,15 +164,15 @@ module nts.uk.at.view.kmp001.c {
 			vm.dateRange
 				.subscribe((dr: DateRange) => {
 				});
-				
+
 			vm.employee.employeeId
 				.subscribe((c: string) => {
-					
-					if(c != '') {
+
+					if (c != '') {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
-						.then((data: IEmployeeVIewC[]) => {
+							.then((data: IEmployeeVIewC[]) => {
 								vm.employee.update(ko.toJS(data));
-						})
+							})
 					}
 				})
 		}
@@ -208,7 +208,7 @@ module nts.uk.at.view.kmp001.c {
 					vm.$blockui("clear");
 				});
 		}
-		
+
 		openDialogCDL009a() {
 			const vm = this;
 			const params = { selectedIds: [], isMultiple: false, baseDate: new Date(), target: 1 };
@@ -221,39 +221,36 @@ module nts.uk.at.view.kmp001.c {
 					vm.employee.employeeId(ko.toJS(data))
 				});
 		}
-		
+
 		addStampCard() {
 			const vm = this,
-			command = {employeeId: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber)},
-			oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
-			newIndex = oldIndex == vm.items.length - 1 ? oldIndex - 1 : oldIndex;
-				
-			console.log(oldIndex);
-			console.log(newIndex);
-			console.log(command.cardNumber);
-			
-			if ( ko.toJS(vm.employee.employeeId) == '' || ko.toJS(vm.model.stampNumber) == ''){
-				vm.$dialog.info({messageId: "Msg_1680"});
+				command = { employeeId: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
+				oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
+				newIndex = oldIndex == ko.unwrap(vm.items).length - 1 ? oldIndex - 1 : oldIndex;
+
+			if (ko.toJS(vm.employee.employeeId) == '' || ko.toJS(vm.model.stampNumber) == '') {
+				vm.$dialog.info({ messageId: "Msg_1680" });
 			} else {
 				vm.$blockui("invisible");
-				
+
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
-				.then(() => vm.$dialog.info({messageId: "Msg_15"}))
-				.then(() => vm.reloadData(newIndex))
-				.then(() => vm.$blockui("clear"));
+					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+					.then(() => vm.reloadData(newIndex))
+					.then(() => vm.employee.clear)
+					.then(() => vm.$blockui("clear"));
 			}
 		}
-		
+
 		public validate(action: 'clear' | undefined = undefined) {
-        if (action === 'clear') {
-            return $.Deferred().resolve()
-                .then(() => $('.nts-input').ntsError('clear'));
-        } else {
-            return $.Deferred().resolve()
-                .then(() => $('.nts-input').trigger("validate"))
-                .then(() => !$('.nts-input').ntsError('hasError'));
-        }
-    }
+			if (action === 'clear') {
+				return $.Deferred().resolve()
+					.then(() => $('.nts-input').ntsError('clear'));
+			} else {
+				return $.Deferred().resolve()
+					.then(() => $('.nts-input').trigger("validate"))
+					.then(() => !$('.nts-input').ntsError('hasError'));
+			}
+		}
 	}
 
 	export interface IStampCardC {
@@ -290,15 +287,15 @@ module nts.uk.at.view.kmp001.c {
 			self.stampNumber('');
 		}
 	}
-	
+
 	interface IEmployeeVIewC {
 		businessName: string;
 		employeeCode: string;
 		employeeId: string;
-		entryDate: Date;
-		retiredDate: Date;
+		entryDate: Date | null;
+		retiredDate: Date | null;
 	}
-	
+
 	class EmployeeVIewC {
 		businessName: KnockoutObservable<string> = ko.observable('');
 		employeeCode: KnockoutObservable<string> = ko.observable('');
@@ -322,6 +319,12 @@ module nts.uk.at.view.kmp001.c {
 			seft.businessName(params.businessName);
 			seft.entryDate(params.entryDate);
 			seft.retiredDate(params.retiredDate);
+		}
+
+		clear() {
+			const self = this;
+			self.employeeId('');
+			self.update({ employeeCode: '', businessName: '', employeeId: '', entryDate: null, retiredDate: null })
 		}
 	}
 }
