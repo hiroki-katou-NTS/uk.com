@@ -190,7 +190,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String employeeID = appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid();
 		ApprovalFunctionSet approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
-		if (approvalFunctionSet.getAppUseSetLst().get(0) .getUseDivision() == UseDivision.TO_USE) {
+		if (approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
 			// エラーメッセージ(Msg_323)を返す
 			throw new BusinessException("Msg_323");
 		}
