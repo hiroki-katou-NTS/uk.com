@@ -41,3 +41,4 @@ public class WorkscheQualifi implements DomainValue {
 	
 	
 }
+

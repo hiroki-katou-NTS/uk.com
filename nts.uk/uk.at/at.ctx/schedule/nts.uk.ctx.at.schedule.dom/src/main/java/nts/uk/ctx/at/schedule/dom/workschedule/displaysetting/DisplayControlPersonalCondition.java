@@ -21,7 +21,8 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTea
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
 
 /**
- * 個人条件の表示制御 UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
+ * 個人条件の表示制御 
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
  * 
  * @author HieuLT
  * 
@@ -91,7 +92,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 			 * $社員免許区分)
 			 */
 			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId).getOptScheduleTeamName();
-			String empRank = mapEmpRankInfor.get(empId).getRankSymbol();
+			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().v();
 			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification();
 

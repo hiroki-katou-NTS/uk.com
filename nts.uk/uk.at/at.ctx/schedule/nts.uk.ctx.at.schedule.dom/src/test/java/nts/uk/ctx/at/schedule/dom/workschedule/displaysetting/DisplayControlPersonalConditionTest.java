@@ -33,14 +33,13 @@ public class DisplayControlPersonalConditionTest {
 	@Test
 	public void success(){
 		DisplayControlPersonalCondition displayControlPersonalCondition = DisplayControlPersonalConditionHelper.getData();
-			
-			List<PersonInforDisplayControl> result = Arrays.asList(
-					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(ConditionATRWorkSchedule.INSURANCE_STATUS.value, ConditionATRWorkSchedule.class),
-							null),
-					new PersonInforDisplayControl(
-							EnumAdaptor.valueOf(ConditionATRWorkSchedule.LICENSE_ATR.value, ConditionATRWorkSchedule.class),
-							EnumAdaptor.valueOf(1, NotUseAtr.class)));
+
+		List<PersonInforDisplayControl> result = Arrays.asList(
+				new PersonInforDisplayControl(EnumAdaptor.valueOf(ConditionATRWorkSchedule.INSURANCE_STATUS.value, ConditionATRWorkSchedule.class),
+						null),
+				new PersonInforDisplayControl(EnumAdaptor.valueOf(ConditionATRWorkSchedule.LICENSE_ATR.value, ConditionATRWorkSchedule.class),
+						EnumAdaptor.valueOf(1, NotUseAtr.class))
+				);
 
 		displayControlPersonalCondition = DisplayControlPersonalCondition.get(displayControlPersonalCondition.getCompanyID(), 
 				result, displayControlPersonalCondition.getOtpWorkscheQualifi());
@@ -52,6 +51,7 @@ public class DisplayControlPersonalConditionTest {
 		assertThat(displayControlPersonalCondition.getOtpWorkscheQualifi().isPresent()).isTrue();
 		
 	}
+	//Thieu Unittest cho ham acquireInforDisplayControlPersonalCondition
 }
 
 
