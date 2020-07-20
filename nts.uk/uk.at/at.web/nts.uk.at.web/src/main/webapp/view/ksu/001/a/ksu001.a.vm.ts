@@ -65,10 +65,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         indexBtnToRight: number = 0;
         indexBtnToDown: number  = 0;
         
-        // 
-        
+        //
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
+        
+        isClickChangeDisplayMode: boolean = false;
+        listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
         
         affiliationId: any = null;
         affiliationName: KnockoutObservable<string> = ko.observable('');
@@ -81,9 +83,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataWorkEmpCombine: KnockoutObservableArray<any> = ko.observableArray([]);
         dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
         isInsuranceStatus: boolean = false;
-        listColorOfHeader: KnockoutObservableArray<ksu001.common.modelgrid.CellColor> = ko.observableArray([]);
+        
         flag: boolean = true;
-        isClickChangeDisplayMode: boolean = false;
+        
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
         arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
         // 表示形式 ＝ 日付別(固定) = 0
@@ -242,7 +244,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         /**
-         * laays setting ban dau
+         * get setting ban dau
          */
         getSettingDisplayWhenStart() {
             let self = this;
@@ -338,8 +340,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             for (let i = 0; i < 30; i++) {
                 detailContentDs.push(new ksu001.common.modelgrid.ExItem(i.toString()));
-                let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
-                leftmostDs.push({ empId: i.toString(), empName: eName });
+                let codeNameOfEmp = nts.uk.text.padRight("社員名" + i, " ", 10) + "EmpAAA";
+                leftmostDs.push({ empId: i.toString(), codeNameOfEmp: codeNameOfEmp });
                 middleDs.push({ empId: i.toString(), team: 'A', rank: 100 + i + "", qualification: 1 + i + "" });
                 updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
                 if (i % 2 === 0) middleContentDeco.push(new ksu001.common.modelgrid.CellColor("over1", i.toString(), "cell-red"));
@@ -349,14 +351,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 0));
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xseal", 1));
                     detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", i.toString(), "xcustom", 1));
-//                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", i.toString(), "xhidden", 0));
-//                    detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", i.toString(), "xhidden", 1));
                 }
                 // Add both child cells to mark them respectively
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 0));
                 detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_2", "2", "blue-text", 1));
-//                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", "3", "black-corner-mark", 2));
-//                detailContentDeco.push(new ksu001.common.modelgrid.CellColor("_3", "4", "red-corner-mark", 3));
                 if (i < 1000) timeRanges.push(new ksu001.common.modelgrid.TimeRange("_2", i.toString(), "17:00", "7:00", 1));
                 vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
                 newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00" });
@@ -463,7 +461,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             // phần leftMost
             let leftmostColumns = [{
-                key: "empName", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "codeNameOfEmp", headerText: getText("KSU001_56"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
             }];
 
@@ -600,7 +598,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 errorMessagePopup: true,
                 determination: {
                     rows: [0],
-                    columns: ["empName"]
+                    columns: ["codeNameOfEmp"]
                 },
                 heightSetter: {
                     showBodyHeightButton: true,
@@ -631,57 +629,82 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             console.log(performance.now() - start);
         }
         
-
         /**
-         * CCG001 return listEmployee
-         * When listEmployee changed, call function updateExtable to refresh data of exTable
+         * Set color for cell header: 日付セル背景色文字色制御
+         * 
          */
-        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
-            let self = this;
-            self.stopRequest(false);
+        setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
 
-            self.empItems.removeAll();
-            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.empItems.push(new PersonModel({
-                    empId: item.employeeId,
-                    empCd: item.employeeCode,
-                    empName: item.employeeName,
-                    affiliationId: item.affiliationId,
-                    affiliationCode: item.affiliationCode,
-                    affiliationName: item.affiliationName,
-                }));
-            });
-            self.affiliationId = self.empItems()[0].affiliationId;
-            self.affiliationName(self.empItems()[0].affiliationName);
-            // get data for listSid
-            self.listSid([]);
-            let arrSid: string[] = [];
-            _.each(self.empItems(), (x) => {
-                arrSid.push(x.empId);
-            });
-            self.listSid(arrSid);
-            //getDataOfWorkPlace(): get workPlaceName to display A3-1
-            //getDataWkpPattern() : get data WorkPattern for screen Q
-            $.when(self.getDataWkpPattern()).done(() => {
-                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.initScreenQ();
+            if (self.isClickChangeDisplayMode) {
+                self.isClickChangeDisplayMode = false;
+                _.map(self.listColorOfHeader(), (item) => {
+                    detailHeaderDeco.push(item);
+                });
+                dfd.resolve();
+                return;
+            }
+            // getDataSpecDateAndHoliday always query to server
+            // because date is changed when click nextMonth or backMonth
+            $.when(self.getDataSpecDateAndHoliday()).done(() => {
+                _.each(self.arrDay, (date) => {
+                    let ymd = date.yearMonthDay;
+                    let dateFormat = moment(date.yearMonthDay).format('YYYY/MM/DD');
+                    if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                    } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                    } else if (date.weekDay === '土') {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-saturday color-schedule-saturday"));
+                    } else if (date.weekDay === '日') {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-schedule-sunday color-schedule-sunday"));
+                    } else {
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 0, "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + ymd, 1, "bg-weekdays color-weekdays"));
+                    }
+                });
+
+                // set class bg-schedule-that-day for currentDay
+                if (self.dateTimePrev() <= moment().format('YYYY/MM/DD') && moment().format('YYYY/MM/DD') <= self.dateTimeAfter()) {
+                    let arrCellColorFilter = _.filter(detailHeaderDeco, ['columnKey', "_" + moment().format('YYYYMMDD')]);
+                    _.map(arrCellColorFilter, (cellColor: any) => {
+                        cellColor.clazz = cellColor.clazz.replace(/bg-\w*/g, 'bg-schedule-that-day');
+                    });
                 }
 
-                if (self.selectedModeDisplayObject() == 1) {
-                    // intended data display mode 
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                } else {
-                    // actual data display mode 
-                    // in phare 2, set actual data = intended data
-                    self.setDatasource().done(function() {
-                        self.updateExTable();
-                    });
-                }
-            }).fail(() => { self.stopRequest(true); });
+                self.listColorOfHeader(detailHeaderDeco);
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
+        /**
+         * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
+         */
+        getDataSpecDateAndHoliday(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    workplaceId: self.empItems()[0] ? self.empItems()[0].affiliationId : null,
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft()
+                };
+            service.getDataSpecDateAndHoliday(obj).done(function(data) {
+                self.dataWkpSpecificDate(data.listWkpSpecificDate);
+                self.dataComSpecificDate(data.listComSpecificDate);
+                self.dataPublicHoliday(data.listPublicHoliday);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+
         // save setting hight cua grid vao localStorage
         saveHeightGridToLocal() {
             let self = this;
@@ -1014,6 +1037,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".editMode").css({"background-color" : "#007fff" , "color" : "#ffffff"});
             $(".confirmMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            
+            
+            
             nts.uk.ui.block.clear();
         }
 
@@ -1023,8 +1049,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set color button
             $(".confirmMode").css({"background-color" : "#007fff", "color" : "#ffffff"});
             $(".editMode").css({"background-color" : "#ffffff" , "color" : "#000000"});
+            
+            
             nts.uk.ui.block.clear();
         }
+        
+        
 
         /**
          * paste data on cell

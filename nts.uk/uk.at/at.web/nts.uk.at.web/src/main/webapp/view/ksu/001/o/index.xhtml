@@ -1,11 +1,11 @@
 <div id="contents-area cf" style="margin-top: 10px;">
 	<div id="set-work-type">
-		<div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
-		<div tabindex="30" id="combo-box1"
+		<div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
+		<div tabindex="30" id="combo-box1" class="Abc2"
 			data-bind="ntsComboBox: {
 								options: listWorkType,
 								optionsValue: 'workTypeCode',
-								visibleItemsCount: 20,
+								visibleItemsCount: 10,
 								value: selectedWorkTypeCode,
 								optionsText: 'labelDisplay',
 								editable:  false,
@@ -13,18 +13,17 @@
 								width: 300,
 								columns: [
 									{ prop: 'workTypeCode', length: 3 },
-									{ prop: 'symbolicName', length: 1 },
 									{ prop: 'name', length: 6 },
 									{ prop: 'memo', length: 20 }]}">
 		</div>
 	</div>
 	<div id="set-work-time">
-		<div data-bind="ntsFormLabel: {enable: isEnableButton}">#{i18n.getText('KSU001_65')}</div>
-		<div tabindex="35" id="combo-box2"
+		<div id="Abc3" data-bind="ntsFormLabel: {enable: isEnableButton}">#{i18n.getText('KSU001_65')}</div>
+		<div tabindex="35" id="combo-box2" class="Abc4"
 			data-bind="ntsComboBox: {
 										options: listWorkTimeComboBox ,
 										optionsValue: 'codeName',
-										visibleItemsCount: 20,
+										visibleItemsCount: 10,
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
 										editable:  false,
