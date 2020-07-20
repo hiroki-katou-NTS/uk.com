@@ -30,7 +30,7 @@ module nts.uk.at.view.kdp004.a {
 			retry: number = 0;
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
 			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
-			listCompany:  KnockoutObservableArray<any> = ko.observableArray([]); 
+			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
 			constructor() {
 				let self = this;
 
@@ -344,18 +344,20 @@ module nts.uk.at.view.kdp004.a {
 					oha: '../../share/voice/0_oha.mp3',
 					otsu: '../../share/voice/1_otsu.mp3'
 				}
-				const audio: HTMLAudioElement = document.createElement('audio');
-				const source: HTMLSourceElement = document.createElement('source');
+
+				let source = '';
 
 				if (audioType === 1) {
-					source.src = url.oha;
+					source = url.oha;
 				}
 
 				if (audioType === 2) {
-					source.src = url.otsu;
+					source = url.otsu;
 				}
-				audio.append(source);
-				audio.play();
+				if (source) {
+					let audio = new Audio(source);
+					audio.play();
+				}
 			}
 
 			checkHis(self: ScreenModel) {
