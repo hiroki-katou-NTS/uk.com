@@ -30,7 +30,7 @@ module nts.uk.at.kdp003.s {
 					const engraving: ENGRAVING = ko.unwrap(vm.filter.engraving);
 
 					_.chain(allStamps)
-						.orderBy(['stampDate', 'stampTime'], ['desc', 'desc'])
+						.orderBy(['stampDate', 'stampTime'], ['asc', 'asc'])
 						.each((item: StampData) => {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');

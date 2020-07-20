@@ -215,6 +215,7 @@ module nts.uk.at.kdp003.f {
 		personalId: string;
 		employeeId: string;
 		employeeCode: string;
+		password: string;
 	}
 
 	export interface TimeStampLoginData {
@@ -234,7 +235,7 @@ module nts.uk.at.kdp003.f {
 		employeeId: string;
 		employeeCode: string;
 		employeeName?: string;
-		password: string;
+		password?: string;
 	}
 
 	export class Model {
