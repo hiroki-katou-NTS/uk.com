@@ -15,9 +15,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class EmployeeLeaveJobPeriodImport {
 	/** 社員ID **/
 
-	private String empID;
+	private final String empID;
 	/** 期間 **/
-	private DatePeriod datePeriod;
+	private final DatePeriod datePeriod;
 
 	// 	[C-0] 社員の休職期間Imported( 社員ID, 期間 )													
 	public EmployeeLeaveJobPeriodImport(String empID, DatePeriod datePeriod) {
