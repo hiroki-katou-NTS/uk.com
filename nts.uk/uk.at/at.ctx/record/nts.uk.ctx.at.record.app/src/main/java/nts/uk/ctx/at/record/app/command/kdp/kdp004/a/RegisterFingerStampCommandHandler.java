@@ -145,8 +145,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().companyCode(), sid);
 		}
 
 		@Override
