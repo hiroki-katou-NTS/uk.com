@@ -4,7 +4,7 @@ module nts.uk.at.kdp003.a {
 	const stampEmployeeSelectionTemplate = `
 		<div data-bind="ntsDatePicker: { value: baseDate }"></div>
 		<div class="button-group-filter" data-bind="foreach: buttons">
-			<button class="large filter" data-bind="
+			<button class="small filter" data-bind="
 					i18n: text, 
 					css: { 'extend': width === 2, selected: ko.toJS($component.button) === text },
 					click: function() { $component.button(text); }
@@ -15,7 +15,7 @@ module nts.uk.at.kdp003.a {
 					i18n: '一覧にない社員で打刻する',
 					click: loginEmployeeNotInList,
 					css: { 
-						'active': ko.unwrap(mode) === 'OUT_LIST'
+						'active': ko.unwrap(options.selectedId) === null
 					}"></button>
 			<div class="list-employee">
 				<table id="grid-employee"></table>
@@ -29,14 +29,33 @@ module nts.uk.at.kdp003.a {
 	})
 	export class StampEmployeeSelectionComponent extends ko.ViewModel {
 		$grid!: JQuery;
-		
-		mode: KnockoutObservable<MODE> = ko.observable('IN_LIST');
+
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-		
+
 		button: KnockoutObservable<string> = ko.observable('KDP003_111');
 
 		buttons: KnockoutObservableArray<Button> = ko.observableArray([]);
-		employees: KnockoutObservableArray<Employee> = ko.observableArray([]);
+
+		constructor(private options: EmployeeListParam) {
+			super();
+
+			const vm = this;
+
+			if (!vm.options) {
+				vm.options = {
+					employees: ko.observableArray([]),
+					selectedId: ko.observable(null)
+				};
+			} else {
+				if (!_.has(vm.options, 'employees')) {
+					vm.options.employees = ko.observableArray([]);
+				}
+
+				if (!_.has(vm.options, 'selectedId')) {
+					vm.options.selectedId = ko.observable(null);
+				}
+			}
+		}
 
 		created() {
 			const vm = this;
@@ -68,14 +87,14 @@ module nts.uk.at.kdp003.a {
 					})
 				});
 
-			vm.employees(employees);
+			vm.options.employees(employees);
 			// end mock data
 
 			ko.computed({
 				read: () => {
 					const $grid = vm.$grid;
 					const type = ko.unwrap(vm.button);
-					const dataSource = ko.unwrap(vm.employees);
+					const dataSource = ko.unwrap(vm.options.employees);
 
 					const filtereds = [];
 					const doFilter = (codes: string[]) => {
@@ -165,18 +184,23 @@ module nts.uk.at.kdp003.a {
 							mode: "row",
 							rowSelectionChanged: function(evt, ui) {
 								const { index } = ui.row;
-								const dataSources = ko.toJS(vm.employees);
+								const dataSources = ko.unwrap(vm.options.employees);
 
 								if (dataSources[index]) {
-									vm.mode('IN_LIST');
-									console.log(dataSources[index]);
+									vm.options.selectedId(dataSources[index].id);
+								} else {
+									vm.options.selectedId(null);
+
+									if ($grid && $grid.data('igGrid')) {
+										$grid.igGridSelection('clearSelection');
+									}
 								}
 							}
 						}
 					],
 					width: "240px",
 					height: `${65 * 7}px`,
-					dataSource: _.orderBy(ko.toJS(vm.employees), ['name', 'code'], ['asc', 'asc'])
+					dataSource: _.orderBy(ko.toJS(vm.options.employees), ['name', 'code'], ['asc', 'asc'])
 				});
 
 			_.extend(window, { vmm: vm, $grid });
@@ -201,26 +225,33 @@ module nts.uk.at.kdp003.a {
 		loginEmployeeNotInList() {
 			const vm = this;
 			const $grid = vm.$grid;
-			
-			vm.mode('OUT_LIST');
+
+			vm.options.selectedId(null);
 
 			if ($grid && $grid.data('igGrid')) {
 				$grid.igGridSelection('clearSelection');
 			}
 		}
+
+		destroy() {
+			const vm  = this;
+			console.log('destroy', vm);
+		}
 	}
-	
-	
-	type MODE = 'IN_LIST' | 'OUT_LIST';
 
 	interface Button {
 		text: string;
 		width: 1 | 2;
 	}
 
-	interface Employee {
+	export interface Employee {
 		id: string;
 		code: string;
 		name: string;
+	}
+
+	export interface EmployeeListParam {
+		employees: KnockoutObservableArray<Employee>;
+		selectedId: KnockoutObservable<string | null>;
 	}
 }

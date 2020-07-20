@@ -6,14 +6,23 @@ module nts.uk.at.kdp003.a {
 
 	const API = {
 		SETTING: 'at/record/stamp/management/personal/startPage',
-		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
+		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
+		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
+		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode'
 	};
+
+	const KDP003_SAVE_DATA = 'KDP003_DATA';
 
 	type STATE = 'LOGING_IN' | 'LOGIN_FAIL' | 'LOGIN_SUCCESS';
 
 	@bean()
-	export class KDP003AViewModel extends ko.ViewModel {
+	export class ViewModel extends ko.ViewModel {
 		state: KnockoutObservable<STATE> = ko.observable('LOGING_IN');
+
+		employeeData: EmployeeListParam = {
+			employees: ko.observableArray([]),
+			selectedId: ko.observable(null)
+		};
 
 		tabs: KnockoutObservableArray<any> = ko.observableArray([]);
 		stampToSuppress: KnockoutObservable<any> = ko.observable({});
@@ -21,25 +30,11 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
-			vm.$window.storage('KDP003')
-				.then((data: StorageData) => {
-					if (!data) {
-						return vm.$window.storage('KDP003', {
-							CID: '',
-							CCD: '000000000000',
-							SID: '',
-							SCD: '',
-							PWD: '',
-							WKPID: '',
-							WKLOC_CD: ''
-						})
-							.then(() => vm.$window.storage('KDP003'));
-					}
+			_.extend(window, { vm });
+		}
 
-					return data;
-				}).then((data: StorageData) => {
-					console.log(data);
-				});
+		mounted() {
+			const vm = this;
 
 			vm.$blockui('show')
 				.then(() => vm.$ajax('at', API.SETTING))
@@ -54,46 +49,132 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 				})
-				.fail((res) => {
-					vm.$dialog.error({ messageId: res.messageId })
-						.then(() => vm.$jump("com", "/view/ccg/008/a/index.xhtml"));
-				})
-				.always(() => vm.$blockui('clear'));
-
-			_.extend(window, { vm });
-		}
-
-		mounted() {
-			const vm = this;
-
-			vm.$window
-				.modal('at', '/view/kdp/003/f/index.xhtml', { mode: 'admin' })
-				.then((data: f.TimeStampLoginData) => {
+				.then(() => vm.$window.storage(KDP003_SAVE_DATA))
+				.then((data: StorageData) => {
 					if (!data) {
-						vm.state('LOGIN_FAIL');
-						return false;
+						// first login
+						return vm.$window
+							.modal('at', '/view/kdp/003/f/index.xhtml', { mode: 'admin' });
 					} else {
-						if (data.msgErrorId || data.errorMessage) {
+						// if data login exist
+						return data;
+					}
+				})
+				.then((data: f.TimeStampLoginData | StorageData) => {
+					if (!data) {
+						vm.state('LOGIN_SUCCESS');
+						vm.employeeData.selectedId(null);
+						return false;
+					} else if (_.has(data, 'em')) {
+						const loginData = data as f.TimeStampLoginData;
+
+						if (loginData.msgErrorId || loginData.errorMessage) {
 							// login faild
 							vm.state('LOGIN_FAIL');
 							return false;
 						} else {
 							// login success
 							vm.state('LOGIN_SUCCESS');
-							return true;
+
+							const storageData: StorageData = {
+								CID: loginData.em.companyId,
+								CCD: loginData.em.companyCode,
+								PWD: loginData.em.password,
+								SCD: loginData.em.employeeCode,
+								SID: loginData.em.employeeId,
+								WKLOC_CD: '',
+								WKPID: []
+							};
+
+							return vm.$window
+								.storage(KDP003_SAVE_DATA, storageData)
+								.then(() => true);
 						}
+					} else {
+						const {
+							CCD,
+							CID,
+							PWD,
+							SCD,
+							SID
+						} = data as StorageData;
+
+						const loginData: f.ModelData = {
+							companyCode: CCD,
+							companyId: CID,
+							employeeCode: SCD,
+							employeeId: SID,
+							password: PWD
+						};
+
+						// auto login
+						return vm.$ajax(API.LOGIN_ADMIN, loginData)
+							.then((data: f.TimeStampLoginData) => {
+								if (!data || data.errorMessage || data.msgErrorId) {
+									vm.state('LOGIN_FAIL');
+								} else {
+									vm.state('LOGIN_SUCCESS');
+								}
+
+								return !!data;
+							})
+							.fail(() => false);
 					}
 				})
+				// check storage data
 				.then((state: boolean) => {
-					if (state) {
-						return vm.$window.modal('at', '/view/kdp/003/k/index.xhtml');
-					} else {
+					if (!state) {
 						return null;
+					} else {
+						return vm.$window.storage(KDP003_SAVE_DATA)
+							.then((data: StorageData) => {
+								if (data && data.WKPID) {
+									return { selectedId: data.WKPID };
+								}
+
+								// if not exist workplaceID
+								return vm.$window.modal('at', '/view/kdp/003/k/index.xhtml');
+							});
 					}
 				})
 				.then((data: null | k.Return) => {
-					console.log(data);
-				});
+					if (!data) {
+						vm.state('LOGIN_FAIL');
+
+						return false;
+					} else {
+						return vm.$window.storage(KDP003_SAVE_DATA)
+							// update workplaceId to storage
+							.then((storage: StorageData) => {
+								if (storage) {
+									if (_.isArray(data.selectedId)) {
+										storage.WKPID = data.selectedId;
+									} else {
+										storage.WKPID = [data.selectedId];
+									}
+								}
+								vm.$window.storage(KDP003_SAVE_DATA, storage);
+							})
+							// return data from storage
+							.then(() => vm.$window.storage(KDP003_SAVE_DATA));
+					}
+				})
+				.then((data: false | StorageData) => {
+					// if login and storage data success
+					if (data) {
+						vm.loadData(data);
+					}
+				})
+				.fail((res) => vm.$dialog
+					.error({ messageId: res.messageId })
+					.then(() => vm.state('LOGIN_FAIL')))
+				.always(() => vm.$blockui('clear'));
+		}
+
+		// 打刻入力(氏名選択)で社員の一覧を取得する
+		loadData(data: StorageData) {
+			const vm = this;
+			console.log(data);
 		}
 
 		setting() {
@@ -102,31 +183,83 @@ module nts.uk.at.kdp003.a {
 			vm.$window
 				.modal('/view/kdp/003/f/index.xhtml', { mode: 'admin' })
 				.then((data: f.TimeStampLoginData) => {
-					console.log(data);
+					if (data) {
+						vm.$window.storage(KDP003_SAVE_DATA)
+							.then((storage: StorageData) => {
+								if (storage) {
+									storage.CCD = data.em.companyCode;
+									storage.CID = data.em.companyId;
+									storage.PWD = data.em.password;
+									storage.SCD = data.em.employeeCode;
+									storage.SID = data.em.employeeId;
+									storage.WKLOC_CD = '';
+									storage.WKPID = [];
+								}
+								else {
+									storage = {
+										CCD: data.em.companyCode,
+										CID: data.em.companyId,
+										PWD: data.em.password,
+										SCD: data.em.employeeCode,
+										SID: data.em.employeeId,
+										WKLOC_CD: '',
+										WKPID: []
+									};
+								}
+
+								vm.$window.storage(KDP003_SAVE_DATA, storage);
+							});
+
+						return vm.$window.modal('at', '/view/kdp/003/k/index.xhtml');
+					}
+
+					return null;
+				})
+				.then((data: null | k.Return) => {
+					if (!data) {
+						return false;
+					} else {
+						return vm.$window.storage(KDP003_SAVE_DATA)
+							// update workplaceId to storage
+							.then((storage: StorageData) => {
+								if (storage) {
+									if (_.isArray(data.selectedId)) {
+										storage.WKPID = data.selectedId;
+									} else {
+										storage.WKPID = [data.selectedId];
+									}
+								}
+								vm.$window.storage(KDP003_SAVE_DATA, storage);
+							})
+							// return data from storage
+							.then(() => vm.$window.storage(KDP003_SAVE_DATA));
+					}
+				})
+				.then((data: false | StorageData) => {
+					// if login and storage data success
+					if (data) {
+						vm.loadData(data);
+					}
 				});
 		}
 
-		company() {
+		stampHistory() {
 			const vm = this;
 
-			vm.playAudio();
-
-			// vm.$window.modal('/view/kdp/003/f/index.xhtml', { mode: 'employee' });
-
-			console.log(vm);
-		}
-
-
-		playAudio() {
-			const vm = this;
-
-			const audio: HTMLAudioElement = document.createElement('audio');
-			const source: HTMLSourceElement = document.createElement('source');
-
-			source.src = 'https://www.w3schools.com/TAGS/horse.ogg';
-			audio.append(source);
-
-			audio.play();
+			vm.$window
+				.storage(KDP003_SAVE_DATA)
+				.then((data: StorageData) => {
+					return vm.$window.modal('/view/kdp/003/f/index.xhtml', {
+						mode: 'employee',
+						company: { id: data.CID },
+						employee: { id: data.SID, code: data.SCD }
+					});
+				})
+				.then((data: f.TimeStampLoginData) => {
+					if (data) {
+						return vm.$window.modal('/view/kdp/003/s/index.xhtml');
+					}
+				});
 		}
 
 		stampButtonClick(btn: any, layout: any) {
@@ -145,14 +278,13 @@ module nts.uk.at.kdp003.a {
 		}
 	}
 
-
 	export interface StorageData {
 		CID: string;
 		CCD: string;
 		SID: string;
 		SCD: string;
 		PWD: string;
-		WKPID: string;
+		WKPID: string[];
 		WKLOC_CD: string;
 	}
 }

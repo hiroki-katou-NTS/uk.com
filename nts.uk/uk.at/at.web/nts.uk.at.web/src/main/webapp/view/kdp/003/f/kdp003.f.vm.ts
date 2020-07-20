@@ -102,15 +102,31 @@ module nts.uk.at.kdp003.f {
 				const { company, employee } = params as EmployeeModeParam;
 
 				if (company) {
-					model.companyId(company.id);
-					model.companyCode(company.code);
-					model.companyName(company.name);
+					if (company.id) {
+						model.companyId(company.id);
+					}
+
+					if (company.code) {
+						model.companyCode(company.code);
+					}
+
+					if (company.name) {
+						model.companyName(company.name);
+					}
 				}
 
 				if (employee) {
-					model.employeeId(employee.id);
-					model.employeeCode(employee.code);
-					model.employeeName(employee.name);
+					if (employee.id) {
+						model.employeeId(employee.id);
+					}
+
+					if (employee.code) {
+						model.employeeCode(employee.code);
+					}
+
+					if (employee.name) {
+						model.employeeName(employee.name);
+					}
 				}
 			}
 		}
@@ -137,7 +153,7 @@ module nts.uk.at.kdp003.f {
 			const { mode } = vm.params as AdminModeParam;
 			const { passwordRequired } = vm.params as EmployeeModeParam;
 			const model: ModelData = ko.toJS(vm.model);
-			const { password } = model;
+			const { password, companyCode } = model;
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
@@ -174,7 +190,8 @@ module nts.uk.at.kdp003.f {
 						})
 						.then((response: TimeStampLoginData) => {
 							_.extend(response.em, {
-								password
+								password,
+								companyCode
 							});
 
 							vm.$window.close(response);
@@ -212,10 +229,11 @@ module nts.uk.at.kdp003.f {
 
 	export interface EmployeeData {
 		companyId: string;
+		companyCode?: string;
 		personalId: string;
 		employeeId: string;
 		employeeCode: string;
-		password: string;
+		password?: string;
 	}
 
 	export interface TimeStampLoginData {

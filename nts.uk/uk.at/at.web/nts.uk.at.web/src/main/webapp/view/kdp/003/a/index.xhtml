@@ -37,8 +37,7 @@
 					<div class="time-sheet">
 						<div data-bind="component: {
 								name: 'stamp-employee-selection',
-								params: {
-								}
+								params: employeeData
 							}">
 						</div>
 					</div>
@@ -53,7 +52,7 @@
 								},
 								events: {
 									setting: function() { $vm.setting.apply($vm, []); },
-									company: function() { $vm.company.apply($vm, []); }
+									company: function() { $vm.stampHistory.apply($vm, []); }
 								}
 							}
 						}"></div>
