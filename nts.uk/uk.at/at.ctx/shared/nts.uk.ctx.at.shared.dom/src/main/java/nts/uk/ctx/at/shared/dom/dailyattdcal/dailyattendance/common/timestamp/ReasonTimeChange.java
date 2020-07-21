@@ -21,7 +21,9 @@ public class ReasonTimeChange implements DomainObject {
 	@Setter
 	private TimeChangeMeans timeChangeMeans;
 	
+	
 	//打刻方法
+	@Setter
 	private Optional<EngravingMethod> engravingMethod;
 
 	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, EngravingMethod engravingMethod) {

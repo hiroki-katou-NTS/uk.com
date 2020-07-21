@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor;
+package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.deleteworkinfor.DeleteWorkinfor;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor.sysdomain.DeleteSystemDomain;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 
 /**
- * 勤務情報を反映する
+ * 日別実績の前データを削除する
  * @author tutk
  *
  */
 @Stateless
-public class ReflectWorkInfor {
+public class DeleteWorkInfor {
 	@Inject
-	private DeleteWorkinfor deleteWorkinfor;
+	private DeleteSystemDomain deleteWorkinfor;
 	
 	@Inject
 	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
@@ -64,7 +64,7 @@ public class ReflectWorkInfor {
 	@Inject
 	private RemarksOfDailyPerformRepo remarks;
 	
-	public void reflectWorkInfor(String companyId,String employeeId,GeneralDate ymd) {
+	public void deleteWorkInfor(String companyId,String employeeId,GeneralDate ymd) {
 		
 		//「情報」系のドメイン削除する
 		deleteWorkinfor.delete(companyId, employeeId, ymd);

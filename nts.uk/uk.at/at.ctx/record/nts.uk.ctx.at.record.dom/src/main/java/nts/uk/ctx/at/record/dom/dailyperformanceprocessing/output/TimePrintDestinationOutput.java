@@ -22,4 +22,12 @@ public class TimePrintDestinationOutput {
 	private TimeChangeMeans stampSourceInfo;
 	//時刻
 	private TimeWithDayAttr timeOfDay;
+	public TimePrintDestinationOutput(WorkLocationCD locationCode, TimeChangeMeans stampSourceInfo,
+			TimeWithDayAttr timeOfDay) {
+		super();
+		this.locationCode = locationCode;
+		this.stampSourceInfo = stampSourceInfo;
+		this.timeOfDay = timeOfDay;
+	}
+	
 }

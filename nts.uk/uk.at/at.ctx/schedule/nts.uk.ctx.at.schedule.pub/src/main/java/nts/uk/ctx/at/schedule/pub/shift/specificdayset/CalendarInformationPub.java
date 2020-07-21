@@ -10,5 +10,8 @@ import nts.arc.time.GeneralDate;
 public interface CalendarInformationPub {
 	
 	public CalendarInformationExport getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date);
+	
+	//RQ651：稼働日区分を取得する
+	public Integer getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date);
 
 }

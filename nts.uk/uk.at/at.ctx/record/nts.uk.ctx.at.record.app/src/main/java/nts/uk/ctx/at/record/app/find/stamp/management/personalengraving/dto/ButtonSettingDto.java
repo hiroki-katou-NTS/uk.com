@@ -188,7 +188,7 @@ public class ButtonSettingDto {
 		}
 		
 		// 14
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.NONE.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.NONE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				&& this.btnReservationArt == ReservationArt.NONE.value) {
 			return 1;
@@ -209,14 +209,14 @@ public class ButtonSettingDto {
 		}
 		
 		// 17
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				&& this.btnReservationArt == ReservationArt.NONE.value) {
 			return 1;
 		}
 		
 		// 18
-		if (this.changeClockArt == ChangeClockArt.FIX.value && this.changeCalArt == ChangeCalArt.BRARK.value
+		if (this.changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && this.changeCalArt == ChangeCalArt.BRARK.value
 				&& this.setPreClockArt == SetPreClockArt.NONE.value && this.changeHalfDay == false
 				&& this.btnReservationArt == ReservationArt.NONE.value) {
 			return 1;
