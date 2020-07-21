@@ -36,7 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand_Old, ProcessResult> {
+public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommandPC, ProcessResult> {
 	//private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
@@ -45,7 +45,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 	private ApplicationRepository_New applicationRepository;
 
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand_Old> context) {
+	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommandPC> context) {
 		// error EA refactor 4
 		/*AddAppWorkChangeCommand command = context.getCommand();
 		// Command data

@@ -36,8 +36,9 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             });
 
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
-                let dataStored = vm.$window.storage('childData');
-                console.log(dataStored);
+                vm.$window.storage('childData').then(rs => {
+                    console.log(rs);           
+                });
             });
         }
     }

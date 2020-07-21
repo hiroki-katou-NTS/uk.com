@@ -36,22 +36,22 @@ public class CreateApplicationCommand {
 	private List<String> employeeIDLst;
 	
 	/**
-	 * 
+	 * 申請種類
 	 */
 	private Integer appType;
 	
 	/**
-	 * 
+	 * 申請日
 	 */
 	private GeneralDate appDate;
 	
 	/**
-	 * 
+	 * 定型理由
 	 */
 	private Integer opAppStandardReasonCD;
 	
 	/**
-	 * 
+	 * 申請理由
 	 */
 	private String opAppReason;
 	

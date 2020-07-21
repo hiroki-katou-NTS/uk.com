@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
     
         created(params: any) {
             const vm = this;
-            vm.application = ko.observable(new Application("", [], 1, 2, "", 0, ""));
+            vm.application = ko.observable(new Application("", 1, [], 2, "", "", 0));
             vm.appWorkChange = ko.observable(new AppWorkChange("001", "001", 100, 200));
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
         }
@@ -34,12 +34,24 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
         
         register() {
             const vm = this;
-            console.log(ko.toJS(vm.application()));
-            console.log(ko.toJS(vm.appWorkChange()));
+            vm.$blockui("show");
+            vm.$ajax(API.register, {
+                workChange: ko.toJS(vm.appWorkChange()),
+                application: ko.toJS(vm.application()),
+                appDispInfoStartupOutput: ko.toJS(vm.appDispInfoStartupOutput())
+            }).done((successData: any) => {
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                    vm.$blockui("hide");
+                });
+            }).fail((failData: any) => {
+                vm.$blockui("hide");    
+            });
+            
         }
     }
     
     const API = {
-        startNew: "at/request/application/workchange/startNew"
+        startNew: "at/request/application/workchange/startNew",
+        register: "at/request/application/workchange/addworkchange_PC"
     }
 }

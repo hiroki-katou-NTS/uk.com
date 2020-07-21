@@ -13,7 +13,8 @@ module nts.uk.at.view.kaf000_ref.a.component2.viewmodel {
             vm.employeeName = ko.observable("employeeName");
             
             vm.appDispInfoStartupOutput.subscribe(value => {
-                vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);                 
+                vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);   
+                params.application().employeeIDLst(_.map(value.appDispInfoNoDateOutput.employeeInfoLst, o => o.sid));              
             });
         }
     

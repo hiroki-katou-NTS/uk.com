@@ -118,6 +118,13 @@ public class Application implements DomainAggregate {
 		this.enteredPerson = enteredPerson;
 		this.inputDate = inputDate;
 		this.reflectionStatus = reflectionStatus;
+		this.opStampRequestMode = Optional.empty();
+		this.opReversionReason = Optional.empty();
+		this.opAppStartDate = Optional.empty();
+		this.opAppEndDate = Optional.empty();
+		this.opAppReason = Optional.empty();
+		this.opAppStandardReasonCD = Optional.empty();
+		
 	}
 	
 	public Application(Application application) {

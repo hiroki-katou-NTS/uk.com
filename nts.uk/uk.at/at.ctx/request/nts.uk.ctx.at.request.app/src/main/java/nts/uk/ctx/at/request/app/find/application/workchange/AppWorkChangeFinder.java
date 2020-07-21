@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand_Old;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandPC;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
@@ -110,7 +110,7 @@ public class AppWorkChangeFinder {
 		return null;
 	}
 
-	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand_Old command) {
+	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommandPC command) {
 		// error EA refactor 4
 		/*
 		 * AppWorkChangeDispInfo appWorkChangeDispInfo =
@@ -181,7 +181,7 @@ public class AppWorkChangeFinder {
 		return null;
 	}
 
-	public void checkBeforeUpdate(AddAppWorkChangeCommand_Old command) {
+	public void checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
 		// error EA refactor 4
 		/*
 		 * // Command data CreateApplicationCommand appCommand =
