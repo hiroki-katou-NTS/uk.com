@@ -218,7 +218,9 @@ module nts.uk.at.view.kmp001.c {
 				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
 				.then(() => vm.$window.storage('CDL009Output'))
 				.then((data: string | string[]) => {
-					vm.employee.employeeId(ko.toJS(data))
+					if (data != ''){
+						vm.employee.employeeId(ko.toJS(data))
+					}
 				});
 		}
 
