@@ -39,7 +39,7 @@ public enum StampMeans {
 
 	public final int value;
 
-	public final String name;
+	public final String nameId;
 
 	/** The Constant values. */
 	private final static StampMeans[] values = StampMeans.values();

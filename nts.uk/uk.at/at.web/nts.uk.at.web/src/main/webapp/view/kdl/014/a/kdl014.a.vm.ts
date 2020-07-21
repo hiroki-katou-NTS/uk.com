@@ -1,135 +1,187 @@
-module kdl014.a.viewmodel {
-    import modal = nts.uk.ui.windows.sub.modal;
-    import getShared = nts.uk.ui.windows.getShared;
-    import setShared = nts.uk.ui.windows.setShared;
+module nts.uk.at.view.kdl014.a {
+    import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
+    import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
     export class ScreenModel {
-        //Param get from test main-screen
-        employeeID: string;
-        startDate: string;
-        endDate: string;
-
-        //Param diplay on screen.
-        items: KnockoutObservableArray<StampModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        employeeCode: KnockoutObservable<String>;
-        employeeName: string;
-        startEndDate: string;
-
-        constructor() {
-            var self = this;
-            //Init param get from test main-screen.
-            self.startDate = '';
-            self.endDate = '';
-            self.employeeID = '';
-            self.employeeCode = "";
-
-            //Init param display in screen.
-            self.items = ko.observableArray([]);
-            self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL014_4"), key: 'date', width: 130 },
-                { headerText: nts.uk.resource.getText("KDL014_5"), key: 'attendanceTime', width: 100 },
-                { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 120 },
-                { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
-                { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
-            ]);
-            self.employeeName = '';
-            self.startEndDate = '';
-            $("#igGridStamp").igGrid({
-                width: '810px',
-                height: '435px',
-                dataSource: self.items(),
-                columns: self.columns()
-            });
-
-        }
-
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-
-            //Get data from main screen.
-            let data: any = getShared('KDL014A_PARAM');
-            let startTemp = data.startDate;
-            let endTemp = data.endDate;
-            self.employeeID = data.employeeID;
-
-            //Set value for param display in screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '　～　';
-            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
-            self.startEndDate = '' + self.startDate + '' + self.endDate;
+        empInfomationList = ko.observableArray([]);
+        columns: any;
+        currentCode = ko.observable();
+        selectedItem = ko.observable( '' );
+        listComponentOption: any;
+        employeeInputList = ko.observableArray([]);
+        
+        //Param start
+        start: string; //YYYY/MM/DD
+        end:string; ////YYYY/MM/DD
+        mode: number; //mode = 0: person, mode = 1: date
+        listEmp = [];//{employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''}
+        dataServer = [];
+        
+        constructor(){
+            let self = this;
+            self.mode = 1;
             
-            //self.employeeName = "name" + self.employeeID;
+            if (self.mode == 1) {
+                self.columns = ko.observableArray([
+                    { headerText: getText("KDL014_11"), key: 'code', hidden: true },
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_12")+ "</div>" , key: 'name', width: 100},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_13")+ "</div>" , key: 'dateShow', width: 115},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_14")+ "</div>" , key: 'time', width: 80},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_15")+ "</div>" , key: 'stampAtr', width: 70},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 200},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50},
+                ]);
+            } else {
+                self.columns = ko.observableArray([
 
-            //Create Param to get list Stamp from server.
-            let arrEmpCode: Array<string> = [];
-            arrEmpCode.push(self.employeeID);
-            let stampParam = new StampParam(startTemp, endTemp, arrEmpCode);
+                    { headerText: getText("KDL014_11"), key: 'code', hidden: true },
+                    { headerText: getText("KDL014_12"), key: 'name', hidden: true },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_13") + "</div>", key: 'dateShow', width: 115 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_14") + "</div>", key: 'time', width: 80 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_15") + "</div>", key: 'stampAtr', width: 90 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 250 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_17") + "</div>", key: 'locationInfo', width: 50 },
+                ]);
+            }
+               
+            self.employeeInputList.push({ id: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name' },
+                { id: '8f9edce4-e135-4a1e-8dca-ad96abe405d6', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name' });
 
-            //Get list stamp by param created.
-            service.getListStampDetail(stampParam).done(function(lstStamp: any) {
-                //List save Stamp list
-                let lstSource: Array<StampModel> = [];
-                
-                if (lstStamp.length > 0) {
-                    _.forEach(lstStamp, function(item) {
-                        //When cardNumber != '';
-                        if(item.cardNumber != ''){
-                            lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-                        }
-                        
-                        //Set employeeName by Dto of emloyeeName.
-                        self.employeeName = item.pname;
-                        self.employeeCode = item.employeeCode;
-                    });
-                };
-                //set list data source
-                self.items(_.orderBy(lstSource, ['date', 'attendanceTime'], ['asc', 'asc']));
-                $("#igGridStamp").igGrid({ dataSource: self.items() });
-                dfd.resolve();
-            }).fail(function(res) {
-                dfd.reject();
+            $('#emp-component').ntsLoadListComponent({
+                systemReference: SystemType.EMPLOYMENT,
+                isDisplayOrganizationName: false,
+                employeeInputList: self.employeeInputList,
+                targetBtnText: getText('KCP009_3'),
+                selectedItem: self.selectedItem,
+                tabIndex: 1
             });
 
+            self.selectedItem.subscribe((newValue) => {
+                self.filterGrid(newValue)
+            });
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            block.grayout();
+            let param = {
+                start: new Date('2019-07-13'),
+                end:new Date('2020-07-14'),
+                mode: 1, 
+                listEmp: [
+                    {employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''},
+                    {employeeId: '8f9edce4-e135-4a1e-8dca-ad96abe405d6', employeeCode: '', employeeName: '', affiliationName: ''}
+                ] 
+            };
+            
+            service.getInfo(param).done(function(data) {
+                _.orderBy(data, ['name','stampDateTime'], ['asc','asc']);
+                console.log(data);
+                self.dataServer = data.listEmps;
+                    self.selectedItem(self.employeeInputList()[0].id);
+                dfd.resolve();
+            }).fail(function (res) {
+                error({ messageId: res.messageId });
+            }).always(function () {
+                block.clear();
+            });
+            
+            dfd.resolve();
             return dfd.promise();
         }
-
-        close() {
+        
+        filterGrid(id:string){
+            let self = this;
+            let tg = [];
+            self.empInfomationList([]);
+            _.forEach(self.dataServer, function(item) {
+                if(item.employeeId === id){
+                    tg.push(new EmpInfomation(item));
+                }
+            });
+            self.empInfomationList(tg);
+        }
+        
+        cancel_Dialog(): any {
             nts.uk.ui.windows.close();
         }
     }
-
-
-    export class StampModel {
-        date: string;
-        attendanceTime: string;
-        stampReasonName: string;
-        stampAtrName: string;
-        stampMethodName: string;
+    
+    class EmpInfomation {
+        code: number;
+        name: string;
+        stampDateTime: string;
+        stampMeans: string;
+        stampAtr: string;
         workLocationName: string;
-        stampCombinationName: string;
-        constructor(date: string, attendanceTime: string, stampReasonName: string, stampAtrName: string, stampMethodName: string, workLocationName: string, stampCombinationName: string) {
-            var self = this;
-            self.date = date;
-            self.attendanceTime = attendanceTime;
-            self.stampReasonName = stampReasonName;
-            self.stampAtrName = stampAtrName;
-            self.stampMethodName = stampMethodName;
-            self.workLocationName = workLocationName;
-            self.stampCombinationName = stampCombinationName;
+        locationInfo: string;
+        time: string;
+        date: string;
+        color: number;
+        
+        constructor(param: any) {
+            let self = this;
+            self.code = param.code;
+            self.name = param.name;
+            self.stampDateTime = new Date().toString();
+            self.date = param.date;
+            self.time = param.time;
+            
+            // 0:出勤
+            if (param.stampAtr === '出勤') {
+                self.stampAtr = `<div style="text-align: left">` + param.stampAtr + '</div>';
+
+                // 1:退勤  
+            } else if (param.stampAtr === '退勤') {
+                self.stampAtr = `<div style="text-align: right">` + param.stampAtr + '</div>';
+
+            } else {
+                self.stampAtr = `<div style="text-align: center">` + param.stampAtr + '</div>';
+            }
+             
+            self.workLocationName = param.workLocationName;
+            
+            if ([1,2,3,4,7,8].includes(param.stampMeans)) {
+                self.time = "<span>" + getText("KDP002_120") + "   " + param.time + "</span>";
+            
+                // 5:スマホ打刻
+            } else if (param.stampMeans == 5) {
+                self.time = "<span>" + getText("KDP002_121") + "   " + param.time + "</span>";
+
+                // 6:タイムレコーダー打刻
+            } else if (param.stampMeans == 6) {
+                self.time = "<span>" + getText("KDP002_122") + "   " + param.time + "</span>";
+
+            } else {
+                self.time = "<span>     " + param.time + "</span>";
+            }
+            
+            let date = moment(param.stampDateTime).format("YYYY/MM/DD");
+            
+            if(new Date(date).getDay() == 6){
+                self.dateShow = "<span class='color-schedule-saturday'> " + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
+            
+            } else if (new Date(date).getDay() == 0) {
+                self.dateShow = "<span class='color-schedule-sunday'> " + nts.uk.time.applyFormat("Short_YMDW", date) + "</span>";
+            
+            } else {
+                self.dateShow = "<span>"+ nts.uk.time.applyFormat("Short_YMDW", date) + "</span>"            
+            }
+            
+//            if (param.locationInfo === null) {
+//                self.locationInfo = '<a href="https://www.google.co.jp/maps/place/' + param.locationInfo.latitude + ',' + param.locationInfo.longitude + '"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a>';
+//            }
+            self.locationInfo = '<div style="text-align: center;"><a href="https://www.google.co.jp/maps/place/35.165556, 136.905333"><img src="../img/Mapアイコン画像.png" height="20" width="20"/></a></div>';
         }
     }
-
-    export class StampParam {
-        startDate: string;
-        endDate: string;
-        sIDs: Array<string>;
-        constructor(startDate: string, endDate: string, sids: Array<string>) {
-            var self = this;
-            self.startDate = startDate;
-            self.endDate = endDate;
-            self.sIDs = sids;
-        }
+    
+    class SystemType {
+        static EMPLOYMENT = 1;
+        static SALARY = 2;
+        static PERSONNEL = 3;
+        static ACCOUNTING = 4;
+        static OH = 6;
     }
 }
