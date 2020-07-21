@@ -16,7 +16,7 @@ public class EmpLeaveWorkPeriodImportTest {
 
 	@Test
 	public void getter(){
-		EmpLeaveWorkPeriodImport target = EmpLeaveWorkPeriodImportHelper.EmpLeaveWorkPeriod.DUMMY;
+		EmpLeaveWorkPeriodImport target = EmpLeaveWorkPeriodImportHelper.getData();
 		NtsAssert.invokeGetters(target);
 	}
 }
