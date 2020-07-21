@@ -6,12 +6,25 @@ package nts.uk.screen.at.app.ksu001.eventinformationandpersonal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.Rank;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
@@ -19,6 +32,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRep
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.repository.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
@@ -27,6 +41,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalConditionRepo;
+import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.PersonalCondition;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -52,17 +67,29 @@ public class EventInfoAndPersonalConditionsPeriod {
 	private SpecificDateItemRepository specificDateItemRepo;
 	@Inject
 	private DisplayControlPersonalConditionRepo displayControlPerCondRepo;
+	@Inject
+	private BelongScheduleTeamRepository belongScheduleTeamRepo; 
+	@Inject
+	private ScheduleTeamRepository scheduleTeamRepo;
+	@Inject
+	private EmployeeRankRepository employeeRankRepo;
+	@Inject
+	private RankRepository rankRepo;
+	@Inject
+	private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+	@Inject
+	private NurseClassificationRepository nurseClassificationRepo;
 	
-
+	@Inject
 	public DataSpecDateAndHolidayDto get(EventInfoAndPerCondPeriodParam param) {
 		
 		// step 1
 		// ・List<Temporary「年月日情報」>
 		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
+		RequireImpl require = new RequireImpl(workplaceSpecificDateRepo, companySpecificDateRepo,
+				workplaceEventRepo, companyEventRepo, publicHolidayRepo, specificDateItemRepo);
 		
 		for (GeneralDate date = param.startDate; date.beforeOrEquals(param.endDate); date = date.addDays(1)){
-			RequireImpl require = new RequireImpl(workplaceSpecificDateRepo, companySpecificDateRepo,
-					workplaceEventRepo, companyEventRepo, publicHolidayRepo, specificDateItemRepo);
 			TargetOrgIdenInfor targetOrgIdenInfor = new  TargetOrgIdenInfor(param.workplaceGroupId == null ? TargetOrganizationUnit.WORKPLACE : TargetOrganizationUnit.WORKPLACE_GROUP, param.workplaceId, param.workplaceGroupId);
 			DateInformation dateInformation = null;
 			dateInformation = DateInformation.create(require, param.startDate, targetOrgIdenInfor);
@@ -76,12 +103,23 @@ public class EventInfoAndPersonalConditionsPeriod {
 			return new DataSpecDateAndHolidayDto(listDateInfo, new ArrayList<>(), Optional.empty());
 		}
 		
+		RequireImplDispControlPerCond requireImplDispControlPerCond = new RequireImplDispControlPerCond(
+				belongScheduleTeamRepo, scheduleTeamRepo, employeeRankRepo, rankRepo, empMedicalWorkStyleHistoryRepo,
+				nurseClassificationRepo);
+		
+		List<PersonalCondition> listPersonalCond = DisplayControlPersonalCondition.acquireInforDisplayControlPersonalCondition(requireImplDispControlPerCond, param.endDate, param.listSid);
+		List<PersonalConditionsDto> listPersonalCondDto = new ArrayList<>();
+		if (!listPersonalCond.isEmpty()) {
+			listPersonalCondDto = listPersonalCond.stream().map(mapper -> {
+				return new PersonalConditionsDto(mapper.getEmpId(), mapper.getTeamName(), mapper.getOptRankSymbol(),
+						Optional.of(mapper.getOptLicenseClassification().get().value));
+			}).collect(Collectors.toList());
+		}
+
 		// step 4
-		return null;
-		
-		
-		
+		return new DataSpecDateAndHolidayDto(listDateInfo, listPersonalCondDto, displayControlPerCond);
 	}
+	
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements DateInformation.Require {
@@ -123,14 +161,66 @@ public class EventInfoAndPersonalConditionsPeriod {
 		}
 
 		@Override
-		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
+		public boolean getHolidaysByDate(GeneralDate date) {
 			Optional<PublicHoliday> data = publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
+			return data.isPresent();
+		}
+
+		@Override
+		public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
+			if (lstSpecificDateItemNo.isEmpty()) {
+				return new ArrayList<>();
+			}
+			
+			List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(mapper -> mapper.v()).collect(Collectors.toList());
+			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(), _lstSpecificDateItemNo);
+			return data;
+		}
+	}
+	
+	@RequiredArgsConstructor
+	private static class RequireImplDispControlPerCond implements DisplayControlPersonalCondition.Require {
+		
+		private  final BelongScheduleTeamRepository belongScheduleTeamRepo;
+		private  final ScheduleTeamRepository scheduleTeamRepo;
+		private  final EmployeeRankRepository employeeRankRepo;
+		private  final RankRepository rankRepo;
+		private  final EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHistoryRepo;
+		private  final NurseClassificationRepository nurseClassificationRepo;
+		
+		@Override
+		public List<BelongScheduleTeam> get(List<String> lstEmpId) {
+			List<BelongScheduleTeam> data = belongScheduleTeamRepo.get(AppContexts.user().companyId(), lstEmpId);
 			return data;
 		}
 
 		@Override
-		public List<SpecificDateItem> getSpecifiDateByListCode(List<Integer> lstSpecificDateItem) {
-			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(), lstSpecificDateItem);
+		public List<ScheduleTeam> getAllSchedule(List<String> listWKPGRPID) {
+			 List<ScheduleTeam> data = scheduleTeamRepo.getAllSchedule(AppContexts.user().companyId(), listWKPGRPID);
+			return data;
+		}
+
+		@Override
+		public List<EmployeeRank> getAll(List<String> lstSID) {
+			List<EmployeeRank> data = employeeRankRepo.getAll(lstSID);
+			return data;
+		}
+
+		@Override
+		public List<Rank> getListRank() {
+			List<Rank> data = rankRepo.getListRank(AppContexts.user().companyId());
+			return data;
+		}
+
+		@Override
+		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
+			return data;
+		}
+
+		@Override
+		public List<NurseClassification> getListCompanyNurseCategory() {
+			List<NurseClassification> data = nurseClassificationRepo.getListCompanyNurseCategory(AppContexts.user().companyId());
 			return data;
 		}
 	}

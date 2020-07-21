@@ -13,7 +13,7 @@ import lombok.Value;
  */
 
 @Value
-public class PersonalConditions {
+public class PersonalConditionsDto {
 	
 	public String sid; // 社員ID
 	Optional<String> teamName; // チーム名

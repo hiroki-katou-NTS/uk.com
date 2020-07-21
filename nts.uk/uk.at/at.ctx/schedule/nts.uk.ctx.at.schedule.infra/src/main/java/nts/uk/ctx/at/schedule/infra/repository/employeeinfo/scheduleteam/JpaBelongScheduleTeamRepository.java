@@ -60,7 +60,7 @@ public class JpaBelongScheduleTeamRepository extends JpaRepository implements Be
 	}
 
 	@Override
-	public Optional<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
+	public List<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
 		// TODO Auto-generated method stub
 		return null;
 	}

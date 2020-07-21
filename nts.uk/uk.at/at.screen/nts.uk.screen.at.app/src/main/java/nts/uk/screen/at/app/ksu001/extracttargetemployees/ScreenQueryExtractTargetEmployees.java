@@ -91,8 +91,8 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public Optional<BelongScheduleTeam> get(String companyID, List<String> empIDs) {
-			return belongScheduleTeamRepo.get(companyID, empIDs);
+		public Optional<BelongScheduleTeam> get(List<String> empIDs) {
+			return belongScheduleTeamRepo.get(AppContexts.user().companyId(), empIDs);
 		}
 
 		@Override

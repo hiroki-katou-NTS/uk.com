@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice;
 
 import java.util.List;
-import java.util.Optional;
-
 
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
@@ -33,6 +31,7 @@ public class GetScheduleTeamInfoService {
 	public static interface Require{
 		/** 
 		 * BelongScheduleTeamRepository
+		 * [R-1] 所属スケジュールチームを取得する
 		 * 所属スケジュールチームRepository.*get ( 会社ID, List<社員ID> )	
 		 * @param companyID
 		 * @param empID
@@ -41,7 +40,8 @@ public class GetScheduleTeamInfoService {
 		List<BelongScheduleTeam> get(List<String> lstEmpId);
 		
 		/**
-		 * スケジュールチームRepository																								
+		 * スケジュールチームRepository
+		 * [R-2] スケジュールチームを取得する																								
 		 * 指定された職場グループ内のスケジュールチームをすべて取得する (会社ID, List<職場グループID>)
 		 * @param companyID
 		 * @param listWKPGRPID

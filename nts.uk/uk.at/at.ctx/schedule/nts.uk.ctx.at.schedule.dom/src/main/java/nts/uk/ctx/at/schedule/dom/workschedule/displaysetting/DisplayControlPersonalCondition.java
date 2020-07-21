@@ -61,7 +61,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 
 	//
 	// [1] 個人条件の表示制御に対して必要な個人情報を取得する
-	public List<PersonalCondition> acquireInforDisplayControlPersonalCondition(Require require,
+	public static List<PersonalCondition> acquireInforDisplayControlPersonalCondition(Require require,
 			GeneralDate referenceDate, List<String> lstEmpId) {
 		List<PersonalCondition> result = new ArrayList<PersonalCondition>();
 		/*
