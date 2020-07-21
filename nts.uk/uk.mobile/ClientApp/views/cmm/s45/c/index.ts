@@ -1,9 +1,8 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
-import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/common/index.d';
+import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/common/index.d';
 import { Phase } from 'views/cmm/s45/common/index';
-import { IOvertime } from 'views/cmm/s45/components/app1';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -46,7 +45,11 @@ export class CmmS45CComponent extends Vue {
     // 承認ルートインスタンス
     public phaseLst: Array<Phase> = [];
     public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
-    public appOvertime: IOvertime = null;
+    public appType: number = 99;
+    public appTransferData: any = {
+        appDispInfoStartupOutput: null,
+        appDetail: null
+    };
     // 差し戻し理由
     public reversionReason: string = '';
 
@@ -112,14 +115,15 @@ export class CmmS45CComponent extends Vue {
         let self = this;
         self.selected = 0;
         self.$http.post('at', API.getDetailMob, self.currentApp)
-        .then((resApp: any) => {
-            let appData: IApplication = resApp.data;
-            self.createPhaseLst(appData.listApprovalPhaseStateDto);
-            self.appState.appStatus = appData.appStatus;
-            self.appState.reflectStatus = appData.reflectStatus;
-            self.appState.version = appData.version;
-            self.reversionReason = appData.reversionReason;
-            self.appOvertime = appData.appOvertime;
+        .then((successData: any) => {
+            self.appTransferData.appDispInfoStartupOutput = successData.data;
+            let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
+            self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
+            self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.version = appDetailScreenInfoDto.application.version;
+            self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
+            self.appType = appDetailScreenInfoDto.application.appType;
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -271,16 +275,24 @@ export class CmmS45CComponent extends Vue {
     
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
-        let self = this;
-        if (self.$router.currentRoute.name == 'kafS05b') {
-            self.$close({ appID: self.currentApp });
-        } else {
-            self.$goto('kafS05b', { appID: self.currentApp }); 
+        const self = this;
+        switch (self.appType) {
+            case 2: 
+                console.log(self.appTransferData);
+                break;
+            default:
+                break;
         }
+
+        // if (self.$router.currentRoute.name == 'kafS05b') {
+        //     self.$close({ appID: self.currentApp });
+        // } else {
+        //     self.$goto('kafS05b', { appID: self.currentApp }); 
+        // }
     }
 }
 
 const API = {
     delete: 'at/request/application/deleteapp',
-    getDetailMob: 'at/request/application/getDetailMob'
+    getDetailMob: 'at/request/app/smartphone/getDetailMob'
 };

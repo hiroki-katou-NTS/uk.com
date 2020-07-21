@@ -33,10 +33,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Override
 	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, Application application, GeneralDate baseDate) {
 		// Output variables
-		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
-		if(application.getEmployeeID().equals(employeeID)||application.getEnteredPerson().equals(employeeID)) {
-			outputData.setLoginInputOrApproval(true);
-		}
+		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false);
 		//4.社員の当月の期間を算出する
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				application.getEmployeeID(), baseDate);
@@ -46,8 +43,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			//ステータス = 過去申請(status= 過去申請)
 			outputData.setReflectPlanState(ReflectPlanPerState.PASTAPP);
 		} else {
-			//ステータス = ドメインモデル「反映情報」．実績反映状態(Set status = 「反映情報」．実績反映状態)
-			// outputData.setReflectPlanState(EnumAdaptor.valueOf(application.getReflectionInformation().getStateReflectionReal().value, ReflectPlanPerState.class));
+			// 反映状態を取得する
+			outputData.setReflectPlanState(EnumAdaptor.valueOf(application.getAppReflectedState().value, ReflectPlanPerState.class));
 		}	
 		
 		// get User

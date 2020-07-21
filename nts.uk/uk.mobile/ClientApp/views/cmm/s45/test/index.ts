@@ -12,7 +12,8 @@ import { CmmS45DComponent } from '../d/index';
     validations: {},
     constraints: [],
     components: {
-        'cmms45c': CmmS45CComponent
+        'cmms45c': CmmS45CComponent,
+        'cmms45d': CmmS45DComponent
     }
 })
 export class CmmS45TestComponent extends Vue {
@@ -26,6 +27,6 @@ export class CmmS45TestComponent extends Vue {
 
     private gotoCMMS45D() {
         let self = this;
-        self.$modal('cmms45c', { 'listAppMeta': [self.text], 'currentApp': self.text });
+        self.$modal('cmms45d', { 'listAppMeta': [self.text], 'currentApp': self.text });
     }
 }

@@ -10,20 +10,29 @@ import { component, Prop } from '@app/core/component';
 })
 export class CmmS45ComponentsApp2Component extends Vue {
     public title: string = 'CmmS45ComponentsApp1';
-    @Prop({ default: () => ({ appWorkChange: new AppWorkChange() }) })
-    public readonly params: AppWorkChange;
+    @Prop({ default: () => ({ 
+        appDispInfoStartupOutput: null, 
+        appDetail: new AppWorkChange() 
+    }) })
+    public readonly params: {
+        appDispInfoStartupOutput: any, 
+        appDetail: AppWorkChange
+    };
     public dataFetch: any;
 
     public isCondition1: boolean = false;
     public isCondition2: boolean = false;
     public  $app() {
-        return this.params;
+        return this.params.appDetail;
     }
-    public created(params: any) {
+    public created() {
+        const self = this;
+        self.params.appDetail = new AppWorkChange();
+
         // this.params = params;
-        let getParams = params;
+        let getParams = self.params;
         // this.fetchData(getParams);
-        this.bindCodition(params);
+        this.bindCodition(self.params);
 
     }
     public mounted() {
@@ -93,9 +102,9 @@ export class CmmS45ComponentsApp2Component extends Vue {
 // dto 
 export class AppWorkChange {
 
-    public workType: string = '';
+    public workType: string = 'workType';
 
-    public workTime: string = '';
+    public workTime: string = 'workTime';
 
     public workHours1: string = '';
 

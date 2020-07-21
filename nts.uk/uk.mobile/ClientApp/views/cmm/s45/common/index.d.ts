@@ -68,16 +68,15 @@ export interface AppListExtractConditionDto {
     empRefineCondition: string;
 }
 
-export interface IApplication {
-    listApprovalPhaseStateDto: Array<IApprovalPhase>;
-    appStatus: number;
-    reflectStatus: number;
-    reversionReason: string;
-    version: number;
-    authorizableFlags: boolean;
-	approvalATR: number;
-    alternateExpiration: boolean;
+export interface AppDetailScreenInfo {
+    application: any;
+    approvalLst: Array<IApprovalPhase>;
     authorComment: string;
-    appOvertime: IOvertime;
+    user: number;
+    reflectPlanState: number;
+    outputMode: number;
+    authorizableFlags: boolean;
+    approvalATR: number;
+    alternateExpiration: boolean;
 }
 

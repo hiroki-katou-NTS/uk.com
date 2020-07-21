@@ -21,24 +21,19 @@ public enum ReflectPlanPerState {
 	REFLECTED(2),
 	
 	/**
-	 * 取消待ち
-	 */
-	WAITCANCEL(3),
-	
-	/**
 	 * 取消済
 	 */
-	CANCELED(4),
+	CANCELED(3),
 	
 	/**
 	 * 差し戻し
 	 */
-	REMAND(5),
+	REMAND(4),
 	
 	/**
 	 * 否認
 	 */
-	DENIAL(6),
+	DENIAL(5),
 	
 	/** Other */
 	/**Status = 過去申請 */

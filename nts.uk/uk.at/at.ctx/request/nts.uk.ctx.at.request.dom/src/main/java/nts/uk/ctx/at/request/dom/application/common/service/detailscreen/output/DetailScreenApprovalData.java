@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 
 @AllArgsConstructor
@@ -21,5 +20,4 @@ public class DetailScreenApprovalData {
 	 */
 	String authorComment;
 	
-	private ApprovalBehaviorAtrImport_New loginApprovalAtr;
 }

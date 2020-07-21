@@ -204,4 +204,26 @@ public class Application implements DomainAggregate {
 		return appType == ApplicationType.LEAVE_TIME_APPLICATION;
 	} 
 	
+	/**
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.アルゴリズム.反映状態を取得する.反映状態を取得する
+	 * @return
+	 */
+	public ReflectedState getAppReflectedState() {
+		// OUTPUT．反映状態＝未反映
+		ReflectedState result = ReflectedState.NOTREFLECTED;
+		// INPUT．反映状態．対象日の反映状態をループする
+		for(ReflectionStatusOfDay reflectionStatusOfDay : reflectionStatus.getListReflectionStatusOfDay()) {
+			// OUTPUT．反映状態＝ループ中の対象日の反映状態．実績反映状態
+			result = reflectionStatusOfDay.getActualReflectStatus();
+			// ループ中の対象日の反映状態．実績反映状態をチェックする
+			if(result == ReflectedState.REFLECTED || result == ReflectedState.CANCELED) {
+				continue;
+			}
+			return result;
+		}
+		return result;
+		
+	}
+	
 }
