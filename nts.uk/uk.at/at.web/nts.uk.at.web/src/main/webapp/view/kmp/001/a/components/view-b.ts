@@ -4,8 +4,8 @@ module nts.uk.at.view.kmp001.b {
 	const template = `
 		<div class="sidebar-content-header">
 			<span class="title" data-bind= "text: $i18n('KMP001_2')"></span>
-			<button class="proceed" data-bind= "text: $i18n('KMP001_5')"></button>
-			<button class="danger" data-bind= "text: $i18n('KMP001_6')"></button>
+			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
+			<button class="danger" data-bind= "text: $i18n('KMP001_6'), click: deleteStamCard"></button>
 		</div>
 		<div class="search_label" style="padding-bottom: 0px">
 			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
@@ -56,7 +56,7 @@ module nts.uk.at.view.kmp001.b {
 							</td>
 							<td class="data">
 								<div id="td-bottom">
-									<div id="td-bottom" data-bind="text: model.employeeCode"></div>
+									<div id="td-bottom" data-bind="text: employee.employeeCode"></div>
 									<div id="td-bottom" style="margin-left: 10px" data-bind="text: employee.businessName"></div>
 								</div>
 							</td>
@@ -94,7 +94,9 @@ module nts.uk.at.view.kmp001.b {
 	const KMP001B_API = {
 		GET_STAMPCARD: 'screen/pointCardNumber/getEmployeeFromCardNo/',
 		GET_ALL_STAMPCARD: 'screen/pointCardNumber/getAllEmployeeFromCardNo/',
-		GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInformationViewB/'
+		GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInformationViewB/',
+		ADD_STAMP: 'at/record/register-stamp-card/view-b/save',
+		DELETE_STAMP: 'at/record/register-stamp-card/view-b/delete'
 	};
 
 	@component({
@@ -119,17 +121,23 @@ module nts.uk.at.view.kmp001.b {
 					const current = _.find(stampCards, e => e.stampNumber === c);
 
 					if (current) {
-						vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(current.employeeId))
-							.then((data: IEmployeeVIewB[]) => {
-								vm.employee.update(ko.toJS(data));
-							});
-					} else {
-						// reset data ve mode them moi
+						vm.employee.employeeId(current.employeeId);
+						vm.model.employeeId(current.employeeId);
 					}
 				});
+
+			vm.employee.employeeId
+				.subscribe((c: string) => {
+					if (c != '') {
+						vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(c))
+							.then((data: IEmployeeVIewB[]) => {
+								vm.employee.update(ko.toJS(data));
+							})
+					}
+				})
 		}
 
-		public getStampCard() {
+		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");
 			const stampInput: string = ko.toJS(vm.inputStampCard);
@@ -149,9 +157,29 @@ module nts.uk.at.view.kmp001.b {
 				});
 		}
 
-		public getAllStampCard() {
+		getAllStampCard() {
 			const vm = this;
-			
+			vm.reloadAllStampCard(0);
+		}
+
+		openDialogCDL009a() {
+			const vm = this;
+			const params = { selectedIds: [], isMultiple: false, baseDate: new Date(), target: 1 };
+
+			vm.$window
+				.storage('CDL009Params', params)
+				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
+				.then(() => vm.$window.storage('CDL009Output'))
+				.then((data: string | string[]) => {
+					if (data != '') {
+						vm.employee.employeeId(ko.toJS(data));
+					}
+				});
+		}
+
+		reloadAllStampCard(selectedIndex: number = 0) {
+			const vm = this;
+
 			vm.$blockui("invisible")
 				.then(() => vm.$ajax(KMP001B_API.GET_ALL_STAMPCARD))
 				.then((data: IDataResponse) => {
@@ -175,7 +203,7 @@ module nts.uk.at.view.kmp001.b {
 					});
 
 					vm.items(stampCardList);
-					const record = stampCardList[0];
+					const record = stampCardList[selectedIndex];
 
 					if (record) {
 						vm.model.stampNumber(record.stampNumber);
@@ -187,25 +215,40 @@ module nts.uk.at.view.kmp001.b {
 				});
 		}
 
-		openDialogCDL009a() {
-			const vm = this;
-			const params = { selectedIds: [], isMultiple: false, baseDate: new Date(), target: 1 };
+		addStampCard() {
+			const vm = this,
+				command = { employeeId: ko.toJS(vm.employee.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
+				oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
+				newIndex = oldIndex == ko.unwrap(vm.items).length - 1 ? oldIndex - 1 : oldIndex;
 
-			vm.$window
-				.storage('CDL009Params', params)
-				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
-				.then(() => vm.$window.storage('CDL009Output'))
-				.then((data: string | string[]) => {
-					console.log(data);
-				});
+			vm.$blockui("invisible");
+			if (ko.toJS(vm.model.employeeId) != '' && ko.toJS(vm.employee.employeeId) != '') {
+				if (ko.toJS(vm.model.employeeId) === ko.toJS(vm.employee.employeeId)) {
+					vm.$dialog.info({ messageId: "Msg_15" });
+				} else {
+					vm.$ajax(KMP001B_API.ADD_STAMP, command)
+						.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+						.then(() => vm.reloadAllStampCard(newIndex));
+				}
+			}
+			vm.$blockui("clear");
+		}
 
-			/* vm.$window
-				.modal('/view/cdl/009/a/index.xhtml', params)
-				.then((data: string | string[]) => {
-					console.log(data);
-				});*/
+		deleteStamCard() {
+			const vm = this,
+				command = { employeeId: ko.toJS(vm.model.employeeId), cardNumber: ko.toJS(vm.model.stampNumber) },
+				oldIndex = _.map(ko.unwrap(vm.items), m => m.stampNumber).indexOf(command.cardNumber),
+				newIndex = oldIndex == ko.unwrap(vm.items).length - 1 ? oldIndex - 1 : oldIndex;
+				
+				console.log(command);
 
-			// selectedIds
+			vm.$blockui("invisible");
+			if (ko.toJS(vm.model.employeeId) != '' && ko.toJS(vm.employee.employeeId) != '') {
+				vm.$ajax(KMP001B_API.DELETE_STAMP, command)
+					.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+					.then(() => vm.reloadAllStampCard(newIndex));
+			}
+			vm.$blockui("clear");
 		}
 	}
 
@@ -233,13 +276,10 @@ module nts.uk.at.view.kmp001.b {
 	}
 
 	interface IEmployeeVIewB {
-		birthDay: Date;
 		businessName: string;
 		employeeCode: string;
 		employeeId: string;
 		entryDate: Date;
-		gender: number;
-		pid: string;
 		retiredDate: Date;
 	}
 
@@ -268,13 +308,10 @@ module nts.uk.at.view.kmp001.b {
 	}
 
 	class EmployeeVIewB {
-		birthDay: KnockoutObservable<Date | null> = ko.observable(null);
 		businessName: KnockoutObservable<string> = ko.observable('');
 		employeeCode: KnockoutObservable<string> = ko.observable('');
 		employeeId: KnockoutObservable<string> = ko.observable('');
 		entryDate: KnockoutObservable<Date | null> = ko.observable(null);
-		gender: KnockoutObservable<number> = ko.observable(0);
-		pid: KnockoutObservable<string> = ko.observable('');
 		retiredDate: KnockoutObservable<Date | null> = ko.observable(null);
 
 		constructor(params?: IEmployeeVIewB) {
@@ -289,12 +326,9 @@ module nts.uk.at.view.kmp001.b {
 		update(params: IEmployeeVIewB) {
 			const seft = this;
 
-			seft.birthDay(params.birthDay);
 			seft.employeeCode(params.employeeCode);
 			seft.businessName(params.businessName);
 			seft.entryDate(params.entryDate);
-			seft.gender(params.gender);
-			seft.pid(params.pid);
 			seft.retiredDate(params.retiredDate);
 		}
 	}
