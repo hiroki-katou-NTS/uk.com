@@ -20,28 +20,27 @@ module nts.uk.at.view.kdl014.a {
         
         constructor(){
             let self = this;
-            self.mode = 1;
+            self.mode = 0;
             
             if (self.mode == 1) {
                 self.columns = ko.observableArray([
                     { headerText: getText("KDL014_11"), key: 'code', hidden: true },
-                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_12")+ "</div>" , key: 'name', width: 100},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_12")+ "</div>" , key: 'name', width: 150},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_13")+ "</div>" , key: 'dateShow', width: 115},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_14")+ "</div>" , key: 'time', width: 80},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_15")+ "</div>" , key: 'stampAtr', width: 70},
                     { headerText: "<div style='text-align: center;'>"+getText("KDL014_16")+ "</div>" , key: 'workLocationName', width: 200},
-                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50},
+                    { headerText: "<div style='text-align: center;'>"+getText("KDL014_17")+ "</div>" , key: 'locationInfo', width: 50}
                 ]);
             } else {
                 self.columns = ko.observableArray([
-
                     { headerText: getText("KDL014_11"), key: 'code', hidden: true },
                     { headerText: getText("KDL014_12"), key: 'name', hidden: true },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_13") + "</div>", key: 'dateShow', width: 115 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_14") + "</div>", key: 'time', width: 80 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_15") + "</div>", key: 'stampAtr', width: 90 },
                     { headerText: "<div style='text-align: center;'>" + getText("KDL014_16") + "</div>", key: 'workLocationName', width: 250 },
-                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_17") + "</div>", key: 'locationInfo', width: 50 },
+                    { headerText: "<div style='text-align: center;'>" + getText("KDL014_17") + "</div>", key: 'locationInfo', width: 50 }
                 ]);
             }
                
@@ -69,7 +68,7 @@ module nts.uk.at.view.kdl014.a {
             let param = {
                 start: new Date('2019-07-13'),
                 end:new Date('2020-07-14'),
-                mode: 1, 
+                mode: self.mode, 
                 listEmp: [
                     {employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''},
                     {employeeId: '8f9edce4-e135-4a1e-8dca-ad96abe405d6', employeeCode: '', employeeName: '', affiliationName: ''}
@@ -143,7 +142,7 @@ module nts.uk.at.view.kdl014.a {
              
             self.workLocationName = param.workLocationName;
             
-            if ([1,2,3,4,7,8].includes(param.stampMeans)) {
+            if (_.includes([1,2,3,4,7,8], param.stampMeans)) {
                 self.time = "<span>" + getText("KDP002_120") + "   " + param.time + "</span>";
             
                 // 5:スマホ打刻
