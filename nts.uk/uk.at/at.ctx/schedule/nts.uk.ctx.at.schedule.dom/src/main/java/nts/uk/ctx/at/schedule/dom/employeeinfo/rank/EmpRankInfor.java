@@ -21,14 +21,6 @@ public class EmpRankInfor {
 	/**ランク記号 **/
 	private final RankSymbol rankSymbol;
 
-	public EmpRankInfor(String empId) {
-		super();
-		this.empId = empId;
-		this.rankCode = null;
-		this.rankSymbol = null;
-		
-		
-	}
 	/**
 	 * [C-1] ランクなしで作る
 	 * @param empId
