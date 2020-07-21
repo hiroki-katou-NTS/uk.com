@@ -63,7 +63,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					console.log(res);
-					let itemIds = [28, 29, 31, 34], itemsFiller =[];
+					let itemIds = [28, 29, 31, 34], itemsFiller = [];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 
@@ -85,8 +85,7 @@ module nts.uk.at.view.kdp002.c {
 							self.timeName2(res.leave ? nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.leave)) : null);
 							self.workName1(res.workTypes.length > 0 ? res.workTypes[0].name : '');
 							self.workName2(res.workTimeTypes.length > 0 ? res.workTimeTypes[0].name : '');
-							itemsFiller =
-								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.itemId)!=-1 && o.value });
+
 							if (res.itemValues) {
 								// C4	実績の属性と表示書式について
 								res.itemValues.forEach(item => {
@@ -104,10 +103,13 @@ module nts.uk.at.view.kdp002.c {
 								});
 							}
 
+							itemsFiller =
+								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.itemId) != -1 && o.value != '' });
+
 							self.items(res.itemValues);
 						}
 					}
-					if (res.confirmResult){
+					if (res.confirmResult) {
 						self.permissionCheck(res.confirmResult.permissionCheck == 1 && itemsFiller.length ? true : false);
 					} else {
 						self.displayButton(false);
