@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 580,
-					height : 540
+					width : 655,
+					height : 480
 				};
 			</script>
 
@@ -34,17 +34,28 @@
 			<div id="contents-area">
 				<div data-bind="visible :mode == 0">
 					<div id="emp-component"></div>
-				</div>
-				<div>
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-						height: 255,
+						height: 275,
 						dataSource: empInfomationList,
 						primaryKey: 'code',
 						columns: columns,
 						multiple: false,
 						value: currentCode,
-						row:10,
+						enable: true
+					}"></table>
+				</div>
+				
+				<div style="height: 23px"></div>
+				<div>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+						height: 275,
+						dataSource: empInfomationList,
+						primaryKey: 'code',
+						columns: columns,
+						multiple: false,
+						value: currentCode,
 						enable: true
 					}"></table>
 				</div>

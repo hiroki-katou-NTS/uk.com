@@ -6,3 +6,7 @@
 #single-list_container {
 	margin: 10px auto !important
 }
+
+#function-tr td:nth-child(7) div {
+	width: 50px;
+}
