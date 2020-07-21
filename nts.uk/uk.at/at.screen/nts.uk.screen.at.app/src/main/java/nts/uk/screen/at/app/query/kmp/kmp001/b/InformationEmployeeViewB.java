@@ -25,10 +25,8 @@ public class InformationEmployeeViewB {
 		}
 
 		InformationEmployeeDtoViewB dto = new InformationEmployeeDtoViewB(
-				personInfoExport.getPid() == null ? "" : personInfoExport.getPid(),
 				personInfoExport.getBusinessName() == null ? "" : personInfoExport.getBusinessName(),
-				personInfoExport.getEntryDate(), personInfoExport.getGender(),
-				personInfoExport.getBirthDay(),
+				personInfoExport.getEntryDate(),
 				personInfoExport.getEmployeeId() == null ? sid : personInfoExport.getEmployeeId(),
 				personInfoExport.getEmployeeCode() == null ? "" : personInfoExport.getEmployeeCode(),
 				personInfoExport.getRetiredDate());
