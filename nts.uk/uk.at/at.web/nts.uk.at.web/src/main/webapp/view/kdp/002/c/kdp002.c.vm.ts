@@ -104,7 +104,7 @@ module nts.uk.at.view.kdp002.c {
 							}
 
 							itemsFiller =
-								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.valueType) != -1 && o.value != '' });
+								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.valueType) != -1 && o.value });
 
 							self.items(res.itemValues);
 						}
