@@ -94,10 +94,12 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				timeZoneWithWorkNo2 = item;
 			}
 		}
+		String contractCD = AppContexts.user().contractCode();
 		
 		return new KrqdtAppWorkChange(
 				// do have value of companyID
 				new KrqdtAppWorkChangePk(AppContexts.user().companyId(), domain.getAppID()),
+				contractCD,
 				domain.getOpWorkTypeCD().get().v(),
 				domain.getOpWorkTimeCD().get().v(),
 				domain.getStraightGo().value,

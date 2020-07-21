@@ -29,6 +29,9 @@ public class KrqdtAppWorkChange extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public KrqdtAppWorkChangePk appWorkChangePk;
+	
+	@Column(name="CONTRACT_CD")
+	private String contractCD;
 
 	/**
 	 * 勤務種類コード

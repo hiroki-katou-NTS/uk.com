@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -421,9 +423,13 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeSettingOutput appWorkChangeSettingOutput = this.getAppWorkChangeSettingOutput(companyID);
 		
 		// 勤務種類を取得する
-		AppEmploymentSet appEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().get();
-		
-		List<WorkType> workTypeLst = this.getWorkTypeLst(appEmploymentSet);
+		Optional<AppEmploymentSet> opAppEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
+		List<WorkType> workTypeLst = Collections.emptyList();
+		if (opAppEmploymentSet.isPresent()) {
+			workTypeLst = this.getWorkTypeLst(opAppEmploymentSet.get());			
+		}else {
+			workTypeLst = this.getWorkTypeLst(null);
+		}
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットする
 		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSettingOutput.getAppWorkChangeSet());

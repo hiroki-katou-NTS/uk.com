@@ -53,7 +53,7 @@ public class AppWorkChange extends Application {
 	public AppWorkChange(NotUseAtr straightGo, NotUseAtr straightBack,
 		Optional<WorkTypeCode> opWorkTypeCD, Optional<WorkTimeCode> opWorkTimeCD,
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst, Application application) {
-		super();
+		super(application);
 		this.straightGo = straightGo;
 		this.straightBack = straightBack;
 		this.opWorkTypeCD = opWorkTypeCD;

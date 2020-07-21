@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,10 +12,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -48,16 +52,23 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 
 	@Override
 	public ProcessResult registerData(String companyId, Application application, AppWorkChange workChange,
-			List<GeneralDate> lstDateHd, Boolean isMail) {
-
-		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		 registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
-		 
+			List<GeneralDate> lstDateHd, Boolean isMail, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		Optional<List<ApprovalPhaseStateImport_New>> opListApproval = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState();
+		List<ApprovalPhaseStateImport_New> lstApproval = null;
+		if (opListApproval.isPresent()) {
+			lstApproval = opListApproval.get();
+		}
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
-		 appRepository.insert(application);
+		// appRepository.insert(application);
+		appRepository.insertApp(application, lstApproval);
+		
 		// ドメインモデル「勤務変更申請」の新規登録をする
 		// KAFS07
-		 workChangeRepository.add(workChange);
+		workChangeRepository.add(workChange);
+		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
+		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+
+		
 
 		// 年月日Listを作成する
 		GeneralDate startDateParam = application.getOpAppStartDate().isPresent()
@@ -76,11 +87,14 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		}
 
 		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
+//		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-//		 return newAfterRegister.processAfterRegister(application);
-		return null;
+		 return newAfterRegister.processAfterRegister(
+				 application.getAppID(), 
+				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet());
+//		return null;
 	}
 
 	@Override
@@ -130,9 +144,9 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 
 	@Override
 	public ProcessResult registerProcess(Boolean mode, String companyId, Application application, AppWorkChange appWorkchange,
-			List<GeneralDate> lstDates, Boolean isMail) {
+			List<GeneralDate> lstDates, Boolean isMail, AppDispInfoStartupOutput appDispInfoStartupOutput ) {
 		if (mode) {
-			return this.registerData(companyId, application, appWorkchange, lstDates, isMail);
+			return this.registerData(companyId, application, appWorkchange, lstDates, isMail, appDispInfoStartupOutput);
 		}else {
 			return workChangeUpdateService.updateWorkChange(companyId, application, appWorkchange);
 		}

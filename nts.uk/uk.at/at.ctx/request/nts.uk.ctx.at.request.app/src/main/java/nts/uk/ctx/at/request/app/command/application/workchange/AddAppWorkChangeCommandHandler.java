@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType_Old;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
@@ -41,14 +43,28 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		// error EA refactor 4
 		AddAppWorkChangeCommand command = context.getCommand();
+//		return application.createFromNew(
+//				application.getPrePostAtr(),
+//				application.getEmployeeID(),
+//				application.getAppType(),
+//				application.getAppDate(),
+//				application.getEnteredPerson(),
+//				application.getOpStampRequestMode(),
+//				application.getOpReversionReason(),
+//				application.getOpAppStartDate(),
+//				application.getOpAppEndDate(),
+//				application.getOpAppReason(),
+//				application.getOpAppStandardReasonCD());
+		Application application = command.getApplicationDto().toDomain();
 		
 		return workChangeRegisterService.registerProcess(
 				command.getMode(),
 				command.getCompanyId(),
-				command.getApplicationDto().toDomain(),
-				command.getAppWorkChangeDto().toDomain(),
+				application,
+				command.getAppWorkChangeDto().toDomain(application),
 				command.getHolidayDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
-				command.getIsMail());
+				command.getIsMail(),
+				command.getAppDispInfoStartupDto().toDomain());
 		/*
 		
 		AppWorkChangeDispInfo appWorkChangeDispInfo = command.getAppWorkChangeDispInfoCmd().toDomain();

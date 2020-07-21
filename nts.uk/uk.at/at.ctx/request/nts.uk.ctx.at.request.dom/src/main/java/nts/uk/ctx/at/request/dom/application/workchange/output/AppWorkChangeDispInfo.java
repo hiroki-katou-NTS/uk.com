@@ -41,22 +41,22 @@ public class AppWorkChangeDispInfo {
 	/**
 	 * 就業時間帯の必須区分
 	 */
-	private Optional<SetupType> setupType;
+	private Optional<SetupType> setupType = Optional.empty();
 	
 	/**
 	 * 所定時間設定
 	 */
-	private Optional<PredetemineTimeSetting> predetemineTimeSetting;
+	private Optional<PredetemineTimeSetting> predetemineTimeSetting = Optional.empty();
 	
 	/**
 	 * 選択中の勤務種類
 	 */
-	private Optional<String> workTypeCD;
+	private Optional<String> workTypeCD = Optional.empty();
 	
 	/**
 	 * 選択中の就業時間帯
 	 */
-	private Optional<String> workTimeCD;
+	private Optional<String> workTimeCD = Optional.empty();
 	
 //	勤務変更申請の反映
 	private ReflectWorkChangeApp reflectWorkChangeApp;

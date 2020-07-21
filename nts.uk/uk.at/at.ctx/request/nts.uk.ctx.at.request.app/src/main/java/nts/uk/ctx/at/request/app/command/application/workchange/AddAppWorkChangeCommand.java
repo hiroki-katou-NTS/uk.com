@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDto;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +25,6 @@ public class AddAppWorkChangeCommand {
 	private List<String> holidayDates;
 //	メールサーバ設定済区分
 	private Boolean isMail;
+	
+	private AppDispInfoStartupDto appDispInfoStartupDto;
 }

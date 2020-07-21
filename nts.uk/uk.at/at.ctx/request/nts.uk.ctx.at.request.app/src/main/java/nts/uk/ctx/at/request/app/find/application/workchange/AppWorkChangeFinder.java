@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDe
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -307,11 +308,12 @@ public class AppWorkChangeFinder {
 
 		Boolean mode = command.getMode();
 		String companyId = command.getCompanyId();
-		ApplicationDto application = command.getApplicationDto();
+		ApplicationDto applicationDto = command.getApplicationDto();
+		Application application = applicationDto.toDomain();
 		AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
 		int isError = command.getIsError();
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
-				application.toDomain(), appWorkChangeDto.toDomain(),
+				application, appWorkChangeDto.toDomain(application),
 				EnumAdaptor.valueOf(isError, ErrorFlagImport.class));
 
 		return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
