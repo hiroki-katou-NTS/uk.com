@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 /**
  * シフトマスタと出勤休日区分の組み合わせを取得する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.シフトマスタ
- * @author kingo
+ * @author HieuLt
  *
  */
 public class GetCombinationrAndWorkHolidayAtrService {
@@ -29,12 +29,12 @@ public class GetCombinationrAndWorkHolidayAtrService {
 		// retrurn	[prv-1] 出勤休日区分をセット($シフトマスタリスト)
 		return setWorkHolidayClassification(require, lstShiftMater);		
 	}
-	
+	//
 	public static Map<ShiftMaster,Optional<WorkStyle>> getbyWorkInfo(Require require , String companyId , List<WorkInformation> lstWorkInformation){
 		List<ShiftMaster> listShiftMaster = require.getByListWorkInfo(companyId,lstWorkInformation);
 		return setWorkHolidayClassification(require, listShiftMaster);
 	}
-	
+	//[prv-1] 出勤休日区分をセット
 	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(Require require , List<ShiftMaster> listShiftMaster){
 		Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<>();
 		//listShiftMaster.stream().map(mapper->mapper.)

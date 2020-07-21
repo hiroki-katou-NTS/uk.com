@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -34,7 +33,7 @@ public class EmpMedicalWorkStyleHistory implements DomainAggregate {
 	public static EmpMedicalWorkStyleHistory get(String empID , List<DateHistoryItem> listDateHistoryItem){
 		//inv-1		履歴.size () > 0			
 		if(!(listDateHistoryItem.size() >0)){
-			throw new BusinessException("Msg_ChuacomaMsg");
+			throw new RuntimeException("SystemError");
 		}
 		return new EmpMedicalWorkStyleHistory(empID, listDateHistoryItem);
 	}
