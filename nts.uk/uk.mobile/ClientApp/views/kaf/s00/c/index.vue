@@ -1,5 +1,5 @@
 <template>
-<div class="kafs00c" v-if="$application">
+<div class="kafs00c">
     <div class="card card-label" v-if="dispReason">
         <div class="card-header" style="align-items: center">
             <v-label class="border-0" v-bind:constraint="validations.reason">
@@ -10,7 +10,7 @@
             <div v-if="displayFixedReason">
                 <span class="small-header">{{'KAFS00_17' | i18n}}</span>
                 <nts-dropdown v-model="params.output.opAppStandardReasonCD">
-                    <option v-for="(item, itemIndex) in $dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
+                    <option v-for="(item, itemIndex) in dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
                         {{item.opReasonForFixedForm | i18n}}
                     </option>
                 </nts-dropdown>

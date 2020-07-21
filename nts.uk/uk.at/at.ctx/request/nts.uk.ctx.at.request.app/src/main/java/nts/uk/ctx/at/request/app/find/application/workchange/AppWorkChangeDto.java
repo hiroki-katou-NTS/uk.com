@@ -15,6 +15,7 @@ import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.ReflectionStatusDto;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -68,6 +69,15 @@ public class AppWorkChangeDto extends ApplicationDto{
 				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
 				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				null);
+	}
+	public AppWorkChange toDomain(Application app) {
+		return new AppWorkChange(
+				NotUseAtr.valueOf(this.straightGo),
+				NotUseAtr.valueOf(this.straightBack),
+				Optional.ofNullable(new WorkTypeCode(this.opWorkTypeCD)),
+				Optional.ofNullable(new WorkTimeCode(this.opWorkTimeCD)),
+				CollectionUtil.isEmpty(timeZoneWithWorkNoLst) ? Collections.emptyList() : timeZoneWithWorkNoLst.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
+				app);
 	}
 	public AppWorkChangeDto(int version, String appID, int prePostAtr, String employeeID, int appType, String appDate,
 			String enteredPerson, String inputDate, ReflectionStatusDto reflectionStatus, Integer opStampRequestMode,

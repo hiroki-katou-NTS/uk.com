@@ -42,19 +42,19 @@ export class KafS00AComponent extends Vue {
             receptionRestrictionSetting: self.params.receptionRestrictionSetting,
             opOvertimeAppAtr: self.params.opOvertimeAppAtr
         }).then((data: any) => {
-            self.appMsg = data.applicationUseSetting.memo;
-            self.appMsgForCurrentMonth = data.deadlineLimitCurrentMonth.opAppDeadline;
-            if (data.preAppAcceptLimit.opAvailableTime) {
-                self.preAppPeriod = self.$i18n('KAFS00_22', data.preAppAcceptLimit.opAvailableTime);    
+            self.appMsg = data.data.applicationUseSetting.memo;
+            self.appMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.opAppDeadline;
+            if (data.data.preAppAcceptLimit.opAvailableTime) {
+                self.preAppPeriod = self.$i18n('KAFS00_22', data.data.preAppAcceptLimit.opAvailableTime);    
             } else {
-                self.preAppPeriod = self.$i18n('KAFS00_5', data.preAppAcceptLimit.opAcceptableDate);
+                self.preAppPeriod = self.$i18n('KAFS00_5', data.data.preAppAcceptLimit.opAcceptableDate);
             }
-            self.postAppPeriod = data.postAppAcceptLimit.opAcceptableDate;   
+            self.postAppPeriod = data.data.postAppAcceptLimit.opAcceptableDate;   
             
-            self.displayAppMsg = data.applicationUseSetting.useDivision && data.applicationUseSetting.memo;
-            self.displayAppMsgForCurrentMonth = data.deadlineLimitCurrentMonth.useAtr;
-            self.displayPreAppPeriod = data.preAppAcceptLimit.useReceptionRestriction;
-            self.displayPostAppPeriod = data.postAppAcceptLimit.useReceptionRestriction;
+            self.displayAppMsg = data.data.applicationUseSetting.useDivision && data.data.applicationUseSetting.memo;
+            self.displayAppMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.useAtr;
+            self.displayPreAppPeriod = data.data.preAppAcceptLimit.useReceptionRestriction;
+            self.displayPostAppPeriod = data.data.postAppAcceptLimit.useReceptionRestriction;
             self.displayAppPeriod = self.displayPreAppPeriod || self.displayPostAppPeriod;
         }).catch((res: any) => {
             self.$mask('hide');

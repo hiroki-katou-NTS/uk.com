@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -27,6 +28,9 @@ public class KrqdtAppReflectState extends UkJpaEntity {
 	
 	@EmbeddedId
 	private KrqdpAppReflectState pk;
+	
+	@Column(name="CONTRACT_CD")
+	private String contractCD;
 	
 	@Column(name="REFLECT_PLAN_STATE")
 	private int scheReflectStatus;
@@ -71,11 +75,13 @@ public class KrqdtAppReflectState extends UkJpaEntity {
 	}
 	
 	public static KrqdtAppReflectState fromDomain(ReflectionStatusOfDay reflectionStatusOfDay, String companyID, String appID) {
+		String contractCD = AppContexts.user().contractCode();
 		return new KrqdtAppReflectState(
 				new KrqdpAppReflectState(
 						companyID, 
 						appID, 
 						reflectionStatusOfDay.getTargetDate()), 
+				contractCD,
 				reflectionStatusOfDay.getScheReflectStatus().value, 
 				reflectionStatusOfDay.getActualReflectStatus().value, 
 				reflectionStatusOfDay.getOpUpdateStatusAppReflect().map(x -> x.getOpReasonScheCantReflect().map(y -> y.value).orElse(null)).orElse(null), 

@@ -64,7 +64,7 @@ export class KafS07AComponent extends Vue {
     public user: any;
     public application: any = {
         version: 1,
-        appID: 'dddd',
+        // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
         prePostAtr: 1,
         employeeID: '292ae91c-508c-4c6e-8fe8-3e72277dec16',
         appType: 2,
@@ -94,7 +94,7 @@ export class KafS07AComponent extends Vue {
         opStampRequestMode: 1,
         opReversionReason: '1',
         opAppStartDate: '2020/08/07',
-        opAppEndDate: '2020/08/07',
+        opAppEndDate: '2020/08/08',
         opAppReason: 'jdjadja',
         opAppStandardReasonCD: 1
 
@@ -155,6 +155,7 @@ export class KafS07AComponent extends Vue {
     public mounted() {
         let self = this;
         this.fetchStart();
+        
 
     }
 
@@ -168,7 +169,7 @@ export class KafS07AComponent extends Vue {
             mode: this.mode,
             companyId: this.user.companyId,
             employeeId: this.user.employeeId,
-            listDates: ['2020/07/08'],
+            listDates: [],
             appWorkChangeOutputDto: this.mode ? null : this.data.appWorkChangeOutputDto,
             appWorkChangeDto: this.mode ? null : this.data.appWorkChangeDto
         })
@@ -177,6 +178,9 @@ export class KafS07AComponent extends Vue {
                     return;
                 }
                 this.data = res.data;
+                this.createParamA();
+                this.createParamB();
+                this.createParamC();
                 // let appWorkChange = res.data.appWorkChange;
                 this.bindStart();
                 this.$mask('hide');
@@ -185,20 +189,21 @@ export class KafS07AComponent extends Vue {
             });
     }
 
+
     // bind params to components
     public createParamA() {
         let appDispInfoWithDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput;
         let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        this.kaf000_B_Params = {
-            companyID: '',
-            employeeID: '',
+        this.kaf000_A_Params = {
+            companyID: this.user.companyId,
+            employeeID: this.user.employeeId,
             // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
             employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
-            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst,
+            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
             receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
-            opOvertimeAppAtr: null
+            // opOvertimeAppAtr: null
         };
     }
     public createParamB() {
@@ -227,7 +232,7 @@ export class KafS07AComponent extends Vue {
                 endDate: new Date()
             }
         };
-        let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        // let appDispInfoNoDateOutput = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         // 新規モード
         // this.mode
 
@@ -262,10 +267,10 @@ export class KafS07AComponent extends Vue {
                 appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                opAppStandardReasonCD: null,
+                // opAppStandardReasonCD: null,
                 // 入力中の申請理由
                 //empty
-                opAppReason: null
+                // opAppReason: null
             },
             output: {
                 // 定型理由
@@ -400,12 +405,21 @@ export class KafS07AComponent extends Vue {
         }
 
 
+        this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
+        if (this.application.prePostAtr == 0) {
+            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+        }
+        // this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
+        this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+
+
     }
 
     public changeDate() {
         let params = {
             companyId: this.user.companyId,
-            listDates: ['2020/01/01'],
+            listDates: ['2020/01/01', '2020/07/07'],
             appWorkChangeDispInfo: this.data.appWorkChangeDispInfo
         };
         this.$http.post('at', API.updateAppWorkChange, params)
@@ -418,12 +432,47 @@ export class KafS07AComponent extends Vue {
             });
 
     }
+    public registerData(res: any ) {
+        this.$http.post('at', API.registerAppWorkChange, {
+            mode: this.mode,
+            companyId: this.user.companyId,
+            applicationDto: this.application,
+            appWorkChangeDto: this.appWorkChangeDto,
+            holidayDates: res.data.holidayDateLst,
+            isMail: true,
+            appDispInfoStartupDto: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput
+        }).then((res: any) => {
+            this.$mask('hide');
+            // KAFS00_D_申請登録後画面に移動する
+        }).catch((res: any) => {
+            this.$mask('hide');
+            this.$modal.error({ messageId: res.errors[0].messageId });
+        });
+    }
+    public handleConfirmMessage(listMes: any, res: any) {
+
+        if (!_.isEmpty(listMes)) {
+            let item = listMes.shift();
+            this.$modal.confirm({ messageId: item.messageId }).then((value) => {
+                if (value == 'yes') {   
+                    if (_.isEmpty(listMes)) {
+                        this.registerData(res);
+                    } else {
+                        this.handleConfirmMessage(listMes, res);
+                    }
+
+                } 
+            });
+        }
+    }
     public register() {
         console.log(this.application);
+        this.$mask('show');
         // check validation 
         this.$validate();
         if (!this.$valid) {
             window.scrollTo(500, 0);
+            this.$mask('hide');
 
             return;
         }
@@ -438,44 +487,58 @@ export class KafS07AComponent extends Vue {
             applicationDto: this.application,
             appWorkChangeDto: this.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            // this.data.appWorkChangeDispInfo.appDispInfoWithDateOutput.opErrorFlag
-            isError: 1
+            isError: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag
         }).then((res: any) => {
             // confirmMsgLst
             // holidayDateLst
             let isConfirm = true;
             if (!_.isEmpty(res)) {
-                this.$modal.confirm({ messageId: res.messageId }).then((value) => {
-                    if (value == 'yes') {
-                        isConfirm = true;
-                    } else {
-                        isConfirm = false;
-                        this.$mask('hide');
-                    }
-                });
+                // display list confirm message
+                if (!_.isEmpty(res.data.confirmMsgLst)) {
+                    let listTemp = _.clone(res.data.confirmMsgLst);
+                    this.handleConfirmMessage(listTemp, res);
 
-            }
-            // 勤務変更申請の登録処理
-            // register application
-            if (isConfirm) {
-                this.$http.post('at', API.registerAppWorkChange, {
-                    mode: this.mode,
-                    companyId: this.user.companyId,
-                    applicationDto: this.application,
-                    appWorkChangeDto: this.appWorkChangeDto,
-                    holidayDates: res.holidayDateLst,
-                    isMail: true
-                }).then((res: any) => {
-                    // KAFS00_D_申請登録後画面に移動する
-                }).catch((res: any) => {
-                    this.$modal.error({ messageId: res.messageId });
-                });
-            }
+                } else {
+                    this.registerData(res);
+                }
+
+
+
+                // this.$modal.confirm({ messageId: res.messageId }).then((value) => {
+                //     if (value == 'yes') {
+                //         isConfirm = true;
+                //     } else {
+                //         isConfirm = false;
+                //         this.$mask('hide');
+                //     }
+                //     // 勤務変更申請の登録処理
+                //     // register application
+                //     if (isConfirm) {
+                //         this.$http.post('at', API.registerAppWorkChange, {
+                //             mode: this.mode,
+                //             companyId: this.user.companyId,
+                //             applicationDto: this.application,
+                //             appWorkChangeDto: this.appWorkChangeDto,
+                //             holidayDates: res.data.holidayDateLst,
+                //             isMail: true,
+                //             lstApproval: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState
+                //         }).then((res: any) => {
+                //             // KAFS00_D_申請登録後画面に移動する
+                //         }).catch((res: any) => {
+                //             this.$modal.error({ messageId: res.messageId });
+                //         });
+                //     }
+
+                // });
+
+            } 
+
 
 
         }).catch((res: any) => {
+            this.$mask('hide');
             // show message error
-            this.$modal.error({ messageId: res.messageId });
+            this.$modal.error({ messageId: res.errors[0].messageId });
         });
 
     }
@@ -550,7 +613,7 @@ export class KafS07AComponent extends Vue {
                 }
             }
         }).catch((res: any) => {
-            this.$modal.error({ messageId: res.messageId });
+            this.$modal.error({ messageId: res.errors[0].messageId });
         });
     }
 

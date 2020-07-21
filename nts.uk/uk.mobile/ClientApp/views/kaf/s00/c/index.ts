@@ -56,7 +56,7 @@ export class KafS00CComponent extends Vue {
                                                     return o.appStandardReasonCD == self.$input.opAppStandardReasonCD;
                                                 }).appStandardReasonCD;
         } else {
-            let defaultReasonCD = _.find(dropdownList, (o: ReasonTypeItemDto) => o.defaultValue);
+            let defaultReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => o.defaultValue);
             if (defaultReasonCD) {
                 self.$output.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;  
             } else {
