@@ -29,18 +29,30 @@ public class GetCombinationrAndWorkHolidayAtrService {
 		// retrurn	[prv-1] 出勤休日区分をセット($シフトマスタリスト)
 		return setWorkHolidayClassification(require, lstShiftMater);		
 	}
-	//
+	/**
+	 * [2] 勤務情報で取得する
+	 * @param require
+	 * @param companyId
+	 * @param lstWorkInformation
+	 * @return
+	 */
 	public static Map<ShiftMaster,Optional<WorkStyle>> getbyWorkInfo(Require require , String companyId , List<WorkInformation> lstWorkInformation){
 		List<ShiftMaster> listShiftMaster = require.getByListWorkInfo(companyId,lstWorkInformation);
 		return setWorkHolidayClassification(require, listShiftMaster);
 	}
-	//[prv-1] 出勤休日区分をセット
-	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(Require require , List<ShiftMaster> listShiftMaster){
+	
+	/**
+	 * [prv-1] 出勤休日区分をセット
+	 * @param require
+	 * @param listShiftMaster
+	 * @return
+	 */
+	private static Map<ShiftMaster,Optional<WorkStyle>> setWorkHolidayClassification(nts.uk.ctx.at.shared.dom.WorkInformation.Require requireWorkinfo , List<ShiftMaster> listShiftMaster){
 		Map<ShiftMaster,Optional<WorkStyle>> map = new HashMap<>();
-		//listShiftMaster.stream().map(mapper->mapper.)
-		//------------------------QA http://192.168.50.4:3000/issues/110620
-		
-		return null;
+		for(ShiftMaster sm : listShiftMaster) {
+			map.put(sm, sm.getWorkStyle(requireWorkinfo));
+		}
+		return map;
 		
 	} 
 	

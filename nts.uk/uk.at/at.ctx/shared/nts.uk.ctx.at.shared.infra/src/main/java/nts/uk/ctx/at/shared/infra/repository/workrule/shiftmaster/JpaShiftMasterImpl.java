@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -172,9 +173,16 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	}
 
 	@Override
-	public Optional<ShiftMaster> get(String companyID, List<WorkInformation> lstWorkInformation) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ShiftMaster> get(String companyID, List<WorkInformation> lstWorkInformation) {
+		List<ShiftMaster> listData = new ArrayList<>();
+		for(WorkInformation wi :lstWorkInformation ) {
+			Optional<ShiftMaster> optSm =  getByWorkTypeAndWorkTime(companyID, wi.getWorkTypeCd()!=null?wi.getWorkTypeCd().v():null, 
+					wi.getWorkTimeCd()!=null?wi.getWorkTimeCd().v():null);
+			if(optSm.isPresent()) {
+				listData.add(optSm.get());
+			}
+		}
+		return listData;
 	}
 
 }
