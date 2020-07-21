@@ -1,5 +1,5 @@
 <template>
-<div class="kafs00c" v-if="$application">
+<div class="kafs00c">
     <div class="card card-label" v-if="dispReason">
         <div class="card-header" style="align-items: center">
             <v-label class="border-0" v-bind:constraint="validations.reason">

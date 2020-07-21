@@ -21,6 +21,8 @@ export class KafS07BComponent extends Vue {
         workTime: '002 worktime',
         workHours1: '08:30 ~ 17:30',
         workHours2: '08:30 ~ 17:30',
+        isWorkHours1: true,
+        isWorkHours2: true,
         straight: true,
         bounce: false
     };
